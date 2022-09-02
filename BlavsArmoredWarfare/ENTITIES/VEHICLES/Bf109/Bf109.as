@@ -69,6 +69,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
 		this.Untag("no_more_shooting");
+		this.set_u32("next_shoot", getGameTime()+shootDelay);
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
 		Vec2f arrowVel;
@@ -97,6 +98,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onTick(CBlob@ this)
 {
+	if (getGameTime() >= this.get_u32("next_shoot")) this.Untag("no_more_shooting");
 	AttachmentPoint@ ap_pilot = this.getAttachments().getAttachmentPointByName("PILOT");
 	if (this.hasAttached() && ap_pilot !is null)
 	{
@@ -118,13 +120,8 @@ void onTick(CBlob@ this)
 			bool pressed_s = ap_pilot.isKeyPressed(key_down);
 			bool pressed_lm = ap_pilot.isKeyPressed(key_action1);
 			
-			bool myplayer = false;
-			CBlob@ pilot = ap_pilot.getOccupied();
-			if (pilot !is null && pilot.isMyPlayer())
-			{
-				bool myplayer = true;
-			}
-			if (!this.hasTag("no_more_shooting") && myplayer && pressed_lm && this.get_u32("next_shoot") < getGameTime())
+			
+			if (!this.hasTag("no_more_shooting") && pilot.isMyPlayer() && pressed_lm && this.get_u32("next_shoot") < getGameTime())
 			{
 				ShootBullet(this, (this.getPosition() - Vec2f(0,1)), this.getPosition()+Vec2f(this.isFacingLeft() ? -32.0f : 32.0f, 0).RotateBy(this.getAngleDegrees() + (this.isFacingLeft() ? -7.5f : 7.5f)), 17.59f * 1.75f);
 				this.Tag("no_more_shooting");
