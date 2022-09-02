@@ -183,7 +183,7 @@ void onTick(CBlob@ this)
 						const bool pressed_m2 = ap.isKeyPressed(key_action2);
 
 						// shoot
-						if (!this.hasTag("no_more_shooting") && pilot.isMyPlayer() && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
+						if (!this.hasTag("no_more_shooting") && hooman.isMyPlayer() && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
 						{
 							CInventory@ inv = this.getInventory();
 							if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_heatwarhead")
@@ -289,7 +289,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
 		this.Untag("no_more_shooting");
-		this.set_u32("next_shoot", getGameTime()+shootDelay);
+		this.set_u32("next_shoot", getGameTime()+15);
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
 		Vec2f arrowVel;
