@@ -288,7 +288,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
-		this.Untag("no_more_shooting");
 		this.set_u32("next_shoot", getGameTime()+15);
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
