@@ -148,7 +148,11 @@ void onTick(CBlob@ this)
 {	
 	if (this !is null)
 	{
-		if (getGameTime() >= this.get_u32("next_shoot")) this.Untag("no_more_shooting");
+		if (getGameTime() >= this.get_u32("next_shoot"))
+		{
+			this.Untag("no_more_shooting");
+			this.Untag("no_more_proj");
+		}
 		if (this.getVelocity().x > 8.25f || this.getVelocity().x < -8.25f) this.setVelocity(Vec2f(this.getOldVelocity().x, this.getVelocity().y));
 		CSprite@ sprite = this.getSprite();
 		CShape@ shape = this.getShape();
@@ -294,7 +298,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		Vec2f arrowVel;
 		if (!params.saferead_Vec2f(arrowVel)) return;
 
-		if (getNet().isServer())
+		if (getNet().isServer() && !this.hasTag("no_more_proj"))
 		{
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
 			proj.Tag("heli");
@@ -307,30 +311,33 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			}
 		}
 		
-		this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
+		if (!this.hasTag("no_more_proj")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
 	}
 }
 
 CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 {
-	CBlob@ proj = server_CreateBlobNoInit("ballista_bolt");
-	if (proj !is null)
+	if (!this.hasTag("no_more_proj"))
 	{
-		proj.SetDamageOwnerPlayer(this.getPlayer());
-		proj.Init();
+		CBlob@ proj = server_CreateBlobNoInit("bulletheavy");
+		if (proj !is null)
+		{
+			proj.SetDamageOwnerPlayer(this.getPlayer());
+			proj.Init();
 
-		proj.set_f32("bullet_damage_body", 6.0f);
-		proj.set_f32("bullet_damage_head", 8.0f);
-		proj.IgnoreCollisionWhileOverlapped(this);
-		proj.server_setTeamNum(this.getTeamNum());
-		proj.setVelocity(arrowVel);
-		proj.setPosition(arrowPos+Vec2f(0, 12.0f));
-		proj.Tag("medium");
-
-		this.set_u32("next_shoot", getGameTime()+15);
-		this.Sync("next_shoot", true);
+			proj.set_f32("bullet_damage_body", 6.0f);
+			proj.set_f32("bullet_damage_head", 8.0f);
+			proj.IgnoreCollisionWhileOverlapped(this);
+			proj.server_setTeamNum(this.getTeamNum());
+			proj.setVelocity(arrowVel);
+			proj.setPosition(arrowPos+Vec2f(0, 12.0f));
+			proj.Tag("medium");
+		}
+		this.Tag("no_more_proj");
+		return proj;
 	}
-	return proj;
+	else
+		return null;
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)

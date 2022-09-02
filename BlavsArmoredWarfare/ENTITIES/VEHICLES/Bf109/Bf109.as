@@ -4,12 +4,11 @@
 const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
-const u32 shootDelay = 3; // Ticks
-const f32 damage = 0.75f;
+const u32 shootDelay = 2; // Ticks
+const f32 damage = 0.85f;
 
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);
-
 
 string[] particles = 
 {
@@ -79,20 +78,20 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
 			if (proj !is null)
 				proj.server_SetTimeToDie(3.0);
-		}
 
-		CInventory@ inv = this.getInventory();
-		if (inv !is null)
-		{
-			for (u8 i = 0; i < inv.getItemsCount(); i++)
+			CInventory@ inv = this.getInventory();
+			if (inv !is null)
 			{
-				if (inv.getItem(i) is null || inv.getItem(i).getName() != "mat_7mmround") continue;
-				inv.getItem(i).server_SetQuantity(inv.getItem(0).getQuantity()-1);
-				break;
+				for (u8 i = 0; i < inv.getItemsCount(); i++)
+				{
+					if (inv.getItem(i) is null || inv.getItem(i).getName() != "mat_7mmround") continue;
+					inv.getItem(i).server_SetQuantity(inv.getItem(0).getQuantity()-1);
+					break;
+				}
 			}
 		}
 
-		this.getSprite().PlaySound("AssaultFire.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
+		if (!this.hasTag("no_more_proj")) this.getSprite().PlaySound("AssaultFire.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
 	}
 }
 
