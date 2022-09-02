@@ -318,7 +318,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 {
 	if (!this.hasTag("no_more_proj"))
 	{
-		CBlob@ proj = server_CreateBlobNoInit("bulletheavy");
+		CBlob@ proj = server_CreateBlobNoInit("ballista_bolt");
 		if (proj !is null)
 		{
 			proj.SetDamageOwnerPlayer(this.getPlayer());
