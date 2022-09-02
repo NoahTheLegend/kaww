@@ -68,6 +68,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
+		this.Untag("no_more_shooting");
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
 		Vec2f arrowVel;
@@ -117,10 +118,10 @@ void onTick(CBlob@ this)
 			bool pressed_s = ap_pilot.isKeyPressed(key_down);
 			bool pressed_lm = ap_pilot.isKeyPressed(key_action1);
 			
-			if (pressed_lm && this.get_u32("next_shoot") < getGameTime())
+			if (!this.hasTag("no_more_shooting") && ap_pilot.isMyPlayer() && pressed_lm && this.get_u32("next_shoot") < getGameTime())
 			{
 				ShootBullet(this, (this.getPosition() - Vec2f(0,1)), this.getPosition()+Vec2f(this.isFacingLeft() ? -32.0f : 32.0f, 0).RotateBy(this.getAngleDegrees() + (this.isFacingLeft() ? -7.5f : 7.5f)), 17.59f * 1.75f);
-				this.set_u32("next_shoot", getGameTime()+shootDelay);
+				this.Tag("no_more_shooting")
 			}
 			
 			// bool pressed_s = ap_pilot.isKeyPressed(key_down);
