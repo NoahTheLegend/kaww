@@ -148,6 +148,7 @@ void onTick(CBlob@ this)
 {	
 	if (this !is null)
 	{
+		if (getGameTime() >= this.get_u32("next_shoot")) this.Untag("no_more_shooting");
 		if (this.getVelocity().x > 8.25f || this.getVelocity().x < -8.25f) this.setVelocity(Vec2f(this.getOldVelocity().x, this.getVelocity().y));
 		CSprite@ sprite = this.getSprite();
 		CShape@ shape = this.getShape();
@@ -182,7 +183,7 @@ void onTick(CBlob@ this)
 						const bool pressed_m2 = ap.isKeyPressed(key_action2);
 
 						// shoot
-						if (ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
+						if (!this.hasTag("no_more_shooting") && pilot.isMyPlayer() && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
 						{
 							CInventory@ inv = this.getInventory();
 							if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_heatwarhead")
@@ -190,6 +191,7 @@ void onTick(CBlob@ this)
 								f32 rot = 1.0f;
 								if (this.isFacingLeft()) rot = -1.0f;
 								ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
+								this.Tag("no_more_shooting");
 							}
 						}
 
@@ -286,6 +288,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
+		this.Untag("no_more_shooting");
+		this.set_u32("next_shoot", getGameTime()+shootDelay);
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
 		Vec2f arrowVel;
