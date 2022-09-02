@@ -4,7 +4,7 @@
 const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
-const u32 shootDelay = 2; // Ticks
+const u32 shootDelay = 1; // Ticks
 const f32 damage = 0.85f;
 
 //ICONS
@@ -90,8 +90,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				}
 			}
 		}
-
-		if (!this.hasTag("no_more_proj")) this.getSprite().PlaySound("AssaultFire.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
 	}
 }
 
@@ -139,6 +137,7 @@ void onTick(CBlob@ this)
 				}
 				if (can_attack)
 				{
+					if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("AssaultFire.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
 					ShootBullet(this, (this.getPosition() - Vec2f(0,1)), this.getPosition()+Vec2f(this.isFacingLeft() ? -32.0f : 32.0f, 0).RotateBy(this.getAngleDegrees() + (this.isFacingLeft() ? -7.5f : 7.5f)), 17.59f * 1.75f);
 					this.Tag("no_more_shooting");
 				}
@@ -227,7 +226,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 {
 	if (!this.hasTag("no_more_proj"))
 	{
-		CBlob@ proj = server_CreateBlobNoInit("bulletheavy");
+		CBlob@ proj = server_CreateBlobNoInit("ballista_bolt");
 		if (proj !is null)
 		{
 			proj.SetDamageOwnerPlayer(this.getPlayer());

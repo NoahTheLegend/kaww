@@ -192,6 +192,7 @@ void onTick(CBlob@ this)
 							CInventory@ inv = this.getInventory();
 							if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_heatwarhead")
 							{
+								if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
 								f32 rot = 1.0f;
 								if (this.isFacingLeft()) rot = -1.0f;
 								ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
@@ -309,9 +310,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				inv.getItem(0).server_SetQuantity(inv.getItem(0).getQuantity()-1);
 			}
-		}
-		
-		if (!this.hasTag("no_more_proj")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
+		} 
 	}
 }
 
