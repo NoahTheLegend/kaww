@@ -74,10 +74,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		Vec2f arrowVel;
 		if (!params.saferead_Vec2f(arrowVel)) return;
 
-		if (getNet().isServer())
+		if (getNet().isServer() && !this.hasTag("no_more_proj"))
 		{
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
-			proj.server_SetTimeToDie(3.0);
+			if (proj !is null)
+				proj.server_SetTimeToDie(3.0);
 		}
 
 		CInventory@ inv = this.getInventory();
@@ -97,7 +98,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onTick(CBlob@ this)
 {
-	if (getGameTime() >= this.get_u32("next_shoot")) this.Untag("no_more_shooting");
+	if (getGameTime() >= this.get_u32("next_shoot"))
+	{
+		this.Untag("no_more_shooting");
+		this.Untag("no_more_proj");
+	}
 	AttachmentPoint@ ap_pilot = this.getAttachments().getAttachmentPointByName("PILOT");
 	if (this.hasAttached() && ap_pilot !is null)
 	{
@@ -221,21 +226,27 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 
 CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 {
-	CBlob@ proj = server_CreateBlobNoInit("bulletheavy");
-	if (proj !is null)
+	if (!this.hasTag("no_more_proj"))
 	{
-		proj.SetDamageOwnerPlayer(this.getPlayer());
-		proj.Init();
+		CBlob@ proj = server_CreateBlobNoInit("bulletheavy");
+		if (proj !is null)
+		{
+			proj.SetDamageOwnerPlayer(this.getPlayer());
+			proj.Init();
 
-		proj.set_f32("bullet_damage_body", damage*0.5f);
-		proj.set_f32("bullet_damage_head", damage);
-		proj.IgnoreCollisionWhileOverlapped(this);
-		proj.server_setTeamNum(this.getTeamNum());
-		proj.setVelocity(arrowVel);
-		proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
-		proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -16.0f : 16.0f), 8.0f).RotateBy(this.getAngleDegrees()));
+			proj.set_f32("bullet_damage_body", damage*0.5f);
+			proj.set_f32("bullet_damage_head", damage);
+			proj.IgnoreCollisionWhileOverlapped(this);
+			proj.server_setTeamNum(this.getTeamNum());
+			proj.setVelocity(arrowVel);
+			proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
+			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -16.0f : 16.0f), 8.0f).RotateBy(this.getAngleDegrees()));
+		}
+		this.Tag("no_more_proj");
+		return proj;
 	}
-	return proj;
+	else
+		return null;
 }
 
 void Shoot(CBlob@ this)
