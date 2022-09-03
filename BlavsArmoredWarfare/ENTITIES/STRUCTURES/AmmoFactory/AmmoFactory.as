@@ -70,7 +70,7 @@ void onTick(CBlob@ this)
 
 			this.Sync(working_prop, true);
 		}
-		//if (getGameTime() % (15 * getTicksASecond()) == this.get_u8(unique_prop))PickupOverlap(this);
+		if (getGameTime() % (15 * getTicksASecond()) == this.get_u8(unique_prop))PickupOverlap(this);
 	}
 
 	CSprite@ sprite = this.getSprite();
@@ -197,10 +197,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage *= 7.00f;
 			break;
 
-	}
-	if (hitterBlob.getName() == "grenade")
-	{
-		return damage * 3;
 	}
 	return damage;
 }

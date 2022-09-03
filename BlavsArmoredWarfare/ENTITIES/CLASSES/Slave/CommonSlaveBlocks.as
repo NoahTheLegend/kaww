@@ -100,15 +100,24 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "constructionyard", "$building$", "Workshop\nStand in an open space\nand tap this button.");
+		AddIconToken("$construction_yard_icon$", "CYardIcon.png", Vec2f(16, 16), 2);
+		BuildBlock b(0, "constructionyard", "$construction_yard_icon$", "Construction Yard\nStand in an open space\nand tap this button.");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		b.buildOnGround = true;
-		b.size.Set(40, 24);
+		b.size.Set(32, 24);
 		blocks[0].insertAt(9, b);
 	}
 	{
 		BuildBlock b(0, "spikes", "$spikes$", "Spikes\nPlace on Stone Block\nfor Retracting Trap");
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", BuilderCosts::spikes);
+		blocks[0].push_back(b);
+	}
+	{
+		AddIconToken("$sandbags_icon$", "SandbagIcon.png", Vec2f(16, 16), 0);
+		BuildBlock b(0, "sandbags", "$sandbags_icon$", "Sandbags\nStand in an open space\nand tap this button.");
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 75);
+		b.buildOnGround = true;
+		b.size.Set(24, 8);
 		blocks[0].push_back(b);
 	}
 	if (TTH)
