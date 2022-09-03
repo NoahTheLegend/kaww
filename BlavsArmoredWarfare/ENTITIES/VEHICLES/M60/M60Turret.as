@@ -41,7 +41,7 @@ void onInit(CBlob@ this)
 	    "mat_bolts", // bullet ammo config name
 	    "Ballista Bolts", // name for ammo selection
 	    "ballista_bolt", // bullet config name
-	    "TankFireHeavy", // fire sound
+	    "sound_100mm", // fire sound
 	    "EmptyFire", // empty fire sound
 	    Vehicle_Fire_Style::custom,
 	    Vec2f(-6.0f, -8.0f), // fire position offset

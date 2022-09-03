@@ -13,7 +13,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	              320.0f, // move speed
+	              270.0f, // move speed
 	              1.47f,  // turn speed
 	              Vec2f(0.0f, 0.56f), // jump out velocity
 	              true  // inventory access
@@ -110,19 +110,6 @@ void onTick(CBlob@ this)
 			Vec2f vel = this.getVelocity();
 			this.setVelocity(Vec2f(vel.x * 0.995, vel.y));
 		}
-		else if (Maths::Abs(vel.x) > 4.5f)
-		{
-			if (getGameTime() % 4 == 0)
-			{
-				if (isClient())
-				{
-					Vec2f pos = this.getPosition();
-					CMap@ map = getMap();
-					
-					//ParticleAnimated("LargeSmoke", this.getPosition() + Vec2f(XORRandom(18) - 9 + (this.isFacingLeft() ? 30 : -30), XORRandom(18) - 3), this.getVelocity()/4 + getRandomVelocity(0.0f, 0.1f + XORRandom(30) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.1f), float(XORRandom(360)), 0.7f + XORRandom(70) * 0.01f, 3 + XORRandom(3), XORRandom(70) * -0.00005f, true);
-				}
-			}
-		}
 	}
 
 	// Crippled
@@ -148,11 +135,8 @@ void onTick(CBlob@ this)
 		}
 	}
 
+	Vehicle_LevelOutInAir(this); // 2x
 	Vehicle_LevelOutInAir(this);
-	if (this.isOnGround())
-	{
-		Vehicle_LevelOutInAir(this);
-	}
 }
 
 // Blow up

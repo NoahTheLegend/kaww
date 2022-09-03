@@ -123,7 +123,10 @@ void onTick(CBlob@ this)
 		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 		if (ap !is null && ap.isKeyJustPressed(key_action3))
 		{
-			if (!this.hasTag("no_pin")) Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
+			if (!this.hasTag("no_pin")) 
+			{
+				Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
+			}
 			CBitStream params;
 			this.SendCommand(this.getCommandID("activate"), params);
 		}

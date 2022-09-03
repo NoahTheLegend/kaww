@@ -96,9 +96,9 @@ void AddGameMusic(CBlob@ this, CMixer@ mixer)
 	
 
 
-	mixer.AddTrack("Kaww_10_theme.ogg", world_battle);
-	mixer.AddTrack("Kaww_13_theme.ogg", world_battle);
-	mixer.AddTrack("Kaww_14_theme.ogg", world_battle);
+	mixer.AddTrack("Kaww_10_theme.ogg", world_intro);
+	mixer.AddTrack("Kaww_13_theme.ogg", world_intro);
+	mixer.AddTrack("Kaww_14_theme.ogg", world_intro);
 
 
 }
@@ -122,10 +122,12 @@ void GameMusicLogic(CBlob@ this, CMixer@ mixer)
 	}
 	else if (rules.isMatchRunning()) //battle music
 	{
+		/*
 		if (mixer.getPlayingCount() == 0)
 		{
 			mixer.FadeInRandom(world_battle , 0.0f);
 		}
+		*/
 	}
 	else
 	{

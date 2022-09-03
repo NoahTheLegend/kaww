@@ -41,7 +41,7 @@ void onInit(CBlob@ this)
 	    "mat_14mmround", // bullet ammo config name
 	    "14mm Rounds", // name for ammo selection
 	    "ballista_bolt", // bullet config name
-	    "BTRFire", // fire sound
+	    "sound_14mm", // fire sound
 	    "EmptyFire", // empty fire sound
 	    Vehicle_Fire_Style::custom,
 	    Vec2f(-6.0f, -8.0f), // fire position offset

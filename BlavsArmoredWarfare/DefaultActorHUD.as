@@ -60,13 +60,13 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 				{
 					if (blob.getHealth() <= blob.getInitialHealth() / 4.5f)
 					{
-						color.set(255, 255, 60, 24);
-						blob.getSprite().PlaySound("/Heartbeat", 1.35f);
+						color.set(255, 255, 55, 22);
+						blob.getSprite().PlaySound("/Heartbeat", 1.45f);
 					}
 					else if (getGameTime() % 60 == 0)
 					{
-						color.set(255, 255, 60, 24);
-						blob.getSprite().PlaySound("/Heartbeat", 1.35f);
+						color.set(255, 255, 55, 22);
+						blob.getSprite().PlaySound("/Heartbeat", 1.45f);
 					}	
 				}
 				else

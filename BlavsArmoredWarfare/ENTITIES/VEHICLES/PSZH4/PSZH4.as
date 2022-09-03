@@ -27,7 +27,7 @@ void onInit(CBlob@ this)
         "mat_14mmround", // bullet ammo config name
         "mat_14mmround", // name for ammo selection
         "material14mmround", // bullet config name
-        "BowFire", // fire sound
+        "sound_14mm", // fire sound
         "EmptyFire" // empty fire sound
        );
 
