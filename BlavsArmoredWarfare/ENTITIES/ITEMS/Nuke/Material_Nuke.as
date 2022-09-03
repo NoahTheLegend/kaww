@@ -12,7 +12,7 @@ void onInit(CBlob@ this)
 		
 	this.Tag("invincible");
 	this.set_f32("map_damage_ratio", 0.5f);
-	this.getCurrentScript().tickFrequency = 4;
+	this.getCurrentScript().tickFrequency = 8;
 	
 	this.Tag("explosive");
 	
@@ -21,14 +21,29 @@ void onInit(CBlob@ this)
 
 void DoExplosion(CBlob@ this, Vec2f velocity)
 {
-	ShakeScreen(256, 64, this.getPosition());
+	ShakeScreen(512, 64, this.getPosition());
 	f32 modifier = this.get_u8("boom_start") / 3.0f;
 	
 	this.set_f32("map_damage_radius", 20.0f * this.get_u8("boom_start"));
 	
 	for (int i = 0; i < 4; i++)
 	{
-		Explode(this, 128.0f * modifier, 8.0f);
+		Explode(this, 128.0f * modifier, 32.0f);
+		//guarantly hit blobs
+		if (getNet().isServer())
+		{
+			CBlob@[] bs;
+			getMap().getBlobsInRadius(this.getPosition(), 128.0f*modifier, bs);
+			for (u32 i = 0; i < bs.length; i++)
+			{
+				CBlob@ b = bs[i];
+				if (b is null) continue;
+				if (b.hasTag("flesh") || b.hasTag("vehicle"))
+				{
+					this.server_Hit(b, b.getPosition(), this.getOldVelocity(), 5.0f / modifier, Hitters::keg);
+				}
+			}
+		}
 	}
 }
 
