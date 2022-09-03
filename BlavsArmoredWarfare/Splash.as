@@ -27,11 +27,11 @@ void onInit(CRules@ rules)
     @black_pixel = @Nu::NuImage();
     black_pixel.CreateImage("BlackPixel.png");
     // ! combine vignette and rough
-    @image_vignette = @Nu::NuImage();
-    image_vignette.CreateImage("VignetteSplash.png"); // Overlay over everything
+    //@image_vignette = @Nu::NuImage();
+    //image_vignette.CreateImage("VignetteSplash.png"); // Overlay over everything
 
-    @image_rough = @Nu::NuImage();
-    image_rough.CreateImage("KAWWrough.png");
+    //@image_rough = @Nu::NuImage();
+    //image_rough.CreateImage("KAWWrough.png");
 
     @image_text = @Nu::NuImage();
     image_text.CreateImage("text_splash.png"); // Text that will display over image continuously 
@@ -39,14 +39,14 @@ void onInit(CRules@ rules)
     @black_pixel = @Nu::NuImage();
     black_pixel.CreateImage("BlackPixel.png");
 
-    image_array = array<Nu::NuImage@>(3);
-    for(u16 i = 0; i < image_array.size(); i++)
-    {
-        Nu::NuImage@ _image = @Nu::NuImage();
-        _image.CreateImage("KAWWback" + i + ".png");
-
-        @image_array[i] = @_image;
-    }
+    //image_array = array<Nu::NuImage@>(3);
+    //for(u16 i = 0; i < image_array.size(); i++)
+    //{
+    //    Nu::NuImage@ _image = @Nu::NuImage();
+    //    _image.CreateImage("KAWWback" + i + ".png");
+//
+    //    @image_array[i] = @_image;
+    //}
 
     u8 pos = Nu::getRandomInt(image_array.size());//Returns a random position in the array
 
@@ -128,20 +128,20 @@ void onTick(CRules@ rules)
     u8 front_alpha = Maths::Lerp(0, 255, Maths::Clamp((current_fade / f32(fade_time)) * 2, 0, 1));
     image_array[splash_front].setColor(SColor(front_alpha, 255, 255, 255));
     
-    RenderImage(
-        Render::layer_posthud, // layer
-        image_array[splash_front],
-        Vec2f(0.0f,0.0f), // pos
-        false); // is drawn on the world?
+    //RenderImage(
+    //    Render::layer_posthud, // layer
+    //    image_array[splash_front],
+    //    Vec2f(0.0f,0.0f), // pos
+    //    false); // is drawn on the world?
 
     if (times_faded + 1 == max_times_faded)//If this is the last iteration
     {
         // fade out text overlay and the vignette
-        image_vignette.setColor(SColor(front_alpha, 255, 255, 255));
-        image_rough.setColor(SColor(front_alpha, 255, 255, 255));
+        //image_vignette.setColor(SColor(front_alpha, 255, 255, 255));
+        //image_rough.setColor(SColor(front_alpha, 255, 255, 255));
         image_text.setColor(SColor(front_alpha, 255, 255, 255));
     }
-
+    /*
     RenderImage(
         Render::layer_posthud, // layer
         image_vignette,
@@ -153,6 +153,7 @@ void onTick(CRules@ rules)
         image_rough,
         Vec2f(0.0f,0.0f), // pos
         false); // is drawn on the world?
+        */
 
     RenderImage(
         Render::layer_posthud, // layer
