@@ -54,10 +54,39 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return damage*0.5f;
 		else return 0;
 	}
-	if (customData == Hitters::explosion && hitterBlob.getName() != "grenade")
+	if (hitterBlob.getName() == "ballista_bolt")
 	{
-		return damage * 0.15f;
+		bool at_bunker = false;
+		Vec2f pos = this.getPosition();
+		Vec2f hit_pos = hitterBlob.getPosition();
+
+		if (!getMap().rayCastSolidNoBlobs(pos, hit_pos))
+		{
+			HitInfo@[] infos;
+			Vec2f hitvec = hit_pos - pos;
+
+			if (getMap().getHitInfosFromRay(pos, -hitvec.Angle(), hitvec.getLength(), this, @infos))
+			{
+				for (u16 i = 0; i < infos.length; i++)
+				{
+					CBlob@ hi = infos[i].blob;
+					if (hi is null) continue;
+					if (hi.hasTag("bunker") || hi.hasTag("tank")) 
+					{
+						return damage * 0.1f;
+					}
+					else if (hi is hitterBlob) return damage;
+				}
+			}
+		}
+
+		if (at_bunker) return 0;
+		else if (customData == Hitters::explosion && hitterBlob.getName() != "grenade")
+		{
+			return damage * 0.15f;
+		}
 	}
+
 	return damage;
 }
 
