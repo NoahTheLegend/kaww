@@ -33,10 +33,12 @@ void InitClasses(CBlob@ this)
 	//AddIconToken("$paratrooper_class_icon$", "Class.png", Vec2f(32, 32), 28);
 	AddIconToken("$slave_class_icon$", "ClassIcon.png", Vec2f(48, 48), 0);
 	AddIconToken("$change_class$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 12, 2);
-	//if (getBlobByName("vehiclebuilder") !is null)
+
+	AddIconToken("$butt_icon$", "butt.png", Vec2f(500, 22), 0, 255);
+	
 	addPlayerClass(this, "---- Slave ----", "$slave_class_icon$", "slave", "---- Slave ----\n\nBuild and break.\nHP: 200\nLMB: Build\nRMB: Mine");
 	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver", "---- Python ----\n\nGreat headshot damage.\nHP: 275\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
-	addPlayerClass(this, "---- Ak47 ----", "$ranger_class_icon$", "ranger", "---- Ak47 ----\n\nExcellent damage.\nHP: 150\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
+	addPlayerClass(this, "---- Ak47 ----", "$ranger_class_icon$", "ranger", "---- Ak47 ----\n\nExcellent damage.\nHP: 150\nLMB: Shoot\nRMB: Aim\nSPACEBAR:\n\n\n"+"Skemonde — Today at 6:10 PM\nbtw descriprion of ranger lies space is for knife when ak shooter uses butt stock instead of a knife (edited)");
 	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun", "---- Shotgunner ----\n\nDeadly at close range.\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
 	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper", "---- Sniper ----\n\nLong range sniper.\nHP: 150\nLMB: Shoot\nSPACEBAR: Knife");
 	addPlayerClass(this, "---- Anti-Tank ----", "$antitank_class_icon$", "antitank", "---- Anti-Tank ----\n\nEliminate tanks onfoot\nHP: 225.\nLMB: RPG\nRMB: Aim\nSPACEBAR: Knife");

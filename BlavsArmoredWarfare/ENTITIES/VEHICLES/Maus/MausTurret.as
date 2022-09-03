@@ -9,19 +9,19 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u8 cooldown_time = 230;//210;
-const u8 recoil = 250;
+const u16 cooldown_time = 290;//210;
+const u8 recoil = 500;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
-const f32 high_angle = 71.0f; // upper depression limit
-const f32 low_angle = 101.0f; // lower depression limit
+const f32 high_angle = 77.5f; // upper depression limit
+const f32 low_angle = 100.0f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
-	this.Tag("medium");
+	this.Tag("heavy");
 	this.Tag("turret");
 	this.Tag("tank");
 	this.Tag("blocks bullet");
@@ -70,32 +70,24 @@ void onInit(CBlob@ this)
 
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 24, 80);
+	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 16, 48);
 
 	if (arm !is null)
 	{
 		f32 angle = low_angle;
 
 		Animation@ anim = arm.addAnimation("default", 0, false);
-		anim.AddFrame(20);
+		if (!this.hasTag("pink"))
+			anim.AddFrame(10);
+		else
+			anim.AddFrame(11);
 
 		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
 		if (arm !is null)
 		{
-			arm.SetRelativeZ(0.5f);
-			arm.SetOffset(Vec2f(-90.0f, -7.0f));
+			arm.SetRelativeZ(110.5f);
+			arm.SetOffset(Vec2f(-80.0f, -7.0f));
 		}
-	}
-
-	sprite.SetZ(-100.0f);
-	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
-	if (front !is null)
-	{
-		front.addAnimation("default", 0, false);
-		int[] frames = { 0, 1, 2 };
-		front.animation.AddFrames(frames);
-		front.SetRelativeZ(0.8f);
-		front.SetOffset(Vec2f(0.0f, 0.0f));
 	}
 
 	this.set_f32("gunelevation", (this.getTeamNum() == 1 ? 270 : 90) - init_gunoffset_angle);
@@ -142,26 +134,26 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
+	CSprite@ sprite = this.getSprite();
 	if (this.isFacingLeft() && !this.hasTag("facing left"))
 	{
-		this.getShape().SetOffset(Vec2f(-4.0f, -11.0f));
+		this.getShape().SetOffset(Vec2f(8.0f, -15.0f));
 		this.Tag("facing left");
 		this.Untag("facing right");
 	}
 	else if (!this.isFacingLeft() && !this.hasTag("facing right"))
 	{
-		this.getShape().SetOffset(Vec2f(4.0f, -11.0f));
+		this.getShape().SetOffset(Vec2f(-8.0f, -15.0f));
 		this.Untag("facing left");
 		this.Tag("facing right");
 	}
-	if (getGameTime()%30==0)
+
+	if (sprite !is null)
 	{
-		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("BOW");
-		if (point !is null)
-		{
-			CBlob@ tur = point.getOccupied();
-			if (isServer() && tur !is null) tur.server_setTeamNum(this.getTeamNum());
-		}
+		if (!this.hasTag("pink"))
+			sprite.SetFrameIndex(2);
+		else 
+			sprite.SetFrameIndex(1);
 	}
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
@@ -239,8 +231,9 @@ void onTick(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.ResetTransform();
-			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(-20.0f, -27.0f));
+			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 8.0f));
+			arm.SetOffset(Vec2f(-14.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -19.5f + (this.isFacingLeft() ? 0.0f : 0.5f)));
+			arm.SetRelativeZ(-20.0f);
 		}
 
 		if (getNet().isClient())
@@ -416,7 +409,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 	v.last_charge = _charge;
 	v.charge = 0;
-	v.cooldown_time = v.getCurrentAmmo().fire_delay;
+	v.cooldown_time = cooldown_time;
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -473,7 +466,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				ParticleAnimated("BoomParticle", this.getPosition(), Vec2f(0.0f, -0.9f), 0.0f, 2.0f, 3, XORRandom(70) * -0.00005f, true);
 			}
 		}
-	}
-
+	}	
+	
 	return damage;
 }

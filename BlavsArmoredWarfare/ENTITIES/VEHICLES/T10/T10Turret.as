@@ -142,6 +142,18 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
+	if (this.isFacingLeft() && !this.hasTag("facing left"))
+	{
+		this.getShape().SetOffset(Vec2f(-6.0f, -11.0f));
+		this.Tag("facing left");
+		this.Untag("facing right");
+	}
+	else if (!this.isFacingLeft() && !this.hasTag("facing right"))
+	{
+		this.getShape().SetOffset(Vec2f(6.0f, -11.0f));
+		this.Untag("facing left");
+		this.Tag("facing right");
+	}
 	if (getGameTime()%30==0)
 	{
 		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("BOW");

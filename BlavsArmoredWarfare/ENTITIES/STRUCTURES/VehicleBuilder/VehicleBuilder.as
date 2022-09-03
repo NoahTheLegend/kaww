@@ -45,6 +45,10 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nUses 105mm");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 110);
+	}
+	{
 		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
