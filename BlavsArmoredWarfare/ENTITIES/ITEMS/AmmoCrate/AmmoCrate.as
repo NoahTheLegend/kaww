@@ -222,20 +222,6 @@ f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hit
 	return dmg;
 }
 
-void onDie(CBlob@ this)
-{
-	this.getSprite().Gib();
-	Vec2f pos = this.getPosition();
-	Vec2f vel = this.getVelocity();
-
-	// Crate gibs
-	string fname = CFileMatcher("/Crate.png").getFirst();
-	for (int i = 0; i < 4; i++)
-	{
-		CParticle@ temp = makeGibParticle(fname, pos, vel + getRandomVelocity(90, 1 , 110), 9, 2 + i, Vec2f(16, 16), 2.0f, 20, "Sounds/material_drop.ogg", 0);
-	}
-}
-
 Vec2f crate_getOffsetPos(CBlob@ blob, CMap@ map)
 {
 	Vec2f halfSize = blob.get_Vec2f(required_space) * 0.5f;
@@ -293,7 +279,65 @@ void onRender(CSprite@ this)
 
 void onDie(CBlob@ this)
 {
-    
+	this.getSprite().Gib();
+	Vec2f pos = this.getPosition();
+	Vec2f vel = this.getVelocity();
+
+	// Crate gibs
+	string fname = CFileMatcher("/Crate.png").getFirst();
+	for (int i = 0; i < 4; i++)
+	{
+		CParticle@ temp = makeGibParticle(fname, pos, vel + getRandomVelocity(90, 1 , 110), 9, 2 + i, Vec2f(16, 16), 2.0f, 20, "Sounds/material_drop.ogg", 0);
+	}
+
+	 if (this.hasTag("despawned")) return;
+
+    this.getSprite().Gib();
+
+    // Drop loot on break
+
+    array<string> _items =
+    {
+    	"mat_scrap",
+        "mat_wood",
+        "mat_stone",
+
+    	"grenade",
+    	"helmet",
+    	"medkit",
+        "food",
+        "mat_7mmround",
+        "mat_bolts",
+        "pipewrench"
+    };
+    array<float> _chances =
+    {
+        0.6,
+        0.25,
+        0.25,
+
+        0.08,
+        0.05,
+        0.02,
+        0.08,
+        0.02,
+        0.01,
+        0.01
+    };
+    array<u8> _amount =
+    {
+        (XORRandom(12)+5),
+        (XORRandom(9)+1)*10,
+        (XORRandom(7)+1)*10,
+
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+    };
 
     if (getNet().isServer())
     {
