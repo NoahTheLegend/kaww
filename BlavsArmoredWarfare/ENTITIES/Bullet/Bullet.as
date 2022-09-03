@@ -18,20 +18,19 @@ void onInit(CBlob@ this)
 	consts.mapCollisions = false;
 	consts.bullet = false;	
 
-	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_right);
-
 	consts.net_threshold_multiplier = 1.0f;
 }
 
 void onTick(CBlob@ this)
 {
+	Vec2f pos = this.getPosition();
 	CShape@ shape = this.getShape();
 	Vec2f velocity = this.getVelocity();
 
 	this.getSprite().SetVisible(this.getTickSinceCreated() >= XORRandom(2)+1);
 
-	Vec2f pos = this.getPosition();
-	if (pos.x < 0.1f || pos.x > (getMap().tilemapwidth * getMap().tilesize) - 0.1f)
+	
+	if (pos.x < 0.1f or pos.x > (getMap().tilemapwidth * getMap().tilesize) - 0.1f)
 	{
 		this.server_Die();
 		return;
@@ -59,7 +58,7 @@ void onTick(CBlob@ this)
 	}
 	else
 	{
-		this.AddForce(Vec2f(0.0f, 0.1f)); //0.20
+		this.AddForce(Vec2f(0.0f, 0.11f));
 	}
 	
 	// collison with blobs
@@ -97,7 +96,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	CMap@ map = getMap();
 	this.setVelocity(this.getVelocity() * 0.8f);
 
-	if (XORRandom(100) < 25) //28
+	if (XORRandom(100) < 25)
 	{
 		if (!this.hasTag("rico"))
 		{
@@ -128,19 +127,17 @@ void onHitWorld(CBlob@ this, Vec2f end)
 			if (map.isTileSolid(tile)) this.AddForce(Vec2f(-30.0f, 0.0f)); }
 
 			this.server_SetTimeToDie(0.6);
-			//this.setPosition(end);
 		}
 
 		return;
 	}
 	else
 	{
-		//this.setPosition(end);
 		this.setVelocity(Vec2f_zero);
 
 		ParticleAnimated("Smoke", end, Vec2f(0.0f, -0.1f), 0.0f, 1.0f, 5, XORRandom(70) * -0.00005f, true);
 
-		Sound::Play("/BulletDirt" + XORRandom(3), this.getPosition(), 1.6f, 0.85f + XORRandom(25) * 0.01f);
+		Sound::Play("/BulletDirt" + XORRandom(3), this.getPosition(), 1.7f, 0.85f + XORRandom(25) * 0.01f);
 
 		CParticle@ p = ParticleAnimated("SparkParticle.png", this.getPosition(), Vec2f(0,0),  0.0f, 1.0f, 2+XORRandom(2), 0.0f, false);
 		if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
@@ -152,7 +149,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 		//print("angle " + this.getAngleDegrees()); work on this
 
-		bool isStrong = this.hasTag("strong") && map.isTileWood(map.getTile(this.getPosition()).type);
+		bool isStrong = this.hasTag("strong");
 
 		{ TileType tile = map.getTile(end + Vec2f(0, -1)).type;
 		if (map.isTileSolid(tile)) impact_angle = 180;}
@@ -186,14 +183,9 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	}
 }
 
-void onCollision(CBlob@ this, CBlob@ blob, bool solid)
-{
-	//if (!isServer() || !solid) return;
-	//this.server_Die();
-}
-
 void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 customData)
 {
+	CSprite@ sprite = this.getSprite();
 	f32 dmg = 0.0f;
 		
 	if (blob.getTeamNum() != this.getTeamNum())
@@ -208,7 +200,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		{
 			if (isClient() && XORRandom(100) < 60)
 			{
-				this.getSprite().PlaySound("Splat.ogg");
+				sprite.PlaySound("Splat.ogg");
 			}
 		}
 
@@ -243,7 +235,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 		if (blob.getName() == "uh1")
 		{
-			this.getSprite().PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
+			sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
 			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.15f, Hitters::arrow);
 		}
 
@@ -272,12 +264,12 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 			if (blob.hasTag("takesdmgfrombullets"))
 			{
-				this.getSprite().PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
+				sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
 				this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::arrow);
 			}
 			else
 			{
-				this.getSprite().PlaySound("/BulletRico" + XORRandom(4), 0.8f, 0.7f + XORRandom(60) * 0.01f);
+				sprite.PlaySound("/BulletRico" + XORRandom(4), 0.8f, 0.7f + XORRandom(60) * 0.01f);
 			}
 			
 			this.server_Die();
@@ -291,7 +283,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		dmg = this.get_f32("bullet_damage_head");
 
 		// hit helmet
-		if (blob.get_string("equipment_head") == "helmet" || blob.get_string("equipment_head") == "goldenhelmet")
+		if (blob.get_string("equipment_head") == "helmet")
 		{
 			dmg*=0.6;
 
@@ -316,8 +308,6 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		dmg = this.get_f32("bullet_damage_body");
 	}
 
-	
-
 	if (!blob.hasTag("weakprop"))
 	{
 		dmg *= 2.0f;
@@ -337,6 +327,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	// too many tag checks?
 	if (blob.hasTag("respawn") || blob.hasTag("invincible"))
 	{
 		return false;
@@ -381,7 +372,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 	if (blob.getName() == "wooden_platform")
 	{
-		//printf("enter");
 		f32 velx = this.getVelocity().x;
 		f32 vely = this.getVelocity().y;
 		f32 deg = blob.getAngleDegrees();
@@ -406,10 +396,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 			blob.Tag("takesdmgfrombullet");
 			return true;
 		}
-
-		//printf("deg "+deg);
-		//printf("velx "+velx);
-		//printf("vely "+vely);
 
 		return false;
 	}
@@ -489,8 +475,6 @@ void onHitBlob(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@
 		if (speed > 6.5f)
 		{
 			f32 force = 0.07f * Maths::Sqrt(hitBlob.getMass() + 1) * scale;
-
-			//hitBlob.AddForce(velocity * force);
 		}
 	}
 }

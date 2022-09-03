@@ -97,7 +97,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	CMap@ map = getMap();
 	this.setVelocity(this.getVelocity() * 0.8f);
 
-	if (XORRandom(100) < 25) //28
+	if (XORRandom(100) < 25)
 	{
 		if (!this.hasTag("rico"))
 		{
@@ -128,14 +128,12 @@ void onHitWorld(CBlob@ this, Vec2f end)
 			if (map.isTileSolid(tile)) this.AddForce(Vec2f(-30.0f, 0.0f)); }
 
 			this.server_SetTimeToDie(0.6);
-			//this.setPosition(end);
 		}
 
 		return;
 	}
 	else
 	{
-		//this.setPosition(end);
 		this.setVelocity(Vec2f_zero);
 
 		ParticleAnimated("Smoke", end, Vec2f(0.0f, -0.1f), 0.0f, 1.0f, 5, XORRandom(70) * -0.00005f, true);
@@ -152,7 +150,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 		//print("angle " + this.getAngleDegrees()); work on this
 
-		bool isStrong = this.hasTag("strong") && map.isTileWood(map.getTile(this.getPosition()).type);
+		bool isStrong = this.hasTag("strong");
 
 		{ TileType tile = map.getTile(end + Vec2f(0, -1)).type;
 		if (map.isTileSolid(tile)) impact_angle = 180;}
@@ -184,12 +182,6 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 		this.server_Die();
 	}
-}
-
-void onCollision(CBlob@ this, CBlob@ blob, bool solid)
-{
-	//if (!isServer() || !solid) return;
-	//this.server_Die();
 }
 
 void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 customData)
@@ -263,7 +255,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		dmg = this.get_f32("bullet_damage_head");
 
 		// hit helmet
-		if (blob.get_string("equipment_head") == "helmet" || blob.get_string("equipment_head") == "goldenhelmet")
+		if (blob.get_string("equipment_head") == "helmet")
 		{
 			dmg*=0.85;
 
