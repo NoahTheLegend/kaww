@@ -419,7 +419,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 		if (this.getPlayer() !is null)
 		{
-			bool sprint = this.isKeyPressed(key_down) && this.getHealth() >= this.getInitialHealth() * 0.75f && this.isOnGround() && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+			bool sprint = this.getHealth() >= this.getInitialHealth() * 0.75f && this.isOnGround() && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
 			if (sprint)
 			{
 				if (!this.hasTag("sprinting"))
@@ -434,13 +434,15 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 				}
 				
 				this.Tag("sprinting");
-				moveVars.walkFactor *= this.getPlayer().hasTag("Max Speed") ? 1.5f : 1.30f;
+				moveVars.walkFactor *= this.getPlayer().hasTag("Max Speed") ? 1.3f : 1.2f;
+				moveVars.walkSpeedInAir = 3.15f;
 				moveVars.jumpFactor *= this.getPlayer().hasTag("Max Speed") ? 1.3f : 1.0f;
 			}
 			else
 			{
 				this.Untag("sprinting");
 				moveVars.walkFactor *= this.getPlayer().hasTag("Max Speed") ? 1.3f : 1.0f;
+				moveVars.walkSpeedInAir = 2.5f;
 				moveVars.jumpFactor *= this.getPlayer().hasTag("Max Speed") ? 1.3f : 1.0f;
 			}
 		}

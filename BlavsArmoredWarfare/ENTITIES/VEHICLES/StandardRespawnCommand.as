@@ -35,13 +35,13 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$change_class$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 12, 2);
 	//if (getBlobByName("vehiclebuilder") !is null)
 	addPlayerClass(this, "---- Slave ----", "$slave_class_icon$", "slave", "---- Slave ----\n\nBuild and break.\nHP: 200\nLMB: Build\nRMB: Mine");
-	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver", "---- Python ----\n\nGreat headshot damage.\nHP: 275\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife\nS+RIGHT|LEFT: Sprint");
-	addPlayerClass(this, "---- Ak47 ----", "$ranger_class_icon$", "ranger", "---- Ak47 ----\n\nExcellent damage.\nHP: 150\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife\nS+RIGHT|LEFT: Sprint");
-	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun", "---- Shotgunner ----\n\nDeadly at close range.\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife\nS+RIGHT|LEFT: Sprint");
-	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper", "---- Sniper ----\n\nLong range sniper.\nHP: 150\nLMB: Shoot\nSPACEBAR: Knife\nS+RIGHT|LEFT: Sprint");
-	addPlayerClass(this, "---- Anti-Tank ----", "$antitank_class_icon$", "antitank", "---- Anti-Tank ----\n\nEliminate tanks onfoot\nHP: 225.\nLMB: RPG\nRMB: Aim\nSPACEBAR: Knife\nS+RIGHT|LEFT: Sprint");
+	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver", "---- Python ----\n\nGreat headshot damage.\nHP: 275\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
+	addPlayerClass(this, "---- Ak47 ----", "$ranger_class_icon$", "ranger", "---- Ak47 ----\n\nExcellent damage.\nHP: 150\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
+	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun", "---- Shotgunner ----\n\nDeadly at close range.\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
+	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper", "---- Sniper ----\n\nLong range sniper.\nHP: 150\nLMB: Shoot\nSPACEBAR: Knife");
+	addPlayerClass(this, "---- Anti-Tank ----", "$antitank_class_icon$", "antitank", "---- Anti-Tank ----\n\nEliminate tanks onfoot\nHP: 225.\nLMB: RPG\nRMB: Aim\nSPACEBAR: Knife");
 	//addPlayerClass(this, "---- Medic ----", "$medic_class_icon$", "mp5", "---- Medic ----\n\nHeal nearby teammates.\nLMB: MP5\nRMB: Knife");
-	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5", "---- MP5 ----\n\nHigh rate of fire.\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Heal pack\nS+RIGHT|LEFT: Sprint");
+	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5", "---- MP5 ----\n\nHigh rate of fire.\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Heal pack");
 	//addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg", "---- LMG ----\n\nExtreme firepower.\nLMB: LMG\nRMB: ADS");
 	//addPlayerClass(this, "---- Paratrooper ----", "$paratrooper_class_icon$", "paratrooper", "---- Paratrooper ----\n\nUse a parachute.\nLMB: Ak47\nRMB: Knife");
 }
