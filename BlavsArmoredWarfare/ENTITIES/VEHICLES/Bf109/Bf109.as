@@ -4,7 +4,7 @@
 const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
-const u32 shootDelay = 2; // Ticks
+const u32 shootDelay = 1; // Ticks
 const f32 damage = 0.7f;
 
 //ICONS
@@ -122,7 +122,7 @@ void onTick(CBlob@ this)
 			bool pressed_lm = ap_pilot.isKeyPressed(key_action1);
 			
 			
-			if (!this.hasTag("no_more_shooting") && pilot.isMyPlayer() && pressed_lm && this.get_u32("next_shoot") < getGameTime())
+			if (!this.hasTag("no_more_shooting") && pilot.isMyPlayer() && pressed_lm && this.get_u32("next_shoot")+1 < getGameTime())
 			{
 				bool can_attack = false;
 				CInventory@ inv = this.getInventory();
