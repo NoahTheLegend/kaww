@@ -300,6 +300,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (customData == Hitters::arrow)
 	{
+		if (hitterBlob.getName() == "bulletheavy") return damage * 6.5;
 		return damage * 2.5;
 	}
 
