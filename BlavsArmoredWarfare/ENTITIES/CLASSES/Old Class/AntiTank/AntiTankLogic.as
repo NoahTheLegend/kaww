@@ -704,7 +704,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (getNet().isServer())
 		{
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
-			proj.Tag("strong");
 			proj.server_SetTimeToDie(3);
 		}
 
