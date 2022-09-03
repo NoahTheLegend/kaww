@@ -654,6 +654,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 		proj.setVelocity(arrowVel);
 		proj.setPosition(arrowPos);
 		proj.Tag("medium");
+		proj.Tag("antitank_shell");
 	}
 	return proj;
 }
