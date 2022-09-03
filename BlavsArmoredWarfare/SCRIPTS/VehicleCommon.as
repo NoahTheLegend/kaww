@@ -767,23 +767,8 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 									printf("can fire? "+Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge));
 								}*/
 							}
-							if (ap.isKeyPressed(key_action2))
-							{
-								//cancel
-								v.firing = false;
-								v.charge = 0;
-								v.cooldown_time = Maths::Max(v.cooldown_time, 10);
-								CBlob@ b = ap.getOccupied();
-								/*if (b !is null && b.getPlayer() !is null && b.getPlayer().getUsername() == "NoahTheLegend")
-								{
-									printf("v.firing "+v.firing);
-									printf("v.charge "+v.charge);
-									printf("v.cooldown_time "+v.cooldown_time);
-									printf("can fire? "+Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge));
-								}*/
-								SetFireDelay(this, v.getCurrentAmmo().fire_delay, v);
-							}
-							else if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && blob.isMyPlayer())
+
+							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && blob.isMyPlayer())
 							{
 								CBitStream fireParams;
 								fireParams.write_u16(blob.getNetworkID());

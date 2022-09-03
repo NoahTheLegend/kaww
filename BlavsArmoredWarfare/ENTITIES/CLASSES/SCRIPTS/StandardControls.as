@@ -438,6 +438,11 @@ void ManageCamera(CBlob@ this)
 				camera.mouseFactor = 0.5f;
 				return;
 			}
+			if (getLocalPlayer().getBlob().isAttachedToPoint("GUNNER"))// && getLocalPlayer().getBlob().isKeyPressed(key_action2))
+			{
+				camera.mouseFactor = 0.5f;
+				return;
+			}
 		}
 		camera.mouseFactor = 0.3f; // doesn't affect fixed cam
 	}
