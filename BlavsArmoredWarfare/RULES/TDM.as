@@ -1052,14 +1052,14 @@ void onTick(CRules@ this)
     }
 	if (getGameTime()%150==0) //every 5 seconds give a coin
 	{
-		if (this.get_s16("blueTickets") > 100) 
+		if (this.get_s16("blueTickets") > 150) 
 		{
-			this.set_s16("blueTickets", 100);
+			this.set_s16("blueTickets", 150);
 			this.Sync("blueTickets", true);
 		}
-		if (this.get_s16("redTickets") > 100)
+		if (this.get_s16("redTickets") > 150)
 		{
-			this.set_s16("redTickets", 100);
+			this.set_s16("redTickets", 150);
 			this.Sync("redTickets", true);
 		}
 		for (u16 i = 0; i < getPlayerCount(); i++)
