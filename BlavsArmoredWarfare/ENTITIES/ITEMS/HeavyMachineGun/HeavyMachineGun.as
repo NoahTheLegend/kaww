@@ -142,29 +142,16 @@ void onTick(CBlob@ this)
 		bool facing_left = sprite.isFacingLeft();
 		f32 rotation = angle * (facing_left ? -1 : 1);
 
-		//if (this.hasAttached())
-		//{
-			CInventory@ inventory = this.getInventory();
-			if (inventory != null)
+		CInventory@ inventory = this.getInventory();
+		if (inventory != null)
+		{
+			arm.animation.frame = 1;
+
+			if (this.hasAttached() && inventory.getItemsCount() <= 0)
 			{
-				if (inventory.getItemsCount() <= 0)
-				{
-					arm.animation.frame = 1;
-					if (this.hasAttached()) v.getCurrentAmmo().ammo_stocked = 0;
-				}
-				else
-				{
-					if (Vehicle_canFire(this, v, this.isKeyPressed(key_action1), this.wasKeyPressed(key_action1), 0))
-					{
-						arm.animation.frame = 1;
-					}
-					else
-					{
-						arm.animation.frame = 1;
-					}
-				}
+				v.getCurrentAmmo().ammo_stocked = 0;
 			}
-		//}
+		}
 
 		arm.ResetTransform();
 		arm.SetFacingLeft(facing_left);
@@ -214,16 +201,18 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 {
 	if (bullet !is null)
 	{
+		Vec2f pos = this.getPosition();
+
 		u16 charge = v.charge;
 		f32 anglereal = Vehicle_getWeaponAngle(this, v);
 		f32 angle = anglereal * (this.isFacingLeft() ? -1 : 1);
-		angle += ((XORRandom(512) - 256) / 225.0f);
+		angle += ((XORRandom(512) - 256) / 220.0f);
 
-		Vec2f vel = Vec2f(500.0f / 16.0f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
+		Vec2f vel = Vec2f(500.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
 		bullet.setVelocity(vel);
 		Vec2f offset = arm_offset;
 		offset.RotateBy(angle);
-		bullet.setPosition(this.getPosition() + offset * 0.2f);
+		bullet.setPosition(pos + offset * 0.2f);
 		
 		CBlob@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER").getOccupied();
 		if (gunner !is null)
@@ -240,25 +229,21 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 
 		bullet.IgnoreCollisionWhileOverlapped(this);
 		bullet.server_setTeamNum(this.getTeamNum());
-		//bullet.getShape().setDrag(bullet.getShape().getDrag() * 0.28f);
 
 		if (isClient())
 		{
-			Vec2f pos = this.getPosition();
-			CMap@ map = getMap();
-			
-			ParticleAnimated("SmallExplosion3", (this.getPosition() + offset * .2f) + vel*0.6, getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+			ParticleAnimated("SmallExplosion3", (pos + offset * .2f) + vel*0.6, getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 		}
 
 		float _angle = this.isFacingLeft() ? -anglereal+180 : anglereal; // on turret spawn it works wrong otherwise
 		_angle += -0.099f + (XORRandom(4) * 0.01f);
 		if (this.isFacingLeft())
 		{
-			ParticleAnimated("Muzzleflash", this.getPosition() + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), _angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			ParticleAnimated("Muzzleflash", pos + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), _angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
 		}
 		else
 		{
-			ParticleAnimated("Muzzleflashflip", this.getPosition() + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), _angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			ParticleAnimated("Muzzleflashflip", pos + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), _angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
 		}
 
 		CPlayer@ p = getLocalPlayer();
@@ -272,18 +257,15 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 				if (ply !is null && ply.isMyPlayer())
 				{
 					const float recoilx = 15;
-					const float recoily = 80;
-					const float recoillength = 45; // how long to recoil (?)
+					const float recoily = 50;
+					const float recoillength = 40; // how long to recoil (?)
 					if (local.isAttachedTo(this)) ShakeScreen(Vec2f( recoilx - XORRandom(recoilx*2) + 1, -recoily + XORRandom(recoily) + 1), recoillength, gunner.getInterpolatedPosition());
-					if (local.isAttachedTo(this)) ShakeScreen(28, 8, this.getPosition());
-
-					//this.set_u8("recoil_count", recoilcursor);
-					//this.set_u8("inaccuracy", this.get_u8("inaccuracy") + inaccuracypershot * (this.hasTag("sprinting")?2.0f:1.0f));
+					if (local.isAttachedTo(this)) ShakeScreen(28, 5, pos);
 
 					makeGibParticle(
 					"EmptyShellSmall",               // file name
-					this.getPosition(),                 // position
-					(this.isFacingLeft() ? -offset : offset) + Vec2f((-20 + XORRandom(40))/18,0.0f),                           // velocity
+					pos,                 // position
+					(this.isFacingLeft() ? -offset : offset) + Vec2f((-20 + XORRandom(40))/18,-1.0f),                           // velocity
 					0,                                  // column
 					0,                                  // row
 					Vec2f(16, 16),                      // frame size
