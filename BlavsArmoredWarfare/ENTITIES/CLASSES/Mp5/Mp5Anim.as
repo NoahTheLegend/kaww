@@ -111,7 +111,6 @@ void onTick(CSprite@ this)
 	}
 
 	// animations
-	const bool firing = IsFiring(blob);
 	bool showgun = true;
 	const bool left = blob.isKeyPressed(key_left);
 	const bool right = blob.isKeyPressed(key_right);
@@ -120,6 +119,7 @@ void onTick(CSprite@ this)
 	const bool inair = (!blob.isOnGround() && !blob.isOnLadder());
 	bool isStabbing = archer.isStabbing;
 	bool isReloading = blob.get_bool("isReloading"); // archer.isReloading;
+	const bool firing = IsFiring(blob) && !isReloading;
 	bool crouch = false;
 
 	if (blob.isOnGround())
