@@ -424,30 +424,27 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 				if (this.getPlayer() !is null)
 				{
-					bool sprint = this.getHealth() >= this.getInitialHealth() * 0.75f && this.isOnGround() && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+					bool sprint = this.getHealth() == this.getInitialHealth() && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
 					if (sprint)
 					{
 						if (!this.hasTag("sprinting"))
 						{
 							if (isClient())
 							{
-								Vec2f pos = this.getPosition();
-								CMap@ map = getMap();
-
-								ParticleAnimated("DustSmall.png", pos-Vec2f(0, -3.75f), Vec2f(this.isFacingLeft() ? 1.0f : -1.0f, -0.1f), 0.0f, 0.75f, 2, XORRandom(70) * -0.00005f, true);
+								ParticleAnimated("DustSmall.png", this.getPosition()-Vec2f(0, -3.75f), Vec2f(this.isFacingLeft() ? 1.0f : -1.0f, -0.1f), 0.0f, 0.75f, 2, XORRandom(70) * -0.00005f, true);
 							}
 						}
 						this.Tag("sprinting");
-						moveVars.walkFactor *= this.getPlayer().hasTag("Max Speed") ? 1.3f : 1.1f;
+						moveVars.walkFactor *= 1.0f;
 						moveVars.walkSpeedInAir = 2.9f;
-						moveVars.jumpFactor *= this.getPlayer().hasTag("Max Speed") ? 1.1f : 0.87f;
+						moveVars.jumpFactor *= 0.87f;
 					}
 					else
 					{
 						this.Untag("sprinting");
-						moveVars.walkFactor *= this.getPlayer().hasTag("Max Speed") ? 1.2f : 0.9f;
+						moveVars.walkFactor *= 0.9f;
 						moveVars.walkSpeedInAir = 2.5f;
-						moveVars.jumpFactor *= this.getPlayer().hasTag("Max Speed") ? 1.1f : 0.87f;
+						moveVars.jumpFactor *= 0.87f;
 					}
 				}
 		}
@@ -608,15 +605,13 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 	float angle = Maths::ATan2(this.getAimPos().y - this.getPosition().y, this.getAimPos().x - this.getPosition().x) * 180 / 3.14159;
 	angle += -0.099f + (XORRandom(2) * 0.01f);
 	if (this.isFacingLeft())
-	{ //getRandomVelocity(0.0f, XORRandom(3) * 0.01f, this.isFacingLeft()?90:270) + Vec2f(0.0f, -0.05f)
+	{ 
 		ParticleAnimated("Muzzleflash", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle, 0.06f + XORRandom(3) * 0.01f, 3 + XORRandom(2), -0.15f, false);
 	}
 	else
 	{
 		ParticleAnimated("Muzzleflashflip", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle + 180, 0.06f + XORRandom(3) * 0.01f, 3 + XORRandom(2), -0.15f, false);
 	}
-
-	//ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 
 	makeGibParticle(
 	"EmptyShellSmall",   	                // file name
@@ -635,14 +630,13 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 		Vec2f targetVector = this.getAimPos() - this.getPosition();
 		f32 targetDistance = targetVector.Length();
 		f32 targetFactor = targetDistance / 367.0f;
-		f32 mod = this.isKeyPressed(key_action2) ? 0.65f : 1.0f;
+		f32 mod = this.isKeyPressed(key_action2) ? 0.5f : 0.65f;
 
-		for (uint i = 0; i < 4; i++)
+		for (uint i = 0; i < 5; i++)
 		{
-			ShootBullet(this, this.getPosition() - Vec2f(0,1), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((80 + this.get_u8("inaccuracy")) - 40)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(80 + this.get_u8("inaccuracy")) - 40)*mod * targetFactor, 11.59f * bulletvelocity);
+			ShootBullet(this, this.getPosition() - Vec2f(0,1), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((100 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(100 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, 11.59f * bulletvelocity);
 		}
 		
-		CMap@ map = getMap();
 		ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 
 		if (this.isMyPlayer()) ShakeScreen((Vec2f(recoilx - XORRandom(recoilx*4) + 1, -recoily + XORRandom(recoily) + 6)), recoillength*2, this.getInterpolatedPosition());

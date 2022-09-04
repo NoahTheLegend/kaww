@@ -423,7 +423,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 				if (this.getPlayer() !is null)
 				{
-					bool sprint = this.getHealth() >= this.getInitialHealth() * 0.75f && this.isOnGround() && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+					bool sprint = this.getHealth() == this.getInitialHealth() && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
 					if (sprint)
 					{
 						if (!this.hasTag("sprinting"))
@@ -437,16 +437,16 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 							}
 						}
 						this.Tag("sprinting");
-						moveVars.walkFactor *= this.getPlayer().hasTag("Max Speed") ? 1.175f : 1.1f;
+						moveVars.walkFactor *= 0.95f;
 						moveVars.walkSpeedInAir = 2.9f;
-						moveVars.jumpFactor *= this.getPlayer().hasTag("Max Speed") ? 1.0f : 1.0f;
+						moveVars.jumpFactor *= 1.0f;
 					}
 					else
 					{
 						this.Untag("sprinting");
-						moveVars.walkFactor *= this.getPlayer().hasTag("Max Speed") ? 1.05f : 0.85f;
+						moveVars.walkFactor *= 0.85f;
 						moveVars.walkSpeedInAir = 2.5f;
-						moveVars.jumpFactor *= this.getPlayer().hasTag("Max Speed") ? 1.0f : 1.0f;
+						moveVars.jumpFactor *= 1.0f;
 					}
 				}
 		}
@@ -634,7 +634,7 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 		Vec2f targetVector = this.getAimPos() - this.getPosition();
 		f32 targetDistance = targetVector.Length();
 		f32 targetFactor = targetDistance / 367.0f;
-		f32 mod = this.isKeyPressed(key_action2) ? 0.05f : 1.0f;
+		f32 mod = this.isKeyPressed(key_action2) ? 0.06f : 0.4f;
 
 		ShootBullet(this, this.getPosition() - Vec2f(0,1), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((30 + this.get_u8("inaccuracy")) - 15)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(30 + this.get_u8("inaccuracy")) - 15)*mod * targetFactor, 11.59f * bulletvelocity);
 		

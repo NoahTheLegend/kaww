@@ -103,7 +103,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 	CMap@ map = this.getMap();
 
 	const f32 speed = velocity.getLength();
-	const f32 damage = 2.25f;
+	const f32 damage = 1.75f;
 
 	Vec2f direction = velocity;
 	direction.Normalize();

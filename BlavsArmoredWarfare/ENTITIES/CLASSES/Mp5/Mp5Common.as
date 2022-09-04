@@ -1,8 +1,8 @@
 const string classname = "Mp5"; // case sensitive
 
 // DAMAGE
-const float damage_body = 0.25f;
-const float damage_head = 0.5f;
+const float damage_body = 0.23f;
+const float damage_head = 0.48f;
 // SHAKE
 const float recoilx = 22; // x shake (20)
 const float recoily = 38; // y shake (45)
@@ -27,8 +27,8 @@ const s8 reloadtime = 65; // time to reload
 const string reloadsfx = classname + "_reload.ogg";
 const string shootsfx = classname + "_shoot.ogg";
 
-const u8 delayafterfire = 3; // time between shots
-const u8 randdelay = 1; // + randomness
+const u8 delayafterfire = 2; // time between shots
+const u8 randdelay = 0; // + randomness
 
 const float bulletvelocity = 1.52f; // speed that bullets fly
 
