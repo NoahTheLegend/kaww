@@ -187,7 +187,6 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	CControls@ controls = this.getControls();
 	CSprite@ sprite = this.getSprite();
 	s8 charge_time = this.get_s32("my_chargetime");//archer.charge_time;
-	printf("c_time = "+charge_time);
 	this.set_s8("charge_time", charge_time);
 	bool isStabbing = archer.isStabbing;
 	bool isReloading = this.get_bool("isReloading"); //archer.isReloading;
@@ -285,6 +284,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 				CBitStream params; // sync to server
 				if (isClient())
 				{
+					this.getSprite().PlaySound(reloadsfx, 0.8);
 					params.write_s8(charge_time);
 					this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
 				}
@@ -799,8 +799,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("sync_reload_to_server"))
 	{
-		if (this.get_s8("charge_time") == 0) this.getSprite().PlaySound(reloadsfx, 0.8);
-		
 		if (isClient())
 		{
 			//printf(""+this.get_s8("charge_time"));
