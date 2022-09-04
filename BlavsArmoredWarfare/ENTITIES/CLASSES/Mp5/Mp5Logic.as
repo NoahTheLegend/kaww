@@ -683,7 +683,7 @@ bool canSend(CBlob@ this)
 
 void ClientFire(CBlob@ this, const s8 charge_time)
 {
-	if (canSend(this) && !this.hasTag("isReloading") && charge_time == 0)
+	if (canSend(this))
 	{
 		Vec2f targetVector = this.getAimPos() - this.getPosition();
 		f32 targetDistance = targetVector.Length();
@@ -778,6 +778,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
+		if (this.get_s8("charge_time") > 0 || this.hasTag("isReloading")) return;
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
 		Vec2f arrowVel;
