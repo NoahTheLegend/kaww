@@ -424,30 +424,27 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 				if (this.getPlayer() !is null)
 				{
-					bool sprint = this.getHealth() >= this.getInitialHealth() * 0.75f && this.isOnGround() && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+					bool sprint = this.getHealth() == this.getInitialHealth() && this.isOnGround() && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
 					if (sprint)
 					{
 						if (!this.hasTag("sprinting"))
 						{
 							if (isClient())
 							{
-								Vec2f pos = this.getPosition();
-								CMap@ map = getMap();
-
-								ParticleAnimated("DustSmall.png", pos-Vec2f(0, -3.75f), Vec2f(this.isFacingLeft() ? 1.0f : -1.0f, -0.1f), 0.0f, 0.75f, 2, XORRandom(70) * -0.00005f, true);
+								ParticleAnimated("DustSmall.png", this.getPosition()-Vec2f(0, -3.75f), Vec2f(this.isFacingLeft() ? 1.0f : -1.0f, -0.1f), 0.0f, 0.75f, 2, XORRandom(70) * -0.00005f, true);
 							}
 						}
 						this.Tag("sprinting");
-						moveVars.walkFactor *= this.getPlayer().hasTag("Max Speed") ? 1.075f : 1.05f;
+						moveVars.walkFactor *= 0.9f;
 						moveVars.walkSpeedInAir = 2.9f;
-						moveVars.jumpFactor *= this.getPlayer().hasTag("Max Speed") ? 1.0f : 1.0f;
+						moveVars.jumpFactor *= 1.0f;
 					}
 					else
 					{
 						this.Untag("sprinting");
-						moveVars.walkFactor *= this.getPlayer().hasTag("Max Speed") ? 0.95f : 0.8f;
+						moveVars.walkFactor *= 0.8f;
 						moveVars.walkSpeedInAir = 2.5f;
-						moveVars.jumpFactor *= this.getPlayer().hasTag("Max Speed") ? 1.0f : 1.0f;
+						moveVars.jumpFactor *= 1.0f;
 					}
 				}
 		}
@@ -623,7 +620,7 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 		Vec2f targetVector = this.getAimPos() - this.getPosition();
 		f32 targetDistance = targetVector.Length();
 		f32 targetFactor = targetDistance / 367.0f;
-		f32 mod = this.isKeyPressed(key_action2) ? 0.05f : 1.0f;
+		f32 mod = this.isKeyPressed(key_action2) ? 0.05f : 0.2f;
 
 		ShootBullet(this, this.getPosition() - Vec2f(-24,0).RotateBy(angle), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((180 + this.get_u8("inaccuracy")) - 110)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(180 + this.get_u8("inaccuracy")) - 110)*mod * targetFactor, 8.0f * bulletvelocity);
 		

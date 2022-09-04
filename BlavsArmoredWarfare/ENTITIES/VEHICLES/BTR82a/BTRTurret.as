@@ -327,6 +327,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 	{
 		u8 charge_prop = _charge;
 
+		f32 anglereal = this.getAngleDegrees();
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
 		Vec2f vel = Vec2f(0.0f, -22.5f).RotateBy(angle);
 		bullet.setVelocity(vel);
@@ -338,6 +339,17 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		{
 			Vec2f pos = this.getPosition();
 			CMap@ map = getMap();
+
+			float _angle = this.isFacingLeft() ? -anglereal+180 : anglereal; // on turret spawn it works wrong otherwise
+			_angle += -0.099f + (XORRandom(4) * 0.01f);
+			if (this.isFacingLeft())
+			{
+				ParticleAnimated("Muzzleflash", bullet.getPosition() + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), _angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			}
+			else
+			{
+				ParticleAnimated("Muzzleflashflip", bullet.getPosition() + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), _angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			}
 			
 			for (int i = 0; i < 12; i++)
 			{
@@ -345,17 +357,17 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 			}
 		}
 
-		//makeGibParticle(
-		//"EmptyShell",               		// file name
-		//this.getPosition(),                 // position
-		//(Vec2f(0.0f,-0.5f) + getRandomVelocity(90, 5, 360)), // velocity
-		//0,                                  // column
-		//0,                                  // row
-		//Vec2f(16, 16),                      // frame size
-		//0.5f,                               // scale?
-		//0,                                  // ?
-		//"ShellCasing",                      // sound
-		//this.get_u8("team_color"));         // team number
+		makeGibParticle(
+		"EmptyShell",               		// file name
+		this.getPosition(),                 // position
+		(Vec2f(0.0f,-0.5f) + getRandomVelocity(90, 5, 360)), // velocity
+		0,                                  // column
+		0,                                  // row
+		Vec2f(16, 16),                      // frame size
+		0.5f,                               // scale?
+		0,                                  // ?
+		"ShellCasing",                      // sound
+		this.get_u8("team_color"));         // team number
 	}	
 
 	v.last_charge = _charge;

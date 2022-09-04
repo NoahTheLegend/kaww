@@ -483,30 +483,27 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 				if (this.getPlayer() !is null)
 				{
-					bool sprint = this.getHealth() >= this.getInitialHealth() * 0.75f && this.isOnGround() && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+					bool sprint = this.getHealth() == this.getInitialHealth() && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
 					if (sprint)
 					{
 						if (!this.hasTag("sprinting"))
 						{
 							if (isClient())
 							{
-								Vec2f pos = this.getPosition();
-								CMap@ map = getMap();
-
-								ParticleAnimated("DustSmall.png", pos-Vec2f(0, -3.75f), Vec2f(this.isFacingLeft() ? 1.0f : -1.0f, -0.1f), 0.0f, 0.75f, 2, XORRandom(70) * -0.00005f, true);
+								ParticleAnimated("DustSmall.png", this.getPosition()-Vec2f(0, -3.75f), Vec2f(this.isFacingLeft() ? 1.0f : -1.0f, -0.1f), 0.0f, 0.75f, 2, XORRandom(70) * -0.00005f, true);
 							}
 						}
 						this.Tag("sprinting");
-						moveVars.walkFactor *= this.getPlayer().hasTag("Max Speed") ? 1.175f : 1.1f;
+						moveVars.walkFactor *= 0.95f;
 						moveVars.walkSpeedInAir = 2.95f;
-						moveVars.jumpFactor *= this.getPlayer().hasTag("Max Speed") ? 1.0f : 1.0f;
+						moveVars.jumpFactor *= 1.0f;
 					}
 					else
 					{
 						this.Untag("sprinting");
-						moveVars.walkFactor *= this.getPlayer().hasTag("Max Speed") ? 1.05f : 0.85f;
+						moveVars.walkFactor *= 0.85f;
 						moveVars.walkSpeedInAir = 2.5f;
-						moveVars.jumpFactor *= this.getPlayer().hasTag("Max Speed") ? 1.0f : 1.0f;
+						moveVars.jumpFactor *= 1.0f;
 					}
 				}
 		}

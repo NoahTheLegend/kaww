@@ -213,12 +213,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (customData == Hitters::ballista) //hitterBlob !is this && 
 		{
-			this.getSprite().PlaySound("BigDamage", 4.5f, 0.85f); //(XORRandom(50)/100)
-
-			if (isClient())
-			{
-				ParticleAnimated("BoomParticle", this.getPosition(), Vec2f(0.0f, -0.9f), 0.0f, 2.0f, 3, XORRandom(70) * -0.00005f, true);
-			}
+			this.getSprite().PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f); //(XORRandom(50)/100)
 		}
 	}
 

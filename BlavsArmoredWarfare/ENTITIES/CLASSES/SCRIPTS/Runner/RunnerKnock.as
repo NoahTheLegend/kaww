@@ -59,11 +59,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			case Hitters::arrow:
 				if (damage > 1.0f)
 				{
-					time = 5;
+					time = 4;
 				}
 				else
 				{
-					time = 3;
+					time = 2;
 				}
 
 				break;

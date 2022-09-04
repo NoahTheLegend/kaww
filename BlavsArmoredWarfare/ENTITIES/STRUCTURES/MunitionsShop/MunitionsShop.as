@@ -62,7 +62,7 @@ void onInit(CBlob@ this)
 			}
 			{
 				ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas a big explosion radius and should not be shot closely to shooter.", false);
-				AddRequirement(s.requirements, "coin", "", "Coins", 50);
+				AddRequirement(s.requirements, "coin", "", "Coins", 60); // + 10 more expensive
 			}
 			{
 				ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming googles that allow you to see much further. Carry them and press [RIGHT MOUSE] ", false);
