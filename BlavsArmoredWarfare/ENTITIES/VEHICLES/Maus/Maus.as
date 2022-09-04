@@ -75,27 +75,29 @@ void onInit(CBlob@ this)
 		front.SetRelativeZ(-0.88f);
 		front.SetOffset(Vec2f(6.0f, 5.0f));
 	}
-
-	// turret
-	if (getNet().isServer())
-	{
-		CBlob@ turret = server_CreateBlobNoInit("mausturret");	
-
-		if (turret !is null)
-		{
-			if (this.hasTag("pink")) turret.Tag("pink");
-			turret.Init();
-			turret.server_setTeamNum(this.getTeamNum());
-			this.server_AttachTo( turret, "TURRET" );
-			this.set_u16("turretid", turret.getNetworkID());
-
-			turret.SetFacingLeft(facing_left);
-		}
-	}	
 }
 
 void onTick(CBlob@ this)
 {
+	if (this.getTickSinceCreated() == 1)
+	{
+		// turret
+		if (getNet().isServer())
+		{
+			CBlob@ turret = server_CreateBlobNoInit("mausturret");	
+	
+			if (turret !is null)
+			{
+				if (this.hasTag("pink")) turret.Tag("pink");
+				turret.Init();
+				turret.server_setTeamNum(this.getTeamNum());
+				this.server_AttachTo( turret, "TURRET" );
+				this.set_u16("turretid", turret.getNetworkID());
+	
+				turret.SetFacingLeft(facing_left);
+			}
+		}	
+	}
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
