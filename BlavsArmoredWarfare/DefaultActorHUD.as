@@ -42,7 +42,7 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 
 	if (thisHP > 0)
 	{
-		Vec2f heartoffset = Vec2f(128, 12);
+		Vec2f heartoffset = Vec2f(148, 5);
 		Vec2f heartpos = origin + Vec2f((segmentWidth*0.5) * HPs, 0) + heartoffset;
 
 		Vec2f dim = Vec2f(126, 24);
@@ -81,6 +81,7 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 				{
 					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 1, heartpos.y + 1), Vec2f(heartpos.x - dim.x + perc2 * 2.0f * dim.x - 1, heartpos.y + dim.y + 0), SColor(0xeeeeeeee));
 					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 2, heartpos.y + 2), Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 2, heartpos.y + dim.y - 2), color);
+					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 2, heartpos.y + 21), Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 2, heartpos.y + dim.y - 2), SColor(0xff2a760a));
 					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 4, heartpos.y + 4), Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 4, heartpos.y + dim.y - 16), SColor(0xffffffff));
 
 					if (perc != 1) {GUI::DrawIcon("Taper.png", Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 34, heartpos.y + 1), 0.5f);}
@@ -112,24 +113,8 @@ void onRender(CSprite@ this)
 	u8 bar_width_in_slots = blob.get_u8("gui_HUD_slots_width");
 	f32 width = bar_width_in_slots * 40.0f;
 
-	//GUI::DrawIcon("556.png", Vec2f(90.0f, getHUDY() - dim.y - 113.0f), 0.5f);
-
 	renderBox(ul + Vec2f(dim.x + 46, 0), width*1.2, 1.0f); //width*1.9
 	renderHPBar(blob, ul);
-
-
-	// buggy if blob is attached(?)
-	if (!blob.isAttached())
-	{
-		if (blob.get_u8("hitmarker") > 20)
-		{
-			GUI::DrawIcon("GunCursor.png", 11, Vec2f(32, 32), getControls().getMouseScreenPos() - Vec2f(32, 32), 1.0f);
-		}
-		else if (blob.get_u8("hitmarker") > 0)
-		{
-			GUI::DrawIcon("GunCursor.png", 10, Vec2f(32, 32), getControls().getMouseScreenPos() - Vec2f(32, 32), 1.0f);
-		}
-	}
 
 	string ammo_amt = blob.get_u32("mag_bullets");
 	string ammo_amt_max = blob.get_u32("mag_bullets_max");
@@ -138,12 +123,12 @@ void onRender(CSprite@ this)
 	// display correct text
 	if (ammo_amt != "" && ammo_amt.size() > 1)
 	{	// CURRENT AMMO
-		GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-30.0f, getHUDY() - dim.y - 64.0f), 0.5f);
-		GUI::DrawIcon("FontNum.png", ammo_amt[1]+2, pngsize, Vec2f(14.0f, getHUDY() - dim.y - 64.0f), 0.5f);
+		GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-30.0f, getHUDY() - dim.y - 58.0f), 0.5f);
+		GUI::DrawIcon("FontNum.png", ammo_amt[1]+2, pngsize, Vec2f(14.0f, getHUDY() - dim.y - 58.0f), 0.5f);
 	}
-	else if (ammo_amt.length() == 1) // ew
+	else if (ammo_amt.length() == 1)
 	{
-		GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-30.0f, getHUDY() - dim.y - 64.0f), 0.5f);
+		GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-10.0f, getHUDY() - dim.y - 58.0f), 0.5f);
 	}
 	
 	/*
@@ -160,6 +145,7 @@ void onRender(CSprite@ this)
 	//GUI::DrawIcon("Separator.png", 0, Vec2f(400, 300), Vec2f(-136.0f, getHUDY() - dim.y - 153.0f), 0.5f);
 	*/
 
+	// combining images would reduce lag
 	if (blob.getHealth() <= blob.getInitialHealth() / 1.5f)
 	{
 		GUI::DrawIcon("BloodOverlay.png", 0, Vec2f(960, 540), Vec2f(0, 0), (getScreenWidth()*0.5f)/960, (getScreenHeight()*0.5f)/540, SColor(255, 255, 255, 255));
@@ -172,9 +158,4 @@ void onRender(CSprite@ this)
 	{
 		GUI::DrawIcon("BloodOverlay.png", 0, Vec2f(960, 540), Vec2f(0, 0), (getScreenWidth()*0.5f)/960, (getScreenHeight()*0.5f)/540, SColor(255, 255, 255, 255));
 	}
-	/*
-	if (blob.hasTag("scopedin"))
-	{
-		GUI::DrawIcon("Vignette.png", 0, Vec2f(960, 540), Vec2f(0, 0), (getScreenWidth()*0.5f)/960, (getScreenHeight()*0.5f)/540, SColor(255, 255, 255, 255));
-	} */
 }
