@@ -202,10 +202,6 @@ void onTick(CSprite@ this)
 	{
 		this.SetAnimation("stab");
 	}
-	else if (isReloading)
-	{
-		this.SetAnimation("reload");
-	}
 	else if (inair)
 	{
 		RunnerMoveVars@ moveVars;
@@ -265,6 +261,11 @@ void onTick(CSprite@ this)
 		}
 
 		defaultIdleAnim(this, blob, direction);
+	}
+
+	if (isReloading)
+	{
+		this.SetAnimation("reload");
 	}
 
 	//arm anims
