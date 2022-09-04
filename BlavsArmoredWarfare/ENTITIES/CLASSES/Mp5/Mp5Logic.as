@@ -20,6 +20,7 @@ void onInit(CBlob@ this)
 	this.Tag("player");
 	this.Tag("flesh");
 	this.Tag("3x2");
+	this.set_u32("no_reload", 0);
 
 	this.addCommandID("sync_reload_to_server");
 
@@ -683,7 +684,7 @@ bool canSend(CBlob@ this)
 
 void ClientFire(CBlob@ this, const s8 charge_time)
 {
-	if (canSend(this))
+	if (canSend(this) && this.get_u32("no_reload") < getGameTime())
 	{
 		Vec2f targetVector = this.getAimPos() - this.getPosition();
 		f32 targetDistance = targetVector.Length();
@@ -784,6 +785,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!params.saferead_Vec2f(arrowVel)) return;
 		ArcherInfo@ archer;
 		if (!this.get("archerInfo", @archer)) return;
+
+		this.set_u32("no_reload", getGameTime()+5);
 
 		if (getNet().isServer())
 		{
