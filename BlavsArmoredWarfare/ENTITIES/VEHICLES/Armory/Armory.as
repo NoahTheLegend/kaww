@@ -82,7 +82,7 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press LMB while holding to arm, ~4 seconds til' boom.", false);
+		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press LMB while holding to arm, ~4 seconds until boom.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 	}
 	{
@@ -95,7 +95,7 @@ void onInit(CBlob@ this)
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue helmet, blocks a small amount of bullet damage, and occasionally bounces bullets.", false);
+		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue helmet, take 40% less bullet damage, and occasionally bounce bullets.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
 	}
 	{

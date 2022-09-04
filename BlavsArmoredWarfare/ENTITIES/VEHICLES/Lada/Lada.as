@@ -10,8 +10,8 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 
 	Vehicle_Setup(this,
-	              434.0f, // move speed  //103
-	              0.03f,  // turn speed
+	              314.0f, // move speed  //103
+	              0.05f,  // turn speed
 	              Vec2f(0.0f, 0.58f), // jump out velocity
 	              false  // inventory access
 	             );
@@ -23,7 +23,7 @@ void onInit(CBlob@ this)
 
 	Vehicle_SetupGroundSound(this, v, "TechnicalTruckEngine",  // movement sound
 	                         2.4f, // movement sound volume modifier   0.0f = no manipulation
-	                         1.3f // movement sound pitch modifier     0.0f = no manipulation
+	                         2.8f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(18.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
@@ -109,9 +109,12 @@ void onTick(CBlob@ this)
 		if (this.isOnMap())
 		{
 			Vec2f vel = this.getVelocity();
-			this.setVelocity(vel * 0.975);
+			this.setVelocity(vel * 0.98);
 		}
 	}
+
+	Vehicle_LevelOutInAir(this);
+	Vehicle_LevelOutInAir(this);
 }
 
 // Blow up

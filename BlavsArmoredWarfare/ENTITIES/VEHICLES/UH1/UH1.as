@@ -9,7 +9,7 @@ const Vec2f rightVelo = Vec2f(0.020f, 0.00f);
 const Vec2f minClampVelocity = Vec2f(-0.40f, -0.70f);
 const Vec2f maxClampVelocity = Vec2f( 0.40f, 0.00f);
 
-const f32 thrust = 1000.00f;
+const f32 thrust = 1020.00f;
 
 const u8 cooldown_time = 15;//210;
 const u8 recoil = 0;
@@ -72,6 +72,8 @@ void onInit(CBlob@ this)
 			arm.SetOffset(Vec2f(-36.0f, 10.0f));
 		}
 	}
+
+	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_right);
 
 	CBlob@ bow = server_CreateBlob("heavygun");	
 
@@ -153,7 +155,17 @@ void onTick(CBlob@ this)
 			this.Untag("no_more_shooting");
 			this.Untag("no_more_proj");
 		}
-		if (this.getVelocity().x > 8.25f || this.getVelocity().x < -8.25f) this.setVelocity(Vec2f(this.getOldVelocity().x, this.getVelocity().y));
+		if (this.getVelocity().x > 6.25f || this.getVelocity().x < -6.25f) this.setVelocity(Vec2f(this.getOldVelocity().x, this.getVelocity().y));
+
+		if (this.getPosition().y < 70.0f && this.getVelocity().y < 0.5f)
+		{
+			//this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y*0.16f));
+			this.AddForce(Vec2f(0, 220.0f));
+		}
+
+
+
+
 		CSprite@ sprite = this.getSprite();
 		CShape@ shape = this.getShape();
 		Vec2f currentVel = this.getVelocity();

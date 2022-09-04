@@ -18,10 +18,8 @@ enum State
 
 void onInit(CBlob@ this)
 {
-	this.getShape().getVars().waterDragScale = 16.0f;
-
-	this.set_f32("explosive_radius", 32.0f);
-	this.set_f32("explosive_damage", 1.5f);
+	this.set_f32("explosive_radius", 42.0f);
+	this.set_f32("explosive_damage", 2.0f);
 	this.set_f32("map_damage_radius", 32.0f);
 	this.set_f32("map_damage_ratio", 0.5f);
 	this.set_bool("map_damage_raycast", true);
