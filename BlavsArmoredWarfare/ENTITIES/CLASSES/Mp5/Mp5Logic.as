@@ -187,6 +187,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	CControls@ controls = this.getControls();
 	CSprite@ sprite = this.getSprite();
 	s8 charge_time = this.get_s32("my_chargetime");//archer.charge_time;
+	printf("c_time = "+charge_time);
 	this.set_s8("charge_time", charge_time);
 	bool isStabbing = archer.isStabbing;
 	bool isReloading = this.get_bool("isReloading"); //archer.isReloading;
