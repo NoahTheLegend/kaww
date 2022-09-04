@@ -193,7 +193,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	//if (getGameTime()%20==0) printf(""+isReloading);
 	u8 charge_state = archer.charge_state;
 	bool just_action1 = this.isKeyJustPressed(key_action1) && this.get_u32("dont_change_zoom") < getGameTime(); // binoculars thing
-	bool is_action1 = this.isKeyPressed(key_action1) && charge_time == 0;
+	bool is_action1 = this.isKeyPressed(key_action1);
 	bool was_action1 = this.wasKeyPressed(key_action1);
 	if (this.isKeyJustPressed(key_action3))
 	{
@@ -267,14 +267,13 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	else
 	{
 		// reload
-		if (charge_time == 0 && controls !is null && !isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
+		if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
 			//print("RELOAD!!");
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
 			if (inv !is null && inv.getItem("mat_7mmround") !is null)
 			{
-				this.Tag("no_shoot");
 				// actually reloading
 				reloadistrue = true;
 				charge_time = reloadtime;
@@ -315,7 +314,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 			}
 		}
 		// shoot
-		if (!this.hasTag("no_shoot") && charge_time == 0 && this.getTickSinceCreated() > 5 && semiauto ? just_action1 : is_action1)
+		if (charge_time == 0 && this.getTickSinceCreated() > 5 && semiauto ? just_action1 : is_action1)
 		{
 			moveVars.walkFactor *= 0.5f;
 			moveVars.jumpFactor *= 0.7f;
@@ -422,8 +421,8 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 					archer.isReloading = false;
 
 					this.set_bool("isReloading", false);
-					this.Untag("no_shoot");
 				}
+
 			}
 		}
 		else
@@ -484,7 +483,6 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 					archer.isReloading = false;
 
 					this.set_bool("isReloading", false);
-					this.Untag("no_shoot");
 				}
 
 				if (this.getPlayer() !is null)
