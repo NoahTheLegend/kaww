@@ -9,14 +9,13 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u16 cooldown_time = 290;//210;
-const u8 recoil = 500;
+const u16 cooldown_time = 225;
 
-const s16 init_gunoffset_angle = -3; // up by so many degrees
+const s16 init_gunoffset_angle = -2; // up by so many degrees
 
 // 0 == up, 90 == sideways
-const f32 high_angle = 77.5f; // upper depression limit
-const f32 low_angle = 100.0f; // lower depression limit
+const f32 high_angle = 76.5f; // upper depression limit
+const f32 low_angle = 99.0f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
@@ -42,7 +41,7 @@ void onInit(CBlob@ this)
 	    "Ballista Bolts", // name for ammo selection
 	    "ballista_bolt", // bullet config name
 	    //"sound_100mm", // fire sound
-		"TankFireHeavy",
+		"sound_128mm",
 	    "EmptyFire", // empty fire sound
 	    Vehicle_Fire_Style::custom,
 	    Vec2f(-6.0f, -8.0f), // fire position offset
@@ -232,7 +231,7 @@ void onTick(CBlob@ this)
 		{
 			arm.ResetTransform();
 			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 8.0f));
-			arm.SetOffset(Vec2f(-14.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -19.5f + (this.isFacingLeft() ? 0.0f : 0.5f)));
+			arm.SetOffset(Vec2f(-19.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -19.5f + (this.isFacingLeft() ? -0.5f : 0.5f)));
 			arm.SetRelativeZ(-20.0f);
 		}
 
@@ -251,28 +250,6 @@ void onTick(CBlob@ this)
 					}
 				}
 			}
-		}
-
-		if (this.isOnMap() && Maths::Abs(this.getVelocity().x) > 2.5f)
-		{
-			if (getGameTime() % 4 == 0)
-			{
-				if (isClient())
-				{
-					Vec2f pos = this.getPosition();
-					CMap@ map = getMap();
-					
-					//ParticleAnimated("LargeSmoke", this.getPosition() + Vec2f(XORRandom(18) - 9 + (this.isFacingLeft() ? 30 : -30), XORRandom(18) - 3), getRandomVelocity(0.0f, 0.5f + XORRandom(60) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.1f), float(XORRandom(360)), 0.7f + XORRandom(70) * 0.01f, 3 + XORRandom(3), XORRandom(70) * -0.00005f, true);
-				}
-			}
-		}
-
-		if (isClient() && getGameTime() % 20 == 0)
-		{
-			Vec2f pos = this.getPosition();
-			CMap@ map = getMap();
-			
-			//ParticleAnimated("SmallSmoke1", pos + Vec2f((this.isFacingLeft() ? 1 : -1)*(28+XORRandom(15)),0.0f) + Vec2f(XORRandom(10) - 5, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(50) * 0.01f, 90) + Vec2f(0.0f,-0.15f), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 5 + XORRandom(8), XORRandom(70) * -0.00005f, true);
 		}
 	}
 
@@ -306,20 +283,7 @@ void onDie(CBlob@ this)
 {
 	Explode(this, 64.0f, 1.0f);
 
-	this.getSprite().PlaySound("/BigDamage");
-}
-
-void GetButtonsFor(CBlob@ this, CBlob@ caller)
-{
-	if (!canSeeButtons(this, caller)) return;
-
-	//if (isOverlapping(this, caller) && !caller.isAttached())
-	{
-		if (!Vehicle_AddFlipButton(this, caller) && caller.getTeamNum() == this.getTeamNum())
-		{
-			//Vehicle_AddLoadAmmoButton(this, caller);
-		}
-	}
+	this.getSprite().PlaySound("/turret_die");
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
@@ -379,9 +343,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
 		Vec2f vel = Vec2f(0.0f, -27.5f).RotateBy(angle);
 		bullet.setVelocity(vel);
-		bullet.setPosition(bullet.getPosition() + vel + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f));
-
-		this.AddForce(Vec2f(this.isFacingLeft() ? (recoil*5.0f) : (-recoil*5.0f), 0.0f));
+		bullet.setPosition(bullet.getPosition() + (vel*1.5) + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 5.0f));
 
 		if (isClient())
 		{
@@ -457,14 +419,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {
 	if (damage > 0.1f) //sound
 	{
-		if (customData == Hitters::ballista) //hitterBlob !is this && 
+		if (customData == Hitters::ballista)
 		{
-			this.getSprite().PlaySound("BigDamage", 4.5f, 0.85f); //(XORRandom(50)/100)
-
-			if (isClient())
-			{
-				ParticleAnimated("BoomParticle", this.getPosition(), Vec2f(0.0f, -0.9f), 0.0f, 2.0f, 3, XORRandom(70) * -0.00005f, true);
-			}
+			this.getSprite().PlaySound("BigDamage", 2.5f, 0.85f + XORRandom(40)*0.01f); 
+			this.getSprite().PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f);
 		}
 	}	
 	

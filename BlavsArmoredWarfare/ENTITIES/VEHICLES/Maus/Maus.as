@@ -7,15 +7,21 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("tank");
 	this.Tag("deal_bunker_dmg");
-	if (XORRandom(5) == 0) this.Tag("pink");
+	if (XORRandom(5) == 0)
+	{
+		this.setInventoryName("Panzerkampfwagen VIII Maus 'Minnie Mouse'");
+		this.Tag("pink");
+	}
+
+	
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    90.0f, // move speed         125 is a good fast speed
-	    0.35f,  // turn speed
+	    131.0f, // move speed         125 is a good fast speed
+	    0.9f,  // turn speed
 	    Vec2f(0.0f, 0.56f), // jump out velocity
 	    false);  // inventory access
 
@@ -34,11 +40,10 @@ void onInit(CBlob@ this)
 
 	v.charge = 400;
 
-	Vehicle_SetupGroundSound(this, v, "TankEngine",  // movement sound
-	    1.1f,   // movement sound volume modifier   0.0f = no manipulation
+	Vehicle_SetupGroundSound(this, v, "TankEngine_maus",  // movement sound
+	    0.7f,   // movement sound volume modifier   0.0f = no manipulation
 	    1.0f); // movement sound pitch modifier     0.0f = no manipulation
 
-	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(37.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-20.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(31.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(23.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(15.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
@@ -47,7 +52,7 @@ void onInit(CBlob@ this)
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-9.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-17.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
 
-	this.getShape().SetOffset(Vec2f(0, 2));
+	this.getShape().SetOffset(Vec2f(0, 1));
 
 	bool facing_left = this.getTeamNum() == 1 ? true : false;
 	this.SetFacingLeft(facing_left);
@@ -153,12 +158,6 @@ void onTick(CBlob@ this)
 				ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(60) - 30, XORRandom(48) - 24), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, 90), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 7 + XORRandom(8), XORRandom(70) * -0.00005f, true);
 			}
 		}
-
-		if (this.isOnMap())
-		{
-			Vec2f vel = this.getVelocity();
-			this.setVelocity(vel * 0.98);
-		}
 	}
 
 	Vehicle_LevelOutInAir(this);
@@ -169,7 +168,12 @@ void onDie(CBlob@ this)
 {
 	Explode(this, 64.0f, 1.0f);
 
-	this.getSprite().PlaySound("/BigDamage");
+	this.getSprite().PlaySound("/vehicle_die");
+
+	for (int i = 0; i < 10; i++)
+	{
+		ParticleAnimated("LargeSmoke", this.getPosition() + Vec2f(XORRandom(120) - 60, XORRandom(20) - 10), getRandomVelocity(0.0f, XORRandom(25) * 0.005f, 360) + Vec2f((XORRandom(5) - 2) * 0.6f, 0.4f), float(XORRandom(360)), 1.0f + XORRandom(40) * 0.01f, 6 + XORRandom(6), XORRandom(30) * -0.001f, true);
+	}
 
 	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
 	if (point !is null)
@@ -224,7 +228,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (customData == Hitters::ballista) //hitterBlob !is this && 
 		{
-			this.getSprite().PlaySound("BigDamage", 4.5f, 0.85f); //(XORRandom(50)/100)
+			this.getSprite().PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f); //(XORRandom(50)/100)
 
 			if (isClient())
 			{

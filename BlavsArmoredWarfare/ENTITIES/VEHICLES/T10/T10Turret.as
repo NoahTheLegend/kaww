@@ -259,28 +259,6 @@ void onTick(CBlob@ this)
 				}
 			}
 		}
-
-		if (this.isOnMap() && Maths::Abs(this.getVelocity().x) > 2.5f)
-		{
-			if (getGameTime() % 4 == 0)
-			{
-				if (isClient())
-				{
-					Vec2f pos = this.getPosition();
-					CMap@ map = getMap();
-					
-					//ParticleAnimated("LargeSmoke", this.getPosition() + Vec2f(XORRandom(18) - 9 + (this.isFacingLeft() ? 30 : -30), XORRandom(18) - 3), getRandomVelocity(0.0f, 0.5f + XORRandom(60) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.1f), float(XORRandom(360)), 0.7f + XORRandom(70) * 0.01f, 3 + XORRandom(3), XORRandom(70) * -0.00005f, true);
-				}
-			}
-		}
-
-		if (isClient() && getGameTime() % 20 == 0)
-		{
-			Vec2f pos = this.getPosition();
-			CMap@ map = getMap();
-			
-			//ParticleAnimated("SmallSmoke1", pos + Vec2f((this.isFacingLeft() ? 1 : -1)*(28+XORRandom(15)),0.0f) + Vec2f(XORRandom(10) - 5, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(50) * 0.01f, 90) + Vec2f(0.0f,-0.15f), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 5 + XORRandom(8), XORRandom(70) * -0.00005f, true);
-		}
 	}
 
 	// Crippled
@@ -313,7 +291,7 @@ void onDie(CBlob@ this)
 {
 	Explode(this, 64.0f, 1.0f);
 
-	this.getSprite().PlaySound("/BigDamage");
+	this.getSprite().PlaySound("/turret_die");
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
@@ -464,14 +442,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {
 	if (damage > 0.1f) //sound
 	{
-		if (customData == Hitters::ballista) //hitterBlob !is this && 
+		if (customData == Hitters::ballista)
 		{
-			this.getSprite().PlaySound("BigDamage", 4.5f, 0.85f); //(XORRandom(50)/100)
-
-			if (isClient())
-			{
-				ParticleAnimated("BoomParticle", this.getPosition(), Vec2f(0.0f, -0.9f), 0.0f, 2.0f, 3, XORRandom(70) * -0.00005f, true);
-			}
+			this.getSprite().PlaySound("BigDamage", 2.5f, 0.85f + XORRandom(40)*0.01f); 
+			this.getSprite().PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f);
 		}
 	}	
 	

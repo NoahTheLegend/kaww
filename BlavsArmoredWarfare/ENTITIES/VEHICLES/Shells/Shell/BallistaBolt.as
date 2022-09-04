@@ -103,7 +103,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 	CMap@ map = this.getMap();
 
 	const f32 speed = velocity.getLength();
-	const f32 damage = speed > MEDIUM_SPEED ? 5.0f : 4.5f;
+	const f32 damage = 2.25f;
 
 	Vec2f direction = velocity;
 	direction.Normalize();
@@ -151,6 +151,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 
 			if (blob !is null)
 			{
+
 				if (blob.getShape().getConsts().platform && !CollidesWithPlatform(this, blob, velocity))
 					continue;
 
@@ -183,15 +184,17 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	
 	this.getSprite().PlaySound("/ShellExplosion");
 
+	Vec2f pos = this.getPosition();
+
 	if (isClient())
 	{
-		Vec2f pos = this.getPosition();
-
-		ParticleAnimated("BoomParticle", pos, Vec2f(0.0f, -0.1f), 0.0f, 1.0f, 3, XORRandom(70) * -0.00005f, true);
-		
 		for (int i = 0; i < 8; i++)
 		{
 			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(16) - 8, XORRandom(12) - 6), getRandomVelocity(0.0f, XORRandom(35) * 0.005f, 360) + Vec2f(0.0f, -0.8f), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 3 + XORRandom(4), XORRandom(45) * -0.00005f, true);
+		}
+		for (int i = 0; i < 4; i++)
+		{
+			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(8) - 4, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(15) * 0.005f, 360), float(XORRandom(360)), 0.75f + XORRandom(40) * 0.01f, 5 + XORRandom(6), XORRandom(30) * -0.0001f, true);
 		}
 
 		for (int i = 0; i < (15 + XORRandom(15)); i++)
@@ -210,6 +213,16 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 void BallistaHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, const f32 damage, CBlob@ blob, u8 customData)
 {
+	this.server_Hit(blob, hit_position, Vec2f(0,0), damage, Hitters::ballista, true); 
+	
+	for (int i = 0; i < (10 + XORRandom(5)); i++)
+		{
+			Vec2f velr = (velocity/6) + getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
+	velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+
+	ParticlePixel(this.getPosition(), velr, SColor(255, 255, 255, 0), true);
+	}
+
 	if (DoExplosion(this, velocity)) return;
 	if (!blob.getShape().isStatic()) return;
 
