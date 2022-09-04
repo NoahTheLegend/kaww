@@ -634,7 +634,7 @@ void ManageStab(CBlob@ this, ArcherInfo@ archer)
 
 void onTick(CBlob@ this)
 {
-	if (this.hasTag("isReloading")) this.SetKeyPressed(key_action1, false);
+	if (this.hasTag("isReloading")) this.setKeyPressed(key_action1, false);
 	ArcherInfo@ archer;
 	if (!this.get("archerInfo", @archer))
 	{
