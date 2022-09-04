@@ -44,7 +44,7 @@ void onInit(CBlob@ this)
 		"sound_128mm",
 	    "EmptyFire", // empty fire sound
 	    Vehicle_Fire_Style::custom,
-	    Vec2f(-6.0f, -8.0f), // fire position offset
+	    Vec2f(-6.0f, -4.0f), // fire position offset
 	    1); // charge time
 
 	Vehicle_SetWeaponAngle(this, low_angle, v);
