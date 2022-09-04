@@ -7,21 +7,22 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("apc");
 	this.Tag("deal_bunker_dmg");
+	this.Tag("takesdmgfrombullets");
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    210.0f, // move speed 125
-	    0.65f,  // turn speed
+	    310.0f, // move speed 125
+	    0.45f,  // turn speed
 	    Vec2f(0.0f, 0.56f), // jump out velocity
 	    false);  // inventory access
 
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
 
 	Vehicle_AddAmmo(this, v,
-        75, // fire delay (ticks)
+        80, // fire delay (ticks)
         1, // fire bullets amount
         1, // fire cost
         "mat_14mmround", // bullet ammo config name
@@ -33,9 +34,10 @@ void onInit(CBlob@ this)
 
 	v.charge = 400;
 
-	Vehicle_SetupGroundSound(this, v, "BTREngine",  // movement sound
-		0.7f, // movement sound volume modifier   0.0f = no manipulation
-		-0.3f); // movement sound pitch modifier     0.0f = no manipulation
+	Vehicle_SetupGroundSound(this, v, "TechnicalTruckEngine",  // movement sound
+	                         0.3f, // movement sound volume modifier   0.0f = no manipulation
+	                         0.5f // movement sound pitch modifier     0.0f = no manipulation
+	                        );
 
 
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(16.5f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
@@ -62,7 +64,7 @@ void onInit(CBlob@ this)
 	// turret
 	if (getNet().isServer())
 	{
-		CBlob@ turret = server_CreateBlob("btrturret");	
+		CBlob@ turret = server_CreateBlob("pszh4turret");	
 
 		if (turret !is null)
 		{
@@ -121,28 +123,6 @@ void onTick(CBlob@ this)
 				}
 			}
 		}
-
-		if (this.isOnMap() && Maths::Abs(this.getVelocity().x) > 2.5f)
-		{
-			if (getGameTime() % 4 == 0)
-			{
-				if (isClient())
-				{
-					Vec2f pos = this.getPosition();
-					CMap@ map = getMap();
-					
-					//ParticleAnimated("LargeSmoke", this.getPosition() + Vec2f(XORRandom(18) - 9 + (this.isFacingLeft() ? 30 : -30), XORRandom(18) - 3), getRandomVelocity(0.0f, 0.5f + XORRandom(60) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.1f), float(XORRandom(360)), 0.7f + XORRandom(70) * 0.01f, 3 + XORRandom(3), XORRandom(70) * -0.00005f, true);
-				}
-			}
-		}
-
-		if (isClient() && getGameTime() % 20 == 0)
-		{
-			Vec2f pos = this.getPosition();
-			CMap@ map = getMap();
-			
-			//ParticleAnimated("SmallSmoke1", pos + Vec2f((this.isFacingLeft() ? 1 : -1)*(28+XORRandom(15)),0.0f) + Vec2f(XORRandom(10) - 5, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(50) * 0.01f, 90) + Vec2f(0.0f,-0.15f), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 5 + XORRandom(8), XORRandom(70) * -0.00005f, true);
-		}
 	}
 
 	// Crippled
@@ -175,6 +155,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
+	Vehicle_LevelOutInAir(this);
 	Vehicle_LevelOutInAir(this);
 }
 
