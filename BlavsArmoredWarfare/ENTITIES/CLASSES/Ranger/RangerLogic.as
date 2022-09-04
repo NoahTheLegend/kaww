@@ -635,7 +635,7 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 
 	this.getSprite().PlaySound(shootsfx, 1.25f, 0.95f + XORRandom(15) * 0.01f);
 
-	if (canSend(this))
+	if (canSend(this) && !this.hasTag("isReloading") && charge_time == 0)
 	{
 		Vec2f targetVector = this.getAimPos() - this.getPosition();
 		f32 targetDistance = targetVector.Length();

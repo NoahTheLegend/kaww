@@ -683,7 +683,7 @@ bool canSend(CBlob@ this)
 
 void ClientFire(CBlob@ this, const s8 charge_time)
 {
-	if (canSend(this))
+	if (canSend(this) && !this.hasTag("isReloading") && charge_time == 0)
 	{
 		Vec2f targetVector = this.getAimPos() - this.getPosition();
 		f32 targetDistance = targetVector.Length();
