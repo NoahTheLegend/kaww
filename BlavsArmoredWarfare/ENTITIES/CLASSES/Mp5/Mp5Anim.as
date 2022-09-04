@@ -111,7 +111,7 @@ void onTick(CSprite@ this)
 	}
 
 	// animations
-	const bool firing = IsFiring(blob) && this.get_s8("reloadtime") == 0;
+	const bool firing = IsFiring(blob) && blob.get_s8("reloadtime") == 0;
 	bool showgun = true;
 	const bool left = blob.isKeyPressed(key_left);
 	const bool right = blob.isKeyPressed(key_right);
