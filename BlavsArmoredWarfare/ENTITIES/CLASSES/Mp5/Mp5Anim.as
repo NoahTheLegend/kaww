@@ -148,196 +148,193 @@ void onTick(CSprite@ this)
 		showgun = false;
 	}
 
-	if (!isReloading)
-	{
-		if (knocked)
-		{
-			if (inair)
-			{
-				this.SetAnimation("knocked_air");
-			}
-			else
-			{
-				this.SetAnimation("knocked");
-			}
-		}
-		else if (blob.hasTag("seated"))
-		{
-			this.SetAnimation("default");
-		}
-		else if (blob.hasTag("seatez"))
-		{
-			this.SetAnimation("heavy");
-		}
-		else if (showgun)
-		{
-			if (inair)
-			{
-				this.SetAnimation("shoot_jump");
-			}
-			else if ((left || right) ||
-			         (blob.isOnLadder() && (up || down)))
-			{
-				if (blob.hasTag("sprinting"))
-				{
-					this.SetAnimation("sprint");
-				}
-				else
-				{
-					if (blob.isKeyPressed(key_action2))
-					{
-						this.SetAnimation("shoot_walk");
-					}
-					else
-					{
-						this.SetAnimation("shoot_run");
-					}
-				}
-			}
-			else
-			{
-				this.SetAnimation("shoot");
-			}
-		}
-		else if (isStabbing)
-		{
-			this.SetAnimation("stab");
-		}
-		else if (inair)
-		{
-			RunnerMoveVars@ moveVars;
-			if (!blob.get("moveVars", @moveVars))
-			{
-				return;
-			}
-			Vec2f vel = blob.getVelocity();
-			f32 vy = vel.y;
-			if (vy < -0.0f && moveVars.walljumped)
-			{
-				this.SetAnimation("run");
-			}
-			else
-			{
-				this.SetAnimation("fall");
-				this.animation.timer = 0;
 
-				if (vy < -1.5)
-				{
-					this.animation.frame = 0;
-				}
-				else if (vy > 1.5)
-				{
-					this.animation.frame = 2;
-				}
-				else
-				{
-					this.animation.frame = 1;
-				}
-			}
+	if (knocked)
+	{
+		if (inair)
+		{
+			this.SetAnimation("knocked_air");
+		}
+		else
+		{
+			this.SetAnimation("knocked");
+		}
+	}
+	else if (blob.hasTag("seated"))
+	{
+		this.SetAnimation("default");
+	}
+	else if (blob.hasTag("seatez"))
+	{
+		this.SetAnimation("heavy");
+	}
+	else if (showgun)
+	{
+		if (inair)
+		{
+			this.SetAnimation("shoot_jump");
 		}
 		else if ((left || right) ||
 		         (blob.isOnLadder() && (up || down)))
+		{
+			if (blob.hasTag("sprinting"))
+			{
+				this.SetAnimation("sprint");
+			}
+			else
+			{
+				if (blob.isKeyPressed(key_action2))
+				{
+					this.SetAnimation("shoot_walk");
+				}
+				else
+				{
+					this.SetAnimation("shoot_run");
+				}
+			}
+		}
+		else
+		{
+			this.SetAnimation("shoot");
+		}
+	}
+	else if (isStabbing)
+	{
+		this.SetAnimation("stab");
+	}
+	else if (isReloading)
+	{
+		this.SetAnimation("reload");
+	}
+	else if (inair)
+	{
+		RunnerMoveVars@ moveVars;
+		if (!blob.get("moveVars", @moveVars))
+		{
+			return;
+		}
+		Vec2f vel = blob.getVelocity();
+		f32 vy = vel.y;
+		if (vy < -0.0f && moveVars.walljumped)
 		{
 			this.SetAnimation("run");
 		}
 		else
 		{
-			if (down && this.isAnimationEnded())
-				crouch = true;
+			this.SetAnimation("fall");
+			this.animation.timer = 0;
 
-			int direction;
-
-			if ((angle > 330 && angle < 361) || (angle > -1 && angle < 30) ||
-			        (angle > 150 && angle < 210))
+			if (vy < -1.5)
 			{
-				direction = 0;
+				this.animation.frame = 0;
 			}
-			else if (aimpos.y < pos.y)
+			else if (vy > 1.5)
 			{
-				direction = -1;
+				this.animation.frame = 2;
 			}
 			else
 			{
-				direction = 1;
+				this.animation.frame = 1;
 			}
+		}
+	}
+	else if ((left || right) ||
+	         (blob.isOnLadder() && (up || down)))
+	{
+		this.SetAnimation("run");
+	}
+	else
+	{
+		if (down && this.isAnimationEnded())
+			crouch = true;
 
-			defaultIdleAnim(this, blob, direction);
+		int direction;
+
+		if ((angle > 330 && angle < 361) || (angle > -1 && angle < 30) ||
+		        (angle > 150 && angle < 210))
+		{
+			direction = 0;
+		}
+		else if (aimpos.y < pos.y)
+		{
+			direction = -1;
+		}
+		else
+		{
+			direction = 1;
 		}
 
-		//arm anims
-		Vec2f armOffset = Vec2f(-1.0f, 4.0f + config_offset);
+		defaultIdleAnim(this, blob, direction);
+	}
 
-		if (showgun)
+	//arm anims
+	Vec2f armOffset = Vec2f(-1.0f, 4.0f + config_offset);
+
+	if (showgun)
+	{
+		f32 armangle = -angle;
+
+		if (this.isFacingLeft())
 		{
-			f32 armangle = -angle;
+			armangle = 180.0f - angle;
+		}
+
+		while (armangle > 180.0f)
+		{
+			armangle -= 360.0f;
+		}
+
+		while (armangle < -180.0f)
+		{
+			armangle += 360.0f;
+		}
+
+		if (!blob.isKeyPressed(key_action1) && !blob.isKeyPressed(key_action2)) //running/walking
+		{
+			armOffset -= Vec2f(0.0f,Maths::Abs(blob.getVelocity().x)*0.5f);
 
 			if (this.isFacingLeft())
 			{
-				armangle = 180.0f - angle;
+				armangle += Maths::Abs(blob.getVelocity().x)*-10.0f;
 			}
-
-			while (armangle > 180.0f)
+			else
 			{
-				armangle -= 360.0f;
+				armangle += Maths::Abs(blob.getVelocity().x)*10.0f;
 			}
-
-			while (armangle < -180.0f)
-			{
-				armangle += 360.0f;
-			}
-
-			if (!blob.isKeyPressed(key_action1) && !blob.isKeyPressed(key_action2)) //running/walking
-			{
-				armOffset -= Vec2f(0.0f,Maths::Abs(blob.getVelocity().x)*0.5f);
-
-				if (this.isFacingLeft())
-				{
-					armangle += Maths::Abs(blob.getVelocity().x)*-10.0f;
-				}
-				else
-				{
-					armangle += Maths::Abs(blob.getVelocity().x)*10.0f;
-				}
-			}
-
-			if (!blob.isOnGround()) //in air
-			{
-				armOffset -= Vec2f(0,2);
-			}
-			else if (blob.isKeyPressed(key_action2)) //ads
-			{
-				armOffset -= Vec2f(2.5f, 1.0f);
-			}
-
-
-			DrawGun(this, blob, archer, armangle, armOffset);
 		}
-		else
+		
+		if (!blob.isOnGround()) //in air
 		{
-			setArmValues(this.getSpriteLayer("frontarm"), false, 0.0f, 0.1f, "default", Vec2f(0, 0), armOffset);
-			//setArmValues(this.getSpriteLayer("backarm"), false, 0.0f, -0.1f, "default", Vec2f(0, 0), armOffset);
+			armOffset -= Vec2f(0,2);
 		}
+		else if (blob.isKeyPressed(key_action2)) //ads
+		{
+			armOffset -= Vec2f(2.5f, 1.0f);
+		}
+		
 
-		//set the head anim
-		if (knocked || crouch)
-		{
-			blob.Tag("dead head");
-		}
-		else if (blob.isKeyPressed(key_action1) || blob.isKeyPressed(key_action2))
-		{
-			blob.Tag("attack head");
-			blob.Untag("dead head");
-		}
-		else
-		{
-			blob.Untag("attack head");
-			blob.Untag("dead head");
-		}
+		DrawGun(this, blob, archer, armangle, armOffset);
+	}
+	else
+	{
+		setArmValues(this.getSpriteLayer("frontarm"), false, 0.0f, 0.1f, "default", Vec2f(0, 0), armOffset);
+		//setArmValues(this.getSpriteLayer("backarm"), false, 0.0f, -0.1f, "default", Vec2f(0, 0), armOffset);
 	}
 
-	if (isReloading)
+	//set the head anim
+	if (knocked || crouch)
 	{
-		this.SetAnimation("reload");
+		blob.Tag("dead head");
+	}
+	else if (blob.isKeyPressed(key_action1) || blob.isKeyPressed(key_action2))
+	{
+		blob.Tag("attack head");
+		blob.Untag("dead head");
+	}
+	else
+	{
+		blob.Untag("attack head");
+		blob.Untag("dead head");
 	}
 }
 
