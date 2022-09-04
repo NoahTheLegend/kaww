@@ -56,7 +56,7 @@ void onInit(CBlob@ this)
 	}
 
 	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "UHT_Launcher", 16, 16);
+	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "UH_Launcher", 16, 16);
 
 	if (arm !is null)
 	{
@@ -90,7 +90,7 @@ void onInit(CSprite@ this)
 {	
 	this.SetRelativeZ(-20.0f);
 	//Add blade
-	CSpriteLayer@ blade = this.addSpriteLayer("blade", "UHT_Blade.png", 92, 8);
+	CSpriteLayer@ blade = this.addSpriteLayer("blade", "UH_Blade.png", 92, 8);
 	if (blade !is null)
 	{
 		Animation@ anim = blade.addAnimation("default", 1, true);
@@ -103,7 +103,7 @@ void onInit(CSprite@ this)
 	}
 
 	//Add tail rotor
-	CSpriteLayer@ tailrotor = this.addSpriteLayer("tailrotor", "UHT_TailRotor.png", 16, 16);
+	CSpriteLayer@ tailrotor = this.addSpriteLayer("tailrotor", "_TailRotor.png", 16, 16);
 	if (tailrotor !is null)
 	{
 		Animation@ anim = tailrotor.addAnimation("default", 1, true);
