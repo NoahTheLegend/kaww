@@ -27,7 +27,7 @@ const s8 reloadtime = 65; // time to reload
 const string reloadsfx = classname + "_reload.ogg";
 const string shootsfx = classname + "_shoot.ogg";
 
-const u8 delayafterfire = 2; // time between shots
+const u8 delayafterfire = 3; // time between shots
 const u8 randdelay = 0; // + randomness
 
 const float bulletvelocity = 1.52f; // speed that bullets fly
