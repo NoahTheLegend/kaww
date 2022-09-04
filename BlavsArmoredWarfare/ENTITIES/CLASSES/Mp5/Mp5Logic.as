@@ -421,6 +421,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 					archer.isReloading = false;
 
 					this.set_bool("isReloading", false);
+					this.set_s8("reloadtime", 0);
 				}
 
 			}
@@ -483,6 +484,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 					archer.isReloading = false;
 
 					this.set_bool("isReloading", false);
+					this.set_s8("reloadtime", 0);
 				}
 
 				if (this.getPlayer() !is null)
