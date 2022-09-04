@@ -13,8 +13,6 @@ void onInit(CBlob@ this)
 		this.Tag("pink");
 	}
 
-	
-
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;
@@ -41,8 +39,8 @@ void onInit(CBlob@ this)
 	v.charge = 400;
 
 	Vehicle_SetupGroundSound(this, v, "TankEngine_maus",  // movement sound
-	    0.7f,   // movement sound volume modifier   0.0f = no manipulation
-	    1.5f); // movement sound pitch modifier     0.0f = no manipulation
+	    1.0f,   // movement sound volume modifier   0.0f = no manipulation
+	    1.4f); // movement sound pitch modifier     0.0f = no manipulation
 
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(31.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(23.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }

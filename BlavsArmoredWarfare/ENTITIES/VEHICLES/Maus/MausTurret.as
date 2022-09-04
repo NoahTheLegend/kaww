@@ -231,7 +231,7 @@ void onTick(CBlob@ this)
 		{
 			arm.ResetTransform();
 			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 8.0f));
-			arm.SetOffset(Vec2f(-19.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -19.5f + (this.isFacingLeft() ? -0.5f : 0.5f)));
+			arm.SetOffset(Vec2f(-19.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -20.5f + (this.isFacingLeft() ? -0.5f : 0.5f)));
 			arm.SetRelativeZ(-20.0f);
 		}
 
