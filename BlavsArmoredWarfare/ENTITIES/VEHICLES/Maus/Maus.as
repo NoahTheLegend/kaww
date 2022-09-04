@@ -85,7 +85,7 @@ void onTick(CBlob@ this)
 		if (getNet().isServer())
 		{
 			CBlob@ turret = server_CreateBlobNoInit("mausturret");	
-	
+
 			if (turret !is null)
 			{
 				if (this.hasTag("pink")) turret.Tag("pink");
@@ -93,8 +93,8 @@ void onTick(CBlob@ this)
 				turret.server_setTeamNum(this.getTeamNum());
 				this.server_AttachTo( turret, "TURRET" );
 				this.set_u16("turretid", turret.getNetworkID());
-	
-				turret.SetFacingLeft(facing_left);
+
+				turret.SetFacingLeft(this.isFacingLeft());
 			}
 		}	
 	}
