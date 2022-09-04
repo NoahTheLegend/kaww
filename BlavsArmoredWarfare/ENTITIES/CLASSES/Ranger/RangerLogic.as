@@ -222,7 +222,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	else
 	{
 		// reload
-		if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && !is_action1 && this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
+		if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("no_reload") < getGameTime() && this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
 			//print("RELOAD!!");
 			bool reloadistrue = false;
@@ -599,6 +599,7 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
+	if (this.isKeyPressed(key_action1)) this.set_u32("no_reload", getGameTime()+10);
 }
 
 bool canSend(CBlob@ this)
