@@ -9,14 +9,13 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u8 cooldown_time = 75;
-const u8 recoil = 250;
+const u8 cooldown_time = 135;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
-const f32 high_angle = 72.0f; // upper depression limit
-const f32 low_angle = 95.0f; // lower depression limit
+const f32 high_angle = 60.0f; // upper depression limit
+const f32 low_angle = 94.0f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
@@ -24,7 +23,12 @@ void onInit(CBlob@ this)
 	this.Tag("light");
 	this.Tag("turret");
 	this.Tag("apc");
-	this.Tag("blocks bullet");
+	//this.Tag("blocks bullet");
+
+	if (this.getTeamNum() == 1)
+	{
+		this.SetFacingLeft(false);
+	}
 
 	Vehicle_Setup(this,
 	    0.0f, // move speed
@@ -50,7 +54,7 @@ void onInit(CBlob@ this)
 	Vehicle_SetWeaponAngle(this, low_angle, v);
 	this.set_string("autograb blob", "mat_bolts");
 
-	this.getShape().SetOffset(Vec2f(0, -12));
+	this.getShape().SetOffset(Vec2f(0, -10));
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
@@ -85,18 +89,6 @@ void onInit(CBlob@ this)
 			arm.SetOffset(Vec2f(-0.0f, -7.0f));
 		}
 	}
-
-	sprite.SetZ(-100.0f);
-	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
-	if (front !is null)
-	{
-		front.addAnimation("default", 0, false);
-		int[] frames = { 0, 1, 2 };
-		front.animation.AddFrames(frames);
-		front.SetRelativeZ(0.8f);
-		front.SetOffset(Vec2f(0.0f, 0.0f));
-	}
-
 	this.set_f32("gunelevation", (this.getTeamNum() == 1 ? 270 : 90) - init_gunoffset_angle);
 }
 
@@ -218,7 +210,7 @@ void onTick(CBlob@ this)
 		{
 			arm.ResetTransform();
 			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(-0.0f, -25.0f));
+			arm.SetOffset(Vec2f(-9.0f, -24.0f));
 			arm.SetRelativeZ(-101.0f);
 		}
 
@@ -236,30 +228,6 @@ void onTick(CBlob@ this)
 						front.SetVisible(!local.isAttachedTo(this));
 					}
 				}
-			}
-		}
-	}
-
-	// Crippled
-	if (this.getHealth() <= this.getInitialHealth() * 0.25f)
-	{
-		if (getGameTime() % 4 == 0 && XORRandom(5) == 0)
-		{
-			const Vec2f pos = this.getPosition() + getRandomVelocity(0, this.getRadius()*0.4f, 360);
-			CParticle@ p = ParticleAnimated("BlackParticle.png", pos, Vec2f(0,0), -0.5f, 1.0f, 3.5f, 0.0f, false);
-			if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
-
-			Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
-			velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
-
-			ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
-
-			if (isClient() && XORRandom(2) == 0)
-			{
-				Vec2f pos = this.getPosition();
-				CMap@ map = getMap();
-				
-				ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(20) - 10, XORRandom(24) - 12), getRandomVelocity(0.0f, XORRandom(60) * 0.01f, 90), float(XORRandom(360)), 0.25f + XORRandom(50) * 0.004f, 2 + XORRandom(3), XORRandom(30) * -0.000035f, true);
 			}
 		}
 	}
@@ -332,8 +300,6 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		Vec2f vel = Vec2f(0.0f, -22.5f).RotateBy(angle);
 		bullet.setVelocity(vel);
 		bullet.setPosition(bullet.getPosition() + vel + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f));
-
-		this.AddForce(Vec2f(this.isFacingLeft() ? (recoil*5.0f) : (-recoil*5.0f), 0.0f));
 
 		if (isClient())
 		{

@@ -16,7 +16,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(17, 2));
+	this.set_Vec2f("shop menu size", Vec2f(14, 4));
 	this.set_string("shop description", "Construct a Vehicle");
 	this.set_u8("shop icon", 15);
 
@@ -32,7 +32,7 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a BTR82a APC", "$btr82a$", "btr82a", "Armored transport with cannon.\n\nUses 14.5mm.");
+		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nUses 14.5mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
 	}
 	{
@@ -44,12 +44,20 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nUses 105mm");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 110);
+	}
+	{
 		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\n\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Build UH1 Helicoptrer", "$uh1$", "uh1", "A helicopter with heavy machinegun.\nPress SPACEBAR to launch HEAT warheads.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy MachineGun.\n\nUses 7.62mm.", false, true);
@@ -58,12 +66,21 @@ void onInit(CBlob@ this)
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
+}
+
+void onTick(CBlob@ this)
+{
+	if (getGameTime() % 51 == 0 && XORRandom(5) == 0)
 	{
-		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 vehicle builder.\n\nUnlocks stronger vehicles and aircraft.", false, false);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
+		for (uint i = 0; i < 4; i ++)
+		{
+			Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
+			velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+
+			velr *= 0.4f;
+
+			ParticlePixel(this.getPosition(), velr, SColor(255, 255, 255, 0), true);
+		}
 	}
 }
 
@@ -82,28 +99,10 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	return false;
 }
 
-void onCommand( CBlob@ this, u8 cmd, CBitStream @params )
+void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shop made item"))
 	{
-		this.getSprite().PlaySound( "/UpgradeT2.ogg" );
-		
-		bool isServer = (getNet().isServer());
-			
-		u16 caller, item;
-		
-		if(!params.saferead_netid(caller) || !params.saferead_netid(item))
-			return;
-		
-		CBlob@ blob = getBlobByNetworkID( caller );
-		CBlob@ tree;
-		Vec2f pos = this.getPosition();
-		
-		string name = params.read_string();
-		
-		if (name == "vehiclebuildert2")
-		{
-			this.server_Die();		
-		}
+		this.getSprite().PlaySound("/BuildVehicle.ogg");
 	}
 }
