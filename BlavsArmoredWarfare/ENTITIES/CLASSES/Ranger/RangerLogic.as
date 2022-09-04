@@ -23,6 +23,7 @@ void onInit(CBlob@ this)
 	this.set_u8("hitmarker", 0);
 	this.set_s8("reloadtime", 0); // for server
 	this.set_u32("end_stabbing", 0);
+	this.set_u32("no_reload", 0);
 
 	this.set_s32("my_chargetime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
@@ -635,7 +636,7 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 
 	this.getSprite().PlaySound(shootsfx, 1.25f, 0.95f + XORRandom(15) * 0.01f);
 
-	if (canSend(this))
+	if (canSend(this) && this.get_u32("no_reload") < getGameTime())
 	{
 		Vec2f targetVector = this.getAimPos() - this.getPosition();
 		f32 targetDistance = targetVector.Length();
@@ -720,6 +721,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!params.saferead_Vec2f(arrowVel)) return;
 		ArcherInfo@ archer;
 		if (!this.get("archerInfo", @archer)) return;
+
+		this.set_u32("no_reload", getGameTime()+5);
 
 		if (getNet().isServer())
 		{
