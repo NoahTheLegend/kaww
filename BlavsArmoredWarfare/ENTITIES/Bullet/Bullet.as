@@ -30,7 +30,6 @@ void onTick(CBlob@ this)
 	Vec2f velocity = this.getVelocity();
 
 	this.getSprite().SetVisible(this.getTickSinceCreated() >= XORRandom(2)+1);
-
 	
 	if (pos.x < 0.1f or pos.x > (getMap().tilemapwidth * getMap().tilesize) - 0.1f)
 	{
@@ -308,6 +307,15 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 	else
 	{
 		dmg = this.get_f32("bullet_damage_body");
+	}
+
+	if (this.getTickSinceCreated() > 20) // less dmg offscreen
+	{
+		dmg *= 0.75f;
+	}
+	else if  (this.getTickSinceCreated() > 14)
+	{
+		dmg *= 0.5f;
 	}
 
 	if (!blob.hasTag("weakprop"))
