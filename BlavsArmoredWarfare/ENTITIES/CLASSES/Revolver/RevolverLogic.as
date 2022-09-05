@@ -76,7 +76,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 					{
 						return damage * 0.1f;
 					}
-					else if (hi is hitterBlob) return damage;
+					else if (hi is hitterBlob)
+					{
+						if (customData == Hitters::explosion) return damage * 0.15f;
+						return damage;
+					}
 				}
 			}
 		}

@@ -13,6 +13,8 @@
 	this.Tag("destructable");
 
 	this.getSprite().SetZ(-5);
+
+	if (this !is null) this.Sync("light", true);
 }
 
 f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData )
