@@ -2,38 +2,33 @@
 #include "Explosion.as";
 
 const Vec2f upVelo = Vec2f(0.00f, -0.015f);
-const Vec2f downVelo = Vec2f(0.00f, 0.0030f);
-const Vec2f leftVelo = Vec2f(-0.020f, 0.00f);
-const Vec2f rightVelo = Vec2f(0.020f, 0.00f);
+const Vec2f downVelo = Vec2f(0.00f, 0.003f);
+const Vec2f leftVelo = Vec2f(-0.035f, 0.00f);
+const Vec2f rightVelo = Vec2f(0.035f, 0.00f);
 
 const Vec2f minClampVelocity = Vec2f(-0.40f, -0.70f);
 const Vec2f maxClampVelocity = Vec2f( 0.40f, 0.00f);
 
-const f32 thrust = 1020.00f;
-
-const u8 cooldown_time = 15;//210;
-const u8 recoil = 0;
-
-const s16 init_gunoffset_angle = -3; // up by so many degrees
-
-// 0 == up, 90 == sideways
-const f32 high_angle = 85.0f; // upper depression limit
-const f32 low_angle = 115.0f; // lower depression limit
+const f32 thrust = 1000.00f;
 
 void onInit(CBlob@ this)
 {
 	this.set_string("custom_explosion_sound", "bigbomb_explosion.ogg");
 	this.set_bool("map_damage_raycast", true);
+	this.set_bool("UPF_Skin", false);
 	this.set_u32("duration", 0);
+	this.Tag("takesdmgfrombullet");
 	//this.getSprite().SetRelativeZ(-60.0f);
+	
+	this.addCommandID("play_music");
+	this.addCommandID("stop_music");
+	this.addCommandID("change_skin");
 
 	this.Tag("vehicle");
 	this.Tag("aerial");
 	this.set_bool("lastTurn", false);
 	this.set_bool("music", false);
 	this.set_bool("glide", false);
-
-	this.addCommandID("shoot bullet");
 
 	if (this !is null)
 	{
@@ -55,64 +50,85 @@ void onInit(CBlob@ this)
 		}
 	}
 
-	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "UH_Launcher", 16, 16);
-
-	if (arm !is null)
-	{
-		f32 angle = low_angle;
-
-		Animation@ anim = arm.addAnimation("default", 0, false);
-		anim.AddFrame(20);
-
-		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
-		if (arm !is null)
-		{
-			arm.SetRelativeZ(0.5f);
-			arm.SetOffset(Vec2f(-36.0f, 10.0f));
-		}
-	}
-
-	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_right);
-
-	CBlob@ bow = server_CreateBlob("heavygun");	
-
-	if (bow !is null)
-	{
-		bow.server_setTeamNum(this.getTeamNum());
-		this.server_AttachTo( bow, "BOW" );
-		this.set_u16("bowid", bow.getNetworkID());
-		bow.SetFacingLeft(this.isFacingLeft());
-	}
+	this.getCurrentScript().tickFrequency = 1;
+	
 }
 
 void onInit(CSprite@ this)
 {	
-	this.SetRelativeZ(-20.0f);
 	//Add blade
-	CSpriteLayer@ blade = this.addSpriteLayer("blade", "UH_Blade.png", 92, 8);
+	CSpriteLayer@ blade = this.addSpriteLayer("blade", "UHT_Blade.png", 67, 8);
 	if (blade !is null)
 	{
-		Animation@ anim = blade.addAnimation("default", 1, true);
+		Animation@ SPEEEN = blade.addAnimation("SPEEEN", 1, true);
 		int[] frames = {1, 2, 3, 2};
-		anim.AddFrames(frames);
+		SPEEEN.AddFrames(frames);
+		Animation@ stopped = blade.addAnimation("No speen?", 0, false);
+		stopped.AddFrame(0);
 		
-		blade.SetOffset(Vec2f(-15, -26));
-		blade.SetRelativeZ(20.0f);
+		blade.SetAnimation("SPEEEN");
+		blade.SetOffset(Vec2f(10.5, -21));
+		blade.SetRelativeZ(-70.0f);
 		blade.SetVisible(true);
 	}
-
+	
+	//Add interior
+	CSpriteLayer@ interior = this.addSpriteLayer("interior", "Jourcop_Interior.png", 34, 32);
+	if (interior !is null)
+	{
+		interior.SetOffset(Vec2f(0, 1));
+		interior.SetRelativeZ(-70.0f);
+		interior.SetVisible(true);
+	}
+	
 	//Add tail rotor
-	CSpriteLayer@ tailrotor = this.addSpriteLayer("tailrotor", "_TailRotor.png", 16, 16);
+	CSpriteLayer@ tailrotor = this.addSpriteLayer("tailrotor", "UHT_TailRotor.png", 16, 16);
 	if (tailrotor !is null)
 	{
 		Animation@ anim = tailrotor.addAnimation("default", 1, true);
 		int[] frames = {0, 1, 2, 3};
 		anim.AddFrames(frames);
 		
-		tailrotor.SetOffset(Vec2f(48.0, -9));
-		tailrotor.SetRelativeZ(20.0f);
+		tailrotor.SetOffset(Vec2f(46.5, -7));
+		tailrotor.SetRelativeZ(-70.0f);
 		tailrotor.SetVisible(true);
+	}
+	
+	//Add glass
+	CSpriteLayer@ glass = this.addSpriteLayer("glass", "Jourcop_Glass.png", 32, 32);
+	if (glass !is null)
+	{
+		glass.SetOffset(Vec2f(0, 0));
+		glass.SetRelativeZ(300.0f);
+		glass.SetVisible(true);
+		glass.setRenderStyle(RenderStyle::additive);
+	}
+	
+	//Add door
+	CSpriteLayer@ door = this.addSpriteLayer("door", "Jourcop_Door.png", 32, 32);
+	if (door !is null)
+	{
+		door.SetOffset(Vec2f(0, 1));
+		door.SetRelativeZ(300.0f);
+		door.SetVisible(false);
+	}
+	
+	//Add seat
+	CSpriteLayer@ seat = this.addSpriteLayer("seat", "Jourcop_Seat.png", 32, 32);
+	if (seat !is null)
+	{
+		seat.SetOffset(Vec2f(0, 1));
+		seat.SetRelativeZ(-70.0f);
+		seat.SetVisible(false);
+	}
+	
+	//Add glare
+	CSpriteLayer@ glare = this.addSpriteLayer("glare", "Jourcop_Glare.png", 32, 32);
+	if (glare !is null)
+	{
+		glare.SetOffset(Vec2f(0, 0));
+		glare.SetRelativeZ(300.0f);
+		glare.SetVisible(true);
 	}
 
 	this.SetEmitSound("Eurokopter_Loop.ogg");
@@ -150,22 +166,6 @@ void onTick(CBlob@ this)
 {	
 	if (this !is null)
 	{
-		if (getGameTime() >= this.get_u32("next_shoot"))
-		{
-			this.Untag("no_more_shooting");
-			this.Untag("no_more_proj");
-		}
-		if (this.getVelocity().x > 6.25f || this.getVelocity().x < -6.25f) this.setVelocity(Vec2f(this.getOldVelocity().x, this.getVelocity().y));
-
-		if (this.getPosition().y < 70.0f && this.getVelocity().y < 0.5f)
-		{
-			//this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y*0.16f));
-			this.AddForce(Vec2f(0, 220.0f));
-		}
-
-
-
-
 		CSprite@ sprite = this.getSprite();
 		CShape@ shape = this.getShape();
 		Vec2f currentVel = this.getVelocity();
@@ -180,7 +180,9 @@ void onTick(CBlob@ this)
 		
 		CSpriteLayer@ blade = sprite.getSpriteLayer("blade");
 		CSpriteLayer@ tailrotor = sprite.getSpriteLayer("tailrotor");
-		for(int a = 0; a < aps.length; a++)
+
+		int size = aps.size();
+		for(int a = 0; a < size; a++)
 		{
 			AttachmentPoint@ ap = aps[a];
 			if (ap !is null)
@@ -198,32 +200,19 @@ void onTick(CBlob@ this)
 						const bool pressed_m1 = ap.isKeyPressed(key_action1);
 						const bool pressed_m2 = ap.isKeyPressed(key_action2);
 
-						// shoot
-						if (!this.hasTag("no_more_shooting") && hooman.isMyPlayer() && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
-						{
-							CInventory@ inv = this.getInventory();
-							if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_heatwarhead")
-							{
-								if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
-								f32 rot = 1.0f;
-								if (this.isFacingLeft()) rot = -1.0f;
-								ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
-								this.Tag("no_more_shooting");
-							}
-						}
-
 						const f32 mass = this.getMass();
 
-						if (pressed_a) newForce += leftVelo;
-						if (pressed_d) newForce += rightVelo;
+
+							if (pressed_a) newForce += leftVelo;
+							if (pressed_d) newForce += rightVelo;
 							
-						if (pressed_m1)this.set_bool("glide", true);
-						else
-						{
-							this.set_bool("glide", false);
-							if (pressed_w) newForce += upVelo;
-							if (pressed_s) newForce += downVelo;
-						}
+							if (pressed_m1)this.set_bool("glide", true);
+							else
+							{
+								this.set_bool("glide", false);
+								if (pressed_w) newForce += upVelo;
+								if (pressed_s) newForce += downVelo;
+							}
 
 						Vec2f mousePos = ap.getAimPos();
 						CBlob@ pilot = ap.getBlob();
@@ -244,125 +233,80 @@ void onTick(CBlob@ this)
 		Vec2f targetForce;
 		Vec2f currentForce = this.get_Vec2f("current_force");
 		CBlob@ pilot = this.getAttachmentPoint(0).getOccupied();
-		if (pilot !is null) targetForce = this.get_Vec2f("target_force") + newForce;
+		if (pilot !is null)
+		{
+			targetForce = this.get_Vec2f("target_force") + newForce;
+			if (this.get_bool("glide")) targetForce = Vec2f(targetForce.x, -0.5890000005);
+		}
 		else targetForce = Vec2f(0, 0);
+		
+		
+		CSpriteLayer@ seat = this.getSprite().getSpriteLayer("seat");
+		
+		CSpriteLayer@ door = this.getSprite().getSpriteLayer("door");
+		CSpriteLayer@ glass = this.getSprite().getSpriteLayer("glass");
+		CSpriteLayer@ glare = this.getSprite().getSpriteLayer("glare");
+		
+		if (pilot !is null)
+		{
+			if (this.getTeamNum() == 250 || this.get_bool("UPF_Skin")) door.SetVisible(true);
+			else seat.SetVisible(true);
+			
+			door.SetRelativeZ(300.0f);
+			glass.SetRelativeZ(300.0f);
+			glare.SetRelativeZ(300.0f);
+		}
+		else
+		{
+			door.SetVisible(false);
+			seat.SetVisible(false);
+			
+			door.SetRelativeZ(0.0f);
+			glass.SetRelativeZ(0.0f);
+			glare.SetRelativeZ(0.0f);
+		}
 
 		f32 targetForce_y = Maths::Clamp(targetForce.y, minClampVelocity.y, maxClampVelocity.y);
 
 		Vec2f clampedTargetForce = Vec2f(Maths::Clamp(targetForce.x, Maths::Max(minClampVelocity.x, -Maths::Abs(targetForce_y)), Maths::Min(maxClampVelocity.x, Maths::Abs(targetForce_y))), targetForce_y);
 		
 		Vec2f resultForce;
-		if(!this.get_bool("glide"))
-		{
+		//if(!this.get_bool("glide"))
+		//{
 			resultForce = Vec2f(Lerp(currentForce.x, clampedTargetForce.x, lerp_speed_x), Lerp(currentForce.y, clampedTargetForce.y, lerp_speed_y));
 			this.set_Vec2f("current_force", resultForce);
-		}
-		else
-		{
-			resultForce = Vec2f(Lerp(currentForce.x, clampedTargetForce.x, lerp_speed_x), -0.5890000005);
-			this.set_Vec2f("current_force", resultForce);
-		}
+		//}
+		//else
+		//{
+		//	resultForce = Vec2f(Lerp(currentForce.x, clampedTargetForce.x, lerp_speed_x), -0.5890000005);
+		//	this.set_Vec2f("current_force", resultForce);
+		//}
 
 		this.AddForce(resultForce * thrust);
-		this.setAngleDegrees(resultForce.x * 75.00f);
+		this.setAngleDegrees(resultForce.x * 80.00f);
 		
 		int anim_time_formula = Maths::Floor(1.00f + (1.00f - Maths::Abs(resultForce.getLength())) * 3) % 4;
-		blade.ResetTransform();
-		blade.SetOffset(Vec2f(-14, -26));
-		blade.animation.time = anim_time_formula;
-		if (blade.animation.time == 0)
+		if (this.get_Vec2f("current_force").getLength() > 0.6) anim_time_formula = 1;
+		
+		if (this.get_Vec2f("current_force").getLength() < 0.02)
 		{
-			blade.SetOffset(Vec2f(-15, -26));
-			blade.SetFrameIndex(0);
-			blade.RotateBy(180, Vec2f(0.0f,2.0f));
+			blade.SetAnimation("No speen?");
+			blade.animation.time = 0;
+			
+			tailrotor.SetFrameIndex(0);
+			tailrotor.animation.time = 0;
+		} else
+		{
+			blade.animation.time = anim_time_formula;
+			blade.SetAnimation("SPEEEN");
+			
+			tailrotor.animation.time = anim_time_formula;
 		}
 		
-		tailrotor.animation.time = anim_time_formula;
-		if (tailrotor.animation.time == 0)
-		{
-			tailrotor.SetFrameIndex(1);
-		}
-		
-		sprite.SetEmitSoundSpeed(Maths::Min(0.00005f + Maths::Abs(resultForce.getLength() * 1.00f), 0.85f) * 1.55);
+		sprite.SetEmitSoundSpeed(Maths::Min(0.0001f + Maths::Abs(resultForce.getLength() * 1.50f), 1.10f) * 1.8);
 
 		this.set_Vec2f("target_force", clampedTargetForce);
 	}
-}
-
-void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
-{
-	Vec2f arrowVel = (aimpos - arrowPos);
-	arrowVel.Normalize();
-	arrowVel *= arrowspeed;
-	CBitStream params;
-	params.write_Vec2f(arrowPos);
-	params.write_Vec2f(arrowVel);
-
-	this.SendCommand(this.getCommandID("shoot bullet"), params);
-}
-
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
-	if (cmd == this.getCommandID("shoot bullet"))
-	{
-		this.set_u32("next_shoot", getGameTime()+15);
-		Vec2f arrowPos;
-		if (!params.saferead_Vec2f(arrowPos)) return;
-		Vec2f arrowVel;
-		if (!params.saferead_Vec2f(arrowVel)) return;
-
-		if (getNet().isServer() && !this.hasTag("no_more_proj"))
-		{
-			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
-			proj.Tag("heli");
-			proj.server_SetTimeToDie(8);
-
-			CInventory@ inv = this.getInventory();
-			if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_heatwarhead")
-			{
-				inv.getItem(0).server_SetQuantity(inv.getItem(0).getQuantity()-1);
-			}
-		} 
-	}
-}
-
-CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
-{
-	if (!this.hasTag("no_more_proj"))
-	{
-		CBlob@ proj = server_CreateBlobNoInit("ballista_bolt");
-		if (proj !is null)
-		{
-			proj.SetDamageOwnerPlayer(this.getPlayer());
-			proj.Init();
-
-			proj.set_f32("bullet_damage_body", 6.0f);
-			proj.set_f32("bullet_damage_head", 8.0f);
-			proj.IgnoreCollisionWhileOverlapped(this);
-			proj.server_setTeamNum(this.getTeamNum());
-			proj.setVelocity(arrowVel);
-			proj.setPosition(arrowPos+Vec2f(0, 12.0f));
-			proj.Tag("medium");
-		}
-		this.Tag("no_more_proj");
-		return proj;
-	}
-	else
-		return null;
-}
-
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (customData == Hitters::explosion)
-	{
-		return damage * 2.5;
-	}
-	if (hitterBlob.hasTag("sniperbullet"))
-	{
-		return damage * 15;
-	}
-
-	return damage;
 }
 
 const f32 lerp_speed_x = 0.20f;
@@ -386,10 +330,11 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 	{
 		this.Tag("no barrier pass");
 	}
-	if (attached !is null)
+	if (attached !is null && attached.getTeamNum() != this.getTeamNum())
 	{
-		if (attached.hasTag("player") && attached.getTeamNum() != this.getTeamNum())
+		if (attached.hasTag("player"))
 		{
+			this.server_setTeamNum(100);
 			this.server_setTeamNum(attached.getTeamNum());
 		}
 		
@@ -430,6 +375,89 @@ bool doesCollideWithBlob( CBlob@ this, CBlob@ blob )
 	return false;
 }
 
+void GetButtonsFor(CBlob@ this, CBlob@ caller)
+{
+	Vec2f buttonPos;
+	buttonPos = Vec2f(-8, 2);
+	if (caller.getTeamNum() == this.getTeamNum())
+	{
+		CBlob@ carried = caller.getCarriedBlob();
+		if (carried !is null)
+		{
+			if (this.get_bool("music") == false)
+			{
+				if(carried.getName() == "musicdisc")
+				{
+					u16 carried_netid = carried.getNetworkID();
+		
+					CBitStream params;
+					params.write_u16(carried_netid);
+					
+					caller.CreateGenericButton("$musicdisc$", buttonPos, this, this.getCommandID("play_music"), "Make it play funny music.", params);
+				}
+			} else 
+			if(this.get_bool("music") == true){
+				if(carried.getName() == "wrench")
+					caller.CreateGenericButton("$icon_wrench$", buttonPos, this, this.getCommandID("stop_music"), "Stop the music.");
+			}
+			if(carried.getName() == "paper")
+			{
+				CBitStream params;
+				params.write_u16(caller.getNetworkID());
+				params.write_u16(carried.getNetworkID());
+		
+				CButton@ buttonWrite = caller.CreateGenericButton("$icon_paper$", buttonPos, this, this.getCommandID("change_skin"),
+				"Change vehicle skin.", params);
+			}
+		}
+	}
+}
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	f32 dmg = damage;
+	switch (customData)
+	{
+		case Hitters::sword:
+		case Hitters::arrow:
+		case Hitters::stab:
+			dmg *= 0.25f;
+			break;
+		case Hitters::bomb:
+			dmg *= 1.25f;
+			break;
+		case Hitters::keg:
+		case Hitters::explosion:
+			dmg *= 0.5f;
+			break;
+		case Hitters::bomb_arrow:
+			dmg *= 0.5f;
+			break;
+		case Hitters::flying:
+			dmg *= 0.5f;
+			break;
+	}
+	return dmg;
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
+{
+	if (cmd == this.getCommandID("change_skin"))
+	{
+		if (isServer())
+		{
+			CBlob @caller = getBlobByNetworkID(params.read_u16());
+			CBlob @carried = getBlobByNetworkID(params.read_u16());
+
+			if (caller !is null && carried !is null)
+			{
+				if (carried.get_string("text") == "upfskin") this.set_bool("UPF_Skin", true);
+				else this.set_bool("UPF_Skin", false);
+			}
+		}
+	}
+}
+
 void onRender(CSprite@ this)
 {
 	if (this is null) return; //can happen with bad reload
@@ -447,6 +475,15 @@ void onRender(CSprite@ this)
 	{
 		return;
 	}
+
+	AttachmentPoint@ gunner = blob.getAttachments().getAttachmentWithBlob(localBlob);
+	if (gunner !is null)
+	{
+
+	}
+
+	Vec2f mouseWorld = getControls().getMouseWorldPos();
+	bool mouseOnBlob = (mouseWorld - blob.getPosition()).getLength() < this.getBlob().getRadius();
 }
 
 void MakeParticle(CBlob@ this, const Vec2f vel, const string filename = "SmallSteam")
@@ -496,6 +533,16 @@ void DoExplosion(CBlob@ this)
 	Vec2f pos = this.getPosition() + this.get_Vec2f("explosion_offset").RotateBy(this.getAngleDegrees());
 	CMap@ map = getMap();
 
+	if (isServer())
+	{
+		for (int i = 0; i < (5 + XORRandom(5)); i++)
+		{
+			CBlob@ blob = server_CreateBlob("flame", -1, this.getPosition());
+			blob.setVelocity(Vec2f(XORRandom(10) - 5, -XORRandom(10)));
+			blob.server_SetTimeToDie(10 + XORRandom(5));
+		}
+	}
+
 	if (isClient())
 	{
 		for (int i = 0; i < 40; i++)
@@ -505,6 +552,12 @@ void DoExplosion(CBlob@ this)
 	}
 
 	this.getSprite().Gib();
+}
+
+void onChangeTeam(CBlob@ this, const int oldTeam)
+{
+	CSpriteLayer@ glass = this.getSprite().getSpriteLayer("glass");
+	glass.setRenderStyle(RenderStyle::additive);
 }
 
 void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string filename = "SmallSteam")

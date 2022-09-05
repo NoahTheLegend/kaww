@@ -9,7 +9,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u16 cooldown_time = 225;
+const u16 cooldown_time = 285;
 
 const s16 init_gunoffset_angle = -2; // up by so many degrees
 
@@ -44,7 +44,7 @@ void onInit(CBlob@ this)
 		"sound_128mm",
 	    "EmptyFire", // empty fire sound
 	    Vehicle_Fire_Style::custom,
-	    Vec2f(-6.0f, -8.0f), // fire position offset
+	    Vec2f(-6.0f, -4.0f), // fire position offset
 	    1); // charge time
 
 	Vehicle_SetWeaponAngle(this, low_angle, v);
@@ -231,7 +231,7 @@ void onTick(CBlob@ this)
 		{
 			arm.ResetTransform();
 			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 8.0f));
-			arm.SetOffset(Vec2f(-19.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -19.5f + (this.isFacingLeft() ? -0.5f : 0.5f)));
+			arm.SetOffset(Vec2f(-19.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -20.5f + (this.isFacingLeft() ? -0.5f : 0.5f)));
 			arm.SetRelativeZ(-20.0f);
 		}
 
