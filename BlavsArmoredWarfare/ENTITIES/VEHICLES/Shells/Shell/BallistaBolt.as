@@ -175,7 +175,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	{
 		mod = 1.25f;
 	}
-	else if (this.hasTag("heli")) mod = 2.0f;
+	else if (this.hasTag("heli")) mod = 3.0f;
 	else if (this.hasTag("medium")) mod = 2.75f;
 	else if (this.hasTag("heavy")) mod = 3.15f;
 
