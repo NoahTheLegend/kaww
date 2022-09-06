@@ -236,7 +236,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.1f, Hitters::arrow);
 		}
 
-		if (blob.hasTag("heavy") || blob.getName() == "t10")
+		if (blob.hasTag("heavy"))
 			this.getSprite().PlaySound("/BulletRico" + XORRandom(4), 0.8f, 0.7f + XORRandom(60) * 0.01f);
 		else
 		{
@@ -291,7 +291,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		this.setVelocity(velocity * 0.96f);
 	}
 
-	if (blob.getName() != "t10" && !blob.hasTag("heavy") && dmg > 0.0f && !this.hasTag("rico"))
+	if (!blob.hasTag("heavy") && dmg > 0.0f && !this.hasTag("rico"))
 	{
 		this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow);
 		//printf("e");
