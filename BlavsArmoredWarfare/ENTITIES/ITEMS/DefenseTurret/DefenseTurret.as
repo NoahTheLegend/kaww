@@ -62,7 +62,7 @@ void onTick(CBlob@ this)
 
 			f32 distance;
 			const bool visibleTarget = isVisible(this, targetblob, distance);
-			if (visibleTarget && distance < 575.0f)
+			if (visibleTarget && distance < 625.0f)
 			{
 				if (this.get_u32("next shot") < getGameTime())
 				{
@@ -70,7 +70,7 @@ void onTick(CBlob@ this)
 					this.SendCommand(this.getCommandID("shoot"));
 					this.set_bool("spawned", false);		
 
-					this.set_u32("next shot", getGameTime() + 15);			
+					this.set_u32("next shot", getGameTime() + 8);			
 				}
 			}
 
@@ -104,23 +104,19 @@ void ClientFire(CBlob@ this)
 {
 	Vec2f pos_2 = this.getPosition()-Vec2f(0.0f, 7.0f);
 	f32 angle = getAimAngle(this);
-	angle += ((XORRandom(512) - 256) / 99.0f);
-	Vec2f vel = Vec2f(550.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
-	//
+	angle += ((XORRandom(512) - 256) / 79.0f);
+	Vec2f vel = Vec2f(490.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
 
-	
 	this.SendCommand(this.getCommandID("shoot"));
-
 
 	if (isClient())
 	{
-
-		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.2f, 0.90f + XORRandom(15) * 0.01f);
+		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.1f, 0.90f + XORRandom(25) * 0.01f);
 
 		makeGibParticle(
 		"EmptyShellSmall",               // file name
 		this.getPosition() + Vec2f(0.0f, -6),                 // position
-		Vec2f((this.isFacingLeft() ? 1 : -1)*2+XORRandom(2),-1.0f),           // velocity
+		Vec2f((this.isFacingLeft() ? 1 : -1)*2+XORRandom(3),-1.2f),           // velocity
 		0,                                  // column
 		0,                                  // row
 		Vec2f(16, 16),                      // frame size
@@ -130,15 +126,15 @@ void ClientFire(CBlob@ this)
 		this.get_u8("team_color"));         // team number
 
 
-		ParticleAnimated("SmallExplosion3", (pos_2) + vel*0.6, getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+		ParticleAnimated("SmallExplosion3", (pos_2) + vel*0.8, getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 
 		if (this.isFacingLeft())
 		{
-			ParticleAnimated("Muzzleflashflip", pos_2 - Vec2f(0.0f, 3.0f) + vel*0.15, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			ParticleAnimated("Muzzleflashflip", pos_2 - Vec2f(0.0f, 3.0f) + vel*0.16, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
 		}
 		else
 		{
-			ParticleAnimated("Muzzleflashflip", pos_2 + Vec2f(0.0f, 3.0f) + vel*0.15, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			ParticleAnimated("Muzzleflashflip", pos_2 + Vec2f(0.0f, 3.0f) + vel*0.16, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
 		}
 	}
 }
@@ -160,8 +156,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					this.set_bool("spawned", true);
 					bullet.Init();
 
-					bullet.set_f32("bullet_damage_body", 0.20f);
-					bullet.set_f32("bullet_damage_head", 0.20f);
+					bullet.set_f32("bullet_damage_body", 0.14f);
+					bullet.set_f32("bullet_damage_head", 0.14f);
 					bullet.IgnoreCollisionWhileOverlapped(this);
 					bullet.server_setTeamNum(this.getTeamNum());
 					Vec2f pos_ = this.getPosition()-Vec2f(0.0f, 7.0f);
@@ -169,7 +165,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 					f32 angle = getAimAngle(this);
 					angle += ((XORRandom(512) - 256) / 118.0f);
-					Vec2f vel = Vec2f(550.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
+					Vec2f vel = Vec2f(540.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
 					bullet.setVelocity(vel);
 
 				}
@@ -257,4 +253,14 @@ f32 getAimAngle(CBlob@ this)
 	}
 
 	return angle;
+}
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (hitterBlob.getName() == "grenade")
+	{
+		return damage * 10;
+	}
+	
+	return damage;
 }
