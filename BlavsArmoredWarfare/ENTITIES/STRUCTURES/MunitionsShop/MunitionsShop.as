@@ -22,7 +22,7 @@ void onInit(CBlob@ this)
 	{
 		if (map.tilemapwidth < 200)
 		{
-			this.set_Vec2f("shop menu size", Vec2f(5, 1));
+			this.set_Vec2f("shop menu size", Vec2f(4, 1));
 		}
 	}
 	this.set_string("shop description", "Buy");
