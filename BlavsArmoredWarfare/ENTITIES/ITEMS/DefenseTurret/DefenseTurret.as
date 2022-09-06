@@ -12,6 +12,9 @@ void onInit(CBlob@ this)
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "DefenseTurret_gun", 48, 32);
 	this.Tag("builder always hit");
 
+
+	this.Tag("structure");
+
 	if (arm !is null)
 	{
 		Animation@ anim = arm.addAnimation("defaultarm", 0, false);
@@ -20,6 +23,9 @@ void onInit(CBlob@ this)
 
 		arm.animation.frame = 2;
 	}
+
+	bool facing_left = this.getTeamNum() == 1 ? true : false;
+	this.SetFacingLeft(facing_left);
 
 	this.getShape().SetRotationsAllowed(false);
 
@@ -53,7 +59,7 @@ void onTick(CBlob@ this)
 			const bool visibleTarget = isVisible(this, targetblob, distance);
 			if (visibleTarget && distance < 580.0f)
 			{
-				if (getGameTime() % 11 == 0)
+				if (getGameTime() % 12 == 0)
 				{
 					this.SendCommand(this.getCommandID("shoot"));
 				}
@@ -91,8 +97,8 @@ void OnFire(CBlob@ this)
 	{
 		bullet.Init();
 
-		bullet.set_f32("bullet_damage_body", 0.22f);
-		bullet.set_f32("bullet_damage_head", 0.28f);
+		bullet.set_f32("bullet_damage_body", 0.20f);
+		bullet.set_f32("bullet_damage_head", 0.26f);
 		bullet.IgnoreCollisionWhileOverlapped(this);
 		bullet.server_setTeamNum(this.getTeamNum());
 		Vec2f pos_ = this.getPosition()-Vec2f(0.0f, 7.0f);
