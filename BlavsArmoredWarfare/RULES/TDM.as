@@ -84,6 +84,7 @@ string cost_config_file = "tdm_vars.cfg";
 
 void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 {
+	if (this is null) return;
     if (cmd == this.getCommandID("flag_cap_won"))
     {
 		u8 team;

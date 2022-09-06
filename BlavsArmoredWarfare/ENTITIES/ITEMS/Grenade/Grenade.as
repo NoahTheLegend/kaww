@@ -200,7 +200,7 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
+{ if (this is null) return;
     if (cmd == this.getCommandID("activate"))
     {
 		this.Tag("no_pin");

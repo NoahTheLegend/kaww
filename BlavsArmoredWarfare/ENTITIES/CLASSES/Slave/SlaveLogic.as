@@ -195,6 +195,7 @@ void SendHitCommand(CBlob@ this, CBlob@ blob, const Vec2f tilepos, const Vec2f a
 
 bool RecdHitCommand(CBlob@ this, CBitStream@ params)
 {
+	if (this is null) return false;
 	u16 blobID;
 	Vec2f tilepos, attackVel;
 	f32 attack_power;
@@ -281,7 +282,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
+{ if (this is null) return;
 	if (cmd == this.getCommandID("pickaxe"))
 	{
 		if (!RecdHitCommand(this, params))

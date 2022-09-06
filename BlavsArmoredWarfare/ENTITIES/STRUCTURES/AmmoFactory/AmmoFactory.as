@@ -138,7 +138,7 @@ void spawnMetal(CBlob@ this)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
+{ if (this is null) return;
 	if (cmd == this.getCommandID("add metal"))
 	{
 		CBlob@ caller = getBlobByNetworkID(params.read_u16());
