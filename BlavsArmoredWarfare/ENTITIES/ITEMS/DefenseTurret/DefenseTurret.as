@@ -4,8 +4,12 @@ void onInit(CBlob@ this)
 {
 	this.addCommandID("shoot");
 
-	this.set_bool("attacking", false);
+	this.set_bool("spawned", false);
 	this.set_u16(target_player_id, 0);
+
+
+
+	this.set_u32("next repair", 0);
 
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
@@ -57,11 +61,15 @@ void onTick(CBlob@ this)
 
 			f32 distance;
 			const bool visibleTarget = isVisible(this, targetblob, distance);
-			if (visibleTarget && distance < 580.0f)
+			if (visibleTarget && distance < 575.0f)
 			{
-				if (getGameTime() % 12 == 0)
+				if (this.get_u32("next shot") < getGameTime())
 				{
+					ClientFire(this);
 					this.SendCommand(this.getCommandID("shoot"));
+					this.set_bool("spawned", false);		
+
+					this.set_u32("next shot", getGameTime() + 15);			
 				}
 			}
 
@@ -90,38 +98,22 @@ void onTick(CBlob@ this)
 	}
 }
 
-void OnFire(CBlob@ this)
+void ClientFire(CBlob@ this)
 {
-	CBlob@ bullet = server_CreateBlobNoInit("bulletheavy");
-	if (bullet !is null)
+	Vec2f pos_2 = this.getPosition()-Vec2f(0.0f, 7.0f);
+	f32 angle = getAimAngle(this);
+	angle += ((XORRandom(512) - 256) / 99.0f);
+	Vec2f vel = Vec2f(550.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
+	//
+
+	
+	this.SendCommand(this.getCommandID("shoot"));
+
+
+	if (isClient())
 	{
-		bullet.Init();
 
-		bullet.set_f32("bullet_damage_body", 0.20f);
-		bullet.set_f32("bullet_damage_head", 0.26f);
-		bullet.IgnoreCollisionWhileOverlapped(this);
-		bullet.server_setTeamNum(this.getTeamNum());
-		Vec2f pos_ = this.getPosition()-Vec2f(0.0f, 7.0f);
-		bullet.setPosition(pos_);
-
-		f32 angle = getAimAngle(this);
-		angle += ((XORRandom(512) - 256) / 105.0f);
-		Vec2f vel = Vec2f(560.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
-		bullet.setVelocity(vel);
-
-		if (isClient())
-		{
-			ParticleAnimated("SmallExplosion3", (pos_) + vel*0.6, getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
-		}
-
-		if (this.isFacingLeft())
-		{
-			ParticleAnimated("Muzzleflashflip", pos_ - Vec2f(0.0f, 3.0f) + vel*0.15, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-		}
-		else
-		{
-			ParticleAnimated("Muzzleflashflip", pos_ + Vec2f(0.0f, 3.0f) + vel*0.15, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-		}
+		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.25f, 0.90f + XORRandom(15) * 0.01f);
 
 		makeGibParticle(
 		"EmptyShellSmall",               // file name
@@ -135,15 +127,52 @@ void OnFire(CBlob@ this)
 		"ShellCasing",                      // sound
 		this.get_u8("team_color"));         // team number
 
-		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.3f, 0.90f + XORRandom(15) * 0.01f);
+
+		ParticleAnimated("SmallExplosion3", (pos_2) + vel*0.6, getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+
+		if (this.isFacingLeft())
+		{
+			ParticleAnimated("Muzzleflashflip", pos_2 - Vec2f(0.0f, 3.0f) + vel*0.15, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+		}
+		else
+		{
+			ParticleAnimated("Muzzleflashflip", pos_2 + Vec2f(0.0f, 3.0f) + vel*0.15, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+		}
 	}
 }
+
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot"))
 	{
-		OnFire(this);
+
+		if (getNet().isServer())
+		{
+			if (!this.get_bool("spawned"))
+			{
+				CBlob@ bullet = server_CreateBlobNoInit("bulletheavy");
+
+				if (bullet !is null)
+				{
+					this.set_bool("spawned", true);
+					bullet.Init();
+
+					bullet.set_f32("bullet_damage_body", 0.18f);
+					bullet.set_f32("bullet_damage_head", 0.18f);
+					bullet.IgnoreCollisionWhileOverlapped(this);
+					bullet.server_setTeamNum(this.getTeamNum());
+					Vec2f pos_ = this.getPosition()-Vec2f(0.0f, 7.0f);
+					bullet.setPosition(pos_);
+
+					f32 angle = getAimAngle(this);
+					angle += ((XORRandom(512) - 256) / 118.0f);
+					Vec2f vel = Vec2f(550.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
+					bullet.setVelocity(vel);
+
+				}
+			}
+		}
 	}
 }
 
@@ -155,7 +184,7 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 
 bool LoseTarget(CBlob@ this, CBlob@ targetblob)
 {
-	if (XORRandom(16) == 0 && targetblob.hasTag("dead"))
+	if (XORRandom(19) == 0 && targetblob.hasTag("dead"))
 	{
 		this.set_u16(target_player_id, 0);
 
@@ -191,7 +220,7 @@ CBlob@ getNewTarget(CBlob @blob, const bool seeThroughWalls = false, const bool 
 bool isVisible(CBlob@ blob, CBlob@ targetblob, f32 &out distance)
 {
 	Vec2f col;
-	bool visible = !getMap().rayCastSolid(blob.getPosition(), targetblob.getPosition() + targetblob.getVelocity() * 5.0f, col);
+	bool visible = !getMap().rayCastSolid(blob.getPosition(), targetblob.getPosition() + targetblob.getVelocity() * 2.0f, col);
 	distance = (blob.getPosition() - col).getLength();
 	return visible;
 }
@@ -207,7 +236,7 @@ f32 getAimAngle(CBlob@ this)
 
 	if (targetblob !is null)
 	{
-		Vec2f aim_vec = (this.getPosition() - Vec2f(0.0f, 10.0f)) - (targetblob.getPosition() + Vec2f(0.0f, -4.0f) + targetblob.getVelocity() * 5.0f);
+		Vec2f aim_vec = (this.getPosition() - Vec2f(0.0f, 10.0f)) - (targetblob.getPosition() + Vec2f(0.0f, -4.0f) + targetblob.getVelocity() * 2.0f);
 
 		if ((!facing_left && aim_vec.x < 0) ||
 		        (facing_left && aim_vec.x > 0))
