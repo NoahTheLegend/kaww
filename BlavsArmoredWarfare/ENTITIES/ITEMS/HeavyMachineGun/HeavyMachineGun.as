@@ -23,7 +23,7 @@ void onInit(CBlob@ this)
 	                    "mat_7mmround", // bullet ammo config name
 	                    "7mm Rounds", // name for ammo selection
 	                    "bulletheavy", // bullet config name
-	                    "", // fire sound  
+	                    "M60fire", // fire sound  
 	                    "EmptyFire", // empty fire sound
 	                    Vehicle_Fire_Style::custom,
 	                    Vec2f(-6.0f, 2.0f), // fire position offset
