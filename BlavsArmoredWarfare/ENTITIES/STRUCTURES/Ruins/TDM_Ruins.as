@@ -59,7 +59,7 @@ void onTick(CBlob@ this)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
+{ if (this is null) return;
 	if (cmd == this.getCommandID("class menu"))
 	{
 		u16 callerID = params.read_u16();

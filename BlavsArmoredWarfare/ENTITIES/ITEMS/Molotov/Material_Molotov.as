@@ -32,7 +32,7 @@ void onTick(CBlob@ this)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
+{ if (this is null) return;
     if (cmd == this.getCommandID("activate"))
     {
 		if (isClient() && !this.hasTag("activated"))

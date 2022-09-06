@@ -198,6 +198,7 @@ void onCreateInventoryMenu(CInventory@ this, CBlob@ forBlob, CGridMenu@ menu)
 
 void onCommand(CInventory@ this, u8 cmd, CBitStream@ params)
 {
+	if (this is null) return;
 	string dbg = "BuilderInventory.as: Unknown command ";
 
 	CBlob@ blob = this.getBlob();

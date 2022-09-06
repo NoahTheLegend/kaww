@@ -308,7 +308,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
+{ if (this is null) return;
 	if (cmd == this.getCommandID("fire blob"))
 	{
 		CBlob@ blob = getBlobByNetworkID(params.read_netid());

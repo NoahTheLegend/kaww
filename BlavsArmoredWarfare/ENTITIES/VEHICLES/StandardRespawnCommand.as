@@ -69,7 +69,7 @@ void buildSpawnMenu(CBlob@ this, CBlob@ caller)
 }
 
 void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
+{ if (this is null) return;
 	switch (cmd)
 	{
 		case SpawnCmd::buildMenu: 

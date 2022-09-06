@@ -285,7 +285,7 @@ void onRender(CSprite@ this)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
+{ if (this is null) return;
 	if (getNet().isServer() && cmd == this.getCommandID("placeBlock"))
 	{
 		u8 index = params.read_u8();

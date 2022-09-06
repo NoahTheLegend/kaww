@@ -183,7 +183,7 @@ void RenderClouds(int id)
 }
 
 void onCommand(CRules@ this, u8 cmd, CBitStream @params)
-{
+{ if (this is null) return;
 	if (!isClient()) { return; }
 
 	if (cmd == this.getCommandID("new_cloud"))

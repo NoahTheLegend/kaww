@@ -309,7 +309,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
+{ if (this is null) return;
 	if (cmd == this.getCommandID("fire blob"))
 	{
 		CBlob@ blob = getBlobByNetworkID(params.read_netid());
