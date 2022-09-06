@@ -29,11 +29,11 @@ void onInit(CBlob@ this)
 	this.set_u8("shop icon", 25);
 
 	{
-		ShopItem@ s = addShopItem(this, "7.62mm Rounds", "$mat_7mmround$", "mat_7mmround", "Ammo for a light machinegun.", false);
+		ShopItem@ s = addShopItem(this, "7.62mm Rounds", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC's heavy machinegun.", false);
+		ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 20);
 	}
 	{
@@ -47,9 +47,12 @@ void onInit(CBlob@ this)
 	{
 		if (map !is null)
 		{
-			u8 cost = map.tilemapwidth > 200 ? 30 : 60;
-			ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in closed rooms.\nPress [SPACEBAR] before throwing", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", cost);
+			if (map.tilemapwidth > 140)
+			{
+				u8 cost = map.tilemapwidth > 200 ? 30 : 60;
+				ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
+				AddRequirement(s.requirements, "coin", "", "Coins", cost);
+			}
 		}
 	}
 	if (map !is null)
@@ -61,11 +64,11 @@ void onInit(CBlob@ this)
 				AddRequirement(s.requirements, "coin", "", "Coins", 20);
 			}
 			{
-				ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas a big explosion radius and should not be shot closely to shooter.", false);
+				ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas an small explosion radius.", false);
 				AddRequirement(s.requirements, "coin", "", "Coins", 60); // + 10 more expensive
 			}
 			{
-				ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming googles that allow you to see much further. Carry them and press [RIGHT MOUSE] ", false);
+				ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
 				AddRequirement(s.requirements, "coin", "", "Coins", 50);
 			}
 		}
