@@ -201,7 +201,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			return;
 		}
 
-		v.last_fired_index = params.read_u8();
+		u8 last;
+		if (!params.saferead_u8(last)) return;
+
+		v.last_fired_index = last;
 	}
 	/// PUT IN MAG
 	else if (isServer && cmd == this.getCommandID("putin_mag"))
