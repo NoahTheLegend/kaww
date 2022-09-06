@@ -73,6 +73,12 @@ void onInit(CBlob@ this)
 			if (!this.server_PutInInventory(ammo))
 				ammo.server_Die();
 		}
+		CBlob@ ammo2 = server_CreateBlob("mat_7mmround");
+		if (ammo2 !is null)
+		{
+			if (!this.server_PutInInventory(ammo2))
+				ammo2.server_Die();
+		}
 	}
 }
 

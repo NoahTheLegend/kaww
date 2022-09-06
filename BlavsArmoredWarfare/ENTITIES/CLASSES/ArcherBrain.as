@@ -62,6 +62,20 @@ void onTick(CBrain@ this)
 
 
 
+
+
+
+
+
+		if (XORRandom(100) < 18)
+		{
+			blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
+		}
+
+
+
+
+
 		// unpredictable movement
 		if (getGameTime() % blob.get_u8("myKey") == 0 && XORRandom(3) == 0)
 		{
