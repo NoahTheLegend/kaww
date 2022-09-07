@@ -298,7 +298,7 @@ void Boom(CBlob@ this)
     	ParticleAnimated("BloodSplatBigger.png", this.getPosition(), getRandomVelocity(angle, (XORRandom(8)+4), 360), float(XORRandom(360)), 1.5f + XORRandom(200) * 0.01f, 4, XORRandom(100) * -0.00005f, true);
 	}
 
-	this.getSprite().PlaySound("/FleshExplosion", 0.25f, 1.0f);
+	this.getSprite().PlaySound("/FleshExplosion", 0.5f, 1.0f);
 
 	this.server_Die();
 }
