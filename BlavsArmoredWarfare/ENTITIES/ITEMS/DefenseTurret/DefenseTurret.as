@@ -114,6 +114,9 @@ void ClientFire(CBlob@ this)
 =======
 
 		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.25f, 0.90f + XORRandom(15) * 0.01f);
+<<<<<<< HEAD
+>>>>>>> parent of 6a598f5 (turret improvements)
+=======
 >>>>>>> parent of 6a598f5 (turret improvements)
 
 		makeGibParticle(
@@ -160,8 +163,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					bullet.Init();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 					bullet.set_f32("bullet_damage_body", 0.14f);
 					bullet.set_f32("bullet_damage_head", 0.14f);
+=======
+					bullet.set_f32("bullet_damage_body", 0.18f);
+					bullet.set_f32("bullet_damage_head", 0.18f);
+>>>>>>> parent of 6a598f5 (turret improvements)
 =======
 					bullet.set_f32("bullet_damage_body", 0.18f);
 					bullet.set_f32("bullet_damage_head", 0.18f);
