@@ -460,7 +460,6 @@ class PNGLoader
 			case map_colors::baseconstructionyard:     autotile(offset); spawnBlob(map, "baseconstructionyard", offset); break;
 			case map_colors::b_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, 0); break;
 			case map_colors::r_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, 1); break;
-			case map_colors::jourcop: 			   autotile(offset); spawnBlob(map, "jourcop", offset, 100); break;
 
 			// Ammo
 			case map_colors::bombs:       autotile(offset); AddMarker(map, offset, "mat_bombs"); break;

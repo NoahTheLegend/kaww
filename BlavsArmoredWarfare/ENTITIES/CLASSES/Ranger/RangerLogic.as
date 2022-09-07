@@ -75,11 +75,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 					{
 						return damage * 0.1f;
 					}
-					else if (hi is hitterBlob)
-					{
-						if (customData == Hitters::explosion) return damage * 0.15f;
-						return damage;
-					}
+					else if (hi is hitterBlob) return damage;
 				}
 			}
 		}
@@ -222,7 +218,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	else
 	{
 		// reload
-		if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("no_reload") < getGameTime() && this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
+		if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
 			//print("RELOAD!!");
 			bool reloadistrue = false;
@@ -269,7 +265,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 			}
 		}
 		// shoot
-		if (charge_time == 0 && this.getTickSinceCreated() > 5 && semiauto ? just_action1 : is_action1)
+		if (this.getTickSinceCreated() > 5 && semiauto ? just_action1 : is_action1)
 		{
 			moveVars.walkFactor *= 0.5f;
 			moveVars.jumpFactor *= 0.7f;
@@ -599,7 +595,6 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-	if (this.isKeyPressed(key_action1)) this.set_u32("no_reload", getGameTime()+10);
 }
 
 bool canSend(CBlob@ this)
