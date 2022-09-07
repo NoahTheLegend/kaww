@@ -9,7 +9,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u16 cooldown_time = 285;
+const u16 cooldown_time = 330;
 
 const s16 init_gunoffset_angle = -2; // up by so many degrees
 
