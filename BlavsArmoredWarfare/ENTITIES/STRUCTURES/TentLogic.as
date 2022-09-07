@@ -57,6 +57,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{ if (this is null) return;
+{
 	onRespawnCommand(this, cmd, params);
 }

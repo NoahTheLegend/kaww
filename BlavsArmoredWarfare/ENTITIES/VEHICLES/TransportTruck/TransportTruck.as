@@ -80,7 +80,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{ if (this is null) return;
+{
 	if (cmd == SpawnCmd::buildMenu || cmd == SpawnCmd::changeClass)
 	{
 		onRespawnCommand(this, cmd, params);
