@@ -36,9 +36,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			case Hitters::sword:
 				if (damage > 1.0f || force)
 				{
-					time = 20;
+					time = 8;
 					if (force) //broke shield
-						time = 10;
+						time = 4;
 				}
 				else
 				{

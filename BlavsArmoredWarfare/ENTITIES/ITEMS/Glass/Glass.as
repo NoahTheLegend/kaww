@@ -1,3 +1,5 @@
+#include "Hitters.as";
+
 void onInit(CBlob@ this)
 {
 	this.SetFacingLeft(XORRandom(100) < 30 ? true : false);
@@ -10,6 +12,11 @@ void onInit(CBlob@ this)
 
 f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData )
 {
+	if (customData == Hitters::sword)
+	{
+		damage *= 0.5f;
+	}
+
 	for (uint i = 0; i < 10 + XORRandom(10); i++)
 	{
 		Vec2f velr = Vec2f((XORRandom(19) - 9.0f)/6, (XORRandom(10) - 9.0f)/3);
