@@ -1,5 +1,5 @@
 const string capture_prop = "capture time";
-const string isbluecapture = "capture team";
+const string teamcapping = "teamcapping";
 
 const u16 capture_time = 3000;
 
@@ -9,7 +9,8 @@ void onInit(CBlob@ this)
 	this.getShape().getConsts().mapCollisions = false;
 
 	this.set_u16(capture_prop, 0);
-	this.set_bool(isbluecapture, false); //false is red, true is blue, this is also a commentary on the nature of good and evil, and colors.
+	this.set_s8(teamcapping, -1); //1 is red, 0 is blue, this is also a commentary on the nature of team colors and the effect it has on team performance. The color red, associated with blood will positively impact a team's competitive gameplay. For opposing teams, a red colored enemy player will subconsiously instill fear.
+	//this.set_bool(isbluecapture, false); //false is red, true is blue, this is also a commentary on the nature of good and evil, and colors.
 	this.set_u8("numcapping", 0);
 	this.set_f32("offsety", -51.0f);
 
@@ -89,17 +90,17 @@ void onTick(CBlob@ this)
 
     if (num_red > 0 || num_blue > 0)
     {
-    	if (num_red > 0 && num_blue == 0 && (this.getTeamNum() == 0 || this.getTeamNum() == 255)) // red capping
+    	if (num_red > 0 && num_blue == 0 && this.get_s8(teamcapping) != 0 && (this.getTeamNum() == 0 || this.getTeamNum() == 255)) // red capping
     	{
     		this.set_u8("numcapping", num_red);
-    		this.set_bool(isbluecapture, false);
+    		this.set_s8(teamcapping, 1);
 
     		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red);
     	}
-    	else if (num_blue > 0 && num_red == 0 && (this.getTeamNum() == 1 || this.getTeamNum() == 255)) // blue capping
+    	else if (num_blue > 0 && num_red == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == 1 || this.getTeamNum() == 255)) // blue capping
     	{
     		this.set_u8("numcapping", num_blue);
-    		this.set_bool(isbluecapture, true);
+    		this.set_s8(teamcapping, 0);
 
     		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue);
     	}
@@ -108,23 +109,20 @@ void onTick(CBlob@ this)
 	&& (this.get_u16(capture_prop) < (capture_time / 4) - 5
 	|| this.get_u16(capture_prop) > (capture_time / 4) + 5)) this.add_u16(capture_prop, -1); // printf("prop "+this.get_u16(capture_prop));
     
-    if ((this.get_u16(capture_prop) > 0 && getGameTime() % 2 == 0) && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0)))
+    if ((this.get_u16(capture_prop) > 0 && getGameTime() % 2 == 0) && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0) || (num_red == 0 && this.get_s8(teamcapping) == 1 && this.getTeamNum() == 255) || (num_blue == 0 && this.get_s8(teamcapping) == 0 && this.getTeamNum() == 255)))
     {
     	this.set_u16(capture_prop, this.get_u16(capture_prop) - 1);
+    }
+    else if (this.get_u16(capture_prop) == 0) //returned to zero
+    {
+    	this.set_s8(teamcapping, -1);
     }
 
     if (this.get_u16(capture_prop) >= (this.getTeamNum() == 255 ? capture_time/2 : capture_time))
     {
     	this.set_u16(capture_prop, 0);
 
-    	if (this.get_bool(isbluecapture))
-    	{
-    		this.server_setTeamNum(0);
-    	}
-    	else
-    	{
-    		this.server_setTeamNum(1);
-    	}
+    	this.server_setTeamNum(this.get_s8(teamcapping));
 
     	this.getSprite().PlaySound("UnlockClass", 3.0f, 1.0f); //CapturePoint
     } 
@@ -252,14 +250,14 @@ void onRender(CSprite@ this)
 
 	SColor color_team;
 
-	if (blob.getTeamNum() == 1 && returncount > 0 || blob.getTeamNum() == 0 && returncount == 0 || blob.getTeamNum() == 255 && blob.get_bool(isbluecapture) == true)
+	if (blob.getTeamNum() == 1 && returncount > 0 || blob.getTeamNum() == 0 && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == 0)
 	{
 		color_light = 0xff2cafde;
 		color_mid	= 0xff1d85ab; //  0xff1d85ab
 		color_dark	= 0xff1a4e83;
 	}
 	
-	if (blob.getTeamNum() == 0 && returncount > 0 || blob.getTeamNum() == 1 && returncount == 0 || blob.getTeamNum() == 255 && blob.get_bool(isbluecapture) == false)
+	if (blob.getTeamNum() == 0 && returncount > 0 || blob.getTeamNum() == 1 && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == 1)
 	{
 		color_light = 0xffd5543f;
 		color_mid	= 0xffb73333; // 0xffb73333
