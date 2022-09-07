@@ -842,12 +842,12 @@ shared class TDMCore : RulesCore
 
 	void SetCorrectMapTypeShared()
 	{
-		if (getPlayersCount() <= 1)
+		if (getPlayersCount() <= 4)
 		{
 			LoadMapCycle("MAPS/mapcyclesmaller.cfg");
 			print(">Loading smaller map");
 		}
-		else if (getPlayersCount() < 7)
+		else if (getPlayersCount() < 11)
 		{
 			LoadMapCycle("MAPS/mapcycle.cfg");
 			print(">Loading medium map");
@@ -862,12 +862,12 @@ shared class TDMCore : RulesCore
 
 void SetCorrectMapType()
 {
-	if (getPlayersCount() <= 1)
+	if (getPlayersCount() <= 4)
 	{
 		LoadMapCycle("MAPS/mapcyclesmaller.cfg");
 		print(">Loading smaller map");
 	}
-	else if (getPlayersCount() < 7)
+	else if (getPlayersCount() < 11)
 	{
 		LoadMapCycle("MAPS/mapcycle.cfg");
 		print(">Loading medium map");
