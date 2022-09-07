@@ -34,7 +34,7 @@ void onTick(CBlob@ this)
 
     for (u16 i = 0; i < blobs.size(); i++)//For every blob in this array
     {
-        if (blobs[i].hasTag("vehicle") && (blobs[i].getTeamNum() == this.getTeamNum())) //If they have the repair tag
+        if (blobs[i].hasTag("vehicle") && (blobs[i].getTeamNum() == this.getTeamNum() || this.getTeamNum() > 1)) //If they have the repair tag
         {
 			if (blobs[i].getHealth() == blobs[i].getInitialHealth()) continue;
 			if (blobs[i].get_u32("no_heal") > getGameTime()) continue; 
