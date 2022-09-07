@@ -1,0 +1,12 @@
+{
+    "description": "ticket mod for ctf, allows different amounts of tickets per team, but only two teams (team 0 and 1) - updated to build 1337", 
+    "devHash": "7346745ccdc7fb8aa0f8298f0a3d928c5efe1e901c05ae4b901b1f3fad16ad9c91ac8cae691b9388063eccc6ad2d3572d2625b914d995a7a97d61726c952d723", 
+    "developer": "cameron1010", 
+    "gameID": 1, 
+    "lastBuild": "2015-06-17 01:00:24", 
+    "modID": "5293f311-eadc-42c7-abca-3544fb390590", 
+    "name": "tickets", 
+    "nameURL": "tickets", 
+    "packageType": "full", 
+    "registered": "2014-07-09 12:14:26"
+}
