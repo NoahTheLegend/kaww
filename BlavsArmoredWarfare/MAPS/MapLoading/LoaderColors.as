@@ -331,6 +331,7 @@ namespace map_colors
 		fan             	   = 0xff6c776e,
 		glass             	   = 0xffefeffe,
 		door         		   = 0xff8c6825,
+		gate         		   = 0xffaf6a28,
 
 		//decor
 		cobweb                 = 0xFFF3F3F3,
