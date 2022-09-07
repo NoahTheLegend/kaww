@@ -46,6 +46,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	return (!blob.hasTag("vehicle") && blob.isCollidable());
 }
 
+bool canBePickedUp( CBlob@ this, CBlob@ byBlob )
+{
+    return !this.hasTag("activated");
+}
+
 bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)
 {
 	return !this.hasTag("activated");

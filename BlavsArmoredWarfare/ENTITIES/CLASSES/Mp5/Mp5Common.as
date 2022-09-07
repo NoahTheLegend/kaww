@@ -8,7 +8,7 @@ const float recoilx = 22; // x shake (20)
 const float recoily = 38; // y shake (45)
 const float recoillength = 70; // how long to recoil (?)
 // RECOIL
-const float recoilforce = 0.03f; // amount to push player (0.15)
+const float recoilforce = 0.05f; // amount to push player (0.15)
 const u8 recoilcursor = 10; // amount to raise mouse pos
 const u8 sidewaysrecoil = 6; // sideways recoil amount
 const u8 sidewaysrecoildamp = 8; // higher number means less sideways recoil
@@ -28,7 +28,7 @@ const string reloadsfx = classname + "_reload.ogg";
 const string shootsfx = classname + "_shoot.ogg";
 
 const u8 delayafterfire = 2; // time between shots
-const u8 randdelay = 1; // + randomness
+const u8 randdelay = 0; // + randomness
 
 const float bulletvelocity = 1.52f; // speed that bullets fly
 

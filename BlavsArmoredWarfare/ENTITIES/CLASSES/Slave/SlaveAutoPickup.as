@@ -15,7 +15,8 @@ void Take(CBlob@ this, CBlob@ blob)
 	if (
 		blobName == "mat_gold" && pickupCriteria(this, blob, 50) ||
 		blobName == "mat_stone" ||
-		blobName == "mat_wood"
+		blobName == "mat_wood" ||
+		blobName == "mat_scrap"
 	) {
 		if ((blob.getDamageOwnerPlayer() !is this.getPlayer()) || getGameTime() > blob.get_u32("autopick time"))
 		{
