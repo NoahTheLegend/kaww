@@ -106,23 +106,36 @@ void onTick(CBlob@ this)
     		this.set_u8("numcapping", num_red);
     		this.set_s8(teamcapping, 1);
 
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red);
+    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red * (getMap() !is null && getMap().tilemapwidth < 200 ? 2 : 1));
     	}
     	else if (num_blue > 0 && num_red == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == 1 || this.getTeamNum() == 255)) // blue capping
     	{
     		this.set_u8("numcapping", num_blue);
     		this.set_s8(teamcapping, 0);
 
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue);
+    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue * (getMap() !is null && getMap().tilemapwidth < 200 ? 1.5 : 1));
     	}
     }
 	else if (this.get_u16(capture_prop) > 0
 	&& (this.get_u16(capture_prop) < (capture_time / 4) - 5
 	|| this.get_u16(capture_prop) > (capture_time / 4) + 5)) this.add_u16(capture_prop, -1); // printf("prop "+this.get_u16(capture_prop));
     
-    if ((this.get_u16(capture_prop) > 0 && getGameTime() % 2 == 0) && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0) || (num_red == 0 && this.get_s8(teamcapping) == 1 && this.getTeamNum() == 255) || (num_blue == 0 && this.get_s8(teamcapping) == 0 && this.getTeamNum() == 255)))
+    if ((this.get_u16(capture_prop) > 0
+	&& getGameTime() % 2 == 0)
+	&& ((num_blue == 0 && this.getTeamNum() == 1)
+	|| (num_red == 0 && this.getTeamNum() == 0)
+	|| (num_red == 0 && this.get_s8(teamcapping) == 1 && this.getTeamNum() == 255)
+	|| (num_blue == 0 && this.get_s8(teamcapping) == 0 && this.getTeamNum() == 255)))
     {
-    	this.set_u16(capture_prop, this.get_u16(capture_prop) - 1);
+		u8 mod = 0;
+		if (this.get_u16(capture_prop) > 50+getPlayersCount())
+			mod = num_blue+num_red;
+		else this.set_s8(teamcapping, (num_blue > num_red ? 0 : 1));
+		if (getMap() !is null && getMap().tilemapwidth < 200) mod *= 2; // twice faster on small maps
+
+		//printf(""+mod);
+
+    	this.set_u16(capture_prop, this.get_u16(capture_prop) - (1+mod));
     }
     else if (this.get_u16(capture_prop) == 0) //returned to zero
     {
@@ -196,27 +209,31 @@ void onTick(CBlob@ this)
 		{
 			if (team < 2)
 			{
-				if (team == 0)
+				if (this.get_s8(teamcapping) == 0)
 				{
 					flag.SetAnimation(down ? anim_blue : anim_red);
 				}
-				else flag.SetAnimation(down ? anim_red : anim_blue);
+				else if (this.get_s8(teamcapping) == 1 )
+				{
+					flag.SetAnimation(down ? anim_red : anim_blue);
+				}
 			}
 			else if (this.get_u16(capture_prop) > 0 || (num_blue > 0 || num_red > 0))
 			{
-				if (num_blue > num_red)
+				flag.SetVisible(true);
+				if (this.get_s8(teamcapping) == 0)
 				{
 					flag.SetAnimation(anim_blue);
 					this.Tag("last_cap_blue");
 					this.Untag("last_cap_red");
 				}
-				else if (num_red > num_blue)
+				else if (this.get_s8(teamcapping) == 1)
 				{
 					flag.SetAnimation(anim_red);
 					this.Tag("last_cap_red");
 					this.Untag("last_cap_blue");
 				}
-				flag.SetVisible(true);
+				else flag.SetVisible(false);
 			}
 		}
 	}  
@@ -239,10 +256,8 @@ void onRender(CSprite@ this)
 
 	GUI::SetFont("menu");
 
-	const f32 scalex = getDriver().getResolutionScaleFactor()/2;
-	const f32 zoom = getCamera().targetDistance * scalex;
 	// adjust vertical offset depending on zoom
-	Vec2f pos2d =  blob.getInterpolatedScreenPos() + Vec2f(0.0f, (-blob.getHeight() - 20.0f) * zoom);
+	Vec2f pos2d =  blob.getInterpolatedScreenPos() + Vec2f(0.0f, (blob.getHeight()-100.0f));
 	
 	f32 wave = Maths::Sin(getGameTime() / 5.0f) * 5.0f - 25.0f;
 
