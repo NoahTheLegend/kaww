@@ -3,6 +3,8 @@
 #include "BuildBlock.as";
 #include "PlacementCommon.as";
 #include "CheckSpam.as";
+#include "GameplayEvents.as";
+
 
 // DAMAGE
 const float damage_body = 0.35f;
@@ -147,7 +149,7 @@ CBlob@ server_BuildBlob(CBlob@ this, BuildBlock[]@ blocks, uint index)
 		this.getSprite().PlaySound("/Construct");
 		// take inv here instead of in onDetach
 		server_TakeRequirements(inv, b.reqs);
-		//SendGameplayEvent(createBuiltBlobEvent(this.getPlayer(), b.name));
+		SendGameplayEvent(createBuiltBlobEvent(this.getPlayer(), b.name));
 	}
 
 	this.set_u8("buildblob", index);
