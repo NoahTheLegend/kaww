@@ -857,8 +857,6 @@ shared class TDMCore : RulesCore
 		}
 	}
 
-<<<<<<< HEAD
-
 	void SetCorrectMapTypeShared()
 	{
 		if (getPlayersCount() <= 4)
@@ -877,7 +875,7 @@ shared class TDMCore : RulesCore
 			print(">Loading larger map");
 		}
 	}
-=======
+
 	//void SetCorrectMapType()
 	//{
 	//	if (getPlayersCount() <= 1 || rules.get_u8("current_round") > 5)
@@ -902,7 +900,6 @@ shared class TDMCore : RulesCore
 	//		print(">Loading medium map");
 	//	}
 	//}
->>>>>>> parent of 72e9d51 (balancing and mapcycle based on pop)
 };
 
 //void SetCorrectMapTypeUnshared()
