@@ -1,63 +1,16 @@
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
-const u16 capture_time = 3000;
+const u16 capture_time = 650;
 
 void onInit(CBlob@ this)
 {
-	//this.server_setTeamNum(0);
 	this.getShape().getConsts().mapCollisions = false;
 
 	this.set_u16(capture_prop, 0);
 	this.set_s8(teamcapping, -1); //1 is red, 0 is blue, this is also a commentary on the nature of team colors and the effect it has on team performance. The color red, associated with blood will positively impact a team's competitive gameplay. For opposing teams, a red colored enemy player will subconsiously instill fear. These values resp- ok time to get back to work
 	//this.set_bool(isbluecapture, false); //false is red, true is blue, this is also a commentary on the nature of good and evil, and colors.
 	this.set_u8("numcapping", 0);
-	this.set_f32("offsety", -51.0f);
-
-	CSprite@ sprite = this.getSprite();
-	if (sprite is null) return;
-	CSpriteLayer@ flag = sprite.addSpriteLayer("flag", "CTF_Flag.png", 32, 16);
-	if (flag !is null)
-	{
-		flag.SetRelativeZ(10.0f);
-		flag.SetOffset(Vec2f(9.0f, -51.0f));
-
-		Animation@ anim_blue = flag.addAnimation("flag_wave_blue", XORRandom(3)+3, true);
-		int[] frames_blue = {0,2,4,6};
-
-		Animation@ anim_red = flag.addAnimation("flag_wave_red", XORRandom(3)+3, true);
-		int[] frames_red = {1,3,5,7};
-
-		if (anim_blue !is null && anim_red !is null)
-		{
-			anim_blue.AddFrames(frames_blue);
-			anim_red.AddFrames(frames_red);
-			u8 team = this.getTeamNum();
-			if (team < 2) flag.SetAnimation((team == 0 ? anim_blue : anim_red));
-		}
-	}
-}
-
-void onChangeTeam(CBlob@ this, const int oldTeam)
-{
-	CBlob@[] blobs;
-	bool won = false;
-	u8 blue = 0;
-	u8 red = 0;
-	getBlobsByName("pointflag", @blobs);
-	{
-		for (u8 i = 0; i < blobs.length; i++)
-		{
-			CBlob@ b = blobs[i];
-			if (b is null) continue;
-			if (b.getTeamNum() != 0 && b.getTeamNum() != 1) return;
-			b.getTeamNum() == 0 ? blue++ : red++;
-		}
-	}
-	CBitStream params;
-	if (red == 0 && blue == blobs.length) params.write_u8(0);
-	else if (blue == 0 && red == blobs.length) params.write_u8(1);
-	getRules().SendCommand(getRules().getCommandID("flag_cap_won"), params);
 }
 
 void onTick(CBlob@ this)
@@ -73,7 +26,7 @@ void onTick(CBlob@ this)
 
     for (u16 i = 0; i < blobs.size(); i++)
     {
-        if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead") && blobs[i].getName() != "slave") // Only players and no builders
+        if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead")) // Only players
         {
         	if (blobs[i].getTeamNum() == 0)
         	{
@@ -105,9 +58,6 @@ void onTick(CBlob@ this)
     		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue);
     	}
     }
-	else if (this.get_u16(capture_prop) > 0
-	&& (this.get_u16(capture_prop) < (capture_time / 4) - 5
-	|| this.get_u16(capture_prop) > (capture_time / 4) + 5)) this.add_u16(capture_prop, -1); // printf("prop "+this.get_u16(capture_prop));
     
     if ((this.get_u16(capture_prop) > 0 && getGameTime() % 2 == 0) && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0) || (num_red == 0 && this.get_s8(teamcapping) == 1 && this.getTeamNum() == 255) || (num_blue == 0 && this.get_s8(teamcapping) == 0 && this.getTeamNum() == 255)))
     {
@@ -125,6 +75,7 @@ void onTick(CBlob@ this)
     	this.server_setTeamNum(this.get_s8(teamcapping));
 
     	this.getSprite().PlaySound("UnlockClass", 3.0f, 1.0f); //CapturePoint
+<<<<<<< HEAD
     } 
 	
 	CSprite@ sprite = this.getSprite();
@@ -300,4 +251,7 @@ void onRender(CSprite@ this)
 
 	//GUI::SetFont("menu");
 	GUI::DrawShadowedText("Capturing...", Vec2f(pos.x - dimension.x + -2, pos.y + 12), SColor(0xffffffff));
+=======
+    }   
+>>>>>>> parent of 5e17548 (new gamemode)
 }
