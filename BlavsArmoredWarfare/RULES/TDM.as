@@ -232,12 +232,7 @@ shared class TDMSpawns : RespawnSystem
 				// spawn resources
 				p_info.spawnsCount++;
 				RemovePlayerFromSpawn(player);
-				if (getGameTime() >= 300 && !getRules().isWarmup())
-				{
-					CBlob@ b = getBlobByName("pointflag");
-					if (b is null)
-						decrementTickets(getRules(), playerBlob.getTeamNum());
-				}
+				if (getGameTime() >= 300 && !getRules().isWarmup()) decrementTickets(getRules(), playerBlob.getTeamNum());
 
 				if (getMap().getMapName() == "KAWWTraining.png")
 				{	
