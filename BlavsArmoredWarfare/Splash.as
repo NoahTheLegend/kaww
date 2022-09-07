@@ -77,6 +77,10 @@ void onTick(CRules@ rules)
     RenderImage(
         Render::layer_posthud, // layer
         image_text, // Text
+<<<<<<< HEAD
         Vec2f(0.0f,0.0f), // pos
+=======
+        Vec2f(getDriver().getScreenWidth()/20,0.0f), // pos
+>>>>>>> parent of 5b194d8 (no more splash, faster load time)
         false); // is drawn on the world?
 }
