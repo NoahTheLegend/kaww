@@ -290,7 +290,6 @@ namespace map_colors
 
 		civcar                 = 0xfff0692e,
 		lada                   = 0xffaeff4c,
-		jourcop                = 0xffaeaa00,
 	
 
 		sign		           = 0xff93723a,

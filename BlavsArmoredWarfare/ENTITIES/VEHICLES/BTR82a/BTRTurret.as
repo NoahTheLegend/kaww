@@ -16,7 +16,7 @@ const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
 const f32 high_angle = 72.0f; // upper depression limit
-const f32 low_angle = 91.0f; // lower depression limit
+const f32 low_angle = 95.0f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
@@ -82,7 +82,7 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(0.5f);
-			arm.SetOffset(Vec2f(-0.0f, -5.0f));
+			arm.SetOffset(Vec2f(-0.0f, -7.0f));
 		}
 	}
 
@@ -218,7 +218,7 @@ void onTick(CBlob@ this)
 		{
 			arm.ResetTransform();
 			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(-0.0f, -22.0f));
+			arm.SetOffset(Vec2f(-0.0f, -25.0f));
 			arm.SetRelativeZ(-101.0f);
 		}
 

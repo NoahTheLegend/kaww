@@ -18,8 +18,6 @@ void onInit(CBlob@ this)
 	consts.mapCollisions = false;
 	consts.bullet = false;	
 
-	this.SetMapEdgeFlags(u8(CBlob::map_collide_none | CBlob::map_collide_left | CBlob::map_collide_right | CBlob::map_collide_nodeath));
-
 	consts.net_threshold_multiplier = 1.0f;
 }
 
