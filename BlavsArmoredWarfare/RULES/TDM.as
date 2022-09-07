@@ -1007,5 +1007,7 @@ void onInit(CRules@ this)
         cfg_playertechs = ConfigFile("KAWW_Techs.cfg");
     }
 
+	this.addCommandID("flag_cap_won");
+
 	Reset(this);
 }
