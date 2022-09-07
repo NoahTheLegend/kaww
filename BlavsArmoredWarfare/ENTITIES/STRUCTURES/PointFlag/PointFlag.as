@@ -1,7 +1,7 @@
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
-const u16 capture_time = 200;
+const u16 capture_time = 2000;
 
 void onInit(CBlob@ this)
 {
@@ -131,7 +131,11 @@ void onTick(CBlob@ this)
 		u8 mod = 0;
 		if (this.get_u16(capture_prop) > 50+getPlayersCount())
 			mod = num_blue+num_red;
-		else this.set_s8(teamcapping, (num_blue > num_red ? 0 : 1));
+		else
+		{
+			if (this.getTeamNum() == 0) this.set_s8(teamcapping, (num_blue > num_red ? 0 : 1));
+			else if (this.getTeamNum() == 1) this.set_s8(teamcapping, (num_red > num_blue ? 0 : 1));
+		}
 		if (getMap() !is null && getMap().tilemapwidth < 200) mod *= 2; // twice faster on small maps
 
 		//printf(""+mod);
