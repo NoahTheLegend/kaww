@@ -59,6 +59,7 @@ void onInit(CBlob@ this)
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
 	this.set_Vec2f("shop menu size", Vec2f(6, 2));
+	if (getBlobByName("pointflag") !is null) this.set_Vec2f("shop menu size", Vec2f(5, 2));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 

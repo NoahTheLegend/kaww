@@ -103,8 +103,10 @@ void Config(TDMCore@ this)
 	this.sudden_death = this.kills_to_win_per_player <= 0;
 
 	//how long for the game to play out?
-	f32 gameDurationMinutes = 25.0f + getPlayersCount()*1.0; //cfg.read_f32("gameDurationMinutes", 7.0f)
+	f32 gameDurationMinutes = 15.0f + getPlayersCount()*1.0; //cfg.read_f32("gameDurationMinutes", 7.0f)
 	this.gameDuration = (getTicksASecond() * 60 * gameDurationMinutes) + this.warmUpTime;
+
+	if (getMap() !is null && getMap().tilemapwidth < 200)  this.gameDuration = (getTicksASecond() * 60 * 15.0f) + this.warmUpTime;
 
 	//spawn after death time - set in gamemode.cfg, or override here
 	f32 spawnTimeSeconds = cfg.read_f32("spawnTimeSeconds", 5);//Maths::Min(3, 8-(getPlayersCount()/3))); //rules.playerrespawn_seconds
@@ -684,108 +686,147 @@ shared class TDMCore : RulesCore
 		TDMTeamInfo@ winteam = null;
 		s8 team_wins_on_end = -1;
 
-		int highkills = 0;
-		for (uint team_num = 0; team_num < teams.length; ++team_num)
+		bool flags_wincondition = getBlobByName("pointflag") !is null;
+		if (flags_wincondition && getGameTime() >= rules.get_u32("game_end_time"))
 		{
-			TDMTeamInfo@ team = cast < TDMTeamInfo@ > (teams[team_num]);
-
-			if (team.kills > highkills)
+			if (rules.getCurrentState() != GAME_OVER)
 			{
-				highkills = team.kills;
-				team_wins_on_end = team_num;
-
-				if (team.kills >= kills_to_win)
+				CBlob@[] flags;
+				getBlobsByName("pointflag", @flags);
+	
+				u8 red_flags = 0;
+				u8 blue_flags = 0;
+	
+				for (u8 i = 0; i < flags.length; i++)
 				{
-					@winteam = team;
-					winteamIndex = team_num;
+					CBlob@ flag = flags[i];
+					if (flag is null) continue;
+					if (flag.getTeamNum() > 1) continue;
+					flag.getTeamNum() == 0 ? blue_flags++ : red_flags++;
 				}
-			}
-			else if (team.kills > 0 && team.kills == highkills)
-			{
-				team_wins_on_end = -1;
+				if (red_flags != blue_flags)
+				{
+					u8 team_won = (red_flags > blue_flags ? 1 : 0);
+					CTeam@ teamis = rules.getTeam(team_won);
+					
+					rules.SetTeamWon(team_won);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game!" );
+				}
+				else
+				{
+					rules.SetTeamWon(-1);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					rules.SetGlobalMessage("It's a tie!");
+					return;
+				}
 			}
 		}
-
-		//sudden death mode - check if anyone survives
-		if (sudden_death)
+		if (!flags_wincondition)
 		{
-			//clear the winning team - we'll find that ourselves
-			@winteam = null;
-			winteamIndex = -1;
-
-			//set up an array of which teams are alive
-			array<bool> teams_alive;
-			s32 teams_alive_count = 0;
-			for (int i = 0; i < teams.length; i++)
-				teams_alive.push_back(false);
-
-			//check with each player
-			for (int i = 0; i < getPlayersCount(); i++)
+			int highkills = 0;
+			for (uint team_num = 0; team_num < teams.length; ++team_num)
 			{
-				CPlayer@ p = getPlayer(i);
-				CBlob@ b = p.getBlob();
-				s32 team = p.getTeamNum();
-				if (b !is null && !b.hasTag("dead") && //blob alive
-				        team >= 0 && team < teams.length) //team sensible
+				TDMTeamInfo@ team = cast < TDMTeamInfo@ > (teams[team_num]);
+
+				if (team.kills > highkills)
 				{
-					if (!teams_alive[team])
+					highkills = team.kills;
+					team_wins_on_end = team_num;
+
+					if (team.kills >= kills_to_win)
 					{
-						teams_alive[team] = true;
-						teams_alive_count++;
+						@winteam = team;
+						winteamIndex = team_num;
 					}
+				}
+				else if (team.kills > 0 && team.kills == highkills)
+				{
+					team_wins_on_end = -1;
 				}
 			}
 
-			//only one team remains!
-			if (teams_alive_count == 1)
+			//sudden death mode - check if anyone survives
+			if (sudden_death)
 			{
+				//clear the winning team - we'll find that ourselves
+				@winteam = null;
+				winteamIndex = -1;
+
+				//set up an array of which teams are alive
+				array<bool> teams_alive;
+				s32 teams_alive_count = 0;
 				for (int i = 0; i < teams.length; i++)
-				{
-					if (teams_alive[i])
-					{
-						@winteam = cast < TDMTeamInfo@ > (teams[i]);
-						winteamIndex = i;
-						team_wins_on_end = i;
-					}
-				}
-			}
-			//no teams survived, draw
-			if (teams_alive_count == 0)
-			{
-				rules.SetTeamWon(-1);   //game over!
-				rules.SetCurrentState(GAME_OVER);
-				rules.SetGlobalMessage("It's a tie!");
-				return;
-			}
-		}
+					teams_alive.push_back(false);
 
-		rules.set_s8("team_wins_on_end", team_wins_on_end);
-
-		if (winteamIndex >= 0)
-		{
-			// add winning team coins
-			if (rules.isMatchRunning())
-			{
-				CBlob@[] players;
-				getBlobsByTag("player", @players);
-				for (uint i = 0; i < players.length; i++)
+				//check with each player
+				for (int i = 0; i < getPlayersCount(); i++)
 				{
-					CPlayer@ player = players[i].getPlayer();
-					if (player !is null)
+					CPlayer@ p = getPlayer(i);
+					CBlob@ b = p.getBlob();
+					s32 team = p.getTeamNum();
+					if (b !is null && !b.hasTag("dead") && //blob alive
+					        team >= 0 && team < teams.length) //team sensible
 					{
-						if (player.getTeamNum() == winteamIndex)
+						if (!teams_alive[team])
 						{
-							player.server_setCoins(player.getCoins() + 30);
-						}	
+							teams_alive[team] = true;
+							teams_alive_count++;
+						}
 					}
+				}
+
+				//only one team remains!
+				if (teams_alive_count == 1)
+				{
+					for (int i = 0; i < teams.length; i++)
+					{
+						if (teams_alive[i])
+						{
+							@winteam = cast < TDMTeamInfo@ > (teams[i]);
+							winteamIndex = i;
+							team_wins_on_end = i;
+						}
+					}
+				}
+				//no teams survived, draw
+				if (teams_alive_count == 0)
+				{
+					rules.SetTeamWon(-1);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					rules.SetGlobalMessage("It's a tie!");
+					return;
 				}
 			}
 
-			rules.SetTeamWon(winteamIndex);   //game over!
-			rules.SetCurrentState(GAME_OVER);
-			rules.SetGlobalMessage("{WINNING_TEAM} wins the round!");
-			rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.name);
-			SetCorrectMapTypeShared();
+			rules.set_s8("team_wins_on_end", team_wins_on_end);
+
+			if (winteamIndex >= 0)
+			{
+				// add winning team coins
+				if (rules.isMatchRunning())
+				{
+					CBlob@[] players;
+					getBlobsByTag("player", @players);
+					for (uint i = 0; i < players.length; i++)
+					{
+						CPlayer@ player = players[i].getPlayer();
+						if (player !is null)
+						{
+							if (player.getTeamNum() == winteamIndex)
+							{
+								player.server_setCoins(player.getCoins() + 30);
+							}	
+						}
+					}
+				}
+
+				rules.SetTeamWon(winteamIndex);   //game over!
+				rules.SetCurrentState(GAME_OVER);
+				rules.SetGlobalMessage("{WINNING_TEAM} wins the round!");
+				rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.name);
+				SetCorrectMapTypeShared();
+			}
 		}
 	}
 
