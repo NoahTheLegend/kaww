@@ -692,7 +692,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{ if (this is null) return;
+{
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
 		Vec2f arrowPos;
