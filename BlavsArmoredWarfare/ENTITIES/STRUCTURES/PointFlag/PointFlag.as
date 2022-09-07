@@ -1,7 +1,7 @@
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
-const u16 capture_time = 3000;
+const u16 capture_time = 2000;
 
 void onInit(CBlob@ this)
 {
@@ -73,7 +73,7 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 
 void onTick(CBlob@ this)
 {
-    float capture_distance = 64.0f; //Distance from this blob that it can be cpaped
+    float capture_distance = 80.0f; //Distance from this blob that it can be cpaped
 
     u8 num_blue = 0;
     u8 num_red = 0;
@@ -246,8 +246,8 @@ void onRender(CSprite@ this)
 	
 	f32 wave = Maths::Sin(getGameTime() / 5.0f) * 5.0f - 25.0f;
 
-	Vec2f pos = pos2d + Vec2f(8.0f, 150.0f);
-	Vec2f dimension = Vec2f(70.0f - 8.0f, 12.0f);
+	Vec2f pos = pos2d + Vec2f(8.0f, 224.0f);
+	Vec2f dimension = Vec2f(115.0f - 8.0f, 20.0f);
 	const f32 y = 0.0f;//blob.getHeight() * 100.8f;
 	
 	f32 percentage = 1.0f - float(returncount) / float(blob.getTeamNum() == 255 ? capture_time/2 : capture_time);
@@ -310,5 +310,5 @@ void onRender(CSprite@ this)
 					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
 
 	//GUI::SetFont("menu");
-	GUI::DrawShadowedText("Capturing...", Vec2f(pos.x - dimension.x + -2, pos.y + 12), SColor(0xffffffff));
+	GUI::DrawShadowedText("Capturing...", Vec2f(pos.x - dimension.x + -2, pos.y + 18), SColor(0xffffffff));
 }
