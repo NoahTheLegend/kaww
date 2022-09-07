@@ -82,45 +82,37 @@ void onTick(CBlob@ this)
 					for (uint i = 0; i < hitInfos.length; i++)
 					{
 						CBlob@ blob = hitInfos[i].blob;
-						if (blob !is null)
+						if (blob !is null && blob.hasTag("vehicle"))
 						{
-							if (blob.hasTag("vehicle") || blob.hasTag("bunker") || blob.hasTag("structure"))
+							if (isServer())
 							{
-								if (team == blob.getTeamNum())
+								holder.server_Hit(this, this.getPosition(), Vec2f(), 0.2f, Hitters::fall, true);
+							}
+
+							float repair_amount = 0.5f;
+
+							if (blob.getHealth() + repair_amount <= blob.getInitialHealth())
+				            {
+				                blob.server_SetHealth(blob.getHealth() + repair_amount);//Add the repair amount.
+
+				               	if (isClient())
 								{
+									this.getSprite().PlaySound("Repair.ogg", 2.0f, 1.0f);
+								}
 
-									if (isServer())
-									{
-										holder.server_Hit(this, this.getPosition(), Vec2f(), 0.2f, Hitters::fall, true);
-									}
+				            	const Vec2f pos = blob.getPosition() + getRandomVelocity(0, blob.getRadius()*0.3f, 360);
+								CParticle@ p = ParticleAnimated("SparkParticle.png", pos, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
+								if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
 
-									float repair_amount = 0.275f;
+								Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
+								velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 
-									if (blob.getHealth() + repair_amount <= blob.getInitialHealth())
-						            {
-						                blob.server_SetHealth(blob.getHealth() + repair_amount);//Add the repair amount.
-
-						               	if (isClient())
-										{
-											this.getSprite().PlaySound("Repair.ogg", 2.0f, 1.0f);
-										}
-
-						            	const Vec2f pos = blob.getPosition() + getRandomVelocity(0, blob.getRadius()*0.3f, 360);
-										CParticle@ p = ParticleAnimated("SparkParticle.png", pos, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
-										if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
-
-										Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
-										velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
-
-										ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
-						            }
-						            else //Repair amount would go above the inital health (max health). 
-						            {
-						                blob.server_SetHealth(blob.getInitialHealth());//Set health to the inital health (max health)
-						            }
-					        	}
-					        }
-
+								ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
+				            }
+				            else //Repair amount would go above the inital health (max health). 
+				            {
+				                blob.server_SetHealth(blob.getInitialHealth());//Set health to the inital health (max health)
+				            }
 						}
 					}
 				}
@@ -131,7 +123,7 @@ void onTick(CBlob@ this)
 					this.getSprite().PlaySound("throw.ogg", 1.5f, 1.0f);
 				}
 
-				this.set_u32("next repair", getGameTime() + 25);
+				this.set_u32("next repair", getGameTime() + 40);
 			}
 		}
 	}
