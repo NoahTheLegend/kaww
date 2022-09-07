@@ -60,12 +60,12 @@ void onTick(CBlob@ this)
 	{
 		this.AddForce(Vec2f(0.0f, 0.11f));
 	}
-
+	
 	// collison with blobs
 	HitInfo@[] infos;
 	CMap@ map = this.getMap();
 	if (isServer() && map.isTileSolid(map.getTile(this.getPosition()).type)) this.server_Die();
-	if (map.getHitInfosFromArc(this.getPosition(), -angle, 13, 27.0f, this, true, @infos))
+	if (map.getHitInfosFromArc(this.getPosition(), -angle, 12, 24.0f, this, true, @infos))
 	{
 		for (uint i = 0; i < infos.length; i ++)
 		{
@@ -203,6 +203,17 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 				sprite.PlaySound("Splat.ogg");
 			}
 		}
+
+		/*
+		CPlayer@ player = this.getDamageOwnerPlayer();
+
+		if (player.getBlob() !is null)
+		{
+			if (player.hasTag("Hollow"))
+			{
+				dmg *= 1.5;
+			}
+		}*/
 	}
 
 	if (isServer() && this.getTeamNum() != blob.getTeamNum() && (blob.getName() == "wooden_platform" || blob.hasTag("door")))
@@ -445,9 +456,14 @@ void BulletHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, u8 cus
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	return 0.0f; //no cut arrows
+	if (customData == Hitters::sword)
+	{
+		return 0.0f; //no cut arrows
+	}
+
+	return damage;
 }
-/*
+
 void onHitBlob(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitBlob, u8 customData)
 {
 	if (this !is hitBlob)
