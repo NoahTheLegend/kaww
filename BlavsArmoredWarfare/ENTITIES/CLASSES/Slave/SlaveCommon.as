@@ -3,6 +3,8 @@
 #include "BuildBlock.as";
 #include "PlacementCommon.as";
 #include "CheckSpam.as";
+#include "GameplayEvents.as";
+
 
 // DAMAGE
 const float damage_body = 0.35f;
