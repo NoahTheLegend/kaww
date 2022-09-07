@@ -86,7 +86,7 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(0.5f);
-			arm.SetOffset(Vec2f(-0.0f, -2.0f));
+			arm.SetOffset(Vec2f(-0.0f, -7.0f));
 		}
 	}
 	this.set_f32("gunelevation", (this.getTeamNum() == 1 ? 270 : 90) - init_gunoffset_angle);
@@ -210,7 +210,7 @@ void onTick(CBlob@ this)
 		{
 			arm.ResetTransform();
 			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(-2.5f, -24.0f));
+			arm.SetOffset(Vec2f(-9.0f, -24.0f));
 			arm.SetRelativeZ(-101.0f);
 		}
 

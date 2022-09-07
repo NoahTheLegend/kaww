@@ -217,7 +217,7 @@ void onTick(CBlob@ this)
 						Vec2f mousePos = ap.getAimPos();
 						CBlob@ pilot = ap.getBlob();
 						
-						if (pilot !is null && pressed_m2 && (this.getVelocity().x < 3.00f || this.getVelocity().x > -3.00f))
+						if (pilot !is null && pressed_m2 && (this.getVelocity().x < 5.00f || this.getVelocity().x > -5.00f))
 						{
 							if (mousePos.x < pilot.getPosition().x) this.SetFacingLeft(true);
 							else if (mousePos.x > pilot.getPosition().x) this.SetFacingLeft(false);

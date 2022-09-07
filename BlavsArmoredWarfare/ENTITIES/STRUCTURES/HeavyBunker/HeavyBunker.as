@@ -8,29 +8,36 @@ void onInit(CBlob@ this)
 
 	this.getShape().getConsts().mapCollisions = false;
 
-	this.SetFacingLeft(this.getTeamNum() == 1);
+	if (this.getTeamNum() == 0)
+    	this.SetFacingLeft(false);
+    else
+    	this.SetFacingLeft(true);
 }
 
 void onDie(CBlob@ this)
 {
+    Explode(this);
+
 	if (!isServer())
 		return;
 	server_CreateBlob("constructionyard",this.getTeamNum(),this.getPosition());
 }
 
-bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+void Explode(CBlob@ this)
 {
-	if (!blob.isCollidable() || blob.isAttached() || blob.getTeamNum() == this.getTeamNum()) // no colliding against people inside vehicles
-		return false;
-	if (blob.getRadius() > this.getRadius() ||
-	        (blob.getTeamNum() != this.getTeamNum() && blob.hasTag("player") && this.getShape().vellen > 1.0f) ||
-	        (blob.getShape().isStatic()) || blob.hasTag("projectile"))
-	{
-		return true;
-	}
-	return false;
+    Explode(this, 48.0f, 2.0f);
+
+    this.getCurrentScript().runFlags |= Script::remove_after_this;
+    this.server_Die();
 }
 
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	if (blob.getTeamNum() == this.getTeamNum()) // no colliding against people inside vehicles
+		return false;
+	else
+		return true;
+}
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
