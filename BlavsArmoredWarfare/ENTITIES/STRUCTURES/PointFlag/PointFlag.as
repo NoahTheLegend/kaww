@@ -1,7 +1,7 @@
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
-const u16 capture_time = 2000;
+const u16 capture_time = 200;
 
 void onInit(CBlob@ this)
 {
@@ -44,6 +44,7 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 	{
 		this.set_u16(capture_prop, 0);
 	}
+	
 	CBlob@[] blobs;
 	bool won = false;
 	u8 blue = 0;
@@ -107,14 +108,14 @@ void onTick(CBlob@ this)
     		this.set_s8(teamcapping, 1);
 
     		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red * (getMap() !is null && getMap().tilemapwidth < 200 ? 2 : 1));
-    	}
+		}
     	else if (num_blue > 0 && num_red == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == 1 || this.getTeamNum() == 255)) // blue capping
     	{
     		this.set_u8("numcapping", num_blue);
     		this.set_s8(teamcapping, 0);
 
     		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue * (getMap() !is null && getMap().tilemapwidth < 200 ? 1.5 : 1));
-    	}
+		}
     }
 	else if (this.get_u16(capture_prop) > 0
 	&& (this.get_u16(capture_prop) < (capture_time / 4) - 5
@@ -209,13 +210,18 @@ void onTick(CBlob@ this)
 		{
 			if (team < 2)
 			{
+				flag.SetVisible(true);
 				if (this.get_s8(teamcapping) == 0)
 				{
-					flag.SetAnimation(down ? anim_blue : anim_red);
+					flag.SetAnimation(!down ? anim_blue : anim_red);
 				}
 				else if (this.get_s8(teamcapping) == 1 )
 				{
-					flag.SetAnimation(down ? anim_red : anim_blue);
+					flag.SetAnimation(!down ? anim_red : anim_blue);
+				}
+				else if (this.get_s8(teamcapping) == -1)
+				{
+					flag.SetAnimation(this.getTeamNum() == 0 ? anim_blue : anim_red);
 				}
 			}
 			else if (this.get_u16(capture_prop) > 0 || (num_blue > 0 || num_red > 0))
@@ -236,7 +242,13 @@ void onTick(CBlob@ this)
 				else flag.SetVisible(false);
 			}
 		}
-	}  
+	} 
+	if (this !is null) // danger zone, trying to fix smth
+	{
+		this.Sync(capture_prop, true);
+		this.Sync(teamcapping, true);
+		this.Sync("offsety", true);
+	}
 }
 
 void sparks(Vec2f at, f32 angle, f32 speed, SColor color)
