@@ -8,7 +8,7 @@ const float recoilx = 50; // x shake (20)
 const float recoily = 100; // y shake (45)
 const float recoillength = 180; // how long to recoil (?)
 // RECOIL
-const float recoilforce = 1.2f; // amount to push player
+const float recoilforce = 0.65f; // amount to push player
 const u8 recoilcursor = 13; // amount to raise mouse pos
 const u8 sidewaysrecoil = 2; // sideways recoil amount
 const u8 sidewaysrecoildamp = 8; // higher number means less sideways recoil
@@ -19,7 +19,7 @@ const float adscushionamount = 1.0f; // lower means less recoil when aiming down
 const float lengthofrecoilarc = 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 
 // ACCURACY
-const u8 inaccuracycap = 69; // max amount of inaccuracy
+const u8 inaccuracycap = 80; // max amount of inaccuracy
 const u8 inaccuracypershot = 50; // aim inaccuracy  (+3 per shot)
 // delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 
