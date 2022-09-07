@@ -314,8 +314,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (getNet().isServer() && !this.hasTag("no_more_proj"))
 		{
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
-			//proj.Tag("heli");
-			proj.Tag("heavy");
+			proj.Tag("heli");
 			proj.server_SetTimeToDie(8);
 
 			CInventory@ inv = this.getInventory();
