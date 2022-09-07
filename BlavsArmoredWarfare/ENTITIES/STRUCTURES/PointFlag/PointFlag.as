@@ -73,7 +73,7 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 
 void onTick(CBlob@ this)
 {
-    float capture_distance = 80.0f; //Distance from this blob that it can be cpaped
+    float capture_distance = 64.0f; //Distance from this blob that it can be cpaped
 
     u8 num_blue = 0;
     u8 num_red = 0;
@@ -84,7 +84,7 @@ void onTick(CBlob@ this)
 
     for (u16 i = 0; i < blobs.size(); i++)
     {
-        if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead") && blobs[i].getName() != "slave") // Only players and no builders
+        if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead") && blobs[i].getName() != "slave" && !blobs[i].isAttached()) // Only players and no builders
         {
         	if (blobs[i].getTeamNum() == 0)
         	{
@@ -257,7 +257,7 @@ void onRender(CSprite@ this)
 	GUI::SetFont("menu");
 
 	// adjust vertical offset depending on zoom
-	Vec2f pos2d =  blob.getInterpolatedScreenPos() + Vec2f(0.0f, (blob.getHeight()-100.0f));
+	Vec2f pos2d =  blob.getInterpolatedScreenPos() + Vec2f(0.0f, (blob.getHeight()-50.0f));
 	
 	f32 wave = Maths::Sin(getGameTime() / 5.0f) * 5.0f - 25.0f;
 
