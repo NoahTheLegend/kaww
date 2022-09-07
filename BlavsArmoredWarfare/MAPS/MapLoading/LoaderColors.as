@@ -250,12 +250,9 @@ namespace map_colors
 
 		// KAWW
 
-<<<<<<< HEAD
 		blue_turret            = 0xff250b91,
 		red_turret             = 0xff910b2d,
 
-=======
->>>>>>> parent of b5be760 (Added auto base defense turret)
 		b_vehiclebuilder       = 0xff3e3c47,
 		r_vehiclebuilder       = 0xff473339,
 
@@ -293,6 +290,7 @@ namespace map_colors
 
 		civcar                 = 0xfff0692e,
 		lada                   = 0xffaeff4c,
+		jourcop                = 0xffaeaa00,
 	
 
 		sign		           = 0xff93723a,
