@@ -234,8 +234,8 @@ shared class TDMSpawns : RespawnSystem
 				RemovePlayerFromSpawn(player);
 				if (getGameTime() >= 300 && !getRules().isWarmup())
 				{
-					CBlob@ b = getBlobByName("pointflag");
-					if (b is null)
+					//CBlob@ b = getBlobByName("pointflag");
+					//if (b is null)
 						decrementTickets(getRules(), playerBlob.getTeamNum());
 				}
 
