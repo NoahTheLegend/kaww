@@ -24,7 +24,6 @@ void onInit(CBlob@ this)
 	this.Tag("turret");
 	this.Tag("tank");
 	this.Tag("blocks bullet");
-	this.Tag("heavy");
 
 	Vehicle_Setup(this,
 	    0.0f, // move speed
