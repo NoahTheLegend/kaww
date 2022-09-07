@@ -103,7 +103,6 @@ void onRender(CSprite@ this)
 
 				//GUI::DrawShadowedText(Maths::Ceil((blob.getHealth() / blob.getInitialHealth()) * (blob.getInitialHealth() * 100)) + "/" + blob.getInitialHealth() * 100, Vec2f(pos2d.x - dim.x + 3, pos2d.y + y - 3), SColor(0xffffffff));
 
-				GUI::SetFont("text");
 				GUI::DrawShadowedText(blob.getInventoryName(), Vec2f(pos2d.x - dim.x + 3, pos2d.y + y - 3), SColor(0xffffffff));
 			}
 		}
