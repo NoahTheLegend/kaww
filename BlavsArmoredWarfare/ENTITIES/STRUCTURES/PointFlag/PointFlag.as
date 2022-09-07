@@ -54,10 +54,15 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 			b.getTeamNum() == 0 ? blue++ : red++;
 		}
 	}
-	CBitStream params;
-	if (red == 0 && blue == blobs.length) params.write_u8(0);
-	else if (blue == 0 && red == blobs.length) params.write_u8(1);
-	getRules().SendCommand(getRules().getCommandID("flag_cap_won"), params);
+	u8 team;
+	if (red == 0 && blue == blobs.length) team = 0;
+	else if (blue == 0 && red == blobs.length) team = 1;
+	if (getRules() !is null)
+	{
+		getRules().SetTeamWon(team);
+		getRules().SetCurrentState(GAME_OVER);
+		getRules().SetGlobalMessage(getRules().getTeam(team).getName() + " wins the game!" );
+	}
 }
 
 void onTick(CBlob@ this)
