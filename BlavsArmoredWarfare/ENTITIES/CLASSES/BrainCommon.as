@@ -153,8 +153,9 @@ void DefaultChaseBlob(CBlob@ blob, CBlob @target)
 		{
 			//if (!isFriendAheadOfMe(blob, target))
 			{
-				brain.SetSuggestedKeys();  // set walk keys here
+				//brain.SetSuggestedKeys();  // set walk keys here
 			}
+			JustGo(blob, target);
 		}
 		else
 		{
