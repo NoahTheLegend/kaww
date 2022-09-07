@@ -82,6 +82,7 @@ ConfigFile cfg_playertechs;
 
 string cost_config_file = "tdm_vars.cfg";
 
+
 void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 {
     if (cmd == this.getCommandID("flag_cap_won"))
@@ -380,7 +381,7 @@ shared class TDMCore : RulesCore
             for(u16 i = 0; i < team.spawns.size(); i++)
             {
                 TDMPlayerInfo@ info = cast < TDMPlayerInfo@ > (team.spawns[i]);
-                info.blob_name = (XORRandom(512) >= 256 ? "ranger" : "shotgun");
+                info.blob_name = (XORRandom(512) >= 256 ? "ranger" : "revolver");
             }
         }
     }
@@ -798,7 +799,7 @@ shared class TDMCore : RulesCore
 			rules.SetCurrentState(GAME_OVER);
 			rules.SetGlobalMessage("{WINNING_TEAM} wins the round!");
 			rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.name);
-			SetCorrectMapTypeShared();
+			//SetCorrectMapType();
 		}
 	}
 
@@ -856,7 +857,6 @@ shared class TDMCore : RulesCore
 		}
 	}
 
-
 	void SetCorrectMapTypeShared()
 	{
 		if (getPlayersCount() <= 4)
@@ -875,25 +875,109 @@ shared class TDMCore : RulesCore
 			print(">Loading larger map");
 		}
 	}
+
+	//void SetCorrectMapType()
+	//{
+	//	if (getPlayersCount() <= 1 || rules.get_u8("current_round") > 5)
+	//	{
+	//		//LoadMapCycle("MAPS/mapcycletrain.cfg");
+	//		LoadMapCycle("MAPS/mapcycle.cfg");
+//
+	//		print(">Loading training map");
+//
+	//		rules.set_u8("current_round", 1);
+	//	}
+	//	else if (getPlayersCount() < 5)
+	//	{
+	//		LoadMapCycle("MAPS/mapcycle.cfg");
+//
+	//		print(">Loading small map");
+	//	}
+	//	else
+	//	{
+	//		LoadMapCycle("MAPS/mapcycle.cfg");
+//
+	//		print(">Loading medium map");
+	//	}
+	//}
 };
 
-void SetCorrectMapType()
+//void SetCorrectMapTypeUnshared()
+//{
+//	CRules@ rules = getRules();
+//
+//	if (getPlayersCount() <= 1 || rules.get_u8("current_round") > 5)
+//	{
+//		print(">Loading training map");
+//
+//		rules.set_u8("current_round", 1);
+//	}
+//	else if (getPlayersCount() < 5)
+//	{
+//		LoadMapCycle("MAPS/mapcycle.cfg");
+//
+//		print(">Loading small map");
+//
+//		rules.set_u8("current_round", rules.get_u8("current_round") + 1);
+//	}
+//	else
+//	{
+//		LoadMapCycle("MAPS/mapcycle.cfg");
+//
+//		print(">Loading medium map");
+//
+//		rules.set_u8("current_round", rules.get_u8("current_round") + 1);
+//	}
+//}
+
+bool onServerProcessChat(CRules@ this, const string &in textIn, string &out textOut, CPlayer@ player) 
 {
+<<<<<<< HEAD
 	if (getPlayersCount() <= 4)
+=======
+	CBlob@ blob = player.getBlob();
+	if (blob is null) return true;
+
+	string command;
+	CPlayer@ actedPlayer;
+	string[]@ args = textIn.split(" ");
+
+	string map_name = getMap().getMapName();
+
+	SColor command_color(255, 128, 20, 128);
+
+	if (textIn == "!start")
+>>>>>>> parent of 72e9d51 (balancing and mapcycle based on pop)
 	{
-		LoadMapCycle("MAPS/mapcyclesmaller.cfg");
-		print(">Loading smaller map");
+		if (getMap().getMapName() == "KAWWTraining.png" && getPlayersCount() > 1)
+		{
+			//send_chat(this, player, "Starting the game!", command_color);
+
+			//SetCorrectMapTypeUnshared();
+			LoadNextMap();
+
+			this.set_u8("current_round", 1);
+		}
 	}
+<<<<<<< HEAD
 	else if (getPlayersCount() < 11)
+=======
+
+	if (textIn == "!nextmap" || textIn == "!next")
+>>>>>>> parent of 72e9d51 (balancing and mapcycle based on pop)
 	{
-		LoadMapCycle("MAPS/mapcycle.cfg");
-		print(">Loading medium map");
+		if (getMap().getMapName() != "KAWWTraining.png" && getPlayersCount() == 1)
+		{
+			//send_chat(this, player, "Skipping the map.", command_color);
+
+			//SetCorrectMapTypeUnshared();
+			LoadNextMap();
+
+			this.set_u8("current_round", 1);
+		}
 	}
-	else
-	{
-		LoadMapCycle("MAPS/mapcyclelarger.cfg");
-		print(">Loading larger map");
-	}
+
+	return true;
 }
 
 void onPlayerLeave(CRules@ this, CPlayer@ player)
@@ -913,7 +997,7 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 //pass stuff to the core from each of the hooks
 void Reset(CRules@ this)
 {
-	SetCorrectMapType();
+	//SetCorrectMapTypeUnshared();
 
 	string configstr = "Rules/CTF/ctf_vars.cfg";
 	ConfigFile cfg = ConfigFile(configstr);
@@ -932,7 +1016,7 @@ void Reset(CRules@ this)
 	this.set_s32("restart_rules_after_game_time", (core.spawnTime < 0 ? 5 : 10) * 20);
 
 	u8 randtime = XORRandom(101); // 0 to 100
-	if (randtime < 11) // bad conditions / night
+	if (randtime < 13) // bad conditions / night
 	{
 		printf("night");
 		getMap().SetDayTime(Maths::Abs(-0.18 + XORRandom(5)*0.05f));
@@ -963,9 +1047,35 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
         playercoins = cfg_playercoins.read_u32(player.getUsername());
     }
 
-    player.server_setCoins(40);
+    player.server_setCoins(30);
+
 
     print("New player joined.");
+    if (cfg_playertechs.exists(player.getUsername() + "_medic"))
+    {
+    	player.Tag("Medic");
+    	player.Sync("Medic", true);
+    }
+    if (cfg_playertechs.exists(player.getUsername() + "_lmg"))
+    {
+    	player.Tag("Lmg");
+    	player.Sync("Lmg", true);
+    }
+    if (cfg_playertechs.exists(player.getUsername() + "_anti"))
+    {
+    	player.Tag("Anti");
+    	player.Sync("Anti", true);
+    }
+    if (cfg_playertechs.exists(player.getUsername() + "_sniper"))
+    {
+    	player.Tag("Sniper");
+    	player.Sync("Sniper", true);
+    }
+    if (cfg_playertechs.exists(player.getUsername() + "_shotgun"))
+    {
+    	player.Tag("Shotgun");
+    	player.Sync("Shotgun", true);
+    }
 }
 
 void onTick(CRules@ this)
@@ -987,14 +1097,14 @@ void onTick(CRules@ this)
     }
 	if (getGameTime()%150==0) //every 5 seconds give a coin
 	{
-		if (this.get_s16("blueTickets") > 120) 
+		if (this.get_s16("blueTickets") > 150) 
 		{
-			this.set_s16("blueTickets", 120);
+			this.set_s16("blueTickets", 150);
 			this.Sync("blueTickets", true);
 		}
-		if (this.get_s16("redTickets") > 120)
+		if (this.get_s16("redTickets") > 150)
 		{
-			this.set_s16("redTickets", 120);
+			this.set_s16("redTickets", 150);
 			this.Sync("redTickets", true);
 		}
 		for (u16 i = 0; i < getPlayerCount(); i++)
