@@ -54,14 +54,16 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 			b.getTeamNum() == 0 ? blue++ : red++;
 		}
 	}
-	u8 team;
-	if (red == 0 && blue == blobs.length) team = 0;
-	else if (blue == 0 && red == blobs.length) team = 1;
-	if (getRules() !is null)
+	u8 team = 255;
+	if (red == 0) team = 0;
+	else if (blue == 0) team = 1;
+	printf(""+team);
+	if (getRules() !is null && team < 2)
 	{
 		getRules().SetTeamWon(team);
 		getRules().SetCurrentState(GAME_OVER);
-		getRules().SetGlobalMessage(getRules().getTeam(team).getName() + " wins the game!" );
+		CTeam@ teamis = getRules().getTeam(team);
+		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
 	}
 }
 
