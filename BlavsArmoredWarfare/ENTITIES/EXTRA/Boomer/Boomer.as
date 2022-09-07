@@ -286,7 +286,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	GUI::DrawIcon("LightCircle.png", Vec2f(getDriver().getScreenCenterPos().x - 256 + (XORRandom(20)-10), getDriver().getScreenCenterPos().y - 256 + (XORRandom(20)-10)), 0.5f);
+	//GUI::DrawIcon("LightCircle.png", Vec2f(getDriver().getScreenCenterPos().x - 256 + (XORRandom(20)-10), getDriver().getScreenCenterPos().y - 256 + (XORRandom(20)-10)), 0.5f);
 }
 
 void onTick(CSprite@ this)
