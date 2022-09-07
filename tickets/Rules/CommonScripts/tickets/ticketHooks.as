@@ -91,8 +91,6 @@ void onRestart(CRules@ this){
 
 void onRender(CRules@ this){
 
-	CBlob@ b = getBlobByName("pointflag");
-	if (b !is null) return;
 	s16 blueTickets=0;
 	s16 redTickets=0;
 
