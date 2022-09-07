@@ -43,7 +43,7 @@ void onTick(CBlob@ this)
 
 	CBlob@ targetblob = getBlobByNetworkID(this.get_u16(target_player_id)); //target's blob
 
-	this.getCurrentScript().tickFrequency = 12;
+	this.getCurrentScript().tickFrequency = 20;
 
 	if (this.get_u16(target_player_id) == 0) // don't have a target
 	{		
@@ -51,7 +51,6 @@ void onTick(CBlob@ this)
 		if (targetblob !is null)
 		{
 			this.set_u16(target_player_id, targetblob.getNetworkID());	
-			this.Sync(target_player_id, true);
 		}
 	}
 	else // i got a target
@@ -76,10 +75,9 @@ void onTick(CBlob@ this)
 
 			LoseTarget(this, targetblob);
 
-			if (XORRandom(200) == 0)
+			if (XORRandom(110) == 0)
 			{
 				this.set_u16(target_player_id, 0);
-				this.Sync(target_player_id, true);
 			}
 		}
 	}
@@ -111,7 +109,12 @@ void ClientFire(CBlob@ this)
 
 	if (isClient())
 	{
+<<<<<<< HEAD
 		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.1f, 0.90f + XORRandom(25) * 0.01f);
+=======
+
+		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.25f, 0.90f + XORRandom(15) * 0.01f);
+>>>>>>> parent of 6a598f5 (turret improvements)
 
 		makeGibParticle(
 		"EmptyShellSmall",               // file name
@@ -156,8 +159,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					this.set_bool("spawned", true);
 					bullet.Init();
 
+<<<<<<< HEAD
 					bullet.set_f32("bullet_damage_body", 0.14f);
 					bullet.set_f32("bullet_damage_head", 0.14f);
+=======
+					bullet.set_f32("bullet_damage_body", 0.18f);
+					bullet.set_f32("bullet_damage_head", 0.18f);
+>>>>>>> parent of 6a598f5 (turret improvements)
 					bullet.IgnoreCollisionWhileOverlapped(this);
 					bullet.server_setTeamNum(this.getTeamNum());
 					Vec2f pos_ = this.getPosition()-Vec2f(0.0f, 7.0f);
@@ -185,7 +193,6 @@ bool LoseTarget(CBlob@ this, CBlob@ targetblob)
 	if (XORRandom(19) == 0 && targetblob.hasTag("dead"))
 	{
 		this.set_u16(target_player_id, 0);
-		this.Sync(target_player_id, true);
 
 		return true;
 	}
@@ -203,9 +210,10 @@ CBlob@ getNewTarget(CBlob @blob, const bool seeThroughWalls = false, const bool 
 		Vec2f pos2 = potential.getPosition();
 		f32 distance;
 		if (potential !is blob && blob.getTeamNum() != potential.getTeamNum()
-		        && (pos2 - pos).getLength() < 700.0f
-		        && !potential.hasTag("dead")
-		        && (XORRandom(200) == 0 || isVisible(blob, potential, distance))
+		        && (pos2 - pos).getLength() < 3500.0f
+		        && (seeBehindBack || Maths::Abs(pos.x - pos2.x) < 40.0f || (blob.isFacingLeft() && pos.x > pos2.x) || (!blob.isFacingLeft() && pos.x < pos2.x))
+		        && !potential.hasTag("dead") && !potential.hasTag("migrant")
+		        && (XORRandom(30) == 0 || isVisible(blob, potential, distance))
 		   )
 		{
 			blob.set_Vec2f("last pathing pos", potential.getPosition());
