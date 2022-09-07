@@ -70,7 +70,6 @@ void onCreateInventoryMenu(CBlob@ this, CBlob@ forBlob, CGridMenu@ gridmenu)
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
-	if (this is null) return;
 	if (cmd == this.getCommandID("equip_head"))
 	{
 		u16 callerID;

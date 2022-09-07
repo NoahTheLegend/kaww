@@ -441,7 +441,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{ if (this is null) return;
+{
 	if (cmd == this.getCommandID("change_skin"))
 	{
 		if (isServer())

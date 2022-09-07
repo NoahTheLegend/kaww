@@ -408,7 +408,7 @@ void onRender(CRules@ this)
 }
 
 void onCommand(CRules@ this, u8 cmd, CBitStream @params)
-{ if (this is null) return;
+{
 	if (isClient())
 	{
 		if (cmd == this.getCommandID("killstreak message"))
