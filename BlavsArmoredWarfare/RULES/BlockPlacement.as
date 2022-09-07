@@ -38,7 +38,7 @@ void PlaceBlock(CBlob@ this, u8 index, Vec2f cursorPos)
 		u32 delay = this.get_u32("build delay");
 		SetBuildDelay(this, delay / 2); // Set a smaller delay to compensate for lag/late packets etc
 
-		//SendGameplayEvent(createBuiltBlockEvent(this.getPlayer(), bc.tile));
+		SendGameplayEvent(createBuiltBlockEvent(this.getPlayer(), bc.tile));
 	}
 }
 
