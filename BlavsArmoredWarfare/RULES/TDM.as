@@ -82,7 +82,7 @@ ConfigFile cfg_playertechs;
 
 string cost_config_file = "tdm_vars.cfg";
 
-/*
+
 void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 {
     if (cmd == this.getCommandID("flag_cap_won"))
@@ -94,7 +94,7 @@ void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 		this.SetCurrentState(GAME_OVER);
 		this.SetGlobalMessage(this.getTeam(team).getName() + " wins the game!" );
     }
-}*/
+}
 
 void Config(TDMCore@ this)
 {
@@ -235,8 +235,8 @@ shared class TDMSpawns : RespawnSystem
 				RemovePlayerFromSpawn(player);
 				if (getGameTime() >= 300 && !getRules().isWarmup())
 				{
-					//CBlob@ b = getBlobByName("pointflag");
-					//if (b is null)
+					CBlob@ b = getBlobByName("pointflag");
+					if (b is null)
 						decrementTickets(getRules(), playerBlob.getTeamNum());
 				}
 
