@@ -250,8 +250,8 @@ namespace map_colors
 
 		// KAWW
 
-		blue_turret            = 0xff250b91,
-		red_turret             = 0xff910b2d,
+		blue_turret       = 0xff250b91,
+		red_turret       = 0xff910b2d,
 
 		b_vehiclebuilder       = 0xff3e3c47,
 		r_vehiclebuilder       = 0xff473339,
