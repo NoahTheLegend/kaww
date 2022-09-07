@@ -100,7 +100,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{ if (this is null) return;
+{
 	if (cmd == this.getCommandID("shop made item"))
 	{
 		this.getSprite().PlaySound("/BuildVehicle.ogg");

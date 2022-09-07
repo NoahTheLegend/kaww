@@ -28,7 +28,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
-	if (this is null) return;
 	if (cmd == this.getCommandID("usemed"))
 	{
 		this.getSprite().PlaySound("Heart.ogg");

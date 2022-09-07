@@ -302,7 +302,7 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{ if (this is null) return;
+{
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
 		this.set_u32("next_shoot", getGameTime()+15);

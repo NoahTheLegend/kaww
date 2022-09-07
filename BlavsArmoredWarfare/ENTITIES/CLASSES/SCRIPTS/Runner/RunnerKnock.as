@@ -215,6 +215,5 @@ void onHealthChange(CBlob@ this, f32 oldHealth)
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
-	if (this is null) return;
 	KnockedCommands(this, cmd, params);
 }

@@ -436,7 +436,7 @@ CBlob@ CreateArrow(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel, u8 arrowType)
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{ if (this is null) return;
+{
 	if (cmd == this.getCommandID("shoot arrow"))
 	{
 		Vec2f arrowPos;
