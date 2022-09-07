@@ -107,7 +107,7 @@ void onTick(CBlob@ this)
     		this.set_u8("numcapping", num_red);
     		this.set_s8(teamcapping, 1);
 
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red * (getMap() !is null && getMap().tilemapwidth < 200 ? 2 : 1));
+    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red * (getMap() !is null && getMap().tilemapwidth < 200 ? 1.5 : 1));
 		}
     	else if (num_blue > 0 && num_red == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == 1 || this.getTeamNum() == 255)) // blue capping
     	{
