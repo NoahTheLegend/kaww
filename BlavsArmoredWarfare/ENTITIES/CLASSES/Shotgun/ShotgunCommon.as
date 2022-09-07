@@ -2,7 +2,7 @@ const string classname = "Ranger"; // case sensitive
 
 // DAMAGE
 const float damage_body = 0.3f;
-const float damage_head = 0.5f;
+const float damage_head = 0.42f;
 // SHAKE
 const float recoilx = 50; // x shake (20)
 const float recoily = 100; // y shake (45)

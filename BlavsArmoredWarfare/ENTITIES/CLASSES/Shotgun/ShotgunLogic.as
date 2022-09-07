@@ -8,9 +8,9 @@
 
 void onInit(CBlob@ this)
 {
-	this.set_u32("mag_bullets_max", 6); // mag size
+	this.set_u32("mag_bullets_max", 4); // mag size
 
-	this.set_u32("mag_bullets", 6);
+	this.set_u32("mag_bullets", 4);
 
 	ArcherInfo archer;
 	this.set("archerInfo", @archer);
