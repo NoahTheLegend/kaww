@@ -425,7 +425,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			this.getSprite().PlaySound("BigDamage", 2.5f, 0.85f + XORRandom(40)*0.01f); 
 			this.getSprite().PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f);
 		}
-	}	
+		if (hitterBlob.hasTag("light"))
+		{
+			return damage / 3;
+		}
+	}
 	
 	return damage;
 }
