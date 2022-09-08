@@ -42,14 +42,10 @@ void onInit(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nUses 105mm & 7.62mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
-	
 	}
-	if (getBlobByName("pointflag") is null)
 	{
-		{
-			ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nUses 105mm");
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 120);
-		}
+		ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nUses 105mm");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 120);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.");
