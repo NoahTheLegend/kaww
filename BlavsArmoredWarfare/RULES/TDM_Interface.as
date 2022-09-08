@@ -38,42 +38,6 @@ shared class FlagsInfo {
         CBlob@[] flags;
         getBlobsByName("pointflag", @flags);
 
-
-		if (getGameTime() < 300 || !getRules().get_bool("done_sorting"))
-		{
-			f32[] pos;
-
-			for (u8 i = 0; i < flags.length; i++)
-        	{
-        	    CBlob@ flag = flags[i];
-        	    if (flag is null) continue;
-				f32 posx = flag.getPosition().x;
-				pos.push_back(posx);
-			}
-
-			for (u16 i = 0; i < pos.length-1; i++) // sort with swapping positions change icons positions
-			{
-				if (pos[i] > pos[i+1])
-				{
-					Vec2f bpos = flags[i].getPosition();
-					f32 temp = pos[i];
-
-					pos[i] = pos[i+1];
-					pos[i+1] = temp;
-					flags[i].setPosition(flags[i+1].getPosition());
-					flags[i].getShape().SetPosition(flags[i+1].getShape().getPosition()); // shape position is needed, otherwise wrong HUD
-					flags[i+1].setPosition(bpos);
-					flags[i+1].getShape().SetPosition(bpos);
-
-					i = 0;
-				}
-				if (i == flags.length-2)
-				{
-					getRules().set_bool("done_sorting", true);
-				}
-			}
-		}		
-
         for (u8 i = 0; i < flags.length; i++)
         {
         	CBlob@ flag = flags[i];
@@ -89,10 +53,31 @@ shared class FlagsInfo {
                 team_state = 2; // alert!!!
             }
 
-			GUI::DrawIcon("CTFGui.png", 0, Vec2f(16,32), start_pos + Vec2f(36.0f*i, 0), 1.0f, team_num);
-            if (team_state == 2) GUI::DrawIcon("CTFGui.png", 1, Vec2f(16,32), start_pos + Vec2f(36.0f*i + 2, 48), 1.0f, team_num);
+			FlagIcon icon;
+			if (icon !is null)
+			{
+				u8 bigger = 0;
+				for (u8 j = 0; j < flags.length; j++) // set offset from left depending on x coordinate
+				{
+					if (flags[j] !is null)
+					{
+						if (flag.getPosition().x > flags[j].getPosition().x) bigger++;
+					}
+				}
+				icon.xpos = 36.0f*bigger;
+				icon.drawIcon(start_pos, team_state, team_num);
+			}
         }
     }
+};
+
+shared class FlagIcon {
+	f32 xpos;
+	void drawIcon(Vec2f start_pos, u8 team_state, u8 team_num)
+	{
+		GUI::DrawIcon("CTFGui.png", 0, Vec2f(16,32), start_pos + Vec2f(xpos, 0), 1.0f, team_num);
+    	if (team_state == 2) GUI::DrawIcon("CTFGui.png", 1, Vec2f(16,32), start_pos + Vec2f(xpos + 2, 48), 1.0f, team_num);
+	}
 };
 
 void onRender(CRules@ this)
