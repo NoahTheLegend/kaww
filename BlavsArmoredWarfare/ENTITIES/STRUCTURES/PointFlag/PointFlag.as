@@ -1,7 +1,9 @@
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
-const u16 capture_time = 2000;
+const u16 capture_time = 200;
+
+//flags HUD is in TDM_Interface
 
 void onInit(CBlob@ this)
 {
@@ -265,7 +267,7 @@ void sparks(Vec2f at, f32 angle, f32 speed, SColor color)
 void onRender(CSprite@ this)
 {
 	CBlob@ blob = this.getBlob();
-	if (blob is null || blob.hasTag("no_cap_bar")) return;
+	if (blob is null) return;
 
 	u16 returncount = blob.get_u16(capture_prop);
 	if (returncount == 0) return;
