@@ -40,7 +40,7 @@ void DoExplosion(CBlob@ this, Vec2f velocity)
 				if (b is null) continue;
 				if (b.hasTag("flesh") || b.hasTag("vehicle"))
 				{
-					this.server_Hit(b, b.getPosition(), this.getOldVelocity(), 5.0f / modifier, Hitters::keg);
+					this.server_Hit(b, b.getPosition(), this.getOldVelocity(), 5.0f / (modifier+1), Hitters::keg);
 				}
 			}
 		}
