@@ -67,14 +67,18 @@ void onRender(CRules@ this)
 	if (getMap().getMapName() == "KAWWTraining.png")
     {
     	GUI::SetFont("menu");
-   	 GUI::DrawTextCentered( "Bootcamp", Vec2f(getScreenWidth()/2,16), color_white );
+   	    GUI::DrawTextCentered("Bootcamp", Vec2f(getScreenWidth()/2,16), color_white);
 
         return;
     }
 
     GUI::SetFont("menu");
-    GUI::DrawTextCentered( "KILLS:", Vec2f(getScreenWidth()/2,16), color_white );
 
-    GUI::DrawText( ""+this.get_u16("blue_kills"), Vec2f(-25 + getScreenWidth()/2, 30), color_blue );
-    GUI::DrawText( ""+this.get_u16("red_kills"), Vec2f(15 + getScreenWidth()/2, 30), color_red );
+    u8 offsetx = 40;
+    u8 offsetx2 = 25;
+
+    //GUI::DrawIconByName("CTFGui.png", Vec2f(128.0f, 128.0f));
+
+    GUI::DrawText(""+this.get_u16("blue_kills"), Vec2f(getScreenWidth()/2 - offsetx, 30), color_blue);
+    GUI::DrawText(""+this.get_u16("red_kills"), Vec2f(getScreenWidth()/2 + offsetx2, 30), color_red);
 }
