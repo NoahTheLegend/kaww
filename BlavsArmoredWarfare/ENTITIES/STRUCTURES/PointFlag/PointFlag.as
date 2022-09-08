@@ -74,7 +74,7 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 
 void onTick(CBlob@ this)
 {
-    float capture_distance = 64.0f; //Distance from this blob that it can be cpaped
+    float capture_distance = 80.0f; //Distance from this blob that it can be cpaped
 
     u8 num_blue = 0;
     u8 num_red = 0;
