@@ -208,7 +208,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 	if (isServer() && this.getTeamNum() != blob.getTeamNum() && (blob.getName() == "wooden_platform" || blob.hasTag("door")))
 	{
-		if (blob.getName() != "stone_door")
+		//if (blob.getName() != "stone_door")
 		{
 			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 1.0f : 0.25f, Hitters::builder);
 			this.server_Die();
@@ -409,8 +409,9 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	}
 
 	if (blob.hasTag("destructable"))
-	{
-		return true;
+	{//xxx
+		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
+		return false;
 	}
 
 	if (blob.getShape().isStatic()) // this is annoying

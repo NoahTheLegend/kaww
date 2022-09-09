@@ -682,7 +682,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (this.get_u32("mag_bullets") > 0) this.set_u32("mag_bullets", this.get_u32("mag_bullets") - 1);
 		if (this.get_u32("mag_bullets") > this.get_u32("mag_bullets_max")) this.set_u32("mag_bullets", this.get_u32("mag_bullets_max"));
 
-		this.getSprite().PlaySound(shootsfx, 1.4f, 0.95f + XORRandom(15) * 0.01f);
+		this.getSprite().PlaySound(shootsfx, 1.2f, 0.90f + XORRandom(15) * 0.01f);
 		//this.set_u32("total_ammo", this.get_u32("total_ammo") - 1);
 	}
 	else if (cmd == this.getCommandID("sync_reload_to_server"))
