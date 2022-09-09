@@ -98,14 +98,8 @@ void DrawBanner(Vec2f center, CRules@ this)
     string text = "";
     text = this.get_string("bannertext");
     
-    GUI::DrawTextCentered(getTranslatedString(text), center, SColor(255, 148, 27, 27));
+    GUI::DrawTextCentered(getTranslatedString(text), center, SColor(255, 255, 255, 255));
 
-    if (this.get_s8("flagcount") > 1)
-    {
-        Driver@ driver = getDriver();
-        f32 wave = Maths::Sin(getGameTime() / 5.0f) * 5.0f - 25.0f;
-        GUI::DrawTextCentered("<<<", Vec2f((driver.getScreenWidth()/7) + wave, driver.getScreenHeight()/4.4), SColor(255, 148, 27, 27));
-    }
     
     
     //GUI::DrawIcon("TeamIcons.png", team, Vec2f(96, 96), center - Vec2f(96, 192) + offset, 1.0f, team);
