@@ -268,7 +268,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 		// shoot
 		if (charge_time == 0 && this.getTickSinceCreated() > 5 && semiauto ? just_action1 : is_action1)
 		{
-			moveVars.walkFactor *= 0.5f;
+			moveVars.walkFactor *= 0.75f;
 			moveVars.jumpFactor *= 0.7f;
 			moveVars.canVault = false;
 

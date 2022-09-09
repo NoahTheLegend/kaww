@@ -204,7 +204,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 		if (!isReloading && !menuopen || this.hasTag("attacking"))
 		{
-			moveVars.walkFactor *= 0.45f;
+			moveVars.walkFactor *= 0.75f;
 			this.Tag("scopedin");
 		}
 	}
@@ -271,7 +271,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 		// shoot
 		if (charge_time == 0 && this.getTickSinceCreated() > 5 && semiauto ? just_action1 : is_action1)
 		{
-			moveVars.walkFactor *= 0.5f;
+			moveVars.walkFactor *= 0.75f;
 			moveVars.jumpFactor *= 0.7f;
 			moveVars.canVault = false;
 
@@ -441,7 +441,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 							}
 						}
 						this.Tag("sprinting");
-						moveVars.walkFactor *= 1.0f;
+						moveVars.walkFactor *= 1.05f;
 						moveVars.walkSpeedInAir = 3.0f;
 						moveVars.jumpFactor *= 0.87f;
 					}
@@ -634,7 +634,7 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 	"ShellCasing",                      // sound
 	this.get_u8("team_color"));         // team number
 
-	this.getSprite().PlaySound(shootsfx, 1.25f, 0.95f + XORRandom(15) * 0.01f);
+	this.getSprite().PlaySound(shootsfx, 1.25f, 0.9f + XORRandom(15) * 0.01f);
 
 	if (canSend(this))
 	{

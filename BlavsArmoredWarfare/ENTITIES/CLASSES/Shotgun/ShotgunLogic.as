@@ -201,7 +201,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 		if (!isReloading && !menuopen || this.hasTag("attacking"))
 		{
-			moveVars.walkFactor *= 0.45f;
+			moveVars.walkFactor *= 0.75f;
 			this.Tag("scopedin");
 		}
 	}
@@ -270,7 +270,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 		// shoot
 		if (charge_time == 0 && this.getTickSinceCreated() > 5 && semiauto ? just_action1 : is_action1)
 		{
-			moveVars.walkFactor *= 0.5f;
+			moveVars.walkFactor *= 0.75f;
 			moveVars.jumpFactor *= 0.7f;
 			moveVars.canVault = false;
 
@@ -439,7 +439,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 							}
 						}
 						this.Tag("sprinting");
-						moveVars.walkFactor *= 1.0f;
+						moveVars.walkFactor *= 1.05f;
 						moveVars.walkSpeedInAir = 2.9f;
 						moveVars.jumpFactor *= 0.87f;
 					}
@@ -634,11 +634,11 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 		Vec2f targetVector = this.getAimPos() - this.getPosition();
 		f32 targetDistance = targetVector.Length();
 		f32 targetFactor = targetDistance / 367.0f;
-		f32 mod = this.isKeyPressed(key_action2) ? 0.5f : 0.65f;
+		f32 mod = this.isKeyPressed(key_action2) ? 0.55f : 0.65f;
 
 		for (uint i = 0; i < 5; i++)
 		{
-			ShootBullet(this, this.getPosition() - Vec2f(0,1), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((100 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(100 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, 11.59f * bulletvelocity);
+			ShootBullet(this, this.getPosition() - Vec2f(0,1), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((1000 + this.get_u8("inaccuracy")) - 500)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(120 + this.get_u8("inaccuracy")) - 60)*mod * targetFactor, 11.59f * bulletvelocity);
 		}
 		
 		ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
@@ -724,7 +724,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (this.get_u32("mag_bullets") > 0 && this.get_u32("next_bullet_take") <= getGameTime()) this.set_u32("mag_bullets", this.get_u32("mag_bullets") - 1);
 		this.set_u32("next_bullet_take", getGameTime()+1);
 		if (this.get_u32("mag_bullets") > this.get_u32("mag_bullets_max")) this.set_u32("mag_bullets", this.get_u32("mag_bullets_max"));
-		this.getSprite().PlaySound(shootsfx, 0.95f, 1.0f + XORRandom(25) * 0.01f);
+		this.getSprite().PlaySound(shootsfx, 0.9f, 0.95f + XORRandom(35) * 0.01f);
 	}
 	else if (cmd == this.getCommandID("sync_reload_to_server"))
 	{

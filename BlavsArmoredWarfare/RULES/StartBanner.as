@@ -14,12 +14,18 @@ void onInit(CRules@ this)
         GUI::LoadFont("AveriaSerif-Bold_32", AveriaSerif, 32, true);
     }
 
+
+
     onRestart(this);
 }
 
 void onRestart(CRules@ this)
 {
     this.Untag("animateBanner");
+
+    this.set_s8("flagcount", -1);
+    this.set_string("bannertext", ".");
+
     bannerPos = Vec2f_zero;
     bannerDest = Vec2f_zero;
     frameTime = 0;
@@ -27,8 +33,29 @@ void onRestart(CRules@ this)
 
 void onTick(CRules@ this)
 {
-    if (getGameTime() < 370 && getMap().getMapName() != "KAWWTraining.png")
+    if (getGameTime() < 370)
     {
+        if (this.get_s8("flagcount") == -1)
+        {
+            CBlob@[] flags;
+            getBlobsByName("pointflag", @flags);
+
+            this.set_s8("flagcount", flags.length);
+
+            if (this.get_s8("flagcount") > 1)
+            {
+                this.set_string("bannertext", "Control all flags to win!");
+            }
+            else if (this.get_s8("flagcount") == 1)
+            {
+                this.set_string("bannertext", "Capture the flag to win!");
+            }
+            else
+            {
+                this.set_string("bannertext", "Reduce the enemy team's lives to 0 to win!");
+            }
+        }
+
         Driver@ driver = getDriver();
         if (driver !is null)
         {
@@ -59,19 +86,27 @@ void onRender(CRules@ this)
 
                 bannerPos = Vec2f_lerp(bannerStart, bannerDest, frameTime);
             }
-            DrawBanner(bannerPos);
+            DrawBanner(bannerPos, this);
         }
     }
 }
 
-void DrawBanner(Vec2f center)
+void DrawBanner(Vec2f center, CRules@ this)
 {
     GUI::SetFont("AveriaSerif-Bold_32");
 
     string text = "";
-    text = "Control all flags to win";
+    text = this.get_string("bannertext");
     
     GUI::DrawTextCentered(getTranslatedString(text), center, SColor(255, 148, 27, 27));
+
+    if (this.get_s8("flagcount") > 1)
+    {
+        Driver@ driver = getDriver();
+        f32 wave = Maths::Sin(getGameTime() / 5.0f) * 5.0f - 25.0f;
+        GUI::DrawTextCentered("<<<", Vec2f((driver.getScreenWidth()/7) + wave, driver.getScreenHeight()/4.4), SColor(255, 148, 27, 27));
+    }
+    
     
     //GUI::DrawIcon("TeamIcons.png", team, Vec2f(96, 96), center - Vec2f(96, 192) + offset, 1.0f, team);
 }

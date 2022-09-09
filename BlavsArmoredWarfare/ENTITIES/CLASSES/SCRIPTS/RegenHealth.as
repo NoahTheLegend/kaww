@@ -16,5 +16,5 @@ void onInit(CBlob@ this)
 void onTick(CBlob@ this)
 {
 	if (this.getHealth() > this.getInitialHealth() / 3.5f)
-		this.server_Heal(0.0625f);
+		this.server_Heal(0.07f);
 }

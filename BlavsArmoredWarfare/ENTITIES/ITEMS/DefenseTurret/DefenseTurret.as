@@ -62,7 +62,7 @@ void onTick(CBlob@ this)
 
 			f32 distance;
 			const bool visibleTarget = isVisible(this, targetblob, distance);
-			if (visibleTarget && distance < 725.0f)
+			if (visibleTarget && distance < 735.0f)
 			{
 				if (this.get_u32("next shot") < getGameTime())
 				{
@@ -156,16 +156,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					this.set_bool("spawned", true);
 					bullet.Init();
 
-					bullet.set_f32("bullet_damage_body", 0.16f);
-					bullet.set_f32("bullet_damage_head", 0.16f);
+					bullet.set_f32("bullet_damage_body", 0.18f);
+					bullet.set_f32("bullet_damage_head", 0.20f);
 					bullet.IgnoreCollisionWhileOverlapped(this);
 					bullet.server_setTeamNum(this.getTeamNum());
 					Vec2f pos_ = this.getPosition()-Vec2f(0.0f, 7.0f);
 					bullet.setPosition(pos_);
 
 					f32 angle = getAimAngle(this);
-					angle += ((XORRandom(512) - 256) / 118.0f);
-					Vec2f vel = Vec2f(540.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
+					angle += ((XORRandom(512) - 256) / 132.0f);
+					Vec2f vel = Vec2f(530.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
 					bullet.setVelocity(vel);
 
 				}
