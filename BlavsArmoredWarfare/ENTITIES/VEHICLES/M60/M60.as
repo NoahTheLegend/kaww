@@ -191,7 +191,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))
 	{
-		return false;
+		return true;
 	}
 
 	if (blob.hasTag("flesh") && !blob.isAttached())
@@ -203,7 +203,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return Vehicle_doesCollideWithBlob_ground(this, blob);
 	}
 }
-
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
 	VehicleInfo@ v;

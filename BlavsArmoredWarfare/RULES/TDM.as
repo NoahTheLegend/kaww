@@ -803,7 +803,7 @@ shared class TDMCore : RulesCore
 
 			if (winteamIndex >= 0)
 			{
-				// add winning team coins
+				// give coins to the losing team.
 				if (rules.isMatchRunning())
 				{
 					CBlob@[] players;
@@ -813,9 +813,9 @@ shared class TDMCore : RulesCore
 						CPlayer@ player = players[i].getPlayer();
 						if (player !is null)
 						{
-							if (player.getTeamNum() == winteamIndex)
+							if (player.getTeamNum() != winteamIndex)
 							{
-								player.server_setCoins(player.getCoins() + 30);
+								player.server_setCoins(player.getCoins() + 60);
 							}	
 						}
 					}

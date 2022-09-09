@@ -1,7 +1,6 @@
 #include "ThrowCommon.as";
 #include "KnockedCommon.as";
 #include "RunnerCommon.as";
-#include "ShieldCommon.as";
 #include "BombCommon.as";
 #include "Hitters.as";
 #include "Recoil.as";
@@ -587,42 +586,39 @@ bool canSend(CBlob@ this)
 
 void ClientFire(CBlob@ this, const s8 charge_time)
 {
-	if (canSend(this))
+	Vec2f targetVector = this.getAimPos() - this.getPosition();
+	f32 targetDistance = targetVector.Length();
+	f32 targetFactor = targetDistance / 367.0f;
+
+	ShootBullet(this, this.getPosition() - Vec2f(0,2), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom(4 + this.get_u8("inaccuracy"))*targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(4 + this.get_u8("inaccuracy")))*targetFactor, 17.59f * bulletvelocity);
+
+	CMap@ map = getMap();
+	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+	
+	CPlayer@ p = getLocalPlayer();
+	if (p !is null)
 	{
-		Vec2f targetVector = this.getAimPos() - this.getPosition();
-		f32 targetDistance = targetVector.Length();
-		f32 targetFactor = targetDistance / 367.0f;
-
-		ShootBullet(this, this.getPosition() - Vec2f(0,2), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom(4 + this.get_u8("inaccuracy"))*targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(4 + this.get_u8("inaccuracy")))*targetFactor, 17.59f * bulletvelocity);
-
-		CMap@ map = getMap();
-		ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
-		
-		CPlayer@ p = getLocalPlayer();
-		if (p !is null)
+		CBlob@ local = p.getBlob();
+		if (local !is null)
 		{
-			CBlob@ local = p.getBlob();
-			if (local !is null)
+			CPlayer@ ply = local.getPlayer();
+
+			if (ply !is null && ply.isMyPlayer())
 			{
-				CPlayer@ ply = local.getPlayer();
+				f32 mod = 0.5; // make some smart stuff here?
+				if (this.isKeyPressed(key_action2)) mod *= 0.25;
 
-				if (ply !is null && ply.isMyPlayer())
-				{
-					f32 mod = 0.5; // make some smart stuff here?
-					if (this.isKeyPressed(key_action2)) mod *= 0.25;
+				ShakeScreen((Vec2f(recoilx - XORRandom(recoilx*2) + 1, -recoily + XORRandom(recoily) + 1) * mod), recoillength*mod, this.getInterpolatedPosition());
+				ShakeScreen(28*mod, 12*mod, this.getPosition());
 
-					ShakeScreen((Vec2f(recoilx - XORRandom(recoilx*2) + 1, -recoily + XORRandom(recoily) + 1) * mod), recoillength*mod, this.getInterpolatedPosition());
-					ShakeScreen(28*mod, 12*mod, this.getPosition());
+				this.set_u8("recoil_count", this.isKeyPressed(key_action2) ? recoilcursor*adscushionamount : recoilcursor);               //freq //ampt
+				this.set_s8("recoil_direction", (20 - XORRandom(41)) / sidewaysrecoildamp);
 
-					this.set_u8("recoil_count", this.isKeyPressed(key_action2) ? recoilcursor*adscushionamount : recoilcursor);               //freq //ampt
-					this.set_s8("recoil_direction", (20 - XORRandom(41)) / sidewaysrecoildamp);
-
-					//this.set_u8("recoil_count", recoilcursor);               //freq //ampt
-					//this.set_s8("recoil_direction", ((Maths::Sin(getGameTime()*0.1)/0.06f) + (20 - XORRandom(41))) / sidewaysrecoildamp);
+				//this.set_u8("recoil_count", recoilcursor);               //freq //ampt
+				//this.set_s8("recoil_direction", ((Maths::Sin(getGameTime()*0.1)/0.06f) + (20 - XORRandom(41))) / sidewaysrecoildamp);
 
 
-					this.set_u8("inaccuracy", this.get_u8("inaccuracy") + inaccuracypershot * (this.hasTag("sprinting")?2.0f:1.0f));
-				}
+				this.set_u8("inaccuracy", this.get_u8("inaccuracy") + inaccuracypershot * (this.hasTag("sprinting")?2.0f:1.0f));
 			}
 		}
 	}
