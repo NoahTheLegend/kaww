@@ -23,7 +23,7 @@ const u8 inaccuracycap = 80; // max amount of inaccuracy
 const u8 inaccuracypershot = 50; // aim inaccuracy  (+3 per shot)
 // delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 
-const bool semiauto = true;
+const bool semiauto = false;
 
 const s8 reloadtime = 58; // time to reload
 const string reloadsfx = classname + "_reload.ogg";
