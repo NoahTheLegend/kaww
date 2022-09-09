@@ -439,7 +439,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 							}
 						}
 						this.Tag("sprinting");
-						moveVars.walkFactor *= 0.9f;
+						moveVars.walkFactor *= 0.95f;
 						moveVars.walkSpeedInAir = 2.9f;
 						moveVars.jumpFactor *= 1.0f;
 					}

@@ -329,8 +329,10 @@ void onRender(CSprite@ this)
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x - 1,                        pos.y + y - 1),
 					   Vec2f(pos.x + dimension.x + 2,                        pos.y + y + dimension.y - 1));
 
+	
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
 					   Vec2f(pos.x + dimension.x - 1,                        pos.y + y + dimension.y - 2), color_team);
+
 
 	// whiteness
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 1,                        pos.y + y + 0),
@@ -342,9 +344,12 @@ void onRender(CSprite@ this)
 	// Health meter trim
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
 					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 1, pos.y + y + dimension.y - 2), color_mid);
-	// Health meter inside
-	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
-					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
+	if (blob.get_u8("numcapping") > 0)
+	{
+		// Health meter inside
+		GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
+						   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
+	}
 
 	//GUI::SetFont("menu");
 	GUI::DrawShadowedText("★ Capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 20), SColor(0xffffffff));

@@ -202,7 +202,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 		if (!isReloading && !menuopen || this.hasTag("attacking"))
 		{
-			moveVars.walkFactor *= 0.65f;
+			moveVars.walkFactor *= 0.75f;
 			this.Tag("scopedin");
 		}
 	}
@@ -252,7 +252,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	// shoot
 	if (charge_time == 0 && semiauto ? just_action1 : this.isKeyPressed(key_action1))
 	{
-		moveVars.walkFactor *= 0.5f;
+		moveVars.walkFactor *= 0.75f;
 		moveVars.jumpFactor *= 0.7f;
 		moveVars.canVault = false;
 
@@ -435,7 +435,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 				}
 
 				this.Tag("sprinting");
-				moveVars.walkFactor *= 1.05f;
+				moveVars.walkFactor *= 1.1f;
 				moveVars.walkSpeedInAir = 3.15f;
 				moveVars.jumpFactor *= 1.0f;
 			}

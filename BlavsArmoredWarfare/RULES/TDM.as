@@ -109,7 +109,7 @@ void Config(TDMCore@ this)
 	if (getMap() !is null && getMap().tilemapwidth < 200)  this.gameDuration = (getTicksASecond() * 60 * 15.0f) + this.warmUpTime;
 
 	//spawn after death time - set in gamemode.cfg, or override here
-	f32 spawnTimeSeconds = cfg.read_f32("spawnTimeSeconds", 5);//Maths::Min(3, 8-(getPlayersCount()/3))); //rules.playerrespawn_seconds
+	f32 spawnTimeSeconds = cfg.read_f32("spawnTimeSeconds", 3);//Maths::Min(3, 8-(getPlayersCount()/3))); //rules.playerrespawn_seconds
 	this.spawnTime = (getTicksASecond() * spawnTimeSeconds);
 
 	//how many players have to be in for the game to start
