@@ -9,7 +9,19 @@ void onInit(CBlob@ this)
 
 	this.setPosition(this.getPosition()+Vec2f(0,8));
 
-	this.SetFacingLeft(this.getTeamNum() == 1);
+	//this.SetFacingLeft(this.getTeamNum() == 1);
+
+	CSprite@ sprite = this.getSprite();
+	sprite.SetRelativeZ(-100.0f);
+	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", "Sandbags.png", 32, 32);
+	if (front !is null)
+	{
+		front.SetFrameIndex(11);
+		//sprite.SetFrameIndex(11);
+
+		front.SetRelativeZ(146.88f);
+		front.SetOffset(Vec2f(0.0f, -11.0f));
+	}
 }
 
 void onTick(CBlob@ this)

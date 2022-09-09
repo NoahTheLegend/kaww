@@ -283,7 +283,7 @@ void onRender(CSprite@ this)
 	
 	f32 wave = Maths::Sin(getGameTime() / 5.0f) * 5.0f - 25.0f;
 
-	Vec2f pos = pos2d + Vec2f(8.0f, 124.0f);
+	Vec2f pos = pos2d + Vec2f(8.0f, 150.0f);
 	Vec2f dimension = Vec2f(115.0f - 8.0f, 22.0f);
 	const f32 y = 0.0f;//blob.getHeight() * 100.8f;
 	

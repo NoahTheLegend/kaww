@@ -10,7 +10,7 @@
 
 	this.set_bool("light", true);
 
-	this.Tag("destructable");
+	this.Tag("destructable_nosoak");
 
 	this.getSprite().SetZ(-5);
 

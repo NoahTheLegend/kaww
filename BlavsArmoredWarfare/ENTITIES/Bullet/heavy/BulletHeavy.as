@@ -66,7 +66,7 @@ void onTick(CBlob@ this)
 	HitInfo@[] infos;
 	CMap@ map = this.getMap();
 	if (isServer() && map.isTileSolid(map.getTile(this.getPosition()).type)) this.server_Die();
-	if (map.getHitInfosFromArc(this.getPosition(), -angle, 12, 24.0f, this, true, @infos))
+	if (map.getHitInfosFromArc(this.getPosition(), -angle, (this.getTickSinceCreated() > 5 ? 13 : (this.getTickSinceCreated() < 2 ? 95 : 50)), 27.0f, this, true, @infos))
 	{
 		for (uint i = 0; i < infos.length; i ++)
 		{
@@ -172,11 +172,11 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 		// chance to break a block
 		
-		if (XORRandom(100) < Maths::Min((isStrong ? 100 : 40) * this.get_f32("bullet_damage_head"), (isStrong ? 100 : 30)))
+		//if (XORRandom(100) < Maths::Min((isStrong ? 100 : 80) * this.get_f32("bullet_damage_head"), (isStrong ? 100 : 80)))
 		{
-			if (map.getSectorAtPosition(this.getPosition(), "no build") is null && !map.isTileCastle(map.getTile(this.getPosition()).type))
+			if (map.getSectorAtPosition(this.getPosition(), "no build") is null)
 			{
-				map.server_DestroyTile(this.getPosition(), isStrong ? 1.5f : 0.25f, this);
+				map.server_DestroyTile(this.getPosition(), isStrong ? 2.5f : 2.0f, this);
 			}
 		}
 
@@ -307,7 +307,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	
 	if (this.getTickSinceCreated() > 1 && blob.isAttached())
 	{
-		if (XORRandom(10) == 0)
+		if (XORRandom(9) == 0)
 		{
 			return true;
 		}
@@ -379,6 +379,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if (blob.hasTag("destructable"))
 	{
 		return true;
+	}
+	if (blob.hasTag("destructable_nosoak"))
+	{
+		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
+		return false;
 	}
 
 	if (blob.getShape().isStatic()) // this is annoying
