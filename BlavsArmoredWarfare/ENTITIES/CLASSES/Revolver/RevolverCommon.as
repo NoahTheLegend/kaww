@@ -25,11 +25,11 @@ const u8 inaccuracypershot = 50; // aim inaccuracy  (+3 per shot)
 
 const bool semiauto = true;
 
-const s8 reloadtime = 63; // time to reload
+const s8 reloadtime = 64; // time to reload
 const string reloadsfx = classname + "_reload.ogg";
 const string shootsfx = classname + "_shoot.ogg";
 
-const u8 delayafterfire = 4; // time between shots 3
+const u8 delayafterfire = 6; // time between shots 3
 //const u8 randdelay = 0; // + randomness
 
 const float bulletvelocity = 1.6f; // speed that bullets fly

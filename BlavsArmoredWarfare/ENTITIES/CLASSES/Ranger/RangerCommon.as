@@ -5,10 +5,10 @@ const float damage_body = 0.35f;
 const float damage_head = 0.6f;
 // SHAKE
 const float recoilx = 13; // x shake (20)
-const float recoily = 52; // y shake (45)
+const float recoily = 56; // y shake (45)
 const float recoillength = 110; // how long to shake
 // RECOIL
-const float recoilforce = 0.1f; // amount to push player (0.1)
+const float recoilforce = 0.09f; // amount to push player (0.1)
 const u8 recoilcursor = 6; // amount to raise mouse pos per shot
 const u8 sidewaysrecoil = 2; // sideways recoil amount
 const u8 sidewaysrecoildamp = 10; // higher number means less sideways recoil
@@ -23,14 +23,14 @@ const u8 inaccuracypershot = 30; // aim inaccuracy  (+3 per shot)
 
 const bool semiauto = false;
 
-const s8 reloadtime = 55; // time to reload
+const s8 reloadtime = 60; // time to reload
 const string reloadsfx = classname + "_reload.ogg";
 const string shootsfx = classname + "_shoot.ogg";
 
 const u8 delayafterfire = 4; // time between shots 4
 const u8 randdelay = 1; // + randomness
 
-const float bulletvelocity = 1.65f; // speed that bullets fly 1.6
+const float bulletvelocity = 1.62f; // speed that bullets fly 1.6
 
 namespace ArcherParams
 {
