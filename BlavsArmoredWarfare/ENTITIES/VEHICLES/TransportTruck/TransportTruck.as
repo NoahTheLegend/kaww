@@ -231,28 +231,21 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (blob.hasTag("vehicle") && this.getTeamNum() != blob.getTeamNum())
+	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
+	if (blob.hasTag("vehicle"))
 	{
 		return true;
 	}
 
 	if (blob.hasTag("flesh") && !blob.isAttached())
 	{
-		if (blob.getPosition().y < this.getPosition().y)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return true;
 	}
 	else
 	{
 		return Vehicle_doesCollideWithBlob_ground(this, blob);
 	}
 }
-
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (blob !is null)

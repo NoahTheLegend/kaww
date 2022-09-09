@@ -304,6 +304,12 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	{
 		return false;
 	}
+
+	if (blob.hasTag("destructable_nosoak"))
+	{
+		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
+		return false;
+	}
 	
 	if (this.getTickSinceCreated() > 1 && blob.isAttached())
 	{
@@ -379,11 +385,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if (blob.hasTag("destructable"))
 	{
 		return true;
-	}
-	if (blob.hasTag("destructable_nosoak"))
-	{
-		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
-		return false;
 	}
 
 	if (blob.getShape().isStatic()) // this is annoying

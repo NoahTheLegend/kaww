@@ -70,7 +70,7 @@ void onTick(CBlob@ this)
 					this.SendCommand(this.getCommandID("shoot"));
 					this.set_bool("spawned", false);		
 
-					this.set_u32("next shot", getGameTime() + 8);			
+					this.set_u32("next shot", getGameTime() + 7);			
 				}
 			}
 

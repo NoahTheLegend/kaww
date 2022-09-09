@@ -9,7 +9,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u8 cooldown_time = 75;
+const u8 cooldown_time = 70; //75 old 
 const u8 recoil = 250;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
@@ -333,6 +333,8 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		bullet.setVelocity(vel);
 		bullet.setPosition(bullet.getPosition() + vel + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f));
 
+
+
 		this.AddForce(Vec2f(this.isFacingLeft() ? (recoil*5.0f) : (-recoil*5.0f), 0.0f));
 
 		if (isClient())
@@ -373,24 +375,6 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 	v.last_charge = _charge;
 	v.charge = 0;
 	v.cooldown_time = v.getCurrentAmmo().fire_delay;
-}
-
-bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
-{
-	if (blob.getTeamNum() == this.getTeamNum()) return false;
-	if (blob.hasTag("vehicle"))
-	{
-		return false;
-	}
-
-	if (blob.hasTag("flesh") && !blob.isAttached())
-	{
-		return false;
-	}
-	else
-	{
-		return Vehicle_doesCollideWithBlob_ground(this, blob);
-	}
 }
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)

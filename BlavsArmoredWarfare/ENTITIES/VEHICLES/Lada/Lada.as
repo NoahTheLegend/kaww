@@ -135,7 +135,20 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return Vehicle_doesCollideWithBlob_ground(this, blob);
+	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
+	if (blob.hasTag("vehicle"))
+	{
+		return true;
+	}
+
+	if (blob.hasTag("flesh") && !blob.isAttached())
+	{
+		return true;
+	}
+	else
+	{
+		return Vehicle_doesCollideWithBlob_ground(this, blob);
+	}
 }
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)

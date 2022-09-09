@@ -603,7 +603,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						// more force when starting
 						if (this.getShape().vellen < 0.1f)
 						{
-							moveForce *= 1.5f;
+							moveForce *= 2.5f;
 						}
 
 						if (this.isOnGround() || this.wasOnGround())
@@ -636,9 +636,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								this.SetFacingLeft(true);
 							}
-
-							//if (onwall)
-								//moveUp = true;
 						}
 
 						if (right)
@@ -660,9 +657,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								this.SetFacingLeft(false);
 							}
-
-							//if (onwall)
-								//moveUp = true;
 						}
 						}
 
@@ -684,15 +678,34 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						this.AddForce(force);
 					}
-					else if (left || right)
+
+					// tilt 
+					const bool down = ap.isKeyPressed(key_down) || ap.isKeyPressed(key_action3);
+					if (down)
 					{
-						moveUp = true;
+						f32 angle = this.getAngleDegrees();
+						//if  (angle < 20 && angle > 340)
+						{
+							if (this.isOnGround())
+							{
+								f32 rotvel = 0;
+
+								//f32 diff = 360 - this.getAngleDegrees();
+								//diff = (diff + 180) % 360 - 180;
+
+								//if (Maths::Abs(diff) > 1)
+								//rotvel += (this.isFacingLeft() ? 1: -1) * 2.75; // * 0.75 is rate
+
+								this.AddTorque(this.isFacingLeft() ? 420.0f : -420.0f);
+
+								this.setAngleDegrees(this.getAngleDegrees() + rotvel);
+								//return;
+							}
+						}
 					}
 
-					// climb uphills
-
-					const bool down = ap.isKeyPressed(key_down) || ap.isKeyPressed(key_action3);
-					if (onground && (down || moveUp))
+					
+					if (onground)// && (down || moveUp))
 					{
 						const bool faceleft = this.isFacingLeft();
 						if (angle > 330 || angle < 30)
@@ -703,21 +716,21 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								f32 mod = 1.0f;
 								if (isFlipped(this)) mod = 3.33f;
-								this.AddTorque(faceleft ? torque*mod : -torque*mod);
+								//this.AddTorque(faceleft ? torque*mod : -torque*mod);
 							}
-							else
-								this.AddTorque(((faceleft && left) || (!faceleft && right)) ? torque : -torque);
-							this.AddForce(Vec2f(0.0f, -500.0f * wallMultiplier));
+							//else
+								//this.AddTorque(((faceleft && left) || (!faceleft && right)) ? torque : -torque);
+							this.AddForce(Vec2f(0.0f, -100.0f * wallMultiplier));
 						}
 
 						if (isFlipped(this))
 						{
 							f32 angle = this.getAngleDegrees();
 							if (!left && !right)
-								this.AddTorque(angle < 180 ? -500 : 500);
-							else
-								this.AddTorque(((faceleft && left) || (!faceleft && right)) ? 500 : -500);
-							this.AddForce(Vec2f(0, -1000));
+								//this.AddTorque(angle < 180 ? -500 : 500);
+							//else
+								//this.AddTorque(((faceleft && left) || (!faceleft && right)) ? 500 : -500);
+							this.AddForce(Vec2f(0, -500));
 						}
 					}
 				}  // driver
@@ -1051,18 +1064,24 @@ void RemoveWheelsOnFlight(CBlob@ this)
 
 void Vehicle_LevelOutInAir(CBlob@ this)
 {
-	//if (!getMap().isInWater(this.getPosition()) && !this.wasOnGround() && !this.isOnGround())
+	f32 angle = this.getAngleDegrees();
+	if  (angle > 23 && angle < 337)
 	{
-		f32 rotvel = 0;
+		if (!getMap().isInWater(this.getPosition()) && !this.wasOnGround() && !this.isOnGround())
+		{
+			f32 rotvel = 0;
 
-		f32 diff = 360 - this.getAngleDegrees();
-		diff = (diff + 180) % 360 - 180;
+			f32 diff = 360 - this.getAngleDegrees();
+			diff = (diff + 180) % 360 - 180;
 
-		if (Maths::Abs(diff) > 1)
-			rotvel += (diff > 0 ? 1 : -1) * 1.05; // * 0.75 is rate
+			if (Maths::Abs(diff) > 1)
+				rotvel += (diff > 0 ? 1 : -1) * 0.75; // * 0.75 is rate
 
-		this.setAngleDegrees(this.getAngleDegrees() + rotvel);
-		return;
+			this.AddTorque(this.isFacingLeft() ? -400.0f : 400.0f);
+
+			this.setAngleDegrees(this.getAngleDegrees() + rotvel);
+			return;
+		}
 	}
 }
 

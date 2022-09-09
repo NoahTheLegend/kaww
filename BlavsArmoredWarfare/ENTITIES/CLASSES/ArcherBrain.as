@@ -11,6 +11,8 @@ void onInit(CBrain@ this)
 {
 	CBlob @blob = this.getBlob();
 
+	blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
+
 	InitBrain(this);
 
 	blob.set_u8("moveover", 0);
@@ -70,6 +72,8 @@ void onTick(CBrain@ this)
 		if (XORRandom(100) < 18)
 		{
 			blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
+
+
 		}
 
 
@@ -79,7 +83,6 @@ void onTick(CBrain@ this)
 		// unpredictable movement
 		if (getGameTime() % blob.get_u8("myKey") == 0 && XORRandom(3) == 0)
 		{
-			//print('asddddd!!!!!!!!!!');
 			if (blob.get_u8("moveover") == 0)
 			{
 				blob.set_u8("moveover", XORRandom(2)+1); // rand dir
@@ -91,7 +94,6 @@ void onTick(CBrain@ this)
 		}
 
 		//secondary random
-
 		if (blob.get_u8("moveover") != 0)
 		{
 			if (XORRandom(70) == 0)
@@ -131,7 +133,7 @@ void onTick(CBrain@ this)
 
 		blob.set_u8("strategy", strategy);
 
-		if (XORRandom(1000) == 0)
+		if (XORRandom(600) == 0)
 		{
 			@target = null;
 		}
@@ -180,9 +182,27 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 	Vec2f col;
 	if (!getMap().rayCastSolid(blob.getPosition() + blob.getVelocity()*2.5f, targetPos + getRandomVelocity( 0, target.getRadius() , 360 ) + target.getVelocity()*5.0f, col))
 	{
-		if (targetDistance > 25.0f)
+		if (targetDistance > 8.0f)
 		{
-			blob.setKeyPressed(key_action1, true);
+			if (targetDistance < 300.0f)
+			{
+				blob.setKeyPressed(key_action1, true);
+
+				if (blob.get_u8("myKey") % 13 == 0)
+				{
+					blob.setKeyPressed(key_action2, true);
+				}
+			}
+			else if (blob.get_u8("myKey") > 120 && targetDistance < 400.0f)
+			{
+				blob.setKeyPressed(key_action1, true);
+
+				if (blob.get_u8("myKey") % 2 == 0)
+				{
+					blob.setKeyPressed(key_action2, true);
+				}
+			}
+			
 
 			if (target !is null)
 			{
