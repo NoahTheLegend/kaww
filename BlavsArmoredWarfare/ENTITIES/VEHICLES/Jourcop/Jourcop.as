@@ -51,6 +51,16 @@ void onInit(CBlob@ this)
 	}
 
 	this.getCurrentScript().tickFrequency = 1;
+
+	CBlob@ bow = server_CreateBlob("heavygun");	
+
+	if (bow !is null)
+	{
+		bow.server_setTeamNum(this.getTeamNum());
+		this.server_AttachTo( bow, "BOW" );
+		this.set_u16("bowid", bow.getNetworkID());
+		bow.SetFacingLeft(this.isFacingLeft());
+	}
 	
 }
 

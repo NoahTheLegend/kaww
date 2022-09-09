@@ -60,22 +60,20 @@ void AddGameMusic(CBlob@ this, CMixer@ mixer)
 	// Tension: plays when team first caps middle point
 	// Domination: when one team controls all points for the first time
 	// Ambient: plays randomly but respects buffers, usually not music
-	/* 
-	mixer.AddTrack("Music6.ogg", world_battle);
-	mixer.AddTrack("Music7.ogg", world_battle);
-	mixer.AddTrack("Music8.ogg", world_battle);
-	mixer.AddTrack("Music9.ogg", world_battle);
-	mixer.AddTrack("Empty.ogg", world_battle);
-	mixer.AddTrack("Empty.ogg", world_battle);
+
+	
+	//mixer.AddTrack("Music7.ogg", world_battle); not good
 
 	mixer.AddTrack("Music1.ogg", world_intro);
 	mixer.AddTrack("Music2.ogg", world_intro);
 	mixer.AddTrack("Music3.ogg", world_intro);
 	mixer.AddTrack("Music4.ogg", world_intro);
 	mixer.AddTrack("Music5.ogg", world_intro);
+	mixer.AddTrack("Music6.ogg", world_intro);
+	mixer.AddTrack("Music8.ogg", world_intro);
+	mixer.AddTrack("Music9.ogg", world_battle);
 	mixer.AddTrack("Music10.ogg", world_intro);
 	mixer.AddTrack("Music11.ogg", world_intro);
-	*/
 
 	mixer.AddTrack("Kaww_01_theme.ogg", world_intro);
 	mixer.AddTrack("Kaww_02_theme.ogg", world_intro);
@@ -93,8 +91,6 @@ void AddGameMusic(CBlob@ this, CMixer@ mixer)
 	mixer.AddTrack("Kaww_10_theme.ogg", world_intro);
 	mixer.AddTrack("Kaww_13_theme.ogg", world_intro);
 	mixer.AddTrack("Kaww_14_theme.ogg", world_intro);
-	
-
 
 	mixer.AddTrack("Kaww_10_theme.ogg", world_intro);
 	mixer.AddTrack("Kaww_13_theme.ogg", world_intro);

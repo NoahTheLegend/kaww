@@ -299,7 +299,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	this.set_u32("no_heal", getGameTime()+15*30);
+	if (damage > 0.05f)
+	{
+		this.set_u32("no_heal", getGameTime()+10*30); //good idea, too much though
+	}
 	//AttachmentPoint@[] aps;
 	//if (this.getAttachmentPoints(@aps))
 	//{
@@ -319,7 +322,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		else if (this.hasTag("apc")) // pszh4 and btr82a
 		{
 			if (isServer())
-				this.server_Heal(0.775f);
+				this.server_Heal(0.775f);  //what tffff
 			return damage;
 		}
 	}

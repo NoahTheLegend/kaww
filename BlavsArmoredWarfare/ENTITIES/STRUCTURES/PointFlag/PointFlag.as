@@ -76,18 +76,18 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 
 void onTick(CBlob@ this)
 {
-    float capture_distance = 80.0f; //Distance from this blob that it can be cpaped
+    float capture_distance = 76.0f; //Distance from this blob that it can be cpaped
 
     u8 num_blue = 0;
     u8 num_red = 0;
 
     array<CBlob@> blobs; //Blob array full of blobs
     CMap@ map = getMap();
-    map.getBlobsInRadius(this.getPosition() + Vec2f(4.0f,0.0f), capture_distance, blobs);
+    map.getBlobsInRadius(this.getPosition() + Vec2f(4.0f,20.0f), capture_distance, blobs);
 
     for (u16 i = 0; i < blobs.size(); i++)
     {
-        if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead") && blobs[i].getName() != "slave" && !blobs[i].isAttached()) // Only players and no builders
+        if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead")) // Only players and builders    && blobs[i].getName() != "slave"
         {
         	if (blobs[i].getTeamNum() == 0)
         	{
@@ -100,6 +100,8 @@ void onTick(CBlob@ this)
         }
     }
 
+    bool isTDM = (getMap().tilemapwidth < 200);
+
     this.set_u8("numcapping", 0);
 
     if (num_red > 0 || num_blue > 0)
@@ -109,14 +111,16 @@ void onTick(CBlob@ this)
     		this.set_u8("numcapping", num_red);
     		this.set_s8(teamcapping, 1);
 
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red * (getMap() !is null && getMap().tilemapwidth < 200 ? 1.5 : 1));
+    		num_red = Maths::Min(num_red, 2);
+    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red * (getMap() !is null && isTDM ? 1 : 2.5));
 		}
     	else if (num_blue > 0 && num_red == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == 1 || this.getTeamNum() == 255)) // blue capping
     	{
     		this.set_u8("numcapping", num_blue);
     		this.set_s8(teamcapping, 0);
 
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue * (getMap() !is null && getMap().tilemapwidth < 200 ? 1.5 : 1));
+    		num_red = Maths::Min(num_blue, 2);
+    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue * (getMap() !is null && isTDM ? 1 : 2.5));
 		}
     }
 	else if (this.get_u16(capture_prop) > 0
@@ -279,8 +283,8 @@ void onRender(CSprite@ this)
 	
 	f32 wave = Maths::Sin(getGameTime() / 5.0f) * 5.0f - 25.0f;
 
-	Vec2f pos = pos2d + Vec2f(8.0f, 224.0f);
-	Vec2f dimension = Vec2f(115.0f - 8.0f, 20.0f);
+	Vec2f pos = pos2d + Vec2f(8.0f, 124.0f);
+	Vec2f dimension = Vec2f(115.0f - 8.0f, 22.0f);
 	const f32 y = 0.0f;//blob.getHeight() * 100.8f;
 	
 	f32 percentage = 1.0f - float(returncount) / float(blob.getTeamNum() == 255 ? capture_time/2 : capture_time);
@@ -343,5 +347,5 @@ void onRender(CSprite@ this)
 					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
 
 	//GUI::SetFont("menu");
-	GUI::DrawShadowedText("Capturing...", Vec2f(pos.x - dimension.x + -2, pos.y + 18), SColor(0xffffffff));
+	GUI::DrawShadowedText("★ Capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 20), SColor(0xffffffff));
 }

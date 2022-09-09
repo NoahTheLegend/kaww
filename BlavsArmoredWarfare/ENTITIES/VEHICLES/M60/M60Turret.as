@@ -394,7 +394,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 	if (blob.hasTag("flesh") && !blob.isAttached())
 	{
-		return true;
+		return false;
 	}
 	else
 	{
