@@ -409,7 +409,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	}
 
 	if (blob.hasTag("destructable"))
-	{//xxx
+	{
+		return true;
+	}
+	if (blob.hasTag("destructable_nosoak"))
+	{
 		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
 		return false;
 	}
