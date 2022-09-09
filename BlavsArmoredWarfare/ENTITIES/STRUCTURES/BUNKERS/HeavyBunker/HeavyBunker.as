@@ -15,7 +15,7 @@ void onInit(CBlob@ this)
 	if (front !is null)
 	{
 		front.addAnimation("default", 0, false);
-		int[] frames = { 0, 1, 2, 3, 4, 5, 6};
+		int[] frames = { 0, 1, 2, 3};
 		front.animation.AddFrames(frames);
 		front.SetRelativeZ(65.8f);
 		front.SetOffset(Vec2f(0.0f, 0.0f));
@@ -29,6 +29,17 @@ void onDie(CBlob@ this)
 	if (!isServer())
 		return;
 	server_CreateBlob("constructionyard",this.getTeamNum(),this.getPosition());
+}
+
+void onHealthChange(CBlob@ this, f32 health_old)
+{
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+
+	CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
+	if (front is null) return;
+
+	front.animation.frame = u8((this.getInitialHealth() - this.getHealth()) / (this.getInitialHealth() / front.animation.getFramesCount()));
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
