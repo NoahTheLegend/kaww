@@ -716,7 +716,10 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								f32 mod = 1.0f;
 								if (isFlipped(this)) mod = 3.33f;
-								//this.AddTorque(faceleft ? torque*mod : -torque*mod);
+								{
+									this.AddTorque(faceleft ? torque*mod : -torque*mod);
+								}
+								//
 							}
 							//else
 								//this.AddTorque(((faceleft && left) || (!faceleft && right)) ? torque : -torque);
@@ -727,10 +730,10 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						{
 							f32 angle = this.getAngleDegrees();
 							if (!left && !right)
-								//this.AddTorque(angle < 180 ? -500 : 500);
-							//else
-								//this.AddTorque(((faceleft && left) || (!faceleft && right)) ? 500 : -500);
-							this.AddForce(Vec2f(0, -500));
+								this.AddTorque(angle < 180 ? -900 : 900);
+							else
+								this.AddTorque(((faceleft && left) || (!faceleft && right)) ? 500 : -500);
+							this.AddForce(Vec2f(0, -1800));
 						}
 					}
 				}  // driver
