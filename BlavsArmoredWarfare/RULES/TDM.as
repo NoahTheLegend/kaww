@@ -22,6 +22,12 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 		if(numTickets<=0)return 1;
 		numTickets--;
 
+		if (numTickets==0)
+		{
+			this.set_s16("redTickets", this.get_s16("redTickets") / 2);
+			this.Sync("redTickets", true);
+		} 
+
 		this.set_s16("blueTickets", numTickets);
 		this.Sync("blueTickets", true);
 		return 0;
@@ -29,6 +35,12 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 		numTickets=this.get_s16("redTickets");
 		if(numTickets<=0)return 1;
 		numTickets--;
+
+		if (numTickets==0)
+		{
+			this.set_s16("blueTickets", this.get_s16("blueTickets") / 2);
+			this.Sync("redTickets", true);
+		} 
 
 		this.set_s16("redTickets", numTickets);
 		this.Sync("redTickets", true);
