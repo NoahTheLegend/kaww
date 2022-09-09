@@ -1,4 +1,4 @@
-#include "Hitters.as";
+#include "Explosion.as";
 
 void onInit(CBlob@ this)
 {
@@ -8,20 +8,20 @@ void onInit(CBlob@ this)
 
 	this.getShape().getConsts().mapCollisions = false;
 
-	this.SetFacingLeft(this.getTeamNum() == 1);
-}
-
-void onTick(CBlob@ this)
-{
-	if (isServer() && this.getTickSinceCreated() == 180 && getGameTime() <= 210)
+	CSprite@ sprite = this.getSprite();
+	sprite.SetAnimation("back");
+	sprite.SetZ(-30.0f);
+	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 32, 32);
+	if (front !is null)
 	{
-		CMap@ map = this.getMap();
-		if (map !is null)
-		{//dont rotate it depending on side after constructing map
-			this.server_setTeamNum(this.getPosition().x > map.tilemapwidth*4 ? 1 : 0);
-			this.SetFacingLeft(this.getPosition().x > map.tilemapwidth*4);
-		}
+		front.addAnimation("default", 0, false);
+		int[] frames = { 0, 1, 2, 3, 4, 5, 6};
+		front.animation.AddFrames(frames);
+		front.SetRelativeZ(65.8f);
+		front.SetOffset(Vec2f(0.0f, 0.0f));
 	}
+
+	this.SetFacingLeft(this.getTeamNum() == 1);
 }
 
 void onDie(CBlob@ this)
@@ -44,23 +44,19 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	return false;
 }
 
+
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (hitterBlob.getName() == "grenade")
 	{
-		return damage * 3;
+		return damage * 2;
 	}
-	if (customData == Hitters::flying || customData == Hitters::flying)
+	if (customData == Hitters::flying)
 	{
-		this.server_Hit(hitterBlob, hitterBlob.getPosition(), this.getOldVelocity(), 3.5f, Hitters::flying, true);
+		this.server_Hit(hitterBlob, hitterBlob.getPosition(), this.getOldVelocity(), 5.0f, Hitters::flying, true);
+
 		if (!hitterBlob.hasTag("deal_bunker_dmg")) return 0;
 		return damage / 35;
-	}
-	if (customData == Hitters::arrow)
-	{
-		//this.server_Hit(hitterBlob, hitterBlob.getPosition(), this.getOldVelocity(), 3.5f, Hitters::flying, true);
-
-		return damage * 1.5;
 	}
 	if (customData == Hitters::explosion)
 	{
@@ -71,6 +67,5 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (!hitterBlob.hasTag("deal_bunker_dmg")) return 0;
 		return Maths::Min(0.2f, damage);
 	}
-	
 	return damage;
 }

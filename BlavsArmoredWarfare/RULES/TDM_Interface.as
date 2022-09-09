@@ -167,7 +167,7 @@ void onRender(CRules@ this)
 				}
 				else if (hud.kills_limit == -2)
 				{
-					kills = getTranslatedString("SUDDEN DEATH");
+					kills = getTranslatedString("ARMORED WAR");
 				}
 
 				GUI::DrawText(kills, topLeft + Vec2f(64, 42), SColor(255, 255, 255, 255));
