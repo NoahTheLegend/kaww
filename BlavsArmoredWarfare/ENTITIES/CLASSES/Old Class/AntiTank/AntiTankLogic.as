@@ -563,6 +563,8 @@ void onTick(CBlob@ this)
 	{
 		return;
 	}
+
+	if (this.getTickSinceCreated() <= 1) this.set_u32("mag_bullets", 0);
 	
 	if (isKnocked(this) || this.isInInventory())
 	{
