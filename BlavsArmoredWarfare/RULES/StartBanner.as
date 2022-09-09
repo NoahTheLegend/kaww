@@ -69,7 +69,7 @@ void DrawBanner(Vec2f center)
     GUI::SetFont("AveriaSerif-Bold_32");
 
     string text = "";
-    text = "Towne, aquire points by killing enemies in the objective area.";
+    text = "Control all flags to win";
     
     GUI::DrawTextCentered(getTranslatedString(text), center, SColor(255, 148, 27, 27));
     

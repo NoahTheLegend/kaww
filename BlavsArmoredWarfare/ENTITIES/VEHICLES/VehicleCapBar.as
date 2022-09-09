@@ -154,5 +154,5 @@ void onRender(CSprite@ this)
 					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
 
 	//GUI::SetFont("menu");
-	GUI::DrawShadowedText("Capturing...", Vec2f(pos.x - dimension.x + -2, pos.y + 12), SColor(0xffffffff));
+	GUI::DrawShadowedText("★ Capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 12), SColor(0xffffffff));
 }

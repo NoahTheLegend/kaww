@@ -7,7 +7,7 @@ void onInit(CBlob@ this)
 	
 	this.getShape().getConsts().mapCollisions = false;
 
-	this.getCurrentScript().tickFrequency = 50;
+	this.getCurrentScript().tickFrequency = 48;
 
 	this.Tag("builder always hit");
 	this.Tag("structure");

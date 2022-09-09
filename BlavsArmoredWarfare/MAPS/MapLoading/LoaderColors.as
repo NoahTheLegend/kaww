@@ -301,6 +301,8 @@ namespace map_colors
 		chair		           = 0xff1b140f,
 		camp		           = 0xff372115,
 
+		refinery               = 0xff68e95f,
+
 
 		blue_munitionsshop     = 0xffa4a2f6,
 		red_munitionsshop      = 0xfff6c2a2,

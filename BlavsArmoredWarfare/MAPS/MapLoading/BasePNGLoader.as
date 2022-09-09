@@ -393,6 +393,8 @@ class PNGLoader
 			case map_colors::bomber:      autotile(offset); spawnVehicle(map, "bomber",   offset); break;
 
 			// KAWW
+			case map_colors::refinery:    autotile(offset); spawnBlob(map, "refinery", offset); break;
+
 			case map_colors::red_turret:       autotile(offset); spawnVehicle(map, "defenseturret",   offset, 1); break;
 			case map_colors::blue_turret:      autotile(offset); spawnVehicle(map, "defenseturret",   offset, 0); break;
 

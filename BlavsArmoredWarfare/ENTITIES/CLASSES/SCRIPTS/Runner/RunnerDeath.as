@@ -29,15 +29,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				if (hitterBlob.getPosition().y < this.getPosition().y - 3.2f && !hitterBlob.hasTag("flesh"))
 				{
 					Sound::Play("HitmarkerHeadshot.ogg", damageowner.getPosition(), 0.85f, 0.75f + (15 - (this.getHealth()/this.getInitialHealth())*15) * 0.01f);
-
-					//damageowner.getSprite().PlaySound("HitmarkerHeadshot.ogg", 0.8f, 0.75f + (15 - (this.getHealth()/this.getInitialHealth())*15) * 0.01f);
 					damageowner.set_u8("hitmarker", 30); // is actually 10
 				}
 				else
 				{
 					Sound::Play("Hitmarker.ogg", damageowner.getPosition(), 2.6f, 0.75f + (50 - (this.getHealth()/this.getInitialHealth())*50) * 0.01f);
-
-					//damageowner.getSprite().PlaySound("Hitmarker.ogg", 2.5f, 0.75f + (50 - (this.getHealth()/this.getInitialHealth())*50) * 0.01f);  //heavy
 					damageowner.set_u8("hitmarker", 7); // is actually 7
 				}
 			}
@@ -58,21 +54,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		this.set_u32("death time", getGameTime());
 
 		this.UnsetMinimapVars(); //remove minimap icon
-
-		// blood thirst healing
-		if (hitterBlob.getDamageOwnerPlayer() !is null)
-		{
-			if (hitterBlob.getDamageOwnerPlayer().getBlob() !is null)
-			{
-				if (hitterBlob.getDamageOwnerPlayer().getBlob().getSprite() !is null && this !is hitterBlob)
-				{
-					if (hitterBlob.getDamageOwnerPlayer().hasTag("Blood Thirst"))
-					{
-						hitterBlob.getDamageOwnerPlayer().getBlob().server_Heal(2.0f);
-					}
-				}
-			}
-		}
 
 		// we want the corpse to stay but player to respawn so we force a die event in rules
 		if (getNet().isServer())

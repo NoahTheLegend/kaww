@@ -435,14 +435,14 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 				}
 
 				this.Tag("sprinting");
-				moveVars.walkFactor *= 1.1f;
+				moveVars.walkFactor *= 1.05f;
 				moveVars.walkSpeedInAir = 3.15f;
 				moveVars.jumpFactor *= 1.0f;
 			}
 			else
 			{
 				this.Untag("sprinting");
-				moveVars.walkFactor *= 1.0f;
+				moveVars.walkFactor *= 0.95f;
 				moveVars.walkSpeedInAir = 2.5f;
 				moveVars.jumpFactor *= 1.0f;
 			}

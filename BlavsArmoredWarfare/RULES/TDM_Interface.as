@@ -76,7 +76,11 @@ shared class FlagIcon {
 	void drawIcon(Vec2f start_pos, u8 team_state, u8 team_num)
 	{
 		GUI::DrawIcon("CTFGui.png", 0, Vec2f(16,32), start_pos + Vec2f(xpos, 0), 1.0f, team_num);
-    	if (team_state == 2) GUI::DrawIcon("CTFGui.png", 1, Vec2f(16,32), start_pos + Vec2f(xpos + 2, 48), 1.0f, team_num);
+    	if (team_state == 2)// && getGameTime() % 30 == 0) 
+    	{
+    		f32 wave = Maths::Sin(getGameTime() / 5.0f) * 5.0f - 25.0f;
+    		GUI::DrawIcon("CTFGui.png", 1, Vec2f(16,32), start_pos + Vec2f(xpos + 2, 72 + wave), 1.0f, team_num);
+    	}
 	}
 };
 
