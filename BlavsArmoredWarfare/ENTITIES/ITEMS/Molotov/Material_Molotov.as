@@ -19,6 +19,13 @@ bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)
 
 void onTick(CBlob@ this)
 {
+	if (isClient()) // a try to fix clientsideonly activation
+	{
+		if (this.hasTag("activated"))
+		{
+			this.Untag("activated");
+		}
+	}
 	if (this.isAttached() && !this.hasTag("activated"))
 	{
 		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
