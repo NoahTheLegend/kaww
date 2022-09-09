@@ -5,7 +5,7 @@ const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
 const u32 shootDelay = 2; // Ticks
-const f32 damage = 0.7f;
+const f32 damage = 1.0f;
 
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);

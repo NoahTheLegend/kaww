@@ -322,7 +322,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		else if (this.hasTag("apc")) // pszh4 and btr82a
 		{
 			if (isServer())
-				this.server_Heal(0.775f);  //what tffff
+				this.server_Heal(0.75f);  //what tffff
 			return damage;
 		}
 	}
