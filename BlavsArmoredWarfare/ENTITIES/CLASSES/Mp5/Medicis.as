@@ -3,9 +3,7 @@
 void onInit( CBlob@ this )
 {
 	this.set_bool(medicCallingBoolString, false);
-	this.set_u32(bucketAmountString, 0);
-	this.set_u32(bucketAmountMaxString, 40);
-	this.set_u32(bucketCostString, 10);
+	this.set_f32(bucketAmountString, 0.0f);
 
 	//this.getCurrentScript().runFlags |= Script::tick_not_attached;
 	this.getCurrentScript().removeIfTag = "dead";	
@@ -20,13 +18,13 @@ void onTick( CBlob@ this )
 
 	if (this.hasTag(medicTagString))
 	{
-		if (isServer() && (getGameTime() + this.getNetworkID()) % 25 == 0) // bucket increase every sometimes
+		if (isServer() && (getGameTime() + this.getNetworkID()) % 30 == 0) // bucket increase every second
 		{
-			updateBucket(this, 1);
+			bucketAdder(this, 0.05f);
 		}
 
-		u32 bucketAmount = this.get_u32(bucketAmountString);
-		u32 bucketCost = this.get_u32(bucketCostString);
+		float bucketAmount = this.get_f32(bucketAmountString);
+		float bucketCost = 1.0f / bucket_Max_Charges;
 
 		if (this.isKeyJustPressed(key_action3))
 		{
@@ -41,7 +39,7 @@ void onTick( CBlob@ this )
 						blob.server_SetTimeToDie(10);
 					}
 					
-					updateBucket(this, -bucketCost);
+					bucketAdder(this, -bucketCost);
 				}
 			}
 			else if (is_my_player) this.getSprite().PlaySound("NoAmmo.ogg", 1.0f);
@@ -81,8 +79,8 @@ void onRender( CSprite@ this )
 	{
 		if (thisBlob is renderBlob)
 		{
-			u32 bucketAmount = thisBlob.get_u32(bucketAmountString);
-			u32 bucketCost = thisBlob.get_u32(bucketCostString);
+			float bucketAmount = thisBlob.get_f32(bucketAmountString);
+			float bucketCost = 1.0f / bucket_Max_Charges;
 			drawBucketHud(bucketAmount, bucketCost);
 		}
 		else if (!renderBlob.hasTag(medicTagString))
@@ -108,11 +106,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 	if (this.isMyPlayer() && cmd == this.getCommandID(bucketSyncIDString))
 	{
-		u32 bucketChange = 0;
+		float newBucketAmount = 0.0f;
 
-		if (params.saferead_u32(bucketChange))
+		if (params.saferead_f32(newBucketAmount))
 		{
-			bucketAdder(this, bucketChange);
+			this.set_f32(bucketAmountString, newBucketAmount);
 		}
 	}
 }
