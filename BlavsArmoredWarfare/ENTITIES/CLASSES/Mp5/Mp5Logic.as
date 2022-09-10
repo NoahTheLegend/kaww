@@ -6,6 +6,7 @@
 #include "Hitters.as";
 #include "Recoil.as";
 #include "Mp5Common.as";
+#include "MedicisCommon.as"
 
 void onInit(CBlob@ this)
 {
@@ -20,6 +21,7 @@ void onInit(CBlob@ this)
 	this.Tag("player");
 	this.Tag("flesh");
 	this.Tag("3x2");
+	this.Tag( medicTagString );
 
 	this.addCommandID("sync_reload_to_server");
 
@@ -195,23 +197,9 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	bool just_action1 = this.isKeyJustPressed(key_action1) && this.get_u32("dont_change_zoom") < getGameTime(); // binoculars thing
 	bool is_action1 = this.isKeyPressed(key_action1);
 	bool was_action1 = this.wasKeyPressed(key_action1);
-	if (this.isKeyJustPressed(key_action3))
-	{
-		if (this.get_u32("next_ability") < getGameTime())
-		{
-			if (isServer())
-			{
-				for (u8 i = 0; i < 3 + XORRandom(2); i++)
-				{
-					CBlob@ blob = server_CreateBlob("heart", -1, this.getPosition());
-					blob.setVelocity(Vec2f(XORRandom(5)-2.0f, -5.0f+XORRandom(3)));
-					blob.server_SetTimeToDie(10);
-				}
-			}
-			this.set_u32("next_ability", getGameTime()+600);
-		}
-		else if (ismyplayer) sprite.PlaySound("NoAmmo.ogg", 1.0f);
-	}
+	
+	//ability was here
+
 	if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-14)
 	{
 		f32 attackarc = 70.0f;
