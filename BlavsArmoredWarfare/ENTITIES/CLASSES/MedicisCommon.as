@@ -2,12 +2,11 @@ const string medicCallingBoolString = "is_calling_medic";
 const string medicTagString = "medic_tag";
 
 const string bucketAmountString = "medic_ability_bucket";
-const string bucketAmountMaxString = "medic_ability_bucket_max";
-const string bucketCostString = "medic_ability_bucket_cost";
+const u8 bucket_Max_Charges = 4;
 
 const string bucketSyncIDString = "bucket_sync_ID";
 
-void drawBucketHud( u32 bucketAmount, u32 bucketCost )
+void drawBucketHud( float bucketAmount, float bucketCost )
 {
 	u8 frame = bucketAmount / bucketCost;
 
@@ -27,33 +26,32 @@ void drawMedicIdentifier( Vec2f HUDpos )
 	GUI::DrawIcon("MedicIdentifier.png", 0, Vec2f(16, 16), HUDpos);
 }
 
-void updateBucket( CBlob@ this, u32 bucketChange )
+void updateBucket( CBlob@ this, float newBucketAmount )
 {
 	CPlayer@ player = this.getPlayer();
 	if (player == null) return;
 	
 	CBitStream params;
-	params.write_u32(bucketChange);
+	params.write_f32(newBucketAmount);
 	
 	this.server_SendCommandToPlayer(this.getCommandID(bucketSyncIDString), params, player);
-	bucketAdder(this, bucketChange);
+	this.set_f32(bucketAmountString, newBucketAmount);
 }
 
-void bucketAdder( CBlob@ this, u32 bucketChange )
+void bucketAdder( CBlob@ this, float bucketChange )
 {
-	u32 bucketAmount = this.get_u32(bucketAmountString);
-	u32 bucketAmountMax = this.get_u32(bucketAmountMaxString);
+	float bucketAmount = this.get_f32(bucketAmountString);
 
-	u32 newBucketAmount = bucketAmount + bucketChange;
+	float newBucketAmount = bucketAmount + bucketChange;
 	
-	if (newBucketAmount > bucketAmountMax)
+	if (newBucketAmount > 1.0f)
 	{
-		newBucketAmount = bucketAmountMax;
+		newBucketAmount = 1.0f;
 	}
-	else if (newBucketAmount < 0)
+	else if (newBucketAmount < 0.0f)
 	{
-		newBucketAmount = 0;
+		newBucketAmount = 0.0f;
 	}
 
-	this.set_u32(bucketAmountString, newBucketAmount);
+	updateBucket(this, newBucketAmount);
 }
