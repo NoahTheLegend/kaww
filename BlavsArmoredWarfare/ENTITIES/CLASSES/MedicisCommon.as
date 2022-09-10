@@ -67,5 +67,6 @@ void spawnMedicisHeart( CBlob@ this )
 
 		blob.setVelocity(blobVel);
 		blob.server_SetTimeToDie(10);
+		blob.IgnoreCollisionWhileOverlapped(this, 20); // do not eat the heart, please. I'm trying to heal someone.
 	}
 }
