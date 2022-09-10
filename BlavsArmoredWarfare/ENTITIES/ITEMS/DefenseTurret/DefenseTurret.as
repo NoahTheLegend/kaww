@@ -104,7 +104,7 @@ void ClientFire(CBlob@ this)
 {
 	Vec2f pos_2 = this.getPosition()-Vec2f(0.0f, 7.0f);
 	f32 angle = getAimAngle(this);
-	angle += ((XORRandom(512) - 256) / 79.0f);
+	angle += ((XORRandom(512) - 256) / 76.0f);
 	Vec2f vel = Vec2f(490.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
 
 	this.SendCommand(this.getCommandID("shoot"));
