@@ -22,6 +22,20 @@ void LoadSprites(CSprite@ this)
 	ensureCorrectRunnerTexture(this, "revolver", "Revolver");
 	string texname = getRunnerTextureName(this);
 
+	// add blade
+	this.RemoveSpriteLayer("chop");
+	CSpriteLayer@ chop = this.addTexturedSpriteLayer("chop", "Revolver", 32, 32);
+
+	if (chop !is null)
+	{
+		Animation@ anim = chop.addAnimation("default", 0, true);
+		anim.AddFrame(0);
+		anim.AddFrame(1);
+		anim.AddFrame(2);
+		chop.SetVisible(false);
+		chop.SetRelativeZ(1000.0f);
+	}
+
 	this.RemoveSpriteLayer("frontarm");
 	CSpriteLayer@ frontarm = this.addTexturedSpriteLayer("frontarm", texname , 32, 16);
 
@@ -101,6 +115,13 @@ void onTick(CSprite@ this)
 			this.SetFrameIndex(2);
 		}
 
+		CSpriteLayer@ chop = this.getSpriteLayer("chop");
+
+		if (chop !is null)
+		{
+			chop.SetVisible(false);
+		}
+
 		return;
 	}
 
@@ -142,6 +163,10 @@ void onTick(CSprite@ this)
 	// get the angle of aiming with mouse
 	Vec2f vec = aimpos - pos;
 	f32 angle = vec.Angle();
+
+	bool wantsChopLayer = false;
+	s32 chopframe = 0;
+	f32 chopAngle = 0.0f;
 
 	if (isStabbing || isReloading || blob.isAttached())
 	{
@@ -264,6 +289,31 @@ void onTick(CSprite@ this)
 		}
 
 		defaultIdleAnim(this, blob, direction);
+	}
+
+	CSpriteLayer@ chop = this.getSpriteLayer("chop");
+
+	if (chop !is null)
+	{
+		chop.SetVisible(false); //wantsChopLayer
+		if (wantsChopLayer)
+		{
+			f32 choplength = 5.0f;
+
+			chop.animation.frame = chopframe;
+			Vec2f offset = Vec2f(choplength, 0.0f);
+			offset.RotateBy(chopAngle, Vec2f_zero);
+			if (!this.isFacingLeft())
+				offset.x *= -1.0f;
+			offset.y += this.getOffset().y * 0.5f;
+
+			chop.SetOffset(offset);
+			chop.ResetTransform();
+			if (this.isFacingLeft())
+				chop.RotateBy(180.0f + chopAngle, Vec2f());
+			else
+				chop.RotateBy(chopAngle, Vec2f());
+		}
 	}
 
 	//arm anims

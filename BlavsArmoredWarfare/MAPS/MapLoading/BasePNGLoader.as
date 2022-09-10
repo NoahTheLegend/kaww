@@ -431,6 +431,7 @@ class PNGLoader
 			case map_colors::gate:         autotile(offset); spawnBlob(map, "gate", offset, 2); break;
 
 			case map_colors::sandbags:    autotile(offset); spawnBlob(map, "sandbags", offset-map.tilemapwidth); break;
+			case map_colors::redbarrel:    autotile(offset); spawnBlob(map, "redbarrel", offset-map.tilemapwidth); break;
 			case map_colors::pointflag:    autotile(offset); spawnBlob(map, "pointflag", offset); break;
 			case map_colors::cobweb:            autotile(offset); spawnBlob(map, "cobweb", offset); break;
 			case map_colors::deadbush:          autotile(offset); spawnBlob(map, "deadbush", offset); break;
