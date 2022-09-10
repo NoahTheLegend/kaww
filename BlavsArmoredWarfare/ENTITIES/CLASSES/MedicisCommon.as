@@ -1,8 +1,8 @@
 const string medicCallingBoolString = "is_calling_medic";
-const string medicTagString = "medic_tag";
+const string medicTagString = "medic_tag"; // add this tag per-basis, in the character logic onInit()
 
 const string bucketAmountString = "medic_ability_bucket";
-const u8 bucket_Max_Charges = 4;
+const u8 bucket_Max_Charges = 4; // MUST be in line with the hud sprite. If you change this, also change the sprite.
 
 const string bucketSyncIDString = "bucket_sync_ID";
 
@@ -26,7 +26,7 @@ void drawMedicIdentifier( Vec2f HUDpos )
 	GUI::DrawIcon("MedicIdentifier.png", 0, Vec2f(16, 16), HUDpos);
 }
 
-void updateBucket( CBlob@ this, float newBucketAmount )
+void updateBucket( CBlob@ this, float newBucketAmount ) // this is the sync method
 {
 	CPlayer@ player = this.getPlayer();
 	if (player == null) return;
@@ -34,24 +34,31 @@ void updateBucket( CBlob@ this, float newBucketAmount )
 	CBitStream params;
 	params.write_f32(newBucketAmount);
 	
-	this.server_SendCommandToPlayer(this.getCommandID(bucketSyncIDString), params, player);
-	this.set_f32(bucketAmountString, newBucketAmount);
+	this.server_SendCommandToPlayer(this.getCommandID(bucketSyncIDString), params, player); // intended for client only
+	this.set_f32(bucketAmountString, newBucketAmount); // intended for server only
+	// Note: Due to "server_SendCommandToPlayer" also sending to Server, in LocalHost the variable is set twice,
+	// however, it doesn't matter due to it being instant and in the same tick. It works fine in both localhost and dedicated.
 }
 
-void bucketAdder( CBlob@ this, float bucketChange )
+void bucketAdder( CBlob@ this, float bucketChange ) // always calls updateBucket()
 {
 	float bucketAmount = this.get_f32(bucketAmountString);
 
-	float newBucketAmount = bucketAmount + bucketChange;
+	float newBucketAmount = Maths::Clamp(bucketAmount + bucketChange, 0.0f, 1.0f); // bucket overflow prevention
 	
-	if (newBucketAmount > 1.0f)
-	{
-		newBucketAmount = 1.0f;
-	}
-	else if (newBucketAmount < 0.0f)
-	{
-		newBucketAmount = 0.0f;
-	}
+	updateBucket(this, newBucketAmount); // bucket changes end here
+}
 
-	updateBucket(this, newBucketAmount);
+void spawnMedicisHeart( CBlob@ this )
+{
+	CBlob@ blob = server_CreateBlob("heart", -1, this.getPosition());
+	if (blob != null)
+	{
+		Vec2f thisVel = this.getVelocity();
+		Vec2f blobVel = Vec2f(this.isFacingLeft() ? -4.0f : 4.0f, -5.0f+XORRandom(3));
+		blobVel += thisVel*0.8f; // add a bit of owner's velocity
+
+		blob.setVelocity(blobVel);
+		blob.server_SetTimeToDie(10);
+	}
 }
