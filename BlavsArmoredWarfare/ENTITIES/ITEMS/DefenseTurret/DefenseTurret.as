@@ -157,7 +157,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					bullet.Init();
 
 					bullet.set_f32("bullet_damage_body", 0.18f);
-					bullet.set_f32("bullet_damage_head", 0.20f);
+					bullet.set_f32("bullet_damage_head", 0.18f);
 					bullet.IgnoreCollisionWhileOverlapped(this);
 					bullet.server_setTeamNum(this.getTeamNum());
 					Vec2f pos_ = this.getPosition()-Vec2f(0.0f, 7.0f);

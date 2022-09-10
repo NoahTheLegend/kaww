@@ -381,7 +381,7 @@ shared class TDMCore : RulesCore
             for(u16 i = 0; i < team.spawns.size(); i++)
             {
                 TDMPlayerInfo@ info = cast < TDMPlayerInfo@ > (team.spawns[i]);
-                info.blob_name = (XORRandom(512) >= 256 ? "revolver" : (XORRandom(512) >= 256 ? "shotgun" : (XORRandom(512) >= 256 ? "ranger" : (XORRandom(512) >= 256 ? "sniper" : (XORRandom(512) >= 256 ? "mp5" : "shotgun"))))); // dont ask
+                info.blob_name = (XORRandom(100) >= 90 ? "revolver" : (XORRandom(100) >= 80 ? "shotgun" : (XORRandom(100) >= 70 ? "ranger" : (XORRandom(100) >= 60 ? "sniper" : (XORRandom(100) >= 50 ? "mp5" : "shotgun"))))); // dont ask
             }
         }
     }
