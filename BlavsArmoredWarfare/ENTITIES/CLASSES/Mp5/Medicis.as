@@ -67,11 +67,13 @@ void onRender( CSprite@ this )
 	CPlayer@ p = getLocalPlayer();
 	if (p is null || !p.isMyPlayer()) return;
 
-	CBlob@ renderBlob = p.getBlob();
-	if (renderBlob == null) return;
-
 	CBlob@ thisBlob = this.getBlob();
 	if (thisBlob == null) return;
+
+	if (thisBlob.getPlayer() == null) return;
+
+	CBlob@ renderBlob = p.getBlob();
+	if (renderBlob == null) return;
 	
 	if (renderBlob.getTeamNum() != thisBlob.getTeamNum()) return;
 
