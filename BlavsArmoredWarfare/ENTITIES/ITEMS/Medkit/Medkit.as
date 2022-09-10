@@ -1,7 +1,7 @@
 void onInit(CBlob@ this)
 {
 	//this.getShape().SetRotationsAllowed(false);
-	this.set_u8("medamount", 6);
+	this.set_u8("medamount", 4);
 	this.Tag("trap");
 
 	this.addCommandID("usemed");

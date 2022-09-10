@@ -18,7 +18,7 @@ void onTick( CBlob@ this )
 
 	if (this.hasTag(medicTagString))
 	{
-		if (isServer() && (getGameTime() + this.getNetworkID()) % 30 == 0) // bucket increase every second
+		if (isServer() && (getGameTime() + this.getNetworkID()) % (this.hasBlob("medkit", 1) ? 15 : 30) == 0) // bucket increase every second, bonus if holding a medkit
 		{
 			bucketAdder(this, 0.05f);
 		}
