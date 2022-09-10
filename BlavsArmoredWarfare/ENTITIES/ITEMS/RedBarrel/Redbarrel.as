@@ -25,13 +25,15 @@ void DoExplosion(CBlob@ this)
 	this.set_f32("map_damage_radius", 35.0f);
 	this.set_f32("map_damage_ratio", 0.01f);
 	
-	//Explode(this, 124.0f, 1.5f);
+	Explode(this, 50.0f, 1.75f);
+
+	Explode(this, 24.0f, 1.5f);
 	
-	for (int i = 0; i < 5; i++) //12
+	for (int i = 0; i < 4; i++) //12
 	{
 		Vec2f dir = getRandomVelocity(angle, 1, 120);
-		LinearExplosion(this, dir, 60.0f, 85, 2, 0.06f, Hitters::water);
-		//Explode(this, 62.0f, 0.1f);
+		LinearExplosion(this, dir, 60.0f, 85, 2, 0.5f, Hitters::water);
+		
 	}
 	
 	for (int i = 0; i < 30; i++)
