@@ -20,7 +20,7 @@ void onTick( CBlob@ this )
 	{
 		if (isServer() && (getGameTime() + this.getNetworkID()) % (this.hasBlob("medkit", 1) ? 15 : 30) == 0) // bucket increase every second, bonus if holding a medkit
 		{
-			bucketAdder(this, 0.03f); // amount of bucket refilled, out of 1.0f
+			bucketAdder(this, 0.05f); // amount of bucket refilled, out of 1.0f
 		}
 
 		float bucketAmount = this.get_f32(bucketAmountString); // MedicisCommon.as
