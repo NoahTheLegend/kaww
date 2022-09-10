@@ -54,8 +54,15 @@ void spawnMedicisHeart( CBlob@ this )
 	CBlob@ blob = server_CreateBlob("heart", -1, this.getPosition());
 	if (blob != null)
 	{
+		Vec2f thisPos = this.getPosition();
 		Vec2f thisVel = this.getVelocity();
-		Vec2f blobVel = Vec2f(this.isFacingLeft() ? -4.0f : 4.0f, -5.0f+XORRandom(3));
+		Vec2f thisAimPos = this.getAimPos();
+		Vec2f thisAimVec = thisAimPos - thisPos;
+		Vec2f thisAimVecNorm = thisAimVec;
+		thisAimVecNorm.Normalize();
+		thisAimVecNorm *= 4.0f;
+
+		Vec2f blobVel = thisAimVecNorm + Vec2f(0.0f, -1.0f);
 		blobVel += thisVel*0.8f; // add a bit of owner's velocity
 
 		blob.setVelocity(blobVel);
