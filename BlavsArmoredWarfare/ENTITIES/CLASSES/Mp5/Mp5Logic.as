@@ -60,7 +60,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return damage*0.5f;
 		else return 0;
 	}
-	if (hitterBlob.getName() == "ballista_bolt")
+	if (customData == Hitters::explosion && hitterBlob.getName() != "grenade")
 	{
 		bool at_bunker = false;
 		Vec2f pos = this.getPosition();
@@ -88,17 +88,15 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 					}
 				}
 			}
-		}
-
-		if (at_bunker) return 0;
-		else if (customData == Hitters::explosion && hitterBlob.getName() != "grenade")
-		{
-			return damage * 0.15f;
+			if (at_bunker) return 0;
+			else
+				return damage * 0.05f;
 		}
 	}
 
 	return damage;
 }
+
 void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 {
 	if (!getNet().isServer()) { return; }
