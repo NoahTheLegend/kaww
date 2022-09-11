@@ -15,10 +15,9 @@ void onRender( CRules@ this )
 	if (p is null || !p.isMyPlayer()) return;
 
 	s8 teamNum = p.getTeamNum();
-	if (teamNum < 0) return; // do not render for spectators for now
+	bool isSpectator = teamNum < 0;
 
 	float screenWidth = getScreenWidth();
-
 
 	CMap@ map = getMap();
 	if (map == null) return;
@@ -90,8 +89,6 @@ void onRender( CRules@ this )
 		
 		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
 
-
-
 		u8 icon_idx;
         u8 team_num = point.getTeamNum();
         u8 team_state = team_num; // team index | 255 neutral | 2 capping
@@ -132,7 +129,7 @@ void onRender( CRules@ this )
 		if (curBlob == null) continue;
 
 		s8 curTeamNum = curPlayer.getTeamNum();
-		if (curTeamNum != teamNum) continue; // not in my team? do not show
+		if (!isSpectator && curTeamNum != teamNum) continue; // do not show enemy players unless spectator
 
 		u8 frame = 0;
 		if (curPlayer !is p) frame = getIndicatorFrame(curBlob.getName().getHash());
@@ -141,7 +138,7 @@ void onRender( CRules@ this )
 		float curBlobYPos = curBlob.getPosition().y;
 		float indicatorProgress = curBlobXPos / mapWidth;
 		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
-		float verticalDeviation = curBlobYPos;
+		float verticalDeviation = curBlobYPos; // blav's soon(tm) heightmap <------
 		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
 
 		GUI::DrawIcon("indicator_sheet_small.png", frame, Vec2f(16, 25), indicatorPos, 1.0f, curTeamNum);
@@ -160,7 +157,9 @@ void onRender( CRules@ this )
 		if (curVehicle == null) continue;
 
 		s8 vehicleTeamnum = curVehicle.getTeamNum();
-		if (vehicleTeamnum < 0 || vehicleTeamnum != teamNum) continue;
+		if (vehicleTeamnum < 0) continue; // do not show neutral vehicles, it crashes due to negative coloring
+
+		if (!isSpectator && vehicleTeamnum != teamNum) continue; // do not show enemy vehicles unless spectator
 
 		u8 frame = getIndicatorFrame(curVehicle.getName().getHash());
 		if (frame == 0) continue;
