@@ -23,7 +23,7 @@ void DoExplosion(CBlob@ this)
 	f32 angle = -this.get_f32("bomb angle");
 
 	this.set_f32("map_damage_radius", 35.0f);
-	this.set_f32("map_damage_ratio", 0.01f);
+	this.set_f32("map_damage_ratio", 0.41f);
 	
 	Explode(this, 50.0f, 1.75f);
 
@@ -33,7 +33,6 @@ void DoExplosion(CBlob@ this)
 	{
 		Vec2f dir = getRandomVelocity(angle, 1, 120);
 		LinearExplosion(this, dir, 60.0f, 85, 2, 0.5f, Hitters::water);
-		
 	}
 	
 	for (int i = 0; i < 30; i++)
@@ -65,6 +64,10 @@ void onDie(CBlob@ this)
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (hitterBlob.getName() == "grenade")
+	{
+		return damage * 5;
+	}
+	if (customData == Hitters::water)
 	{
 		return damage * 5;
 	}
