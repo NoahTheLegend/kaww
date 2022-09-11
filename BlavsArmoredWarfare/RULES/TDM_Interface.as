@@ -112,12 +112,12 @@ void onRender(CRules@ this)
 				TDM_HUD hud(serialised_team_hud);
 				Vec2f topLeft = Vec2f(8, 8 + 64 * hud.team_num);
 				GUI::DrawIcon(gui_image_fname, 0, Vec2f(128, 32), topLeft, 1.0f, hud.team_num);
-				
+				/*
 				FlagsInfo flags_info;
     			if (flags_info !is null)
     			{
     			    flags_info.renderFlagIcons(Vec2f(16, 140));
-    			}
+    			}*/
 
 				int team_player_count = 0;
 				int team_dead_count = 0;
