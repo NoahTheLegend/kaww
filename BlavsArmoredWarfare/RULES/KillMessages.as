@@ -113,7 +113,7 @@ class KillFeed
 				Vec2f attacker_tag_size;
 				GUI::GetTextDimensions(message.attacker_tag + " ", attacker_tag_size);
 				Vec2f dim(getScreenWidth() - attacker_name_size.x - max_username_size.x - max_clantag_size.x - single_space_size.x - 36, 0);
-				ul.Set(dim.x + 200, (message_step + yOffset + assists) * 28);
+				ul.Set(dim.x + 160, (message_step + yOffset + assists) * 28);
 				col = getTeamColor(message.attackerteam);
 				GUI::DrawText(message.attacker, ul, col);
 
@@ -131,7 +131,7 @@ class KillFeed
 				Vec2f helper_tag_size;
 				GUI::GetTextDimensions(message.helper_tag + " ", helper_tag_size);
 				Vec2f dim(getScreenWidth() - helper_name_size.x - max_username_size.x - max_clantag_size.x - single_space_size.x - 36, 0);
-				ul.Set(dim.x + 200, (message_step + yOffset + assists + 1) * 28);
+				ul.Set(dim.x + 160, (message_step + yOffset + assists + 1) * 28);
 				col = getTeamColor(message.attackerteam);
 				GUI::DrawText(message.helper, ul, col);
 
@@ -193,7 +193,7 @@ class KillFeed
 			if (hitterIcon != "")
 			{
 				Vec2f dim(getScreenWidth() - max_username_size.x - max_clantag_size.x - (single_space_size.x*2) - 32, 0);
-				ul.Set(dim.x + 200, ((message_step + yOffset + assists) * 28) - 8);
+				ul.Set(dim.x + 160, ((message_step + yOffset + assists) * 28) - 8);
 				if (message.attackerteam < 0 || message.attackerteam > 6)
 				{
 					GUI::DrawIconByName(hitterIcon, ul, 1, 1, 7, color_white);
@@ -214,11 +214,11 @@ class KillFeed
 
 				Vec2f dim(getScreenWidth() - max_username_size.x - max_clantag_size.x, 0);
 
-				ul.Set(dim.x + 200, (message_step + yOffset + assists) * 28);
+				ul.Set(dim.x + 160, (message_step + yOffset + assists) * 28);
 				col = getTeamColor(-1);
 				GUI::DrawText(message.victim_tag, ul, col);
 
-				ul.Set(dim.x + 200 + victim_tag_size.x, (message_step + yOffset + assists) * 28);
+				ul.Set(dim.x + 160 + victim_tag_size.x, (message_step + yOffset + assists) * 28);
 				col = getTeamColor(message.victimteam);
 				GUI::DrawText(message.victim, ul, col);
 			}
