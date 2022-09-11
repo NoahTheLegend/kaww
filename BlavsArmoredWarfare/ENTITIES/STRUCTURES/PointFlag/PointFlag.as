@@ -1,7 +1,7 @@
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
-const u16 capture_time = 3000;
+const u16 capture_time = 2800;
 
 //flags HUD is in TDM_Interface
 
