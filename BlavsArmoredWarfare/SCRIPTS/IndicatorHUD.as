@@ -4,6 +4,16 @@ const float timelineHeight = 10.0f;
 const float timelineLeftEnd = 0.3f;
 const float timelineRightEnd = 0.9f;
 
+void onInit( CRules@ this )
+{
+
+}
+
+void onTick( CRules@ this )
+{
+
+}
+
 void onRender( CRules@ this )
 {
 	if (g_videorecording) return;
@@ -24,8 +34,8 @@ void onRender( CRules@ this )
 	Vec2f timelineRPos = Vec2f(timelineRDist, timelineHeight);
 
 	//draw flags
-	GUI::DrawIcon("indicator_sheet.png", 12, Vec2f(16, 25), timelineLPos, 1.0f, 0);
-	GUI::DrawIcon("indicator_sheet.png", 12, Vec2f(16, 25), timelineRPos, 1.0f, 1);
+	GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineLPos, 1.0f, 0);
+	GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineRPos, 1.0f, 1);
 
 	CMap@ map = getMap();
 	if (map == null) return;
@@ -33,7 +43,7 @@ void onRender( CRules@ this )
 	float mapWidth = map.tilemapwidth * 8.0f;
 
 	int playerCount = getPlayerCount();
-	for (uint i = 0; i < playerCount; i++)
+	for (uint i = 0; i < playerCount; i++) // walking blobs
 	{
 		CPlayer@ curPlayer = getPlayer(i);
 		if (curPlayer == null) continue;
@@ -42,26 +52,46 @@ void onRender( CRules@ this )
 		if (curBlob == null) continue;
 
 		s8 curTeamNum = curPlayer.getTeamNum();
-		u8 frame = 0;
-
 		if (curTeamNum != teamNum) continue; // not in my team? do not show
 
-		if (curPlayer is p)
-		{
-			frame = 11;
-		}
-		else
-		{
-			frame = getIndicatorFrame(curBlob.getName().getHash());
-		}
+		u8 frame = 0;
+		if (curPlayer !is p) frame = getIndicatorFrame(curBlob.getName().getHash());
 
 		float curBlobXPos = curBlob.getPosition().x;
 		float indicatorProgress = curBlobXPos / mapWidth;
-		float indicatorDist = indicatorProgress * timelineLength;
-		indicatorDist += timelineLDist;
+		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+		
 		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
 
-		GUI::DrawIcon("indicator_sheet.png", frame, Vec2f(16, 25), indicatorPos);
+		GUI::DrawIcon("indicator_sheet_small.png", frame, Vec2f(16, 25), indicatorPos);
+	}
+
+	// indicate vehicles
+	
+	CBlob@[] vehicleList;
+	getBlobsByTag("vehicle", @vehicleList);
+
+	int vehicleCount = vehicleList.length;
+	//print ("count: "+ vehicleCount);
+	
+	for (uint i = 0; i < vehicleCount; i++)
+	{
+		CBlob@ curVehicle = vehicleList[i];
+		if (curVehicle == null) continue;
+
+		s8 vehicleTeamnum = curVehicle.getTeamNum();
+		if (vehicleTeamnum < 0 || vehicleTeamnum != teamNum) continue;
+
+		u8 frame = getIndicatorFrame(curVehicle.getName().getHash());
+		if (frame == 0) continue;
+
+		float curVehicleXPos = curVehicle.getPosition().x;
+		float indicatorProgress = curVehicleXPos / mapWidth;
+		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+		
+		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
+
+		GUI::DrawIcon("indicator_sheet.png", frame, Vec2f(16, 25), indicatorPos, 1.0f, vehicleTeamnum);
 	}
 }
 
@@ -70,25 +100,37 @@ u8 getIndicatorFrame( int hash )
 	u8 frame = 0;
 	switch(hash)
 	{
-		case _slave: frame = 8;
+		case _slave:
+		case _t10:
+		case _m60:
+		frame = 1;
 		break;
 
-		case _revolver: frame = 7;
+		case _revolver:
+		case _techtruck:
+		frame = 2;
 		break;
 
-		case _ranger: frame = 9;
+		case _ranger:
+		case _pszh4:
+		case _civcar:
+		case _transporttruck:
+		case _uh1:
+		frame = 3;
 		break;
 
-		case _shotgun: frame = 5;
+		case _shotgun:
+		case _maus:
+		frame = 4;
 		break;
 
-		case _sniper: frame = 6;
+		case _sniper: frame = 5;
 		break;
 
-		case _antitank: frame = 10;
+		case _antitank: frame = 6;
 		break;
 
-		case _mp5: frame = 4;
+		case _mp5: frame = 7;
 		break;
 	}
 
