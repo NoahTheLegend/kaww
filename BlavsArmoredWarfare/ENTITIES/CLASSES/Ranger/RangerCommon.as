@@ -4,8 +4,8 @@ const string classname = "Ranger"; // case sensitive
 const float damage_body = 0.35f;
 const float damage_head = 0.6f;
 // SHAKE
-const float recoilx = 13; // x shake (20)
-const float recoily = 56; // y shake (45)
+const float recoilx = 0; // x shake (20)
+const float recoily = 65; // y shake (45)
 const float recoillength = 110; // how long to shake
 // RECOIL
 const float recoilforce = 0.09f; // amount to push player (0.1)

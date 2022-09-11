@@ -115,7 +115,7 @@ void Config(TDMCore@ this)
 	this.sudden_death = this.kills_to_win_per_player <= 0;
 
 	//how long for the game to play out?
-	f32 gameDurationMinutes = 15.0f + getPlayersCount()*1.0; //cfg.read_f32("gameDurationMinutes", 7.0f)
+	f32 gameDurationMinutes = 15.0f + getPlayersCount()*1.25; //cfg.read_f32("gameDurationMinutes", 7.0f)
 	this.gameDuration = (getTicksASecond() * 60 * gameDurationMinutes) + this.warmUpTime;
 
 	if (getMap() !is null && getMap().tilemapwidth < 200)  this.gameDuration = (getTicksASecond() * 60 * 15.0f) + this.warmUpTime;
@@ -381,7 +381,8 @@ shared class TDMCore : RulesCore
             for(u16 i = 0; i < team.spawns.size(); i++)
             {
                 TDMPlayerInfo@ info = cast < TDMPlayerInfo@ > (team.spawns[i]);
-                info.blob_name = (XORRandom(512) >= 256 ? "revolver" : (XORRandom(512) >= 256 ? "shotgun" : (XORRandom(512) >= 256 ? "ranger" : (XORRandom(512) >= 256 ? "sniper" : (XORRandom(512) >= 256 ? "mp5" : "shotgun"))))); // dont ask
+                //info.blob_name = (XORRandom(100) >= 90 ? "revolver" : (XORRandom(100) >= 80 ? "shotgun" : (XORRandom(100) >= 70 ? "ranger" : (XORRandom(100) >= 60 ? "sniper" : (XORRandom(100) >= 50 ? "mp5" : "shotgun"))))); // dont ask
+                info.blob_name = (XORRandom(100) >= 83 ? "revolver" : (XORRandom(100) >= 66 ? "mp5" : (XORRandom(100) >= 50 ? "slave" : "antitank"))); // dont ask
             }
         }
     }

@@ -104,7 +104,7 @@ void ClientFire(CBlob@ this)
 {
 	Vec2f pos_2 = this.getPosition()-Vec2f(0.0f, 7.0f);
 	f32 angle = getAimAngle(this);
-	angle += ((XORRandom(512) - 256) / 79.0f);
+	angle += ((XORRandom(512) - 256) / 76.0f);
 	Vec2f vel = Vec2f(490.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
 
 	this.SendCommand(this.getCommandID("shoot"));
@@ -157,7 +157,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					bullet.Init();
 
 					bullet.set_f32("bullet_damage_body", 0.18f);
-					bullet.set_f32("bullet_damage_head", 0.20f);
+					bullet.set_f32("bullet_damage_head", 0.18f);
 					bullet.IgnoreCollisionWhileOverlapped(this);
 					bullet.server_setTeamNum(this.getTeamNum());
 					Vec2f pos_ = this.getPosition()-Vec2f(0.0f, 7.0f);
