@@ -266,7 +266,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 					const float recoilx = 15;
 					const float recoily = 50;
 					const float recoillength = 40; // how long to recoil (?)
-					if (local.isAttachedTo(this)) ShakeScreen(Vec2f( recoilx - XORRandom(recoilx*2) + 1, -recoily + XORRandom(recoily) + 1), recoillength, gunner.getInterpolatedPosition());
+					//if (local.isAttachedTo(this)) ShakeScreen(Vec2f( recoilx - XORRandom(recoilx*2) + 1, -recoily + XORRandom(recoily) + 1), recoillength, gunner.getInterpolatedPosition());
 					if (local.isAttachedTo(this)) ShakeScreen(28, 5, pos);
 
 					makeGibParticle(

@@ -324,6 +324,7 @@ namespace map_colors
 
 		// environmental objs
 		sandbags               = 0xffedd295,
+		redbarrel              = 0xffc40e0e,
 
 		blue_tanktrap		   = 0xff181c20,
 		red_tanktrap		   = 0xff1f1919,

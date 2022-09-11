@@ -2,13 +2,13 @@
 
 void onInit( CBlob@ this )
 {
-	this.set_bool(medicCallingBoolString, false);
-	this.set_f32(bucketAmountString, 0.0f);
+	this.set_bool(medicCallingBoolString, false); // MedicisCommon.as
+	this.set_f32(bucketAmountString, 0.0f); // MedicisCommon.as
 
 	//this.getCurrentScript().runFlags |= Script::tick_not_attached;
 	this.getCurrentScript().removeIfTag = "dead";	
 
-	this.addCommandID(bucketSyncIDString);
+	this.addCommandID(bucketSyncIDString); // MedicisCommon.as
 }
 
 void onTick( CBlob@ this )
@@ -18,35 +18,29 @@ void onTick( CBlob@ this )
 
 	if (this.hasTag(medicTagString))
 	{
-		if (isServer() && (getGameTime() + this.getNetworkID()) % 30 == 0) // bucket increase every second
+		if (isServer() && (getGameTime() + this.getNetworkID()) % (this.hasBlob("medkit", 1) ? 15 : 30) == 0) // bucket increase every second, bonus if holding a medkit
 		{
-			bucketAdder(this, 0.05f);
+			bucketAdder(this, 0.05f); // amount of bucket refilled, out of 1.0f
 		}
 
-		float bucketAmount = this.get_f32(bucketAmountString);
-		float bucketCost = 1.0f / bucket_Max_Charges;
+		float bucketAmount = this.get_f32(bucketAmountString); // MedicisCommon.as
+		float bucketCost = 1.0f / bucket_Max_Charges; // max bucket is always 1.0f, get cost out of max charges
 
-		if (this.isKeyJustPressed(key_action3))
+		if (this.isKeyJustPressed(key_action3)) // 1 frame, when space is pressed
 		{
-			if (bucketAmount >= bucketCost)
+			if (bucketAmount >= bucketCost) // must have enough bucket load
 			{
-				if (isServer())
+				if (isServer()) // ability is completely handled by server, no chance for true desync
 				{
-					CBlob@ blob = server_CreateBlob("heart", -1, this.getPosition());
-					if (blob != null)
-					{
-						blob.setVelocity(Vec2f(this.isFacingLeft() ? -4.0f : 4.0f, -5.0f+XORRandom(3)));
-						blob.server_SetTimeToDie(10);
-					}
-					
-					bucketAdder(this, -bucketCost);
+					spawnMedicisHeart(this); // MedicisCommon.as
+					bucketAdder(this, -bucketCost); // instead of refill, drain by using negative
 				}
 			}
-			else if (is_my_player) this.getSprite().PlaySound("NoAmmo.ogg", 1.0f);
+			else if (is_my_player) this.getSprite().PlaySound("NoAmmo.ogg", 1.0f); // only happens client side, no effect on bucket or sync
 		}
 	}
 
-	if (is_client)
+	if (is_client) // "Help Me" sign check, if character is below 50% health. Only a variable, does not render here.
 	{
 		if ((getGameTime() + this.getNetworkID()) % 30 == 0) // once a second
 		{
@@ -79,25 +73,25 @@ void onRender( CSprite@ this )
 
 	if (thisBlob.hasTag(medicTagString))
 	{
-		if (thisBlob is renderBlob)
+		if (thisBlob is renderBlob) // if the blob is YOU, draw the hud. Otherwise fuck off
 		{
 			float bucketAmount = thisBlob.get_f32(bucketAmountString);
 			float bucketCost = 1.0f / bucket_Max_Charges;
-			drawBucketHud(bucketAmount, bucketCost);
+			drawBucketHud(bucketAmount, bucketCost); // MedicisCommon.as
 		}
-		else if (!renderBlob.hasTag(medicTagString))
+		else if (!renderBlob.hasTag(medicTagString)) // only draw medic identifier on people if you yourself are not a medic
 		{
 			Vec2f pos2d = thisBlob.getScreenPos() + Vec2f(-16, -60);
-			drawMedicIdentifier(pos2d);
+			drawMedicIdentifier(pos2d); // MedicisCommon.as
 		}
 	}
-	else if (renderBlob.hasTag(medicTagString))
+	else if (renderBlob.hasTag(medicTagString)) // if YOU are a medic, draw the "Help Me" icon on players with the variable set TRUE
 	{
-		bool medicCalling = thisBlob.get_bool(medicCallingBoolString);
+		bool medicCalling = thisBlob.get_bool(medicCallingBoolString); // checked in onTick()
 		if (medicCalling)
 		{
 			Vec2f pos2d = thisBlob.getScreenPos() + Vec2f(-16, -60);
-			drawMedicCalling(pos2d);
+			drawMedicCalling(pos2d); // MedicisCommon.as
 		}
 	}
 }
@@ -106,6 +100,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (this == null) return;
 
+	// this is called from MedicisCommon.as - updateBucket(). Should only run on clients.
 	if (this.isMyPlayer() && cmd == this.getCommandID(bucketSyncIDString))
 	{
 		float newBucketAmount = 0.0f;

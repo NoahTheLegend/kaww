@@ -8,7 +8,7 @@ const float recoilx = 50; // x shake (20)
 const float recoily = 100; // y shake (45)
 const float recoillength = 180; // how long to recoil (?)
 // RECOIL
-const float recoilforce = 0.65f; // amount to push player
+const float recoilforce = 0.7f; // amount to push player
 const u8 recoilcursor = 13; // amount to raise mouse pos
 const u8 sidewaysrecoil = 2; // sideways recoil amount
 const u8 sidewaysrecoildamp = 8; // higher number means less sideways recoil
@@ -29,10 +29,10 @@ const s8 reloadtime = 90; // time to reload
 const string reloadsfx = classname + "_reload.ogg";
 const string shootsfx = "ShotgunFire.ogg";
 
-const u8 delayafterfire = 26; // time between shots 4
+const u8 delayafterfire = 25; // time between shots 4
 const u8 randdelay = 0; // + randomness
 
-const float bulletvelocity = 1.65f; // speed that bullets fly 1.6
+const float bulletvelocity = 1.62f; // speed that bullets fly 1.6
 
 namespace ArcherParams
 {
