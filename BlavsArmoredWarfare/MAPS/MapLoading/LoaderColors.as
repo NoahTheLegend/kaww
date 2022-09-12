@@ -333,21 +333,25 @@ namespace map_colors
 		ledlight               = 0xfff5be41,
 		fan             	   = 0xff6c776e,
 		glass             	   = 0xffefeffe,
-		door         		   = 0xff8c6825,
-		gate         		   = 0xffaf6a28,
 
 		//decor
 		cobweb                 = 0xFFF3F3F3,
 		deadbush               = 0xFF8D4A16,
 		cacti                  = 0xff74dd0c,
 		hanginglantern         = 0xffadbd51,
+		//bonepine               = 0xffeaeadc,
 
 		// OBJECTIVE
 		pointflag              = 0xfffdf8e8,
 
-		// NPC
-		vehicleguy             = 0xffb3ada8,
-		heavyweaponsguy        = 0xffaba29b,
+		// zambis
+		zspawn                 = 0xff090a09,
+		door         		   = 0xff8c6825,
+		gate0         		   = 0xffaf6a28,
+		gate1         		   = 0xffaf7528,
+		gate2         		   = 0xffaf7e28,
+		gate3         		   = 0xffaf8028,
+		gate4         		   = 0xffaf8928,
 
 		///////
 

@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 	// 0 = 25
 	// 1 = 50
 
-	this.set_u16("openCost", (this.getTeamNum()+1)*25);
+	this.set_u16("openCost", (this.getTeamNum()+1)*75);
 }
 
 bool isOpen(CBlob@ this)
@@ -53,7 +53,7 @@ void onRender(CSprite@ this)
 
 	Vec2f center = blob.getPosition();
 	Vec2f mouseWorld = getControls().getMouseWorldPos();
-	const f32 renderRadius = (blob.getRadius()) * 2.0f;
+	const f32 renderRadius = (blob.getRadius()) * 3.0f;
 	bool mouseOnBlob = (mouseWorld - center).getLength() < renderRadius;
 	if (mouseOnBlob && !isOpen(blob))
 	{

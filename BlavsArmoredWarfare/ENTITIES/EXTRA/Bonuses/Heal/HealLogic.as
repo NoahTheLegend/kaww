@@ -5,7 +5,7 @@ void onInit(CBlob@ this)
 	this.SetLightRadius(16.0f);
 	this.SetLightColor(SColor(255, 240, 25, 25));
 
-	this.server_SetTimeToDie(15);
+	this.server_SetTimeToDie(17);
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
