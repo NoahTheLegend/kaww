@@ -1,10 +1,10 @@
 #include "Hitters.as";
 #include "ZombieCommon.as";
 
-const float target_radius = 3000;
-const float maxDistance = 3000.0f;
+const float target_radius = 2000;
+const float maxDistance = target_radius;
 const float distToFuse = 125.0f;
-
+const float walkSpeed = 0.80f;
 
 const u8 LOOT_CASH = 5;
 
@@ -13,19 +13,21 @@ void onTick(CBlob@ this)
 	f32 x = this.getVelocity().x;
 
 	bool up = false;
-
 	bool left = false;
 	bool right = false;
+
+	float walkSpeedModded = walkSpeed;
 
 	CMap@ map = this.getMap();
 	Vec2f vel = this.getVelocity();
 	Vec2f pos = this.getPosition();
 	CShape@ shape = this.getShape();
+	ShapeConsts@ consts = shape.getConsts();
+	consts.net_threshold_multiplier = 0.5f;
 
-	const f32 vellen = shape.vellen;
 	const bool onground = this.isOnGround() || this.isOnLadder();
 
-	// AI
+	//brain
 	if (isServer())
 	{
 		CBlob@ target;
@@ -35,45 +37,35 @@ void onTick(CBlob@ this)
 		if (target !is null)
 		{
 			found = true;
-			if (getGameTime() % 233 == 2) // check if there are no target in range
+			if (getGameTime() % 220 == 2) // check if there are no target in range
 			{
 				@target = getClosestTarget(this.getPosition(), target_radius);
 				this.set("target", @target);
 				found = (target !is null);
 			}
 		}
-		else if (getGameTime() % 133 == 2)
+		else if (getGameTime() % 120 == 2)
 		{
 			@target = getClosestTarget(this.getPosition(), target_radius);
 			this.set("target", @target);
 			found = (target !is null);
 		}
 
-		// Attack!
-		if (found)
+		if (found) // target found
 		{
 			Vec2f path = target.getPosition();
 			Vec2f pos = this.getPosition();
 
-			// Move towards
-			if (pos.x > path.x)
+			if (this.getDistanceTo(target) > 15.0f) // move towards
 			{
-				left = true;
-				right = false;
+				left = (pos.x > path.x);
+				right = (pos.x < path.x);
 			}
-			else
-			{
-				left = false;
-				right = true;
-			}
-
-			bool facingleft = this.isFacingLeft();
-			bool stand = this.isOnGround() || this.isOnLadder();
-			Vec2f walkDirection;
-
+			
 			this.SetFacingLeft(pos.x > path.x);
+			bool facingleft = this.isFacingLeft();
 
-			CMap@ map = this.getMap();
+			//trigger jump
 			const f32 radius = this.getRadius() * 2.0f;
 			if ((map.isTileSolid(Vec2f(pos.x - radius, pos.y + 0.45f * radius)) && facingleft)
 				|| (map.isTileSolid(Vec2f(pos.x + radius, pos.y + 0.45f * radius))) && !facingleft
@@ -85,183 +77,44 @@ void onTick(CBlob@ this)
 				}
 			}
 
-			//jumping
-			if (onground)
+			if (up && vel.y > -2.9f)
 			{
-				this.set_u16("jumpCount", 0);
+				DoJump(this, 0.7f, 0.2f, 0.1f, left, right, 0.7f);
 			}
-			else
-			{
-				this.set_u16("jumpCount", this.get_u16("jumpCount") + 1);
-			}
+
+			this.set_u16("jumpCount", onground ? 0 : this.get_u16("jumpCount") + 1);
 
 			if ((path - pos).Length() < distToFuse && isVisible(this, target) && this.get_u16("fuseCount") == 0)
 			{
 				this.set_u16("fuseCount", 70);
+				this.Sync("fuseCount", true);
 
 				this.getSprite().PlayRandomSound("/BoomerFuseStart", 1.25f, 1.0f);
 			}
 
-			if (up && vel.y > -2.9f)
-			{
-				float jumpStart = 0.7f;
-				float jumpMid = 0.5f;
-				float jumpEnd = 0.2f;
-
-				Vec2f force = Vec2f(target.getPosition().x > this.getPosition().x ? 1.0f : -1.0f, 0);
-				f32 side = 0.0f;
-
-				if (this.isFacingLeft() && left)
-				{
-					side = -1.0f;
-				}
-				else if (!this.isFacingLeft() && right)
-				{
-					side = 1.0f;
-				}
-
-				// jump
-				if (this.get_u16("jumpCount") <= 0)
-				{
-					force.y -= 1.5f;
-				}
-				else if (this.get_u16("jumpCount") < 3)
-				{
-					force.y -= jumpStart;
-				}
-				else if (this.get_u16("jumpCount") < 6)
-				{
-					force.y -= jumpMid;
-				}
-				else if (this.get_u16("jumpCount") < 8)
-				{
-					force.y -= jumpEnd;
-				}
-
-				force *= 160.0f;
-
-				this.AddForce(force);
-
-				// sound
-				if (this.get_u16("jumpCount") == 1)
-				{
-					TileType tile = this.getMap().getTile(this.getPosition() + Vec2f(0.0f, this.getRadius() + 4.0f)).type;
-
-					if (this.getMap().isTileGroundStuff(tile))
-					{
-						this.getSprite().PlayRandomSound("/EarthJump");
-					}
-					else
-					{
-						this.getSprite().PlayRandomSound("/StoneJump");
-					}
-				}
-			}
-
-			float walkSpeed = 0.80f;
-
 			if (this.get_u16("fuseCount") > 0)
 			{
-				walkSpeed *= 3.25f;
-
-				if (XORRandom(100) < 35)
-				{
-					ParticleAnimated("BloodSplatBigger.png", this.getPosition() + Vec2f(XORRandom(20)-10, XORRandom(20)-10), Vec2f(0, 0), float(XORRandom(360)), 0.25f + XORRandom(100)*0.01f, 3 + XORRandom(4), XORRandom(100) * -0.00005f, true);
-				}
-			}
-			else
-			{
-				if (XORRandom(100) < 10)
-				{
-					ParticleAnimated("BloodSplatBigger.png", this.getPosition() + Vec2f(XORRandom(20)-10, XORRandom(20)-10), Vec2f(0, 0), float(XORRandom(360)), 0.25f + XORRandom(100)*0.01f, 3 + XORRandom(4), XORRandom(100) * -0.00005f, true);
-				}
+				walkSpeedModded *= 3.0f;
 			}
 
-			bool left_or_right = (left || right);
+			DoWalk(this, vel, left, right, walkSpeedModded);
 
-			if (right)
-			{
-				if (vel.x < -0.1f)
-				{
-					walkDirection.x += walkSpeed + 0.3f;
-				}
-				else if (facingleft)
-				{
-					walkDirection.x += walkSpeed - 0.2f;
-				}
-				else
-				{
-					walkDirection.x += walkSpeed;
-				}
-			}
-
-			if (left)
-			{
-				if (vel.x > 0.1f)
-				{
-					walkDirection.x -= walkSpeed + 0.3f;
-				}
-				else if (!facingleft)
-				{
-					walkDirection.x -= walkSpeed - 0.2f;
-				}
-				else
-				{
-					walkDirection.x -= walkSpeed;
-				}
-			}
-
-			f32 force = 1.0f;
-
-			f32 lim = 0.0f;
-
-			if (left_or_right)
-			{
-				lim = 2.0f;
-				if (!onground)
-				{
-					lim = 2.5f;
-				}
-
-				lim *= 0.5f * Maths::Abs(walkDirection.x);
-			}
-
-			Vec2f stop_force;
-
-			bool greater = vel.x > 0;
-			f32 absx = greater ? vel.x : -vel.x;
-			if ((absx < lim) || left && greater || right && !greater)
-			{
-				force *= 15.0f;
-				if (Maths::Abs(force) > 0.01f)
-				{
-					this.AddForce(walkDirection * force);
-				}
-			}
-
-			bool stopped = false;
-			if (absx > lim)
-			{
-				stopped = true;
-				stop_force.x -= (absx - lim) * (greater ? 1 : -1);
-
-				stop_force.x *= 100.0f * (onground ? 0.8f : 0.3f);
-
-				if (absx > 3.0f)
-				{
-					f32 extra = (absx - 3.0f);
-					f32 scale = (1.0f / ((1 + extra) * 2));
-					stop_force.x *= scale;
-				}
-
-				this.AddForce(stop_force);
-			}
-
+			// lose target randomly
 			if (XORRandom(250) == 0) 
 			{
 				if (this.get_u16("fuseCount") == 0)
 				{
 					this.set("target", null);
+				}
+			}
+
+
+			// particles
+			if (isClient())
+			{
+				if (XORRandom(100) < 40)
+				{
+					ParticleAnimated("BloodSplatBigger.png", this.getPosition() + Vec2f(XORRandom(20)-10, XORRandom(20)-10), Vec2f(0, 0), float(XORRandom(360)), 0.25f + XORRandom(100)*0.01f, 3 + XORRandom(4), XORRandom(100) * -0.00005f, true);
 				}
 			}
 		}
@@ -285,8 +138,6 @@ void onTick(CBlob@ this)
 			this.set_u16("fuseCount", this.get_u16("fuseCount") - 1);
 		}
 	}
-
-	GUI::DrawIcon("LightCircle.png", Vec2f(getDriver().getScreenCenterPos().x - 256 + (XORRandom(20)-10), getDriver().getScreenCenterPos().y - 256 + (XORRandom(20)-10)), 0.5f);
 }
 
 void onTick(CSprite@ this)
@@ -321,8 +172,32 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	return false;
 }
 
-bool isVisible(CBlob@blob, CBlob@ target)
+void onDie(CBlob@ this)
 {
-	Vec2f col;
-	return !getMap().rayCastSolid(blob.getPosition(), target.getPosition(), col);
+	if (!this.hasTag("despawned"))
+	{
+		Boom(this);
+
+		// loot
+		if (XORRandom(100) > 91)
+		{
+			if (isServer())
+			{
+				CBlob @blob = server_CreateBlob("heal", this.getTeamNum(), this.getPosition());
+				if (blob !is null)
+				{
+					blob.setVelocity(Vec2f(0.0f, -2.5f));
+				}
+			}
+		}
+		else
+		{
+			CBlob @blob = server_CreateBlob("cash", this.getTeamNum(), this.getPosition());
+			if (blob !is null)
+			{
+				blob.setVelocity(Vec2f(0.0f, -2.5f));
+				blob.set_u8("cash_amount", LOOT_CASH);
+			}
+		}
+	}
 }

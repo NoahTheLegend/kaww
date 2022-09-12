@@ -428,7 +428,13 @@ class PNGLoader
 			case map_colors::chair:         autotile(offset); spawnBlob(map, "chair", offset, 2); break;
 			case map_colors::camp:         autotile(offset); spawnBlob(map, "camp", offset, 5); break;
 
-			case map_colors::gate:         autotile(offset); spawnBlob(map, "gate", offset, 2); break;
+			//zambis
+			case map_colors::gate0:         autotile(offset); spawnBlob(map, "gate", offset, 0); break;
+			case map_colors::gate1:         autotile(offset); spawnBlob(map, "gate", offset, 1); break;
+			case map_colors::gate2:         autotile(offset); spawnBlob(map, "gate", offset, 2); break;
+			case map_colors::gate3:         autotile(offset); spawnBlob(map, "gate", offset, 3); break;
+			case map_colors::gate4:         autotile(offset); spawnBlob(map, "gate", offset, 4); break;
+			case map_colors::zspawn:         autotile(offset); spawnBlob(map, "zspawn", offset, 0); break;
 
 			case map_colors::sandbags:    autotile(offset); spawnBlob(map, "sandbags", offset-map.tilemapwidth); break;
 			case map_colors::redbarrel:    autotile(offset); spawnBlob(map, "redbarrel", offset-map.tilemapwidth); break;
@@ -437,11 +443,8 @@ class PNGLoader
 			case map_colors::deadbush:          autotile(offset); spawnBlob(map, "deadbush", offset); break;
 			case map_colors::cacti:    autotile(offset); spawnBlob(map, "cacti", offset); break;
 
-			//npcs 
-			case map_colors::vehicleguy:    autotile(offset); spawnBlob(map, "vehicleguy", offset); break;
-			case map_colors::heavyweaponsguy:    autotile(offset); spawnBlob(map, "heavyweaponsguy", offset); break;
-
 			case map_colors::hanginglantern:    autotile(offset); spawnBlob(map, "hanginglantern", offset); break;
+			//case map_colors::bonepine:    autotile(offset); spawnBlob(map, "bonepine", offset); break;
 
 			case map_colors::blue_munitionsshop:        autotile(offset); spawnBlob(map, "munitionsshop", offset, 0); break;
 			case map_colors::red_munitionsshop:         autotile(offset); spawnBlob(map, "munitionsshop", offset, 1); break;

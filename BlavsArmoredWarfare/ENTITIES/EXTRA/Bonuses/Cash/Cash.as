@@ -10,7 +10,7 @@ void onInit(CBlob@ this)
 		this.set_u8("cash_amount", 1);
 	}
 
-	this.server_SetTimeToDie(15);
+	this.server_SetTimeToDie(20);
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)

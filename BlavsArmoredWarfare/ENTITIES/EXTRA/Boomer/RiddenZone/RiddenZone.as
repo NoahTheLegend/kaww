@@ -1,17 +1,17 @@
 #include "Hitters.as";
 
-const float hurt_distance = 50.0f;
+const float hurt_distance = 48.0f;
 
 void onInit(CBlob@ this)
 {
-	this.getSprite().SetEmitSound("CampfireSound.ogg");
+	//this.getSprite().SetEmitSound("CampfireSound.ogg");
 
-	this.server_SetTimeToDie(45.0f);
+	this.server_SetTimeToDie(42.0f);
 
 	CShape@ shape = this.getShape();
 	shape.SetGravityScale(0);
 
-	this.getCurrentScript().tickFrequency = 5;
+	this.getCurrentScript().tickFrequency = 6;
 }
 
 void onTick(CBlob@ this)
@@ -28,8 +28,8 @@ void onTick(CBlob@ this)
 
             if (blobs[i].isMyPlayer())
 		    {
-		        SetScreenFlash( 100, 150, 0, 0, 10.0f);
-		        ShakeScreen(200, 200, this.getInterpolatedPosition());
+		        SetScreenFlash( 100, 150, 0, 0, 9.0f);
+		        ShakeScreen(100, 100, this.getInterpolatedPosition());
 		    }
         }
         else if (blobs[i].hasTag("zombie"))

@@ -1,6 +1,8 @@
 #include "Hitters.as";
 #include "Explosion.as";
 
+const u32 maxSnakes = 6;
+
 void onInit(CSprite@ this)
 {
 	this.SetAnimation("default");
@@ -39,7 +41,7 @@ void faceDirection(CBlob@ this, CBlob@ target, f32 x)
 
 // Show all death effects
 void deathEffects(CBlob@ this)
-{
+{/*
 	if (isClient())
 	{
 		CParticle@ p = ParticleAnimated("MonsterDie.png", this.getPosition(), Vec2f(0,0), 0.0f, 1.0f, 5, 0.0f, false);
@@ -51,7 +53,7 @@ void deathEffects(CBlob@ this)
 		const Vec2f pos = this.getPosition() + getRandomVelocity(0, 22.0f+XORRandom(30), 360);
 		CParticle@ p = ParticleAnimated("MonsterDiePart.png", pos, Vec2f(0,0),  0.0f, 1.0f, 8+XORRandom(4), -0.04f, false);
 		if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = true; }
-	}
+	}*/
 }
 
 // CLOSEST TARGET
@@ -189,14 +191,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			if (hitterBlob.getDamageOwnerPlayer().getBlob().getSprite() !is null && !this.hasTag("dead") && this !is hitterBlob)
 			{
-				if (this.hasTag("headshotable") && hitterBlob.getPosition().y < this.getPosition().y - 2.75f && !hitterBlob.hasTag("flesh"))
+				if (this.hasTag("headshotable") && hitterBlob.getPosition().y < this.getPosition().y - 3.25f && !hitterBlob.hasTag("flesh"))
 				{
 					hitterBlob.getDamageOwnerPlayer().getBlob().getSprite().PlaySound("HitmarkerHeadshot.ogg", 0.7f, 1.0f); //
 
 					if (isClient())
 					{
-						CParticle@ p = ParticleAnimated("MonsterDie.png", this.getPosition() - Vec2f(0.0f, 6.0f), Vec2f(0,0), 0.0f, 1.0f, 3, 0.0f, false);
-						if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
+						//CParticle@ p = ParticleAnimated("MonsterDie.png", this.getPosition() - Vec2f(0.0f, 6.0f), Vec2f(0,0), 0.0f, 1.0f, 3, 0.0f, false);
+						//if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
 					}
 				}
 				else
@@ -227,7 +229,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	return damage;
 }
-
+/*
 void onDie(CBlob@ this)
 {
 	if (!this.hasTag("despawned"))
@@ -261,7 +263,7 @@ void onDie(CBlob@ this)
 	{
 		ParticleAnimated("Lurker_headshot", this.getPosition() - Vec2f(0.0f, this.getRadius()/2), Vec2f(0, 0), 0, this.isFacingLeft() ? -1 : 1, 5, 0, false);
 	}
-}
+}*/
 
 void Boom(CBlob@ this)
 {
@@ -308,4 +310,132 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 	if (!isClient()) return;
 
 	ParticleAnimated(filename, this.getPosition() + pos, vel, float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 1 + XORRandom(4), XORRandom(100) * -0.00005f, true);
+}
+
+void DoWalk(CBlob@ this, Vec2f vel, bool left, bool right, float walkSpeedModded)
+{
+	Vec2f walkDirection;
+	bool facingleft = this.isFacingLeft();
+	const bool onground = this.isOnGround() || this.isOnLadder();
+
+	if (right)
+	{
+		if (vel.x < -0.1f)
+		{
+			walkDirection.x += walkSpeedModded + 0.3f;
+		}
+		else if (facingleft)
+		{
+			walkDirection.x += walkSpeedModded - 0.2f;
+		}
+		else
+		{
+			walkDirection.x += walkSpeedModded;
+		}
+	}
+
+	if (left)
+	{
+		if (vel.x > 0.1f)
+		{
+			walkDirection.x -= walkSpeedModded + 0.3f;
+		}
+		else if (!facingleft)
+		{
+			walkDirection.x -= walkSpeedModded - 0.2f;
+		}
+		else
+		{
+			walkDirection.x -= walkSpeedModded;
+		}
+	}
+
+	f32 force = 1.0f;
+
+	f32 lim = 0.0f;
+
+	if ((left || right))
+	{
+		lim = 2.0f;
+		if (!onground)
+		{
+			lim = 2.5f;
+		}
+
+		lim *= 0.5f * Maths::Abs(walkDirection.x);
+	}
+
+	Vec2f stop_force;
+
+	bool greater = vel.x > 0;
+	f32 absx = greater ? vel.x : -vel.x;
+	if ((absx < lim) || left && greater || right && !greater)
+	{
+		force *= 15.0f;
+		if (Maths::Abs(force) > 0.01f)
+		{
+			this.AddForce(walkDirection * force);
+		}
+	}
+
+	bool stopped = false;
+	if (absx > lim)
+	{
+		stopped = true;
+		stop_force.x -= (absx - lim) * (greater ? 1 : -1);
+
+		stop_force.x *= 100.0f * (onground ? 0.8f : 0.3f);
+
+		if (absx > 3.0f)
+		{
+			f32 extra = (absx - 3.0f);
+			f32 scale = (1.0f / ((1 + extra) * 2));
+			stop_force.x *= scale;
+		}
+
+		this.AddForce(stop_force);
+	}
+}
+
+
+void DoJump(CBlob@ this, float jumpStart, float jumpMid, float jumpEnd, bool left, bool right, float sideways)
+{
+	float side = 0.0f;
+	if (this.isFacingLeft() && left)
+	{
+		side = -sideways;
+	}
+	else if (!this.isFacingLeft() && right)
+	{
+		side = sideways;
+	}
+
+	Vec2f force = Vec2f(side, 0);
+
+	if (this.get_u16("jumpCount") <= 0)
+	{
+		force.y -= 1.5f;
+	}
+	else if (this.get_u16("jumpCount") < 3)
+	{
+		force.y -= jumpStart;
+	}
+	else if (this.get_u16("jumpCount") < 6)
+	{
+		force.y -= jumpMid;
+	}
+	else if (this.get_u16("jumpCount") < 8)
+	{
+		force.y -= jumpEnd;
+	}
+
+	force *= 160.0f;
+
+	this.AddForce(force);
+}
+
+bool isVisible(CBlob@blob, CBlob@ target)
+{
+	Vec2f col;
+	return !getMap().rayCastSolid(blob.getPosition(), target.getPosition(), col);
 }
