@@ -110,12 +110,12 @@ void onRender( CRules@ this )
 
 		float flag_height = -6;
 
-		GUI::DrawIcon("KAWWGui.png", 0, Vec2f(16,32), indicatorPos + Vec2f(-4, flag_height), 1.0f, team_num);
-    	if (team_state == 2)
+		if (team_state == 2)
     	{
     		f32 wave = Maths::Sin(getGameTime() / 3.0f) * 5.0f - 25.0f;
     		GUI::DrawIcon("KAWWGui.png", 1, Vec2f(16,32), indicatorPos + Vec2f(-2, flag_height + 64 + wave), 1.0f, team_num);
     	}
+		GUI::DrawIcon("KAWWGui.png", 0, Vec2f(16,32), indicatorPos + Vec2f(-4, flag_height), 1.0f, team_num);
 	}
 
 

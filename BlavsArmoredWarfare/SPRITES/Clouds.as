@@ -47,7 +47,6 @@ u16 CLEAR_WIDTH_POS = 0;
 
 u16 SCREEN_HEIGHT = 0;
 u16 SCREEN_WIDTH = 0;
-//
 
 void onInit(CRules@ this)
 {
@@ -99,10 +98,11 @@ void onReload(CRules@ this)
 		this.set_u16("callback", callback);
 	}
 }
-//
 
 void onTick(CRules@ this)
 {
+	if (!this.get_bool("allowclouds")) return;
+
 	if (CLEAR_WIDTH_POS == 0) // Required here because map is null in onInit and onRestart
 	{
 		CLEAR_WIDTH_POS = (getMap().tilemapwidth * 8) + PADDING;
@@ -166,8 +166,7 @@ void RenderClouds(int id)
 	Driver@ driver = getDriver();
 	SCREEN_WIDTH = driver.getScreenWidth();
 	SCREEN_HEIGHT = driver.getScreenHeight();
-	//
-
+	
 	for (int a = 0; a < size; a++)
 	{
 		C_CLOUDS[a].SendToRenderer();
@@ -198,8 +197,6 @@ void onCommand(CRules@ this, u8 cmd, CBitStream @params)
 		);
 	}
 }
-
-
 
 class Clouds
 {
@@ -304,20 +301,6 @@ class Clouds
 
 		return false;
 	}
-
-	/*bool dontBotherChecking(const Vec2f &in pos)
-	{
-		const f32 posx = pos.x;
-		const f32 posy = pos.y;
-
-		if (posx < -250 || posx > SCREEN_WIDTH + 250 ||
-			posy < -250 || posy > SCREEN_HEIGHT + 250)
-		{
-			return true;
-		}
-
-		return false;
-	}*/
 
 	bool isVectorOnScreen(const Vec2f &in pos)
 	{
