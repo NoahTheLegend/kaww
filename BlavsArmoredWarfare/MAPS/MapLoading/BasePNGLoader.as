@@ -20,6 +20,7 @@ enum WAROffset
 
 //global
 Random@ map_random = Random();
+u8 map_type = 0; // 0 default, 1 desert, 2 grim
 
 class PNGLoader
 {
@@ -39,6 +40,9 @@ class PNGLoader
 	{
 		@map = _map;
 		@map_random = Random();
+		map_type = 0; // reset type
+		getRules().set_bool("allowclouds", false);
+		getRules().set_u8("brightmod", 50); // 50 default
 
 		if(!getNet().isServer())
 		{
@@ -53,7 +57,6 @@ class PNGLoader
 		if(image.isLoaded())
 		{
 			SetupMap(image.getWidth(), image.getHeight());
-			SetupBackgrounds();
 
 			while(image.nextPixel())
 			{
@@ -69,6 +72,8 @@ class PNGLoader
 
 				getNet().server_KeepConnectionsAlive();
 			}
+
+			SetupBackgrounds();
 
 			// late load - after placing tiles
 			for(uint i = 0; i < offsets.length; ++i)
@@ -496,6 +501,12 @@ class PNGLoader
 			case map_colors::mook_spawner:    autotile(offset); AddMarker(map, offset, "mook spawner"); break;
 			case map_colors::mook_spawner_10: autotile(offset); AddMarker(map, offset, "mook spawner 10"); break;
 			case map_colors::dummy:           autotile(offset); spawnBlob(map, "dummy", offset, 1, true); break;
+
+			// Backgrounds
+			case map_colors::map_desert: map_type = 1; break;
+			case map_colors::map_grim: map_type = 2; break;
+			//case map_colors::map_desert:      map_type = 3 break;
+
 			default:
 				HandleCustomTile( map, offset, pixel );
 			};
@@ -553,28 +564,68 @@ class PNGLoader
 
 	void SetupMap(int width, int height)
 	{
-		map.CreateTileMap(width, height, 8.0f, "Sprites/world.png");
+		map.CreateTileMap(width, height, 8.0f, "Tilesets/world.png");
+		/*
+		if (map_type == 0)
+		{
+			map.CreateTileMap(width, height, 8.0f, "Tilesets/world.png");
+		}
+		else
+		{
+			map.CreateTileMap(width, height, 8.0f, "Tilesets/worlddesert.png");
+		}*/
 	}
 
 	void SetupBackgrounds()
 	{
-		// sky
-		map.CreateSky(color_black, Vec2f(1.0f, 1.0f), 200, "Sprites/Back/cloud", 0);
-		map.CreateSkyGradient("Sprites/skygradient.png"); // override sky color with gradient
-		/*
-		// background
-		map.AddBackground("Sprites/Back/BackgroundPlains.png", Vec2f(0.0f, -38.0f), Vec2f(0.3f, 0.3f), color_white); //-18
-		map.AddBackground("Sprites/Back/BackgroundTrees.png", Vec2f(0.0f,  -25.0f), Vec2f(0.4f, 0.4f), color_white);  //-5
-		map.AddBackground("Sprites/Back/BackgroundIsland.png", Vec2f(0.0f, -20.0f), Vec2f(0.6f, 0.6f), color_white); //0 */
+		switch (map_type)
+		{
+			// Tiles
+			case 0: //default
+			{
+				map.CreateSky(color_black, Vec2f(1.0f, 1.0f), 200, "Sprites/Back/cloud", 0); // sky
+				map.CreateSkyGradient("Sprites/skygradient.png"); // override sky color with gradient
+				getRules().set_bool("allowclouds", true);
+				getRules().set_u8("brightmod", 50);
 
-		// background
-		map.AddBackground("Sprites/Back/BackgroundPlains.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
-		map.AddBackground("Sprites/Back/BackgroundCastle.png", Vec2f(0.0f, -120.0f), Vec2f(0.35f, 0.35f), color_white);
-		map.AddBackground("Sprites/Back/BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
-		map.AddBackground("Sprites/Back/BackgroundIsland.png", Vec2f(0.0f, -3.0f), Vec2f(0.5f, 0.5f), color_white);
+				map.AddBackground("Backgrounds/BackgroundPlains.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
+				map.AddBackground("Backgrounds/BackgroundCastle.png", Vec2f(0.0f, -120.0f), Vec2f(0.35f, 0.35f), color_white);
+				map.AddBackground("Backgrounds/BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
+				map.AddBackground("Backgrounds/BackgroundIsland.png", Vec2f(0.0f, 40.0f), Vec2f(0.5f, 0.5f), color_white);
 
-		// fade in
-		SetScreenFlash(255,   0,   0,   0,   1.0);
+				SetScreenFlash(255,   0,   0,   0,   1.25);
+				break;
+			}
+			case 1: //desert
+			{
+				map.CreateSky(color_black, Vec2f(1.0f, 1.0f), 200, "Sprites/Back/cloud", 0); // sky
+				map.CreateSkyGradient("Sprites/skygradientdesert.png"); // override sky color with gradient
+				getRules().set_bool("allowclouds", false);
+				getRules().set_u8("brightmod", 100);
+
+				map.AddBackground("Backgrounds/BackgroundDesertDetail.png", Vec2f(0.0f, -15.0f), Vec2f(0.055f, 0.5f), color_white);
+				map.AddBackground("Backgrounds/BackgroundDesertRocky.png",  Vec2f(27.0f, -20.0f), Vec2f(0.12f, 0.5f), color_white);
+				map.AddBackground("Backgrounds/BackgroundDesert.png",       Vec2f(5.0f, -8.0f), Vec2f(0.25f, 2.0f), color_white);
+				map.AddBackground("Backgrounds/BackgroundDunes.png",        Vec2f(0.0f,  -7.0f), Vec2f(0.5f, 2.5f), color_white);
+
+				SetScreenFlash(255,   0,   0,   0,   1.25);
+				break;
+			}
+			case 2: //grim
+			{
+				map.CreateSky(color_black, Vec2f(1.0f, 1.0f), 200, "Sprites/Back/cloud", 0); // sky
+				map.CreateSkyGradient("Sprites/skygradient.png"); // override sky color with gradient
+				getRules().set_bool("allowclouds", true);
+				getRules().set_u8("brightmod", 0);
+				
+				map.AddBackground("Backgrounds/BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
+				map.AddBackground("Backgrounds/City.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
+				map.AddBackground("Backgrounds/Forest.png", Vec2f(0.0f, -120.0f), Vec2f(0.35f, 0.35f), color_white);
+
+				SetScreenFlash(255,   0,   0,   0,   3.0);
+				break;
+			}
+		}
 	}
 
 	CBlob@ spawnLadder(CMap@ map, int offset)

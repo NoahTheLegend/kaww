@@ -171,13 +171,9 @@ void onHitWorld(CBlob@ this, Vec2f end)
 		}
 
 		// chance to break a block
-		
-		if (XORRandom(80) < Maths::Min((isStrong ? 100 : 50) * this.get_f32("bullet_damage_head"), (isStrong ? 100 : 50)))
+		if (map.getSectorAtPosition(this.getPosition(), "no build") is null)
 		{
-			if (map.getSectorAtPosition(this.getPosition(), "no build") is null)
-			{
-				map.server_DestroyTile(this.getPosition(), isStrong ? 1.5f : 0.65f, this);
-			}
+			map.server_DestroyTile(this.getPosition(), isStrong ? 1.5f : 0.65f, this);
 		}
 
 		this.server_Die();
