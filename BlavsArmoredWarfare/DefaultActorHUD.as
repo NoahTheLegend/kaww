@@ -83,8 +83,6 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 2, heartpos.y + 2), Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 2, heartpos.y + dim.y - 2), color);
 					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 2, heartpos.y + 21), Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 2, heartpos.y + dim.y - 2), SColor(0xff2a760a));
 					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 4, heartpos.y + 4), Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 4, heartpos.y + dim.y - 16), SColor(0xffffffff));
-
-					if (perc != 1) {GUI::DrawIcon("Taper.png", Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 34, heartpos.y + 1), 0.5f);}
 				}
 			}
 		}

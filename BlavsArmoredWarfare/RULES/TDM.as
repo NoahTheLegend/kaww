@@ -954,7 +954,7 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 //pass stuff to the core from each of the hooks
 void Reset(CRules@ this)
 {
-	SetCorrectMapType();
+	SetCorrectMapType(); // has a one map delay on adjusting to player population
 
 	string configstr = "Rules/CTF/ctf_vars.cfg";
 	ConfigFile cfg = ConfigFile(configstr);
@@ -972,7 +972,12 @@ void Reset(CRules@ this)
 	this.set_u32("game_end_time", getGameTime() + core.gameDuration);
 	this.set_s32("restart_rules_after_game_time", (core.spawnTime < 0 ? 5 : 10) * 20);
 
-	u8 randtime = XORRandom(101); // 0 to 100
+	u8 brightmod = getRules().get_u8("brightmod");
+	// 0 full bright
+	// 50 normal
+	// 100 dark
+
+	u8 randtime = XORRandom(100) + 1; // 1 to 100
 	if (randtime < 11) // bad conditions / night
 	{
 		printf("night");
@@ -987,6 +992,16 @@ void Reset(CRules@ this)
 	{
 		printf("normal");
 		getMap().SetDayTime(0.8f);
+	}
+
+	print("p " + brightmod);
+	if (brightmod == 100)
+	{
+		getMap().SetDayTime(0.5f);
+	}
+	if (brightmod == 0)
+	{
+		getMap().SetDayTime(0.03f);
 	}
 	print("TIME: " + getMap().getDayTime());
 }
