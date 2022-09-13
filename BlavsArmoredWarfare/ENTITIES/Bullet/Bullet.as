@@ -215,7 +215,6 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		}
 	}
 
-	
 	CParticle@ p = ParticleAnimated("SparkParticle.png", hit_position, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
 	if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
 
