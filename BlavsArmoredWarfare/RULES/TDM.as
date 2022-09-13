@@ -1033,13 +1033,12 @@ void onTick(CRules@ this)
         for (i = 0; i < getPlayerCount(); i++)
         {
             CPlayer@ player = getPlayer(i);
-            if (player.getCoins() != 0)
+            if ((player.getTeamNum() == 0 || player.getTeamNum() == 1) && player.getCoins() != 0)
             {
+            	///xxx
                 cfg_playercoins.add_u32(player.getUsername(), (player.getCoins()));
             }
         }
-
-        cfg_playercoins.saveFile("KAWW_Coins.cfg");
     }
 	if (getGameTime()%150==0) //every 5 seconds give a coin
 	{
@@ -1070,16 +1069,6 @@ void onInit(CRules@ this)
 	this.set_u8("current_round", 1);
 
 	//this.addCommandID("send_chat");
-
-	if ( !cfg_playercoins.loadFile("../Cache/KAWW_Coins.cfg") )
-    {
-        cfg_playercoins = ConfigFile("KAWW_Coins.cfg");
-    }
-
-    if ( !cfg_playertechs.loadFile("../Cache/KAWW_Techs.cfg") )
-    {
-        cfg_playertechs = ConfigFile("KAWW_Techs.cfg");
-    }
 
 	//this.addCommandID("flag_cap_won"); //breaks chat and other stuff!!!
 
