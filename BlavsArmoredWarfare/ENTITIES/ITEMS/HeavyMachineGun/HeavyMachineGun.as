@@ -51,9 +51,7 @@ void onInit(CBlob@ this)
 	if (cage !is null)
 	{
 		Animation@ anim = cage.addAnimation("default", 0, false);
-		anim.AddFrame(1);
-		anim.AddFrame(5);
-		anim.AddFrame(7);
+		anim.AddFrame(0);
 		cage.SetOffset(sprite.getOffset());
 		cage.SetRelativeZ(20.0f);
 	}
@@ -83,14 +81,24 @@ void onInit(CBlob@ this)
 	}
 }
 
+void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
+{
+	if (attached.getName() != "m60turret" && attached.getName() != "t10turret") return;
+	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
+	if (cage !is null)
+	{
+		cage.SetVisible(false);
+	}
+}
+
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
-	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+	if (this.isAttached()) return;
 
-	if (arm !is null)
+	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
+	if (cage !is null)
 	{
-		arm.animation.frame = 1;
+		cage.SetVisible(true);
 	}
 }
 
