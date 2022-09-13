@@ -329,6 +329,10 @@ namespace map_colors
 		blue_tanktrap		   = 0xff181c20,
 		red_tanktrap		   = 0xff1f1919,
 
+		// map background signifier
+		map_desert             = 0xfffcd38b,
+		map_grim               = 0xff2a1830,
+
 		//buildings
 		ledlight               = 0xfff5be41,
 		fan             	   = 0xff6c776e,
