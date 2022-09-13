@@ -505,8 +505,8 @@ class PNGLoader
 			case map_colors::dummy:           autotile(offset); spawnBlob(map, "dummy", offset, 1, true); break;
 
 			// Backgrounds
-			case map_colors::map_desert: getRules().set_u8("map_type", 1); break;
-			case map_colors::map_grim: getRules().set_u8("map_type", 2); break;
+			case map_colors::map_desert: autotile(offset); spawnBlob(map, "info_desert", offset); break;
+			case map_colors::map_grim: autotile(offset); spawnBlob(map, "info_grim", offset); break;
 			//case map_colors::map_desert:      map_type = 3 break;
 
 			default:
