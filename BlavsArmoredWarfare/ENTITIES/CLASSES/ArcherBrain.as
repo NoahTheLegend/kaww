@@ -5,7 +5,7 @@
 #include "BrainCommon.as"
 #include "ArcherCommon.as"
 
-float mouse_mvspd = 0.40f;
+float mouse_mvspd = 0.44f;
 
 void onInit(CBrain@ this)
 {

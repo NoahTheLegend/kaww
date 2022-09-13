@@ -12,7 +12,6 @@ const int min_input = Maths::Ceil(input/output);
 void onInit(CSprite@ this)
 {
 	this.SetEmitSound("/Refinery_fire.ogg");
-
 	this.SetEmitSoundPaused(true);
 }
 
@@ -34,11 +33,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (hitterBlob.getTeamNum() == this.getTeamNum()) damage *= 5;
 	switch (customData)
 	{
-	
      	case Hitters::builder:
 			damage *= 3.50f;
 			break;
-
 	}
 	if (hitterBlob.getName() == "grenade")
 	{
@@ -70,7 +67,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	CBitStream params;
 	params.write_u16(caller.getNetworkID());
 
-	CButton@ button = caller.CreateGenericButton("$mat_stone$", Vec2f(1.0f, 3.0f), this, this.getCommandID("add stone"), getTranslatedString("Add stone"), params);
+	CButton@ button = caller.CreateGenericButton("$mat_stone$", Vec2f(1.0f, 3.0f), this, this.getCommandID("add stone"), getTranslatedString("Convert stone to scrap"), params);
 	if (button !is null)
 	{
 		button.deleteAfterClick = false;
