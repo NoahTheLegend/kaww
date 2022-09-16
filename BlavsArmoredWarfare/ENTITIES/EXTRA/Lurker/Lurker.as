@@ -1,8 +1,8 @@
 #include "Hitters.as";
 #include "ZombieCommon.as";
 
-const float target_radius = 3000;
-const float maxDistance = 3000.0f;
+const float target_radius = 2000;
+const float maxDistance = target_radius;
 const float walkSpeed = 0.80f;
 
 const u8 LOOT_CASH = 1;
@@ -12,7 +12,6 @@ void onTick(CBlob@ this)
 	f32 x = this.getVelocity().x;
 
 	bool up = false;
-
 	bool left = false;
 	bool right = false;
 

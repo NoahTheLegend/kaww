@@ -199,7 +199,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 		for (int i = 0; i < (15 + XORRandom(15)); i++)
 		{
-			makeGibParticle("GenericGibs", this.getPosition(), getRandomVelocity((this.getPosition() + Vec2f(XORRandom(24) - 12, 0.0f)).getAngle(), 1.0f + XORRandom(4), 360.0f) + Vec2f(0.0f, -5.0f),
+			makeGibParticle("GenericGibs", pos, getRandomVelocity((pos + Vec2f(XORRandom(24) - 12, 0.0f)).getAngle(), 1.0f + XORRandom(4), 360.0f) + Vec2f(0.0f, -5.0f),
 	                2, 4 + XORRandom(4), Vec2f(8, 8), 2.0f, 0, "", 0);
 		}
 	}

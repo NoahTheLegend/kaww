@@ -27,7 +27,7 @@ void onTick(CBlob@ this)
 	CBlob@ ownerBlob = point.getOccupied();
 	if (ownerBlob is null) return;
 
-	float angle = ownerBlob.isFacingLeft() ? 45.0f : -45.0f;
+	float angle = ownerBlob.isFacingLeft() ? 30.0f : -30.0f;
 	this.setAngleDegrees(angle);
 
 	if (!ownerBlob.isMyPlayer()) return; // only player holding this
@@ -53,7 +53,10 @@ void onTick(CBlob@ this)
 		if (b.getTeamNum() == ownerBlob.getTeamNum()) //enemy only
 		{ continue; }
 
-		if (!b.hasTag("vehicle") || b.isAttached()) //vehicles only
+		if (!b.hasTag("vehicle")) //vehicles only
+		{ continue; }
+
+		if (b.isAttached()) // non attached blobs
 		{ continue; }
 
 		u16 bNetID = b.getNetworkID();
@@ -148,10 +151,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		CBlob@ ownerBlob = point.getOccupied();
 		if (ownerBlob is null) return;
 
-		Vec2f launchVec = Vec2f(1.0f, 0.0f);
-		launchVec.RotateByDegrees(ownerBlob.isFacingLeft() ? -130.0f : -50.0f);
+		Vec2f launchVec = Vec2f(ownerBlob.isFacingLeft() ? -1 : 1, -0.75f);
 
-		CBlob@ blob = server_CreateBlob("missile_javelin", ownerBlob.getTeamNum(), this.getPosition());
+		CBlob@ blob = server_CreateBlob("missile_javelin", ownerBlob.getTeamNum(), this.getPosition() - Vec2f(0,2));
 		if (blob != null)
 		{
 			blob.setVelocity(launchVec * 3.0f);

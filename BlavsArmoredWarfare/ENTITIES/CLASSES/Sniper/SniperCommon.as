@@ -4,9 +4,9 @@ const string classname = "Sniper"; // case sensitive
 const float damage_body = 1.0f;
 const float damage_head = 2.0f;
 // SHAKE
-const float recoilx = 16; // x shake (20)
-const float recoily = 120; // y shake (45)
-const float recoillength = 700; // how long to recoil (?)
+const float recoilx = 14; // x shake (20)
+const float recoily = 80; // y shake (45)
+const float recoillength = 600; // how long to recoil (?)
 // RECOIL
 const float recoilforce = 0.03f; // amount to push player
 const u8 recoilcursor = 13; // amount to raise mouse pos
