@@ -221,7 +221,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 		u16 charge = v.charge;
 		f32 anglereal = Vehicle_getWeaponAngle(this, v);
 		f32 angle = anglereal * (this.isFacingLeft() ? -1 : 1);
-		angle += ((XORRandom(512) - 256) / 220.0f);
+		angle += ((XORRandom(512) - 256) / 120.0f);
 
 		Vec2f vel = Vec2f(500.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
 		bullet.setVelocity(vel);

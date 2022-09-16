@@ -41,6 +41,8 @@ void onTick(CBlob@ this)
 	CMap@ map = getMap();
 	if (map == null) return;
 
+	if (ownerBlob.isAttached()) return;
+
 	u16[] validBlobIDs; //detectable enemies go here
 	CBlob@[] blobsInRadius;
 	map.getBlobsInRadius(ownerAimpos, searchRadius, @blobsInRadius); //possible enemies in radius
@@ -98,11 +100,11 @@ void onTick(CBlob@ this)
 				targetingProgress = 0.0f;
 			}
 			
-			f32 squareAngle = 45.0f * (1.0f - targetingProgress);
-			Vec2f squareScale = Vec2f(32.0f, 32.0f) * (2.0f - targetingProgress);
+			f32 squareAngle = 45.0f * (1.0f - targetingProgress) * 3;
+			Vec2f squareScale = Vec2f(36.0f, 36.0f) * (2.0f - targetingProgress*1.5);
 			f32 squareCornerSeparation = 4.0f;
 			makeTargetSquare(targetPos, squareAngle, squareScale, squareCornerSeparation, 1.0f, targetingProgress == 1.0f ? redConsoleColor : yellowConsoleColor); //target detected rhombus
-			this.set_f32(targetingProgressString, Maths::Min(targetingProgress+0.02f, 1.0f));
+			this.set_f32(targetingProgressString, Maths::Min(targetingProgress+0.01f, 1.0f));
 		}
 	}
 	else //resets if no valid targets in range
@@ -121,11 +123,50 @@ void onTick(CBlob@ this)
 	}
 	else if (targetingProgress == 1.0f && ownerBlob.isKeyJustPressed(key_action3))
 	{
-		CBitStream params;
-		params.write_u16(curTargetNetID);
-		this.SendCommandOnlyServer(this.getCommandID(launchJavelinIDString), params);
-		this.set_f32(targetingProgressString, 0);
-		this.set_u16(curTargetNetIDString, 0);
+		CInventory@ inv = ownerBlob.getInventory();
+		if (inv !is null && inv.getItem("mat_heatwarhead") !is null)
+		{
+			CBlob@ mag;
+			for (u8 i = 0; i < inv.getItemsCount(); i++)
+			{
+				CBlob@ b = inv.getItem(i);
+				if (b is null || b.getName() != "mat_heatwarhead" || b.hasTag("dead")) continue;
+				@mag = @b;
+				break;
+			}
+			if (mag !is null)
+			{
+				u16 quantity = mag.getQuantity();
+
+				if (quantity <= 1)
+				{
+					this.add_u32("mag_bullets", quantity);
+					mag.Tag("dead");
+					if (isServer()) mag.server_Die();
+					CBitStream params;
+					params.write_u16(curTargetNetID);
+					this.SendCommandOnlyServer(this.getCommandID(launchJavelinIDString), params);
+					this.set_f32(targetingProgressString, 0);
+					this.set_u16(curTargetNetIDString, 0);
+				}
+				else
+				{
+					this.set_u32("mag_bullets", 1);
+					if (isServer()) mag.server_SetQuantity(quantity - 1);
+					CBitStream params;
+					params.write_u16(curTargetNetID);
+					this.SendCommandOnlyServer(this.getCommandID(launchJavelinIDString), params);
+					this.set_f32(targetingProgressString, 0);
+					this.set_u16(curTargetNetIDString, 0);
+				}
+			}
+		}
+		else if (this.isMyPlayer())
+		{
+			this.getSprite().PlaySound("NoAmmo.ogg", 0.85);
+		}
+
+		
 	}
 }
 
@@ -151,9 +192,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		CBlob@ ownerBlob = point.getOccupied();
 		if (ownerBlob is null) return;
 
-		Vec2f launchVec = Vec2f(ownerBlob.isFacingLeft() ? -1 : 1, -0.75f);
+		Vec2f launchVec = Vec2f(ownerBlob.isFacingLeft() ? -1 : 1, -1.05f);
 
-		CBlob@ blob = server_CreateBlob("missile_javelin", ownerBlob.getTeamNum(), this.getPosition() - Vec2f(0,2));
+		CBlob@ blob = server_CreateBlob("missile_javelin", ownerBlob.getTeamNum(), this.getPosition() - Vec2f(0,3));
 		if (blob != null)
 		{
 			blob.setVelocity(launchVec * 3.0f);
