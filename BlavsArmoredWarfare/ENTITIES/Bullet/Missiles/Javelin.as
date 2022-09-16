@@ -98,12 +98,12 @@ void onTick(CBlob@ this)
 	Vec2f targetPos = targetBlob.getPosition();
 	Vec2f targetVel = targetBlob.getVelocity();
 	Vec2f gravity = Vec2f(0, sv_gravity*0.6f); 
-	Vec2f bVel = thisVel + gravity - targetVel; //compensates for missile speed
+	Vec2f bVel = thisVel - targetVel; //compensates for missile speed
 	Vec2f targetVec = targetPos - thisPos;
 	f32 targetDist = targetVec.getLength(); //distance to target
 
 	Vec2f lastBVel = this.get_Vec2f(lastAbsoluteVelString);
-	Vec2f bAccel = lastBVel - bVel;
+	Vec2f bAccel = (lastBVel - bVel) + gravity;
 	this.set_Vec2f(lastAbsoluteVelString, bVel);
 
 	float turnAngle = 0.0f;
@@ -133,7 +133,6 @@ void onTick(CBlob@ this)
 				}
 			}
 
-			
 			float bVelAngle = (bVel + bAccel).getAngleDegrees();
 			float targetVecAngle = targetVec.getAngleDegrees();
 
@@ -155,14 +154,11 @@ void onTick(CBlob@ this)
 
 	this.setAngleDegrees(thisAngle + Maths::Clamp(angleDiff, -10.0f, 10.0f));
 	
-	Vec2f thrustVec = Vec2f(1.0f, 0).RotateByDegrees(this.getAngleDegrees());
-	Vec2f thrustNorm = thrustVec;
-	//thrustNorm.Normalize();
-	f32 thrustAngle = thrustNorm.getAngleDegrees();
+	Vec2f thrustNorm = Vec2f(1.0f, 0).RotateByDegrees(this.getAngleDegrees());
+	Vec2f thrustVec = thrustNorm * thrust;
 
 	bool hasThrust = Maths::Abs(angleDiff) < 45.0f;
-
-	Vec2f newVel = thisVel + (hasThrust ? (thrustNorm * thrust) : Vec2f_zero);
+	Vec2f newVel = thisVel + (hasThrust ? thrustVec : Vec2f_zero);
 
 	f32 maxSpeed = 10.0f;
 	if (maxSpeed != 0 && newVel.getLength() > maxSpeed) //max speed logic - 0 means no cap
