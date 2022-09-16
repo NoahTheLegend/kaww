@@ -2,6 +2,7 @@
 
 #include "Hitters.as"
 #include "ComputerCommon.as"
+#include "Explosion.as"
 
 Random _missile_r(12231);
 
@@ -84,7 +85,15 @@ void onTick(CBlob@ this)
 		return;
 	}
 
-	
+	// smoke effect
+	if (XORRandom(2) == 0) 
+	{
+		if (is_client)
+		{
+			ParticleAnimated("LargeSmoke", this.getPosition(), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, 90), float(XORRandom(360)), 0.5f + XORRandom(25) * 0.01f, 1 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+		}
+	}
+
 	//homing logic
 	Vec2f targetPos = targetBlob.getPosition();
 	Vec2f gravity = Vec2f(0, sv_gravity*0.6f); 
@@ -177,6 +186,8 @@ void onDie( CBlob@ this )
 {
 	Vec2f thisPos = this.getPosition();
 
+	DoExplosion(this, this.getVelocity());
+
 	makeMissileEffect(thisPos); //boom effect
 }
 
@@ -203,7 +214,6 @@ void doThrustParticles(Vec2f pPos = Vec2f_zero, Vec2f pVel = Vec2f_zero)
 		p.Z = 8;
 		p.timeout = 10;
 	}
-
 }
 
 void doMuzzleFlash(Vec2f thisPos = Vec2f_zero, Vec2f flashVec = Vec2f_zero)
@@ -243,7 +253,7 @@ void doMuzzleFlash(Vec2f thisPos = Vec2f_zero, Vec2f flashVec = Vec2f_zero)
 		}
 	}
 	
-	Sound::Play("BasicShotSound.ogg", thisPos, 0.3f , 1.3f + (0.1f * _missile_r.NextFloat()));
+	Sound::Play("RPGFire.ogg", thisPos, 0.6f , 0.8f + (0.1f * _missile_r.NextFloat()));
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -307,4 +317,32 @@ void makeMissileEffect(Vec2f thisPos = Vec2f_zero)
 		p.Z = 200.0f;
 		p.lighting = false;
     }
+}
+
+bool DoExplosion(CBlob@ this, Vec2f velocity)
+{
+	f32 mod = 3.0f;
+
+	Explode(this, 26.0f*mod, 12.0f*(mod/2));
+	LinearExplosion(this, velocity, 22.0f*mod/2+XORRandom(9), 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
+	
+	this.getSprite().PlaySound("/ShellExplosion");
+
+	if (isClient())
+	{
+		Vec2f pos = this.getPosition();
+
+		for (int i = 0; i < 6; i++)
+		{
+			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(8) - 4, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(15) * 0.005f, 360), float(XORRandom(360)), 0.75f + XORRandom(40) * 0.01f, 5 + XORRandom(6), XORRandom(30) * -0.0001f, true);
+		}
+
+		for (int i = 0; i < (15 + XORRandom(15)); i++)
+		{
+			makeGibParticle("GenericGibs", pos, getRandomVelocity((pos + Vec2f(XORRandom(24) - 12, 0.0f)).getAngle(), 1.0f + XORRandom(4), 360.0f) + Vec2f(0.0f, -5.0f),
+	                2, 4 + XORRandom(4), Vec2f(8, 8), 2.0f, 0, "", 0);
+		}
+	}
+
+	return true;
 }

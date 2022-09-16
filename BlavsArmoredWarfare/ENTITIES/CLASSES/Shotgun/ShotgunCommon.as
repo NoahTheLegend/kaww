@@ -1,14 +1,14 @@
-const string classname = "Ranger"; // case sensitive
+const string classname = "Shotgun"; // case sensitive
 
 // DAMAGE
 const float damage_body = 0.3f;
 const float damage_head = 0.42f;
 // SHAKE
-const float recoilx = 50; // x shake (20)
-const float recoily = 100; // y shake (45)
+const float recoilx = 20; // x shake (20)
+const float recoily = 80; // y shake (45)
 const float recoillength = 180; // how long to recoil (?)
 // RECOIL
-const float recoilforce = 0.7f; // amount to push player
+const float recoilforce = 1.4f; // amount to push player
 const u8 recoilcursor = 13; // amount to raise mouse pos
 const u8 sidewaysrecoil = 2; // sideways recoil amount
 const u8 sidewaysrecoildamp = 8; // higher number means less sideways recoil
@@ -29,10 +29,10 @@ const s8 reloadtime = 90; // time to reload
 const string reloadsfx = classname + "_reload.ogg";
 const string shootsfx = "ShotgunFire.ogg";
 
-const u8 delayafterfire = 25; // time between shots 4
+const u8 delayafterfire = 26; // time between shots 4
 const u8 randdelay = 0; // + randomness
 
-const float bulletvelocity = 1.62f; // speed that bullets fly 1.6
+const float bulletvelocity = 1.42f; // speed that bullets fly 1.6
 
 namespace ArcherParams
 {

@@ -18,6 +18,7 @@ void onInit(CBlob@ this)
 
 
 	this.Tag("structure");
+	this.Tag("vehicle");
 
 	if (arm !is null)
 	{

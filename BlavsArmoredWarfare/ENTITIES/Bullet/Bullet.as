@@ -365,11 +365,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return true;
 	}
 
-	if (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())
-	{
-		return true;
-	}
-
 	if (blob.hasTag("door") && blob.getShape().getConsts().collidable)
 	{
 		return true;
@@ -405,10 +400,17 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
+
 	if (this.getTickSinceCreated() < 2 && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
 	{
 		return false;
 	}
+
+	if (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())
+	{
+		return this.getTickSinceCreated() > 1;
+	}
+
 
 	if (blob.hasTag("destructable"))
 	{
