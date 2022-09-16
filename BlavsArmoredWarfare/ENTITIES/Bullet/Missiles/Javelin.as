@@ -6,8 +6,8 @@
 
 Random _missile_r(12231);
 
-const f32 damage = 0.5f;
-const f32 searchRadius = 128.0f;
+const f32 damage = 8.0f;
+const f32 searchRadius = 132.0f;
 const f32 radius = 24.0f;
 const float thrust = 0.5f;
 
@@ -73,6 +73,7 @@ void onTick(CBlob@ this)
 
 			this.setPosition(thisPos);
 			this.server_Die();
+			this.server_Hit(hi.blob, thisPos, Vec2f(0,0), damage, Hitters::ballista, true); 
 			return;
 		}
 	}
@@ -127,6 +128,7 @@ void onTick(CBlob@ this)
 				if (targetDist < radius*0.8f) //if closer than 80% of explosion radius, detonate.
 				{
 					this.server_Die();
+					this.server_Hit(targetBlob, targetPos, Vec2f(0,0), damage, Hitters::ballista, true); 
 					return;
 				}
 			}
@@ -180,15 +182,6 @@ void onTick(CBlob@ this)
 	
 	//client UI and sounds
 	makeTargetSquare(targetPos-thisVel, targetSquareAngle, Vec2f(2.5f, 2.5f), 2.0f, 1.0f, redConsoleColor); //target acquired square
-}
-
-void onDie( CBlob@ this )
-{
-	Vec2f thisPos = this.getPosition();
-
-	DoExplosion(this, this.getVelocity());
-
-	makeMissileEffect(thisPos); //boom effect
 }
 
 void doThrustParticles(Vec2f pPos = Vec2f_zero, Vec2f pVel = Vec2f_zero)
@@ -286,6 +279,16 @@ void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f coll
 	{ return; }
 
 	this.server_Die();
+	this.server_Hit(blob, collisionPos, Vec2f(0,0), damage, Hitters::ballista, true); 
+}
+
+void onDie( CBlob@ this )
+{
+	Vec2f thisPos = this.getPosition();
+
+	DoExplosion(this, this.getVelocity());
+
+	makeMissileEffect(thisPos); //boom effect
 }
 
 void makeMissileEffect(Vec2f thisPos = Vec2f_zero)
@@ -321,7 +324,7 @@ void makeMissileEffect(Vec2f thisPos = Vec2f_zero)
 
 bool DoExplosion(CBlob@ this, Vec2f velocity)
 {
-	f32 mod = 3.0f;
+	f32 mod = 1.5;
 
 	Explode(this, 26.0f*mod, 12.0f*(mod/2));
 	LinearExplosion(this, velocity, 22.0f*mod/2+XORRandom(9), 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
