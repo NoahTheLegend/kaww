@@ -1,5 +1,6 @@
 const string curTargetNetIDString = "target_NetID";
 const string navigationPhaseString = "nav_phase";
+const string lastAbsoluteVelString = "last_absoulte_vel";
 
 const SColor greenConsoleColor = SColor(200, 0, 255, 0);
 const SColor redConsoleColor = SColor(200, 255, 20, 20);

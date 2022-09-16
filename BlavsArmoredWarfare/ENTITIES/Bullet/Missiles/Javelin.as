@@ -39,7 +39,6 @@ void onTick(CBlob@ this)
 	int teamNum = this.getTeamNum();
 
 	f32 travelDist = thisVel.getLength();
-	Vec2f futurePos = thisPos + thisVel;
 
 	const bool is_client = isClient();
 	const bool is_server = isServer();
@@ -96,12 +95,15 @@ void onTick(CBlob@ this)
 
 	//homing logic
 	Vec2f targetPos = targetBlob.getPosition();
+	Vec2f targetVel = targetBlob.getVelocity();
 	Vec2f gravity = Vec2f(0, sv_gravity*0.6f); 
-	Vec2f bVel = targetBlob.getVelocity() - (thisVel + gravity); //compensates for missile speed
+	Vec2f bVel = thisVel + gravity - targetVel; //compensates for missile speed
 	Vec2f targetVec = targetPos - thisPos;
 	f32 targetDist = targetVec.getLength(); //distance to target
 
-	Vec2f futureTargetPos = targetPos + bVel; // main targetpos finder
+	Vec2f lastBVel = this.get_Vec2f(lastAbsoluteVelString);
+	Vec2f bAccel = lastBVel - bVel;
+	this.set_Vec2f(lastAbsoluteVelString, bVel);
 
 	float turnAngle = 0.0f;
 
@@ -129,16 +131,15 @@ void onTick(CBlob@ this)
 				}
 			}
 
-			//this block of code re-does the calculation to be more exact
-			targetVec = futureTargetPos - thisPos;
-			targetDist = targetVec.getLength();
-			float thisFinalSpeed = Maths::Sqrt(2.0f*thrust * targetDist) + travelDist;
-			float thisAverageSpeed = (thisFinalSpeed + travelDist) / 2;
-			float travelTicks = targetDist / thisFinalSpeed; // theoretical ticks required to get to the target (again, TODO)
-			futureTargetPos = targetPos + (bVel*travelTicks); // matches future target pos with travel time
-			targetVec = futureTargetPos - thisPos;
+			
+			float bVelAngle = (bVel + bAccel).getAngleDegrees();
+			float targetVecAngle = targetVec.getAngleDegrees();
 
-			turnAngle = targetVec.getAngleDegrees();
+			float directionDiff = targetVecAngle - bVelAngle;
+			directionDiff += directionDiff > 180 ? -360 : directionDiff < -180 ? 360 : 0;
+			bool movingAway = Maths::Abs(directionDiff) > 90.0f;
+
+			turnAngle = movingAway ? bVelAngle + 180.0f : targetVecAngle + directionDiff;
 		}
 		break;
 		
@@ -152,7 +153,6 @@ void onTick(CBlob@ this)
 
 	this.setAngleDegrees(thisAngle + Maths::Clamp(angleDiff, -10.0f, 10.0f));
 	
-	//Vec2f thrustVec = futureTargetPos - thisPos;
 	Vec2f thrustVec = Vec2f(1.0f, 0).RotateByDegrees(this.getAngleDegrees());
 	Vec2f thrustNorm = thrustVec;
 	//thrustNorm.Normalize();
@@ -179,7 +179,7 @@ void onTick(CBlob@ this)
 	if (hasThrust) doThrustParticles(thisPos, -thrustNorm*2.0f); //exhaust particles
 	
 	//client UI and sounds
-	makeTargetSquare(futureTargetPos, targetSquareAngle, Vec2f(2.5f, 2.5f), 2.0f, 1.0f, redConsoleColor); //target acquired square
+	makeTargetSquare(targetPos-thisVel, targetSquareAngle, Vec2f(2.5f, 2.5f), 2.0f, 1.0f, redConsoleColor); //target acquired square
 }
 
 void onDie( CBlob@ this )
