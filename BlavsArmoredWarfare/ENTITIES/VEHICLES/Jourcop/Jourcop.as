@@ -2,7 +2,7 @@
 #include "Explosion.as";
 
 const Vec2f upVelo = Vec2f(0.00f, -0.015f);
-const Vec2f downVelo = Vec2f(0.00f, 0.003f);
+const Vec2f downVelo = Vec2f(0.00f, 0.006f);
 const Vec2f leftVelo = Vec2f(-0.035f, 0.00f);
 const Vec2f rightVelo = Vec2f(0.035f, 0.00f);
 
