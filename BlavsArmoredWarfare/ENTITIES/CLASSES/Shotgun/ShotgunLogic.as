@@ -18,6 +18,7 @@ void onInit(CBlob@ this)
 	this.Tag("player");
 	this.Tag("flesh");
 	this.addCommandID("sync_reload_to_server");
+	this.Tag("3x2");
 
 	this.set_u8("hitmarker", 0);
 	this.set_s8("reloadtime", 0); // for server

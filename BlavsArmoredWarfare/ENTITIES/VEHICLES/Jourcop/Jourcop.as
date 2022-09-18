@@ -3,8 +3,8 @@
 
 const Vec2f upVelo = Vec2f(0.00f, -0.015f);
 const Vec2f downVelo = Vec2f(0.00f, 0.006f);
-const Vec2f leftVelo = Vec2f(-0.035f, 0.00f);
-const Vec2f rightVelo = Vec2f(0.035f, 0.00f);
+const Vec2f leftVelo = Vec2f(-0.031f, 0.00f);
+const Vec2f rightVelo = Vec2f(0.031f, 0.00f);
 
 const Vec2f minClampVelocity = Vec2f(-0.40f, -0.70f);
 const Vec2f maxClampVelocity = Vec2f( 0.40f, 0.00f);
@@ -51,16 +51,6 @@ void onInit(CBlob@ this)
 	}
 
 	this.getCurrentScript().tickFrequency = 1;
-
-	//CBlob@ bow = server_CreateBlob("heavygun");	
-//
-	//if (bow !is null)
-	//{
-	//	bow.server_setTeamNum(this.getTeamNum());
-	//	this.server_AttachTo( bow, "BOW" );
-	//	this.set_u16("bowid", bow.getNetworkID());
-	//	bow.SetFacingLeft(this.isFacingLeft());
-	//}
 }
 
 void onInit(CSprite@ this)

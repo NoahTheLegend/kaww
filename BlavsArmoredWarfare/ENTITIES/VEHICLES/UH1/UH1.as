@@ -469,6 +469,14 @@ void onDie(CBlob@ this)
 			blade.server_Die();
 		}
 	}
+	if (this.exists("bowid"))
+	{
+		CBlob@ bow = getBlobByNetworkID(this.get_u16("bowid"));
+		if (bow !is null)
+		{
+			bow.server_Die();
+		}
+	}
 }
 
 string[] particles = 
