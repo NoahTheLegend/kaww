@@ -2,7 +2,7 @@
 #include "Explosion.as";
 
 const Vec2f upVelo = Vec2f(0.00f, -0.015f);
-const Vec2f downVelo = Vec2f(0.00f, 0.0030f);
+const Vec2f downVelo = Vec2f(0.00f, 0.0050f);
 const Vec2f leftVelo = Vec2f(-0.020f, 0.00f);
 const Vec2f rightVelo = Vec2f(0.020f, 0.00f);
 
@@ -22,7 +22,6 @@ const f32 low_angle = 115.0f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
-	this.set_string("custom_explosion_sound", "bigbomb_explosion.ogg");
 	this.set_bool("map_damage_raycast", true);
 	this.set_u32("duration", 0);
 	//this.getSprite().SetRelativeZ(-60.0f);
@@ -56,7 +55,7 @@ void onInit(CBlob@ this)
 	}
 
 	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "UH_Launcher", 16, 16);
+	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "UHT_Launcher", 16, 16);
 
 	if (arm !is null)
 	{
@@ -103,7 +102,7 @@ void onInit(CSprite@ this)
 	}
 
 	//Add tail rotor
-	CSpriteLayer@ tailrotor = this.addSpriteLayer("tailrotor", "_TailRotor.png", 16, 16);
+	CSpriteLayer@ tailrotor = this.addSpriteLayer("tailrotor", "UH_TailRotor.png", 16, 16);
 	if (tailrotor !is null)
 	{
 		Animation@ anim = tailrotor.addAnimation("default", 1, true);
