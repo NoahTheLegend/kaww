@@ -186,6 +186,7 @@ void onTick(CBlob@ this)
 
 				if (quantity <= 1)
 				{
+					this.add_u32("mag_bullets", quantity);
 					mag.Tag("dead");
 					if (isServer()) mag.server_Die();
 					CBitStream params;
@@ -197,6 +198,7 @@ void onTick(CBlob@ this)
 				}
 				else
 				{
+					this.set_u32("mag_bullets", 1);
 					if (isServer()) mag.server_SetQuantity(quantity - 1);
 					CBitStream params;
 					params.write_u16(curTargetNetID);
