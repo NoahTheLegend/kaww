@@ -66,7 +66,7 @@ void onTick(CBlob@ this)
 	HitInfo@[] infos;
 	CMap@ map = this.getMap();
 	if (isServer() && map.isTileSolid(map.getTile(this.getPosition()).type)) this.server_Die();
-	if (map.getHitInfosFromArc(this.getPosition(), -angle, (this.getTickSinceCreated() > 5 ? 13 : (this.getTickSinceCreated() < 2 ? 65 : 40)), 27.0f, this, true, @infos))
+	if (map.getHitInfosFromArc(this.getPosition(), -angle, (this.getTickSinceCreated() > 4 ? 13 : (this.getTickSinceCreated() < 1 ? 70 : 35)), 27.0f, this, true, @infos))
 	{
 		for (uint i = 0; i < infos.length; i ++)
 		{
