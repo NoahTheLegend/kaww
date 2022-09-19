@@ -277,6 +277,7 @@ namespace map_colors
 		blue_m60               = 0xffa3dfc4,
 		red_m60                = 0xffc0e3ab,
 
+		blue_armory            = 0xff0d6f98,
 		red_armory             = 0xff980f0d,
 
 		blue_cruiser		   = 0xffb4cbd6,

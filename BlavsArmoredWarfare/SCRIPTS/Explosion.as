@@ -344,7 +344,7 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32 width,
 	int width_steps = int(width / tilesize);
 	int damagedsteps = 0;
 	bool laststep = false;
-	/*
+	
 	for (int step = 0; step <= steps; ++step)
 	{
 		bool damaged = false;
@@ -377,7 +377,7 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32 width,
 							damaged = true;
 
 						justhurt = justhurt || !canExplosionDestroy(map, tpos, t);
-						//map.server_DestroyTile(tpos, justhurt ? 5.0f : 100.0f, this);
+						map.server_DestroyTile(tpos, justhurt ? 5.0f : 100.0f, this);
 					}
 					else
 					{
@@ -405,7 +405,7 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32 width,
 
 		pos += direction;
 	}
-	*/
+	
 
 	if (!isserver) return; //EARLY OUT ---------------------------------------- SERVER ONLY BELOW HERE
 

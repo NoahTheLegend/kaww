@@ -417,6 +417,7 @@ class PNGLoader
 			case map_colors::red_btr82a:       autotile(offset); spawnVehicle(map, "btr82a",   offset, 1); break;
 			case map_colors::red_t10:        autotile(offset); spawnVehicle(map, "t10",   offset, 1); break;
 			case map_colors::red_m60:          autotile(offset); spawnVehicle(map, "m60",   offset, 1); break;
+			case map_colors::blue_armory:          autotile(offset); spawnVehicle(map, "armory",   offset, 0); break;
 			case map_colors::red_armory:          autotile(offset); spawnVehicle(map, "armory",   offset, 1); break;
 			case map_colors::red_tanktrap:     autotile(offset); spawnVehicle(map, "tanktrap",   offset, 1); break;
 			case map_colors::red_cruiser:     autotile(offset); spawnVehicle(map, "cruiser",   offset, 1); break;

@@ -115,7 +115,7 @@ void Config(TDMCore@ this)
 	this.sudden_death = this.kills_to_win_per_player <= 0;
 
 	//how long for the game to play out?
-	f32 gameDurationMinutes = 15.0f + getPlayersCount()*1.25; //cfg.read_f32("gameDurationMinutes", 7.0f)
+	f32 gameDurationMinutes = 15.0f + getPlayersCount()*1.5; //cfg.read_f32("gameDurationMinutes", 7.0f)
 	this.gameDuration = (getTicksASecond() * 60 * gameDurationMinutes) + this.warmUpTime;
 
 	if (getMap() !is null && getMap().tilemapwidth < 200)  this.gameDuration = (getTicksASecond() * 60 * 15.0f) + this.warmUpTime;

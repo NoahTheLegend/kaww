@@ -47,9 +47,10 @@ void onDie(CBlob@ this)
 
     array<string> _items =
     {
-    	"mat_scrap",
+    	"mat_scrap", //common
         "mat_wood",
         "mat_stone",
+        "mat_gold", //rare
 
     	"grenade",
     	"helmet",
@@ -61,23 +62,25 @@ void onDie(CBlob@ this)
     };
     array<float> _chances =
     {
-        0.6,
+        0.7,
         0.25,
         0.25,
+        0.01,
 
         0.08,
-        0.05,
-        0.02,
         0.08,
+        0.02,
+        0.03,
         0.02,
         0.01,
         0.01
     };
     array<u8> _amount =
     {
-        (XORRandom(12)+5),
-        (XORRandom(9)+1)*10,
-        (XORRandom(7)+1)*10,
+        (XORRandom(5)+3),
+        (XORRandom(6)+1)*20,
+        (XORRandom(4)+1)*20,
+        100,
 
         1,
         1,

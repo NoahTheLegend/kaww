@@ -2,15 +2,13 @@
 {
 	this.getSprite().SetZ(-150); //background
 	this.getShape().getConsts().mapCollisions = false;
-	this.getCurrentScript().tickFrequency = 35;
+	this.getCurrentScript().tickFrequency = 30;
 
-	this.set_s16("spawn_timer", 25 + XORRandom(20));
+	this.set_s16("spawn_timer", 5 + XORRandom(10));
 }
 
 void onTick(CBlob@ this)
-{
-	CMap@ map = getMap();
-	
+{	
 	if (this.get_s16("spawn_timer") <= 0)
 	{
 		CBlob@[] crateblobs;
@@ -23,12 +21,18 @@ void onTick(CBlob@ this)
 
 			CBlob@ b = server_CreateBlob("lootcrate",-1,this.getPosition() + Vec2f(XORRandom(24) - 12, XORRandom(8) - 8));
 
-			this.set_s16("spawn_timer", 100);
+			if (b !is null)
+			{
+				b.setVelocity(Vec2f(XORRandom(3)-1.0f, -1.5f));
+			}
+
+			this.set_s16("spawn_timer", 60); // one minute,    or 30 sec with higher pop
+			this.Sync("spawn_timer", true);
 		}
 	}
 	else
 	{
-		this.set_s16("spawn_timer", this.get_s16("spawn_timer") - (getPlayersCount() > 7 ? 4 : (getPlayersCount() < 5 ? 1 : 2)));
+		this.set_s16("spawn_timer", this.get_s16("spawn_timer") - (getPlayersCount() > 12 ? 2 : 1 ));
 	}			
 }
 
@@ -46,18 +50,8 @@ void onRender(CSprite@ this)
 	{
 		//VV right here VV
 		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 20);
-		Vec2f dim = Vec2f(24, 8);
-		const f32 y = blob.getHeight() * 2.4f;
-		const f32 initialHealth = blob.getInitialHealth();
-		if (initialHealth > 0.0f)
-		{
-			const f32 perc = blob.get_s16("spawn_timer") / 100.0f;
-			if (perc >= 0.0f)
-			{
-				GUI::DrawRectangle(Vec2f(pos2d.x - dim.x - 2, pos2d.y + y - 2), Vec2f(pos2d.x + dim.x + 2, pos2d.y + y + dim.y + 2));
-				GUI::DrawRectangle(Vec2f(pos2d.x - dim.x + 2, pos2d.y + y + 2), Vec2f(pos2d.x - dim.x + perc * 2.0f * dim.x - 2, pos2d.y + y + dim.y - 2), SColor(0xfffefefe));
-			}
-		}
+		GUI::SetFont("text");
+
+		GUI::DrawText("until next crate: " + (blob.get_s16("spawn_timer")*(getPlayersCount() > 12 ? 0.5 : 1 )), pos2d, color_white);
 	}
 }
-
