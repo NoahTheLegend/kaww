@@ -411,6 +411,11 @@ void DrawGun(CSprite@ this, CBlob@ blob, ArcherInfo@ archer, f32 armangle, Vec2f
 		setArmValues(frontarm, true, armangle, 0.1f, "default", Vec2f(-4.0f * sign, 0.0f), armOffset + Vec2f(0.0f, (Maths::Abs(blob.getVelocity().x) >= 1.0f && (blob.isOnGround())) ? ((getGameTime() % 8 < 4) ? -1.0f : 0.0f) : 0.0f));
 	}
 
+	if (blob.getCarriedBlob() !is null)
+	{
+		frontarm.SetVisible(!blob.getCarriedBlob().hasTag("hidesgunonhold"));
+	}
+
 	frontarm.SetRelativeZ(1.5f);
 	setArmValues(this.getSpriteLayer("backarm"), true, armangle, -0.1f, "default", Vec2f(-4.0f * sign, 0.0f), armOffset);
 }

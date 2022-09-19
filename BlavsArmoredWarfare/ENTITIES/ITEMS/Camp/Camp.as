@@ -49,9 +49,9 @@ void onRender(CSprite@ this)
 	if (mouseOnBlob)
 	{
 		//VV right here VV
-		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 20);
+		Vec2f pos2d = blob.getScreenPos() + Vec2f(-32, 34);
 		GUI::SetFont("text");
 
-		GUI::DrawText("until next crate: " + (blob.get_s16("spawn_timer")*(getPlayersCount() > 12 ? 0.5 : 1 )), pos2d, color_white);
+		GUI::DrawText("next crate: " + (blob.get_s16("spawn_timer")*(getPlayersCount() > 12 ? 0.5 : 1 )), pos2d, color_white);
 	}
 }

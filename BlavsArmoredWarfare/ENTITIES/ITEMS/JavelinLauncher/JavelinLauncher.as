@@ -8,10 +8,13 @@ void onInit(CBlob@ this)
 {
 	this.set_u16(curTargetNetIDString, 0);
 	this.set_f32(targetingProgressString, 0.0f); // out of 1.0f
-	this.set_f32(robotechHeightString, 68.0f); //pixels
+	this.set_f32(robotechHeightString, 168.0f); //pixels
 
 	this.Tag("medium weight");
 	this.Tag("trap"); // so bullets pass
+	this.Tag("hidesgunonhold"); // is it's own weapon
+
+	this.getSprite().SetFrame(4); // no hand
 
 	this.addCommandID(launchJavelinIDString);
 }
@@ -21,6 +24,7 @@ void onTick(CBlob@ this)
 	if (!this.isAttached())
 	{
 		this.set_f32(robotechHeightString, 68.0f); //resets robotech height
+		this.getSprite().SetFrame(4);
 		return;
 	}
 
@@ -31,7 +35,6 @@ void onTick(CBlob@ this)
 	if (ownerBlob is null) return;
 
 	float angle = ownerBlob.isFacingLeft() ? 30.0f : -30.0f;
-	this.setAngleDegrees(angle);
 
 	if (!ownerBlob.isMyPlayer()) return; // only player holding this
 
@@ -89,6 +92,8 @@ void onTick(CBlob@ this)
 		}
 	}
 
+	this.getSprite().SetFrame(0); // reset
+
 	if (bestBlobNetID != 0) //start locking onto valid target
 	{
 		CBlob@ bestBlob = getBlobByNetworkID(bestBlobNetID);
@@ -108,6 +113,14 @@ void onTick(CBlob@ this)
 			f32 squareCornerSeparation = 4.0f;
 			makeTargetSquare(targetPos, squareAngle, squareScale, squareCornerSeparation, 1.0f, targetingProgress == 1.0f ? redConsoleColor : yellowConsoleColor); //target detected rhombus
 			this.set_f32(targetingProgressString, Maths::Min(targetingProgress+0.01f, 1.0f));
+
+			this.getSprite().SetFrame(2); // green ping
+			angle *= 1.55f;
+
+			if (getGameTime() % 11 == 0)
+			{
+				this.getSprite().PlaySound("collect.ogg", 0.8, Maths::Clamp(1.5*targetingProgress, 0.7f, 2.0f));
+			}
 		}
 	}
 	else //resets if no valid targets in range
@@ -121,25 +134,28 @@ void onTick(CBlob@ this)
 
 	CControls@ controls = getControls();
 	float robotechHeight = this.get_f32(robotechHeightString);
-	if (controls.isKeyJustPressed(KEY_UP))
+	if (controls.isKeyJustPressed(MOUSE_SCROLL_DOWN))
 	{
 		robotechHeight += 10.0f;
+
+		this.getSprite().PlaySound("techsound3.ogg", 0.65);
 	}
-	else if (controls.isKeyJustPressed(KEY_DOWN))
+	else if (controls.isKeyJustPressed(MOUSE_SCROLL_UP))
 	{
 		robotechHeight -= 10.0f;
+
+		this.getSprite().PlaySound("techsound3.ogg", 0.65, 0.75);
 	}
 
-	robotechHeight = Maths::Clamp(robotechHeight, 18.0f, 128.0f);
+	robotechHeight = Maths::Clamp(robotechHeight, 18.0f, 118.0f);
 	this.set_f32(robotechHeightString, robotechHeight);
 
 	Vec2f robotechPos = Vec2f(0, -robotechHeight * 2.0f);
 	robotechPos.RotateByDegrees(ownerBlob.isFacingLeft() ? -45.0f : 45.0f); 
 	robotechPos += ownerPos; // join with thispos
 
-	makeTargetSquare(robotechPos, 0, Vec2f(4.0f, 4.0f), 3.0f, 1.0f, greenConsoleColor); // turnpoint
-	drawParticleLine( ownerPos, robotechPos, Vec2f_zero, greenConsoleColor, 0, 4.0f); // trajectory
-
+	makeTargetSquare(robotechPos, 0, Vec2f(3.0f, 3.0f), 3.0f, 1.0f, greenConsoleColor); // turnpoint
+	
 	CBlob@ targetBlob = getBlobByNetworkID(curTargetNetID);
 	if (curTargetNetID == 0 || targetBlob == null)
 	{
@@ -147,7 +163,8 @@ void onTick(CBlob@ this)
 	}
 	else
 	{
-		drawParticleLine( robotechPos, targetBlob.getPosition(), Vec2f_zero, greenConsoleColor, 0, 4.0f); // trajectory
+		drawParticleLine( ownerPos - Vec2f(0,2), robotechPos, Vec2f_zero, greenConsoleColor, 0, 5.0f); // trajectory
+		drawParticleLine( robotechPos, targetBlob.getPosition(), Vec2f_zero, greenConsoleColor, 0, 5.0f); // trajectory
 	}
 
 	if (targetingProgress == 1.0f && ownerBlob.isKeyJustPressed(key_action3))
@@ -169,7 +186,6 @@ void onTick(CBlob@ this)
 
 				if (quantity <= 1)
 				{
-					this.add_u32("mag_bullets", quantity);
 					mag.Tag("dead");
 					if (isServer()) mag.server_Die();
 					CBitStream params;
@@ -181,7 +197,6 @@ void onTick(CBlob@ this)
 				}
 				else
 				{
-					this.set_u32("mag_bullets", 1);
 					if (isServer()) mag.server_SetQuantity(quantity - 1);
 					CBitStream params;
 					params.write_u16(curTargetNetID);
@@ -192,13 +207,13 @@ void onTick(CBlob@ this)
 				}
 			}
 		}
-		else if (this.isMyPlayer())
+		else
 		{
-			this.getSprite().PlaySound("NoAmmo.ogg", 0.85);
+			this.getSprite().PlaySound("NoAmmo.ogg", 0.55);
 		}
-
-		
 	}
+
+	this.setAngleDegrees(angle);
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
