@@ -5,6 +5,7 @@
 #include "Hitters.as";
 #include "Recoil.as";
 #include "RevolverCommon.as";
+#include "ClassesCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -186,12 +187,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	bool menuopen = getHUD().hasButtons();
 	Vec2f pos = this.getPosition();
 
-	if (!this.isOnGround())
-	{
-		this.set_u8("inaccuracy", this.get_u8("inaccuracy") + 7);
-		if (this.get_u8("inaccuracy") > inaccuracycap) { this.set_u8("inaccuracy", inaccuracycap); }
-		this.setVelocity(Vec2f(this.getVelocity().x*0.87f, this.getVelocity().y));
-	}
+	InAirLogic(this);
 	
 	if (this.isKeyPressed(key_action2))
 	{
@@ -209,8 +205,6 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	}
 
 	// reload
-	//if (getGameTime()%90==0) printf("mag"+this.get_u32("mag_bullets"));
-	//if (getGameTime()%90==0) printf("max"+this.get_u32("mag_bullets_max"));
 	if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 	{
 		CInventory@ inv = this.getInventory();
@@ -301,122 +295,122 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 		{
 			charge_time--;
 
-				if (charge_time <= 0)
+			if (charge_time <= 0)
+			{
+				charge_time = 0;
+				if (isReloading)
 				{
-					charge_time = 0;
-					if (isReloading)
+					// reload
+					CInventory@ inv = this.getInventory();
+					if (inv !is null)
 					{
-						// reload
-						CInventory@ inv = this.getInventory();
-						if (inv !is null)
+						//printf(""+need_ammo);
+						//printf(""+current);
+						for (u8 i = 0; i < 20; i++)
 						{
-							//printf(""+need_ammo);
-							//printf(""+current);
-							for (u8 i = 0; i < 20; i++)
+							u32 current = this.get_u32("mag_bullets");
+							u32 max = this.get_u32("mag_bullets_max");
+							u32 miss = max-current;
+							CBlob@ mag;
+							for (u8 i = 0; i < inv.getItemsCount(); i++)
 							{
-								u32 current = this.get_u32("mag_bullets");
-								u32 max = this.get_u32("mag_bullets_max");
-								u32 miss = max-current;
-								CBlob@ mag;
-								for (u8 i = 0; i < inv.getItemsCount(); i++)
+								CBlob@ b = inv.getItem(i);
+								if (b is null || b.getName() != "mat_7mmround" || b.hasTag("dead")) continue;
+								@mag = @b;
+								break;
+							}
+							if (mag !is null)
+							{
+								u16 quantity = mag.getQuantity();
+								if (quantity <= miss)
 								{
-									CBlob@ b = inv.getItem(i);
-									if (b is null || b.getName() != "mat_7mmround" || b.hasTag("dead")) continue;
-									@mag = @b;
+									//printf("a");
+									//printf(""+miss);
+									//printf(""+quantity);
+									this.add_u32("mag_bullets", quantity);
+									mag.Tag("dead");
+									if (isServer()) mag.server_Die();
+									continue;
+								}
+								else
+								{
+									this.set_u32("mag_bullets", max);
+									if (isServer()) mag.server_SetQuantity(quantity - miss);
 									break;
 								}
-								if (mag !is null)
-								{
-									u16 quantity = mag.getQuantity();
-									if (quantity <= miss)
-									{
-										//printf("a");
-										//printf(""+miss);
-										//printf(""+quantity);
-										this.add_u32("mag_bullets", quantity);
-										mag.Tag("dead");
-										if (isServer()) mag.server_Die();
-										continue;
-									}
-									else
-									{
-										this.set_u32("mag_bullets", max);
-										if (isServer()) mag.server_SetQuantity(quantity - miss);
-										break;
-									}
-								}
-								else break;
 							}
+							else break;
 						}
 					}
-					archer.isStabbing = false;
-					archer.isReloading = false;
-
-					this.set_bool("isReloading", false);
 				}
+				archer.isStabbing = false;
+				archer.isReloading = false;
 
+				this.set_bool("isReloading", false);
 			}
-		}
-		else
-		{
-			charge_time--;
 
-				if (charge_time <= 0)
+		}
+	}
+	else
+	{
+		charge_time--;
+
+		if (charge_time <= 0)
+		{
+			charge_time = 0;
+			if (isReloading)
+			{
+				// reload
+				CInventory@ inv = this.getInventory();
+				if (inv !is null)
 				{
-					charge_time = 0;
-					if (isReloading)
+					//printf(""+need_ammo);
+					//printf(""+current);
+					for (u8 i = 0; i < 20; i++)
 					{
-						// reload
-						CInventory@ inv = this.getInventory();
-						if (inv !is null)
+						u32 current = this.get_u32("mag_bullets");
+						u32 max = this.get_u32("mag_bullets_max");
+						u32 miss = max-current;
+						CBlob@ mag;
+						for (u8 i = 0; i < inv.getItemsCount(); i++)
 						{
-							//printf(""+need_ammo);
-							//printf(""+current);
-							for (u8 i = 0; i < 20; i++)
+							CBlob@ b = inv.getItem(i);
+							if (b is null || b.getName() != "mat_7mmround" || b.hasTag("dead")) continue;
+							@mag = @b;
+							break;
+						}
+						if (mag !is null)
+						{
+							u16 quantity = mag.getQuantity();
+							if (quantity <= miss)
 							{
-								u32 current = this.get_u32("mag_bullets");
-								u32 max = this.get_u32("mag_bullets_max");
-								u32 miss = max-current;
-								CBlob@ mag;
-								for (u8 i = 0; i < inv.getItemsCount(); i++)
-								{
-									CBlob@ b = inv.getItem(i);
-									if (b is null || b.getName() != "mat_7mmround" || b.hasTag("dead")) continue;
-									@mag = @b;
-									break;
-								}
-								if (mag !is null)
-								{
-									u16 quantity = mag.getQuantity();
-									if (quantity <= miss)
-									{
-										//printf("a");
-										//printf(""+miss);
-										//printf(""+quantity);
-										this.add_u32("mag_bullets", quantity);
-										mag.Tag("dead");
-										if (isServer()) mag.server_Die();
-										continue;
-									}
-									else
-									{
-										//printf("e");
-										this.set_u32("mag_bullets", max);
-										if (isServer()) mag.server_SetQuantity(quantity - miss);
-										break;
-									}
-								}
-								else break;
+								//printf("a");
+								//printf(""+miss);
+								//printf(""+quantity);
+								this.add_u32("mag_bullets", quantity);
+								mag.Tag("dead");
+								if (isServer()) mag.server_Die();
+								continue;
+							}
+							else
+							{
+								//printf("e");
+								this.set_u32("mag_bullets", max);
+								if (isServer()) mag.server_SetQuantity(quantity - miss);
+								break;
 							}
 						}
-						if (isServer()) this.set_s8("reloadtime", 0);
+						else break;
 					}
-
-					archer.isStabbing = false;
-					archer.isReloading = false;
-
-					this.set_bool("isReloading", false);
 				}
+				if (isServer()) this.set_s8("reloadtime", 0);
+			}
+
+			archer.isStabbing = false;
+			archer.isReloading = false;
+
+			this.set_bool("isReloading", false);
+		}
 
 		if (this.getPlayer() !is null)
 		{
@@ -588,9 +582,8 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 	f32 targetDistance = targetVector.Length();
 	f32 targetFactor = targetDistance / 367.0f;
 
-	ShootBullet(this, this.getPosition() - Vec2f(0,2), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom(4 + this.get_u8("inaccuracy"))*targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(4 + this.get_u8("inaccuracy")))*targetFactor, 17.59f * bulletvelocity);
+	ShootBullet(this, this.getPosition() - Vec2f(0,2), this.getAimPos() + Vec2f(8, (-this.get_u8("inaccuracy") + XORRandom(this.get_u8("inaccuracy")*2))/3)*targetFactor, 17.59f * bulletvelocity);
 
-	CMap@ map = getMap();
 	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 	
 	CPlayer@ p = getLocalPlayer();
@@ -607,14 +600,7 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 				if (this.isKeyPressed(key_action2)) mod *= 0.25;
 
 				ShakeScreen((Vec2f(recoilx - XORRandom(recoilx*2) + 1, -recoily + XORRandom(recoily) + 1) * mod), recoillength*mod, this.getInterpolatedPosition());
-				ShakeScreen(28*mod, 12*mod, this.getPosition());
-
-				this.set_u8("recoil_count", this.isKeyPressed(key_action2) ? recoilcursor*adscushionamount : recoilcursor);               //freq //ampt
-				this.set_s8("recoil_direction", (20 - XORRandom(41)) / sidewaysrecoildamp);
-
-				//this.set_u8("recoil_count", recoilcursor);               //freq //ampt
-				//this.set_s8("recoil_direction", ((Maths::Sin(getGameTime()*0.1)/0.06f) + (20 - XORRandom(41))) / sidewaysrecoildamp);
-
+				ShakeScreen(20, 8, this.getPosition());
 
 				this.set_u8("inaccuracy", this.get_u8("inaccuracy") + inaccuracypershot * (this.hasTag("sprinting")?2.0f:1.0f));
 			}

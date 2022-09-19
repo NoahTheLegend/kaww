@@ -18,7 +18,7 @@ const float lengthofrecoilarc = 1.8f; // 2.0 is regular, -- 1.5 long arc   -- ak
 
 // ACCURACY
 const u8 inaccuracycap = 36; // max amount of inaccuracy
-const u8 inaccuracypershot = 18; // aim inaccuracy  (+3 per shot)
+const u8 inaccuracypershot = 22; // aim inaccuracy  (+3 per shot)
 // delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 
 const bool semiauto = false;

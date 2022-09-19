@@ -5,6 +5,7 @@
 #include "Hitters.as";
 #include "Recoil.as";
 #include "ShotgunCommon.as";
+#include "ClassesCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -186,12 +187,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 	bool scoped = this.hasTag("scopedin");
 
-	if (!this.isOnGround() && !this.isOnLadder())
-	{
-		this.set_u8("inaccuracy", this.get_u8("inaccuracy") + 7);
-		if (this.get_u8("inaccuracy") > inaccuracycap) { this.set_u8("inaccuracy", inaccuracycap); }
-		this.setVelocity(Vec2f(this.getVelocity().x*0.93f, this.getVelocity().y));
-	}
+	InAirLogic(this);
 
 	if (this.isKeyPressed(key_action2))
 	{
@@ -615,51 +611,34 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 		ParticleAnimated("Muzzleflashflip", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle + 180, 0.06f + XORRandom(3) * 0.01f, 3 + XORRandom(2), -0.15f, false);
 	}
 
-	makeGibParticle(
-	"EmptyShellSmall",   	                // file name
-	this.getPosition(),                 // position
-	Vec2f(this.isFacingLeft() ? 2.0f : -2.0f, 0.0f), // velocity
-	0,                                  // column
-	0,                                  // row
-	Vec2f(16, 16),                      // frame size
-	0.2f,                               // scale?
-	0,                                  // ?
-	"ShellCasing",                      // sound
-	this.get_u8("team_color"));         // team number
+	Vec2f targetVector = this.getAimPos() - this.getPosition();
+	f32 targetDistance = targetVector.Length();
+	f32 targetFactor = targetDistance / 367.0f;
 
-	if (canSend(this))
+	for (uint i = 0; i < 5; i++)
 	{
-		Vec2f targetVector = this.getAimPos() - this.getPosition();
-		f32 targetDistance = targetVector.Length();
-		f32 targetFactor = targetDistance / 367.0f;
-		f32 mod = this.isKeyPressed(key_action2) ? 0.55f : 0.65f;
+		ShootBullet(this, this.getPosition() - Vec2f(0,1), this.getAimPos() + Vec2f((-160 + XORRandom(160*2))/3, (-160 + XORRandom(160*2))/3)*targetFactor, 12.59f * bulletvelocity);
+	}
 
-		for (uint i = 0; i < 5; i++)
+	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+	
+	CPlayer@ p = getLocalPlayer();
+	if (p !is null)
+	{
+		CBlob@ local = p.getBlob();
+		if (local !is null)
 		{
-			ShootBullet(this, this.getPosition() - Vec2f(0,1), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((1000 + this.get_u8("inaccuracy")) - 500)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(120 + this.get_u8("inaccuracy")) - 60)*mod * targetFactor, 11.59f * bulletvelocity);
-		}
-		
-		ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+			CPlayer@ ply = local.getPlayer();
 
-		if (this.isMyPlayer()) ShakeScreen((Vec2f(recoilx - XORRandom(recoilx*4) + 1, -recoily + XORRandom(recoily) + 6)), recoillength*2, this.getInterpolatedPosition());
-		if (this.isMyPlayer()) ShakeScreen(48, 24, this.getPosition());
-
-		this.set_u8("inaccuracy", this.get_u8("inaccuracy") + inaccuracypershot * (this.hasTag("sprinting")?2.0f:1.0f));
-
-		CPlayer@ p = getLocalPlayer();
-		if (p !is null)
-		{
-			CBlob@ local = p.getBlob();
-			if (local !is null)
+			if (ply !is null && ply.isMyPlayer())
 			{
-				CPlayer@ ply = local.getPlayer();
-			
-				if (ply !is null && ply.isMyPlayer())
-				{
-					Recoil(this, local, 20.0f, 1);
+				f32 mod = 0.5; // make some smart stuff here?
+				if (this.isKeyPressed(key_action2)) mod *= 0.25;
 
-					ShakeScreen(30, 10, this.getPosition());
-				}
+				ShakeScreen((Vec2f(recoilx - XORRandom(recoilx*2) + 1, -recoily + XORRandom(recoily) + 1) * mod), recoillength*mod, this.getInterpolatedPosition());
+				ShakeScreen(28, 10, this.getPosition());
+
+				this.set_u8("inaccuracy", 130);
 			}
 		}
 	}

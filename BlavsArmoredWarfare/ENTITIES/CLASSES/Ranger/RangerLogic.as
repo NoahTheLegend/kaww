@@ -5,6 +5,7 @@
 #include "Hitters.as";
 #include "Recoil.as";
 #include "RangerCommon.as";
+#include "ClassesCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -189,12 +190,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 	bool scoped = this.hasTag("scopedin");
 
-	if (!this.isOnGround() && !this.isOnLadder())
-	{
-		this.set_u8("inaccuracy", this.get_u8("inaccuracy") + 7);
-		if (this.get_u8("inaccuracy") > inaccuracycap) { this.set_u8("inaccuracy", inaccuracycap); }
-		this.setVelocity(Vec2f(this.getVelocity().x*0.93f, this.getVelocity().y));
-	}
+	InAirLogic(this);
 
 	if (this.isKeyPressed(key_action2))
 	{
@@ -640,7 +636,7 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 		f32 targetDistance = targetVector.Length();
 		f32 targetFactor = targetDistance / 367.0f;
 
-		ShootBullet(this, this.getPosition() - Vec2f(0,1), this.getAimPos() + Vec2f(-(this.get_u8("inaccuracy")) + (XORRandom(16 + this.get_u8("inaccuracy"))-(8+this.get_u8("inaccuracy")/2))*targetFactor, -(this.get_u8("inaccuracy")) + XORRandom(16 + this.get_u8("inaccuracy"))-(8+this.get_u8("inaccuracy")/2))*targetFactor, 17.59f * bulletvelocity);
+		ShootBullet(this, this.getPosition() - Vec2f(0,2), this.getAimPos() + Vec2f(8, (-this.get_u8("inaccuracy") + XORRandom(this.get_u8("inaccuracy")*2))/1)*targetFactor, 17.59f * bulletvelocity);
 
 		if (this.isMyPlayer()) ShakeScreen2(16, 8, this.getInterpolatedPosition());
 

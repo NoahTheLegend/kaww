@@ -5,6 +5,7 @@
 #include "Hitters.as";
 #include "Recoil.as";
 #include "SniperCommon.as";
+#include "ClassesCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -186,12 +187,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 	bool scoped = this.hasTag("scopedin");
 
-	if (!this.isOnGround() && !this.isOnLadder())
-	{
-		this.set_u8("inaccuracy", this.get_u8("inaccuracy") + 7);
-		if (this.get_u8("inaccuracy") > inaccuracycap) { this.set_u8("inaccuracy", inaccuracycap); }
-		this.setVelocity(Vec2f(this.getVelocity().x*0.93f, this.getVelocity().y));
-	}
+	InAirLogic(this);
 
 	if (this.isKeyPressed(key_action2))
 	{
@@ -638,7 +634,7 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 		f32 targetFactor = targetDistance / 367.0f;
 		f32 mod = this.isKeyPressed(key_action2) ? 0.06f : 0.4f;
 
-		ShootBullet(this, this.getPosition() - Vec2f(0,1), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((30 + this.get_u8("inaccuracy")) - 15)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(30 + this.get_u8("inaccuracy")) - 15)*mod * targetFactor, 11.59f * bulletvelocity);
+		ShootBullet(this, this.getPosition() - Vec2f(0,1), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((30 + this.get_u8("inaccuracy")) - 15)*mod * targetFactor, (-this.get_u8("inaccuracy") + XORRandom(this.get_u8("inaccuracy")*2))/4)*mod * targetFactor, 11.59f * bulletvelocity);
 		
 		CMap@ map = getMap();
 		ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
