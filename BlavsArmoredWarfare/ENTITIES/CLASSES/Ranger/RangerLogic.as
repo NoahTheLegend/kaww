@@ -162,12 +162,21 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	s8 charge_time = this.get_s32("my_chargetime");//archer.charge_time;
 	bool isStabbing = archer.isStabbing;
 	bool isReloading = this.get_bool("isReloading"); //archer.isReloading;
-	//if (getGameTime()%20==0) printf(""+isReloading);
 	u8 charge_state = archer.charge_state;
 	bool just_action1 = this.isKeyJustPressed(key_action1) && this.get_u32("dont_change_zoom") < getGameTime(); // binoculars thing
 	bool is_action1 = this.isKeyPressed(key_action1);
 	bool was_action1 = this.wasKeyPressed(key_action1);
-	if (this.isKeyJustPressed(key_action3) && !isReloading && this.get_u32("end_stabbing") < getGameTime())
+
+	bool hidegun = false;
+	if (this.getCarriedBlob() !is null)
+	{
+		if (this.getCarriedBlob().hasTag("hidesgunonhold"))
+		{
+			hidegun = true;
+		}
+	}
+
+	if (this.isKeyJustPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
 	{
 		this.set_u32("end_stabbing", getGameTime()+33);
 		this.Tag("attacking");
@@ -206,6 +215,8 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	{
 		this.Untag("scopedin");
 	}
+
+	if (hidegun) return;
 
 	if (isKnocked(this))
 	{

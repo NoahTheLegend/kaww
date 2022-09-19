@@ -197,20 +197,15 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	bool is_action1 = this.isKeyPressed(key_action1);
 	bool was_action1 = this.wasKeyPressed(key_action1);
 	
-	//ability was here
-
-	if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-14)
+	bool hidegun = false;
+	if (this.getCarriedBlob() !is null)
 	{
-		f32 attackarc = 70.0f;
-		DoAttack(this, 1.0f, (this.isFacingLeft() ? 180.0f : 0.0f), attackarc, Hitters::sword);
-		this.Untag("attacking");
+		if (this.getCarriedBlob().hasTag("hidesgunonhold"))
+		{
+			hidegun = true;
+		}
 	}
-	if (this.get_u32("end_stabbing") > getGameTime())
-	{
-		just_action1 = false;
-		is_action1 = false;
-		was_action1 = false;
-	}
+	
 	const bool pressed_action2 = this.isKeyPressed(key_action2);
 	bool menuopen = getHUD().hasButtons();
 	Vec2f pos = this.getPosition();
@@ -239,6 +234,8 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	{
 		this.Untag("scopedin");
 	}
+
+	if (hidegun) return;
 
 	if (isKnocked(this))
 	{

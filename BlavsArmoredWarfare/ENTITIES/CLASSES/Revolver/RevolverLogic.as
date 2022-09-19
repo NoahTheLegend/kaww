@@ -166,15 +166,24 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	bool just_action1 = this.isKeyJustPressed(key_action1) && this.get_u32("dont_change_zoom") < getGameTime(); // binoculars thing
 	bool is_action1 = this.isKeyPressed(key_action1);
 	bool was_action1 = this.wasKeyPressed(key_action1);
-	if (this.isKeyJustPressed(key_action3) && !isReloading && this.get_u32("end_stabbing") < getGameTime())
+	bool hidegun = false;
+	if (this.getCarriedBlob() !is null)
 	{
-		this.set_u32("end_stabbing", getGameTime()+18);
+		if (this.getCarriedBlob().hasTag("hidesgunonhold"))
+		{
+			hidegun = true;
+		}
+	}
+
+	if (this.isKeyJustPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
+	{
+		this.set_u32("end_stabbing", getGameTime()+16);
 		this.Tag("attacking");
 	}
-	if (this.hasTag("attacking"))
+	if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-13)
 	{
-		f32 attackarc = 50.0f;
-		DoAttack(this, 2.0f, (this.isFacingLeft() ? 180.0f : 0.0f), attackarc, Hitters::sword);
+		f32 attackarc = 70.0f;
+		DoAttack(this, 1.5f, (this.isFacingLeft() ? 180.0f : 0.0f), attackarc, Hitters::sword);
 		this.Untag("attacking");
 	}
 	if (this.get_u32("end_stabbing") > getGameTime())
@@ -187,8 +196,10 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	bool menuopen = getHUD().hasButtons();
 	Vec2f pos = this.getPosition();
 
+	bool scoped = this.hasTag("scopedin");
+
 	InAirLogic(this);
-	
+
 	if (this.isKeyPressed(key_action2))
 	{
 		this.Untag("scopedin");
@@ -203,6 +214,8 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	{
 		this.Untag("scopedin");
 	}
+
+	if (hidegun) return;
 
 	// reload
 	if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))

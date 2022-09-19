@@ -77,7 +77,7 @@ void onDie(CBlob@ this)
     };
     array<u8> _amount =
     {
-        (XORRandom(5)+3),
+        (XORRandom(5)+2),
         (XORRandom(6)+1)*20,
         (XORRandom(4)+1)*20,
         100,
