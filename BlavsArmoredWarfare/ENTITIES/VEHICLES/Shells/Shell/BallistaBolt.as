@@ -109,7 +109,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 	direction.Normalize();
 
 	Vec2f position = this.getPosition();
-	Vec2f tip_position = position + direction * 14.0f;
+	Vec2f tip_position = position + direction * 13.0f;
 	Vec2f middle_position = position + direction * 6.0f;
 	Vec2f tail_position = position - direction * 12.0f;
 
