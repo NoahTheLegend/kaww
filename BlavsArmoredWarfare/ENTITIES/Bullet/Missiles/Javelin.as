@@ -100,11 +100,15 @@ void onTick(CBlob@ this)
 	Vec2f targetVel = targetBlob.getVelocity();
 	Vec2f gravity = Vec2f(0, sv_gravity*0.6f); 
 	Vec2f bVel = thisVel - targetVel; //compensates for missile speed
+	Vec2f bVelNorm = bVel;
+	bVelNorm.Normalize();
 	Vec2f targetVec = targetPos - thisPos;
 	f32 targetDist = targetVec.getLength(); //distance to target
 
 	Vec2f lastBVel = this.get_Vec2f(lastAbsoluteVelString);
 	Vec2f bAccel = (lastBVel - bVel) + gravity;
+	Vec2f bAccelNorm = bAccel;
+	bAccelNorm.Normalize();
 	this.set_Vec2f(lastAbsoluteVelString, bVel);
 
 	float turnAngle = 0.0f;
@@ -135,7 +139,7 @@ void onTick(CBlob@ this)
 				}
 			}
 
-			float bVelAngle = (bVel + bAccel).getAngleDegrees();
+			float bVelAngle = (bVelNorm + (bAccelNorm*0.5f)).getAngleDegrees();
 			float targetVecAngle = targetVec.getAngleDegrees();
 
 			float directionDiff = targetVecAngle - bVelAngle;
@@ -154,7 +158,8 @@ void onTick(CBlob@ this)
 	float angleDiff = angle - thisAngle;
 	angleDiff += angleDiff > 180 ? -360 : angleDiff < -180 ? 360 : 0;
 
-	this.setAngleDegrees(thisAngle + Maths::Clamp(angleDiff, -10.0f, 10.0f));
+	const float turnSpeed = 10.0f;
+	this.setAngleDegrees(thisAngle + Maths::Clamp(angleDiff, -turnSpeed, turnSpeed));
 	
 	Vec2f thrustNorm = Vec2f(1.0f, 0).RotateByDegrees(this.getAngleDegrees());
 	Vec2f thrustVec = thrustNorm * thrust;
