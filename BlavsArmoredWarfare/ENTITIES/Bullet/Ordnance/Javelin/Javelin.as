@@ -20,9 +20,12 @@ void onInit(CBlob@ this)
 	missile.turn_speed 					= JavelinParams::turn_speed;
 	missile.max_speed 					= JavelinParams::max_speed;
 //	missile.lose_target_ticks 			= JavelinParams::lose_target_ticks;
+	missile.gravity_scale 				= JavelinParams::gravity_scale;
 	this.set("missileInfo", @missile);
 
 	this.set_f32(robotechHeightString, 64.0f); // pixels
+
+	this.getShape().SetGravityScale(missile.gravity_scale);
 }
 
 void onTick(CBlob@ this)
@@ -109,7 +112,9 @@ void onTick(CBlob@ this)
 	Vec2f targetVec = targetPos - thisPos;
 	f32 targetDist = targetVec.getLength(); //distance to target
 
-	Vec2f gravity = Vec2f(0, sv_gravity*0.6f); 
+	float gravityScale = missile.gravity_scale;
+	Vec2f gravity = Vec2f(0, (sv_gravity*gravityScale) / getTicksASecond()); 
+
 	Vec2f lastBVel = this.get_Vec2f(lastRelativeVelString);
 	Vec2f bAccel = (lastBVel - bVel) + gravity;
 	Vec2f bAccelNorm = bAccel;
@@ -147,7 +152,8 @@ void onTick(CBlob@ this)
 				}
 			}
 
-			float bVelAngle = ((bVelNorm*2.0f) + bAccelNorm).getAngleDegrees();
+			float influence = gravity.y / mainEngineForce;
+			float bVelAngle = (bVelNorm + (bAccelNorm*influence)).getAngleDegrees();
 			float targetVecAngle = targetVec.getAngleDegrees();
 
 			float directionDiff = targetVecAngle - bVelAngle;
