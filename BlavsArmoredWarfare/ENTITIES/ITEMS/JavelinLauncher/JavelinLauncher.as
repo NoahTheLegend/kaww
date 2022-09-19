@@ -87,7 +87,12 @@ void onTick(CBlob@ this)
 		Vec2f targetVec = targetPos - ownerAimpos;
 		f32 targetDist = targetVec.getLength();
 
-		if (targetDist < bestDist)
+		if (validNetID == curTargetNetID) 
+		{
+			bestBlobNetID = validNetID;
+			break;
+		}
+		else if (targetDist < bestDist)
 		{
 			bestDist = targetDist;
 			bestBlobNetID = validNetID;
