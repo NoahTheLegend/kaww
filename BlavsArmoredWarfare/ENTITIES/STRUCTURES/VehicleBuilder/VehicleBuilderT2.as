@@ -66,6 +66,13 @@ void onInit(CBlob@ this)
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
+	{
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$crate$", "launcher_javelin", "Homing rocket launcher.\n\nUses HEAT warheads.", false, true);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
+	}
 }
 
 void onTick(CBlob@ this)
