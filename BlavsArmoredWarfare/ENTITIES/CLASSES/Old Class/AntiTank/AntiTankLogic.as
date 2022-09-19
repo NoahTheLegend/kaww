@@ -5,6 +5,7 @@
 #include "Hitters.as";
 #include "Recoil.as";
 #include "AntiTankCommon.as";
+#include "ClassesCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -185,12 +186,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 	bool scoped = this.hasTag("scopedin");
 
-	if (!this.isOnGround() && !this.isOnLadder())
-	{
-		this.set_u8("inaccuracy", this.get_u8("inaccuracy") + 7);
-		if (this.get_u8("inaccuracy") > inaccuracycap) { this.set_u8("inaccuracy", inaccuracycap); }
-		this.setVelocity(Vec2f(this.getVelocity().x*0.89f, this.getVelocity().y));
-	}
+	InAirLogic(this);
 
 	if (this.isKeyPressed(key_action2))
 	{
