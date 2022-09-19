@@ -96,23 +96,29 @@ void onTick(CBlob@ this)
 			ParticleAnimated("LargeSmoke", this.getPosition(), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, 90), float(XORRandom(360)), 0.5f + XORRandom(25) * 0.01f, 1 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 		}
 	}
-
+	
 	//homing logic
 	Vec2f targetPos = targetBlob.getPosition();
 	Vec2f targetVel = targetBlob.getVelocity();
-	Vec2f gravity = Vec2f(0, sv_gravity*0.6f); 
+
 	Vec2f bVel = thisVel - targetVel; //compensates for missile speed
+	float bSpeed = bVel.getLength();
 	Vec2f bVelNorm = bVel;
 	bVelNorm.Normalize();
+
 	Vec2f targetVec = targetPos - thisPos;
 	f32 targetDist = targetVec.getLength(); //distance to target
 
+	Vec2f gravity = Vec2f(0, sv_gravity*0.6f); 
 	Vec2f lastBVel = this.get_Vec2f(lastRelativeVelString);
 	Vec2f bAccel = (lastBVel - bVel) + gravity;
 	Vec2f bAccelNorm = bAccel;
 	bAccelNorm.Normalize();
 	this.set_Vec2f(lastRelativeVelString, bVel);
 
+	const float mainEngineForce = missile.main_engine_force;
+	const float maxSpeed = missile.max_speed;
+	const float turnSpeed = missile.turn_speed;
 	float turnAngle = 0.0f;
 
 	switch (this.get_s8(navigationPhaseString))
@@ -141,7 +147,7 @@ void onTick(CBlob@ this)
 				}
 			}
 
-			float bVelAngle = (bVelNorm + (bAccelNorm*0.5f)).getAngleDegrees();
+			float bVelAngle = ((bVelNorm*2.0f) + bAccelNorm).getAngleDegrees();
 			float targetVecAngle = targetVec.getAngleDegrees();
 
 			float directionDiff = targetVecAngle - bVelAngle;
@@ -160,16 +166,16 @@ void onTick(CBlob@ this)
 	float angleDiff = angle - thisAngle;
 	angleDiff += angleDiff > 180 ? -360 : angleDiff < -180 ? 360 : 0;
 
-	float turnSpeed = missile.turn_speed;
+	// turning
 	this.setAngleDegrees(thisAngle + Maths::Clamp(angleDiff, -turnSpeed, turnSpeed));
 	
+	// thrust
 	Vec2f thrustNorm = Vec2f(1.0f, 0).RotateByDegrees(this.getAngleDegrees());
-	Vec2f thrustVec = thrustNorm * missile.main_engine_force;
+	Vec2f thrustVec = thrustNorm * mainEngineForce;
 
 	bool hasThrust = Maths::Abs(angleDiff) < 45.0f;
 	Vec2f newVel = thisVel + (hasThrust ? thrustVec : Vec2f_zero);
 
-	f32 maxSpeed = missile.max_speed;
 	if (maxSpeed != 0 && newVel.getLength() > maxSpeed) //max speed logic - 0 means no cap
 	{
 		newVel.Normalize();
