@@ -35,7 +35,7 @@ void onTick(CBlob@ this)
 {
 	f32 angle = 0;
 
-	if (this.getTickSinceCreated() <= 3) // make it fly straight some time before falling
+	if (this.getTickSinceCreated() <= 4) // make it fly straight some time before falling
 	{
 		this.setVelocity(this.getOldVelocity());
 	}
@@ -109,7 +109,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 	direction.Normalize();
 
 	Vec2f position = this.getPosition();
-	Vec2f tip_position = position + direction * 12.0f;
+	Vec2f tip_position = position + direction * 14.0f;
 	Vec2f middle_position = position + direction * 6.0f;
 	Vec2f tail_position = position - direction * 12.0f;
 
@@ -211,8 +211,14 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	return true;
 }
 
-void BallistaHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, const f32 damage, CBlob@ blob, u8 customData)
+void BallistaHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, f32 damage, CBlob@ blob, u8 customData)
 {
+	if (this.hasTag("antitank_shell") && blob.hasTag("flesh"))
+	{
+		damage *= 1.45f;
+		this.server_Hit(blob, hit_position, Vec2f(0,0), damage, Hitters::ballista, true); 
+		return;
+	}
 	this.server_Hit(blob, hit_position, Vec2f(0,0), damage, Hitters::ballista, true); 
 	
 	for (int i = 0; i < (10 + XORRandom(5)); i++)

@@ -26,7 +26,7 @@ void onInit(CBlob@ this)
 	{
 		ap.SetKeysToTake(key_action3);
 	}
-	this.set_u8("death_timer", 125);
+	this.set_u8("death_timer", 120);
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -57,12 +57,12 @@ void DoExplosion(CBlob@ this)
 
 	f32 angle = -this.get_f32("bomb angle");
 
-	this.set_f32("map_damage_radius", 35.0f);
-	this.set_f32("map_damage_ratio", 0.15f);
+	this.set_f32("map_damage_radius", 17.0f);
+	this.set_f32("map_damage_ratio", 0.01f);
 	
 	Explode(this, 64.0f, 0.5f);
 	
-	for (int i = 0; i < 16; i++) 
+	for (int i = 0; i < 15; i++) 
 	{
 		Vec2f dir = getRandomVelocity(angle, 1, 120);
 		dir.x *= 3;
