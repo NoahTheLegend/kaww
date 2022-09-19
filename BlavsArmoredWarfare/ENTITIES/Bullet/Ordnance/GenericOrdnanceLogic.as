@@ -12,7 +12,6 @@ void onInit(CBlob@ this)
 	this.set_bool(clientFirstTickString, true);
 
 	this.getSprite().SetFrame(0);
-	this.getShape().SetGravityScale(0.6f);
 
 	this.addCommandID( targetUpdateCommandID );
 }
