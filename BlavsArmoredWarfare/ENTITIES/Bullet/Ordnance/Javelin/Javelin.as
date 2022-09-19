@@ -3,28 +3,26 @@
 #include "Hitters.as"
 #include "ComputerCommon.as"
 #include "Explosion.as"
+#include "OrdnanceCommon.as"
 
 Random _missile_r(12231);
 
 const f32 damage = 8.0f;
 const f32 searchRadius = 132.0f;
 const f32 radius = 24.0f;
-const float thrust = 0.5f;
-
-const string firstTickString = "first_tick";
-const string clientFirstTickString = "first_tick_client";
 
 void onInit(CBlob@ this)
 {
-	this.server_SetTimeToDie(15);
-	this.set_s8(navigationPhaseString, 0);
+	MissileInfo missile;
+	missile.main_engine_force 			= JavelinParams::main_engine_force;
+//	missile.secondary_engine_force 		= JavelinParams::secondary_engine_force;
+//	missile.rcs_force 					= JavelinParams::rcs_force;
+	missile.turn_speed 					= JavelinParams::turn_speed;
+	missile.max_speed 					= JavelinParams::max_speed;
+//	missile.lose_target_ticks 			= JavelinParams::lose_target_ticks;
+	this.set("missileInfo", @missile);
+
 	this.set_f32(robotechHeightString, 64.0f); // pixels
-
-	this.set_bool(firstTickString, true);
-	this.set_bool(clientFirstTickString, true);
-
-	this.getSprite().SetFrame(0);
-	this.getShape().SetGravityScale(0.6f);
 }
 
 void onTick(CBlob@ this)
@@ -79,7 +77,11 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	u16 targetBlobID = this.get_u16(curTargetNetIDString);
+	MissileInfo@ missile;
+	if (!this.get( "missileInfo", @missile )) 
+	{ return; }
+
+	u16 targetBlobID = this.get_u16(targetNetIDString);
 	CBlob@ targetBlob = getBlobByNetworkID(targetBlobID);
 	if ( targetBlobID == 0 || targetBlob == null || this.getTickSinceCreated() < 5)
 	{
@@ -105,11 +107,11 @@ void onTick(CBlob@ this)
 	Vec2f targetVec = targetPos - thisPos;
 	f32 targetDist = targetVec.getLength(); //distance to target
 
-	Vec2f lastBVel = this.get_Vec2f(lastAbsoluteVelString);
+	Vec2f lastBVel = this.get_Vec2f(lastRelativeVelString);
 	Vec2f bAccel = (lastBVel - bVel) + gravity;
 	Vec2f bAccelNorm = bAccel;
 	bAccelNorm.Normalize();
-	this.set_Vec2f(lastAbsoluteVelString, bVel);
+	this.set_Vec2f(lastRelativeVelString, bVel);
 
 	float turnAngle = 0.0f;
 
@@ -158,16 +160,16 @@ void onTick(CBlob@ this)
 	float angleDiff = angle - thisAngle;
 	angleDiff += angleDiff > 180 ? -360 : angleDiff < -180 ? 360 : 0;
 
-	const float turnSpeed = 10.0f;
+	float turnSpeed = missile.turn_speed;
 	this.setAngleDegrees(thisAngle + Maths::Clamp(angleDiff, -turnSpeed, turnSpeed));
 	
 	Vec2f thrustNorm = Vec2f(1.0f, 0).RotateByDegrees(this.getAngleDegrees());
-	Vec2f thrustVec = thrustNorm * thrust;
+	Vec2f thrustVec = thrustNorm * missile.main_engine_force;
 
 	bool hasThrust = Maths::Abs(angleDiff) < 45.0f;
 	Vec2f newVel = thisVel + (hasThrust ? thrustVec : Vec2f_zero);
 
-	f32 maxSpeed = 10.0f;
+	f32 maxSpeed = missile.max_speed;
 	if (maxSpeed != 0 && newVel.getLength() > maxSpeed) //max speed logic - 0 means no cap
 	{
 		newVel.Normalize();

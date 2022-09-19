@@ -1,9 +1,16 @@
 const string targetingProgressString = "targeting_progress";
-const string curTargetNetIDString = "target_NetID";
+const string targetNetIDString = "target_NetID";
+const string hasTargetTicksString = "has_target_ticks";
+
 const string navigationPhaseString = "nav_phase";
-const string lastAbsoluteVelString = "last_absoulte_vel";
+const string lastRelativeVelString = "last_absoulte_vel";
 
 const string robotechHeightString = "robotech_height";
+
+const string targetUpdateCommandID = "target_update";
+
+const string firstTickString = "first_tick";
+const string clientFirstTickString = "first_tick_client";
 
 const SColor greenConsoleColor = SColor(200, 0, 255, 0);
 const SColor redConsoleColor = SColor(200, 255, 20, 20);
@@ -91,4 +98,12 @@ void drawParticleLine( Vec2f pos1 = Vec2f_zero, Vec2f pos2 = Vec2f_zero, Vec2f p
 			p.setRenderStyle(RenderStyle::light);
 		}
 	}
+}
+
+void updateTarget( CBlob@ this, u16 newTargetNetID = 0, bool resetTimer = false)
+{
+	CBitStream params;
+	params.write_u16(newTargetNetID);
+	params.write_bool(resetTimer);
+	this.SendCommand(this.getCommandID(targetUpdateCommandID), params);
 }

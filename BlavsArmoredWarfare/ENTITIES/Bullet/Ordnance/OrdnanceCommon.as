@@ -1,23 +1,15 @@
 //Missile Include
 
-const string targetNetIDString = "target_net_ID";
-const string hasTargetTicksString = "has_target_ticks";
-
-const string has_ordinance_update_ID = "has_ordinance_update";
-const string homing_target_update_ID = "homing_target_update";
-
-const string lastAbsoluteVelString = "last_absoulte_vel";
-
 const string quickHomingTag = "quick_homing";
 
 namespace JavelinParams
 {
 	// movement general
-	const ::f32 main_engine_force = 0.35f;
-	const ::f32 secondary_engine_force = 0.18f;
-	const ::f32 rcs_force = 0.15f;
-	const ::f32 turn_speed = 14.0f; // degrees per tick, 0 = instant (30 ticks a second)
-	const ::f32 max_speed = 16.0f; // 0 = infinite speed
+	const ::f32 main_engine_force = 0.5f;
+	const ::f32 secondary_engine_force = 0.1f;
+	const ::f32 rcs_force = 0.1f;
+	const ::f32 turn_speed = 10.0f; // degrees per tick, 0 = instant (30 ticks a second)
+	const ::f32 max_speed = 10.0f; // 0 = infinite speed
 
 	//targeting
 	const ::u32 lose_target_ticks = 90; //ticks until targetblob is null again
