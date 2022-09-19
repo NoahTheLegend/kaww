@@ -624,27 +624,10 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 		ShootBullet(this, this.getPosition() - Vec2f(-24,0).RotateBy(angle), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((180 + this.get_u8("inaccuracy")) - 110)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(180 + this.get_u8("inaccuracy")) - 110)*mod * targetFactor, 8.0f * bulletvelocity);
 		
 		CMap@ map = getMap();
-		ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+		ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.75f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 
 		if (this.isMyPlayer()) ShakeScreen((Vec2f(recoilx - XORRandom(recoilx*4) + 1, -recoily + XORRandom(recoily) + 6)), recoillength*2, this.getInterpolatedPosition());
-		if (this.isMyPlayer()) ShakeScreen(48, 24, this.getPosition());
-
-		CPlayer@ p = getLocalPlayer();
-		if (p !is null)
-		{
-			CBlob@ local = p.getBlob();
-			if (local !is null)
-			{
-				CPlayer@ ply = local.getPlayer();
-			
-				if (ply !is null && ply.isMyPlayer())
-				{
-					Recoil(this, local, 20.0f, 1);
-
-					ShakeScreen(40, 10, this.getPosition());
-				}
-			}
-		}
+		if (this.isMyPlayer()) ShakeScreen(48, 28, this.getPosition());
 	}
 }
 
