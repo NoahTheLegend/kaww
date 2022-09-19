@@ -59,13 +59,6 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$crate$", "launcher_javelin", "Homing rocket launcher.\n\nUses HEAT warheads.", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
-	}
-	{
 		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 vehicle builder.\n\nUnlocks stronger vehicles and aircraft.", false, false);
 		s.customButton = true;
 		s.buttonwidth = 1;
