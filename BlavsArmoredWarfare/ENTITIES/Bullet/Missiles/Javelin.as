@@ -18,6 +18,7 @@ void onInit(CBlob@ this)
 {
 	this.server_SetTimeToDie(15);
 	this.set_s8(navigationPhaseString, 0);
+	this.set_f32(robotechHeightString, 64.0f); // pixels
 
 	this.set_bool(firstTickString, true);
 	this.set_bool(clientFirstTickString, true);
@@ -114,7 +115,8 @@ void onTick(CBlob@ this)
 		{
 			Vec2f raisingPos = targetPos + Vec2f(0, -2000.0f);
 			turnAngle = (raisingPos-thisPos).getAngleDegrees();
-			if (targetPos.y - 100.0f > thisPos.y)
+			
+			if (thisPos.y < this.get_f32(robotechHeightString))
 			{
 				this.set_s8(navigationPhaseString, 1);
 			}
