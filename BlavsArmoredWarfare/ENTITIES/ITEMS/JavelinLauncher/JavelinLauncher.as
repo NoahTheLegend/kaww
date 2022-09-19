@@ -8,7 +8,7 @@ const u8 searchRadius = 32.0f;
 
 void onInit(CBlob@ this)
 {
-	this.set_u16(curTargetNetIDString, 0);
+	this.set_u16(targetNetIDString, 0);
 	this.set_f32(targetingProgressString, 0.0f); // out of 1.0f
 	this.set_f32(robotechHeightString, 168.0f); //pixels
 
@@ -43,7 +43,7 @@ void onTick(CBlob@ this)
 	Vec2f ownerPos = ownerBlob.getPosition();
 	Vec2f ownerAimpos = ownerBlob.getAimPos() + Vec2f(2.0f, 2.0f);
 
-	u16 curTargetNetID = this.get_u16(curTargetNetIDString);
+	u16 curTargetNetID = this.get_u16(targetNetIDString);
 	float targetingProgress = this.get_f32(targetingProgressString);
 
 	CMap@ map = getMap();
@@ -111,7 +111,7 @@ void onTick(CBlob@ this)
 			if (bestBlobNetID != curTargetNetID)
 			{
 				curTargetNetID = bestBlobNetID;
-				this.set_u16(curTargetNetIDString, bestBlobNetID);
+				this.set_u16(targetNetIDString, bestBlobNetID);
 				targetingProgress = 0.0f;
 			}
 			
@@ -135,7 +135,7 @@ void onTick(CBlob@ this)
 		if (curTargetNetID != 0)
 		{
 			curTargetNetID = 0;
-			this.set_u16(curTargetNetIDString, 0);
+			this.set_u16(targetNetIDString, 0);
 		}
 	}
 
@@ -184,7 +184,7 @@ void onTick(CBlob@ this)
 			params.write_f32(robotechHeight);
 			this.SendCommandOnlyServer(this.getCommandID(launchJavelinIDString), params);
 			this.set_f32(targetingProgressString, 0);
-			this.set_u16(curTargetNetIDString, 0);
+			this.set_u16(targetNetIDString, 0);
 		}
 		else
 		{
@@ -233,7 +233,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			blob.IgnoreCollisionWhileOverlapped(this, 20);
 
 			blob.SetDamageOwnerPlayer(ownerBlob.getPlayer()); 
-			blob.set_u16(curTargetNetIDString, curTargetNetID);
+			blob.set_u16(targetNetIDString, curTargetNetID);
 			blob.set_f32(robotechHeightString, thisPos.y - robotechHeight);
 		}
 	}
