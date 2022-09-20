@@ -66,6 +66,8 @@ void onTick(CBlob@ this)
 	CMap@ map = getMap();
 	if (map == null) return;
 
+	int savedTargetCount = launcher.found_targets_id.length;
+
 	const bool isSearching = ownerBlob.isKeyPressed(key_action2);
 	if (!isSearching)
 	{
@@ -78,9 +80,8 @@ void onTick(CBlob@ this)
 			ownerBlob.set_u16(targetNetIDString, 0);
 		}
 		makeTargetSquare(ownerAimpos, 0, Vec2f(3.0f, 3.0f), 3.0f, 1.0f, greenConsoleColor);
-		
 	}
-	else
+	else if (savedTargetCount < 5)
 	{
 		u16[] validBlobIDs; //detectable enemies go here
 		CBlob@[] blobsInRadius;
@@ -187,7 +188,6 @@ void onTick(CBlob@ this)
 	}
 
 	//draw square for all saved targets
-	int savedTargetCount = launcher.found_targets_id.length;
 	for (uint i = 0; i < savedTargetCount; i++)
 	{
 		u16 netID = launcher.found_targets_id[i];
