@@ -71,6 +71,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 - Vehicle builder.\n\nUnlocks stronger vehicles and aircraft.", false, false);
+		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 vehicle builder.\n\nUnlocks stronger vehicles and aircraft.", false, false);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
