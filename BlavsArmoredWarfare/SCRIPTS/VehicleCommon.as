@@ -608,7 +608,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						if (this.isOnGround() || this.wasOnGround())
 						{
-							this.AddForce(Vec2f(0.0f, -500.0f)); // this is nice
+							this.AddForce(Vec2f(0.0f, this.getMass()*-0.25f)); // this is nice
 						}
 
 						bool slopeangle = (angle > 15 && angle < 345 && this.isOnMap());
@@ -683,6 +683,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					const bool down = ap.isKeyPressed(key_down) || ap.isKeyPressed(key_action3);
 					if (down)
 					{
+						this.Tag("holding_down");
 						f32 angle = this.getAngleDegrees();
 						//if  (angle < 20 && angle > 340)
 						{
@@ -703,6 +704,9 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							}
 						}
 					}
+					else{
+						this.Untag("holding_down");
+					}
 
 					
 					if (onground)// && (down || moveUp))
@@ -715,7 +719,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							if (down)
 							{
 								f32 mod = 1.0f;
-								if (isFlipped(this)) mod = 3.33f;
+								if (isFlipped(this)) mod = 4.33f;
 								{
 									this.AddTorque(faceleft ? torque*mod : -torque*mod);
 								}
@@ -1080,7 +1084,36 @@ void Vehicle_LevelOutInAir(CBlob@ this)
 			if (Maths::Abs(diff) > 1)
 				rotvel += (diff > 0 ? 1 : -1) * 0.75; // * 0.75 is rate
 
-			this.AddTorque(this.isFacingLeft() ? -400.0f : 400.0f);
+			this.AddTorque(this.isFacingLeft() ? -360.0f : 360.0f);
+
+			this.setAngleDegrees(this.getAngleDegrees() + rotvel);
+			return;
+		}
+	}
+}
+
+void Vehicle_LevelOutInAirCushion(CBlob@ this)
+{
+	f32 angle = this.getAngleDegrees();
+	if  (angle > 4 && angle < 356)
+	{
+		if (!this.hasTag("holding_down"))
+		{
+			f32 rotvel = 0;
+
+			f32 diff = 360 - this.getAngleDegrees();
+			diff = (diff + 180) % 360 - 180;
+
+			float rate = 1.8f;
+			if  (angle > 10 && angle < 350)
+			{
+				rate = 3.5f;
+			}
+
+			if (Maths::Abs(diff) > 1)
+				rotvel += (diff > 0 ? 1 : -1) * rate; // * 0.75 is rate
+
+			this.AddTorque(this.isFacingLeft() ? -190.0f :190.0f);
 
 			this.setAngleDegrees(this.getAngleDegrees() + rotvel);
 			return;
@@ -1185,7 +1218,7 @@ void Vehicle_onDetach(CBlob@ this, VehicleInfo@ v, CBlob@ detached, AttachmentPo
 		}
 
 		detached.setPosition(detached.getPosition() + Vec2f(0.0f, -4.0f));
-		detached.setVelocity(v.out_vel);
+		detached.setVelocity(v.out_vel + this.getVelocity()*1.55f);
 		detached.IgnoreCollisionWhileOverlapped(null);
 		this.IgnoreCollisionWhileOverlapped(null);
 	}

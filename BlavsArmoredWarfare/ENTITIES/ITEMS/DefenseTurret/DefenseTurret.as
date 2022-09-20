@@ -19,6 +19,7 @@ void onInit(CBlob@ this)
 
 	this.Tag("structure");
 	this.Tag("vehicle");
+	this.Tag("turret");
 
 	if (arm !is null)
 	{
@@ -264,4 +265,22 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	
 	return damage;
+}
+
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
+	if (blob.hasTag("vehicle"))
+	{
+		return true;
+	}
+
+	if (blob.hasTag("flesh") && !blob.isAttached())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

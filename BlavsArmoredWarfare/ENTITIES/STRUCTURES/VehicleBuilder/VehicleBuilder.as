@@ -16,13 +16,17 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(18, 2));
+	this.set_Vec2f("shop menu size", Vec2f(16, 2));
 	this.set_string("shop description", "Construct a Vehicle");
 	this.set_u8("shop icon", 15);
 
 	this.Tag("ignore_arrow");
 	this.Tag("builder always hit");
 
+	{
+		ShopItem@ s = addShopItem(this, "Build a Motorcycle", "$motorcycle$", "motorcycle", "Speedy transport.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
@@ -47,12 +51,12 @@ void onInit(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
 	}
+	//{
+	//	ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\n\nUses 7.62mm.");
+	//	AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
+	//}
 	{
-		ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\n\nUses 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy MachineGun.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy machinegun.\n\nUses 7.62mm.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -66,7 +70,7 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 vehicle builder.\n\nUnlocks stronger vehicles and aircraft.", false, false);
+		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 - Vehicle builder.\n\nUnlocks stronger vehicles and aircraft.", false, false);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;

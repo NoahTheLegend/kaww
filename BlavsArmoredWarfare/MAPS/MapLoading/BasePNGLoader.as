@@ -405,6 +405,9 @@ class PNGLoader
 			case map_colors::red_turret:       autotile(offset); spawnVehicle(map, "defenseturret",   offset, 1); break;
 			case map_colors::blue_turret:      autotile(offset); spawnVehicle(map, "defenseturret",   offset, 0); break;
 
+			case map_colors::blue_motorcycle:   autotile(offset); spawnVehicle(map, "motorcycle",   offset, 0); break;
+			case map_colors::red_motorcycle:   autotile(offset); spawnVehicle(map, "motorcycle",   offset, 1); break;
+
 			case map_colors::blue_techtruck:   autotile(offset); spawnVehicle(map, "techtruck",   offset, 0); break;
 			case map_colors::blue_btr82a:      autotile(offset); spawnVehicle(map, "btr82a",   offset, 0); break;
 			case map_colors::blue_t10:       autotile(offset); spawnVehicle(map, "t10",   offset, 0); break;

@@ -97,6 +97,16 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	CMap@ map = getMap();
 	this.setVelocity(this.getVelocity() * 0.8f);
 
+	// chance to break a block
+	bool isStrong = this.hasTag("strong");
+	if (XORRandom(100) < 40)
+	{
+		if (map.getSectorAtPosition(end, "no build") is null)
+		{
+			map.server_DestroyTile(end, isStrong ? 1.5f : 0.65f, this);
+		}
+	}
+
 	if (XORRandom(100) < 25)
 	{
 		if (!this.hasTag("rico"))
@@ -150,8 +160,6 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 		//print("angle " + this.getAngleDegrees()); work on this
 
-		bool isStrong = this.hasTag("strong");
-
 		{ TileType tile = map.getTile(end + Vec2f(0, -1)).type;
 		if (map.isTileSolid(tile)) impact_angle = 180;}
 
@@ -168,12 +176,6 @@ void onHitWorld(CBlob@ this, Vec2f end)
 		{
 			{ CParticle@ p = ParticleAnimated("BulletHitParticle1.png", end + Vec2f(0.0f, 1.0f), Vec2f(0,0), impact_angle, 0.55f + XORRandom(50)*0.01f, 2+XORRandom(2), 0.0f, true);
 			if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }}
-		}
-
-		// break a block
-		if (map.getSectorAtPosition(this.getPosition(), "no build") is null)
-		{
-			map.server_DestroyTile(this.getPosition(), isStrong ? 2.5f : 2.0f, this);
 		}
 
 		this.server_Die();
