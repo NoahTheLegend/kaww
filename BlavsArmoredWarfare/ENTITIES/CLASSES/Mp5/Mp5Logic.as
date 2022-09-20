@@ -61,11 +61,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return damage*0.5f;
 		else return 0;
 	}
-	if (customData == Hitters::explosion && hitterBlob.getName() != "grenade")
+	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") && hitterBlob.getName() != "grenade")
 	{
 		bool at_bunker = false;
 		Vec2f pos = this.getPosition();
 		Vec2f hit_pos = hitterBlob.getPosition();
+
+		CBlob@[] bunkers;
+		getMap().getBlobsInRadius(this.getPosition(), this.getRadius(), @bunkers);
 
 		if (!getMap().rayCastSolidNoBlobs(pos, hit_pos))
 		{
@@ -80,18 +83,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 					if (hi is null) continue;
 					if (hi.hasTag("bunker") || hi.hasTag("tank")) 
 					{
-						return damage * 0.1f;
-					}
-					else if (hi is hitterBlob)
-					{
-						if (customData == Hitters::explosion) return damage * 0.15f;
-						return damage;
+						at_bunker = true;
+						break;
 					}
 				}
 			}
 			if (at_bunker) return 0;
-			else
-				return damage * 0.05f;
+			return damage * 0.1f;
 		}
 	}
 
