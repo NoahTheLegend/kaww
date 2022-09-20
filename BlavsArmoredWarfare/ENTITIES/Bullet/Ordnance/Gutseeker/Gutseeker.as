@@ -7,7 +7,7 @@
 
 Random _missile_r(12231);
 
-const f32 damage = 12.0f;
+const f32 damage = 12.5f;
 const f32 searchRadius = 132.0f;
 const f32 radius = 40.0f;
 
