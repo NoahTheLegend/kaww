@@ -1,14 +1,14 @@
 const string classname = "Shotgun"; // case sensitive
 
 // DAMAGE
-const float damage_body = 0.3f;
+const float damage_body = 0.35f;
 const float damage_head = 0.42f;
 // SHAKE
 const float recoilx = 20; // x shake (20)
 const float recoily = 80; // y shake (45)
 const float recoillength = 180; // how long to recoil (?)
 // RECOIL
-const float recoilforce = 1.2f; // amount to push player
+const float recoilforce = 0.2f; // amount to push player
 const u8 recoilcursor = 13; // amount to raise mouse pos
 const u8 sidewaysrecoil = 2; // sideways recoil amount
 const u8 sidewaysrecoildamp = 8; // higher number means less sideways recoil
