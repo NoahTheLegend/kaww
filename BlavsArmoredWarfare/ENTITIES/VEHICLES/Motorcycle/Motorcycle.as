@@ -8,6 +8,8 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("takesdmgfrombullet");
 
+	//print("" + this.getName().getHash());
+
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;

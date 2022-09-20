@@ -29,7 +29,7 @@ void onInit(CBlob@ this)
 	                         0.5f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(20.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(18.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-24.5f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	

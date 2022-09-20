@@ -19,6 +19,7 @@ enum EntityHash
 	//_uh1 = -2084182629,
 	_transporttruck = -384075523,
 	_armory = -2000954281,
+	_motorcycle = -1537538612,
 	_civcar = 2114887441
 
 	

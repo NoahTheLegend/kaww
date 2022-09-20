@@ -67,6 +67,8 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 		SetOccupied(attachedPoint, 0);
 		detached.Untag("seatez");
 
+		detached.getSprite().SetRelativeZ(0);
+
 		if (!detached.getShape().isRotationsAllowed())
 		{
 			detached.setAngleDegrees(0.0f);

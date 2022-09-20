@@ -7,9 +7,9 @@
 
 Random _missile_r(12231);
 
-const f32 damage = 4.0f;
+const f32 damage = 26.0f;
 const f32 searchRadius = 132.0f;
-const f32 radius = 24.0f;
+const f32 radius = 40.0f;
 
 void onInit(CBlob@ this)
 {
@@ -329,7 +329,7 @@ void onDie( CBlob@ this )
 			CBlob@ blob = server_CreateBlob("missile_gutseeker", this.getTeamNum(), thisPos);
 			if (blob != null)
 			{
-				blob.setVelocity(launchVec * 2.0f);
+				blob.setVelocity((this.getVelocity() + Vec2f(0, -0.5f - 0.25f*XORRandom(40))) + launchVec * 2.0f);
 				blob.IgnoreCollisionWhileOverlapped(this, 20);
 
 				blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
@@ -373,12 +373,15 @@ void makeMissileEffect(Vec2f thisPos = Vec2f_zero)
 
 bool DoExplosion(CBlob@ this, Vec2f velocity)
 {
+	this.set_f32("map_damage_radius", 34.0f);
+	this.set_f32("map_damage_ratio", 0.2f);
+
 	f32 mod = 1.5;
 
 	Explode(this, radius*mod, damage*(mod/2));
-	//LinearExplosion(this, velocity, 22.0f*mod/2+XORRandom(9), 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
+	LinearExplosion(this, velocity, 2.0f, 2.0f, 2, 1.0f, Hitters::fall);
 	
-	this.getSprite().PlaySound("/ShellExplosion");
+	this.getSprite().PlaySound("/ClusterExplode");
 
 	if (isClient())
 	{
@@ -386,7 +389,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 		for (int i = 0; i < 6; i++)
 		{
-			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(8) - 4, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(15) * 0.005f, 360), float(XORRandom(360)), 0.75f + XORRandom(40) * 0.01f, 5 + XORRandom(6), XORRandom(30) * -0.0001f, true);
+			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(8) - 4, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(35) * 0.005f, 360), float(XORRandom(360)), 1.0f + XORRandom(40) * 0.01f, 7 + XORRandom(6), XORRandom(40) * -0.0001f, true);
 		}
 
 		for (int i = 0; i < (15 + XORRandom(15)); i++)
