@@ -24,6 +24,10 @@ void onInit(CBlob@ this)
 	this.Tag("builder always hit");
 
 	{
+		ShopItem@ s = addShopItem(this, "Build a Motorcycle", "$motorcycle$", "motorcycle", "Speedy transport.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+	}
+	{
 		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
@@ -44,12 +48,12 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nUses 105mm");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 120);
-	}
-	{
 		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nUses 105mm");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 120);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");

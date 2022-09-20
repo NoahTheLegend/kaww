@@ -264,6 +264,8 @@ namespace map_colors
 		b_hq                   = 0xff0916fe,
 		r_hq                   = 0xfffe091d,
 
+		blue_motorcycle        = 0xff3a285b,
+		red_motorcycle         = 0xff5e254e,
 
 		blue_techtruck         = 0xfff9d5c2,
 		red_techtruck          = 0xfff9c2cf,

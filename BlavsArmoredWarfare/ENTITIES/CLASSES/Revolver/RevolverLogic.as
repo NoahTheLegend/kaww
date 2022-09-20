@@ -595,7 +595,7 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 	f32 targetDistance = targetVector.Length();
 	f32 targetFactor = targetDistance / 367.0f;
 
-	ShootBullet(this, this.getPosition() - Vec2f(0,2), this.getAimPos() + Vec2f(8, (-this.get_u8("inaccuracy") + XORRandom(this.get_u8("inaccuracy")*2))/3)*targetFactor, 17.59f * bulletvelocity);
+	ShootBullet(this, this.getPosition() - Vec2f(0,2), this.getAimPos() + Vec2f(8, (-this.get_u8("inaccuracy") + XORRandom(this.get_u8("inaccuracy")*2))/2)*targetFactor, 17.59f * bulletvelocity);
 
 	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 	

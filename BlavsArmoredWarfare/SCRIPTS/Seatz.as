@@ -38,6 +38,7 @@ void onTick(CBlob@ this)
 				{
 					occBlob.SetFacingLeft(facing);
 					occBlob.setAngleDegrees(angle);
+					occBlob.getSprite().SetRelativeZ(-100);
 				}
 			}
 		}
