@@ -8,7 +8,7 @@ const float recoilx = 20; // x shake (20)
 const float recoily = 80; // y shake (45)
 const float recoillength = 180; // how long to recoil (?)
 // RECOIL
-const float recoilforce = 1.4f; // amount to push player
+const float recoilforce = 1.2f; // amount to push player
 const u8 recoilcursor = 13; // amount to raise mouse pos
 const u8 sidewaysrecoil = 2; // sideways recoil amount
 const u8 sidewaysrecoildamp = 8; // higher number means less sideways recoil
