@@ -16,7 +16,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(15, 4));
+	this.set_Vec2f("shop menu size", Vec2f(14, 4));
 	this.set_string("shop description", "Construct a Vehicle");
 	this.set_u8("shop icon", 15);
 
@@ -69,13 +69,6 @@ void onInit(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$crate$", "launcher_javelin", "Homing rocket launcher.\n\nUses HEAT warheads.", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
 	}
 }
 
