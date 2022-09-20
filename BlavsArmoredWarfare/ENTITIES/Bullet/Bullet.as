@@ -97,6 +97,16 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	CMap@ map = getMap();
 	this.setVelocity(this.getVelocity() * 0.8f);
 
+	// chance to break a block
+	bool isStrong = this.hasTag("strong");
+	if (XORRandom(100) < 36)
+	{
+		if (map.getSectorAtPosition(end, "no build") is null)
+		{
+			map.server_DestroyTile(end, isStrong ? 1.5f : 0.65f, this);
+		}
+	}
+
 	if (XORRandom(100) < 25)
 	{
 		if (!this.hasTag("rico"))
@@ -150,8 +160,6 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 		//print("angle " + this.getAngleDegrees()); work on this
 
-		bool isStrong = this.hasTag("strong");
-
 		{ TileType tile = map.getTile(end + Vec2f(0, -1)).type;
 		if (map.isTileSolid(tile)) impact_angle = 180;}
 
@@ -168,12 +176,6 @@ void onHitWorld(CBlob@ this, Vec2f end)
 		{
 			{ CParticle@ p = ParticleAnimated("BulletHitParticle1.png", end + Vec2f(0.0f, 1.0f), Vec2f(0,0), impact_angle, 0.55f + XORRandom(50)*0.01f, 2+XORRandom(2), 0.0f, true);
 			if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }}
-		}
-
-		// chance to break a block
-		if (map.getSectorAtPosition(this.getPosition(), "no build") is null)
-		{
-			map.server_DestroyTile(this.getPosition(), isStrong ? 1.5f : 0.65f, this);
 		}
 
 		this.server_Die();
@@ -343,8 +345,12 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
 		if (point !is null && point.getOccupied() !is null && (point.getOccupied().getName() == "heavygun" || point.getOccupied().getName() == "gun"))
 			return true;
+
+		AttachmentPoint@ point2 = blob.getAttachments().getAttachmentPointByName("DRIVER");
+		if (point2 !is null && point2.getOccupied() !is null && (point2.getOccupied().getName() == "motorcycle"))
+			return true;
 	}
-	
+
 	if (blob.hasTag("trap"))
 	{
 		return false;

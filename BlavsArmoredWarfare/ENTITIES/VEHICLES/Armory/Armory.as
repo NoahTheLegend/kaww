@@ -17,8 +17,8 @@ void onInit(CBlob@ this)
 	this.Tag("takesdmgfrombullets");
 
 	Vehicle_Setup(this,
-	              140.0f, // move speed  //103
-	              0.5f,  // turn speed
+	              145.0f, // move speed  //103
+	              0.4f,  // turn speed
 	              Vec2f(0.0f, 0.57f), // jump out velocity
 	              true  // inventory access
 	             );
@@ -58,7 +58,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(6, 2));
+	this.set_Vec2f("shop menu size", Vec2f(7, 2));
 	if (getBlobByName("pointflag") !is null) this.set_Vec2f("shop menu size", Vec2f(5, 2));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
@@ -87,6 +87,10 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue helmet, take 40% less bullet damage, and occasionally bounce bullets.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
+	}
+	{
 		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 275);
 
@@ -94,10 +98,6 @@ void onInit(CBlob@ this)
 		
 		s.buttonwidth = 1;
 		s.buttonheight = 2;
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue helmet, take 40% less bullet damage, and occasionally bounce bullets.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
@@ -112,9 +112,18 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "HEAT War Heads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammunition for anti-tank guns, helis, javelins, etc..", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$launcher_javelin$", "launcher_javelin", "Homing rocket launcher.\n\nUses HEAT warheads.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
+	}
+	{
 		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
+	
 
 	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
 }

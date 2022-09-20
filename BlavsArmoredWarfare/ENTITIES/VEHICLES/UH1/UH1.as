@@ -68,7 +68,7 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(0.5f);
-			arm.SetOffset(Vec2f(-36.0f, 10.0f));
+			arm.SetOffset(Vec2f(-32.0f, 10.0f));
 		}
 	}
 
@@ -96,7 +96,7 @@ void onInit(CSprite@ this)
 		int[] frames = {1, 2, 3, 2};
 		anim.AddFrames(frames);
 		
-		blade.SetOffset(Vec2f(-15, -26));
+		blade.SetOffset(Vec2f(-5, -26));
 		blade.SetRelativeZ(20.0f);
 		blade.SetVisible(true);
 	}
@@ -109,7 +109,7 @@ void onInit(CSprite@ this)
 		int[] frames = {0, 1, 2, 3};
 		anim.AddFrames(frames);
 		
-		tailrotor.SetOffset(Vec2f(48.0, -9));
+		tailrotor.SetOffset(Vec2f(58.0, -9));
 		tailrotor.SetRelativeZ(20.0f);
 		tailrotor.SetVisible(true);
 	}
@@ -267,11 +267,11 @@ void onTick(CBlob@ this)
 		
 		int anim_time_formula = Maths::Floor(1.00f + (1.00f - Maths::Abs(resultForce.getLength())) * 3) % 4;
 		blade.ResetTransform();
-		blade.SetOffset(Vec2f(-14, -26));
+		blade.SetOffset(Vec2f(-4, -26));
 		blade.animation.time = anim_time_formula;
 		if (blade.animation.time == 0)
 		{
-			blade.SetOffset(Vec2f(-15, -26));
+			blade.SetOffset(Vec2f(-5, -26));
 			blade.SetFrameIndex(0);
 			blade.RotateBy(180, Vec2f(0.0f,2.0f));
 		}
