@@ -1,7 +1,7 @@
 const string classname = "Shotgun"; // case sensitive
 
 // DAMAGE
-const float damage_body = 0.3f;
+const float damage_body = 0.35f;
 const float damage_head = 0.42f;
 // SHAKE
 const float recoilx = 20; // x shake (20)
