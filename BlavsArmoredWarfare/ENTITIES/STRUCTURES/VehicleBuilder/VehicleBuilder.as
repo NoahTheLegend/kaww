@@ -16,7 +16,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(15, 2));
+	this.set_Vec2f("shop menu size", Vec2f(16, 2));
 	this.set_string("shop description", "Construct a Vehicle");
 	this.set_u8("shop icon", 15);
 
@@ -57,6 +57,20 @@ void onInit(CBlob@ this)
 	//}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy machinegun.\n\nUses 7.62mm.", false, true);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$crate$", "launcher_javelin", "Homing Missile launcher.\n\nSingle use.", false, true);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Gutseeker Launcher", "$crate$", "launcher_gutseeker", "Cluster Missile launcher.\n\nSingle use.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
