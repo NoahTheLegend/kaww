@@ -13,6 +13,7 @@ const f32 radius = 24.0f;
 
 void onInit(CBlob@ this)
 {
+	this.Tag("jav");
 	MissileInfo missile;
 	missile.main_engine_force 			= JavelinParams::main_engine_force;
 //	missile.secondary_engine_force 		= JavelinParams::secondary_engine_force;

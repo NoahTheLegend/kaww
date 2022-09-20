@@ -420,6 +420,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {
 	if (damage > 0.1f) //sound
 	{
+		if (hitterBlob.hasTag("jav")) return Maths::Min(damage / 2, this.getInitialHealth()/5);
 		if (customData == Hitters::ballista)
 		{
 			this.getSprite().PlaySound("BigDamage", 2.5f, 0.85f + XORRandom(40)*0.01f); 
