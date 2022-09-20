@@ -7,23 +7,23 @@
 
 Random _missile_r(12231);
 
-const f32 damage = 8.0f;
+const f32 damage = 4.0f;
 const f32 searchRadius = 132.0f;
 const f32 radius = 24.0f;
 
 void onInit(CBlob@ this)
 {
 	MissileInfo missile;
-	missile.main_engine_force 			= JavelinParams::main_engine_force;
-//	missile.secondary_engine_force 		= JavelinParams::secondary_engine_force;
-//	missile.rcs_force 					= JavelinParams::rcs_force;
-	missile.turn_speed 					= JavelinParams::turn_speed;
-	missile.max_speed 					= JavelinParams::max_speed;
-//	missile.lose_target_ticks 			= JavelinParams::lose_target_ticks;
-	missile.gravity_scale 				= JavelinParams::gravity_scale;
+	missile.main_engine_force 			= GutseekerParams::main_engine_force;
+//	missile.secondary_engine_force 		= GutseekerParams::secondary_engine_force;
+//	missile.rcs_force 					= GutseekerParams::rcs_force;
+	missile.turn_speed 					= GutseekerParams::turn_speed;
+	missile.max_speed 					= GutseekerParams::max_speed;
+//	missile.lose_target_ticks 			= GutseekerParams::lose_target_ticks;
+	missile.gravity_scale 				= GutseekerParams::gravity_scale;
 	this.set("missileInfo", @missile);
 
-	this.set_f32(robotechHeightString, 64.0f); // pixels
+	this.set_Vec2f("disperse_pos", Vec2f_zero);
 
 	this.getShape().SetGravityScale(missile.gravity_scale);
 }
@@ -75,7 +75,6 @@ void onTick(CBlob@ this)
 
 			this.setPosition(thisPos);
 			this.server_Die();
-			this.server_Hit(hi.blob, thisPos, Vec2f(0,0), damage, Hitters::ballista, true); 
 			return;
 		}
 	}
@@ -83,13 +82,6 @@ void onTick(CBlob@ this)
 	MissileInfo@ missile;
 	if (!this.get( "missileInfo", @missile )) 
 	{ return; }
-
-	u16 targetBlobID = this.get_u16(targetNetIDString);
-	CBlob@ targetBlob = getBlobByNetworkID(targetBlobID);
-	if ( targetBlobID == 0 || targetBlob == null || this.getTickSinceCreated() < 5)
-	{
-		return;
-	}
 
 	// smoke effect
 	if (XORRandom(2) == 0) 
@@ -101,8 +93,18 @@ void onTick(CBlob@ this)
 	}
 	
 	//homing logic
-	Vec2f targetPos = targetBlob.getPosition();
-	Vec2f targetVel = targetBlob.getVelocity();
+	if ( this.getTickSinceCreated() < 5) return;
+	
+	Vec2f targetPos = this.get_Vec2f("disperse_pos");
+	Vec2f targetVel = Vec2f_zero;
+
+	u16 targetBlobID = this.get_u16(targetNetIDString);
+	CBlob@ targetBlob = getBlobByNetworkID(targetBlobID);
+	if (targetBlobID != 0 && targetBlob != null)
+	{
+		targetPos = targetBlob.getPosition();
+		targetVel = targetBlob.getVelocity();
+	}
 
 	Vec2f bVel = thisVel - targetVel; //compensates for missile speed
 	float bSpeed = bVel.getLength();
@@ -112,30 +114,21 @@ void onTick(CBlob@ this)
 	Vec2f targetVec = targetPos - thisPos;
 	f32 targetDist = targetVec.getLength(); //distance to target
 
-	float gravityScale = missile.gravity_scale;
-	Vec2f gravity = Vec2f(0, (sv_gravity*gravityScale) / getTicksASecond()); 
-
-	Vec2f lastBVel = this.get_Vec2f(lastRelativeVelString);
-	Vec2f bAccel = (lastBVel - bVel) + gravity;
-	Vec2f bAccelNorm = bAccel;
-	bAccelNorm.Normalize();
-	this.set_Vec2f(lastRelativeVelString, bVel);
-
-	const float mainEngineForce = missile.main_engine_force;
-	const float maxSpeed = missile.max_speed;
-	const float turnSpeed = missile.turn_speed;
-	float turnAngle = 0.0f;
+	float mainEngineForce = missile.main_engine_force;
+	float maxSpeed = missile.max_speed;
+	float turnSpeed = missile.turn_speed;
 
 	switch (this.get_s8(navigationPhaseString))
 	{
 		case 0:
 		{
-			Vec2f risingPos = targetPos + Vec2f(0, -2000.0f);
-			turnAngle = (risingPos-thisPos).getAngleDegrees();
-			
-			if (thisPos.y < this.get_f32(robotechHeightString))
+			if (is_server) //server only detonation
 			{
-				this.set_s8(navigationPhaseString, 1);
+				if (targetDist < 32.0f)
+				{
+					this.server_Die();
+					return;
+				}
 			}
 		}
 		break;
@@ -147,32 +140,42 @@ void onTick(CBlob@ this)
 				if (targetDist < radius*0.8f) //if closer than 80% of explosion radius, detonate.
 				{
 					this.server_Die();
-					this.server_Hit(targetBlob, targetPos, Vec2f(0,0), damage, Hitters::ballista, true); 
 					return;
 				}
 			}
 
-			float influence = gravity.y / mainEngineForce;
-			float bVelAngle = (bVelNorm + (bAccelNorm*influence)).getAngleDegrees();
-			float targetVecAngle = targetVec.getAngleDegrees();
-
-			float directionDiff = targetVecAngle - bVelAngle;
-			directionDiff += directionDiff > 180 ? -360 : directionDiff < -180 ? 360 : 0;
-			bool movingAway = Maths::Abs(directionDiff) > 90.0f;
-
-			turnAngle = movingAway ? bVelAngle + 180.0f : targetVecAngle + directionDiff;
+			if (targetBlob == null) return; // die like a fly
 		}
 		break;
-		
 	}
+
+	// acceleration math
+	float gravityScale = missile.gravity_scale;
+	Vec2f gravity = Vec2f(0, (sv_gravity*gravityScale) / getTicksASecond()); 
+
+	Vec2f lastBVel = this.get_Vec2f(lastRelativeVelString);
+	Vec2f bAccel = (lastBVel - bVel) + gravity;
+	Vec2f bAccelNorm = bAccel;
+	bAccelNorm.Normalize();
+	this.set_Vec2f(lastRelativeVelString, bVel);
+
+	// find optimal flight angle
+	float influence = gravity.y / mainEngineForce;
+	float bVelAngle = (bVelNorm + (bAccelNorm*influence)).getAngleDegrees();
+	float targetVecAngle = targetVec.getAngleDegrees();
+
+	float directionDiff = targetVecAngle - bVelAngle;
+	directionDiff += directionDiff > 180 ? -360 : directionDiff < -180 ? 360 : 0;
+	bool movingAway = Maths::Abs(directionDiff) > 90.0f;
+
+	float turnAngle = movingAway ? bVelAngle + 180.0f : targetVecAngle + directionDiff;
 	
+	// turning 
 	float angle = -turnAngle + 360.0f;
 	float thisAngle = this.getAngleDegrees();
 		
 	float angleDiff = angle - thisAngle;
 	angleDiff += angleDiff > 180 ? -360 : angleDiff < -180 ? 360 : 0;
-
-	// turning
 	this.setAngleDegrees(thisAngle + Maths::Clamp(angleDiff, -turnSpeed, turnSpeed));
 	
 	// thrust
@@ -296,7 +299,6 @@ void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f coll
 	{ return; }
 
 	this.server_Die();
-	this.server_Hit(blob, collisionPos, Vec2f(0,0), damage, Hitters::ballista, true); 
 }
 
 void onDie( CBlob@ this )
@@ -306,6 +308,36 @@ void onDie( CBlob@ this )
 	DoExplosion(this, this.getVelocity());
 
 	makeMissileEffect(thisPos); //boom effect
+
+	if (!isServer()) return;
+
+	MissileInfo@ missile;
+	if (!this.get( "missileInfo", @missile )) return;
+
+	int targetAmount = missile.target_netid_list.length;
+	if (targetAmount > 0)
+	{
+		for (uint i = 0; i < targetAmount; i++)
+		{
+			u16 netID = missile.target_netid_list[i];
+			CBlob@ targetBlob = getBlobByNetworkID(netID);
+			if (targetBlob == null) continue;
+
+			Vec2f launchVec = Vec2f(1.0f + _missile_r.NextFloat(), 0);
+			launchVec.RotateByDegrees(360.0f * _missile_r.NextFloat());
+			
+			CBlob@ blob = server_CreateBlob("missile_gutseeker", this.getTeamNum(), thisPos);
+			if (blob != null)
+			{
+				blob.setVelocity(launchVec * 2.0f);
+				blob.IgnoreCollisionWhileOverlapped(this, 20);
+
+				blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
+				blob.set_u16(targetNetIDString, netID);
+				blob.set_s8(navigationPhaseString, 1);
+			}
+		}
+	}
 }
 
 void makeMissileEffect(Vec2f thisPos = Vec2f_zero)
@@ -343,8 +375,8 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 {
 	f32 mod = 1.5;
 
-	Explode(this, 26.0f*mod, 12.0f*(mod/2));
-	LinearExplosion(this, velocity, 22.0f*mod/2+XORRandom(9), 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
+	Explode(this, radius*mod, damage*(mod/2));
+	//LinearExplosion(this, velocity, 22.0f*mod/2+XORRandom(9), 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
 	
 	this.getSprite().PlaySound("/ShellExplosion");
 

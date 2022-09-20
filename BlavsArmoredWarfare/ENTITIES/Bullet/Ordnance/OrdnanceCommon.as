@@ -1,5 +1,6 @@
 //Missile Include
 
+const string launchOrdnanceIDString = "launch_ordnance";
 const string quickHomingTag = "quick_homing";
 
 namespace JavelinParams
@@ -18,6 +19,17 @@ namespace JavelinParams
 	const ::u32 lose_target_ticks = 90; //ticks until targetblob is null again
 }
 
+namespace GutseekerParams
+{
+	// movement general
+	const ::f32 main_engine_force = 0.7f;
+	const ::f32 max_speed = 15.0f; // 0 = infinite speed
+	const ::f32 turn_speed = 20.0f; // degrees per tick, 0 = instant (30 ticks a second)
+
+	// factors
+	const ::f32 gravity_scale = 0.6f;
+}
+
 class MissileInfo
 {
 	// movement general
@@ -32,6 +44,7 @@ class MissileInfo
 
 	//targeting
 	u32 lose_target_ticks; //ticks until targetblob is null again
+	u16[] target_netid_list; // NetID array
 
 	MissileInfo()
 	{
@@ -47,5 +60,17 @@ class MissileInfo
 
 		//targeting
 		lose_target_ticks = 30;
+	}
+};
+
+shared class LauncherInfo
+{
+	float progress_speed;
+
+	u16[] found_targets_id; // NetID array
+
+	LauncherInfo()
+	{
+		progress_speed = 0.1f;
 	}
 };
