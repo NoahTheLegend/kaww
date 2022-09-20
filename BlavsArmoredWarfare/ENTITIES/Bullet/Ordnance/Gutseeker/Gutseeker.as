@@ -7,12 +7,13 @@
 
 Random _missile_r(12231);
 
-const f32 damage = 26.0f;
+const f32 damage = 1.0f;
 const f32 searchRadius = 132.0f;
 const f32 radius = 40.0f;
 
 void onInit(CBlob@ this)
 {
+	this.Tag("jav");
 	MissileInfo missile;
 	missile.main_engine_force 			= GutseekerParams::main_engine_force;
 //	missile.secondary_engine_force 		= GutseekerParams::secondary_engine_force;
