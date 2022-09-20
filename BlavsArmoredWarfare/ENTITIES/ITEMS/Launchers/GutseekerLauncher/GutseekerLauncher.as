@@ -200,7 +200,7 @@ void onTick(CBlob@ this)
 		makeTargetSquare(targetPos, 0.0f, Vec2f(8.0f, 8.0f), 4.0f, 1.0f); //target acquired square
 	}
 
-	if (savedTargetCount > 0 && ownerBlob.isKeyJustPressed(key_action3))
+	if (savedTargetCount > 0 && ownerBlob.isKeyJustPressed(key_action1))
 	{
 		bool existingTargets = false;
 		CBitStream params;
