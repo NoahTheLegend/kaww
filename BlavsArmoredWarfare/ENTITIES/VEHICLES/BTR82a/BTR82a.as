@@ -8,8 +8,6 @@ void onInit(CBlob@ this)
 	this.Tag("apc");
 	this.Tag("deal_bunker_dmg");
 
-	print("" + this.getName().getHash());
-
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;

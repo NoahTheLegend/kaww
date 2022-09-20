@@ -208,6 +208,9 @@ u8 getIndicatorFrame( int hash )
 		case _pszh4:
 		case _civcar:
 		frame = 7; break;
+
+		case _motorcycle:
+		frame = 8; break;
 	}
 
 	return frame;

@@ -1104,10 +1104,10 @@ void Vehicle_LevelOutInAirCushion(CBlob@ this)
 			f32 diff = 360 - this.getAngleDegrees();
 			diff = (diff + 180) % 360 - 180;
 
-			float rate = 1.8f;
+			float rate = 1.6f;
 			if  (angle > 10 && angle < 350)
 			{
-				rate = 3.5f;
+				rate = 2.5f;
 			}
 
 			if (Maths::Abs(diff) > 1)
@@ -1218,7 +1218,7 @@ void Vehicle_onDetach(CBlob@ this, VehicleInfo@ v, CBlob@ detached, AttachmentPo
 		}
 
 		detached.setPosition(detached.getPosition() + Vec2f(0.0f, -4.0f));
-		detached.setVelocity(v.out_vel + this.getVelocity()*1.55f);
+		detached.setVelocity(v.out_vel + this.getVelocity());
 		detached.IgnoreCollisionWhileOverlapped(null);
 		this.IgnoreCollisionWhileOverlapped(null);
 	}

@@ -91,7 +91,10 @@ void onTick(CBlob@ this)
 		if (b.getTeamNum() == ownerBlob.getTeamNum()) //enemy only
 		{ continue; }
 
-		if (!b.hasTag("vehicle") && !b.hasTag("player") && b.hasTag("dead")) //vehicles only
+		if (!b.hasTag("vehicle") && !b.hasTag("flesh") && !b.hasTag("structure") && !b.hasTag("bunker")) // important things
+		{ continue; }
+
+		if (b.hasTag("dead") || b.isAttached()) // living things
 		{ continue; }
 
 		if (b.isAttached()) // non attached blobs
@@ -285,7 +288,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				missile.target_netid_list.push_back(targetNetIDList[i]);
 			}
 		}
-		this.Tag("dead");
-		this.server_Die();
+		//this.Tag("dead");
+		//this.server_Die();
 	}
 }
