@@ -1,6 +1,8 @@
 //Missile Include
 
 const string launchOrdnanceIDString = "launch_ordnance";
+const string launcherDeathIDString = "launcher_die";
+const string launcherUpdateStateIDString = "launcher_state_sync";
 const string quickHomingTag = "quick_homing";
 
 namespace JavelinParams
@@ -74,3 +76,8 @@ shared class LauncherInfo
 		progress_speed = 0.1f;
 	}
 };
+
+void launcherDie( CBlob@ this )
+{
+	this.SendCommand(this.getCommandID(launcherDeathIDString));
+}

@@ -70,6 +70,20 @@ void onInit(CBlob@ this)
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
+	{
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$crate$", "launcher_javelin", "Homing Missile launcher.\n\nSingle use.", false, true);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Gutseeker Launcher", "$crate$", "launcher_gutseeker", "Cluster Missile launcher.\n\nSingle use.", false, true);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+	}
 }
 
 void onTick(CBlob@ this)

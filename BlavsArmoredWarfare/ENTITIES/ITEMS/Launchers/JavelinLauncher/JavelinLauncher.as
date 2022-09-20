@@ -1,32 +1,40 @@
 #include "ComputerCommon.as"
-
-const string launchJavelinIDString = "launch_javelin_command";
-
-const string ammoBlobName = "mat_heatwarhead";
+#include "OrdnanceCommon.as"
 
 const u8 searchRadius = 32.0f;
 
 void onInit(CBlob@ this)
 {
-	this.set_u16(targetNetIDString, 0);
-	this.set_f32(targetingProgressString, 0.0f); // out of 1.0f
+	LauncherInfo launcher;
+	launcher.progress_speed = 0.04f;
+	this.set("launcherInfo", @launcher);
+	
 	this.set_f32(robotechHeightString, 168.0f); //pixels
 
-	this.Tag("medium weight");
-	this.Tag("trap"); // so bullets pass
-	this.Tag("hidesgunonhold"); // is it's own weapon
-
-	this.getSprite().SetFrame(4); // no hand
-
-	this.addCommandID(launchJavelinIDString);
+	this.getSprite().SetFrame(2); // no hand
 }
 
 void onTick(CBlob@ this)
 {
+	const bool is_client = isClient();
+	s8 launcherFrame = this.get_s8("launcher_frame");
+	float launcherAngle = this.get_f32("launcher_angle");
+
+	this.setAngleDegrees(launcherAngle);
+	if (is_client) this.getSprite().SetFrame(launcherFrame);
+
+	if (this.hasTag("dead"))
+	{
+		this.set_s8("launcher_frame", 3); // no ammo
+		this.set_f32("launcher_angle", 0);
+		return;
+	}
+
 	if (!this.isAttached())
 	{
 		this.set_f32(robotechHeightString, 68.0f); //resets robotech height
-		this.getSprite().SetFrame(4);
+		this.set_s8("launcher_frame", 2); // not held
+		this.set_f32("launcher_angle", 0);
 		return;
 	}
 
@@ -36,9 +44,9 @@ void onTick(CBlob@ this)
 	CBlob@ ownerBlob = point.getOccupied();
 	if (ownerBlob is null) return;
 
-	float angle = ownerBlob.isFacingLeft() ? 30.0f : -30.0f;
-
-	if (!ownerBlob.isMyPlayer()) return; // only player holding this
+	if (!ownerBlob.isMyPlayer() || ownerBlob.isAttached()) return; // only player holding this
+	launcherFrame = 2;
+	launcherAngle = ownerBlob.isFacingLeft() ? 30.0f : -30.0f;
 
 	Vec2f ownerPos = ownerBlob.getPosition();
 	Vec2f ownerAimpos = ownerBlob.getAimPos() + Vec2f(2.0f, 2.0f);
@@ -48,8 +56,6 @@ void onTick(CBlob@ this)
 
 	CMap@ map = getMap();
 	if (map == null) return;
-
-	if (ownerBlob.isAttached()) return;
 
 	u16[] validBlobIDs; //detectable enemies go here
 	CBlob@[] blobsInRadius;
@@ -99,7 +105,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	this.getSprite().SetFrame(0); // reset
+	launcherFrame = 0; // grabbed, no green ping
 
 	if (bestBlobNetID != 0) //start locking onto valid target
 	{
@@ -121,8 +127,8 @@ void onTick(CBlob@ this)
 			makeTargetSquare(targetPos, squareAngle, squareScale, squareCornerSeparation, 1.0f, targetingProgress == 1.0f ? redConsoleColor : yellowConsoleColor); //target detected rhombus
 			this.set_f32(targetingProgressString, Maths::Min(targetingProgress+0.01f, 1.0f));
 
-			this.getSprite().SetFrame(2); // green ping
-			angle *= 1.55f;
+			launcherFrame = 1; // green ping
+			launcherAngle *= 1.55f;
 
 			if (getGameTime() % 11 == 0)
 			{
@@ -174,15 +180,14 @@ void onTick(CBlob@ this)
 		drawParticleLine( robotechPos, targetBlob.getPosition(), Vec2f_zero, greenConsoleColor, 0, 5.0f); // trajectory
 	}
 
-	if (targetingProgress == 1.0f && ownerBlob.isKeyJustPressed(key_action3))
+	if (ownerBlob.isKeyJustPressed(key_action3))
 	{
-		CInventory@ inv = ownerBlob.getInventory();
-		if (inv !is null && inv.getItem(ammoBlobName) !is null)
+		if (targetingProgress == 1.0f)
 		{
 			CBitStream params;
 			params.write_u16(curTargetNetID);
 			params.write_f32(robotechHeight);
-			this.SendCommandOnlyServer(this.getCommandID(launchJavelinIDString), params);
+			this.SendCommandOnlyServer(this.getCommandID(launchOrdnanceIDString), params);
 			this.set_f32(targetingProgressString, 0);
 			this.set_u16(targetNetIDString, 0);
 		}
@@ -192,7 +197,36 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	this.setAngleDegrees(angle);
+	/*
+	if (targetingProgress == 1.0f && ownerBlob.isKeyJustPressed(key_action3))
+	{
+		CInventory@ inv = ownerBlob.getInventory();
+		if (inv !is null && inv.getItem(ammoBlobName) !is null)
+		{
+			CBitStream params;
+			params.write_u16(curTargetNetID);
+			params.write_f32(robotechHeight);
+			this.SendCommandOnlyServer(this.getCommandID(launchOrdnanceIDString), params);
+			this.set_f32(targetingProgressString, 0);
+			this.set_u16(targetNetIDString, 0);
+		}
+		else
+		{
+			this.getSprite().PlaySound("NoAmmo.ogg", 0.55);
+		}
+	}
+	*/
+
+	bool differentAngle = launcherAngle != this.getAngleDegrees();
+	bool differentFrame = launcherFrame != this.get_s8("launcher_frame");
+	
+	if (differentAngle || differentFrame)
+	{
+		CBitStream params;
+		params.write_s8(launcherFrame);
+		params.write_f32(launcherAngle);
+		this.SendCommand(this.getCommandID(launcherUpdateStateIDString), params);
+	}
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
@@ -200,7 +234,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	if (this == null) return;
 	if (!isServer()) return;
 
-	if (cmd == this.getCommandID(launchJavelinIDString))
+	if (cmd == this.getCommandID(launchOrdnanceIDString))
 	{
 		u16 curTargetNetID = 0;
 		float robotechHeight = 64.0f;
@@ -222,10 +256,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		Vec2f launchVec = Vec2f(ownerBlob.isFacingLeft() ? -1 : 1, -1.05f);
 		Vec2f thisPos = this.getPosition();
 
-		CInventory@ inv = ownerBlob.getInventory();
-		if (inv is null || inv.getItem(ammoBlobName) is null) return;
-		inv.server_RemoveItems(ammoBlobName, 1);
-
 		CBlob@ blob = server_CreateBlob("missile_javelin", ownerBlob.getTeamNum(), thisPos - Vec2f(0,3));
 		if (blob != null)
 		{
@@ -236,5 +266,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			blob.set_u16(targetNetIDString, curTargetNetID);
 			blob.set_f32(robotechHeightString, thisPos.y - robotechHeight);
 		}
+
+		launcherDie( this );
 	}
 }
