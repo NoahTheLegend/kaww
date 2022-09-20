@@ -180,7 +180,7 @@ void onTick(CBlob@ this)
 		drawParticleLine( robotechPos, targetBlob.getPosition(), Vec2f_zero, greenConsoleColor, 0, 5.0f); // trajectory
 	}
 
-	if (ownerBlob.isKeyJustPressed(key_action3))
+	if (ownerBlob.isKeyJustPressed(key_action1))
 	{
 		if (targetingProgress == 1.0f)
 		{
