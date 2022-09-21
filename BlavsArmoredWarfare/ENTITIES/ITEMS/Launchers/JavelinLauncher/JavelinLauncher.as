@@ -50,6 +50,14 @@ void onTick(CBlob@ this)
 	if (!ownerBlob.isMyPlayer() || ownerBlob.isAttached()) return; // only player holding this
 	CControls@ controls = getControls();
 
+	// binoculars effect
+	ownerBlob.set_u32("dont_change_zoom", getGameTime()+3);
+	CCamera@ camera = getCamera();
+	if (camera !is null)
+	{
+		camera.mouseFactor = 0.6f;
+	}
+
 	if (is_dead)
 	{
 		if (controls.isKeyJustPressed(KEY_KEY_R))
