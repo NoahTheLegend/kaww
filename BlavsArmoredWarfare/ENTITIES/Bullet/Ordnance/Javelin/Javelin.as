@@ -146,8 +146,8 @@ void onTick(CBlob@ this)
 
 		case 1:
 		{
-			float influence = gravity.y / mainEngineForce;
-			float bVelAngle = (bVelNorm - (bAccelNorm*influence) + (gravity*influence)).getAngleDegrees();
+			float influence = gravity.y / (mainEngineForce*0.9f);
+			float bVelAngle = (bVelNorm - (bAccelNorm*influence) + (gravityNorm*influence)).getAngleDegrees();
 			float targetVecAngle = targetVec.getAngleDegrees();
 
 			float directionDiff = targetVecAngle - bVelAngle;
