@@ -171,15 +171,21 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 		return true;
 
 	f32 mod = 1.0f;
+	f32 explosion_mod = 1.0f;
 	if (this.hasTag("light"))
 	{
 		mod = 1.25f;
 	}
 	else if (this.hasTag("heli")) mod = 3.0f;
 	else if (this.hasTag("medium")) mod = 2.75f;
-	else if (this.hasTag("heavy")) mod = 3.15f;
+	else if (this.hasTag("heavy"))
+	{
+		explosion_mod = 1.15f;
+		mod = 3.15f;
+	}
+	if (this.hasTag("antitank_shell")) explosion_mod = 1.6f;
 
-	Explode(this, 26.0f*mod, 12.0f*(mod/2));
+	Explode(this, 26.0f*mod*explosion_mod, 12.0f*(mod/2));
 	LinearExplosion(this, velocity, 22.0f*(this.hasTag("light") ? mod/2 : mod/3)+XORRandom(9), 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
 	
 	this.getSprite().PlaySound("/ShellExplosion");
