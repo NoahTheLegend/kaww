@@ -59,14 +59,18 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(7, 2));
-	if (tents.length == 0) this.set_Vec2f("shop menu size", Vec2f(5, 2));
+	this.set_Vec2f("shop menu size", Vec2f(9, 2));
+	if (tents.length == 0) this.set_Vec2f("shop menu size", Vec2f(8, 2));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
 	{
-		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
+		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press LMB while holding to arm, ~4 seconds until boom.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Tank Trap", "$tanktrap$", "tanktrap", "Czech hedgehog, will harm any enemy vehicle that collides with it.", false);
@@ -84,12 +88,16 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press LMB while holding to arm, ~4 seconds until boom.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
-	}
-	{
 		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue helmet, take 40% less bullet damage, and occasionally bounce bullets.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Lantern", "$lantern$", "lantern", "A source of light.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
 	}
 	if (tents.length != 0)
 	{
@@ -109,7 +117,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "14mm Rounds", "$mat_14mmround$", "mat_14mmround", "Used by APCs", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 2);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "105mm Rounds", "$mat_bolts$", "mat_bolts", "Ammunition for tank main guns.", false);
@@ -117,15 +125,20 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "HEAT War Heads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammunition for anti-tank guns, helis, javelins, etc..", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 7);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "M22 Binoculars", "$binoculars$", "binoculars", "A pair of glasses with optical zooming.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$launcher_javelin$", "launcher_javelin", "Homing rocket launcher.\n\nUses HEAT warheads.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+
+		s.customButton = true;
+
+		s.buttonwidth = 3;
+		s.buttonheight = 1;
 	}
 	
 
