@@ -40,11 +40,32 @@ void onTick(CRules@ this)
 		int redTickets = this.get_s16("redTickets");
 		int blueTickets = this.get_s16("blueTickets");
 
-		if(redTickets>blueTickets)
-			teamWonNumber = 1;
+		bool is_siege = this.get_u8("siege") != 255;
 
-		else if(blueTickets>redTickets)
-			teamWonNumber = 0;
+		if (is_siege)
+		{
+			teamWonNumber = (this.get_u8("siege") == 0 ? 1 : 0);
+			bool all_flags_capped = true;
+			CBlob@[] flags;
+        	getBlobsByName("pointflag", @flags);
+
+			for (u8 i = 0; i < flags.length; i++)
+			{
+				CBlob@ b = flags[i];
+				if (b is null) continue;
+				if (b.getTeamNum() != this.get_u8("siege")) all_flags_capped = false;
+			}
+
+			if (all_flags_capped) teamWonNumber = -1;
+		}
+		else
+		{
+			if(redTickets>blueTickets)
+				teamWonNumber = 1;
+
+			else if(blueTickets>redTickets)
+				teamWonNumber = 0;
+		}
 
 		if (teamWonNumber >= 0)
 		{
