@@ -17,24 +17,27 @@ void onInit(CBlob@ this)
 void onTick(CBlob@ this)
 {
 	const bool is_client = isClient();
+	const bool is_dead = this.hasTag("dead");
 	s8 launcherFrame = this.get_s8("launcher_frame");
 	float launcherAngle = this.get_f32("launcher_angle");
 
 	this.setAngleDegrees(launcherAngle);
 	if (is_client) this.getSprite().SetFrame(launcherFrame);
 
-	if (this.hasTag("dead"))
+	if (is_dead)
 	{
 		this.set_s8("launcher_frame", 3); // no ammo
 		this.set_f32("launcher_angle", 0);
-		return;
 	}
 
 	if (!this.isAttached())
 	{
 		this.set_f32(robotechHeightString, 68.0f); //resets robotech height
-		this.set_s8("launcher_frame", 2); // not held
-		this.set_f32("launcher_angle", 0);
+		if (!is_dead)
+		{
+			this.set_s8("launcher_frame", 2); // not held
+			this.set_f32("launcher_angle", 0);
+		}
 		return;
 	}
 
@@ -45,6 +48,17 @@ void onTick(CBlob@ this)
 	if (ownerBlob is null) return;
 
 	if (!ownerBlob.isMyPlayer() || ownerBlob.isAttached()) return; // only player holding this
+	CControls@ controls = getControls();
+
+	if (is_dead)
+	{
+		if (controls.isKeyJustPressed(KEY_KEY_R))
+		{
+			launcherSetDeath( this, false );
+		}
+		return;
+	}
+
 	launcherFrame = 2;
 	launcherAngle = ownerBlob.isFacingLeft() ? 30.0f : -30.0f;
 
@@ -145,7 +159,6 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	CControls@ controls = getControls();
 	float robotechHeight = this.get_f32(robotechHeightString);
 	if (controls.isKeyJustPressed(MOUSE_SCROLL_DOWN))
 	{
@@ -236,6 +249,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 	if (cmd == this.getCommandID(launchOrdnanceIDString))
 	{
+		if (this.hasTag("dead")) return;
+		
 		u16 curTargetNetID = 0;
 		float robotechHeight = 64.0f;
 
@@ -267,6 +282,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			blob.set_f32(robotechHeightString, thisPos.y - robotechHeight);
 		}
 
-		launcherDie( this );
+		launcherSetDeath( this, true); // set dead
 	}
 }
