@@ -316,7 +316,10 @@ namespace map_colors
 
 		repairstation          = 0xff698272,
 
-		bunker                 = 0xff6d4c28,
+		blue_bunker            = 0xff6d4cff,
+		red_bunker             = 0xff6d4c28,
+		blue_heavybunker       = 0xff6d4cef,
+		red_heavybunker        = 0xff6d4c08,
 
 		constructionyard       = 0xffdfdde2,
 		baseconstructionyard   = 0xffb9c5b5,
