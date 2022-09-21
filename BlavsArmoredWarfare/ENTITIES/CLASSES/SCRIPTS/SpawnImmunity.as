@@ -5,7 +5,7 @@ const f32 IMMUNITY_SECS = 3;
 
 void onInit(CRules@ this)
 {
-	this.set_f32("immunity sec", IMMUNITY_SECS);
+	this.set_f32("immunity sec", Maths::Min(4+getPlayersCount()/5, 10));
 }
 
 f32 onPlayerTakeDamage(CRules@ this, CPlayer@ victim, CPlayer@ attacker, f32 DamageScale)
