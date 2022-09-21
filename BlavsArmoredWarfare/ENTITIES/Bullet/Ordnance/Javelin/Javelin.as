@@ -146,8 +146,11 @@ void onTick(CBlob@ this)
 
 		case 1:
 		{
-			float influence = gravity.y / (mainEngineForce*0.9f);
-			float bVelAngle = (bVelNorm - (bAccelNorm*influence) + (gravityNorm*influence)).getAngleDegrees();
+			float gravInfluence = gravity.y / mainEngineForce;
+			//float accelInfluence = bAccel.getLength() / mainEngineForce;
+			//float bVelInfluence = bSpeed / mainEngineForce;
+			Vec2f combinedVel = (bVelNorm) - (bAccelNorm*gravInfluence) + (gravityNorm*gravInfluence);
+			float bVelAngle = combinedVel.getAngleDegrees();
 			float targetVecAngle = targetVec.getAngleDegrees();
 
 			float directionDiff = targetVecAngle - bVelAngle;
@@ -272,7 +275,9 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		)
 		&&
 		(
-			blob.hasTag("vehicle")
+			blob.hasTag("vehicle") || 
+			blob.hasTag("structure") ||
+			blob.hasTag("bunker")
 		)
 	);
 }
