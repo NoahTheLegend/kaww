@@ -251,7 +251,7 @@ shared class TDMSpawns : RespawnSystem
 					CBlob@ b = getBlobByName("pointflag");
 					CBlob@[] tents;
 					getBlobsByName("tent", @tents);
-					if (b is null || tents.length > 0)
+					if (b is null && tents.length > 0)
 						decrementTickets(getRules(), playerBlob.getTeamNum());
 				}
 

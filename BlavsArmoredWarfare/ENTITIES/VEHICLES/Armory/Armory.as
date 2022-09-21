@@ -245,7 +245,7 @@ void onDie(CBlob@ this)
 
 	if (tents.length == 0)
 	{
-		u8 team = (getRules().get_u8("siege") == 0 ? 1 : 0);
+		u8 team = (this.getTeamNum() == 0 ? 1 : 0);
 		getRules().SetTeamWon(team);
 		getRules().SetCurrentState(GAME_OVER);
 		CTeam@ teamis = getRules().getTeam(team);
