@@ -42,7 +42,15 @@ void onTick(CRules@ this)
 
             this.set_s8("flagcount", flags.length);
 
-            if (this.get_s8("flagcount") > 1)
+            CBlob@[] tents;
+            getBlobsByName("tent", @tents);
+
+            if (tents.length == 0)
+            {
+                // break the truck
+                this.set_string("bannertext", "Destroy the enemy truck!");
+            }
+            else if (this.get_s8("flagcount") > 1)
             {
                 // siege
                 CBlob@[] vehbuilders;
