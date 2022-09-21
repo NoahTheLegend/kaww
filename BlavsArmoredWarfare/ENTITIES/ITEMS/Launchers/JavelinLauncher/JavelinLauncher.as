@@ -250,7 +250,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	if (cmd == this.getCommandID(launchOrdnanceIDString))
 	{
 		if (this.hasTag("dead")) return;
-		
+
 		u16 curTargetNetID = 0;
 		float robotechHeight = 64.0f;
 

@@ -7,13 +7,12 @@
 
 Random _missile_r(12231);
 
-const f32 damage = 9.33f;
-const f32 searchRadius = 132.0f;
-const f32 radius = 24.0f;
+const f32 radius = 32.0f;
+const f32 damage = 15.0f;
 
 void onInit(CBlob@ this)
 {
-	this.Tag("jav");
+	//this.Tag("jav");
 	MissileInfo missile;
 	missile.main_engine_force 			= JavelinParams::main_engine_force;
 //	missile.secondary_engine_force 		= JavelinParams::secondary_engine_force;
@@ -76,7 +75,6 @@ void onTick(CBlob@ this)
 
 			this.setPosition(thisPos);
 			this.server_Die();
-			this.server_Hit(hi.blob, thisPos, Vec2f(0,0), damage, Hitters::ballista, true); 
 			return;
 		}
 	}
@@ -102,6 +100,10 @@ void onTick(CBlob@ this)
 	}
 	
 	//homing logic
+	const float mainEngineForce = missile.main_engine_force;
+	const float maxSpeed = missile.max_speed;
+	const float turnSpeed = missile.turn_speed;
+	
 	Vec2f targetPos = targetBlob.getPosition();
 	Vec2f targetVel = targetBlob.getVelocity();
 
@@ -111,20 +113,21 @@ void onTick(CBlob@ this)
 	bVelNorm.Normalize();
 
 	Vec2f targetVec = targetPos - thisPos;
-	f32 targetDist = targetVec.getLength(); //distance to target
+	f32 targetDist = targetVec.getLength(); // distance to target
+	this.set_Vec2f("target_vec", targetVec); // for shaped charge direction
 
 	float gravityScale = missile.gravity_scale;
 	Vec2f gravity = Vec2f(0, (sv_gravity*gravityScale) / getTicksASecond()); 
+	Vec2f gravityNorm = gravity;
+	gravityNorm.Normalize();
 
 	Vec2f lastBVel = this.get_Vec2f(lastRelativeVelString);
-	Vec2f bAccel = (lastBVel - bVel) + gravity;
+	Vec2f bAccel = (lastBVel - bVel);
 	Vec2f bAccelNorm = bAccel;
 	bAccelNorm.Normalize();
 	this.set_Vec2f(lastRelativeVelString, bVel);
 
-	const float mainEngineForce = missile.main_engine_force;
-	const float maxSpeed = missile.max_speed;
-	const float turnSpeed = missile.turn_speed;
+	
 	float turnAngle = 0.0f;
 
 	switch (this.get_s8(navigationPhaseString))
@@ -143,18 +146,8 @@ void onTick(CBlob@ this)
 
 		case 1:
 		{
-			if (is_server) //server only detonation
-			{
-				if (targetDist < radius*0.8f) //if closer than 80% of explosion radius, detonate.
-				{
-					this.server_Die();
-					this.server_Hit(targetBlob, targetPos, Vec2f(0,0), damage, Hitters::ballista, true); 
-					return;
-				}
-			}
-
 			float influence = gravity.y / mainEngineForce;
-			float bVelAngle = (bVelNorm + (bAccelNorm*influence)).getAngleDegrees();
+			float bVelAngle = (bVelNorm - (bAccelNorm*influence) + (gravity*influence)).getAngleDegrees();
 			float targetVecAngle = targetVec.getAngleDegrees();
 
 			float directionDiff = targetVecAngle - bVelAngle;
@@ -164,7 +157,6 @@ void onTick(CBlob@ this)
 			turnAngle = movingAway ? bVelAngle + 180.0f : targetVecAngle + directionDiff;
 		}
 		break;
-		
 	}
 	
 	float angle = -turnAngle + 360.0f;
@@ -280,7 +272,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		)
 		&&
 		(
-			blob.hasTag("flesh")
+			blob.hasTag("vehicle")
 		)
 	);
 }
@@ -297,14 +289,13 @@ void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f coll
 	{ return; }
 
 	this.server_Die();
-	this.server_Hit(blob, collisionPos, Vec2f(0,0), damage, Hitters::ballista, true); 
 }
 
 void onDie( CBlob@ this )
 {
 	Vec2f thisPos = this.getPosition();
 
-	DoExplosion(this, this.getVelocity());
+	DoExplosion(this, this.get_Vec2f("target_vec"));
 
 	makeMissileEffect(thisPos); //boom effect
 }
@@ -340,12 +331,12 @@ void makeMissileEffect(Vec2f thisPos = Vec2f_zero)
     }
 }
 
-bool DoExplosion(CBlob@ this, Vec2f velocity)
+bool DoExplosion(CBlob@ this, Vec2f explosionVec)
 {
-	f32 mod = 1.5;
+	//f32 mod = 1.5;
 
-	Explode(this, 26.0f*mod, 12.0f*(mod/2));
-	LinearExplosion(this, velocity, 22.0f*mod/2+XORRandom(9), 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
+	//Explode(this, radius, damage);
+	LinearExplosion(this, explosionVec, radius, 16.0f, radius, damage, Hitters::fall);
 	
 	this.getSprite().PlaySound("/ShellExplosion");
 
