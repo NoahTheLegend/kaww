@@ -6,6 +6,7 @@
 #include "LoaderColors.as";
 #include "LoaderUtilities.as";
 #include "CustomBlocks.as";
+#include "MakeCrate.as";
 
 enum WAROffset
 {
@@ -468,8 +469,10 @@ class PNGLoader
 
 			case map_colors::wheeloffortune:         autotile(offset); spawnBlob(map, "wheeloffortune", offset, 2); break;
 
-			case map_colors::heavygun:    autotile(offset); spawnVehicle(map, "heavygun",   offset); break;
+			case map_colors::heavygun:         autotile(offset); spawnVehicle(map, "heavygun", offset); break;
+			case map_colors::crateheavygun:    autotile(offset); server_MakeCrate("heavygun", "Crate with Heavy machinegun.", 0, -1, getSpawnPosition(map, offset)); break;
 
+			
 			case map_colors::ammocrate:        autotile(offset); spawnBlob(map, "ammocrate", offset); break;
 			case map_colors::repairstation:        autotile(offset); spawnBlob(map, "repairstation", offset); break;
 			case map_colors::bunker:        autotile(offset); spawnBlob(map, "bunker", offset); break;

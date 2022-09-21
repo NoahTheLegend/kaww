@@ -257,6 +257,7 @@ namespace map_colors
 		r_vehiclebuilder       = 0xff473339,
 
 		heavygun               = 0xff1f11f4,
+		crateheavygun          = 0xff0f00f4,
 		ammocrate              = 0xffbda269,
 		arabicspeaker          = 0xffeb2c01,
 		russianspeaker         = 0xffeb4f01,
@@ -320,7 +321,7 @@ namespace map_colors
 		constructionyard       = 0xffdfdde2,
 		baseconstructionyard   = 0xffb9c5b5,
 
-		
+		// dont use these
 		classvendor            = 0xff62d49e,
 		perkvendor             = 0xff2372ca,
 		wheeloffortune         = 0xfffed519,
