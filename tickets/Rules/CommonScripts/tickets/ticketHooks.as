@@ -47,7 +47,7 @@ void reset(CRules@ this){
 		
 		RulesCore@ core;
 		this.get("core", @core);
-		if(core is null) print("core is null!!!");
+		if (core is null) print("core is null!!!");
 		
 
 		s16 redTickets=ticketsPerTeam;
@@ -93,6 +93,9 @@ void onRender(CRules@ this){
 
 	CBlob@ b = getBlobByName("pointflag");
 	if (b !is null) return;
+	CBlob@[] tents;
+	getBlobsByName("tent", @tents);
+	if (tents.length == 0) return;
 	s16 blueTickets=0;
 	s16 redTickets=0;
 

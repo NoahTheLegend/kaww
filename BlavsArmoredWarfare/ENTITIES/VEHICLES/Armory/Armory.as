@@ -51,15 +51,16 @@ void onInit(CBlob@ this)
 		front.SetOffset(Vec2f(0.0f, 0.0f));
 	}
 
-
-
 	//INIT COSTS
 	InitCosts();
+
+	CBlob@[] tents;
+    getBlobsByName("tent", @tents);
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
 	this.set_Vec2f("shop menu size", Vec2f(7, 2));
-	if (getBlobByName("pointflag") !is null) this.set_Vec2f("shop menu size", Vec2f(5, 2));
+	if (tents.length == 0) this.set_Vec2f("shop menu size", Vec2f(5, 2));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
@@ -90,14 +91,17 @@ void onInit(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue helmet, take 40% less bullet damage, and occasionally bounce bullets.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
 	}
+	if (tents.length != 0)
 	{
-		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 275);
+		{
+			ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 275);
 
-		s.customButton = true;
-		
-		s.buttonwidth = 1;
-		s.buttonheight = 2;
+			s.customButton = true;
+
+			s.buttonwidth = 1;
+			s.buttonheight = 2;
+		}
 	}
 	{
 		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
@@ -225,12 +229,28 @@ void onTick(CBlob@ this)
 	}
 
 	Vehicle_LevelOutInAir(this);
+
+	CBlob@[] tents;
+	getBlobsByName("tent", @tents);
+	if (tents.length == 0) this.set_u16("capture time", 0);
 }
 
 // Lose
 void onDie(CBlob@ this)
 {
     Explode(this, 64.0f, 1.0f);
+
+	CBlob@[] tents;
+	getBlobsByName("tent", @tents);
+
+	if (tents.length == 0)
+	{
+		u8 team = (getRules().get_u8("siege") == 0 ? 1 : 0);
+		getRules().SetTeamWon(team);
+		getRules().SetCurrentState(GAME_OVER);
+		CTeam@ teamis = getRules().getTeam(team);
+		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
+	}
 }
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
@@ -303,9 +323,9 @@ bool isOverlapping(CBlob@ this, CBlob@ blob)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (customData == Hitters::explosion)
+	if (customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt")
 	{
-		return damage * 5;
+		return damage * 8;
 	}
 	
 	if (hitterBlob.getTeamNum() == this.getTeamNum())
@@ -315,8 +335,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (customData == Hitters::arrow)
 	{
-		if (hitterBlob.getName() == "bulletheavy") return damage * 6.5;
-		return damage * 2.5;
+		if (hitterBlob.getName() == "bulletheavy") return damage * 4;
+		return damage * 2.25;
 	}
 
 	return damage;

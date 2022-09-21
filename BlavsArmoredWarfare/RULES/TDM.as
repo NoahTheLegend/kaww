@@ -249,7 +249,9 @@ shared class TDMSpawns : RespawnSystem
 				if (getGameTime() >= 300 && !getRules().isWarmup())
 				{
 					CBlob@ b = getBlobByName("pointflag");
-					if (b is null)
+					CBlob@[] tents;
+					getBlobsByName("tent", @tents);
+					if (b is null || tents.length > 0)
 						decrementTickets(getRules(), playerBlob.getTeamNum());
 				}
 
@@ -277,7 +279,7 @@ shared class TDMSpawns : RespawnSystem
 		CBlob@[] spawns;
 		CBlob@[] teamspawns;
 
-		if (getBlobsByName("tent", @spawns))
+		if (getBlobsByName("tent", @spawns) || getBlobsByName("armory", @spawns))
 		{
 			for (uint step = 0; step < spawns.length; ++step)
 			{
@@ -631,17 +633,26 @@ shared class TDMCore : RulesCore
 
 	void SetupBases()
 	{
-		const string base_name = "tent";
+		Vec2f[] respawnPositions;
+		CBlob@[] tents;
+        getBlobsByName("tent", @tents);
+		string spawn_prop = "tent";
+		if (!getMap().getMarkers("blue main spawn", respawnPositions) && !getMap().getMarkers("red main spawn", respawnPositions))
+			spawn_prop = "armory";
+		const string base_name = spawn_prop;
 
 		string map_name = getMap().getMapName();
 		
 		// destroy all previous spawns if present
-		CBlob@[] oldBases;
-		getBlobsByName(base_name, @oldBases);
-
-		for (uint i = 0; i < oldBases.length; i++)
+		if (spawn_prop != "armory")
 		{
-			oldBases[i].server_Die();
+			CBlob@[] oldBases;
+			getBlobsByName(base_name, @oldBases);
+
+			for (uint i = 0; i < oldBases.length; i++)
+			{
+				oldBases[i].server_Die();
+			}
 		}
 		
 		//spawn the spawns :D
@@ -649,7 +660,6 @@ shared class TDMCore : RulesCore
 
 		if (map !is null)
 		{
-			Vec2f[] respawnPositions;
 			Vec2f respawnPos;
 
 			if (map_name == "KAWWTraining.png")
@@ -657,7 +667,7 @@ shared class TDMCore : RulesCore
 				if (!getMap().getMarkers("training main spawn", respawnPositions))
 				{
 					respawnPos = Vec2f(50.0f, map.getLandYAtX(50.0f / map.tilesize) * map.tilesize - 32.0f);
-					SetupBase(server_CreateBlob(base_name, 2, respawnPos));
+					if (spawn_prop != "armory") SetupBase(server_CreateBlob(base_name, 2, respawnPos));
 				}
 			}
 			else
@@ -666,14 +676,14 @@ shared class TDMCore : RulesCore
 				if (!getMap().getMarkers("blue main spawn", respawnPositions))
 				{
 					respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
-					SetupBase(server_CreateBlob(base_name, 0, respawnPos));
+					if (spawn_prop != "armory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
 				}
 				else
 				{
 					for (uint i = 0; i < respawnPositions.length; i++)
 					{
 						respawnPos = respawnPositions[i];
-						SetupBase(server_CreateBlob(base_name, 0, respawnPos));
+						if (spawn_prop != "armory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
 					}
 				}
 
@@ -683,14 +693,14 @@ shared class TDMCore : RulesCore
 				if (!getMap().getMarkers("red main spawn", respawnPositions))
 				{
 					respawnPos = Vec2f(map.tilemapwidth * map.tilesize - 150.0f, map.getLandYAtX(map.tilemapwidth - (150.0f / map.tilesize)) * map.tilesize - 32.0f);
-					SetupBase(server_CreateBlob(base_name, 1, respawnPos));
+					if (spawn_prop != "armory")  SetupBase(server_CreateBlob(base_name, 1, respawnPos));
 				}
 				else
 				{
 					for (uint i = 0; i < respawnPositions.length; i++)
 					{
 						respawnPos = respawnPositions[i];
-						SetupBase(server_CreateBlob(base_name, 1, respawnPos));
+						if (spawn_prop != "armory") SetupBase(server_CreateBlob(base_name, 1, respawnPos));
 					}
 				}
 			}
@@ -712,6 +722,10 @@ shared class TDMCore : RulesCore
 		TDMTeamInfo@ winteam = null;
 		s8 team_wins_on_end = -1;
 
+		CBlob@[] flags;
+		getBlobsByName("pointflag", @flags);
+		bool flags_wincondition = flags.length > 0;
+
 		if (flags_wincondition && getGameTime() >= rules.get_u32("game_end_time"))
 		{
 			if (rules.getCurrentState() != GAME_OVER)
@@ -731,21 +745,18 @@ shared class TDMCore : RulesCore
 				}
 				if (red_flags != blue_flags)
 				{
-					{
-						u8 team_won = (red_flags > blue_flags ? 1 : 0);
-						CTeam@ teamis = rules.getTeam(team_won);
-
-						rules.SetTeamWon(team_won);   //game over!
-						rules.SetCurrentState(GAME_OVER);
-						if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game!" );
-					}
-					else
-					{
-						rules.SetTeamWon(-1);   //game over!
-						rules.SetCurrentState(GAME_OVER);
-						rules.SetGlobalMessage("It's a tie!");
-						return;
-					}
+					u8 team_won = (red_flags > blue_flags ? 1 : 0);
+					CTeam@ teamis = rules.getTeam(team_won);
+					rules.SetTeamWon(team_won);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game!" );
+				}
+				else
+				{
+					rules.SetTeamWon(-1);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					rules.SetGlobalMessage("It's a tie!");
+					return;
 				}
 			}
 		}
@@ -971,6 +982,7 @@ void Reset(CRules@ this)
 	SetCorrectMapType(); // has a one map delay on adjusting to player population
 
 	this.set_u8("siege", 255);
+	this.Sync("siege", true);
 	this.Untag("synced_time");
 	this.Untag("synced_siege");
 
