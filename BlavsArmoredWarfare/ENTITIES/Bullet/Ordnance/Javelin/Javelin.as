@@ -146,18 +146,32 @@ void onTick(CBlob@ this)
 
 		case 1:
 		{
-			float gravInfluence = gravity.y / mainEngineForce;
-			//float accelInfluence = bAccel.getLength() / mainEngineForce;
-			//float bVelInfluence = bSpeed / mainEngineForce;
-			Vec2f combinedVel = (bVelNorm) - (bAccelNorm*gravInfluence) + (gravityNorm*gravInfluence);
-			float bVelAngle = combinedVel.getAngleDegrees();
+			Vec2f bVelFinal = bVel - (bAccel*4.0f);
+			float bVelFinalAngle = bVelFinal.getAngleDegrees();
 			float targetVecAngle = targetVec.getAngleDegrees();
-
-			float directionDiff = targetVecAngle - bVelAngle;
+		
+			float directionDiff = targetVecAngle - bVelFinalAngle;
 			directionDiff += directionDiff > 180 ? -360 : directionDiff < -180 ? 360 : 0;
 			bool movingAway = Maths::Abs(directionDiff) > 90.0f;
 
-			turnAngle = movingAway ? bVelAngle + 180.0f : targetVecAngle + directionDiff;
+			turnAngle = movingAway ? bVelFinalAngle + 180.0f : targetVecAngle + directionDiff;
+
+			float gravInfluence = (gravity.y / mainEngineForce);
+			float gravityDiff = 90.0f - turnAngle;
+			gravityDiff += gravityDiff > 180 ? -360 : gravityDiff < -180 ? 360 : 0;
+
+			if (gravityDiff > 90.0f) 
+			{
+				gravityDiff = 180.0f - gravityDiff;
+			}
+			else if (gravityDiff < -90.0f)
+			{
+				gravityDiff = -180.0f - gravityDiff;
+			}
+			gravityDiff *= gravInfluence;
+
+			float optimalAngle = turnAngle + gravityDiff;
+			turnAngle = optimalAngle;
 		}
 		break;
 	}
