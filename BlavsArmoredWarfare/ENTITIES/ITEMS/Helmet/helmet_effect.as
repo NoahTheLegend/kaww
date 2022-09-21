@@ -18,7 +18,7 @@ void UpdateScript(CBlob@ this)
 		helmet.animation.AddFrames(frames);
 		
 		helmet.SetVisible(true);
-        helmet.SetRelativeZ(200);
+        helmet.SetRelativeZ(5);
         if(this.getSprite().isFacingLeft())
             helmet.SetFacingLeft(true);
     }
