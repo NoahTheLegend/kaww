@@ -300,6 +300,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			}
 		}
 
-		launcherDie( this );
+		launcherSetDeath( this, true); // set dead
 	}
 }

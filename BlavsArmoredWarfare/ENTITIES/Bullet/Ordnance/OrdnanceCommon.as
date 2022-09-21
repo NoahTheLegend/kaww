@@ -1,7 +1,7 @@
 //Missile Include
 
 const string launchOrdnanceIDString = "launch_ordnance";
-const string launcherDeathIDString = "launcher_die";
+const string launcherSetDeathIDString = "launcher_set_death";
 const string launcherUpdateStateIDString = "launcher_state_sync";
 const string quickHomingTag = "quick_homing";
 
@@ -77,7 +77,9 @@ shared class LauncherInfo
 	}
 };
 
-void launcherDie( CBlob@ this )
+void launcherSetDeath( CBlob@ this, bool setDead = true )
 {
-	this.SendCommand(this.getCommandID(launcherDeathIDString));
+	CBitStream params;
+	params.write_bool(setDead);
+	this.SendCommand(this.getCommandID(launcherSetDeathIDString), params);
 }
