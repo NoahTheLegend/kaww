@@ -116,9 +116,22 @@ void Config(TDMCore@ this)
 
 	//how long for the game to play out?
 	f32 gameDurationMinutes = 15.0f + getPlayersCount()*1.5; //cfg.read_f32("gameDurationMinutes", 7.0f)
+	// basic time
 	this.gameDuration = (getTicksASecond() * 60 * gameDurationMinutes) + this.warmUpTime;
-
+	// tdm map time
 	if (getMap() !is null && getMap().tilemapwidth < 200)  this.gameDuration = (getTicksASecond() * 60 * 15.0f) + this.warmUpTime;
+	// siege time
+	CBlob@[] vehbuilders;
+    getBlobsByName("vehiclebuilder", @vehbuilders);
+    if (vehbuilders.length == 1) 
+    {
+		CBlob@[] flags;
+        getBlobsByName("pointflag", @flags);
+		if (flags.length > 1)
+		{
+			this.gameDuration = (getTicksASecond() * 60 * (10.0f+0.5f*flags.length)) + this.warmUpTime;
+		}
+	}
 
 	//spawn after death time - set in gamemode.cfg, or override here
 	f32 spawnTimeSeconds = cfg.read_f32("spawnTimeSeconds", 3);//Maths::Min(3, 8-(getPlayersCount()/3))); //rules.playerrespawn_seconds
@@ -956,6 +969,10 @@ void Reset(CRules@ this)
 {
 	SetCorrectMapType(); // has a one map delay on adjusting to player population
 
+	this.set_u8("siege", 255);
+	this.Untag("synced_time");
+	this.Untag("synced_siege");
+
 	string configstr = "Rules/CTF/ctf_vars.cfg";
 	ConfigFile cfg = ConfigFile(configstr);
 	if (cfg.read_s32("game_time") != -2)
@@ -1040,6 +1057,13 @@ void onTick(CRules@ this)
             }
         }
     }
+	if (getGameTime() >= 1 && !this.hasTag("synced_time"))
+	{
+		TDMSpawns spawns();
+		TDMCore core(this, spawns);
+		Config(core);
+		this.Tag("synced_time");
+	}
 	if (getGameTime()%150==0) //every 5 seconds give a coin
 	{
 		if (this.get_s16("blueTickets") > 120) 

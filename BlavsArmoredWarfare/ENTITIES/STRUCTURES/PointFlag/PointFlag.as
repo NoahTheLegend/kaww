@@ -84,6 +84,9 @@ void onTick(CBlob@ this)
     array<CBlob@> blobs; //Blob array full of blobs
     CMap@ map = getMap();
     map.getBlobsInRadius(this.getPosition() + Vec2f(4.0f,20.0f), capture_distance, blobs);
+	
+	u8 sieging_team = getRules().get_u8("siege");
+	bool is_siege = sieging_team < 255;
 
     for (u16 i = 0; i < blobs.size(); i++)
     {
@@ -91,11 +94,13 @@ void onTick(CBlob@ this)
         {
         	if (blobs[i].getTeamNum() == 0)
         	{
-        		num_blue++;
+				if (!is_siege || sieging_team == 0)
+        			num_blue++;
         	}
         	if (blobs[i].getTeamNum() == 1)
         	{
-        		num_red++;
+        		if (!is_siege || sieging_team == 1)
+        			num_red++;
         	}
         }
     }
