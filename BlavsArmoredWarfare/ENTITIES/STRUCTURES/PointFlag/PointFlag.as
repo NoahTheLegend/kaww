@@ -67,10 +67,26 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 	//printf(""+team);
 	if (getRules() !is null && team < 2)
 	{
-		getRules().SetTeamWon(team);
-		getRules().SetCurrentState(GAME_OVER);
-		CTeam@ teamis = getRules().getTeam(team);
-		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
+		if (getRules().get_u8("siege") == 255)
+		{
+			getRules().SetTeamWon(team);
+			getRules().SetCurrentState(GAME_OVER);
+			CTeam@ teamis = getRules().getTeam(team);
+			if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
+		}
+		else
+		{
+			if (getRules().get_u8("siege") == 0)
+			{
+				getRules().set_s16("redTickets", 0);
+				getRules().Sync("redTickets", true);
+			}
+			else
+			{
+				getRules().set_s16("blueTickets", 0);
+				getRules().Sync("blueTickets", true);
+			}
+		}
 	}
 }
 

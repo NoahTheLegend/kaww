@@ -129,7 +129,7 @@ void Config(TDMCore@ this)
         getBlobsByName("pointflag", @flags);
 		if (flags.length > 1)
 		{
-			this.gameDuration = (getTicksASecond() * 60 * (10.0f+0.5f*flags.length)) + this.warmUpTime;
+			this.gameDuration = (getTicksASecond() * 60 * (10.0f+(0.5*flags.length))) + this.warmUpTime;
 		}
 	}
 
@@ -712,7 +712,6 @@ shared class TDMCore : RulesCore
 		TDMTeamInfo@ winteam = null;
 		s8 team_wins_on_end = -1;
 
-		bool flags_wincondition = getBlobByName("pointflag") !is null;
 		if (flags_wincondition && getGameTime() >= rules.get_u32("game_end_time"))
 		{
 			if (rules.getCurrentState() != GAME_OVER)
@@ -732,19 +731,21 @@ shared class TDMCore : RulesCore
 				}
 				if (red_flags != blue_flags)
 				{
-					u8 team_won = (red_flags > blue_flags ? 1 : 0);
-					CTeam@ teamis = rules.getTeam(team_won);
-					
-					rules.SetTeamWon(team_won);   //game over!
-					rules.SetCurrentState(GAME_OVER);
-					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game!" );
-				}
-				else
-				{
-					rules.SetTeamWon(-1);   //game over!
-					rules.SetCurrentState(GAME_OVER);
-					rules.SetGlobalMessage("It's a tie!");
-					return;
+					{
+						u8 team_won = (red_flags > blue_flags ? 1 : 0);
+						CTeam@ teamis = rules.getTeam(team_won);
+
+						rules.SetTeamWon(team_won);   //game over!
+						rules.SetCurrentState(GAME_OVER);
+						if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game!" );
+					}
+					else
+					{
+						rules.SetTeamWon(-1);   //game over!
+						rules.SetCurrentState(GAME_OVER);
+						rules.SetGlobalMessage("It's a tie!");
+						return;
+					}
 				}
 			}
 		}
