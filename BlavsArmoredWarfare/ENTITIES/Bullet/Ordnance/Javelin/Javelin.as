@@ -146,7 +146,7 @@ void onTick(CBlob@ this)
 
 		case 1:
 		{
-			Vec2f bVelFinal = bVel - (bAccel*4.0f);
+			Vec2f bVelFinal = bVel - (bAccel*bAccel.getLengthSquared());
 			float bVelFinalAngle = bVelFinal.getAngleDegrees();
 			float targetVecAngle = targetVec.getAngleDegrees();
 		
@@ -289,8 +289,8 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		)
 		&&
 		(
-			blob.hasTag("vehicle") || 
-			blob.hasTag("structure") ||
+			blob.hasTag("vehicle") ||
+			blob.hasTag("turret") ||
 			blob.hasTag("bunker")
 		)
 	);
