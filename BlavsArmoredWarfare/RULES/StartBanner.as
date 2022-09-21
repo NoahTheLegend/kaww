@@ -44,14 +44,30 @@ void onTick(CRules@ this)
 
             if (this.get_s8("flagcount") > 1)
             {
-                this.set_string("bannertext", "Control all flags to win!");
+                // siege
+                CBlob@[] vehbuilders;
+                getBlobsByName("vehiclebuilder", @vehbuilders);
+                if (vehbuilders.length == 1) 
+                {
+                    this.set_string("bannertext", "Siege enemy team or defend flags until time passes!");
+                    if (vehbuilders[0] !is null && !this.hasTag("synced_siege"))
+                    {
+                        this.set_u8("siege", vehbuilders[0].getTeamNum()); // mark the sieging team
+                        this.Sync("siege", true);
+                        this.Tag("synced_siege");
+                    }
+                }
+                else // capture the flags
+                    this.set_string("bannertext", "Control all flags to win!");
             }
             else if (this.get_s8("flagcount") == 1)
             {
+                // capture the flag
                 this.set_string("bannertext", "Capture the flag to win!");
             }
             else
             {
+                // showdown
                 this.set_string("bannertext", "Reduce the enemy team's lives to 0 to win!");
             }
         }
