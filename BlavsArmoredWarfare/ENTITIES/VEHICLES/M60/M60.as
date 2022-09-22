@@ -20,9 +20,9 @@ void onInit(CBlob@ this)
 
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
 
-	//Vehicle_SetupGroundSound(this, v, "TracksSound",  // movement sound
-	//    0.3f,   // movement sound volume modifier   0.0f = no manipulation
-	//    0.2f); // movement sound pitch modifier     0.0f = no manipulation
+	Vehicle_SetupGroundSound(this, v, "TracksSound",  // movement sound
+	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
+	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
 	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(29.0f, 2.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(20.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
@@ -76,12 +76,29 @@ void onInit(CBlob@ this)
 			bow.SetFacingLeft(facing_left);
 		}
 
-		CBlob@ soundmanager = server_CreateBlob("soundmanager");	
-
-		if (soundmanager !is null)
 		{
-			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
-			this.set_u16("followid", soundmanager.getNetworkID());
+			CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 1
+
+			if (soundmanager !is null)
+			{
+				soundmanager.set_bool("manager_Type", false);
+				soundmanager.Init();
+				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+
+				this.set_u16("followid", soundmanager.getNetworkID());
+			}
+		}
+		{
+			CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 2
+
+			if (soundmanager !is null)
+			{
+				soundmanager.set_bool("manager_Type", true);
+				soundmanager.Init();
+				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+				
+				this.set_u16("followid2", soundmanager.getNetworkID());
+			}
 		}
 	}	
 }
@@ -159,6 +176,18 @@ void onTick(CBlob@ this)
 		{	
 			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
 			soundmanager.setVelocity(this.getVelocity());
+			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+		}
+	}
+	if (this.exists("followid2"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid2"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 10 : -10, -6));
+			soundmanager.setVelocity(this.getVelocity());
+			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
 		}
 	}
 }
@@ -181,6 +210,15 @@ void onDie(CBlob@ this)
 	if (this.exists("followid"))
 	{
 		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.server_Die();
+		}
+	}
+	if (this.exists("followid2"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid2"));
 
 		if (soundmanager !is null)
 		{	

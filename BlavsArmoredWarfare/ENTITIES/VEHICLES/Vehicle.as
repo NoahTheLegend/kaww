@@ -6,8 +6,10 @@
 #include "GenericButtonCommon.as"
 #include "Hitters.as";
 
+const string wheelsTurnAmountString = "wheelsTurnAmount";
 const string engineRPMString = "engine_RPM";
 const string engineRPMTargetString = "engine_RPMtarget";
+const string engineThrottleString = "engine_throttle";
 
 void onInit(CBlob@ this)
 {
@@ -90,7 +92,11 @@ void onInit(CBlob@ this)
 
 	this.set_s8(weaponRatingString, weaponRating);
 
+
 	this.set_f32(engineRPMString, 0.0f);
+	this.set_f32(engineThrottleString, 0.0f);
+
+	this.set_f32(wheelsTurnAmountString, 0.0f);
 }
 
 void onTick(CBlob@ this)
@@ -116,17 +122,6 @@ void onTick(CBlob@ this)
 			Vehicle_LoadAmmoIfEmpty(this, v);
 		}
 	}
-
-	//smooth collisions with other vehs
-	//f32 vel = this.getVelocity().x;
-	//f32 oldvel = this.getOldVelocity().x;
-	//if ((vel > 0.0f
-	//&& oldvel < vel / 10)
-	//|| (vel < 0.0f
-	//&& oldvel > vel / 10))
-	//{
-	//	this.setVelocity(Vec2f(this.getVelocity().x / 10, this.getVelocity().y));
-	//}
 
 	// update movement sounds
 	f32 velx = Maths::Abs(this.getVelocity().x);
@@ -191,12 +186,25 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	/*
-	if (this.set_f32("engine_RPMtarget") > this.get_f32("engine_RPM"))
+	if (this.get_f32("engine_RPMtarget") > this.get_f32("engine_RPM"))
 	{
-		this.add_f32("engine_RPM", 10.0f);
+		this.add_f32("engine_RPM", this.get_f32("engine_throttle") * (250 + XORRandom(70))); // gas flow variance
+
+		if (XORRandom(100) < 30)
+		{
+			if (isClient())
+			{	
+				//ParticleAnimated("SmokeyParticle", this.getPosition() + Vec2f(XORRandom(60) - 30, XORRandom(48) - 24), getRandomVelocity(0.0f, XORRandom(30) * 0.01f, 90), float(XORRandom(1)), 0.5f + XORRandom(50) * 0.01f, 4, 0, Vec2f(32,32),2 + XORRandom(4), XORRandom(30) * -0.0005f, false);
+			}
+		}
 	}
-	*/
+
+	this.sub_f32("engine_RPM", 70 + XORRandom(80)); // more variance
+
+	this.set_f32("engine_RPM", Maths::Clamp(this.get_f32("engine_RPM"), 0.0f, 30000.0f));
+	
+	//turn those wheels
+	this.add_f32("wheelsTurnAmount", (this.isFacingLeft() ? -1 : 1) * this.get_f32("engine_RPM")/30000);
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
