@@ -5,6 +5,9 @@
 
 const f32 MEDIUM_SPEED = 5.0f;
 
+const float projRadius = 32.0f;
+const float projDamage = 15.0f;
+
 void onInit(CBlob@ this)
 {
 	this.Tag("projectile");
