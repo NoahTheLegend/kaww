@@ -68,38 +68,80 @@ void onInit(CBlob@ this)
 			print ("-");
 		}
 	}
-
-	switch(blobHash) // weapon rating
+		f32 linear_length = 4.0f;
+	switch(blobHash) // weapon rating and length of linear (map) explosion damage
 	{
 		case _mausturret: // MAUS Shell cannon
+		{
+			weaponRating = 3;
+			linear_length = 20.0f;
+			break;
+		}
 		case _t10turret: // T10 Shell cannon
-		weaponRating = 3; break;
-
+		{
+			weaponRating = 3;
+			linear_length = 14.0f;
+			break;
+		}
 		case _m60turret: // M60 Shell cannon
-		weaponRating = 2; break;
-
+		{
+			weaponRating = 2;
+			linear_length = 12.0f;
+			break;
+		}
 		case _uh1: // heli
+		{
+			weaponRating = 1;
+			break;
+		}
 		case _heavygun: // MG
-		weaponRating = 1; break;
-
+		{
+			weaponRating = 1;
+			break;
+		}
 		case _pszh4turret: // smol APC cannon
+		{
+			weaponRating = 0;
+			linear_length = 3.0f;
+			break;
+		}
 		case _btrturret: // big APC cannon
-		weaponRating = 0; break;
+		{
+			weaponRating = 0;
+			linear_length = 4.0f;
+			break;
+		}
 	}
+	this.set_f32("linear_length", linear_length);
 
 	float backsideOffset = -1.0f;
-	switch(blobHash) // backside (noah/snek)
+	switch(blobHash) // backside vulnerability point
 	{
 		case _maus: // maus
-		backsideOffset = 24.0f; break;
+		{
+			backsideOffset = 24.0f;
+			break;
+		}
 		case _t10: // T10
-		backsideOffset = 20.0f; break;
+		{
+			backsideOffset = 20.0f;
+			break;
+		}
 		case _m60: // normal tank
-		backsideOffset = 16.0f; break;
+		{
+			backsideOffset = 16.0f;
+			break;
+		}
 		case _btr82a: // big APC
-		backsideOffset = 16.0f; break;
+		{
+			backsideOffset = 16.0f;
+			break;
+		}
 		case _pszh4: // smol APC
-		backsideOffset = 16.0f; break;
+		{
+			backsideOffset = 16.0f;
+			break;
+		}
 		case _uh1: // heli
 		backsideOffset = 24.0f; break;
 		case _bf109: // plane
@@ -420,6 +462,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	Vec2f thisPos = this.getPosition();
 	Vec2f hitterBlobPos = hitterBlob.getPosition();
 
+	if (customData == Hitters::sword) return 0;
+
 	s8 armorRating = this.get_s8(armorRatingString);
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
@@ -478,6 +522,24 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		break;
 	}
 	
+	float backsideOffset = this.get_f32(backsideOffsetString);
+	if (backsideOffset > 0)
+	{
+		// add more damage if hit from below (only hull)
+		if (hitterBlobPos.y > thisPos.y)
+		{
+			damage *= 2.5f;
+			//print("e");
+		}
+
+		// add more damage if hit backside of the tank (only hull)
+		if (this.isFacingLeft() ? hitterBlobPos.x > (thisPos.x + backsideOffset) : hitterBlobPos.x < (thisPos.x - backsideOffset))
+		{
+			damage *= 2.75f;
+			//print("a");
+		}
+	}
+
 	print ("finalDamage: "+damage);
 
 	// if damage is not insignificant, prevent repairs for a time
