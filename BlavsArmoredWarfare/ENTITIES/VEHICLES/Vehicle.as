@@ -466,6 +466,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
 
+	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor
+
 	const bool is_explosive = customData == Hitters::explosion;
 
 	bool isHitUnderside = false;

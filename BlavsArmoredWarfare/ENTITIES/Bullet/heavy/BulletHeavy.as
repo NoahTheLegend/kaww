@@ -425,16 +425,6 @@ void BulletHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, u8 cus
 	this.server_Die();
 }
 
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (customData == Hitters::sword)
-	{
-		return 0.0f; //no cut arrows
-	}
-
-	return damage;
-}
-
 void onHitBlob(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitBlob, u8 customData)
 {
 	if (this !is hitBlob)
