@@ -1,3 +1,4 @@
+#include "WarfareGlobal.as"
 #include "SeatsCommon.as"
 #include "VehicleAttachmentCommon.as"
 #include "KnockedCommon.as"
@@ -495,8 +496,9 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 					if (bullet !is null)
 					{
 						if (this.hasTag("light")) bullet.Tag("light");
-						else if (this.hasTag("medium")) bullet.Tag("medium");
 						else if (this.hasTag("heavy")) bullet.Tag("heavy");
+
+						bullet.set_s8(penRatingString, this.get_s8(weaponRatingString));
 						
 						bullet.setPosition(bulletPos);
 						bullet.server_setTeamNum(team);

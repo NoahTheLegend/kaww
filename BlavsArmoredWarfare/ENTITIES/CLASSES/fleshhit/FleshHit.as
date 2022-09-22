@@ -17,11 +17,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	// Gib if health below gibHealth
 	f32 gibHealth = getGibHealth(this);
 
-	if (hitterBlob.hasTag("antitank_shell"))
-	{
-		return damage * 0.325;
-	}
-
 	//no dmg from explosion if overlapping bunker
 	if (customData == Hitters::explosion)
 	{

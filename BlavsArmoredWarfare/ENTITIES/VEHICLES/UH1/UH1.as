@@ -342,7 +342,6 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 			proj.server_setTeamNum(this.getTeamNum());
 			proj.setVelocity(arrowVel);
 			proj.setPosition(arrowPos+Vec2f(0, 12.0f));
-			proj.Tag("medium");
 		}
 		this.Tag("no_more_proj");
 		return proj;
