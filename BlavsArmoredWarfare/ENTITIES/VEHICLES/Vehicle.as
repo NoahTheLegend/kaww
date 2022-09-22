@@ -421,11 +421,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		// positive armor, trickles down
 		case 5:
 		{
-<<<<<<< HEAD
-			damageNegation += 0.35f; // reduction to final damage, extremely tanky
-=======
 			damageNegation += 0.5f; // reduction to final damage, extremely tanky
->>>>>>> a16695ac80d69041978acddfeba8bdc93ffd1144
 		}
 		case 4:
 		{
