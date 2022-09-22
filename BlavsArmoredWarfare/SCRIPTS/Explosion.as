@@ -318,14 +318,14 @@ void WarfareExplode(CBlob@ this, f32 radius, f32 damage)
 
 	//load custom properties
 	//map damage
-	f32 map_damage_radius = 0.0f;
+	f32 map_damage_radius = radius;
 
 	if (this.exists("map_damage_radius"))
 	{
 		map_damage_radius = this.get_f32("map_damage_radius");
 	}
 
-	f32 map_damage_ratio = 0.5f;
+	f32 map_damage_ratio = 0.2f;
 
 	if (this.exists("map_damage_ratio"))
 	{
@@ -796,6 +796,8 @@ bool WarfareHitBlob(CBlob@ this, CBlob@ hit_blob, f32 radius, f32 damage, const 
 	Vec2f hit_blob_pos = hit_blob.getPosition();
 	Vec2f wall_hit;
 	Vec2f hitvec = hit_blob_pos - pos;
+
+	if (map.rayCastSolidNoBlobs(pos, hit_blob_pos, wall_hit)) { return false; }
 
 	f32 scale;
 	Vec2f bombforce = getBombForce(this, radius, hit_blob_pos, pos, hit_blob.getMass(), scale);
