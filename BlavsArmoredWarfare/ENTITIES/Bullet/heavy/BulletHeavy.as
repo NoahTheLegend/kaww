@@ -224,7 +224,6 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 	if (blob.hasTag("vehicle") && !blob.hasTag("takesdmgfrombullet") && !this.hasTag("rico"))
 	{
-		this.Tag("rico");
 		this.Tag("dead");
 		
 		if (blob.getName() == "uh1" || blob.getName() == "bf109") //extra dmg
@@ -232,8 +231,9 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 			this.getSprite().PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
 		}
 
-		if (finalRating > 0)
+		if (finalRating > 0) // if hit strong armor, disable hit
 		{
+			this.Tag("rico");
 			this.getSprite().PlaySound("/BulletRico" + XORRandom(4), 0.8f, 0.7f + XORRandom(60) * 0.01f);
 		}
 		else
