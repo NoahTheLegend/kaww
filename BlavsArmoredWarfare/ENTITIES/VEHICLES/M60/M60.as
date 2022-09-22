@@ -13,38 +13,25 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    137.0f, // move speed
-	    0.8f,  // turn speed
-	    Vec2f(0.0f, 0.56f), // jump out velocity
+	    135.0f, // move speed
+	    1.3f,  // turn speed
+	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    false);  // inventory access
 
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
 
-	Vehicle_AddAmmo(this, v,
-        25, // fire delay (ticks)
-        1, // fire bullets amount
-        1, // fire cost
-        "mat_arrows", // bullet ammo config name
-        "Arrows", // name for ammo selection
-        "arrow", // bullet config name
-        "BowFire", // fire sound
-        "EmptyFire" // empty fire sound
-       );
+	Vehicle_SetupGroundSound(this, v, "TracksSound",  // movement sound
+	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
+	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
-	v.charge = 400;
-
-	Vehicle_SetupGroundSound(this, v, "TankEngine",  // movement sound
-	    1.1f,   // movement sound volume modifier   0.0f = no manipulation
-	    1.8f); // movement sound pitch modifier     0.0f = no manipulation
-
-	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(29.0f, 2.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(29.0f, 2.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(20.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(12.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(4.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-4.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-12.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-20.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-29.0f, 2.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-29.0f, 2.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
 
 	this.getShape().SetOffset(Vec2f(0, 2));
 
@@ -53,6 +40,7 @@ void onInit(CBlob@ this)
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
+
 	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
 	if (front !is null)
 	{
@@ -63,7 +51,7 @@ void onInit(CBlob@ this)
 		front.SetOffset(Vec2f(0.0f, 0.0f));
 	}
 
-	// turret
+	// attach turret & machine gun
 	if (getNet().isServer())
 	{
 		CBlob@ turret = server_CreateBlob("m60turret");	
@@ -151,12 +139,6 @@ void onTick(CBlob@ this)
 				
 				ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(60) - 30, XORRandom(48) - 24), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, 90), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 7 + XORRandom(8), XORRandom(70) * -0.00005f, true);
 			}
-		}
-
-		if (this.isOnMap())
-		{
-			Vec2f vel = this.getVelocity();
-			this.setVelocity(vel * 0.98);
 		}
 	}
 

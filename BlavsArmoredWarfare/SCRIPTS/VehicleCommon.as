@@ -143,15 +143,6 @@ void Vehicle_AddAmmo(CBlob@ this, VehicleInfo@ v, int fireDelay, int fireAmount,
 	v.ammo_types.push_back(a);
 }
 
-void Vehicle_SetupPlane(CBlob@ this, VehicleInfo@ v,
-                          f32 flySpeed)
-{
-	v.fly_speed = flySpeed;
-	v.fly_amount = 0.5f;
-	v.move_direction = 0;
-	this.Tag("plane");
-}
-
 void Vehicle_SetupAirship(CBlob@ this, VehicleInfo@ v,
                           f32 flySpeed)
 {
@@ -1197,6 +1188,14 @@ void Vehicle_onAttach(CBlob@ this, VehicleInfo@ v, CBlob@ attached, AttachmentPo
 
 		// recount all ammo so the client has proper numbers
 		RecountAmmo(this, v);
+	}
+
+	if (attached.hasTag("player") && // is a player
+		attachedPoint.name == "DRIVER") // in driver seat 
+	{
+		this.getSprite().PlaySound("EngineStart_tank", 1.0f, 0.95f + XORRandom(11)*0.01f);
+
+		this.set_f32("engine_RPMtarget", 800.0f);
 	}
 }
 

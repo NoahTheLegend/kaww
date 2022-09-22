@@ -7,7 +7,7 @@ void onInit(CBlob@ this)
 	Vehicle_Setup(this,
 	              0.0f, // move speed
 	              0.1f,  // turn speed
-	              Vec2f(0.0f, -4.3f), // jump out velocity
+	              Vec2f(0.0f, -1.56f), // jump out velocity
 	              true  // inventory access
 	             );
 	VehicleInfo@ v;
@@ -114,25 +114,17 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 		gunner.offsetZ = -9.0f;   //5.0f
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 
-		if (this.isAttached())
+		if ((!facing_left && aim_vec.x < 0) ||
+				(facing_left && aim_vec.x > 0))
 		{
-			if (facing_left) { aim_vec.x = -aim_vec.x; }
+			if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
+
 			angle = (-(aim_vec).getAngle() + 180.0f);
+			angle = Maths::Max(-80.0f , Maths::Min(angle , 80.0f));
 		}
 		else
 		{
-			if ((!facing_left && aim_vec.x < 0) ||
-			        (facing_left && aim_vec.x > 0))
-			{
-				if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
-
-				angle = (-(aim_vec).getAngle() + 180.0f);
-				angle = Maths::Max(-80.0f , Maths::Min(angle , 80.0f));
-			}
-			else
-			{
-				this.SetFacingLeft(!facing_left);
-			}
+			this.SetFacingLeft(!facing_left);
 		}
 	}
 

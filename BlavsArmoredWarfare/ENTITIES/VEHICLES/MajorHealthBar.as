@@ -104,4 +104,19 @@ void onRender(CSprite@ this)
 			GUI::DrawShadowedText(blob.getInventoryName(), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 15), SColor(0xffffffff));
 		}
 	}
+
+	GUI::SetFont("menu");
+	if (this.getEmitSoundPaused())
+	{
+		GUI::DrawShadowedText("Vol: 0", Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 35), SColor(0xffffffff));
+	}
+	else
+	{
+		GUI::DrawShadowedText("Vol: " + this.getEmitSoundVolume(), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 35), SColor(0xffffffff));
+	}
+	
+
+	GUI::DrawShadowedText("RPM: " + blob.get_f32("engine_RPM"), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 65), SColor(0xffffffff));
+
+	
 }
