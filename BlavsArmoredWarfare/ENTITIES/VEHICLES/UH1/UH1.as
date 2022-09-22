@@ -315,9 +315,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
 			
-			proj.set_f32(projDamageString, 6.0f);
-			proj.set_f32(projExplosionRadiusString, 32.0f);
-			proj.set_f32(projExplosionDamageString, 15.0f);
+			proj.set_f32(projExplosionRadiusString, 25.0f);
+			proj.set_f32(projExplosionDamageString, 10.0f);
 
 			proj.set_s8(penRatingString, 1);
 

@@ -334,27 +334,6 @@ bool isOverlapping(CBlob@ this, CBlob@ blob)
 	       && _br.y > tl.y;
 }
 
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt")
-	{
-		return damage * 8;
-	}
-	
-	if (hitterBlob.getTeamNum() == this.getTeamNum())
-	{
-		return 0.0f;
-	}
-
-	if (customData == Hitters::arrow)
-	{
-		if (hitterBlob.getName() == "bulletheavy") return damage * 4;
-		return damage * 2.25;
-	}
-
-	return damage;
-}
-
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	onRespawnCommand(this, cmd, params);
