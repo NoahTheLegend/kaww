@@ -8,8 +8,16 @@ const string penRatingString = "pen_level";
 // bool hardShelled : if true, penRating above 0 will be reduced by 1. Negative penRating is unaffected.
 const string hardShelledString = "hard_shelled";
 
+// s8 weaponRating : Essentially the same as penRating, but as a reference for firing projectiles
+const string weaponRatingString = "weapon_level";
+
 const s8 minArmor = -2;
 const s8 maxArmor = 5;
+
+const string projDamageString = "proj_damage";
+
+const string projExplosionRadiusString = "proj_ex_radius";
+const string projExplosionDamageString = "proj_ex_damage";
 
 s8 getFinalRating( s8 armorRating, s8 penRating, bool hardShelled = false)
 {
