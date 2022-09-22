@@ -12,7 +12,7 @@ void onInit(CBlob@ this)
 
 	this.set_f32(projDamageString, 1.0f);
 	this.set_f32(projExplosionRadiusString, 25.0f);
-	this.set_f32(projExplosionDamageString, 10.0f);
+	this.set_f32(projExplosionDamageString, 15.0f);
 
 	this.set_u8("blocks_pierced", 0);
 
