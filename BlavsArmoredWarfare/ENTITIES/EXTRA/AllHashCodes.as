@@ -28,9 +28,13 @@ enum EntityHash
 	_motorcycle = -1537538612, // bike
 	_civcar = 2114887441, // car
 
+	_pszh4turret = -561402448, // smol APC cannon
+	_btrturret = 2047864813, // big APC cannon
+	_m60turret = -627481976, // M60 Shell cannon
 	_t10turret = -616940740, // T10 Shell cannon
+	_mausturret = 56012293, // MAUS Shell cannon
+	_gun = 1043670821, // light MG
 	_heavygun = -153292038 // MG
-	
 
 	
 	//_ = 1111111,
