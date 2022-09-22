@@ -222,7 +222,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 	CParticle@ p = ParticleAnimated("SparkParticle.png", hit_position, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
 	if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
 
-	if (blob.hasTag("vehicle") && !blob.hasTag("takesdmgfrombullet") && !this.hasTag("rico"))
+	if (blob.hasTag("vehicle") && !this.hasTag("rico"))
 	{
 		this.Tag("dead");
 		
@@ -231,7 +231,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 			this.getSprite().PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
 		}
 
-		if (finalRating > 0) // if hit strong armor, disable hit
+		if (finalRating > 1) // if hit strong armor, disable hit
 		{
 			this.Tag("rico");
 			this.getSprite().PlaySound("/BulletRico" + XORRandom(4), 0.8f, 0.7f + XORRandom(60) * 0.01f);
@@ -284,7 +284,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 	if (dmg > 0.0f && !this.hasTag("rico"))
 	{
-		this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow);
+		this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow, false);
 	}
 }
 
@@ -341,22 +341,18 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 		if (deg < 45.0f || deg > 315.0f && vely > 0.0f) //up		
 		{
-			blob.Tag("takesdmgfrombullet");
 			return true;
 		}
 		else if (deg > 45.0f && deg < 135.0f && velx < 0.0f) //right
 		{
-			blob.Tag("takesdmgfrombullet");
 			return true;
 		}
 		else if (deg > 135.0f && deg < 225.0f && vely < 0.0f) //down
 		{
-			blob.Tag("takesdmgfrombullet");
 			return true;
 		}
 		else if (deg > 225.0f && deg < 315.0f && velx > 0.0f) //left
 		{
-			blob.Tag("takesdmgfrombullet");
 			return true;
 		}
 

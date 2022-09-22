@@ -36,7 +36,6 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("aerial");
 	this.Tag("wooden");
-	this.Tag("takesdmgfrombullet");
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetEmitSound("Aircraft_Loop.ogg");
