@@ -284,13 +284,3 @@ bool isOverlapping(CBlob@ this, CBlob@ blob)
 	       && _br.x > tl.x
 	       && _br.y > tl.y;
 }
-
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (hitterBlob.getTeamNum() == this.getTeamNum())
-	{
-		return 0.0f;
-	}
-
-	return damage;
-}
