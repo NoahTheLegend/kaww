@@ -1,3 +1,4 @@
+#include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "MakeDustParticle.as";
 
@@ -97,7 +98,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	CMap@ map = getMap();
 	this.setVelocity(this.getVelocity() * 0.8f);
 
-	// chance to break a block
+	// chance to break a block. Will not touch "strong" tag for now.
 	bool isStrong = this.hasTag("strong");
 	if (XORRandom(100) < 40)
 	{
@@ -184,13 +185,10 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 customData)
 {
-	f32 dmg = 0.0f;
+	f32 dmg = this.get_f32("bullet_damage_body");
 
-	if (blob.getTeamNum() != this.getTeamNum())
-	{
-		dmg = this.get_f32("bullet_damage_body");
-	}
-
+	s8 finalRating = getFinalRating(blob.get_s8(armorRatingString), this.get_s8(penRatingString), blob.get_bool(hardShelledString));
+	print("rating: "+finalRating);
 	if (blob !is null)
 	{
 		// play sound
@@ -216,6 +214,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 	if (isServer() && this.getTeamNum() != blob.getTeamNum() && (blob.getName() == "wooden_platform" || blob.hasTag("door")))
 	{
+		// destroy doors. Will not touch "strong" tag for now.
 		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 1.0f : 0.25f, Hitters::builder);
 		this.server_Die();
 	}
@@ -231,24 +230,24 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		if (blob.getName() == "uh1" || blob.getName() == "bf109") //extra dmg
 		{
 			this.getSprite().PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
-			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.1f, Hitters::arrow);
 		}
 
-		if (blob.hasTag("heavy"))
+		if (finalRating > 0)
+		{
 			this.getSprite().PlaySound("/BulletRico" + XORRandom(4), 0.8f, 0.7f + XORRandom(60) * 0.01f);
+		}
 		else
 		{
 			this.getSprite().PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
 
 			if (isServer())
 			{
-				this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), dmg, Hitters::arrow);
 				this.server_Die();
 			}
 		}
 	}
 	
-	if (hit_position.y < blob.getPosition().y - 3.2f)
+	if (blob.hasTag("flesh") && hit_position.y < blob.getPosition().y - 3.2f)
 	{
 		dmg = this.get_f32("bullet_damage_head");
 
@@ -273,15 +272,9 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 			}
 		}
 	}
-	else
-	{
-		dmg = this.get_f32("bullet_damage_body");
-	}
 
 	if (!blob.hasTag("weakprop"))
 	{
-		dmg *= 2.0f;
-
 		this.server_Die();
 	}
 	else
@@ -289,10 +282,9 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		this.setVelocity(velocity * 0.96f);
 	}
 
-	if (!blob.hasTag("heavy") && dmg > 0.0f && !this.hasTag("rico"))
+	if (dmg > 0.0f && !this.hasTag("rico"))
 	{
 		this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow);
-		//printf("e");
 	}
 }
 
