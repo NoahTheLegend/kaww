@@ -1,5 +1,6 @@
 // Slave logic
 
+#include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "SlaveCommon.as";
 #include "ThrowCommon.as";
@@ -19,6 +20,8 @@ void onInit(CBlob@ this)
 {
 	this.set_f32("pickaxe_distance", 10.0f);
 	this.set_f32("gib health", -1.5f);
+
+	this.set_s8(penRatingString, 3);
 
 	this.Tag("player");
 	this.Tag("flesh");
