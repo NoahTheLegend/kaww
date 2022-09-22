@@ -69,8 +69,15 @@ void onInit(CBlob@ this)
 
 	switch(blobHash) // weapon rating
 	{
+		case _mausturret: // MAUS Shell cannon
+		weaponRating = 3; break;
+
+		case _t10turret: // T10 Shell cannon
+		weaponRating = 2; break;
+
 		case _uh1: // heli
 		case _m60turret: // M60 Shell cannon
+		case _heavygun: // MG
 		weaponRating = 1; break;
 
 		case _pszh4turret: // smol APC cannon
@@ -408,7 +415,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		// positive armor, trickles down
 		case 5:
 		{
-			damageNegation += 2.0f; // reduction to final damage, extremely tanky
+			damageNegation += 1.0f; // reduction to final damage, extremely tanky
 		}
 		case 4:
 		{
@@ -424,7 +431,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		case 1:
 		{
-			damageNegation += 0.5f; // reduction to final damage, for negating small bullets
+			damageNegation += 0.2f; // reduction to final damage, for negating small bullets
 			damage = Maths::Max(damage - damageNegation, 0.0f); // nullification happens here
 		}
 		break;

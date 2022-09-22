@@ -666,7 +666,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 		proj.SetDamageOwnerPlayer(this.getPlayer());
 		proj.Init();
 
-		proj.set_f32(projDamageString, 1.5f);
+		proj.set_f32(projDamageString, damage_body);
 		proj.set_f32(projExplosionRadiusString, 32.0f);
 		proj.set_f32(projExplosionDamageString, 15.0f);
 

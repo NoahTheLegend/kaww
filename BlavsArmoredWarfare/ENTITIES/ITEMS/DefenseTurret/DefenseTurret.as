@@ -1,3 +1,4 @@
+#include "WarfareGlobal.as"
 const string target_player_id = "target_player_id";
 
 void onInit(CBlob@ this)
@@ -157,6 +158,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				{
 					this.set_bool("spawned", true);
 					bullet.Init();
+
+					bullet.set_s8(penRatingString, 1);
 
 					bullet.set_f32("bullet_damage_body", 0.18f);
 					bullet.set_f32("bullet_damage_head", 0.18f);
