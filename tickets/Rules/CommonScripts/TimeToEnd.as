@@ -102,10 +102,18 @@ void onRender(CRules@ this)
 
 		s32 secondsToEnd = timeToEnd % 60;
 		s32 MinutesToEnd = timeToEnd / 60;
+
+		SColor color = SColor(255, 255, 255, 255);
+		if (secondsToEnd%2==0)
+		{
+			if (MinutesToEnd < 3) color = SColor(255, 255, 75, 40);
+			else if (MinutesToEnd < 10) color = SColor(255, 255, 255, 25);
+		}
+
 		drawRulesFont("Time left: " +
 		              ((MinutesToEnd < 10) ? "0" + MinutesToEnd : "" + MinutesToEnd) +
 		              ":" +
 		              ((secondsToEnd < 10) ? "0" + secondsToEnd : "" + secondsToEnd),
-		              SColor(255, 255, 255, 255), Vec2f(10, 140), Vec2f(getScreenWidth() - 20, 180), true, false);
+		              color, Vec2f(10, 140), Vec2f(getScreenWidth() - 20, 180), true, false);
 	}
 }
