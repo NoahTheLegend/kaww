@@ -69,6 +69,12 @@ void onInit(CBlob@ this)
 
 	switch(blobHash) // weapon rating
 	{
+		case _mausturret: // MAUS Shell cannon
+		weaponRating = 3; break;
+
+		case _t10turret: // T10 Shell cannon
+		weaponRating = 2; break;
+
 		case _uh1: // heli
 		case _m60turret: // M60 Shell cannon
 		weaponRating = 1; break;
