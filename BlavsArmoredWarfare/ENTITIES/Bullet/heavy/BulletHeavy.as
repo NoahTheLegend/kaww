@@ -186,9 +186,12 @@ void onHitWorld(CBlob@ this, Vec2f end)
 void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 customData)
 {
 	f32 dmg = this.get_f32("bullet_damage_body");
-
+	
 	s8 finalRating = getFinalRating(blob.get_s8(armorRatingString), this.get_s8(penRatingString), blob.get_bool(hardShelledString), blob, hit_position);
 	print("rating: "+finalRating);
+
+	const bool can_pierce = finalRating < 2;
+
 	if (blob !is null)
 	{
 		// play sound
@@ -231,7 +234,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 			this.getSprite().PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
 		}
 
-		if (finalRating > 1) // if hit strong armor, disable hit
+		if (!can_pierce) // if hit strong armor, disable hit
 		{
 			this.Tag("rico");
 			this.getSprite().PlaySound("/BulletRico" + XORRandom(4), 0.8f, 0.7f + XORRandom(60) * 0.01f);
