@@ -120,7 +120,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 			if (b !is null) // blob
 			{
 				if (b.hasTag("ignore sword")) continue;
-				if (b.getTeamNum() == this.getTeamNum()) return;
+				if (b.getTeamNum() == this.getTeamNum()) continue;
 				if (b.getName() == "wooden_platform" || b.hasTag("door")) damage *= 1.5;
 
 				//big things block attacks
