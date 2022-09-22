@@ -174,7 +174,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	float projExplosionDamage = this.get_f32(projExplosionDamageString);
 
 	Explode(this, projExplosionRadius, projExplosionDamage);
-	//LinearExplosion(this, velocity, 22.0f*(this.hasTag("light") ? mod/2 : mod/3)+XORRandom(9), 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
+	//LinearExplosion(this, velocity, projExplosionRadius, 16.0f, 9, projExplosionDamage, Hitters::fall);
 	
 	this.getSprite().PlaySound("/ShellExplosion");
 
