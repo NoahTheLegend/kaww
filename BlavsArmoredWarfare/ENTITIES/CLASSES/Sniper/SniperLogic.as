@@ -39,9 +39,6 @@ void onInit(CBlob@ this)
 	this.getShape().SetRotationsAllowed(false);
 	this.addCommandID("shoot bullet");
 	this.getShape().getConsts().net_threshold_multiplier = 0.5f;
-
-	this.getCurrentScript().runFlags |= Script::tick_not_attached;
-	this.getCurrentScript().removeIfTag = "dead";	
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
