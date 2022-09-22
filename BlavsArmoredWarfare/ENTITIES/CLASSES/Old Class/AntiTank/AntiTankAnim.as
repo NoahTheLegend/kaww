@@ -146,7 +146,7 @@ void onTick(CSprite@ this)
 	Vec2f vec = aimpos - pos;
 	f32 angle = vec.Angle();
 
-	if (isStabbing || isReloading || (blob.isAttached() && !blob.hasTag("show_gun")))
+	if (!blob.hasTag("show_gun") && (isStabbing || isReloading || blob.isAttached()))
 	{
 		showgun = false;
 	}
