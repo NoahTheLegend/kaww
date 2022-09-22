@@ -16,6 +16,8 @@ void onInit(CBlob@ this)
 	s8 armorRating = 0;
 	bool hardShelled = false;
 
+	s8 weaponRating = 0;
+
 	string blobName = this.getName();
 	int blobHash = blobName.getHash();
 	switch(blobHash)
@@ -65,8 +67,17 @@ void onInit(CBlob@ this)
 		}
 	}
 
+	switch(blobHash) // weapon rating
+	{
+		case _uh1: // heli
+		case _m60turret: // M60 Shell cannon
+		weaponRating = 1; break;
+	}
+
 	this.set_s8(armorRatingString, armorRating);
 	this.set_bool(hardShelledString, hardShelled);
+
+	this.set_s8(weaponRatingString, weaponRating);
 
 	this.set_f32(engineRPMString, 0.0f);
 }

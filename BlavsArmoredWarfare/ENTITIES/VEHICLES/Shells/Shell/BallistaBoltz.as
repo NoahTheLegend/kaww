@@ -200,7 +200,6 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	{
 		mod = 1.5f;
 	}
-	else if (this.hasTag("medium")) mod = 2.5f;
 	else if (this.hasTag("heavy")) mod = 3.15f;
 
 	Explode(this, 20.0f*mod, 12.0f*(mod/2));

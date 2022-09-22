@@ -1,3 +1,4 @@
+#include "WarfareGlobal.as"
 #include "ThrowCommon.as";
 #include "KnockedCommon.as";
 #include "RunnerCommon.as";
@@ -665,15 +666,17 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 		proj.SetDamageOwnerPlayer(this.getPlayer());
 		proj.Init();
 
+		proj.set_f32(projDamageString, 1.5f);
+		proj.set_f32(projExplosionRadiusString, 32.0f);
+		proj.set_f32(projExplosionDamageString, 15.0f);
+
 		proj.set_f32("bullet_damage_body", damage_body);
 		proj.set_f32("bullet_damage_head", damage_head);
 		proj.IgnoreCollisionWhileOverlapped(this);
 		proj.server_setTeamNum(this.getTeamNum());
 		proj.setPosition(arrowPos);
 		proj.setVelocity(arrowVel);
-		proj.setPosition(arrowPos);
-		proj.Tag("medium");
-		proj.Tag("antitank_shell");
+		proj.set_s8(penRatingString, 2);
 	}
 	return proj;
 }

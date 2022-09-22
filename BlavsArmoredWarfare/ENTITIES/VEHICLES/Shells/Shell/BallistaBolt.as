@@ -1,12 +1,10 @@
+#include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "ShieldCommon.as";
 #include "LimitedAttacks.as";
 #include "Explosion.as";
 
 const f32 MEDIUM_SPEED = 5.0f;
-
-const float projRadius = 32.0f;
-const float projDamage = 15.0f;
 
 void onInit(CBlob@ this)
 {
@@ -106,7 +104,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 	CMap@ map = this.getMap();
 
 	const f32 speed = velocity.getLength();
-	const f32 damage = 1.5f;
+	const f32 damage = this.get_f32(projDamageString);
 
 	Vec2f direction = velocity;
 	direction.Normalize();
@@ -170,26 +168,13 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 
 bool DoExplosion(CBlob@ this, Vec2f velocity)
 {
-	if (this.hasTag("dead"))
-		return true;
+	if (this.hasTag("dead")) return true;
 
-	f32 mod = 1.0f;
-	f32 explosion_mod = 1.0f;
-	if (this.hasTag("light"))
-	{
-		mod = 1.25f;
-	}
-	else if (this.hasTag("heli")) mod = 3.0f;
-	else if (this.hasTag("medium")) mod = 2.75f;
-	else if (this.hasTag("heavy"))
-	{
-		explosion_mod = 1.15f;
-		mod = 3.15f;
-	}
-	if (this.hasTag("antitank_shell")) explosion_mod = 1.6f;
+	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
+	float projExplosionDamage = this.get_f32(projExplosionDamageString);
 
-	Explode(this, 26.0f*mod*explosion_mod, 12.0f*(mod/2));
-	LinearExplosion(this, velocity, 22.0f*(this.hasTag("light") ? mod/2 : mod/3)+XORRandom(9), 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
+	Explode(this, projExplosionRadius, projExplosionDamage);
+	//LinearExplosion(this, velocity, 22.0f*(this.hasTag("light") ? mod/2 : mod/3)+XORRandom(9), 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
 	
 	this.getSprite().PlaySound("/ShellExplosion");
 
@@ -222,12 +207,12 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 void BallistaHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, f32 damage, CBlob@ blob, u8 customData)
 {
-	if (this.hasTag("antitank_shell") && blob.hasTag("flesh"))
+	if (blob.hasTag("flesh"))
 	{
-		damage *= 1.45f;
 		this.server_Hit(blob, hit_position, Vec2f(0,0), damage, Hitters::ballista, true); 
 		return;
 	}
+	
 	this.server_Hit(blob, hit_position, Vec2f(0,0), damage, Hitters::ballista, true); 
 	
 	for (int i = 0; i < (10 + XORRandom(5)); i++)

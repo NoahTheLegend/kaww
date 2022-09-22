@@ -21,7 +21,6 @@ const f32 low_angle = 101.0f; // lower depression limit
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
-	this.Tag("medium");
 	this.Tag("turret");
 	this.Tag("tank");
 	this.Tag("blocks bullet");
