@@ -14,15 +14,15 @@ void onInit(CBlob@ this)
 
 	Vehicle_Setup(this,
 	    135.0f, // move speed
-	    1.3f,  // turn speed
+	    1.0f,  // turn speed
 	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    false);  // inventory access
 
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
 
-	Vehicle_SetupGroundSound(this, v, "TracksSound",  // movement sound
-	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
-	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
+	//Vehicle_SetupGroundSound(this, v, "TracksSound",  // movement sound
+	//    0.3f,   // movement sound volume modifier   0.0f = no manipulation
+	//    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
 	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(29.0f, 2.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(20.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
@@ -74,6 +74,14 @@ void onInit(CBlob@ this)
 			this.set_u16("bowid", bow.getNetworkID());
 
 			bow.SetFacingLeft(facing_left);
+		}
+
+		CBlob@ soundmanager = server_CreateBlob("soundmanager");	
+
+		if (soundmanager !is null)
+		{
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+			this.set_u16("followid", soundmanager.getNetworkID());
 		}
 	}	
 }
@@ -133,22 +141,30 @@ void onTick(CBlob@ this)
 			ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
 
 			if (isClient() && XORRandom(2) == 0)
-			{
-				Vec2f pos = this.getPosition();
-				CMap@ map = getMap();
-				
-				ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(60) - 30, XORRandom(48) - 24), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, 90), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 7 + XORRandom(8), XORRandom(70) * -0.00005f, true);
+			{	
+				ParticleAnimated("LargeSmoke", this.getPosition() + Vec2f(XORRandom(60) - 30, XORRandom(48) - 24), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, 90), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 7 + XORRandom(8), XORRandom(70) * -0.00005f, true);
 			}
 		}
 	}
 
 	Vehicle_LevelOutInAir(this);
+
+	if (this.exists("followid"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+			soundmanager.setVelocity(this.getVelocity());
+		}
+	}
 }
 
 // Blow up
 void onDie(CBlob@ this)
 {
-	Explode(this, 64.0f, 1.0f);
+	Explode(this, 72.0f, 1.0f);
 
 	this.getSprite().PlaySound("/vehicle_die");
 
@@ -158,6 +174,15 @@ void onDie(CBlob@ this)
 		if (bow !is null)
 		{
 			bow.server_Die();
+		}
+	}
+	if (this.exists("followid"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.server_Die();
 		}
 	}
 	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
