@@ -11,8 +11,6 @@ const string engineRPMString = "engine_RPM";
 const string engineRPMTargetString = "engine_RPMtarget";
 const string engineThrottleString = "engine_throttle";
 
-const string backsideOffsetString = "backside_offset";
-
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
@@ -428,9 +426,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	const bool is_explosive = customData == Hitters::explosion;
 
+	bool isHitUnderside = false;
+	bool isHitBackside = false;
+
 	float damageNegation = 0.0f;
 	print ("blob: "+this.getName()+" - damage: "+damage);
-	s8 finalRating = getFinalRating(armorRating, penRating, hardShelled);
+	s8 finalRating = getFinalRating(armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
 	switch (finalRating)
 	{
 		// negative armor, trickles up
@@ -470,22 +471,18 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		break;
 	}
 	
-	float backsideOffset = this.get_f32(backsideOffsetString);
-	if (backsideOffset > 0)
+	// add more damage if hit from below (only hull)
+	if (isHitUnderside)
 	{
-		// add more damage if hit from below (only hull)
-		if (hitterBlobPos.y > thisPos.y + 4.0f)
-		{
-			damage *= 1.5f;
-		}
-
-		// add more damage if hit backside of the tank (only hull)
-		if (this.isFacingLeft() ? hitterBlobPos.x > (thisPos.x + backsideOffset) : hitterBlobPos.x < (thisPos.x - backsideOffset))
-		{
-			damage *= 1.5f;
-		}
+		damage *= 1.5f;
 	}
 
+	// add more damage if hit backside of the tank (only hull)
+	if (isHitBackside)
+	{
+		damage *= 1.5f;
+	}
+	
 	print ("finalDamage: "+damage);
 
 	// if damage is not insignificant, prevent repairs for a time
