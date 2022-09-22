@@ -64,8 +64,8 @@ void onInit(CBlob@ this)
 
 		default:
 		{
-			print ("blobName: "+ blobName + " hash: "+blobHash);
-			print ("-");
+			//print ("blobName: "+ blobName + " hash: "+blobHash);
+			//print ("-");
 		}
 	}
 		f32 linear_length = 4.0f;
@@ -462,6 +462,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	Vec2f thisPos = this.getPosition();
 	Vec2f hitterBlobPos = hitterBlob.getPosition();
 
+	if (customData == Hitters::sword) return 0;
+
 	s8 armorRating = this.get_s8(armorRatingString);
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
@@ -477,7 +479,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	//print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
 	
-	//print ("isHitUnderside: "+ isHitUnderside + " - isHitBackside: "+isHitBackside);
 	// add more damage if hit from below or hit backside of the tank (only hull)
 	if (isHitUnderside || isHitBackside)
 	{
@@ -523,6 +524,24 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		break;
 	}
 	
+	float backsideOffset = this.get_f32(backsideOffsetString);
+	if (backsideOffset > 0)
+	{
+		// add more damage if hit from below (only hull)
+		if (hitterBlobPos.y > thisPos.y)
+		{
+			damage *= 2.5f;
+			//print("e");
+		}
+
+		// add more damage if hit backside of the tank (only hull)
+		if (this.isFacingLeft() ? hitterBlobPos.x > (thisPos.x + backsideOffset) : hitterBlobPos.x < (thisPos.x - backsideOffset))
+		{
+			damage *= 2.75f;
+			//print("a");
+		}
+	}
+
 	//print ("finalDamage: "+damage);
 
 	// if damage is not insignificant, prevent repairs for a time

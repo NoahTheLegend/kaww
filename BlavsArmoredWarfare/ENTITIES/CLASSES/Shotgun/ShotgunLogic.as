@@ -109,6 +109,23 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 	f32 exact_aimangle = (this.getAimPos() - blobPos).Angle();
 
 	// this gathers HitInfo objects which contain blob or tile hit information
+	HitInfo@[] hitMapInfos;
+	if (map.getHitInfosFromRay(blobPos, -exact_aimangle, radius + attack_distance, this, @hitMapInfos))
+	{
+		bool dontHitMore = false;
+		for (uint i = 0; i < hitMapInfos.length; i++)
+		{
+			HitInfo@ hi = hitMapInfos[i];
+			CBlob@ b = hi.blob;
+			if (!dontHitMore)
+			{
+				Vec2f tpos = map.getTileWorldPosition(hi.tileOffset) + Vec2f(4, 4);
+				//bool canhit = canhit && map.getSectorAtPosition(tpos, "no build") is null;
+				if (!map.isTileCastle(map.getTile(tpos).type))
+					map.server_DestroyTile(hi.hitpos, 0.1f, this);
+			}
+		}
+	}
 	HitInfo@[] hitInfos;
 	if (map.getHitInfosFromArc(pos, aimangle, arcdegrees, radius + attack_distance, this, @hitInfos))
 	{
@@ -117,10 +134,11 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 		{
 			HitInfo@ hi = hitInfos[i];
 			CBlob@ b = hi.blob;
+
 			if (b !is null) // blob
 			{
 				if (b.hasTag("ignore sword")) continue;
-				if (b.getTeamNum() == this.getTeamNum()) return;
+				if (b.getTeamNum() == this.getTeamNum()) continue;
 				if (b.getName() == "wooden_platform" || b.hasTag("door")) damage *= 1.5;
 
 				//big things block attacks
@@ -171,15 +189,15 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 		}
 	}
 
-	if (this.isKeyJustPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
+	if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
 	{
-		this.set_u32("end_stabbing", getGameTime()+16);
+		this.set_u32("end_stabbing", getGameTime()+21);
 		this.Tag("attacking");
 	}
 	if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-13)
 	{
-		f32 attackarc = 70.0f;
-		DoAttack(this, 1.5f, (this.isFacingLeft() ? 180.0f : 0.0f), attackarc, Hitters::sword);
+		f32 attackarc = 45.0f;
+		DoAttack(this, 0.5f, (this.isFacingLeft() ? 180.0f : 0.0f), attackarc, Hitters::sword);
 		this.Untag("attacking");
 	}
 	if (this.get_u32("end_stabbing") > getGameTime())
