@@ -177,7 +177,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
 	float projExplosionDamage = this.get_f32(projExplosionDamageString);
 
-	Explode(this, projExplosionRadius, projExplosionDamage);
+	WarfareExplode(this, projExplosionRadius, projExplosionDamage);
 	//LinearExplosion(this, velocity, projExplosionRadius, 16.0f, 9, projExplosionDamage, Hitters::fall);
 	
 	this.getSprite().PlaySound("/ShellExplosion");
