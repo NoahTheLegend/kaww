@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 
 	Vehicle_Setup(this,
 	    135.0f, // move speed
-	    1.3f,  // turn speed
+	    0.95f,  // turn speed
 	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    false);  // inventory access
 
@@ -80,6 +80,8 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	this.set_Vec2f("backside_hitpos", this.getPosition()+Vec2f(this.isFacingLeft() ? 16.0f : -16.0f, 0));
+	
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		if (getGameTime()%30==0)

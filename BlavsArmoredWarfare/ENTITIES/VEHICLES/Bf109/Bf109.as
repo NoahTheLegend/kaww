@@ -96,6 +96,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onTick(CBlob@ this)
 {
+	this.set_Vec2f("backside_hitpos", this.getPosition()+Vec2f(this.isFacingLeft() ? 8.0f : -8.0f, 0));
 	if (getGameTime() == this.get_u32("next_shoot"))
 	{
 		this.Untag("no_more_shooting");
