@@ -374,14 +374,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	const bool is_explosive = customData == Hitters::explosion;
 
 	float damageNegation = 0.0f;
-
+	print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(armorRating, penRating, hardShelled);
 	switch (finalRating)
 	{
 		// negative armor, trickles up
 		case -2:
 		{
-			if (is_explosive) damage += 0.5f; // suffer bonus base damage (you just got your entire vehicle burned)
+			if (is_explosive && damage != 0) damage += 0.5f; // suffer bonus base damage (you just got your entire vehicle burned)
 			damage *= 1.3f;
 		}
 		case -1:
@@ -414,7 +414,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		break;
 	}
-
+	print ("finalDamage: "+damage);
 	// if damage is not insignificant, prevent repairs for a time
 	if (damage > 0.25f)
 	{
