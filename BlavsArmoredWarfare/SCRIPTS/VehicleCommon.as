@@ -547,6 +547,8 @@ void server_FireBlob(CBlob@ this, CBlob@ blob, const u8 charge)
 
 void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 {
+	this.set_f32("engine_RPMtarget", 0); // shut off the engine by default (longer idle time?)
+
 	v.move_direction = 0;
 	AttachmentPoint@[] aps;
 	if (this.getAttachmentPoints(@aps))
@@ -568,7 +570,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 				} // get out
 
 				// DRIVER
-
 				if (ap.name == "DRIVER" && !this.hasTag("immobile"))
 				{
 					bool moveUp = false;
@@ -593,25 +594,39 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						// more force when starting
 						if (this.getShape().vellen < 0.1f)
 						{
-							moveForce *= 2.5f;
+							moveForce *= 6.25f;
 						}
+
+						moveForce *= this.get_f32("engine_RPM") / 5000;
 
 						if (this.isOnGround() || this.wasOnGround())
 						{
-							this.AddForce(Vec2f(0.0f, this.getMass()*-0.25f)); // this is nice
+							this.AddForce(Vec2f(0.0f, this.getMass()*-0.24f)); // this is nice
 						}
 
 						bool slopeangle = (angle > 15 && angle < 345 && this.isOnMap());
 
 						Vec2f pos = this.getPosition();
 
-						//if (onground || this.wasOnGround())
+						if (!left && !right) //no input
 						{
-						if (left)
+							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.0f, 0.1f));
+						}
+
+						if (this.isFacingLeft())
 						{
+							if (ap.isKeyJustPressed(key_left))
+							{
+								this.getSprite().PlayRandomSound("/EngineThrottle", 1.5f, 0.85f + XORRandom(11)*0.01f);
+
+								ShakeScreen(32.0f, 32, this.getPosition());
+							}
+							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.6f));
+
 							if (vel.x > 2.0f)
 							{
 								ShakeScreen(30.0f, 8, this.getPosition());
+								
 							}
 							if (onground && groundNormal.y < -0.4f && groundNormal.x > 0.05f && vel.x < 1.0f && slopeangle)   // put more force when going up
 							{
@@ -626,10 +641,23 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								this.SetFacingLeft(true);
 							}
+
+							if (right)
+							{
+								this.SetFacingLeft(false);
+							}
 						}
 
-						if (right)
-						{
+						if (!this.isFacingLeft())
+						{//spamable and has no effect
+							if (ap.isKeyJustPressed(key_right))
+							{
+								this.getSprite().PlayRandomSound("/EngineThrottle", 1.5f, 0.85f + XORRandom(11)*0.01f);
+
+								ShakeScreen(32.0f, 32, this.getPosition());
+							}
+							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.6f));
+
 							if (vel.x < -2.0f)
 							{
 								ShakeScreen(30.0f, 8, this.getPosition());
@@ -647,26 +675,31 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								this.SetFacingLeft(false);
 							}
-						}
-						}
 
-						force.RotateBy(this.getShape().getAngleDegrees());
-						/*
-						if ((onwall /*|| (angle < 351 && angle > 9)*//*) && (right || left))
-						{
-							Vec2f end;
-							Vec2f forceoffset((this.isFacingLeft() ? this.getRadius() : -this.getRadius()) * 0.5f, 0.0f);
-							Vec2f forcepos = pos + forceoffset;
-							bool rearHasGround = this.getMap().rayCastSolid(pos, forcepos + Vec2f(0.0f, this.getMap().tilesize * 3.0f), end);
-							if (rearHasGround)
+							if (left)
 							{
-								//this.AddForceAtPosition(Vec2f(0.0f, -890.0f), pos + Vec2f(-forceoffset.x, forceoffset.y) * 0.2f);
-								print("%%%");
+								this.SetFacingLeft(true);
 							}
 						}
-						*/
 
-						this.AddForce(force);
+						
+
+
+						if (Maths::Abs(vel.x) < 3.0f) // range of speed to be in neutral
+						{
+							if ((left or right))
+							{
+								this.AddForce(force);
+								force.RotateBy(this.getShape().getAngleDegrees());
+							}
+						}
+						else 
+						{
+							this.AddForce(force);
+							force.RotateBy(this.getShape().getAngleDegrees());
+						}
+					
+						
 					}
 
 					// tilt 
@@ -730,6 +763,16 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							this.AddForce(Vec2f(0, -1800));
 						}
 					}
+
+					if (this.get_f32("engine_throttle") == 0.5f)
+					{
+						this.set_f32("engine_RPMtarget", 8000); // gas gas gas
+					}
+					else
+					{
+						this.set_f32("engine_RPMtarget", 2000); // let engine idle
+					}
+					
 				}  // driver
 
 				if (ap.name == "GUNNER" && !isKnocked(blob))
@@ -792,127 +835,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 				} // gunner
 
-				// FLYER
-
-				if (ap.name == "FLYER")
-				{
-					f32 moveForce = v.move_speed;
-
-					f32 flyAmount = v.fly_amount;
-
-					f32 turnSpeed = v.turn_speed;
-					s8 direction = v.move_direction;
-					bool stalling = false;
-
-					const Vec2f vel = this.getVelocity();
-
-					f32 angle = this.getAngleDegrees();
-
-					f32 diff = 360 - this.getAngleDegrees();
-					diff = (diff + 180) % 360 - 180;
-					
-					if (Maths::Abs(vel.x) < 4.5f && ((Maths::Abs(diff) > 14) || Maths::Abs(blob.getVelocity().x) < 0.8f) && this.getVelocity().y > -0.5f && !getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 55.0f)))
-					{
-						stalling = true;
-
-						this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y + ((this.isOnGround() || this.wasOnGround()) ? 0.08f : 0.28f)));
-
-						if (!this.isOnGround() && !this.wasOnGround() && getGameTime() % 10 == 0)
-						{
-							Sound::Play("PlaneStallWarning.ogg", ap.getPosition());
-						}
-					}
-
-					angle = (this.getVelocity()).Angle();
-
-					if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 55.0f)) && (!this.isOnGround() && !this.wasOnGround()))
-					{
-						this.setAngleDegrees(-angle + (this.isFacingLeft() ? -180 : 0));
-					}
-					else
-					{
-						Vehicle_LevelOutInAir(this);
-					}
-
-					Vec2f force;
-					bool moving = false;
-					const bool up = ap.isKeyPressed(key_up);
-					const bool down = ap.isKeyPressed(key_down);
-
-					// fly up/down
-					if (up || down)
-					{
-						if (up)
-						{
-							direction -= 1;
-
-							flyAmount += (0.15f * Maths::Abs(vel.x)) / getTicksASecond(); //0.1
-							if (flyAmount > 1.45f) //1.7
-								flyAmount = 1.45f;
-						}
-						else
-						{
-							direction += 1;
-
-							flyAmount -= 0.9 / getTicksASecond(); //0.6
-							if (flyAmount < 0.05f)
-								flyAmount = 0.05f; //0.1
-						}
-						v.fly_amount = stalling ? (flyAmount*0.8) : flyAmount;
-						v.move_direction = direction;
-					}
-
-					// fly left/right
-					const bool left = ap.isKeyPressed(key_left);
-					const bool right = ap.isKeyPressed(key_right);
-
-					if (left)
-					{
-						force.x -= moveForce;
-
-						if (vel.x < -turnSpeed)
-							this.SetFacingLeft(true);
-
-						moving = true;
-					}
-
-					if (right)
-					{
-						force.x += moveForce;
-
-						if (vel.x > turnSpeed)
-							this.SetFacingLeft(false);
-
-						moving = true;
-					}
-
-					if (this.getPosition().x < 60.0f || this.getPosition().x > (getMap().tilemapwidth * getMap().tilesize) - 60.0f)
-					{
-						if (this.getPosition().x < 60.0f && vel.x < 0)
-						{
-							this.SetFacingLeft(false);
-							this.setVelocity(Vec2f(10.0f, 0.0f));
-						}
-
-						if (this.getPosition().x > (getMap().tilemapwidth * getMap().tilesize) - 60.0f && vel.x > 0)
-						{
-							this.SetFacingLeft(true);
-							this.setVelocity(Vec2f(-10.0f, 0.0f));
-						}
-
-						this.setAngleDegrees(0);
-					}
-
-					if (moving)
-						this.AddForce(force);
-
-					f32 flyForce = v.fly_speed;
-					this.AddForce(Vec2f(0, flyForce * flyAmount));
-				} // flyer
-
-
 				// ROWER
-
 				if ((ap.name == "ROWER" && this.isInWater()) || (ap.name == "SAIL" && !this.hasTag("no sail")))
 				{
 					const f32 moveForce = v.move_speed;
@@ -963,7 +886,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					{
 						this.AddForce(force);
 					}
-				} // flyer
+				}
 			}  // ap.occupied
 		}   // for
 	}
@@ -1035,7 +958,8 @@ void UpdateWheels(CBlob@ this)
 				wheels_angle = ((this.getVelocity().x * 60) % 360); //Maths::Round
 			}
 			else {
-				wheels_angle = (Maths::Round(wheel.getWorldTranslation().x * 10) % 360);
+				//wheels_angle = (Maths::Round(wheel.getWorldTranslation().x * 10) % 360);
+				wheels_angle = (Maths::Round(wheel.getWorldTranslation().x + (this.get_f32("wheelsTurnAmount")*100)) % 360);
 			}
 						
 			wheel.ResetTransform();
@@ -1190,11 +1114,14 @@ void Vehicle_onAttach(CBlob@ this, VehicleInfo@ v, CBlob@ attached, AttachmentPo
 	}
 
 	if (attached.hasTag("player") && // is a player
-		attachedPoint.name == "DRIVER") // in driver seat 
+		attachedPoint.name == "DRIVER" && // in driver seat 
+		this.get_f32("engine_RPM") < 1000) // rpm is low
 	{
 		this.getSprite().PlaySound("EngineStart_tank", 1.0f, 0.95f + XORRandom(11)*0.01f);
 
-		this.set_f32("engine_RPMtarget", 800.0f);
+		ShakeScreen(32.0f, 64, this.getPosition());
+
+		this.set_f32("engine_throttle", 0.3f);
 	}
 }
 

@@ -118,5 +118,6 @@ void onRender(CSprite@ this)
 
 	GUI::DrawShadowedText("RPM: " + blob.get_f32("engine_RPM"), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 65), SColor(0xffffffff));
 
-	
+	GUI::DrawLine2D(Vec2f(pos2d.x, pos2d.y + y - 1 + 165), Vec2f(pos2d.x + ((blob.get_f32("engine_throttle")-0.35) * 1000), pos2d.y + y - 1 + 165), SColor(0xffffffff));
+	//GUI::DrawLine2D(Vec2f(pos2d.x - dim.x, pos2d.y + y - 1 + 169), Vec2f(pos2d.x - dim.x + 500, pos2d.y + y - 1 + 169), SColor(0xffcdb692));
 }
