@@ -13,7 +13,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	              328.0f, // move speed
+	              330.0f, // move speed
 	              0.87f,  // turn speed
 	              Vec2f(0.0f, 0.56f), // jump out velocity
 	              true  // inventory access
