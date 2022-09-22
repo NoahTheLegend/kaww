@@ -64,8 +64,8 @@ void onInit(CBlob@ this)
 
 		default:
 		{
-			print ("blobName: "+ blobName + " hash: "+blobHash);
-			print ("-");
+			//print ("blobName: "+ blobName + " hash: "+blobHash);
+			//print ("-");
 		}
 	}
 		f32 linear_length = 4.0f;
@@ -474,7 +474,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	bool isHitBackside = false;
 
 	float damageNegation = 0.0f;
-	print ("blob: "+this.getName()+" - damage: "+damage);
+	//print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
 	
 	// add more damage if hit from below or hit backside of the tank (only hull)
@@ -540,7 +540,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 	}
 
-	print ("finalDamage: "+damage);
+	//print ("finalDamage: "+damage);
 
 	// if damage is not insignificant, prevent repairs for a time
 	if (damage > 0.25f)
