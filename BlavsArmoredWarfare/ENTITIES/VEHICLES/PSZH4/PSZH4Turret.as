@@ -380,17 +380,3 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	this.getShape().SetStatic(false);
 	Vehicle_onDetach(this, v, detached, attachedPoint);
 }
-
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (damage > 0.1f) //sound
-	{
-		if (customData == Hitters::ballista)
-		{
-			this.getSprite().PlaySound("BigDamage", 2.5f, 0.85f + XORRandom(40)*0.01f); 
-			this.getSprite().PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f);
-		}
-	}
-
-	return damage;
-}
