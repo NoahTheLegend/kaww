@@ -89,7 +89,7 @@ void onInit(CBlob@ this)
 		weaponRating = 0; break;
 	}
 
-	float backsideOffset = 8.0f;
+	float backsideOffset = -1.0f;
 	switch(blobHash) // backside (noah/snek)
 	{
 		case _maus: // maus
@@ -470,16 +470,16 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		break;
 	}
 	
-	if (this.getName() != "heavygun" && !this.hasTag("turret"))
+	float backsideOffset = this.get_f32(backsideOffsetString);
+	if (backsideOffset > 0)
 	{
 		// add more damage if hit from below (only hull)
-		if (worldPoint.y > thisPos.y + 4.0f)
+		if (hitterBlobPos.y > thisPos.y + 4.0f)
 		{
 			damage *= 1.5f;
 		}
 
 		// add more damage if hit backside of the tank (only hull)
-		float backsideOffset = this.get_f32(backsideOffsetString);
 		if (this.isFacingLeft() ? hitterBlobPos.x > (thisPos.x + backsideOffset) : hitterBlobPos.x < (thisPos.x - backsideOffset))
 		{
 			damage *= 1.5f;
