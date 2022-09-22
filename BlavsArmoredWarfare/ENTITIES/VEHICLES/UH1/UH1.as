@@ -355,20 +355,6 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 		return null;
 }
 
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (customData == Hitters::explosion)
-	{
-		return damage * 2.5;
-	}
-	if (hitterBlob.hasTag("sniperbullet"))
-	{
-		return damage * 15;
-	}
-
-	return damage;
-}
-
 const f32 lerp_speed_x = 0.20f;
 const f32 lerp_speed_y = 0.20f;
 

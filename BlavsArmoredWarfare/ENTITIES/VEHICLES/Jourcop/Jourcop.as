@@ -411,33 +411,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	}
 }
 
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	f32 dmg = damage;
-	switch (customData)
-	{
-		case Hitters::sword:
-		case Hitters::arrow:
-		case Hitters::stab:
-			dmg *= 0.25f;
-			break;
-		case Hitters::bomb:
-			dmg *= 1.25f;
-			break;
-		case Hitters::keg:
-		case Hitters::explosion:
-			dmg *= 0.5f;
-			break;
-		case Hitters::bomb_arrow:
-			dmg *= 0.5f;
-			break;
-		case Hitters::flying:
-			dmg *= 0.5f;
-			break;
-	}
-	return dmg;
-}
-
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("change_skin"))
