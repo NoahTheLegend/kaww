@@ -191,7 +191,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 	if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
 	{
-		this.set_u32("end_stabbing", getGameTime()+18);
+		this.set_u32("end_stabbing", getGameTime()+21);
 		this.Tag("attacking");
 	}
 	if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-13)
