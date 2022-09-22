@@ -78,8 +78,6 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	this.set_Vec2f("backside_hitpos", this.getPosition()+Vec2f(this.isFacingLeft() ? 24.0f : -24.0f, 0));
-
 	if (this.getTickSinceCreated() == 1)
 	{
 		// turret

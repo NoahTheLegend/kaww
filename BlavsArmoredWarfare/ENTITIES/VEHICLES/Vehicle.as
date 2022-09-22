@@ -397,7 +397,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (customData == Hitters::sword) return 0;
+	Vec2f thisPos = this.getPosition();
 
 	s8 armorRating = this.get_s8(armorRatingString);
 	s8 penRating = hitterBlob.get_s8(penRatingString);
@@ -408,63 +408,59 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	float damageNegation = 0.0f;
 	print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(armorRating, penRating, hardShelled);
-
-	Vec2f hb_pos = hitterBlob.getPosition();
-	Vec2f this_pos = this.getPosition();
-
 	switch (finalRating)
 	{
 		// negative armor, trickles up
 		case -2:
 		{
 			if (is_explosive && damage != 0) damage += 0.5f; // suffer bonus base damage (you just got your entire vehicle burned)
-			damage *= 1.5f;
+			damage *= 1.3f;
 		}
 		case -1:
 		{
-			damage *= 1.4f;
+			damage *= 1.1f;
 		}
 		break;
 
 		// positive armor, trickles down
 		case 5:
 		{
-			damageNegation += 0.65f; // reduction to final damage, extremely tanky
+			damageNegation += 0.5f; // reduction to final damage, extremely tanky
 		}
 		case 4:
 		{
-			damage *= 0.75f;
+			damage *= 0.7f;
 		}
 		case 3:
 		{
-			damage *= 0.85f;
+			damage *= 0.8f;
 		}
 		case 2:
 		{
-			damage *= 1.05f;
+			damage *= 0.8f;
 		}
 		case 1:
 		{
-			damageNegation += 0.15f; // reduction to final damage, for negating small bullets
+			damageNegation += 0.2f; // reduction to final damage, for negating small bullets
 			damage = Maths::Max(damage - damageNegation, 0.0f); // nullification happens here
 		}
 		break;
 	}
 	
 	// add more damage if hit from below (only hull)
-	if (!this.hasTag("turret") && this.getName() != "heavygun" && hb_pos.y > this_pos.y)
+	if (worldPoint.y > thisPos.y + 4.0f)
 	{
-		//printf(""+hb_pos.y);
-		//printf(""+this_pos.y+8.0f);
 		damage *= 1.5f;
 	}
+
 	// add more damage if hit backside of the tank (only hull)
-	if (this.exists("backside_hitpos"))
+	if (this.isFacingLeft() ? worldPoint.x > (thisPos.x + 8.0f) : worldPoint.x < (thisPos.x - 8.0f))
 	{
-		Vec2f back_pos = this.get_Vec2f("backside_hitpos");
-		if ((hb_pos - back_pos).Length() < (hb_pos - this_pos).Length()) damage *= 2.25f;
+		damage *= 1.5f;
 	}
+
 	print ("finalDamage: "+damage);
+
 	// if damage is not insignificant, prevent repairs for a time
 	if (damage > 0.25f)
 	{
@@ -479,7 +475,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				thisSprite.PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f);
 			}
 		}
-		
 	}
 
 	return damage;
