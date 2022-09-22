@@ -70,13 +70,13 @@ void onInit(CBlob@ this)
 	switch(blobHash) // weapon rating
 	{
 		case _mausturret: // MAUS Shell cannon
+		case _t10turret: // T10 Shell cannon
 		weaponRating = 3; break;
 
-		case _t10turret: // T10 Shell cannon
+		case _m60turret: // M60 Shell cannon
 		weaponRating = 2; break;
 
 		case _uh1: // heli
-		case _m60turret: // M60 Shell cannon
 		case _heavygun: // MG
 		weaponRating = 1; break;
 
@@ -421,7 +421,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		// positive armor, trickles down
 		case 5:
 		{
+<<<<<<< HEAD
 			damageNegation += 0.35f; // reduction to final damage, extremely tanky
+=======
+			damageNegation += 0.5f; // reduction to final damage, extremely tanky
+>>>>>>> a16695ac80d69041978acddfeba8bdc93ffd1144
 		}
 		case 4:
 		{
