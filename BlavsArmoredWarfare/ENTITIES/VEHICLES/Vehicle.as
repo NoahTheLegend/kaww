@@ -11,6 +11,8 @@ const string engineRPMString = "engine_RPM";
 const string engineRPMTargetString = "engine_RPMtarget";
 const string engineThrottleString = "engine_throttle";
 
+const string backsideOffsetString = "backside_offset";
+
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
@@ -86,6 +88,26 @@ void onInit(CBlob@ this)
 		case _btrturret: // big APC cannon
 		weaponRating = 0; break;
 	}
+
+	float backsideOffset = 8.0f;
+	switch(blobHash) // backside (noah/snek)
+	{
+		case _maus: // maus
+		backsideOffset = 24.0f; break;
+		case _t10: // T10
+		backsideOffset = 20.0f; break;
+		case _m60: // normal tank
+		backsideOffset = 16.0f; break;
+		case _btr82a: // big APC
+		backsideOffset = 16.0f; break;
+		case _pszh4: // smol APC
+		backsideOffset = 16.0f; break;
+		case _uh1: // heli
+		backsideOffset = 24.0f; break;
+		case _bf109: // plane
+		backsideOffset = 8.0f; break;
+	}
+	this.set_f32(backsideOffsetString, backsideOffset);
 
 	this.set_s8(armorRatingString, armorRating);
 	this.set_bool(hardShelledString, hardShelled);
@@ -398,6 +420,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	Vec2f thisPos = this.getPosition();
+	Vec2f hitterBlobPos = hitterBlob.getPosition();
 
 	s8 armorRating = this.get_s8(armorRatingString);
 	s8 penRating = hitterBlob.get_s8(penRatingString);
@@ -454,7 +477,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 
 	// add more damage if hit backside of the tank (only hull)
-	if (this.isFacingLeft() ? worldPoint.x > (thisPos.x + 8.0f) : worldPoint.x < (thisPos.x - 8.0f))
+	float backsideOffset = this.get_f32(backsideOffsetString);
+	if (this.isFacingLeft() ? hitterBlobPos.x > (thisPos.x + backsideOffset) : hitterBlobPos.x < (thisPos.x - backsideOffset))
 	{
 		damage *= 1.5f;
 	}
