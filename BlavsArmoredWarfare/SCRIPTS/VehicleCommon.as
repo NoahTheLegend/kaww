@@ -495,8 +495,7 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 					CBlob@ bullet = isServer ? server_CreateBlobNoInit(v.getCurrentAmmo().bullet_name) : null;
 					if (bullet !is null)
 					{
-						if (this.hasTag("light")) bullet.Tag("light");
-						else if (this.hasTag("heavy")) bullet.Tag("heavy");
+						if (this.hasTag("heavy")) bullet.Tag("heavy");
 
 						bullet.set_s8(penRatingString, this.get_s8(weaponRatingString));
 						

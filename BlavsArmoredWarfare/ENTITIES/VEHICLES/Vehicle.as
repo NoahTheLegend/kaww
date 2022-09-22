@@ -72,6 +72,10 @@ void onInit(CBlob@ this)
 		case _uh1: // heli
 		case _m60turret: // M60 Shell cannon
 		weaponRating = 1; break;
+
+		case _pszh4turret: // smol APC cannon
+		case _btrturret: // big APC cannon
+		weaponRating = 0; break;
 	}
 
 	this.set_s8(armorRatingString, armorRating);
@@ -430,10 +434,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (damage > 0.25f)
 	{
 		this.set_u32("no_heal", getGameTime()+10*30);
-		if (customData == Hitters::ballista && armorRating > 1) // ballista hits are usually anti-tank. Don't ask me.
+
+		if (isClient())
 		{
-			this.getSprite().PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f);
+			CSprite@ thisSprite = this.getSprite();
+			if (thisSprite != null && customData == Hitters::ballista && armorRating > 1) // ballista hits are usually anti-tank. Don't ask me.
+			{
+				if (this.hasTag("turret")) thisSprite.PlaySound("BigDamage", 2.5f, 0.85f + XORRandom(40)*0.01f); 
+				thisSprite.PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f);
+			}
 		}
+		
 	}
 
 	return damage;

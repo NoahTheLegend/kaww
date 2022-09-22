@@ -196,14 +196,10 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 		return true;
 
 	f32 mod = 1.0f;
-	if (this.hasTag("light"))
-	{
-		mod = 1.5f;
-	}
-	else if (this.hasTag("heavy")) mod = 3.15f;
+	if (this.hasTag("heavy")) mod = 3.15f;
 
 	Explode(this, 20.0f*mod, 12.0f*(mod/2));
-	LinearExplosion(this, velocity, 22.0f*(this.hasTag("light") ? mod/2 : mod/3)+XORRandom(9), 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
+	LinearExplosion(this, velocity, 22.0f, 10.0f*mod, 9, 5.0f*mod, Hitters::fall);
 	
 	this.getSprite().PlaySound("/ShellExplosion");
 

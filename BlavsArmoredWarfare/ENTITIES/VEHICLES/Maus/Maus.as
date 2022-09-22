@@ -224,23 +224,6 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	Vehicle_onDetach(this, v, detached, attachedPoint);
 }
 
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (damage > 0.1f) //sound
-	{
-		if (hitterBlob.hasTag("jav")) return Maths::Min(damage / 2, this.getInitialHealth()/5);
-		if (customData == Hitters::ballista) //hitterBlob !is this && 
-		{
-			this.getSprite().PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f); //(XORRandom(50)/100)
-		}
-		if (hitterBlob.hasTag("light"))
-		{
-			return damage / 3;
-		}
-	}
-	return damage;
-}
-
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
 
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}
