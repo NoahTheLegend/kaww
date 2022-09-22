@@ -499,6 +499,7 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 						
 						bullet.setPosition(bulletPos);
 						bullet.server_setTeamNum(team);
+						bullet.set_f32("linear_length", this.get_f32("linear_length"));
 						bullet.SetDamageOwnerPlayer(caller.getPlayer());
 						bullet.Init();
 					}

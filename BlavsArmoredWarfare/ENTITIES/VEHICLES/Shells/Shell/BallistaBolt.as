@@ -11,7 +11,7 @@ void onInit(CBlob@ this)
 	this.Tag("projectile");
 
 	this.set_f32(projDamageString, 1.0f);
-	this.set_f32(projExplosionRadiusString, 25.0f);
+	this.set_f32(projExplosionRadiusString, 22.0f);
 	this.set_f32(projExplosionDamageString, 15.0f);
 
 	this.set_u8("blocks_pierced", 0);
@@ -176,9 +176,11 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
 	float projExplosionDamage = this.get_f32(projExplosionDamageString);
-
+	f32 length = this.get_f32("linear_length");
+	//printf(""+projExplosionRadius);
+	//printf(""+length);
 	WarfareExplode(this, projExplosionRadius, projExplosionDamage);
-	//LinearExplosion(this, velocity, projExplosionRadius, 16.0f, 9, projExplosionDamage, Hitters::fall);
+	LinearExplosion(this, velocity, projExplosionRadius, length, 2+Maths::Floor(length/6), 0.01f, Hitters::fall);//only for damaging map
 	
 	this.getSprite().PlaySound("/ShellExplosion");
 
