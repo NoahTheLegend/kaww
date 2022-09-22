@@ -470,17 +470,20 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		break;
 	}
 	
-	// add more damage if hit from below (only hull)
-	if (worldPoint.y > thisPos.y + 4.0f)
+	if (this.getName() != "heavygun" && !this.hasTag("turret"))
 	{
-		damage *= 1.5f;
-	}
+		// add more damage if hit from below (only hull)
+		if (worldPoint.y > thisPos.y + 4.0f)
+		{
+			damage *= 1.5f;
+		}
 
-	// add more damage if hit backside of the tank (only hull)
-	float backsideOffset = this.get_f32(backsideOffsetString);
-	if (this.isFacingLeft() ? hitterBlobPos.x > (thisPos.x + backsideOffset) : hitterBlobPos.x < (thisPos.x - backsideOffset))
-	{
-		damage *= 1.5f;
+		// add more damage if hit backside of the tank (only hull)
+		float backsideOffset = this.get_f32(backsideOffsetString);
+		if (this.isFacingLeft() ? hitterBlobPos.x > (thisPos.x + backsideOffset) : hitterBlobPos.x < (thisPos.x - backsideOffset))
+		{
+			damage *= 1.5f;
+		}
 	}
 
 	print ("finalDamage: "+damage);
