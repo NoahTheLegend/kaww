@@ -181,16 +181,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	}
 }
 
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (customData == Hitters::arrow)
-	{
-		return damage * 5;
-	}
-
-	return damage;
-}
-
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (blob !is null)

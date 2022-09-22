@@ -451,20 +451,6 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 	ParticleAnimated(CFileMatcher(filename).getFirst(), this.getPosition() + pos, vel, float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 1 + XORRandom(4), XORRandom(100) * -0.00005f, true);
 }
 
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (customData == Hitters::explosion)
-	{
-		return damage * 2.5;
-	}
-	if (hitterBlob.hasTag("sniperbullet"))
-	{
-		return damage * 2;
-	}
-
-	return damage;
-}
-
 void onAttach(CBlob@ this,CBlob@ attached,AttachmentPoint @attachedPoint)
 {
 	if (attached.hasTag("bomber")) return;
