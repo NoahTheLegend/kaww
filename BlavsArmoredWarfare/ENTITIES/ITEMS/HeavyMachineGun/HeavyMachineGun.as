@@ -21,7 +21,7 @@ void onInit(CBlob@ this)
 	                    1, // fire bullets amount
 	                    1, // fire cost
 	                    "mat_7mmround", // bullet ammo config name
-	                    "7mm Rounds", // name for ammo selection
+	                    "7mm bullets", // name for ammo selection
 	                    "bulletheavy", // bullet config name
 	                    "M60fire", // fire sound  
 	                    "EmptyFire", // empty fire sound
