@@ -159,8 +159,11 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	bool isStabbing = archer.isStabbing;
 	bool isReloading = this.get_bool("isReloading"); //archer.isReloading;
 	u8 charge_state = archer.charge_state;
-	bool just_action1 = this.isKeyJustPressed(key_action1) && this.get_u32("dont_change_zoom") < getGameTime(); // binoculars thing
-	bool is_action1 = this.isKeyPressed(key_action1);
+	bool just_action1;
+	bool is_action1;
+
+	just_action1 = (this.get_bool("just_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyJustPressed(key_action1) && this.get_u32("dont_change_zoom") < getGameTime()); // binoculars thing
+	is_action1 = (this.get_bool("is_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyPressed(key_action1));
 	bool was_action1 = this.wasKeyPressed(key_action1);
 	bool hidegun = false;
 	if (this.getCarriedBlob() !is null)
@@ -600,6 +603,9 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
+
+	this.set_bool("is_a1", false);
+	this.set_bool("just_a1", false);
 }
 
 bool canSend(CBlob@ this)
