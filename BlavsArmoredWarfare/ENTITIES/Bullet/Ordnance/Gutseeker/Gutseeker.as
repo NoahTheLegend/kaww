@@ -379,7 +379,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 	f32 mod = 1.5;
 
-	Explode(this, radius*mod, damage*(mod/2));
+	WarfareExplode(this, radius*mod, damage*(mod/2));
 	LinearExplosion(this, velocity, 2.0f, 2.0f, 2, 1.0f, Hitters::fall);
 	
 	this.getSprite().PlaySound("/ClusterExplode");
