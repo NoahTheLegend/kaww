@@ -134,7 +134,7 @@ void Config(TDMCore@ this)
         getBlobsByName("pointflag", @flags);
 		if (flags.length > 1)
 		{
-			this.gameDuration = (getTicksASecond() * 60 * (10.0f+(0.5*flags.length))) + this.warmUpTime;
+			this.gameDuration = (getTicksASecond() * 60 * (10.0f+(0.5*flags.length)+(0.25f*getPlayersCount()))) + this.warmUpTime;
 		}
 	}
 
