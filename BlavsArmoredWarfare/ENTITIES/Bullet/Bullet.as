@@ -1,3 +1,4 @@
+#include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "MakeDustParticle.as";
 
@@ -185,12 +186,12 @@ void onHitWorld(CBlob@ this, Vec2f end)
 void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 customData)
 {
 	CSprite@ sprite = this.getSprite();
-	f32 dmg = 0.0f;
-		
-	if (blob.getTeamNum() != this.getTeamNum())
-	{
-		dmg = this.get_f32("bullet_damage_body");
-	}
+	f32 dmg = this.get_f32("bullet_damage_body");
+
+	s8 finalRating = getFinalRating(blob.get_s8(armorRatingString), this.get_s8(penRatingString), blob.get_bool(hardShelledString));
+	print("rating: "+finalRating);
+
+	const bool can_pierce = finalRating < 1;
 
 	if (blob !is null)
 	{
@@ -217,18 +218,11 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 	CParticle@ p = ParticleAnimated("SparkParticle.png", hit_position, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
 	if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
 
-	if (blob.hasTag("vehicle") && !blob.hasTag("takesdmgfrombullet") && !this.hasTag("rico"))
+	if (blob.hasTag("vehicle") && !this.hasTag("rico"))
 	{
-		this.Tag("rico");
 		this.Tag("dead");
 
-		if (blob.getName() == "uh1")
-		{
-			sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
-			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.15f, Hitters::arrow);
-		}
-
-		if (XORRandom(101) < (blob.hasTag("takesdmgfrombullets") ? 20 : 35))
+		if (isClient() && XORRandom(101) < (can_pierce ? 20 : 35))
 		{
 			Vec2f velr = this.getVelocity()/(XORRandom(4)+2.5f);
 			velr += Vec2f(0.0f, -3.0f);
@@ -237,8 +231,9 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 			ParticlePixel(this.getPosition(), velr, SColor(255, 255, 255, 0), true);
 		}
 
-		if (XORRandom(101) < (blob.hasTag("takesdmgfrombullets") ? 10 : 45))
+		if (!can_pierce)
 		{
+			this.Tag("rico");
 			Sound::Play("/BulletRico" + (XORRandom(4) + 4), this.getPosition(), 1.4f, 0.85f + XORRandom(45) * 0.01f);
 			this.setVelocity(this.getVelocity() * 1.05f);
 			this.AddForce(Vec2f(3.5f-XORRandom(7), 5.0f-XORRandom(10)));
@@ -251,15 +246,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 			CParticle@ p = ParticleAnimated("PingParticle.png", pos, Vec2f(0,0),  0.0f, 0.75f + XORRandom(4) * 0.10f, 2, 0.0f, false);
 			if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
 
-			if (blob.hasTag("takesdmgfrombullets"))
-			{
-				sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
-				this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::arrow);
-			}
-			else
-			{
-				sprite.PlaySound("/BulletRico" + XORRandom(4), 0.8f, 0.7f + XORRandom(60) * 0.01f);
-			}
+			sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
 			
 			this.server_Die();
 		}
@@ -267,14 +254,14 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		this.server_SetTimeToDie(0.4);
 	}
 	
-	if (hit_position.y < blob.getPosition().y - 3.2f)
+	if (blob.hasTag("flesh") && hit_position.y < blob.getPosition().y - 3.2f)
 	{
 		dmg = this.get_f32("bullet_damage_head");
 
 		// hit helmet
 		if (blob.get_string("equipment_head") == "helmet")
 		{
-			dmg*=0.6;
+			dmg *= 0.6;
 
 			if (XORRandom(100) < 25)
 			{
@@ -291,29 +278,20 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 				dmg = 0;
 			}
 		}
-		else
-		{
-			dmg*=0.85;
-		}
-	}
-	else
-	{
-		dmg = this.get_f32("bullet_damage_body");
 	}
 
-	if (this.getTickSinceCreated() > 20) // less dmg offscreen
+	int creationTicks = this.getTickSinceCreated();
+	if (creationTicks > 20) // less dmg offscreen
 	{
 		dmg *= 0.75f;
 	}
-	else if  (this.getTickSinceCreated() > 14)
+	else if  (creationTicks > 14)
 	{
 		dmg *= 0.5f;
 	}
 
 	if (!blob.hasTag("weakprop"))
 	{
-		dmg *= 2.0f;
-
 		this.server_Die();
 	}
 	else
@@ -323,7 +301,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 	if (dmg > 0.0f && !this.hasTag("rico"))
 	{
-		this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow);
+		this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow, false);
 	}
 }
 
@@ -361,12 +339,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	{
 		return false;
 	}
-
-	if (blob.hasTag("vehicle") && blob.hasTag("takesdmgfrombullet") && blob.getTeamNum() == this.getTeamNum())
-	{
-		return false;
-	}
-
+	
 	if (blob.hasTag("blocks bullet"))
 	{
 		return true;
@@ -385,22 +358,18 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 		if ((deg < 45.0f || deg > 315.0f) && vely > 0.0f) //up		
 		{
-			blob.Tag("takesdmgfrombullet");
 			return true;
 		}
 		else if (deg > 45.0f && deg < 135.0f && velx < 0.0f) //right
 		{
-			blob.Tag("takesdmgfrombullet");
 			return true;
 		}
 		else if (deg > 135.0f && deg < 225.0f && vely < 0.0f) //down
 		{
-			blob.Tag("takesdmgfrombullet");
 			return true;
 		}
 		else if (deg > 225.0f && deg < 315.0f && velx > 0.0f) //left
 		{
-			blob.Tag("takesdmgfrombullet");
 			return true;
 		}
 

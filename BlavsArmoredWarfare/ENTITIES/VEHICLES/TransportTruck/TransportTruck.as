@@ -14,7 +14,6 @@ void onInit(CBlob@ this)
 {
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
-	this.Tag("takesdmgfrombullets");
 
 	this.set_s16(spawn_prop, 30);
 
