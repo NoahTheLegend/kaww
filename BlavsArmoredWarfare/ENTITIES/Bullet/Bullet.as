@@ -188,7 +188,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 	CSprite@ sprite = this.getSprite();
 	f32 dmg = this.get_f32("bullet_damage_body");
 
-	s8 finalRating = getFinalRating(blob.get_s8(armorRatingString), this.get_s8(penRatingString), blob.get_bool(hardShelledString));
+	s8 finalRating = getFinalRating(blob.get_s8(armorRatingString), this.get_s8(penRatingString), blob.get_bool(hardShelledString), blob, hit_position);
 	print("rating: "+finalRating);
 
 	const bool can_pierce = finalRating < 1;
@@ -339,7 +339,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	{
 		return false;
 	}
-	
+
 	if (blob.hasTag("blocks bullet"))
 	{
 		return true;
