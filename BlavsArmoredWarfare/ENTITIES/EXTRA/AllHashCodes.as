@@ -10,17 +10,27 @@ enum EntityHash
 	_mp5 = -1636222121,
 
 	//vehicles
-	_m60 = 505863822,
-	_t10 = -360649198,
-	_techtruck = -4555140,
-	_maus = -544849061,
-	_pszh4 = 1117406230,
-	_btr82a = 1873450872,
-	//_uh1 = -2084182629,
-	_transporttruck = -384075523,
-	_armory = -2000954281,
-	_motorcycle = -1537538612,
-	_civcar = 2114887441
+	_m60 = 505863822, // normal tank
+	_t10 = -360649198, // T10
+	_maus = -544849061, // mouse
+
+	_pszh4 = 1117406230, // smol APC
+	_btr82a = 1873450872, // big APC
+	
+	_transporttruck = -384075523, // vanilla truck?
+	_armory = -2000954281, // shop truck
+	
+	_bf109 = 948257107, // plane
+	_jourcop = 1406825361, // journalist
+	_uh1 = -2084182629, // heli
+	
+	_techtruck = -4555140, // MG truck
+	_motorcycle = -1537538612, // bike
+	_civcar = 2114887441, // car
+
+	_t10turret = -616940740, // T10 Shell cannon
+	_heavygun = -153292038 // MG
+	
 
 	
 	//_ = 1111111,

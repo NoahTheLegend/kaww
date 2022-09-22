@@ -1,3 +1,5 @@
+#include "WarfareGlobal.as"
+#include "AllHashCodes.as"
 #include "SeatsCommon.as"
 #include "VehicleCommon.as"
 #include "VehicleAttachmentCommon.as"
@@ -7,6 +9,57 @@
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
+
+	s8 armorRating = 0;
+	bool hardShelled = false;
+
+	string blobName = this.getName();
+	int blobHash = blobName.getHash();
+	switch(blobHash)
+	{
+		case _maus: // mouse
+		{
+			armorRating = 5;
+			hardShelled = true;
+		}
+		break;
+
+		case _t10: // T10
+		case _t10turret: // T10 Shell cannon
+		armorRating = 4; break;
+			
+		case _m60: // normal tank
+		
+		armorRating = 3; break;
+
+		case _transporttruck: // vanilla truck?
+		case _armory: // shop truck
+		case _btr82a: // big APC
+		case _heavygun: // MG
+		armorRating = 2; break;
+
+		case _uh1: // heli
+		case _pszh4: // smol APC
+		case _techtruck: // MG truck
+		armorRating = 1; break;
+
+		case _bf109: // plane
+		case _civcar: // car
+		armorRating = 0; break;
+
+		case _motorcycle: // bike
+		case _jourcop: // journalist
+		armorRating = -1; break;
+	}
+
+	print ("blobName: "+ blobName + " hash: "+blobHash);
+	print ("armor: "+ armorRating);
+	print ("hardShelled: "+ hardShelled);
+	print ("-");
+
+	this.set_s8(armorRatingString, armorRating);
+	this.set_bool(hardShelledString, hardShelled);
+
 }
 
 void onTick(CBlob@ this)
@@ -299,55 +352,64 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (damage > 0.05f)
+	s8 armorRating = this.get_s8(armorRatingString);
+	s8 penRating = hitterBlob.get_s8(penRatingString);
+	bool hardShelled = this.get_bool(hardShelledString);
+
+	const bool is_explosive = customData == Hitters::explosion;
+
+	float damageNegation = 0.0f;
+
+	s8 finalRating = getFinalRating(armorRating, penRating, hardShelled);
+	switch (finalRating)
 	{
-		this.set_u32("no_heal", getGameTime()+10*30); //good idea, too much though
-	}
-	//AttachmentPoint@[] aps;
-	//if (this.getAttachmentPoints(@aps))
-	//{
-	//	for (uint i = 0; i < aps.length; i++)
-	//	{
-//
-	//	}
-	//}
-	if (hitterBlob.getName() == "bulletheavy" && this.getName() != "t10" && !this.hasTag("heavy")) // no t10
-	{
-		if (this.hasTag("tank")) // m60
+		// negative armor, trickles up
+		case -2:
 		{
-			if (isServer())
-				this.server_Heal(0.85f); // i dont fucking know why damage is always 50, nothing is working
-			return damage;
+			if (is_explosive) damage += 0.5f; // suffer bonus base damage (you just got your entire vehicle burned)
+			damage *= 1.3f;
 		}
-		else if (this.hasTag("apc")) // pszh4 and btr82a
+		case -1:
 		{
-			if (isServer())
-				this.server_Heal(0.75f);  //what tffff
-			return damage;
+			damage *= 1.1f;
+		}
+		break;
+
+		// positive armor, trickles down
+		case 5:
+		{
+			damageNegation += 2.0f; // reduction to final damage, extremely tanky
+		}
+		case 4:
+		{
+			damage *= 0.7f;
+		}
+		case 3:
+		{
+			damage *= 0.9f;
+		}
+		case 2:
+		{
+			damage *= 0.9f;
+		}
+		case 1:
+		{
+			damageNegation += 0.5f; // reduction to final damage, for negating small bullets
+			damage = Maths::Max(damage - damageNegation, 0.0f); // nullification happens here
+		}
+		break;
+	}
+
+	// if damage is not insignificant, prevent repairs for a time
+	if (damage > 0.1f)
+	{
+		this.set_u32("no_heal", getGameTime()+10*30);
+		if (customData == Hitters::ballista && armorRating > 1) // ballista hits are usually anti-tank. Don't ask me.
+		{
+			this.getSprite().PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f); //(XORRandom(50)/100)
 		}
 	}
-	if (customData == Hitters::arrow) this.server_Heal(0.775f);
-	if (this.getName() == "techtruck" && customData == Hitters::explosion && (hitterBlob.hasTag("medium") || hitterBlob.hasTag("heavy")))
-	{
-		return damage * 3;
-	} 
-	if (hitterBlob.getName() == "ballista_bolt" && customData == Hitters::explosion)
-	{
-		return damage / (this.hasTag("turret") ? 3 : 20);
-	}
-	if (hitterBlob.getName() == "grenade")
-	{
-		return damage * 4;
-	}
-	if (hitterBlob.getName() == "mine")
-	{
-		return damage * 0.5;
-	}
-	if (hitterBlob.hasTag("sniperbullet"))
-	{
-		return damage * 4;
-	}
-	
+
 	return damage;
 }
 
