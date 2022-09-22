@@ -88,6 +88,8 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	this.set_Vec2f("backside_hitpos", this.getPosition()+Vec2f(this.isFacingLeft() ? 16.0f : -16.0f, 0));
+	
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		if (getGameTime()%30==0)

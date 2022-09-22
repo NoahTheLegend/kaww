@@ -1,5 +1,6 @@
 // small artillery
 
+#include "WarfareGlobal.as"
 #include "Hitters.as"
 #include "ComputerCommon.as"
 #include "Explosion.as"
@@ -22,6 +23,11 @@ void onInit(CBlob@ this)
 //	missile.lose_target_ticks 			= JavelinParams::lose_target_ticks;
 	missile.gravity_scale 				= JavelinParams::gravity_scale;
 	this.set("missileInfo", @missile);
+
+	this.set_f32(projExplosionRadiusString, 30.0f);
+	this.set_f32(projExplosionDamageString, 15.0f);
+
+	this.set_s8(penRatingString, 3);
 
 	this.set_f32(robotechHeightString, 64.0f); // pixels
 
@@ -330,7 +336,7 @@ void makeMissileEffect(Vec2f thisPos = Vec2f_zero)
 
 	for (int i = 0; i < particleNum; i++)
     {
-        Vec2f pOffset(_missile_r.NextFloat() * radius, 0);
+        Vec2f pOffset(_missile_r.NextFloat() * 32.0f, 0);
         pOffset.RotateBy(_missile_r.NextFloat() * 360.0f);
 
         CParticle@ p = ParticleAnimated("BulletHitParticle1.png", 
@@ -352,10 +358,11 @@ void makeMissileEffect(Vec2f thisPos = Vec2f_zero)
 
 bool DoExplosion(CBlob@ this, Vec2f explosionVec)
 {
-	//f32 mod = 1.5;
+	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
+	float projExplosionDamage = this.get_f32(projExplosionDamageString);
 
-	//Explode(this, radius, damage);
-	LinearExplosion(this, explosionVec, radius, 16.0f, radius, damage, Hitters::explosion);
+	WarfareExplode(this, projExplosionRadius, projExplosionDamage);
+	//LinearExplosion(this, explosionVec, radius, 16.0f, radius, damage, Hitters::explosion);
 	
 	this.getSprite().PlaySound("/ShellExplosion");
 

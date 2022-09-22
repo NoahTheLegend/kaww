@@ -92,6 +92,8 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	this.set_Vec2f("backside_hitpos", this.getPosition()+Vec2f(this.isFacingLeft() ? 20.0f : -20.0f, 0));
+
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
