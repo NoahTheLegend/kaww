@@ -29,7 +29,7 @@ void onInit(CBlob@ this)
 	this.set_u8("shop icon", 25);
 
 	{
-		ShopItem@ s = addShopItem(this, "7.62mm Rounds", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
+		ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 10);
 	}
 	{
