@@ -355,7 +355,7 @@ bool DoExplosion(CBlob@ this, Vec2f explosionVec)
 	//f32 mod = 1.5;
 
 	//Explode(this, radius, damage);
-	LinearExplosion(this, explosionVec, radius, 16.0f, radius, damage, Hitters::fall);
+	LinearExplosion(this, explosionVec, radius, 16.0f, radius, damage, Hitters::explosion);
 	
 	this.getSprite().PlaySound("/ShellExplosion");
 
