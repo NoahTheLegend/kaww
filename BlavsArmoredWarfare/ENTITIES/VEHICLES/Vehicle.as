@@ -462,8 +462,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	Vec2f thisPos = this.getPosition();
 	Vec2f hitterBlobPos = hitterBlob.getPosition();
 
-	if (customData == Hitters::sword) return 0;
-
 	s8 armorRating = this.get_s8(armorRatingString);
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
@@ -522,24 +520,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage = Maths::Max(damage - damageNegation, 0.0f); // nullification happens here
 		}
 		break;
-	}
-	
-	float backsideOffset = this.get_f32(backsideOffsetString);
-	if (backsideOffset > 0)
-	{
-		// add more damage if hit from below (only hull)
-		if (hitterBlobPos.y > thisPos.y)
-		{
-			damage *= 2.5f;
-			//print("e");
-		}
-
-		// add more damage if hit backside of the tank (only hull)
-		if (this.isFacingLeft() ? hitterBlobPos.x > (thisPos.x + backsideOffset) : hitterBlobPos.x < (thisPos.x - backsideOffset))
-		{
-			damage *= 2.75f;
-			//print("a");
-		}
 	}
 
 	//print ("finalDamage: "+damage);
