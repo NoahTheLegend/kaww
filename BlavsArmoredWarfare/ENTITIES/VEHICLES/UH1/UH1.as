@@ -150,6 +150,8 @@ void onTick(CBlob@ this)
 {	
 	if (this !is null)
 	{
+		this.set_Vec2f("backside_hitpos", this.getPosition()+Vec2f(this.isFacingLeft() ? 24.0f : -24.0f, 0));
+
 		if (getGameTime() >= this.get_u32("next_shoot"))
 		{
 			this.Untag("no_more_shooting");
@@ -162,8 +164,6 @@ void onTick(CBlob@ this)
 			//this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y*0.16f));
 			this.AddForce(Vec2f(0, 220.0f));
 		}
-
-
 
 
 		CSprite@ sprite = this.getSprite();
