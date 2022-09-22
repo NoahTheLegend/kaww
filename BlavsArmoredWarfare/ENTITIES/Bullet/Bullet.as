@@ -97,7 +97,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	CMap@ map = getMap();
 	this.setVelocity(this.getVelocity() * 0.8f);
 
-	// chance to break a block
+	// chance to break a block. Will not touch "strong" tag for now.
 	bool isStrong = this.hasTag("strong");
 	if (XORRandom(100) < 36)
 	{
@@ -208,6 +208,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 	{
 		if (blob.getName() != "stone_door")
 		{
+			// destroy doors. Will not touch "strong" tag for now.
 			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 1.0f : 0.25f, Hitters::builder);
 			this.server_Die();
 		}

@@ -1,3 +1,4 @@
+#include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "Explosion.as";
 // const u32 fuel_timer_max = 30 * 600;
@@ -5,7 +6,7 @@ const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
 const u32 shootDelay = 2; // Ticks
-const f32 damage = 1.0f;
+const f32 projDamage = 0.3f;
 
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);
@@ -232,8 +233,10 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 			proj.SetDamageOwnerPlayer(this.getPlayer());
 			proj.Init();
 
-			proj.set_f32("bullet_damage_body", damage*0.5f);
-			proj.set_f32("bullet_damage_head", damage);
+			proj.set_s8(penRatingString, 2);
+
+			proj.set_f32("bullet_damage_body", projDamage);
+			proj.set_f32("bullet_damage_head", projDamage*1.5f);
 			proj.IgnoreCollisionWhileOverlapped(this);
 			proj.server_setTeamNum(this.getTeamNum());
 			proj.setVelocity(arrowVel);
@@ -333,7 +336,7 @@ void Shoot(CBlob@ this)
 					if ((blob.isCollidable() || blob.hasTag("flesh")) && blob.getTeamNum() != this.getTeamNum())
 					{
 						// print("Hit " + blob.getName() + " for " + damage * falloff);
-						this.server_Hit(blob, blob.getPosition(), Vec2f(0, 0), damage * Maths::Max(0.1, falloff), Hitters::arrow);
+						this.server_Hit(blob, blob.getPosition(), Vec2f(0, 0), projDamage * Maths::Max(0.1, falloff), Hitters::arrow);
 						falloff = falloff * 0.5f;			
 					}
 				}
@@ -347,7 +350,7 @@ void Shoot(CBlob@ this)
 			
 			if (!map.isTileBedrock(tile) && tile != CMap::tile_ground_d0 && tile != CMap::tile_stone_d0)
 			{
-				map.server_DestroyTile(hitPos, damage * 0.125f);
+				map.server_DestroyTile(hitPos, 0.125f);
 			}
 		}
 	}
