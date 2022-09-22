@@ -13,7 +13,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    135.0f, // move speed
+	    175.0f, // move speed
 	    1.0f,  // turn speed
 	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    false);  // inventory access
@@ -160,7 +160,7 @@ void onTick(CBlob@ this)
 			ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
 
 			if (isClient() && XORRandom(2) == 0)
-			{	
+			{
 				ParticleAnimated("LargeSmoke", this.getPosition() + Vec2f(XORRandom(60) - 30, XORRandom(48) - 24), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, 90), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 7 + XORRandom(8), XORRandom(70) * -0.00005f, true);
 			}
 		}

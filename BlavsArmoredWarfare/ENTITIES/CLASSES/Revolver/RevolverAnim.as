@@ -168,7 +168,7 @@ void onTick(CSprite@ this)
 	s32 chopframe = 0;
 	f32 chopAngle = 0.0f;
 
-	if (isStabbing || isReloading || blob.isAttached())
+	if (isStabbing || isReloading || (blob.isAttached() && !blob.hasTag("show_gun")))
 	{
 		showgun = false;
 	}
