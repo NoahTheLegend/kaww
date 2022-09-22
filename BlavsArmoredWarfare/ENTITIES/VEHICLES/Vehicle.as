@@ -21,6 +21,7 @@ void onInit(CBlob@ this)
 	switch(blobHash)
 	{
 		case _maus: // maus
+		case _mausturret: // MAUS Shell cannon
 		{
 			armorRating = 5;
 			hardShelled = true;
@@ -32,18 +33,21 @@ void onInit(CBlob@ this)
 		armorRating = 4; break;
 			
 		case _m60: // normal tank
-		
+		case _m60turret: // M60 Shell cannon
 		armorRating = 3; break;
 
 		case _transporttruck: // vanilla truck?
 		case _armory: // shop truck
 		case _btr82a: // big APC
+		case _btrturret: // big APC cannon
 		case _heavygun: // MG
 		armorRating = 2; break;
 
 		case _uh1: // heli
 		case _pszh4: // smol APC
+		case _pszh4turret: // smol APC cannon
 		case _techtruck: // MG truck
+		case _gun: // light MG
 		armorRating = 1; break;
 
 		case _bf109: // plane
@@ -53,12 +57,13 @@ void onInit(CBlob@ this)
 		case _motorcycle: // bike
 		case _jourcop: // journalist
 		armorRating = -1; break;
-	}
 
-	print ("blobName: "+ blobName + " hash: "+blobHash);
-	print ("armor: "+ armorRating);
-	print ("hardShelled: "+ hardShelled);
-	print ("-");
+		default:
+		{
+			print ("blobName: "+ blobName + " hash: "+blobHash);
+			print ("-");
+		}
+	}
 
 	this.set_s8(armorRatingString, armorRating);
 	this.set_bool(hardShelledString, hardShelled);
@@ -164,10 +169,12 @@ void onTick(CBlob@ this)
 		}
 	}
 
+	/*
 	if (this.set_f32("engine_RPMtarget") > this.get_f32("engine_RPM"))
 	{
 		this.add_f32("engine_RPM", 10.0f);
 	}
+	*/
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
@@ -394,11 +401,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		case 3:
 		{
-			damage *= 0.9f;
+			damage *= 0.8f;
 		}
 		case 2:
 		{
-			damage *= 0.9f;
+			damage *= 0.8f;
 		}
 		case 1:
 		{
