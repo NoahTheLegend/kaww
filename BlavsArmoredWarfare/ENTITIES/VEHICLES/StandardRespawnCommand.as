@@ -39,7 +39,7 @@ void InitClasses(CBlob@ this)
 	addPlayerClass(this, "---- Mechanic ----", "$slave_class_icon$", "slave", "---- Mechanic ----\n\nBuild and break.\nCan't capture flags.\n\nHP: 200\nLMB: Build\nRMB: Mine");
 	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver", "---- Python ----\n\nGreat headshot damage.\nHP: 275\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
 	addPlayerClass(this, "---- Ak47 ----", "$ranger_class_icon$", "ranger", "---- Ak47 ----\n\nExcellent damage.\nHP: 200\nLMB: Shoot\nRMB: Aim\nSPACEBAR:\n\n\n"+"Skemonde — Today at 6:10 PM\nbtw descriprion of ranger lies space is for knife when ak shooter uses butt stock instead of a knife (edited)");
-	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun", "---- Shotgunner ----\n\nDeadly at close range.\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
+	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun", "---- Shotgunner ----\n\nDeadly at close range.\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Dig");
 	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper", "---- Sniper ----\n\nLong range sniper.\nHP: 175\nLMB: Shoot\nRMB: Scope in\nSPACEBAR: Knife");
 	addPlayerClass(this, "---- Anti-Tank ----", "$antitank_class_icon$", "antitank", "---- Anti-Tank ----\n\nEliminate tanks onfoot\nHP: 225.\nLMB: RPG\nRMB: Aim\nSPACEBAR: Knife");
 	//addPlayerClass(this, "---- Medic ----", "$medic_class_icon$", "mp5", "---- Medic ----\n\nHeal nearby teammates.\nLMB: MP5\nRMB: Knife");
