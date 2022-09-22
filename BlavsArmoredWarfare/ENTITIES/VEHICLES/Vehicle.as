@@ -476,7 +476,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	float damageNegation = 0.0f;
 	//print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
-	
+	//print("finalRating: "+finalRating);
 	// add more damage if hit from below or hit backside of the tank (only hull)
 	if (isHitUnderside || isHitBackside)
 	{
@@ -488,12 +488,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		// negative armor, trickles up
 		case -2:
 		{
-			if (is_explosive && damage != 0) damage += 0.5f; // suffer bonus base damage (you just got your entire vehicle burned)
+			if (is_explosive && damage != 0) damage += 1.5f; // suffer bonus base damage (you just got your entire vehicle burned)
 			damage *= 1.3f;
 		}
 		case -1:
 		{
-			damage *= 1.1f;
+			damage *= 1.3f;
 		}
 		break;
 
