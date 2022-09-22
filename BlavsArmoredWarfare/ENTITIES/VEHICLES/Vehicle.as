@@ -6,6 +6,9 @@
 #include "GenericButtonCommon.as"
 #include "Hitters.as";
 
+const string engineRPMString = "engine_RPM";
+const string engineRPMTargetString = "engine_RPMtarget";
+
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
@@ -17,7 +20,7 @@ void onInit(CBlob@ this)
 	int blobHash = blobName.getHash();
 	switch(blobHash)
 	{
-		case _maus: // mouse
+		case _maus: // maus
 		{
 			armorRating = 5;
 			hardShelled = true;
@@ -60,6 +63,7 @@ void onInit(CBlob@ this)
 	this.set_s8(armorRatingString, armorRating);
 	this.set_bool(hardShelledString, hardShelled);
 
+	this.set_f32(engineRPMString, 0.0f);
 }
 
 void onTick(CBlob@ this)
@@ -101,13 +105,12 @@ void onTick(CBlob@ this)
 	f32 velx = Maths::Abs(this.getVelocity().x);
 
 	// ground sound
-
-	if (velx < 0.02f || (!this.isOnGround() && !this.isInWater()))
+	if (velx < 0.5f)
 	{
 		CSprite@ sprite = this.getSprite();
 		f32 vol = sprite.getEmitSoundVolume();
-		sprite.SetEmitSoundVolume(vol * 0.9f);
-		if (vol < 0.1f)
+		sprite.SetEmitSoundVolume(vol * 0.95f);
+		if (vol < 0.05f)
 		{
 			sprite.SetEmitSoundPaused(true);
 			sprite.SetEmitSoundVolume(1.0f);
@@ -118,7 +121,7 @@ void onTick(CBlob@ this)
 		if (this.isOnGround() && !v.ground_sound.isEmpty())
 		{
 			CSprite@ sprite = this.getSprite();
-			if ((this.getVelocity().x > 0.25f || this.getVelocity().x < -0.25f) && sprite.getEmitSoundPaused())
+			if ((this.getVelocity().x > 0.01f || this.getVelocity().x < -0.01f) && sprite.getEmitSoundPaused())
 			{
 				this.getSprite().SetEmitSound(v.ground_sound);
 				sprite.SetEmitSoundPaused(false);
@@ -129,7 +132,7 @@ void onTick(CBlob@ this)
 
 			if (volMod > 0.0f)
 			{
-				sprite.SetEmitSoundVolume(Maths::Min(velx * 0.565f * volMod, 1.0f));
+				sprite.SetEmitSoundVolume(Maths::Min(velx * 0.667f * volMod, 1.0f));
 			}
 
 			if (pitchMod > 0.0f)
@@ -137,7 +140,7 @@ void onTick(CBlob@ this)
 				sprite.SetEmitSoundSpeed(Maths::Max(Maths::Min(Maths::Sqrt(0.5f * velx * pitchMod), 1.5f), 0.75f));
 			}
 		}
-		else if (!this.isOnGround() && !v.water_sound.isEmpty())
+		if (!this.isOnGround() && !v.water_sound.isEmpty())
 		{
 			CSprite@ sprite = this.getSprite();
 			if (sprite.getEmitSoundPaused())
@@ -159,6 +162,11 @@ void onTick(CBlob@ this)
 				sprite.SetEmitSoundSpeed(Maths::Max(Maths::Min(Maths::Sqrt(0.5f * velx * pitchMod), 1.5f), 0.75f));
 			}
 		}
+	}
+
+	if (this.set_f32("engine_RPMtarget") > this.get_f32("engine_RPM"))
+	{
+		this.add_f32("engine_RPM", 10.0f);
 	}
 }
 
@@ -401,12 +409,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 
 	// if damage is not insignificant, prevent repairs for a time
-	if (damage > 0.1f)
+	if (damage > 0.25f)
 	{
 		this.set_u32("no_heal", getGameTime()+10*30);
 		if (customData == Hitters::ballista && armorRating > 1) // ballista hits are usually anti-tank. Don't ask me.
 		{
-			this.getSprite().PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f); //(XORRandom(50)/100)
+			this.getSprite().PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f);
 		}
 	}
 

@@ -29,7 +29,7 @@ void onInit(CBlob@ this)
 	Vehicle_Setup(this,
 	    0.0f, // move speed
 	    0.3f,  // turn speed
-	    Vec2f(0.0f, 0.56f), // jump out velocity
+	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    true);  // inventory access
 
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
@@ -82,7 +82,7 @@ void onInit(CBlob@ this)
 		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
 		if (arm !is null)
 		{
-			arm.SetRelativeZ(0.5f);
+			arm.SetRelativeZ(2.5f);
 			arm.SetOffset(Vec2f(-90.0f, -7.0f));
 		}
 	}
@@ -187,14 +187,6 @@ void onTick(CBlob@ this)
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 
 			bool facing_left = this.isFacingLeft();
-
-			//if (aim_vec.x > 0)
-			//{
-			//	this.SetFacingLeft(true);
-			//}
-			//else {
-			//	this.SetFacingLeft(false);
-			//}
 		}
 
 		if (angle < 0) //
@@ -232,7 +224,6 @@ void onTick(CBlob@ this)
 		{
 			this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 		}
-		//this.set_f32("gunelevation", Maths::Min(360-high_angle , this.get_f32("gunelevation")));
 
 		CSprite@ sprite = this.getSprite();
 		CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
@@ -240,7 +231,7 @@ void onTick(CBlob@ this)
 		{
 			arm.ResetTransform();
 			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(-20.0f, -27.0f));
+			arm.SetOffset(Vec2f(this.isFacingLeft() ? -21.0f : -20.0f, this.isFacingLeft() ? -27.5f : -26.5f));
 		}
 
 		if (getNet().isClient())
