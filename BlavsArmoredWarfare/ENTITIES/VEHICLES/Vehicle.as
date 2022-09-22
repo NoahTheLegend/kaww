@@ -432,6 +432,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	float damageNegation = 0.0f;
 	print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
+	
+	// add more damage if hit from below or hit backside of the tank (only hull)
+	if (isHitUnderside || isHitBackside)
+	{
+		damage *= 1.5f;
+	}
+
 	switch (finalRating)
 	{
 		// negative armor, trickles up
@@ -469,18 +476,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage = Maths::Max(damage - damageNegation, 0.0f); // nullification happens here
 		}
 		break;
-	}
-	
-	// add more damage if hit from below (only hull)
-	if (isHitUnderside)
-	{
-		damage *= 1.5f;
-	}
-
-	// add more damage if hit backside of the tank (only hull)
-	if (isHitBackside)
-	{
-		damage *= 1.5f;
 	}
 	
 	print ("finalDamage: "+damage);
