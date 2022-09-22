@@ -277,8 +277,17 @@ namespace map_colors
 		blue_t10               = 0xff5fffb7,
 		red_t10                = 0xff8ed264,
 
+		blue_maus              = 0xff00fecf,
+		red_maus               = 0xff00d2ff,
+
 		blue_m60               = 0xffa3dfc4,
 		red_m60                = 0xffc0e3ab,
+
+		blue_bf109             = 0xff09f34e,
+		red_bf109              = 0xfffff34e,
+
+		blue_uh1               = 0xff133899,
+		red_uh1                = 0xff113cce,
 
 		blue_armory            = 0xff0d6f98,
 		red_armory             = 0xff980f0d,
