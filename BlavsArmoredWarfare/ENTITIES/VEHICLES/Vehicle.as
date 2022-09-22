@@ -421,19 +421,19 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		// positive armor, trickles down
 		case 5:
 		{
-			damageNegation += 0.5f; // reduction to final damage, extremely tanky
+			damageNegation += 0.65f; // reduction to final damage, extremely tanky
 		}
 		case 4:
 		{
-			damage *= 0.9f;
+			damage *= 0.75f;
 		}
 		case 3:
 		{
-			damage *= 1.05f;
+			damage *= 0.85f;
 		}
 		case 2:
 		{
-			damage *= 1.15f;
+			damage *= 1.05f;
 		}
 		case 1:
 		{
@@ -448,13 +448,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		//printf(""+hb_pos.y);
 		//printf(""+this_pos.y+8.0f);
-		damage *= 1.75f;
+		damage *= 1.5f;
 	}
 	// add more damage if hit backside of the tank (only hull)
 	if (this.exists("backside_hitpos"))
 	{
 		Vec2f back_pos = this.get_Vec2f("backside_hitpos");
-		if ((hb_pos - back_pos).Length() < (hb_pos - this_pos).Length()) damage *= 2.75f;
+		if ((hb_pos - back_pos).Length() < (hb_pos - this_pos).Length()) damage *= 2.25f;
 	}
 	print ("finalDamage: "+damage);
 	// if damage is not insignificant, prevent repairs for a time
