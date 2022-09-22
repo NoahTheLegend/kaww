@@ -7,6 +7,7 @@ void onInit(CBlob@ this)
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
 	this.Tag("takesdmgfrombullet");
+	this.Tag("shootseat");
 
 	//print("" + this.getName().getHash());
 
@@ -52,6 +53,16 @@ void onInit(CBlob@ this)
 	}
 
 	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
+
+	AttachmentPoint@[] aps;
+	if (this.getAttachmentPoints(@aps))
+	{
+		for (uint i = 0; i < aps.length; i++)
+		{
+			AttachmentPoint@ ap = aps[i];
+			ap.SetKeysToTake(key_action1 | key_action2 | key_action3);
+		}
+	}
 }
 
 void onTick(CBlob@ this)
@@ -64,6 +75,20 @@ void onTick(CBlob@ this)
 			return;
 		}
 		Vehicle_StandardControls(this, v);
+
+		// allow passenger shoot from it
+		AttachmentPoint@ pass = this.getAttachments().getAttachmentPointByName("PASSENGER");
+		if (pass !is null && pass.getOccupied() !is null)
+		{
+			CBlob@ b = pass.getOccupied();
+			if (b !is null)
+			{
+				b.Tag("show_gun");
+
+				if (b.getAimPos().x < b.getPosition().x) b.SetFacingLeft(true);
+				else b.SetFacingLeft(false);
+			}
+		}
 
 		CSprite@ sprite = this.getSprite();
 		if (getNet().isClient())
@@ -198,6 +223,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	{
 		return;
 	}
+	detached.Untag("show_gun");
 	Vehicle_onDetach(this, v, detached, attachedPoint);
 }
 
