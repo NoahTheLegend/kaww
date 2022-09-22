@@ -401,12 +401,12 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if (blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))
 	{
-		return false;
+		return true;
 	}
 
 	if (blob.hasTag("flesh") && !blob.isAttached())
 	{
-		return false;
+		return true;
 	}
 	else
 	{
