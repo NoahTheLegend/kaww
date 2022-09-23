@@ -1,15 +1,9 @@
 const string engineRPMString_Manager = "engine_RPM_M";
-const float baseVolume = 1.1f; // 1.0 is smooth, 1.1 adds grime
+const float baseVolume = 1.0f; // 1.0 is smooth, 1.1 adds grime
 
 
-
-//
 const float idleRestingPitch = 250.0f;
-
-
-
-
-
+const string isThisOnGroundString = "isThisOnGround";
 
 
 
@@ -44,6 +38,8 @@ void onTick(CBlob@ this)
         sprite.SetEmitSoundPaused(false);
     }
 
+    print("a " + this.get_bool(isThisOnGroundString));
+
     if (!type)
     {
         if (rpm < 5000) // switch to idle
@@ -60,14 +56,26 @@ void onTick(CBlob@ this)
             sprite.SetEmitSoundSpeed(
                 Maths::Min(0.01f + Maths::Abs((5500 - rpm) / 3000), 1.15f) * 1.0);
 
+            if(!this.get_bool(isThisOnGroundString))
+            {
+                sprite.SetEmitSoundSpeed( sprite.getEmitSoundSpeed()*1.15f);
+            }
+            
+           
+
             //print("--------- " + sprite.getEmitSoundSpeed());
         }        
     }
     else{ 
         // middle ground
         sprite.SetEmitSoundSpeed(
-            Maths::Min(0.01f + Maths::Abs((2000 - rpm) / 3000), 1.3f) * 1.0);
-        //print("--------- " + sprite.getEmitSoundSpeed());
+            Maths::Min(0.01f + Maths::Abs((3000 - rpm) / 3000), 1.2f) * 1.0);
+        print("--------- " + sprite.getEmitSoundSpeed());
+
+        if(!this.get_bool(isThisOnGroundString))
+        {
+            sprite.SetEmitSoundSpeed( sprite.getEmitSoundSpeed()*1.25f);
+        }
     }
    
     if (rpm > 2000)
