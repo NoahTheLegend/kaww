@@ -11,6 +11,8 @@ const string engineRPMString = "engine_RPM";
 const string engineRPMTargetString = "engine_RPMtarget";
 const string engineThrottleString = "engine_throttle";
 
+const u8 turretShowHPSeconds = 8;
+
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
@@ -151,6 +153,8 @@ void onInit(CBlob@ this)
 	this.set_f32(engineThrottleString, 0.0f);
 
 	this.set_f32(wheelsTurnAmountString, 0.0f);
+
+	this.set_u32("show_hp", 0);
 }
 
 void onTick(CBlob@ this)
@@ -469,6 +473,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	bool hardShelled = this.get_bool(hardShelledString);
 
 	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor
+
+	if (this.hasTag("turret")) this.set_u32("show_hp", getGameTime() + turretShowHPSeconds * 30);
 
 	const bool is_explosive = customData == Hitters::explosion || customData == Hitters::keg;
 
