@@ -16,11 +16,11 @@ shared int ticketsRemaining(CRules@ this, int team){
 
 shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets left, 0 otherwise
 	s16 numTickets;
+
 	//double check idk why its passing
 	CBlob@ b = getBlobByName("pointflag");
-	CBlob@[] tents;
-	getBlobsByName("tent", @tents);
-	if (b is null && tents.length > 0) return 0;
+	CBlob@ t = getBlobByName("tent");
+	if (b !is null || t is null) return 0;
 	
 	if(team==0){
 		numTickets=this.get_s16("blueTickets");
