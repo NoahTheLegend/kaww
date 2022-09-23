@@ -54,8 +54,8 @@ void onInit(CBlob@ this)
 	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", sprite.getConsts().filename, 80, 80);
 	if (tracks !is null)
 	{
-		tracks.addAnimation("default", 0, false);
-		int[] frames = { 15, 15, 15 };
+		tracks.addAnimation("default", 2, true);
+		int[] frames = { 15, 16, 17 };
 		tracks.animation.AddFrames(frames);
 		tracks.SetRelativeZ(50.8f);
 		tracks.SetOffset(Vec2f(0.0f, 0.0f));
@@ -150,6 +150,22 @@ void onTick(CBlob@ this)
 					}
 				}
 			}
+		}
+
+		CSpriteLayer@ tracks = this.getSprite().getSpriteLayer("tracks");
+		if (tracks !is null)
+		{
+			float wheels_angle = (Maths::Round(((this.getSprite().getWorldTranslation().x*8) + (this.get_f32("wheelsTurnAmount")*80))) % 360);
+			//print("w " + wheels_angle);
+			if (Maths::Abs(this.getVelocity().x) > 0.5f)
+			{
+				tracks.animation.timer = 1;
+			}
+			else
+			{
+				tracks.animation.timer = 0;
+			}
+			
 		}
 	}
 

@@ -635,7 +635,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (vel.x > 2.0f)
 							{
-								ShakeScreen(30.0f, 8, this.getPosition());
+								//ShakeScreen(30.0f, 8, this.getPosition());
 								
 							}
 							if (onground && groundNormal.y < -0.4f && groundNormal.x > 0.05f && vel.x < 1.0f && slopeangle)   // put more force when going up
@@ -652,7 +652,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								this.SetFacingLeft(true);
 							}
 
-							if (right)
+							if (right && getGameTime() % 4 == 0)
 							{
 								this.SetFacingLeft(false);
 							}
@@ -675,7 +675,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (vel.x < -2.0f)
 							{
-								ShakeScreen(30.0f, 8, this.getPosition());
+								//ShakeScreen(30.0f, 8, this.getPosition());
 							}
 							if (onground && groundNormal.y < -0.4f && groundNormal.x < -0.05f && vel.x > -1.0f && slopeangle)   // put more force when going up
 							{
@@ -691,7 +691,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								this.SetFacingLeft(false);
 							}
 
-							if (left)
+							if (left && getGameTime() % 4 == 0)
 							{
 								this.SetFacingLeft(true);
 							}
