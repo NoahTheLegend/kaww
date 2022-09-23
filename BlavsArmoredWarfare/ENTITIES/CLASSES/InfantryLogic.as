@@ -266,7 +266,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	bool just_action1;
 	bool is_action1;
 
-	just_action1 = (this.get_bool("just_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyJustPressed(key_action1) && this.get_u32("dont_change_zoom") < getGameTime()); // binoculars thing
+	just_action1 = (this.get_bool("just_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyJustPressed(key_action1));
 	is_action1 = (this.get_bool("is_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyPressed(key_action1));
 	bool was_action1 = this.wasKeyPressed(key_action1);
 	bool hidegun = false;
@@ -345,7 +345,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		// reload
 		if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("mag_bullets") < magSize)
 		{
-			print("wtf");
 			//print("RELOAD!!");
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
