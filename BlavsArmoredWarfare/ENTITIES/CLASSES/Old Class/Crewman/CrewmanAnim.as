@@ -1,6 +1,6 @@
 // Crewman animations
 
-#include "CrewmanCommon.as"
+#include "InfantryCommon.as"
 #include "FireParticle.as"
 #include "RunnerAnimCommon.as";
 #include "RunnerCommon.as";

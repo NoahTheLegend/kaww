@@ -5,7 +5,6 @@
 #include "BombCommon.as";
 #include "Hitters.as";
 #include "Recoil.as";
-#include "ShotgunCommon.as";
 #include "InfantryCommon.as";
 
 void onInit(CBlob@ this)
@@ -21,9 +20,6 @@ void onInit(CBlob@ this)
 	this.Tag("flesh");
 	this.addCommandID("sync_reload_to_server");
 	this.Tag("3x2");
-
-	this.set_u8("hitmarker", 0);
-	this.set_s8("reloadtime", 0); // for server
 
 	this.set_s32("my_chargetime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
