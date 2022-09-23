@@ -470,7 +470,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor
 
-	const bool is_explosive = customData == Hitters::explosion;
+	const bool is_explosive = customData == Hitters::explosion || customData == Hitters::keg;
 
 	bool isHitUnderside = false;
 	bool isHitBackside = false;
