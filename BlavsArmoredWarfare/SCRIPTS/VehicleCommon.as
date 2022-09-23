@@ -585,7 +585,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					// left / right
 					if (angle < 80 || angle > 290)
 					{
-						f32 moveForce = v.move_speed;
+						f32 moveForce = v.move_speed/32;
 						f32 turnSpeed = v.turn_speed;
 						Vec2f groundNormal = this.getGroundNormal();
 
@@ -593,12 +593,16 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						Vec2f force;
 
 						// more force when starting
-						if (this.getShape().vellen < 0.1f)
+						if (this.getShape().vellen < 1.75f)
 						{
-							moveForce *= 6.25f;
+							moveForce *= 2.0f; // gear 1
 						}
 
-						moveForce *= this.get_f32("engine_RPM") / 5000;
+						const f32 engine_topspeed = v.move_speed; //5500;
+
+						moveForce *= Maths::Clamp(this.get_f32("engine_RPM"), 0, engine_topspeed) / 4500;
+
+						
 
 						if (this.isOnGround() || this.wasOnGround())
 						{
@@ -616,13 +620,18 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						if (this.isFacingLeft())
 						{
+							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2500)
+							{
+								this.add_f32("wheelsTurnAmount", -1 * (this.get_f32("engine_RPM")- 1900)/30000);
+							}
+
 							if (ap.isKeyJustPressed(key_left))
 							{
 								this.getSprite().PlayRandomSound("/EngineThrottle", 1.5f, 0.85f + XORRandom(11)*0.01f);
 
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
-							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.6f));
+							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.5f));
 
 							if (vel.x > 2.0f)
 							{
@@ -651,13 +660,18 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						if (!this.isFacingLeft())
 						{//spamable and has no effect
+							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2500)
+							{
+								this.add_f32("wheelsTurnAmount", 1 * (this.get_f32("engine_RPM")- 1900)/30000);
+							}
+
 							if (ap.isKeyJustPressed(key_right))
 							{
 								this.getSprite().PlayRandomSound("/EngineThrottle", 1.5f, 0.85f + XORRandom(11)*0.01f);
 
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
-							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.6f));
+							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.5f));
 
 							if (vel.x < -2.0f)
 							{
@@ -765,7 +779,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						}
 					}
 
-					if (this.get_f32("engine_throttle") == 0.5f)
+					if (this.get_f32("engine_throttle") >= 0.5f) // make this an equation
 					{
 						this.set_f32("engine_RPMtarget", 8000); // gas gas gas
 					}
@@ -960,7 +974,7 @@ void UpdateWheels(CBlob@ this)
 			}
 			else {
 				//wheels_angle = (Maths::Round(wheel.getWorldTranslation().x * 10) % 360);
-				wheels_angle = (Maths::Round(wheel.getWorldTranslation().x + (this.get_f32("wheelsTurnAmount")*100)) % 360);
+				wheels_angle = (Maths::Round(((wheel.getWorldTranslation().x*8) + (this.get_f32("wheelsTurnAmount")*80))) % 360);
 			}
 						
 			wheel.ResetTransform();
