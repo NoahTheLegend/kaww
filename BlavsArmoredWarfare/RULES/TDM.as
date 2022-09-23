@@ -121,6 +121,7 @@ void Config(TDMCore@ this)
 
 	//how long for the game to play out?
 	f32 gameDurationMinutes = 15.0f + getPlayersCount()*1.5; //cfg.read_f32("gameDurationMinutes", 7.0f)
+	
 	// basic time
 	this.gameDuration = (getTicksASecond() * 60 * gameDurationMinutes) + this.warmUpTime;
 	// tdm map time
@@ -1053,6 +1054,8 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
     {
         playercoins = cfg_playercoins.read_u32(player.getUsername());
     }
+
+	this.SyncToPlayer("siege", player);
 
     player.server_setCoins(40);
 
