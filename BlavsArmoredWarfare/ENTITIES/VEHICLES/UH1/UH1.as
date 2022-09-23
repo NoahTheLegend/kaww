@@ -234,19 +234,21 @@ void onTick(CBlob@ this)
 						const bool pressed_m2 = ap.isKeyPressed(key_action2);
 
 						// shoot
-						//if (!this.hasTag("no_more_shooting") && hooman.isMyPlayer() && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
-						//{
-						//	CInventory@ inv = this.getInventory();
-						//	if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_heatwarhead")
-						//	{
-						//		if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
-						//		f32 rot = 1.0f;
-						//		if (this.isFacingLeft()) rot = -1.0f;
-						//		ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
-						//		this.Tag("no_more_shooting");
-						//	}
-						//}
-
+						/*
+						if (!this.hasTag("no_more_shooting") && hooman.isMyPlayer() && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
+						{
+							CInventory@ inv = this.getInventory();
+							if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_heatwarhead")
+							{
+								if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
+								f32 rot = 1.0f;
+								if (this.isFacingLeft()) rot = -1.0f;
+								ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
+								this.Tag("no_more_shooting");
+							}
+						}
+						*/
+						
 						const f32 mass = this.getMass();
 
 						if (pressed_a) newForce += leftVelo;
