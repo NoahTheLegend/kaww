@@ -61,7 +61,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build UH1 Helicoptrer", "$uh1$", "uh1", "A helicopter with heavy machinegun.\nPress SPACEBAR to launch HEAT warheads.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy MachineGun.\n\nUses 7.62mm.", false, true);

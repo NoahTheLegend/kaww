@@ -275,6 +275,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	bool isServer = getNet().isServer();
 
+	if (cmd == this.getCommandID("shoot bullet")) // heli causes all commands below because of sending this 1
+	{
+		return;
+	}
+
 	/// LOAD AMMO
 	if (isServer && cmd == this.getCommandID("load_ammo"))
 	{

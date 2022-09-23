@@ -327,29 +327,29 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				inv.getItem(0).server_SetQuantity(inv.getItem(0).getQuantity()-1);
 			}
-		} 
+		}
+		return;
 	}
+}
+
+bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
+{
+	return this.getTeamNum() == forBlob.getTeamNum();
 }
 
 CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 {
 	if (!this.hasTag("no_more_proj"))
 	{
-		CBlob@ proj = server_CreateBlobNoInit("ballista_bolt");
-		if (proj !is null)
+		CBlob@ blob = server_CreateBlob("missile_javelin", this.getTeamNum(), this.getPosition() - Vec2f(0,3));
+		if (blob != null)
 		{
-			proj.SetDamageOwnerPlayer(this.getPlayer());
-			proj.Init();
-
-			proj.set_f32("bullet_damage_body", 6.0f);
-			proj.set_f32("bullet_damage_head", 8.0f);
-			proj.IgnoreCollisionWhileOverlapped(this);
-			proj.server_setTeamNum(this.getTeamNum());
-			proj.setVelocity(arrowVel);
-			proj.setPosition(arrowPos+Vec2f(0, 12.0f));
+			blob.setVelocity(arrowVel);
+			blob.set_Vec2f("map_target_pos", this.get_Vec2f("map_target_pos"));
+			blob.IgnoreCollisionWhileOverlapped(this, 20);
 		}
 		this.Tag("no_more_proj");
-		return proj;
+		return blob;
 	}
 	else
 		return null;
