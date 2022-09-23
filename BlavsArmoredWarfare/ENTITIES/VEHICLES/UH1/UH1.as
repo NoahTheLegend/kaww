@@ -4,8 +4,8 @@
 
 const Vec2f upVelo = Vec2f(0.00f, -0.015f);
 const Vec2f downVelo = Vec2f(0.00f, 0.0050f);
-const Vec2f leftVelo = Vec2f(-0.020f, 0.00f);
-const Vec2f rightVelo = Vec2f(0.020f, 0.00f);
+const Vec2f leftVelo = Vec2f(-0.0275f, 0.00f);
+const Vec2f rightVelo = Vec2f(0.0275f, 0.00f);
 
 const Vec2f minClampVelocity = Vec2f(-0.40f, -0.70f);
 const Vec2f maxClampVelocity = Vec2f( 0.40f, 0.00f);
@@ -55,6 +55,21 @@ void onInit(CBlob@ this)
 		}
 	}
 
+	//add javlauncher
+	if (getNet().isServer())
+	{
+		CBlob@ launcher = server_CreateBlob("launcher_javelin");	
+
+		if (launcher !is null)
+		{
+			launcher.server_setTeamNum(this.getTeamNum());
+			this.server_AttachTo(launcher, "JAVLAUNCHER");
+			this.set_u16("launcherid", launcher.getNetworkID());
+
+			launcher.SetFacingLeft(this.isFacingLeft());
+		}
+	}
+
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "UHT_Launcher", 16, 16);
 
@@ -84,6 +99,8 @@ void onInit(CBlob@ this)
 		this.set_u16("bowid", bow.getNetworkID());
 		bow.SetFacingLeft(this.isFacingLeft());
 	}
+
+	this.inventoryButtonPos = Vec2f(-8.0f, 0);
 }
 
 void onInit(CSprite@ this)
@@ -163,8 +180,26 @@ void onTick(CBlob@ this)
 			this.AddForce(Vec2f(0, 220.0f));
 		}
 
+		bool has_ammo = false;
 
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("JAVLAUNCHER");
+		if (this.get_u32("next_shoot") < getGameTime() && ap !is null)
+		{
+			CBlob@ launcher = ap.getOccupied();
+			if (launcher !is null && launcher.hasTag("dead"))
+			{
+				CInventory@ inv = this.getInventory();
+				if (inv !is null && inv.getItem("mat_heatwarhead") !is null)
+				{
+					has_ammo = true;
+					if (isServer()) inv.server_RemoveItems("mat_heatwarhead", 1);
+					launcher.Untag("dead");
+					this.set_u32("next_shoot", getGameTime()+30);
+				}
+			}
+		}
 
+		this.set_bool("has_ammo", has_ammo);
 
 		CSprite@ sprite = this.getSprite();
 		CShape@ shape = this.getShape();
@@ -199,18 +234,18 @@ void onTick(CBlob@ this)
 						const bool pressed_m2 = ap.isKeyPressed(key_action2);
 
 						// shoot
-						if (!this.hasTag("no_more_shooting") && hooman.isMyPlayer() && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
-						{
-							CInventory@ inv = this.getInventory();
-							if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_heatwarhead")
-							{
-								if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
-								f32 rot = 1.0f;
-								if (this.isFacingLeft()) rot = -1.0f;
-								ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
-								this.Tag("no_more_shooting");
-							}
-						}
+						//if (!this.hasTag("no_more_shooting") && hooman.isMyPlayer() && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
+						//{
+						//	CInventory@ inv = this.getInventory();
+						//	if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_heatwarhead")
+						//	{
+						//		if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
+						//		f32 rot = 1.0f;
+						//		if (this.isFacingLeft()) rot = -1.0f;
+						//		ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
+						//		this.Tag("no_more_shooting");
+						//	}
+						//}
 
 						const f32 mass = this.getMass();
 
@@ -327,8 +362,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				inv.getItem(0).server_SetQuantity(inv.getItem(0).getQuantity()-1);
 			}
-		}
-		return;
+		} 
 	}
 }
 
@@ -341,15 +375,21 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 {
 	if (!this.hasTag("no_more_proj"))
 	{
-		CBlob@ blob = server_CreateBlob("missile_javelin", this.getTeamNum(), this.getPosition() - Vec2f(0,3));
-		if (blob != null)
+		CBlob@ proj = server_CreateBlobNoInit("ballista_bolt");
+		if (proj !is null)
 		{
-			blob.setVelocity(arrowVel);
-			blob.set_Vec2f("map_target_pos", this.get_Vec2f("map_target_pos"));
-			blob.IgnoreCollisionWhileOverlapped(this, 20);
+			proj.SetDamageOwnerPlayer(this.getPlayer());
+			proj.Init();
+
+			proj.set_f32("bullet_damage_body", 6.0f);
+			proj.set_f32("bullet_damage_head", 8.0f);
+			proj.IgnoreCollisionWhileOverlapped(this);
+			proj.server_setTeamNum(this.getTeamNum());
+			proj.setVelocity(arrowVel);
+			proj.setPosition(arrowPos+Vec2f(0, 12.0f));
 		}
 		this.Tag("no_more_proj");
-		return blob;
+		return proj;
 	}
 	else
 		return null;
@@ -450,6 +490,13 @@ void MakeParticle(CBlob@ this, const Vec2f vel, const string filename = "SmallSt
 void onDie(CBlob@ this)
 {
 	DoExplosion(this);
+
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("JAVLAUNCHER");
+	if (this.get_u32("next_shoot") < getGameTime() && ap !is null)
+	{
+		CBlob@ launcher = ap.getOccupied();
+		if (launcher !is null) launcher.server_Die();
+	}
 	
 	if (this.exists("bladeid"))
 	{
