@@ -51,6 +51,16 @@ void onInit(CBlob@ this)
 		front.SetOffset(Vec2f(0.0f, 0.0f));
 	}
 
+	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", sprite.getConsts().filename, 80, 80);
+	if (tracks !is null)
+	{
+		tracks.addAnimation("default", 0, false);
+		int[] frames = { 15, 15, 15 };
+		tracks.animation.AddFrames(frames);
+		tracks.SetRelativeZ(50.8f);
+		tracks.SetOffset(Vec2f(0.0f, 0.0f));
+	}
+
 	// attach turret & machine gun
 	if (getNet().isServer())
 	{
@@ -173,6 +183,7 @@ void onTick(CBlob@ this)
 		if (soundmanager !is null)
 		{	
 			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
 			soundmanager.setVelocity(this.getVelocity());
 			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
 		}
@@ -184,6 +195,7 @@ void onTick(CBlob@ this)
 		if (soundmanager !is null)
 		{	
 			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 10 : -10, -6));
+			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
 			soundmanager.setVelocity(this.getVelocity());
 			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
 		}

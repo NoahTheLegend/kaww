@@ -12,7 +12,7 @@ void onInit(CBlob@ this)
 void onTick(CBlob@ this)
 {
 	if (this.isAttached()) return;
-    float capture_distance = 34.0f; //Distance from this blob that it can be cpaped
+    float capture_distance = 38.0f; //Distance from this blob that it can be cpaped
 
     u8 num_blue = 0;
     u8 num_red = 0;
