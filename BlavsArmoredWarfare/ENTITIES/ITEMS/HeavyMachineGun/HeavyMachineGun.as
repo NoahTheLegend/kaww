@@ -111,7 +111,7 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		print(".");
+		//print(".");
 		gunner.offsetZ = -9.0f;
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 
