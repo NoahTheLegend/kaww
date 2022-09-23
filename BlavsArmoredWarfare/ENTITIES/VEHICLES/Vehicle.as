@@ -119,32 +119,23 @@ void onInit(CBlob@ this)
 	switch(blobHash) // backside vulnerability point
 	{
 		case _maus: // maus
-		{
-			backsideOffset = 24.0f;
-			break;
-		}
+		backsideOffset = 24.0f; break;
+
 		case _t10: // T10
-		{
-			backsideOffset = 20.0f;
-			break;
-		}
+		backsideOffset = 20.0f; break;
+		
 		case _m60: // normal tank
-		{
-			backsideOffset = 16.0f;
-			break;
-		}
+		backsideOffset = 16.0f; break;
+
 		case _btr82a: // big APC
-		{
-			backsideOffset = 16.0f;
-			break;
-		}
+		backsideOffset = 16.0f; break;
+
 		case _pszh4: // smol APC
-		{
-			backsideOffset = 16.0f;
-			break;
-		}
+		backsideOffset = 16.0f; break;
+
 		case _uh1: // heli
 		backsideOffset = 24.0f; break;
+
 		case _bf109: // plane
 		backsideOffset = 8.0f; break;
 	}
