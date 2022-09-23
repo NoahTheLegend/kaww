@@ -988,6 +988,11 @@ void RemoveWheelsOnFlight(CBlob@ this)
 
 void Vehicle_LevelOutInAir(CBlob@ this)
 {
+	if (this.hasTag("holding_down"))
+	{
+		return;
+	}
+	
 	f32 rotvel = 0;
 
 	f32 angle = this.getAngleDegrees();
@@ -1023,30 +1028,32 @@ void Vehicle_LevelOutInAir(CBlob@ this)
 
 void Vehicle_LevelOutInAirCushion(CBlob@ this)
 {
+	if (this.hasTag("holding_down"))
+	{
+		return;
+	}
+
 	f32 angle = this.getAngleDegrees();
 	if  (angle > 4 && angle < 356)
 	{
-		if (!this.hasTag("holding_down"))
+		f32 rotvel = 0;
+
+		f32 diff = 360 - this.getAngleDegrees();
+		diff = (diff + 180) % 360 - 180;
+
+		float rate = 1.6f;
+		if  (angle > 10 && angle < 350)
 		{
-			f32 rotvel = 0;
-
-			f32 diff = 360 - this.getAngleDegrees();
-			diff = (diff + 180) % 360 - 180;
-
-			float rate = 1.6f;
-			if  (angle > 10 && angle < 350)
-			{
-				rate = 2.5f;
-			}
-
-			if (Maths::Abs(diff) > 1)
-				rotvel += (diff > 0 ? 1 : -1) * rate; // * 0.75 is rate
-
-			this.AddTorque(this.isFacingLeft() ? -190.0f :190.0f);
-
-			this.setAngleDegrees(this.getAngleDegrees() + rotvel);
-			return;
+			rate = 2.5f;
 		}
+
+		if (Maths::Abs(diff) > 1)
+			rotvel += (diff > 0 ? 1 : -1) * rate; // * 0.75 is rate
+
+		this.AddTorque(this.isFacingLeft() ? -190.0f :190.0f);
+
+		this.setAngleDegrees(this.getAngleDegrees() + rotvel);
+		return;
 	}
 }
 
