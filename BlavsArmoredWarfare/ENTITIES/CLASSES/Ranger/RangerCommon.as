@@ -32,65 +32,15 @@ const u8 randdelay = 1; // + randomness
 
 const float bulletvelocity = 1.62f; // speed that bullets fly 1.6
 
-namespace ArcherParams
-{
-	enum Aim
-	{
-		not_aiming = 0,
-		readying,
-		charging,
-		fired,
-		no_ammo,
-		stabbing
-	}
-}
-
-namespace ArrowType
-{
-	enum type
-	{
-		normal = 0,
-		count
-	};
-}
-
-class ArcherInfo
-{
-	s8 charge_time;
-	u8 charge_state;
-
-	bool isStabbing;
-	bool isReloading;
-
-	ArcherInfo()
-	{
-		charge_time = 0;
-		charge_state = 0;
-	}
-};
-
-const string[] arrowTypeNames = { "mat_arrows" };
-
-const string[] arrowNames = { "Ammo", };
 
 
 
-namespace Strategy
-{
-	enum strategy_type
-	{
-		idle = 0,
-		attack_blob,
-		goto_blob,
-		find_healing,
-		find_drill,
-		dodge_spike,
-		runaway
-	};
-};
 
-const f32 SEEK_RANGE = 700.0f;
-const f32 ENEMY_RANGE = 400.0f;
 
-// Show emotes?
-const bool USE_EMOTES = true;
+
+
+
+
+
+
+
