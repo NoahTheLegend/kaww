@@ -7,6 +7,7 @@
 #include "Hitters.as";
 #include "Recoil.as";
 #include "InfantryCommon.as";
+#include "MedicisCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -99,6 +100,8 @@ void onInit(CBlob@ this)
 	this.Tag("flesh");
 	this.addCommandID("sync_reload_to_server");
 	this.Tag("3x2");
+
+	if (thisBlobHash == _mp5) this.Tag(medicTagString);
 
 	this.set_u8("hitmarker", 0);
 	this.set_s8("reloadtime", 0); // for server
@@ -270,23 +273,27 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		}
 	}
 
-	if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
+	if (!this.hasTag(medicTagString))
 	{
-		this.set_u32("end_stabbing", getGameTime()+21);
-		this.Tag("attacking");
+		if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
+		{
+			this.set_u32("end_stabbing", getGameTime()+21);
+			this.Tag("attacking");
+		}
+		if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-13)
+		{
+			f32 attackarc = 45.0f;
+			DoAttack(this, 0.5f, (this.isFacingLeft() ? 180.0f : 0.0f), attackarc, Hitters::sword);
+			this.Untag("attacking");
+		}
+		if (this.get_u32("end_stabbing") > getGameTime())
+		{
+			just_action1 = false;
+			is_action1 = false;
+			was_action1 = false;
+		}
 	}
-	if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-13)
-	{
-		f32 attackarc = 45.0f;
-		DoAttack(this, 0.5f, (this.isFacingLeft() ? 180.0f : 0.0f), attackarc, Hitters::sword);
-		this.Untag("attacking");
-	}
-	if (this.get_u32("end_stabbing") > getGameTime())
-	{
-		just_action1 = false;
-		is_action1 = false;
-		was_action1 = false;
-	}
+	
 	const bool pressed_action2 = this.isKeyPressed(key_action2);
 	bool menuopen = getHUD().hasButtons();
 	Vec2f pos = this.getPosition();
