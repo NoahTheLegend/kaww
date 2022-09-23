@@ -317,7 +317,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
-	if (blob.hasTag("turret"))
+	if (blob.hasTag("turret") && blob.getTeamNum() != this.getTeamNum())
 	{
 		return true;
 	}
