@@ -101,7 +101,7 @@ void onInit(CBlob@ this)
 
 	sprite.SetEmitSound("Hydraulics.ogg");
 	sprite.SetEmitSoundPaused(true);
-	sprite.SetEmitSoundVolume(1.0f);
+	sprite.SetEmitSoundVolume(1.25f);
 }
 
 f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
@@ -120,7 +120,7 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 		        (facing_left && aim_vec.x > 0))
 		{
 			this.getSprite().SetEmitSoundPaused(false);
-			this.getSprite().SetEmitSoundVolume(1.0f);
+			this.getSprite().SetEmitSoundVolume(1.25f);
 
 			if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
 
@@ -226,7 +226,7 @@ void onTick(CBlob@ this)
 				else currentAngle++;
 			}
 			this.getSprite().SetEmitSoundPaused(false);
-			this.getSprite().SetEmitSoundVolume(1.0f);
+			this.getSprite().SetEmitSoundVolume(1.25f);
 
 			this.set_f32("gunelevation", ((currentAngle % 360) + 360) % 360);
 			Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
