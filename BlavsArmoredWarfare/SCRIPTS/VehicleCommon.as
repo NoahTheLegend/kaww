@@ -627,7 +627,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (ap.isKeyJustPressed(key_left))
 							{
-								this.getSprite().PlayRandomSound("/EngineThrottle", 1.5f, 0.85f + XORRandom(11)*0.01f);
+								this.getSprite().PlayRandomSound("/EngineThrottle", 1.75f, 0.85f + XORRandom(11)*0.01f);
 
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
@@ -667,7 +667,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (ap.isKeyJustPressed(key_right))
 							{
-								this.getSprite().PlayRandomSound("/EngineThrottle", 1.5f, 0.85f + XORRandom(11)*0.01f);
+								this.getSprite().PlayRandomSound("/EngineThrottle", 1.75f, 0.85f + XORRandom(11)*0.01f);
 
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
