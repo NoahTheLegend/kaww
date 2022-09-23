@@ -1,5 +1,18 @@
 const string engineRPMString_Manager = "engine_RPM_M";
-const float baseVolume = 1.0f;
+const float baseVolume = 1.1f; // 1.0 is smooth, 1.1 adds grime
+
+
+
+//
+const float idleRestingPitch = 250.0f;
+
+
+
+
+
+
+
+
 void onInit(CBlob@ this)
 {
     CSprite@ sprite = this.getSprite();
@@ -33,43 +46,62 @@ void onTick(CBlob@ this)
 
     if (!type)
     {
-        if (rpm < 6000)
+        if (rpm < 5000) // switch to idle
         {
             sprite.SetEmitSound("EngineRun_low.ogg");
+
+            sprite.SetEmitSoundSpeed(
+                Maths::Min(0.01f + Maths::Abs((idleRestingPitch - rpm) / 2000), 1.15f) * 1.0);
         }
-        else
+        else // high rpm
         {
             sprite.SetEmitSound("EngineRun_high.ogg");
-        }
 
-        sprite.SetEmitSoundSpeed(
-            Maths::Min(0.01f + Maths::Abs(rpm / 2000), 1.15f) * 1.0);
+            sprite.SetEmitSoundSpeed(
+                Maths::Min(0.01f + Maths::Abs((5500 - rpm) / 3000), 1.15f) * 1.0);
+
+            //print("--------- " + sprite.getEmitSoundSpeed());
+        }        
     }
-    else{
+    else{ 
+        // middle ground
         sprite.SetEmitSoundSpeed(
-            Maths::Min(0.01f + Maths::Abs(rpm / 6000), 1.3f) * 1.0);
+            Maths::Min(0.01f + Maths::Abs((2000 - rpm) / 3000), 1.3f) * 1.0);
+        //print("--------- " + sprite.getEmitSoundSpeed());
     }
    
-    
-
     if (rpm > 2000)
     {
         if (type) // MANAGER 1
         {
-            sprite.SetEmitSoundVolume(Maths::Clamp(Maths::Abs((2000 - rpm) / 1000), 0, baseVolume));
-            print("mid " +Maths::Clamp(Maths::Abs((2000 - rpm) / 1000), 0, baseVolume));
+            if (rpm > 6000)
+            {
+                if (rpm > 8000)
+                {
+                    sprite.SetEmitSoundPaused(true);
+                }
+                else
+                {
+                    sprite.SetEmitSoundPaused(false);
+                    sprite.SetEmitSoundVolume(Maths::Clamp(1 - Maths::Abs((6000 - rpm) / 2000), 0, baseVolume));
+                }
+            }
+            else
+            {
+                sprite.SetEmitSoundVolume(Maths::Clamp(Maths::Abs((2000 - rpm) / 1000), 0, baseVolume));
+            }
+            
         }
         else // MANAGER 2
         {
             if (rpm < 6000)
             {
                 sprite.SetEmitSoundVolume(Maths::Clamp(1.0f - Maths::Abs(2000 - rpm) / 2000, 0, baseVolume));
-                print("low " + Maths::Clamp(1.0f - Maths::Abs(2000 - rpm) / 2000, 0, baseVolume));
+                //print("low " + Maths::Clamp(1.0f - Maths::Abs(2000 - rpm) / 2000, 0, baseVolume));
             }
             else {
-                //print("c " + Maths::Abs(Maths::Min(6000 - rpm, 1000) / 1000));
                 sprite.SetEmitSoundVolume(Maths::Clamp(Maths::Abs((6000 - rpm) / 1000), 0, baseVolume));
-                print("high " + Maths::Clamp(Maths::Abs((6000 - rpm) / 1000), 0, baseVolume));
+                //print("high " + Maths::Clamp(Maths::Abs((6000 - rpm) / 1000), 0, baseVolume));
             }
         }
     }
@@ -79,27 +111,11 @@ void onTick(CBlob@ this)
         if (rpm < low_rpm_fade)
         {
             sprite.SetEmitSoundVolume(1 - (low_rpm_fade - rpm)/low_rpm_fade);
-            //print("start " + (1 - (low_rpm_fade - rpm)/low_rpm_fade));
         }
         else
         {
              // only idle
             sprite.SetEmitSoundVolume(type ? 0 : baseVolume);
-            //sprite.SetEmitSoundVolume(baseVolume);
         }
-       
     }
-    
 }
-
-
-
-
-
-
-
-
-
-
-
-//script by blav
