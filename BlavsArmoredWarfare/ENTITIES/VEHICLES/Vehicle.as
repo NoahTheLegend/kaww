@@ -253,7 +253,8 @@ void onTick(CBlob@ this)
 				Vec2f velocity = Vec2f(((this.get_f32("engine_throttle") - 0.453)*143), 0);
 				velocity *= this.isFacingLeft() ? 0.25 : -0.25;
 				velocity += Vec2f(0, -0.35) + this.getVelocity()*0.35f;
-				ParticleAnimated("Smoke", this.getPosition() + Vec2f_lengthdir(this.isFacingLeft() ? this.getWidth()/2 : -this.getWidth()/2, this.getAngleDegrees()), velocity + getRandomVelocity(0.0f, XORRandom(35) * 0.01f, 360), 45 + float(XORRandom(90)), 0.3f + XORRandom(50) * 0.01f, Maths::Round(7 - Maths::Clamp(this.get_f32("engine_RPM")/2000, 1, 6)) + XORRandom(3), -0.02 - XORRandom(30) * -0.0005f, false );
+				//print("ve" + velocity);
+				ParticleAnimated("Smoke", this.getPosition() + Vec2f_lengthdir(this.isFacingLeft() ? this.getWidth()/2.2 : -this.getWidth()/2.2, this.getAngleDegrees()), velocity + getRandomVelocity(0.0f, XORRandom(35) * 0.01f, 360), 45 + float(XORRandom(90)), 0.3f + XORRandom(50) * 0.01f, Maths::Round(7 - Maths::Clamp(this.get_f32("engine_RPM")/2000, 1, 6)) + XORRandom(3), -0.02 - XORRandom(30) * -0.0005f, false );
 			}
 		}
 	}
@@ -561,3 +562,68 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 // VehicleCommon.as
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 charge) {}
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
+
+
+void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point1)
+{
+	if (!solid)
+	{
+		return;
+	}
+
+	f32 vellen = this.getShape().vellen;
+	// sound
+	const f32 soundbase = 1.0;
+
+	if (vellen > soundbase)
+	{
+		f32 volume = Maths::Min(1.0f, Maths::Max(0.2f, (vellen - soundbase) / soundbase));
+
+		if (vellen > 3.0f)
+		{
+			this.getSprite().PlayRandomSound("/WoodHeavyBump", volume, 0.9);
+		}
+		else
+		{
+			this.getSprite().PlayRandomSound("/WoodHeavyHit", volume, 0.9);
+		}
+	}
+
+	// damage
+	if (!this.hasTag("ignore fall"))
+	{
+		const f32 base = 5.0f;
+		const f32 ramp = 1.2f;
+
+		if (getNet().isServer() && vellen > base) // server only
+		{
+			if (vellen > base * ramp)
+			{
+				f32 damage = 0.0f;
+
+				if (vellen < base * Maths::Pow(ramp, 1))
+				{
+					damage = 0.5f;
+				}
+				else if (vellen < base * Maths::Pow(ramp, 2))
+				{
+					damage = 1.0f;
+				}
+				else if (vellen < base * Maths::Pow(ramp, 3))
+				{
+					damage = 2.0f;
+				}
+				else if (vellen < base * Maths::Pow(ramp, 3))
+				{
+					damage = 3.0f;
+				}
+				else //very dead
+				{
+					damage = 100.0f;
+				}
+
+				this.server_Hit(this, point1, normal, damage, Hitters::fall);
+			}
+		}
+	}
+}

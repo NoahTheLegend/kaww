@@ -647,14 +647,21 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								force.x -= moveForce;
 							}
 
-							if (vel.x < -turnSpeed)
+							if (ap.isKeyPressed(key_action2))
 							{
-								this.SetFacingLeft(true);
+								if (right) {force.x *= -0.45f;} // reverse
 							}
-
-							if (right && getGameTime() % 4 == 0)
+							else 
 							{
-								this.SetFacingLeft(false);
+								if (vel.x < -turnSpeed)
+								{
+									this.SetFacingLeft(true);
+								}
+
+								if (right && getGameTime() % 4 == 0)
+								{
+									this.SetFacingLeft(false);
+								}
 							}
 						}
 
@@ -673,10 +680,8 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							}
 							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.5f));
 
-							if (vel.x < -2.0f)
-							{
-								//ShakeScreen(30.0f, 8, this.getPosition());
-							}
+							
+
 							if (onground && groundNormal.y < -0.4f && groundNormal.x < -0.05f && vel.x > -1.0f && slopeangle)   // put more force when going up
 							{
 								force.x += 4.0f * moveForce;
@@ -686,14 +691,21 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								force.x += moveForce;
 							}
 
-							if (vel.x > turnSpeed)
+							if (ap.isKeyPressed(key_action2))
 							{
-								this.SetFacingLeft(false);
+								if (left) {force.x *= -0.45f;} // reverse
 							}
-
-							if (left && getGameTime() % 4 == 0)
+							else
 							{
-								this.SetFacingLeft(true);
+								if (vel.x > turnSpeed)
+								{
+									this.SetFacingLeft(false);
+								}
+
+								if (left && getGameTime() % 4 == 0)
+								{
+									this.SetFacingLeft(true);
+								}
 							}
 						}
 
@@ -723,31 +735,20 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					{
 						this.Tag("holding_down");
 						f32 angle = this.getAngleDegrees();
-						//if  (angle < 20 && angle > 340)
+						if (this.isOnGround())
 						{
-							if (this.isOnGround())
-							{
-								f32 rotvel = 0;
+							f32 rotvel = 0;
 
-								//f32 diff = 360 - this.getAngleDegrees();
-								//diff = (diff + 180) % 360 - 180;
+							this.AddTorque(this.isFacingLeft() ? 420.0f : -420.0f);
 
-								//if (Maths::Abs(diff) > 1)
-								//rotvel += (this.isFacingLeft() ? 1: -1) * 2.75; // * 0.75 is rate
-
-								this.AddTorque(this.isFacingLeft() ? 420.0f : -420.0f);
-
-								this.setAngleDegrees(this.getAngleDegrees() + rotvel);
-								//return;
-							}
+							this.setAngleDegrees(this.getAngleDegrees() + rotvel);
 						}
 					}
 					else{
 						this.Untag("holding_down");
 					}
 
-					
-					if (onground)// && (down || moveUp))
+					if (onground)
 					{
 						const bool faceleft = this.isFacingLeft();
 						if (angle > 330 || angle < 30)
@@ -761,10 +762,8 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								{
 									this.AddTorque(faceleft ? torque*mod : -torque*mod);
 								}
-								//
 							}
-							//else
-								//this.AddTorque(((faceleft && left) || (!faceleft && right)) ? torque : -torque);
+
 							this.AddForce(Vec2f(0.0f, -100.0f * wallMultiplier));
 						}
 
