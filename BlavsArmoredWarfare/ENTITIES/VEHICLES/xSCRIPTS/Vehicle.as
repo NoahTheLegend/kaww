@@ -71,25 +71,29 @@ void onInit(CBlob@ this)
 		}
 	}
 
-	float linear_length = 4.0f;
-	switch(blobHash) // weapon rating and length of linear (map) explosion damage
+	f32 linear_length = 4.0f;
+	f32 scale_damage = 1.0f;
+	switch(blobHash) // weapon rating and length of linear (map) and circled explosion damage
 	{
 		case _mausturret: // MAUS Shell cannon
 		{
 			weaponRating = 3;
 			linear_length = 20.0f;
+			scale_damage = 2.5f;
 			break;
 		}
 		case _t10turret: // T10 Shell cannon
 		{
 			weaponRating = 3;
 			linear_length = 14.0f;
+			scale_damage = 2.0f;
 			break;
 		}
 		case _m60turret: // M60 Shell cannon
 		{
 			weaponRating = 2;
 			linear_length = 12.0f;
+			scale_damage = 1.75f;
 			break;
 		}
 		case _uh1: // heli
@@ -106,16 +110,19 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 0;
 			linear_length = 3.0f;
+			scale_damage = 0.75f;
 			break;
 		}
 		case _btrturret: // big APC cannon
 		{
 			weaponRating = 0;
 			linear_length = 4.0f;
+			scale_damage = 0.8f;
 			break;
 		}
 	}
 	this.set_f32("linear_length", linear_length);
+	this.set_f32("explosion_damage_scale", scale_damage);
 
 	float backsideOffset = -1.0f;
 	switch(blobHash) // backside vulnerability point
@@ -485,36 +492,42 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		damage *= 1.5f;
 	}
 
+	// reduce damage if it hits turret (for maus)
+	if (this.hasTag("reduce_upper_dmg") && hitterBlob.getPosition().y < thisPos.y && hitterBlob.getPosition().y > thisPos.y-24.0f)
+	{
+		damage *= 0.5;
+	}
+
 	switch (finalRating)
 	{
 		// negative armor, trickles up
 		case -2:
 		{
 			if (is_explosive && damage != 0) damage += 1.5f; // suffer bonus base damage (you just got your entire vehicle burned)
-			damage *= 1.3f;
+			damage *= 2.0f;
 		}
 		case -1:
 		{
-			damage *= 1.3f;
+			damage *= 1.5f;
 		}
 		break;
 
 		// positive armor, trickles down
 		case 5:
 		{
-			damageNegation += 0.5f; // reduction to final damage, extremely tanky
+			damageNegation += 0.3f; // reduction to final damage, extremely tanky
 		}
 		case 4:
 		{
-			damage *= 0.6f;
+			damage *= 0.85f;
 		}
 		case 3:
 		{
-			damage *= 0.7f;
+			damage *= 1.0f;
 		}
 		case 2:
 		{
-			damage *= 0.7f;
+			damage *= 1.25f;
 		}
 		case 1:
 		{

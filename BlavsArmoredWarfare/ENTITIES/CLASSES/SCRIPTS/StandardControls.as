@@ -428,22 +428,32 @@ void ManageCamera(CBlob@ this)
 		}
 	}
 
-	if (getLocalPlayer().getBlob() !is null && getLocalPlayer().getBlob().get_u32("dont_change_zoom") < getGameTime())
+
+	if (getLocalPlayer().getBlob() !is null)
 	{
-		// camera
-		if (getLocalPlayer() !is null)
+		if (getLocalPlayer().getBlob().hasTag("binoculars"))
 		{
-			if (getLocalPlayer().getBlob().getName() == "sniper")
-			{
-				camera.mouseFactor = 0.5f;
-				return;
-			}
-			if (getLocalPlayer().getBlob().isAttachedToPoint("GUNNER"))// && getLocalPlayer().getBlob().isKeyPressed(key_action2))
-			{
-				camera.mouseFactor = 0.5f;
-				return;
-			}
+			camera.mouseFactor = 0.65f;
 		}
-		camera.mouseFactor = 0.3f; // doesn't affect fixed cam
+
+		// camera
+		if (getLocalPlayer().getBlob().get_u32("dont_change_zoom") < getGameTime())
+		{
+			getLocalPlayer().getBlob().Untag("binoculars");
+			if (getLocalPlayer() !is null)
+			{
+				if (getLocalPlayer().getBlob().getName() == "sniper")
+				{
+					camera.mouseFactor = 0.5f;
+					return;
+				}
+				if (getLocalPlayer().getBlob().isAttachedToPoint("GUNNER"))// && getLocalPlayer().getBlob().isKeyPressed(key_action2))
+				{
+					camera.mouseFactor = 0.5f;
+					return;
+				}
+			}
+			camera.mouseFactor = 0.3f; // doesn't affect fixed cam
+		}
 	}
 }
