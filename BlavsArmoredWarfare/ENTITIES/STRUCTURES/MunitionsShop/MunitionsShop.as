@@ -69,7 +69,7 @@ void onInit(CBlob@ this)
 			}
 			{
 				ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
-				AddRequirement(s.requirements, "coin", "", "Coins", 50);
+				AddRequirement(s.requirements, "coin", "", "Coins", 60);
 			}
 		}
 	}

@@ -262,17 +262,10 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-	
-
-	
 
 	this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
 
 	this.set_f32("engine_RPM", Maths::Clamp(this.get_f32("engine_RPM"), 0.0f, 30000.0f));
-	
-	//turn those wheels
-	//if ()
-	
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
@@ -568,7 +561,6 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 // VehicleCommon.as
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 charge) {}
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
-
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point1)
 {

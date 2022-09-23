@@ -57,6 +57,15 @@ void onInit(CBlob@ this)
 		tracks.addAnimation("default", 2, true);
 		int[] frames = { 15, 16, 17 };
 		tracks.animation.AddFrames(frames);
+
+		tracks.addAnimation("reverse", 3, true);
+		int[] frames2 = { 17, 16, 15 };
+		tracks.animation.AddFrames(frames2);
+
+		tracks.addAnimation("slow", 4, true);
+		int[] frames3 = { 15, 15, 16, 16, 17, 17 };
+		tracks.animation.AddFrames(frames3);
+
 		tracks.SetRelativeZ(50.8f);
 		tracks.SetOffset(Vec2f(0.0f, 0.0f));
 	}
@@ -159,13 +168,25 @@ void onTick(CBlob@ this)
 			//print("w " + wheels_angle);
 			if (Maths::Abs(this.getVelocity().x) > 0.5f)
 			{
-				tracks.animation.timer = 1;
+				if ((this.getVelocity().x) > 2.5f)
+				{
+					//tracks.animation.timer = 1;
+					//tracks.SetAnimation("default");
+				}
+				else
+				{
+					//tracks.animation.timer = 1;
+					//tracks.SetAnimation("slow");
+					
+				}
+				
 			}
 			else
 			{
-				tracks.animation.timer = 0;
+				//tracks.animation.timer = 0;
+				//tracks.SetAnimation("default");
 			}
-			
+			//print("an " + tracks.getAnimation());
 		}
 	}
 
