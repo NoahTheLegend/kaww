@@ -38,7 +38,7 @@ void onTick(CBlob@ this)
         sprite.SetEmitSoundPaused(false);
     }
 
-    print("a " + this.get_bool(isThisOnGroundString));
+    //print("a " + this.get_bool(isThisOnGroundString));
 
     if (!type)
     {
@@ -70,7 +70,7 @@ void onTick(CBlob@ this)
         // middle ground
         sprite.SetEmitSoundSpeed(
             Maths::Min(0.01f + Maths::Abs((3000 - rpm) / 3000), 1.2f) * 1.0);
-        print("--------- " + sprite.getEmitSoundSpeed());
+        //print("--------- " + sprite.getEmitSoundSpeed());
 
         if(!this.get_bool(isThisOnGroundString))
         {
