@@ -621,7 +621,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						if (this.isFacingLeft())
 						{
-							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2750)
+							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550)
 							{
 								this.add_f32("wheelsTurnAmount", (this.getVelocity().x >= 0 ? 1 : -1) * 1 * (this.get_f32("engine_RPM")- 1900)/30000);
 							}
@@ -629,6 +629,17 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							if (ap.isKeyJustPressed(key_left))
 							{
 								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
+
+								if (isClient())
+								{	
+									for(int i = 0; i < 9; ++i)
+									{
+										Vec2f velocity = Vec2f(7, 0);
+										velocity *= this.isFacingLeft() ? 0.5 : -0.5;
+										velocity += Vec2f(0, -0.15) + this.getVelocity()*0.35f;
+										ParticleAnimated("Smoke", this.getPosition() + Vec2f_lengthdir(this.isFacingLeft() ? 35 : -35, this.getAngleDegrees()), velocity.RotateBy(this.getAngleDegrees()) + getRandomVelocity(0.0f, XORRandom(125) * 0.01f, 360), 45 + float(XORRandom(90)), 0.3f + XORRandom(50) * 0.01f, 1 + XORRandom(2), -0.02 - XORRandom(30) * -0.0005f, false );
+									}
+								}
 
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
@@ -663,14 +674,26 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						if (!this.isFacingLeft())
 						{//spamable and has no effect
-							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2750)
+							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550)
 							{						
 								this.add_f32("wheelsTurnAmount", (this.getVelocity().x >= 0 ? -1 : 1) * -1 * (this.get_f32("engine_RPM")- 1900)/30000);
+								//this.add_f32("wheelsTurnAmount", -1 * (this.get_f32("engine_RPM")- 1900)/30000);
 							}
 
 							if (ap.isKeyJustPressed(key_right))
 							{
 								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
+
+								if (isClient())
+								{	
+									for(int i = 0; i < 9; ++i)
+									{
+										Vec2f velocity = Vec2f(7, 0);
+										velocity *= this.isFacingLeft() ? 0.5 : -0.5;
+										velocity += Vec2f(0, -0.15) + this.getVelocity()*0.35f;
+										ParticleAnimated("Smoke", this.getPosition() + Vec2f_lengthdir(this.isFacingLeft() ? 35 : -35, this.getAngleDegrees()), velocity.RotateBy(this.getAngleDegrees()) + getRandomVelocity(0.0f, XORRandom(125) * 0.01f, 360), 45 + float(XORRandom(90)), 0.3f + XORRandom(50) * 0.01f, 1 + XORRandom(2), -0.02 - XORRandom(30) * -0.0005f, false );
+									}
+								}
 
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
@@ -993,7 +1016,7 @@ void Vehicle_LevelOutInAir(CBlob@ this)
 	{
 		return;
 	}
-	
+
 	f32 rotvel = 0;
 
 	f32 angle = this.getAngleDegrees();
@@ -1151,7 +1174,7 @@ void Vehicle_onAttach(CBlob@ this, VehicleInfo@ v, CBlob@ attached, AttachmentPo
 				Vec2f velocity = Vec2f(7, 0);
 				velocity *= this.isFacingLeft() ? 0.25 : -0.25;
 				velocity += Vec2f(0, -0.35) + this.getVelocity()*0.35f;
-				ParticleAnimated("Smoke", this.getPosition() + Vec2f_lengthdir(this.isFacingLeft() ? 35 : -35, this.getAngleDegrees()), velocity + getRandomVelocity(0.0f, XORRandom(35) * 0.01f, 360), 45 + float(XORRandom(90)), 0.3f + XORRandom(50) * 0.01f, Maths::Round(7 - Maths::Clamp(this.get_f32("engine_RPM")/2000, 1, 6)) + XORRandom(3), -0.02 - XORRandom(30) * -0.0005f, false );
+				ParticleAnimated("Smoke", this.getPosition() + Vec2f_lengthdir(this.isFacingLeft() ? 35 : -35, this.getAngleDegrees()), velocity.RotateBy(this.getAngleDegrees()) + getRandomVelocity(0.0f, XORRandom(35) * 0.01f, 360), 45 + float(XORRandom(90)), 0.3f + XORRandom(50) * 0.01f, Maths::Round(7 - Maths::Clamp(this.get_f32("engine_RPM")/2000, 1, 6)) + XORRandom(3), -0.02 - XORRandom(30) * -0.0005f, false );
 			}
 		}
 
@@ -1187,4 +1210,32 @@ bool isFlipped(CBlob@ this)
 {
 	f32 angle = this.getAngleDegrees();
 	return (angle > 80 && angle < 290);
+}
+/*
+void UpdateWheels(CBlob@ this)
+{
+	{
+		CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 1
+
+		if (soundmanager !is null)
+		{
+			soundmanager.set_bool("manager_Type", false);
+			soundmanager.Init();
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+
+			this.set_u16("followid", soundmanager.getNetworkID());
+		}
+	}
+	{
+		CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 2
+
+		if (soundmanager !is null)
+		{
+			soundmanager.set_bool("manager_Type", true);
+			soundmanager.Init();
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+			
+			this.set_u16("followid2", soundmanager.getNetworkID());
+		}
+	}
 }

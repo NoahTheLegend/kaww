@@ -40,9 +40,9 @@ void onInit(CBlob@ this)
 
 	v.charge = 400;
 
-	Vehicle_SetupGroundSound(this, v, "TankEngine_maus",  // movement sound
-	    1.0f,   // movement sound volume modifier   0.0f = no manipulation
-	    1.4f); // movement sound pitch modifier     0.0f = no manipulation
+	Vehicle_SetupGroundSound(this, v, "TracksSound",  // movement sound
+	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
+	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(31.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(23.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
