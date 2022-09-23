@@ -265,6 +265,13 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	is_action1 = (this.get_bool("is_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyPressed(key_action1));
 	bool was_action1 = this.wasKeyPressed(key_action1);
 	bool hidegun = false;
+
+	if (this.hasTag("dead"))
+	{
+		just_action1 = false;
+		is_action1 = false;
+	}
+
 	if (this.getCarriedBlob() !is null)
 	{
 		if (this.getCarriedBlob().hasTag("hidesgunonhold"))
