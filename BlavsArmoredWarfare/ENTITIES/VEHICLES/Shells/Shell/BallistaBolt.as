@@ -62,6 +62,12 @@ void onTick(CBlob@ this)
 
 	Pierce(this, velocity, angle);
 
+	if (this.getTickSinceCreated() == 0) // return 0,0 onInit()
+	{
+		this.set_Vec2f("from_pos", this.getPosition());
+		//printf("x: "+this.get_Vec2f("from_pos").x+" y: "+this.get_Vec2f("from_pos").y);
+	}
+
 	this.setAngleDegrees(-angle + 180.0f);
 }
 
@@ -179,7 +185,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	f32 length = this.get_f32("linear_length");
 	//printf(""+projExplosionRadius);
 	//printf(""+length);
-	WarfareExplode(this, projExplosionRadius, projExplosionDamage);
+	WarfareExplode(this, projExplosionRadius*1.35, projExplosionDamage);
 	LinearExplosion(this, velocity, projExplosionRadius, length, 2+Maths::Floor(length/6), 0.01f, Hitters::fall);//only for damaging map
 	
 	this.getSprite().PlaySound("/ShellExplosion");
@@ -213,12 +219,6 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 void BallistaHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, f32 damage, CBlob@ blob, u8 customData)
 {
-	if (blob.hasTag("flesh"))
-	{
-		this.server_Hit(blob, hit_position, Vec2f(0,0), damage, Hitters::ballista, true); 
-		return;
-	}
-	
 	this.server_Hit(blob, hit_position, Vec2f(0,0), damage, Hitters::ballista, true); 
 	
 	for (int i = 0; i < (10 + XORRandom(5)); i++)

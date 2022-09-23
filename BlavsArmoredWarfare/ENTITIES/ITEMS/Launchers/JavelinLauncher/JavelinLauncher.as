@@ -77,11 +77,7 @@ void onTick(CBlob@ this)
 	
 	// binoculars effect
 	ownerBlob.set_u32("dont_change_zoom", getGameTime()+3);
-	CCamera@ camera = getCamera();
-	if (camera !is null)
-	{
-		camera.mouseFactor = 0.6f;
-	}
+	ownerBlob.Tag("binoculars");
 
 	if (is_dead)
 	{
