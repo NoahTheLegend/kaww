@@ -11,6 +11,7 @@
 
 void onInit(CBlob@ this)
 {
+	// chargeInfo.charge 			= FighterParams::CHARGE_START * FighterParams::CHARGE_MAX;
 	this.set_u32("mag_bullets_max", 4); // mag size
 
 	this.set_u32("mag_bullets", 4);

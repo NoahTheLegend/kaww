@@ -5,7 +5,6 @@
 #include "BombCommon.as";
 #include "Hitters.as";
 #include "Recoil.as";
-#include "ShotgunCommon.as";
 #include "InfantryCommon.as";
 
 void onInit(CBlob@ this)
