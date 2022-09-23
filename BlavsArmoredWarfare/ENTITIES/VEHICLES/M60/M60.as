@@ -54,17 +54,17 @@ void onInit(CBlob@ this)
 	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", sprite.getConsts().filename, 80, 80);
 	if (tracks !is null)
 	{
-		tracks.addAnimation("default", 2, true);
 		int[] frames = { 15, 16, 17 };
-		tracks.animation.AddFrames(frames);
 
-		tracks.addAnimation("reverse", 3, true);
 		int[] frames2 = { 17, 16, 15 };
-		tracks.animation.AddFrames(frames2);
 
-		tracks.addAnimation("slow", 4, true);
-		int[] frames3 = { 15, 15, 16, 16, 17, 17 };
-		tracks.animation.AddFrames(frames3);
+
+		Animation@ animdefault = tracks.addAnimation("default", 2, true);
+		animdefault.AddFrames(frames);
+		Animation@ animslow = tracks.addAnimation("slow", 3, true);
+		animslow.AddFrames(frames2);
+		Animation@ animrev = tracks.addAnimation("reverse", 6, true);
+		animrev.AddFrames(frames);
 
 		tracks.SetRelativeZ(50.8f);
 		tracks.SetOffset(Vec2f(0.0f, 0.0f));
@@ -164,29 +164,60 @@ void onTick(CBlob@ this)
 		CSpriteLayer@ tracks = this.getSprite().getSpriteLayer("tracks");
 		if (tracks !is null)
 		{
-			float wheels_angle = (Maths::Round(((this.getSprite().getWorldTranslation().x*8) + (this.get_f32("wheelsTurnAmount")*80))) % 360);
+			//float wheels_angle = (Maths::Round(((this.getSprite().getWorldTranslation().x*8) + (this.get_f32("wheelsTurnAmount")*80))) % 360);
 			//print("w " + wheels_angle);
-			if (Maths::Abs(this.getVelocity().x) > 0.5f)
+			if (Maths::Abs(this.getVelocity().x) > 0.3f)
 			{
-				if ((this.getVelocity().x) > 2.5f)
+				tracks.animation.timer = 1;
+				if ((this.getVelocity().x) > 0)
 				{
-					//tracks.animation.timer = 1;
-					//tracks.SetAnimation("default");
-				}
-				else
-				{
-					//tracks.animation.timer = 1;
-					//tracks.SetAnimation("slow");
+					if (!this.isFacingLeft())
+					{
+						if ((this.getVelocity().x) > 1.5f)
+						{
+							tracks.SetAnimation("default");
+							print("def");
+						}
+						else
+						{
+							tracks.SetAnimation("slow");
+							print("slow");
+						}
+					}
+					else{
+						tracks.SetAnimation("reverse");
+						print("rev");
+					}
 					
 				}
+				else{
+					if (this.isFacingLeft())
+					{
+						if ((this.getVelocity().x) > -1.5f)
+						{
+							tracks.SetAnimation("slow");
+							print("slow");
+						}
+						else
+						{
+							tracks.SetAnimation("default");
+							print("def");
+						}
+					}
+					else{
+						tracks.SetAnimation("reverse");
+						print("rev");
+					}
+				}
+				
 				
 			}
 			else
 			{
-				//tracks.animation.timer = 0;
-				//tracks.SetAnimation("default");
+				tracks.animation.timer = 0;
+				tracks.SetAnimation("default");
 			}
-			//print("an " + tracks.getAnimation());
+			print("an " + tracks.getAnimation());
 		}
 	}
 
