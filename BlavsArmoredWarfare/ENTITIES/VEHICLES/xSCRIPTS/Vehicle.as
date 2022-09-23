@@ -256,9 +256,10 @@ void onTick(CBlob@ this)
 			{	
 				Vec2f velocity = Vec2f(((this.get_f32("engine_throttle") - 0.453)*143), 0);
 				velocity *= this.isFacingLeft() ? 0.25 : -0.25;
+				velocity *= this.get_f32("engine_RPM")/3000;
 				velocity += Vec2f(0, -0.35) + this.getVelocity()*0.35f;
 				//print("ve" + velocity);
-				ParticleAnimated("Smoke", this.getPosition() + Vec2f_lengthdir(this.isFacingLeft() ? this.getWidth()/2.2 : -this.getWidth()/2.2, this.getAngleDegrees()), velocity + getRandomVelocity(0.0f, XORRandom(35) * 0.01f, 360), 45 + float(XORRandom(90)), 0.3f + XORRandom(50) * 0.01f, Maths::Round(7 - Maths::Clamp(this.get_f32("engine_RPM")/2000, 1, 6)) + XORRandom(3), -0.02 - XORRandom(30) * -0.0005f, false );
+				ParticleAnimated("Smoke", this.getPosition() + Vec2f_lengthdir(this.isFacingLeft() ? this.getWidth()/2.2 : -this.getWidth()/2.2, this.getAngleDegrees()), velocity.RotateBy(this.getAngleDegrees()) + getRandomVelocity(0.0f, XORRandom(35) * 0.01f, 360), 45 + float(XORRandom(90)), 0.3f + XORRandom(50) * 0.01f, Maths::Round(7 - Maths::Clamp(this.get_f32("engine_RPM")/1000, 1, 6)) + XORRandom(2), -0.02 - XORRandom(30) * -0.0005f, false );
 			}
 		}
 	}

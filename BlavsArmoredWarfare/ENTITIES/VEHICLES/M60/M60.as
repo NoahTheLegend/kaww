@@ -13,7 +13,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    4300.0f, // move speed
+	    4350.0f, // move speed
 	    1.0f,  // turn speed
 	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    false);  // inventory access
@@ -62,7 +62,7 @@ void onInit(CBlob@ this)
 		animdefault.AddFrames(frames);
 		Animation@ animslow = tracks.addAnimation("slow", 3, true);
 		animslow.AddFrames(frames);
-		Animation@ animrev = tracks.addAnimation("reverse", 3, true);
+		Animation@ animrev = tracks.addAnimation("reverse", 2, true);
 		animrev.AddFrames(frames2);
 		Animation@ animstopped = tracks.addAnimation("stopped", 1, true);
 		animstopped.AddFrame(15);
@@ -171,7 +171,6 @@ void onTick(CBlob@ this)
 				{
 					if (!this.isFacingLeft())
 					{
-						
 						if ((this.getVelocity().x) > 1.5f)
 						{
 							if (!tracks.isAnimation("default"))
@@ -191,13 +190,11 @@ void onTick(CBlob@ this)
 							}
 						}
 					}
-					else{
-						if (!tracks.isAnimation("reverse"))
-						{
-							tracks.SetAnimation("reverse");
-							tracks.animation.timer = 1;
-							tracks.SetFrameIndex(0);
-						}
+					else if (!tracks.isAnimation("reverse"))
+					{
+						tracks.SetAnimation("reverse");
+						tracks.animation.timer = 1;
+						tracks.SetFrameIndex(0);
 					}
 					
 				}
@@ -223,13 +220,11 @@ void onTick(CBlob@ this)
 							}
 						}
 					}
-					else{
-						if (!tracks.isAnimation("reverse"))
-						{
-							tracks.SetAnimation("reverse");
-							tracks.animation.timer = 1;
-							tracks.SetFrameIndex(0);
-						}
+					else if (!tracks.isAnimation("reverse"))
+					{
+						tracks.SetAnimation("reverse");
+						tracks.animation.timer = 1;
+						tracks.SetFrameIndex(0);
 					}
 				}
 			}

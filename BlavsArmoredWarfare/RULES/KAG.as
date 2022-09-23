@@ -55,6 +55,27 @@ void onRestart(CRules@ this)
 	}
 }
 
+void onTick(CRules@ this)
+{
+	//TODO: figure out a way to optimise so we don't need to keep running this hook
+	if (need_sky_check)
+	{
+		need_sky_check = false;
+		CMap@ map = getMap();
+		//find out if there's any solid tiles in top row
+		// if not - semitransparent sky
+		// if yes - totally solid, looks buggy with "floating" tiles
+		bool has_solid_tiles = false;
+		for(int i = 0; i < map.tilemapwidth; i++) {
+			if(map.isTileSolid(map.getTile(i))) {
+				has_solid_tiles = true;
+				break;
+			}
+		}
+		map.SetBorderColourTop(SColor(has_solid_tiles ? 0xff000000 : 0x000000));
+	}
+}
+
 //chat stuff!
 
 void onEnterChat(CRules @this)
