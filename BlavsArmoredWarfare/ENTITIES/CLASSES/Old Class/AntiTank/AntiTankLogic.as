@@ -52,6 +52,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") && hitterBlob.getName() != "grenade")
 	{
+		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
+		if (hitterBlob.exists("explosion_damage_scale")) damage *= hitterBlob.get_f32("explosion_damage_scale");
 		bool at_bunker = false;
 		Vec2f pos = this.getPosition();
 		Vec2f hit_pos = hitterBlob.getPosition();
@@ -78,7 +80,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				}
 			}
 			if (at_bunker) return 0;
-			return damage * 0.1f;
+
+			u16 dist_blocks = Maths::Floor((pos-hitterBlob.get_Vec2f("from_pos")).Length()/8);
+			// printf(""+dist_blocks);
+			return damage * Maths::Min(0.2f, 0.2f - (0.0025 * (dist_blocks/25)));
 		}
 	}
 

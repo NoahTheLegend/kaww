@@ -17,23 +17,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	// Gib if health below gibHealth
 	f32 gibHealth = getGibHealth(this);
 
-	//no dmg from explosion if overlapping bunker
-	if (customData == Hitters::explosion)
-	{
-		CBlob@[] bunkers;
-		getBlobsByTag("bunker", @bunkers);
-		bool at_bunker = false;
-		for (u16 i = 0; i < bunkers.length; i++)
-		{
-			CBlob@ b = bunkers[i];
-			if (b is null || b.getDistanceTo(this) > this.getRadius()) continue;
-			at_bunker = true;
-		}
-		if (at_bunker) return 0;
-
-		return damage;
-	}
-
 	//printf("ON HIT " + damage + " he " + this.getHealth() + " g " + gibHealth );
 	// blob server_Die()() and then gib
 

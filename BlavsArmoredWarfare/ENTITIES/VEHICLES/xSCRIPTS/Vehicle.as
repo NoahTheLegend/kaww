@@ -71,25 +71,29 @@ void onInit(CBlob@ this)
 		}
 	}
 
-	float linear_length = 4.0f;
-	switch(blobHash) // weapon rating and length of linear (map) explosion damage
+	f32 linear_length = 4.0f;
+	f32 scale_damage = 1.0f;
+	switch(blobHash) // weapon rating and length of linear (map) and circled explosion damage
 	{
 		case _mausturret: // MAUS Shell cannon
 		{
 			weaponRating = 3;
 			linear_length = 20.0f;
+			scale_damage = 2.5f;
 			break;
 		}
 		case _t10turret: // T10 Shell cannon
 		{
 			weaponRating = 3;
 			linear_length = 14.0f;
+			scale_damage = 2.0f;
 			break;
 		}
 		case _m60turret: // M60 Shell cannon
 		{
 			weaponRating = 2;
 			linear_length = 12.0f;
+			scale_damage = 1.75f;
 			break;
 		}
 		case _uh1: // heli
@@ -106,16 +110,19 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 0;
 			linear_length = 3.0f;
+			scale_damage = 0.75f;
 			break;
 		}
 		case _btrturret: // big APC cannon
 		{
 			weaponRating = 0;
 			linear_length = 4.0f;
+			scale_damage = 0.8f;
 			break;
 		}
 	}
 	this.set_f32("linear_length", linear_length);
+	this.set_f32("explosion_damage_scale", scale_damage);
 
 	float backsideOffset = -1.0f;
 	switch(blobHash) // backside vulnerability point
