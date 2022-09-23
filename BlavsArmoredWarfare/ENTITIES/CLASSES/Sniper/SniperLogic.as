@@ -1,3 +1,4 @@
+#include "WarfareGlobal.as"
 #include "ThrowCommon.as";
 #include "KnockedCommon.as";
 #include "RunnerCommon.as";
@@ -5,7 +6,7 @@
 #include "Hitters.as";
 #include "Recoil.as";
 #include "SniperCommon.as";
-#include "ClassesCommon.as";
+#include "InfantryCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -707,7 +708,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 		proj.setPosition(arrowPos);
 		proj.setVelocity(arrowVel);
 		proj.setPosition(arrowPos);
-		proj.Tag("sniperbullet");
+		proj.set_s8(penRatingString, 2);
 	}
 	return proj;
 }

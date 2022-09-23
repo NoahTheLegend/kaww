@@ -7,7 +7,7 @@
 #include "Recoil.as";
 #include "Mp5Common.as";
 #include "MedicisCommon.as";
-#include "ClassesCommon.as";
+#include "InfantryCommon.as";
 
 void onInit(CBlob@ this)
 {
