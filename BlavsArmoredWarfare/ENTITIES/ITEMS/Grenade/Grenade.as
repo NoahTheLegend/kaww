@@ -1,3 +1,4 @@
+#include "WarfareGlobal.as"
 #include "Explosion.as";
 
 const string GRENADE_STATE = "grenade_state";
@@ -13,6 +14,10 @@ enum State
 
 void onInit(CBlob@ this)
 {
+	this.set_s8(penRatingString, 4);
+	this.set_f32(projExplosionRadiusString, 64.0f);
+	this.set_f32(projExplosionDamageString, 5.0f);
+
 	this.set_bool("map_damage_raycast", true);
 	this.set_bool("explosive_teamkill", true);
 	
@@ -60,16 +65,7 @@ void DoExplosion(CBlob@ this)
 	this.set_f32("map_damage_radius", 17.0f);
 	this.set_f32("map_damage_ratio", 0.01f);
 	
-	Explode(this, 64.0f, 0.5f);
-	
-	for (int i = 0; i < 15; i++) 
-	{
-		Vec2f dir = getRandomVelocity(angle, 1, 120);
-		dir.x *= 3;
-		dir.Normalize();
-		LinearExplosion(this, dir, 10.0f, 24, 2, 0.10f, Hitters::keg);
-		Explode(this, 32.0f, 0.1f);
-	}
+	WarfareExplode(this, this.get_f32(projExplosionRadiusString), this.get_f32(projExplosionDamageString));
 	
 	//if (isClient())
 	{
@@ -149,7 +145,6 @@ void onTick(CBlob@ this)
 		}
 		else if (this.get_u8("exploding_2") < 3)
 		{
-			Explode(this, 64.0f, 0.35f);
 			
 			for (int i = 0; i < 3; i++)
 			{
@@ -172,7 +167,6 @@ void onTick(CBlob@ this)
 
 		if (this.get_u8("exploding_2") == 1)
 		{
-			Explode(this, 64.0f, 3.0f);
 			this.server_Die();
 		}
 	}
