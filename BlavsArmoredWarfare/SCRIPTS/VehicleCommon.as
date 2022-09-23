@@ -627,7 +627,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (ap.isKeyJustPressed(key_left))
 							{
-								this.getSprite().PlayRandomSound("/EngineThrottle", 1.75f, 0.85f + XORRandom(11)*0.01f);
+								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
 
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
@@ -667,7 +667,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (ap.isKeyJustPressed(key_right))
 							{
-								this.getSprite().PlayRandomSound("/EngineThrottle", 1.75f, 0.85f + XORRandom(11)*0.01f);
+								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
 
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
@@ -1000,13 +1000,13 @@ void RemoveWheelsOnFlight(CBlob@ this)
 
 void Vehicle_LevelOutInAir(CBlob@ this)
 {
+	f32 rotvel = 0;
+
 	f32 angle = this.getAngleDegrees();
 	if  (angle > 23 && angle < 337)
 	{
 		if (!getMap().isInWater(this.getPosition()) && !this.wasOnGround() && !this.isOnGround())
 		{
-			f32 rotvel = 0;
-
 			f32 diff = 360 - this.getAngleDegrees();
 			diff = (diff + 180) % 360 - 180;
 
@@ -1018,6 +1018,18 @@ void Vehicle_LevelOutInAir(CBlob@ this)
 			this.setAngleDegrees(this.getAngleDegrees() + rotvel);
 			return;
 		}
+	}
+	else
+	{
+		f32 diff = 360 - this.getAngleDegrees();
+		diff = (diff + 180) % 360 - 180;
+
+		if (Maths::Abs(diff) > 1)
+			rotvel += (diff > 0 ? 1 : -1) * 0.5;
+
+
+		this.setAngleDegrees(this.getAngleDegrees() + rotvel);
+		return;
 	}
 }
 

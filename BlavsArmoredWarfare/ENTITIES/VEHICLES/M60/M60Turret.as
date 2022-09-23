@@ -131,8 +131,6 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 			angle = Maths::Max(high_angle , Maths::Min(angle , low_angle));
 
 			not_found = false;
-
-			print("aim " + (angle));
 		}
 		else
 		{
