@@ -1,4 +1,4 @@
-#include "Mp5Common.as"
+#include "InfantryCommon.as"
 #include "RunnerAnimCommon.as";
 #include "RunnerCommon.as";
 #include "KnockedCommon.as";

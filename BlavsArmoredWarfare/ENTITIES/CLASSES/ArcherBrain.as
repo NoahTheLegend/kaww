@@ -11,8 +11,6 @@ void onInit(CBrain@ this)
 {
 	CBlob @blob = this.getBlob();
 
-	blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
-
 	InitBrain(this);
 
 	blob.set_u8("moveover", 0);

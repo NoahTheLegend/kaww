@@ -88,9 +88,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (customData == Hitters::explosion)
 	{
-		return damage / 5;
+		return damage *= 0.4f;
 	}
-	if (hitterBlob.hasTag("vehicle") && customData != Hitters::explosion)
+	if (hitterBlob.hasTag("vehicle"))
 	{
 		if (!hitterBlob.hasTag("deal_bunker_dmg")) return 0;
 		return Maths::Min(0.2f, damage);

@@ -5,7 +5,7 @@
 #include "BombCommon.as";
 #include "Hitters.as";
 #include "Recoil.as";
-#include "Mp5Common.as";
+#include "InfantryCommon.as";
 #include "MedicisCommon.as";
 #include "InfantryCommon.as";
 
@@ -28,8 +28,7 @@ void onInit(CBlob@ this)
 
 	this.set_u32("next_ability", getGameTime()+600);
 
-	this.set_u8("hitmarker", 0);
-	this.set_s8("reloadtime", 0); // for server
+	
 
 	this.set_s8("charge_time", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);

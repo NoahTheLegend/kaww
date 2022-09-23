@@ -40,15 +40,6 @@ const f32 archer_grapple_force = 2.0f;
 const f32 archer_grapple_accel_limit = 1.5f;
 const f32 archer_grapple_stiffness = 0.1f;
 
-namespace ArrowType
-{
-	enum type
-	{
-		normal = 0,
-		count
-	};
-}
-
 class ArcherInfo
 {
 	s8 charge_time;

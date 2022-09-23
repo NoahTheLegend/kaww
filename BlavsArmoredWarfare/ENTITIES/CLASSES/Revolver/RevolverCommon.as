@@ -34,43 +34,9 @@ const u8 delayafterfire = 5; // time between shots
 
 const float bulletvelocity = 1.6f; // speed that bullets fly
 
-namespace ArcherParams
-{
-	enum Aim
-	{
-		not_aiming = 0,
-		readying,
-		charging,
-		fired,
-		no_ammo,
-		stabbing
-	}
-}
 
-namespace ArrowType
-{
-	enum type
-	{
-		normal = 0,
-		count
-	};
-}
 
-class ArcherInfo
-{
-	s8 charge_time;
-	u8 charge_state;
 
-	bool isStabbing;
-	bool isReloading;
 
-	ArcherInfo()
-	{
-		charge_time = 0;
-		charge_state = 0;
-	}
-};
 
-const string[] arrowTypeNames = { "mat_arrows" };
 
-const string[] arrowNames = { "Ammo", };

@@ -6,14 +6,91 @@
 #include "BombCommon.as";
 #include "Hitters.as";
 #include "Recoil.as";
-#include "ShotgunCommon.as";
 #include "InfantryCommon.as";
 
 void onInit(CBlob@ this)
 {
-	this.set_u32("mag_bullets_max", 4); // mag size
+	const string thisBlobName = this.getName();
+	const int thisBlobHash = thisBlobName.getHash();
 
-	this.set_u32("mag_bullets", 4);
+	string classname; // case sensitive
+	int class_hash = thisBlobHash; // hash of the name
+	// DAMAGE
+	f32 damage_body; // damage dealt to body
+	f32 damage_head; // damage dealt on headshot
+	// SHAKE
+	f32 recoil_x; // x shake (20)
+	f32 recoil_y; // y shake (45)
+	f32 recoil_length; // how long to recoil (?)
+	// RECOIL
+	f32 recoil_force; // amount to push player
+	u8 recoil_cursor; // amount to raise mouse pos
+	u8 sideways_recoil; // sideways recoil amount
+	u8 sideways_recoil_damp; // higher number means less sideways recoil
+	f32 ads_cushion_amount; // lower means less recoil when aiming down sights. 1.0 is no change
+	// spray pattern in logic
+	f32 length_of_recoil_arc; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
+	// ACCURACY
+	u8 inaccuracy_cap; // max amount of inaccuracy
+	u8 inaccuracy_pershot; // aim inaccuracy  (+3 per shot)
+	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
+	// GUN
+	bool semiauto;
+	u8 burst_size; // bullets fired per click
+	u8 burst_rate; // ticks per bullet fired in a burst
+	s8 reload_time; // time to reload
+	u32 mag_size; // max bullets in mag
+	u8 delayafterfire; // time between shots 4
+	u8 randdelay; // + randomness
+	f32 bullet_velocity; // speed that bullets fly 1.6
+	f32 bullet_lifetime; // in seconds, time for bullet to die
+	s8 bullet_pen; // penRating for bullet
+	// SOUND
+	string reload_sfx;
+	string shoot_sfx;
+
+	getBasicStats( thisBlobHash, classname, reload_sfx, shoot_sfx, damage_body, damage_head );
+	getRecoilStats( thisBlobHash, recoil_x, recoil_y, recoil_length, recoil_force, recoil_cursor, sideways_recoil, sideways_recoil_damp, ads_cushion_amount, length_of_recoil_arc );
+	getWeaponStats( thisBlobHash, 
+	inaccuracy_cap, inaccuracy_pershot, 
+	semiauto, burst_size, burst_rate, 
+	reload_time, mag_size, delayafterfire, randdelay, 
+	bullet_velocity, bullet_lifetime, bullet_pen );
+
+	InfantryInfo infantry;
+	infantry.classname 				= classname;
+	infantry.class_hash 			= class_hash;
+	infantry.reload_sfx 			= reload_sfx;
+	infantry.shoot_sfx 				= shoot_sfx;
+	infantry.damage_body 			= damage_body;
+	infantry.damage_head 			= damage_head;
+
+	infantry.recoil_x 				= recoil_x;
+	infantry.recoil_y 				= recoil_y;
+	infantry.recoil_length 			= recoil_length;
+	infantry.recoil_force 			= recoil_force;
+	infantry.recoil_cursor 			= recoil_cursor;
+	infantry.sideways_recoil 		= sideways_recoil;
+	infantry.sideways_recoil_damp 	= sideways_recoil_damp;
+	infantry.ads_cushion_amount 	= ads_cushion_amount;
+	infantry.length_of_recoil_arc 	= length_of_recoil_arc;
+
+	infantry.inaccuracy_cap 		= inaccuracy_cap;
+	infantry.inaccuracy_pershot 	= inaccuracy_pershot;
+	infantry.semiauto 				= semiauto;
+	infantry.burst_size 			= burst_size;
+	infantry.burst_rate 			= burst_rate;
+	infantry.reload_time 			= reload_time;
+	infantry.mag_size 				= mag_size;
+	infantry.delayafterfire 		= delayafterfire;
+	infantry.randdelay 				= randdelay;
+	infantry.bullet_velocity 		= bullet_velocity;
+	infantry.bullet_lifetime 		= bullet_lifetime;
+	infantry.bullet_pen 			= bullet_pen;
+	this.set("infantryInfo", @infantry);
+
+	this.set_u32("mag_bullets_max", mag_size);
+	this.set_u32("mag_bullets", mag_size);
 
 	ArcherInfo archer;
 	this.set("archerInfo", @archer);
@@ -26,6 +103,8 @@ void onInit(CBlob@ this)
 	this.set_u8("hitmarker", 0);
 	this.set_s8("reloadtime", 0); // for server
 
+	// one of these two has to go
+	this.set_s8("charge_time", 0);
 	this.set_s32("my_chargetime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
 
@@ -157,7 +236,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 	}
 }
 
-void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
+void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, InfantryInfo@ infantry )
 {
 	bool ismyplayer = this.isMyPlayer();
 	bool responsible = ismyplayer;
@@ -214,7 +293,8 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 	bool scoped = this.hasTag("scopedin");
 
-	InAirLogic(this);
+	const u8 inaccuracyCap = infantry.inaccuracy_cap;
+	InAirLogic(this, inaccuracyCap);
 
 	if (this.isKeyPressed(key_action2))
 	{
@@ -232,7 +312,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	}
 
 	if (hidegun) return;
-
+	
 	if (isKnocked(this))
 	{
 		charge_time = 0;
@@ -241,9 +321,12 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	}
 	else
 	{
+		const s8 reloadTime = infantry.reload_time;
+		const u32 magSize = infantry.mag_size;
 		// reload
-		if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
+		if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("mag_bullets") < magSize)
 		{
+			print("wtf");
 			//print("RELOAD!!");
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
@@ -251,7 +334,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 			{
 				// actually reloading
 				reloadistrue = true;
-				charge_time = reloadtime;
+				charge_time = reloadTime;
 				//archer.isReloading = true;
 				isReloading = true;
 				this.set_bool("isReloading", true);
@@ -270,11 +353,11 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 			if (reloadistrue)
 			{
-				charge_time = reloadtime;
+				charge_time = reloadTime;
 				//archer.isReloading = true;
 				this.set_bool("isReloading", true);
 
-				sprite.PlaySound(reloadsfx, 0.8);
+				sprite.PlaySound(infantry.reload_sfx, 0.8);
 			}
 		}
 		if (isServer() && this.hasTag("sync_reload"))
@@ -290,8 +373,11 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 				this.Untag("sync_reload");
 			}
 		}
+
+		const bool oldEnough = this.getTickSinceCreated() > 5;
+		const bool is_m1 = infantry.semiauto ? just_action1 : is_action1;
 		// shoot
-		if (charge_time == 0 && this.getTickSinceCreated() > 5 && semiauto ? just_action1 : is_action1)
+		if (charge_time == 0 && oldEnough && is_m1)
 		{
 			moveVars.walkFactor *= 0.75f;
 			moveVars.jumpFactor *= 0.7f;
@@ -321,12 +407,13 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 				}
 				else
 				{
-					ClientFire(this, charge_time);
+					ClientFire(this, charge_time, infantry);
 
-					charge_time = delayafterfire + XORRandom(randdelay);
+					charge_time = infantry.delayafterfire + XORRandom(infantry.randdelay);
 					charge_state = ArcherParams::fired;
 
-					this.AddForce(Vec2f(this.getAimPos() - this.getPosition()) * (scoped ? -recoilforce/1.6 : -recoilforce));
+					float recoilForce = infantry.recoil_force;
+					this.AddForce(Vec2f(this.getAimPos() - this.getPosition()) * (scoped ? -recoilForce/1.6 : -recoilForce));
 				}
 			}
 			else
@@ -347,8 +434,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 							for (u8 i = 0; i < 20; i++)
 							{
 								u32 current = this.get_u32("mag_bullets");
-								u32 max = this.get_u32("mag_bullets_max");
-								u32 miss = max-current;
+								u32 miss = magSize-current;
 								CBlob@ mag;
 								for (u8 i = 0; i < inv.getItemsCount(); i++)
 								{
@@ -373,7 +459,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 									else
 									{
 										//printf("e");
-										this.set_u32("mag_bullets", max);
+										this.set_u32("mag_bullets", magSize);
 										if (isServer()) mag.server_SetQuantity(quantity - miss);
 										break;
 									}
@@ -393,87 +479,88 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 		{
 			charge_time--;
 
-				if (charge_time <= 0)
+			if (charge_time <= 0)
+			{
+				charge_time = 0;
+				if (isReloading)
 				{
-					charge_time = 0;
-					if (isReloading)
+					// reload
+					CInventory@ inv = this.getInventory();
+					if (inv !is null)
 					{
-						// reload
-						CInventory@ inv = this.getInventory();
-						if (inv !is null)
+						//printf(""+need_ammo);
+						//printf(""+current);
+						for (u8 i = 0; i < 20; i++)
 						{
-							//printf(""+need_ammo);
-							//printf(""+current);
-							for (u8 i = 0; i < 20; i++)
+							u32 current = this.get_u32("mag_bullets");
+							u32 miss = magSize-current;
+							CBlob@ mag;
+							for (u8 i = 0; i < inv.getItemsCount(); i++)
 							{
-								u32 current = this.get_u32("mag_bullets");
-								u32 max = this.get_u32("mag_bullets_max");
-								u32 miss = max-current;
-								CBlob@ mag;
-								for (u8 i = 0; i < inv.getItemsCount(); i++)
+								CBlob@ b = inv.getItem(i);
+								if (b is null || b.getName() != "mat_7mmround" || b.hasTag("dead")) continue;
+								@mag = @b;
+								break;
+							}
+							if (mag !is null)
+							{
+								u16 quantity = mag.getQuantity();
+								if (quantity <= miss)
 								{
-									CBlob@ b = inv.getItem(i);
-									if (b is null || b.getName() != "mat_7mmround" || b.hasTag("dead")) continue;
-									@mag = @b;
+									//printf("a");
+									//printf(""+miss);
+									//printf(""+quantity);
+									this.add_u32("mag_bullets", quantity);
+									mag.Tag("dead");
+									if (isServer()) mag.server_Die();
+									continue;
+								}
+								else
+								{
+									//printf("e");
+									this.set_u32("mag_bullets", magSize);
+									if (isServer()) mag.server_SetQuantity(quantity - miss);
 									break;
 								}
-								if (mag !is null)
-								{
-									u16 quantity = mag.getQuantity();
-									if (quantity <= miss)
-									{
-										//printf("a");
-										//printf(""+miss);
-										//printf(""+quantity);
-										this.add_u32("mag_bullets", quantity);
-										mag.Tag("dead");
-										if (isServer()) mag.server_Die();
-										continue;
-									}
-									else
-									{
-										//printf("e");
-										this.set_u32("mag_bullets", max);
-										if (isServer()) mag.server_SetQuantity(quantity - miss);
-										break;
-									}
-								}
-								else break;
 							}
+							else break;
 						}
 					}
-
-					archer.isStabbing = false;
-					archer.isReloading = false;
-
-					this.set_bool("isReloading", false);
 				}
 
-				if (this.getPlayer() !is null)
+				archer.isStabbing = false;
+				archer.isReloading = false;
+
+				this.set_bool("isReloading", false);
+			}
+
+			if (this.getPlayer() !is null)
+			{
+				bool sprint = this.getHealth() == this.getInitialHealth() && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+				if (sprint)
 				{
-					bool sprint = this.getHealth() == this.getInitialHealth() && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
-					if (sprint)
+					if (!this.hasTag("sprinting"))
 					{
-						if (!this.hasTag("sprinting"))
+						if (isClient())
 						{
-							if (isClient())
-							{
-								ParticleAnimated("DustSmall.png", this.getPosition()-Vec2f(0, -3.75f), Vec2f(this.isFacingLeft() ? 1.0f : -1.0f, -0.1f), 0.0f, 0.75f, 2, XORRandom(70) * -0.00005f, true);
-							}
+							ParticleAnimated("DustSmall.png", this.getPosition()-Vec2f(0, -3.75f), Vec2f(this.isFacingLeft() ? 1.0f : -1.0f, -0.1f), 0.0f, 0.75f, 2, XORRandom(70) * -0.00005f, true);
 						}
-						this.Tag("sprinting");
-						moveVars.walkFactor *= 1.05f;
-						moveVars.walkSpeedInAir = 2.9f;
-						moveVars.jumpFactor *= 0.87f;
 					}
-					else
-					{
-						this.Untag("sprinting");
-						moveVars.walkFactor *= 0.9f;
-						moveVars.walkSpeedInAir = 2.5f;
-						moveVars.jumpFactor *= 0.87f;
-					}
+					this.Tag("sprinting");
 				}
+				else
+				{
+					this.Untag("sprinting");
+				}
+
+				float walkStat = 1.0f;
+				float airwalkStat = 1.0f;
+				float jumpStat = 1.0f;
+				getMovementStats(this.getName().getHash(), sprint, walkStat, airwalkStat, jumpStat);
+				moveVars.walkFactor *= walkStat;
+				moveVars.walkSpeedInAir = airwalkStat;
+				moveVars.jumpFactor *= jumpStat;
+			}
 		}
 	}
 
@@ -514,7 +601,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 			}
 		}
 
-		this.set_u8("recoil_count", Maths::Floor(this.get_u8("recoil_count") / lengthofrecoilarc));
+		this.set_u8("recoil_count", Maths::Floor(this.get_u8("recoil_count") / infantry.length_of_recoil_arc));
 	}
 
 	if (this.get_u8("inaccuracy") > 0)
@@ -529,7 +616,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 			this.set_u8("inaccuracy", this.get_u8("inaccuracy") - 5);
 		}
 		
-		if (this.get_u8("inaccuracy") > inaccuracycap) {this.set_u8("inaccuracy", inaccuracycap);}
+		if (this.get_u8("inaccuracy") > inaccuracyCap) {this.set_u8("inaccuracy", inaccuracyCap);}
 	}
 	
 	if (responsible)
@@ -581,11 +668,11 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 void onTick(CBlob@ this)
 {
+	InfantryInfo@ infantry;
+	if (!this.get( "infantryInfo", @infantry )) return;
+
 	ArcherInfo@ archer;
-	if (!this.get("archerInfo", @archer))
-	{
-		return;
-	}
+	if (!this.get("archerInfo", @archer)) return;
 	
 	if (isKnocked(this) || this.isInInventory())
 	{
@@ -597,12 +684,9 @@ void onTick(CBlob@ this)
 	}
 
 	RunnerMoveVars@ moveVars;
-	if (!this.get("moveVars", @moveVars))
-	{
-		return;
-	}
+	if (!this.get("moveVars", @moveVars)) return;	
 
-	ManageGun(this, archer, moveVars);
+	ManageGun(this, archer, moveVars, infantry);
 
 	if (!this.isOnGround()) // ladders sometimes dont work
 	{
@@ -625,14 +709,16 @@ void onTick(CBlob@ this)
 	this.set_bool("just_a1", false);
 }
 
-bool canSend(CBlob@ this)
+bool canSend( CBlob@ this )
 {
 	return (this.isMyPlayer() || this.getPlayer() is null || this.getPlayer().isBot());
 }
 
-void ClientFire(CBlob@ this, const s8 charge_time)
+void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 {
-	float angle = Maths::ATan2(this.getAimPos().y - this.getPosition().y, this.getAimPos().x - this.getPosition().x) * 180 / 3.14159;
+	Vec2f thisAimPos = this.getAimPos();
+
+	float angle = Maths::ATan2(thisAimPos.y - this.getPosition().y, thisAimPos.x - this.getPosition().x) * 180 / 3.14159;
 	angle += -0.099f + (XORRandom(2) * 0.01f);
 	if (this.isFacingLeft())
 	{ 
@@ -643,14 +729,12 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 		ParticleAnimated("Muzzleflashflip", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle + 180, 0.06f + XORRandom(3) * 0.01f, 3 + XORRandom(2), -0.15f, false);
 	}
 
-	Vec2f targetVector = this.getAimPos() - this.getPosition();
+	Vec2f targetVector = thisAimPos - this.getPosition();
 	f32 targetDistance = targetVector.Length();
 	f32 targetFactor = targetDistance / 367.0f;
-
-	for (uint i = 0; i < 5; i++)
-	{
-		ShootBullet(this, this.getPosition() - Vec2f(0,1), this.getAimPos() + Vec2f((-160 + XORRandom(160*2))/3, (-160 + XORRandom(160*2))/3)*targetFactor, 12.59f * bulletvelocity);
-	}
+	
+	float bulletSpread = getBulletSpread(infantry.class_hash) + float(this.get_u8("inaccuracy"));
+	ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity, bulletSpread*targetFactor, infantry.burst_size );
 
 	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 	
@@ -667,74 +751,78 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 				f32 mod = 0.5; // make some smart stuff here?
 				if (this.isKeyPressed(key_action2)) mod *= 0.25;
 
-				ShakeScreen((Vec2f(recoilx - XORRandom(recoilx*2) + 1, -recoily + XORRandom(recoily) + 1) * mod), recoillength*mod, this.getInterpolatedPosition());
+				float recoilX = infantry.recoil_x;
+				float recoilY = infantry.recoil_y;
+				ShakeScreen((Vec2f(recoilX - XORRandom(recoilX*2) + 1, -recoilY + XORRandom(recoilY) + 1) * mod), infantry.recoil_length*mod, this.getInterpolatedPosition());
 				ShakeScreen(28, 10, this.getPosition());
 
-				this.set_u8("inaccuracy", 130);
+				this.set_u8("inaccuracy", this.get_u8("inaccuracy") + infantry.inaccuracy_pershot * (this.hasTag("sprinting")?2.0f:1.0f));
 			}
 		}
 	}
 }
 
-void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
+void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, float bulletSpread, u8 burstSize )
 {
 	if (canSend(this))
 	{
-		Vec2f arrowVel = (aimpos - arrowPos);
-		arrowVel.Normalize();
-		arrowVel *= arrowspeed;
 		CBitStream params;
-		params.write_Vec2f(arrowPos);
-		params.write_Vec2f(arrowVel);
+		params.write_Vec2f(arrowPos); // only once, only one place to fire from
 
+		for (uint i = 0; i < burstSize; i++)
+		{
+			Vec2f spreadAimpos = aimpos;
+			if (bulletSpread > 0.0f) spreadAimpos += Vec2f(bulletSpread * (0.5f - _infantry_r.NextFloat()), bulletSpread * (0.5f - _infantry_r.NextFloat()));
+			Vec2f arrowVel = (spreadAimpos - arrowPos);
+			arrowVel.Normalize();
+			arrowVel *= arrowspeed;
+			params.write_Vec2f(arrowVel);
+		}
+		
 		this.SendCommand(this.getCommandID("shoot bullet"), params);
 	}
 
 	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
 }
 
-CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
-{
-	CBlob@ proj = server_CreateBlobNoInit("bullet");
-	if (proj !is null)
-	{
-		proj.SetDamageOwnerPlayer(this.getPlayer());
-		proj.Init();
-
-		proj.set_f32("bullet_damage_body", damage_body);
-		proj.set_f32("bullet_damage_head", damage_head);
-		proj.IgnoreCollisionWhileOverlapped(this);
-		proj.server_setTeamNum(this.getTeamNum());
-		proj.setPosition(arrowPos);
-		proj.setVelocity(arrowVel);
-		proj.setPosition(arrowPos);
-		proj.set_s8(penRatingString, -1); // buckshot isn't exactly known for its effectivness against tanks...
-	}
-	return proj;
-}
-
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
-		Vec2f arrowPos;
-		if (!params.saferead_Vec2f(arrowPos)) return;
-		Vec2f arrowVel;
-		if (!params.saferead_Vec2f(arrowVel)) return;
+		InfantryInfo@ infantry;
+		if (!this.get( "infantryInfo", @infantry )) return;
 		ArcherInfo@ archer;
 		if (!this.get("archerInfo", @archer)) return;
 
-		if (getNet().isServer())
+		Vec2f arrowPos;
+		if (!params.saferead_Vec2f(arrowPos)) return;
+
+		float damageBody = infantry.damage_body;
+		float damageHead = infantry.damage_head;
+		s8 bulletPen = infantry.bullet_pen;
+
+		bool shotOnce = false;
+		Vec2f arrowVel;
+		//if (!params.saferead_Vec2f(arrowVel)) return;
+		while (params.saferead_Vec2f(arrowVel))
 		{
-			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
-			proj.Tag("strong");
-			proj.server_SetTimeToDie(0.5);
+			if (isServer())
+			{
+				CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
+				proj.Tag("strong");
+				proj.server_SetTimeToDie(infantry.bullet_lifetime);
+			}
+			shotOnce = true;
 		}
 
+		if (!shotOnce) return;
+		
 		if (this.get_u32("mag_bullets") > 0 && this.get_u32("next_bullet_take") <= getGameTime()) this.set_u32("mag_bullets", this.get_u32("mag_bullets") - 1);
 		this.set_u32("next_bullet_take", getGameTime()+1);
-		if (this.get_u32("mag_bullets") > this.get_u32("mag_bullets_max")) this.set_u32("mag_bullets", this.get_u32("mag_bullets_max"));
-		this.getSprite().PlaySound(shootsfx, 0.9f, 0.95f + XORRandom(35) * 0.01f);
+
+		const u32 magSize = infantry.mag_size;
+		if (this.get_u32("mag_bullets") > magSize) this.set_u32("mag_bullets", magSize);
+		if (isClient()) this.getSprite().PlaySound(infantry.shoot_sfx, 0.9f, 0.95f + XORRandom(35) * 0.01f);
 	}
 	else if (cmd == this.getCommandID("sync_reload_to_server"))
 	{
