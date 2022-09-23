@@ -64,7 +64,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 			}
 		}
 		else    // blob
-			if (blob.getTeamNum() != this.getTeamNum() && blob.getName() != "bullet" && blob.getName() != "sniperbullet")
+			if (blob.getTeamNum() != this.getTeamNum() && blob.getName() != "bullet")
 			{
 				const f32 mass = Maths::Max(this.getMass(), 10.0f);
 				const f32 veryHeavy = 500.0f;
