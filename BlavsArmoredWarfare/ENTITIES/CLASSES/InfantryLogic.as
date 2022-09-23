@@ -1,4 +1,5 @@
 #include "WarfareGlobal.as"
+#include "AllHashCodes.as"
 #include "ThrowCommon.as";
 #include "KnockedCommon.as";
 #include "RunnerCommon.as";
