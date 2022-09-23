@@ -16,8 +16,16 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	bool heli_launcher = this.isAttachedToPoint("JAVLAUNCHER");
+	this.set_bool("is_heli_launcher", heli_launcher);
+	if (heli_launcher) // heli's launcher
+	{
+		this.getSprite().SetVisible(false);
+	}
+
 	const bool is_client = isClient();
 	const bool is_dead = this.hasTag("dead");
+	const bool draw_robotech = !heli_launcher;
 	s8 launcherFrame = this.get_s8("launcher_frame");
 	float launcherAngle = this.get_f32("launcher_angle");
 
@@ -40,16 +48,33 @@ void onTick(CBlob@ this)
 		}
 		return;
 	}
-
-	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
+	
+	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName((!heli_launcher ? "PICKUP" : "JAVLAUNCHER"));
 	if (point is null) return;
 
 	CBlob@ ownerBlob = point.getOccupied();
 	if (ownerBlob is null) return;
+	
+	Vec2f ownerPos = ownerBlob.getPosition();
+	Vec2f ownerAimpos = ownerBlob.getAimPos() + Vec2f(2.0f, 2.0f);
 
-	if (!ownerBlob.isMyPlayer() || ownerBlob.isAttached()) return; // only player holding this
+	bool launch = false;
+
+	if (heli_launcher) // move controls to pilot of helicopter
+	{
+		AttachmentPoint@ appilot = ownerBlob.getAttachments().getAttachmentPointByName("DRIVER");
+		if (appilot is null) return;
+		
+		CBlob@ pilot = appilot.getOccupied();
+		if (pilot is null) return;
+
+		ownerAimpos = appilot.getAimPos(); // set aimpos to attachment point because kag
+		if (appilot.isKeyJustPressed(key_action3)) launch = true;
+		@ownerBlob = @pilot;
+	}
+	else if (!ownerBlob.isMyPlayer() || ownerBlob.isAttached()) return; // only player holding this
 	CControls@ controls = getControls();
-
+	
 	// binoculars effect
 	ownerBlob.set_u32("dont_change_zoom", getGameTime()+3);
 	CCamera@ camera = getCamera();
@@ -69,9 +94,6 @@ void onTick(CBlob@ this)
 
 	launcherFrame = 2;
 	launcherAngle = ownerBlob.isFacingLeft() ? 30.0f : -30.0f;
-
-	Vec2f ownerPos = ownerBlob.getPosition();
-	Vec2f ownerAimpos = ownerBlob.getAimPos() + Vec2f(2.0f, 2.0f);
 
 	u16 curTargetNetID = this.get_u16(targetNetIDString);
 	float targetingProgress = this.get_f32(targetingProgressString);
@@ -144,6 +166,7 @@ void onTick(CBlob@ this)
 			}
 			
 			f32 squareAngle = 45.0f * (1.0f - targetingProgress) * 3;
+			if (heli_launcher) squareAngle = 90.0f;
 			Vec2f squareScale = Vec2f(36.0f, 36.0f) * (2.0f - targetingProgress*1.5);
 			f32 squareCornerSeparation = 4.0f;
 			makeTargetSquare(targetPos, squareAngle, squareScale, squareCornerSeparation, 1.0f, targetingProgress == 1.0f ? redConsoleColor : yellowConsoleColor); //target detected rhombus
@@ -168,17 +191,20 @@ void onTick(CBlob@ this)
 	}
 
 	float robotechHeight = this.get_f32(robotechHeightString);
-	if (controls.isKeyJustPressed(MOUSE_SCROLL_DOWN))
+	if (draw_robotech)
 	{
-		robotechHeight += 10.0f;
+		if (controls.isKeyJustPressed(MOUSE_SCROLL_DOWN))
+		{
+			robotechHeight += 10.0f;
 
-		this.getSprite().PlaySound("techsound3.ogg", 0.65);
-	}
-	else if (controls.isKeyJustPressed(MOUSE_SCROLL_UP))
-	{
-		robotechHeight -= 10.0f;
+			this.getSprite().PlaySound("techsound3.ogg", 0.65);
+		}
+		else if (controls.isKeyJustPressed(MOUSE_SCROLL_UP))
+		{
+			robotechHeight -= 10.0f;
 
-		this.getSprite().PlaySound("techsound3.ogg", 0.65, 0.75);
+			this.getSprite().PlaySound("techsound3.ogg", 0.65, 0.75);
+		}
 	}
 
 	robotechHeight = Maths::Clamp(robotechHeight, 18.0f, 118.0f);
@@ -188,20 +214,20 @@ void onTick(CBlob@ this)
 	robotechPos.RotateByDegrees(ownerBlob.isFacingLeft() ? -45.0f : 45.0f); 
 	robotechPos += ownerPos; // join with thispos
 
-	makeTargetSquare(robotechPos, 0, Vec2f(3.0f, 3.0f), 3.0f, 1.0f, greenConsoleColor); // turnpoint
+	if (draw_robotech) makeTargetSquare(robotechPos, 0, Vec2f(3.0f, 3.0f), 3.0f, 1.0f, greenConsoleColor); // turnpoint
 	
 	CBlob@ targetBlob = getBlobByNetworkID(curTargetNetID);
 	if (curTargetNetID == 0 || targetBlob == null)
 	{
 		makeTargetSquare(ownerAimpos, 0, Vec2f(32.0f, 20.0f), 2.0f, 1.0f, greenConsoleColor);
 	}
-	else
+	else if (draw_robotech)
 	{
 		drawParticleLine( ownerPos - Vec2f(0,2), robotechPos, Vec2f_zero, greenConsoleColor, 0, 5.0f); // trajectory
 		drawParticleLine( robotechPos, targetBlob.getPosition(), Vec2f_zero, greenConsoleColor, 0, 5.0f); // trajectory
 	}
 
-	if (ownerBlob.isKeyJustPressed(key_action1))
+	if (ownerBlob.isKeyJustPressed(key_action1) || launch)
 	{
 		if (targetingProgress == 1.0f)
 		{
@@ -209,8 +235,12 @@ void onTick(CBlob@ this)
 			params.write_u16(curTargetNetID);
 			params.write_f32(robotechHeight);
 			this.SendCommandOnlyServer(this.getCommandID(launchOrdnanceIDString), params);
-			this.set_f32(targetingProgressString, 0);
-			this.set_u16(targetNetIDString, 0);
+
+			if (!heli_launcher)
+			{
+				this.set_f32(targetingProgressString, 0);
+				this.set_u16(targetNetIDString, 0);
+			}
 		}
 		else
 		{
@@ -270,11 +300,17 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		
 		if (!this.isAttached()) return;
 
-		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
+		bool heli_launcher = this.get_bool("is_heli_launcher");
+
+		if (heli_launcher) robotechHeight = 0.0f;
+
+		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName(!heli_launcher ? "PICKUP" : "JAVLAUNCHER");
 		if (point is null) return;
 
 		CBlob@ ownerBlob = point.getOccupied();
 		if (ownerBlob is null) return;
+
+		if (heli_launcher && ownerBlob.get_u32("next_shoot") >= getGameTime()) return;
 
 		Vec2f launchVec = Vec2f(ownerBlob.isFacingLeft() ? -1 : 1, -1.05f);
 		Vec2f thisPos = this.getPosition();
