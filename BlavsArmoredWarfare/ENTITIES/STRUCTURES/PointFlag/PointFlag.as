@@ -102,21 +102,20 @@ void onTick(CBlob@ this)
     map.getBlobsInRadius(this.getPosition() + Vec2f(4.0f,20.0f), capture_distance, blobs);
 	
 	u8 sieging_team = getRules().get_u8("siege");
-	bool is_siege = sieging_team < 255;
+	bool is_siege = sieging_team != 255;
 
     for (u16 i = 0; i < blobs.size(); i++)
     {
         if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead")) // Only players and builders    && blobs[i].getName() != "slave"
         {
+			if (is_siege && blobs[i].getTeamNum() != sieging_team) continue;
         	if (blobs[i].getTeamNum() == 0)
         	{
-				if (!is_siege || sieging_team == 0)
-        			num_blue++;
+        		num_blue++;
         	}
         	if (blobs[i].getTeamNum() == 1)
         	{
-        		if (!is_siege || sieging_team == 1)
-        			num_red++;
+        		num_red++;
         	}
         }
     }
