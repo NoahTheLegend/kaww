@@ -217,7 +217,6 @@ void onTick(CBlob@ this)
 				tracks.animation.timer = 0;
 				tracks.SetAnimation("default");
 			}
-			print("an " + tracks.getAnimation());
 		}
 	}
 
