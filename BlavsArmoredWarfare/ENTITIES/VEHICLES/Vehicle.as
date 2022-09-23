@@ -68,7 +68,8 @@ void onInit(CBlob@ this)
 			//print ("-");
 		}
 	}
-		f32 linear_length = 4.0f;
+
+	float linear_length = 4.0f;
 	switch(blobHash) // weapon rating and length of linear (map) explosion damage
 	{
 		case _mausturret: // MAUS Shell cannon
@@ -512,15 +513,15 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		case 4:
 		{
-			damage *= 0.7f;
+			damage *= 0.6f;
 		}
 		case 3:
 		{
-			damage *= 0.8f;
+			damage *= 0.7f;
 		}
 		case 2:
 		{
-			damage *= 0.8f;
+			damage *= 0.7f;
 		}
 		case 1:
 		{
