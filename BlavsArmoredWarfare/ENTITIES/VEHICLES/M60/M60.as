@@ -58,13 +58,14 @@ void onInit(CBlob@ this)
 
 		int[] frames2 = { 17, 16, 15 };
 
-
-		Animation@ animdefault = tracks.addAnimation("default", 2, true);
+		Animation@ animdefault = tracks.addAnimation("default", 1, true);
 		animdefault.AddFrames(frames);
 		Animation@ animslow = tracks.addAnimation("slow", 3, true);
 		animslow.AddFrames(frames);
-		Animation@ animrev = tracks.addAnimation("reverse", 6, true);
+		Animation@ animrev = tracks.addAnimation("reverse", 3, true);
 		animrev.AddFrames(frames2);
+		Animation@ animstopped = tracks.addAnimation("stopped", 1, true);
+		animstopped.AddFrame(15);
 
 		tracks.SetRelativeZ(50.8f);
 		tracks.SetOffset(Vec2f(0.0f, 0.0f));
@@ -234,8 +235,8 @@ void onTick(CBlob@ this)
 			}
 			else
 			{
+				tracks.SetAnimation("slow");
 				tracks.animation.timer = 0;
-				tracks.SetAnimation("default");
 			}
 		}
 	}
