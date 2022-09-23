@@ -5,8 +5,8 @@
 #include "BombCommon.as";
 #include "Hitters.as";
 #include "Recoil.as";
-#include "AntiTankCommon.as";
 #include "InfantryCommon.as";
+#include "AntiTankCommon.as"
 
 void onInit(CBlob@ this)
 {
@@ -21,8 +21,7 @@ void onInit(CBlob@ this)
 	this.Tag("flesh");
 	this.addCommandID("sync_reload_to_server");
 
-	this.set_u8("hitmarker", 0);
-	this.set_s8("reloadtime", 0); // for server
+	
 
 	this.set_s32("my_chargetime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
@@ -194,7 +193,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 	bool scoped = this.hasTag("scopedin");
 
-	InAirLogic(this);
+	InAirLogic(this, inaccuracycap);
 
 	if (this.isKeyPressed(key_action2))
 	{

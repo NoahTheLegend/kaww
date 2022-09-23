@@ -27,7 +27,7 @@ const bool semiauto = true;
 
 const s8 reloadtime = 41; // time to reload 45
 const string reloadsfx = classname + "_reload.ogg";
-const string shootsfx = "RPGFire.ogg";
+const string shootsfx = "AntiTank_shoot.ogg";
 
 const u8 delayafterfire = 85; // time between shots 4
 const u8 randdelay = 5; // + randomness
