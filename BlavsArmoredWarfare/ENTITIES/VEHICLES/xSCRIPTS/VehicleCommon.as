@@ -620,9 +620,9 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						if (this.isFacingLeft())
 						{
-							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2500)
+							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2750)
 							{
-								this.add_f32("wheelsTurnAmount", -1 * (this.get_f32("engine_RPM")- 1900)/30000);
+								this.add_f32("wheelsTurnAmount", (this.getVelocity().x >= 0 ? 1 : -1) * 1 * (this.get_f32("engine_RPM")- 1900)/30000);
 							}
 
 							if (ap.isKeyJustPressed(key_left))
@@ -633,11 +633,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							}
 							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.5f));
 
-							if (vel.x > 2.0f)
-							{
-								//ShakeScreen(30.0f, 8, this.getPosition());
-								
-							}
 							if (onground && groundNormal.y < -0.4f && groundNormal.x > 0.05f && vel.x < 1.0f && slopeangle)   // put more force when going up
 							{
 								force.x -= 4.0f * moveForce;
@@ -667,9 +662,9 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						if (!this.isFacingLeft())
 						{//spamable and has no effect
-							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2500)
-							{
-								this.add_f32("wheelsTurnAmount", 1 * (this.get_f32("engine_RPM")- 1900)/30000);
+							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2750)
+							{						
+								this.add_f32("wheelsTurnAmount", (this.getVelocity().x >= 0 ? -1 : 1) * -1 * (this.get_f32("engine_RPM")- 1900)/30000);
 							}
 
 							if (ap.isKeyJustPressed(key_right))
@@ -826,13 +821,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								v.firing = true;
 								CBlob@ b = ap.getOccupied();
-								/*if (b !is null && b.getPlayer() !is null && b.getPlayer().getUsername() == "NoahTheLegend")
-								{
-									printf("v.firing "+v.firing);
-									printf("v.charge "+v.charge);
-									printf("v.cooldown_time "+v.cooldown_time);
-									printf("can fire? "+Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge));
-								}*/
+
 							}
 
 							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && blob.isMyPlayer())
