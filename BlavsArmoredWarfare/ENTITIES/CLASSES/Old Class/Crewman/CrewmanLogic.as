@@ -1,4 +1,4 @@
-#include "CrewmanCommon.as"
+#include "InfantryCommon.as"
 #include "ThrowCommon.as"
 #include "KnockedCommon.as"
 #include "Hitters.as"

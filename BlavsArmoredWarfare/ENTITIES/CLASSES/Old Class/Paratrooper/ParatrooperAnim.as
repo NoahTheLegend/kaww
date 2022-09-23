@@ -1,6 +1,6 @@
 // Paratrooper animations
 
-#include "ParatrooperCommon.as"
+#include "InfantryCommon.as"
 #include "FireParticle.as"
 #include "RunnerAnimCommon.as";
 #include "RunnerCommon.as";
