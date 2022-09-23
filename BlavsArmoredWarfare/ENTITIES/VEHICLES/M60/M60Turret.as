@@ -126,7 +126,6 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 			aim_vec.RotateBy((facing_left ? 1 : -1) * this.getAngleDegrees());
 
-
 			angle = (-(aim_vec).getAngle() + 270.0f);
 			angle = Maths::Max(high_angle , Maths::Min(angle , low_angle));
 
@@ -159,13 +158,17 @@ void onTick(CBlob@ this)
 		this.getShape().SetOffset(Vec2f(-4.0f, -11.0f));
 		this.Tag("facing left");
 		this.Untag("facing right");
+		this.set_f32("gunelevation", 360 - this.get_f32("gunelevation"));
 	}
+	
 	else if (!this.isFacingLeft() && !this.hasTag("facing right"))
 	{
 		this.getShape().SetOffset(Vec2f(4.0f, -11.0f));
 		this.Untag("facing left");
 		this.Tag("facing right");
+		this.set_f32("gunelevation", 360 - this.get_f32("gunelevation"));
 	}
+
 	if (getGameTime()%30==0)
 	{
 		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("BOW");
@@ -212,6 +215,15 @@ void onTick(CBlob@ this)
 
 		s16 currentAngle = this.get_f32("gunelevation");
 
+		if (this.isFacingLeft())
+		{
+			this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+		}
+		else
+		{
+			this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
+		}
+
 		this.getSprite().SetEmitSoundPaused(true);
 
 		if (!this.hasTag("nogunner"))
@@ -232,14 +244,6 @@ void onTick(CBlob@ this)
 			Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 		}
 
-		if (this.isFacingLeft())
-		{
-			this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
-		}
-		else
-		{
-			this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
-		}
 
 		CSprite@ sprite = this.getSprite();
 		CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
@@ -249,7 +253,7 @@ void onTick(CBlob@ this)
 			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
 			arm.SetOffset(Vec2f(this.isFacingLeft() ? -21.0f : -20.0f, this.isFacingLeft() ? -27.5f : -26.5f));
 		}
-
+		
 		if (getNet().isClient())
 		{
 			CPlayer@ p = getLocalPlayer();

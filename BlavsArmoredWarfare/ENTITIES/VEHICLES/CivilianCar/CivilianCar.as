@@ -10,7 +10,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 
 	Vehicle_Setup(this,
-	              6000.0f, // move speed  //103
+	              6000.0f, // move speed
 	              0.08f,  // turn speed
 	              Vec2f(0.0f, 0.51f), // jump out velocity
 	              false  // inventory access

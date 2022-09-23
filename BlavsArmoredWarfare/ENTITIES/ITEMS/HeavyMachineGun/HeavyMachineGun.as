@@ -111,7 +111,8 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		gunner.offsetZ = -9.0f;   //5.0f
+		print(".");
+		gunner.offsetZ = -9.0f;
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 
 		if ((!facing_left && aim_vec.x < 0) ||
@@ -171,10 +172,7 @@ void onTick(CBlob@ this)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	if (!Vehicle_AddFlipButton(this, caller))
-	{
-		Vehicle_AddLoadAmmoButton(this, caller);
-	}
+	Vehicle_AddLoadAmmoButton(this, caller);
 }
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
@@ -266,13 +264,13 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 					const float recoilx = 15;
 					const float recoily = 50;
 					const float recoillength = 40; // how long to recoil (?)
-					//if (local.isAttachedTo(this)) ShakeScreen(Vec2f( recoilx - XORRandom(recoilx*2) + 1, -recoily + XORRandom(recoily) + 1), recoillength, gunner.getInterpolatedPosition());
+	
 					if (local.isAttachedTo(this)) ShakeScreen(28, 5, pos);
 
 					makeGibParticle(
 					"EmptyShellSmall",               // file name
 					pos,                 // position
-					(this.isFacingLeft() ? -offset : offset) + Vec2f((-20 + XORRandom(40))/18,-1.0f),                           // velocity
+					(this.isFacingLeft() ? -offset : offset) + Vec2f((-20 + XORRandom(40))/18,-1.1f),                           // velocity
 					0,                                  // column
 					0,                                  // row
 					Vec2f(16, 16),                      // frame size
