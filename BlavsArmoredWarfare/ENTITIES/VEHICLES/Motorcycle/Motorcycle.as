@@ -62,6 +62,34 @@ void onInit(CBlob@ this)
 			ap.SetKeysToTake(key_action1 | key_action2 | key_action3);
 		}
 	}
+
+	if (getNet().isServer())
+	{
+		{
+			CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 1
+
+			if (soundmanager !is null)
+			{
+				soundmanager.set_bool("manager_Type", false);
+				soundmanager.Init();
+				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+
+				this.set_u16("followid", soundmanager.getNetworkID());
+			}
+		}
+		{
+			CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 2
+
+			if (soundmanager !is null)
+			{
+				soundmanager.set_bool("manager_Type", true);
+				soundmanager.Init();
+				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+				
+				this.set_u16("followid2", soundmanager.getNetworkID());
+			}
+		}
+	}
 }
 
 void onTick(CBlob@ this)
@@ -144,8 +172,33 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	//Vehicle_LevelOutInAir(this);
 	Vehicle_LevelOutInAirCushion(this);
+
+	// feed info and attach sound managers
+	if (this.exists("followid"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
+			soundmanager.setVelocity(this.getVelocity());
+			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+		}
+	}
+	if (this.exists("followid2"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid2"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 10 : -10, -6));
+			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
+			soundmanager.setVelocity(this.getVelocity());
+			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+		}
+	}
 }
 
 // Blow up
@@ -159,6 +212,24 @@ void onDie(CBlob@ this)
 		if (bow !is null)
 		{
 			bow.server_Die();
+		}
+	}
+	if (this.exists("followid"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.server_Die();
+		}
+	}
+	if (this.exists("followid2"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid2"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.server_Die();
 		}
 	}
 }

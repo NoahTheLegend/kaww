@@ -62,9 +62,9 @@ void onInit(CBlob@ this)
 		Animation@ animdefault = tracks.addAnimation("default", 2, true);
 		animdefault.AddFrames(frames);
 		Animation@ animslow = tracks.addAnimation("slow", 3, true);
-		animslow.AddFrames(frames2);
+		animslow.AddFrames(frames);
 		Animation@ animrev = tracks.addAnimation("reverse", 6, true);
-		animrev.AddFrames(frames);
+		animrev.AddFrames(frames2);
 
 		tracks.SetRelativeZ(50.8f);
 		tracks.SetOffset(Vec2f(0.0f, 0.0f));
@@ -164,29 +164,39 @@ void onTick(CBlob@ this)
 		CSpriteLayer@ tracks = this.getSprite().getSpriteLayer("tracks");
 		if (tracks !is null)
 		{
-			//float wheels_angle = (Maths::Round(((this.getSprite().getWorldTranslation().x*8) + (this.get_f32("wheelsTurnAmount")*80))) % 360);
-			//print("w " + wheels_angle);
 			if (Maths::Abs(this.getVelocity().x) > 0.3f)
 			{
-				tracks.animation.timer = 1;
 				if ((this.getVelocity().x) > 0)
 				{
 					if (!this.isFacingLeft())
 					{
+						
 						if ((this.getVelocity().x) > 1.5f)
 						{
-							tracks.SetAnimation("default");
-							print("def");
+							if (!tracks.isAnimation("default"))
+							{
+								tracks.SetAnimation("default");
+								tracks.animation.timer = 1;
+								tracks.SetFrameIndex(0);
+							}
 						}
 						else
 						{
-							tracks.SetAnimation("slow");
-							print("slow");
+							if (!tracks.isAnimation("slow"))
+							{
+								tracks.SetAnimation("slow");
+								tracks.animation.timer = 1;
+								tracks.SetFrameIndex(0);
+							}
 						}
 					}
 					else{
-						tracks.SetAnimation("reverse");
-						print("rev");
+						if (!tracks.isAnimation("reverse"))
+						{
+							tracks.SetAnimation("reverse");
+							tracks.animation.timer = 1;
+							tracks.SetFrameIndex(0);
+						}
 					}
 					
 				}
@@ -195,22 +205,32 @@ void onTick(CBlob@ this)
 					{
 						if ((this.getVelocity().x) > -1.5f)
 						{
-							tracks.SetAnimation("slow");
-							print("slow");
+							if (!tracks.isAnimation("slow"))
+							{
+								tracks.SetAnimation("slow");
+								tracks.animation.timer = 1;
+								tracks.SetFrameIndex(0);
+							}
 						}
 						else
 						{
-							tracks.SetAnimation("default");
-							print("def");
+							if (!tracks.isAnimation("default"))
+							{
+								tracks.SetAnimation("default");
+								tracks.animation.timer = 1;
+								tracks.SetFrameIndex(0);
+							}
 						}
 					}
 					else{
-						tracks.SetAnimation("reverse");
-						print("rev");
+						if (!tracks.isAnimation("reverse"))
+						{
+							tracks.SetAnimation("reverse");
+							tracks.animation.timer = 1;
+							tracks.SetFrameIndex(0);
+						}
 					}
 				}
-				
-				
 			}
 			else
 			{
