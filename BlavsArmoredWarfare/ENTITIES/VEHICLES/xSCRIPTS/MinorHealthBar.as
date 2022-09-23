@@ -48,7 +48,7 @@ void onRender(CSprite@ this)
 
 	const f32 renderRadius = (blob.getRadius()) * 1.95f;
 	bool mouseOnBlob = (mouseWorld - center).getLength() < renderRadius;
-	if (mouseOnBlob)
+	if (mouseOnBlob || blob.get_u32("show_hp") > getGameTime())
 	{
 		if (initialHealth > 0.0f)
 		{
