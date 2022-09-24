@@ -148,6 +148,37 @@ void onInit(CBlob@ this)
 		case _bf109: // plane
 		backsideOffset = 8.0f; break;
 	}
+
+	// speedy stuff
+	f32 intake;
+	switch(blobHash) // backside vulnerability point
+	{
+		case _maus: // maus
+		intake = -50.0f; break;
+
+		case _t10: // T10
+		break;
+		
+		case _m60: // normal tank
+		intake = 50.0f; break;
+
+		case _btr82a: // big APC
+		intake = 75.0f; break;
+
+		case _pszh4: // smol APC
+		intake = 100.0f; break;
+
+		case _techtruck: // truck
+		intake = 150.0f; break;
+
+		case _armory :// armory
+		intake = 100.0f; break;
+
+		case _motorcycle: // bike!
+		intake = 200.0f; break;
+	}
+	this.set_f32("add_gas_intake", intake);
+
 	this.set_f32(backsideOffsetString, backsideOffset);
 
 	this.set_s8(armorRatingString, armorRating);
@@ -253,7 +284,8 @@ void onTick(CBlob@ this)
 
 	if (this.get_f32("engine_RPMtarget") > this.get_f32("engine_RPM"))
 	{
-		u32 gas_intake = 230 + XORRandom(70); // gas flow variance  (needs equation)
+		f32 custom_add = this.get_f32("add_gas_intake");
+		u32 gas_intake = 230 + custom_add + XORRandom(70+custom_add/3.5f); // gas flow variance  (needs equation)
 		if (this.get_f32("engine_RPM") > 2000) {gas_intake += 100;}
 		this.add_f32("engine_RPM", this.get_f32("engine_throttle") * gas_intake); 
 
