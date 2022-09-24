@@ -435,6 +435,10 @@ void ManageCamera(CBlob@ this)
 		{
 			camera.mouseFactor = 0.65f;
 		}
+		else if (getLocalPlayer().getBlob().hasTag("driver_vision"))
+		{
+			camera.mouseFactor = 0.55f;
+		}
 
 		// camera
 		if (getLocalPlayer().getBlob().get_u32("dont_change_zoom") < getGameTime())
