@@ -769,3 +769,75 @@ float getBulletSpread( int blobNameHash )
 
 	return bulletSpread;
 }
+
+void onRevolverReload(CBlob@ this)
+{
+	this.getSprite().PlaySound("Revolver_reload.ogg", 0.8);
+	for (uint i = 0; i < 6; i++)
+	{
+		makeGibParticle(
+		"EmptyShellSmall",      		            // file name
+		this.getPosition() + Vec2f(this.isFacingLeft() ? -6.0f : 6.0f, 0.0f), // position
+		Vec2f(this.isFacingLeft() ? 1.0f+(0.1f * XORRandom(10) - 0.5f) : -1.0f-(0.1f * XORRandom(10) - 0.5f), 0.0f), // velocity
+		0,                                  // column
+		0,                                  // row
+		Vec2f(16, 16),                      // frame size
+		0.2f,                               // scale?
+		0,                                  // ?
+		"ShellCasing",                      // sound
+		this.get_u8("team_color"));         // team number
+	}
+}
+
+void onRangerReload(CBlob@ this)
+{
+	this.getSprite().PlaySound("Ranger_reload.ogg", 0.8);
+
+	makeGibParticle(
+	"EmptyMag",               // file name
+	this.getPosition() + Vec2f(this.isFacingLeft() ? -6.0f : 6.0f, 0.5f),      // position
+	Vec2f(this.isFacingLeft() ? -2.0f : 2.0f, -1.0f),                          // velocity
+	0,                                  // column
+	0,                                  // row
+	Vec2f(16, 16),                      // frame size
+	1.0f,                               // scale?
+	0,                                  // ?
+	"EmptyMagSound",                    // sound
+	this.get_u8("team_color"));         // team number
+}
+
+void onSniperReload(CBlob@ this)
+{
+	if (this.get_bool("isReloading") && (this.get_s8("charge_time") == 0)) //  || this.get_s8("charge_time") == 17)
+	{
+		makeGibParticle(
+		"EmptyMag",               // file name
+		this.getPosition() + Vec2f(this.isFacingLeft() ? -4.0f : 4.0f, 1.0f),      // position
+		Vec2f(this.isFacingLeft() ? -0.5f : 0.5f, 0.25f),                          // velocity
+		0,                                  // column
+		0,                                  // row
+		Vec2f(16, 16),                      // frame size
+		1.0f,                               // scale?
+		0,                                  // ?
+		"EmptyMagSound",                    // sound
+		this.get_u8("team_color"));         // team number
+	}
+}
+
+void onMp5Reload(CBlob@ this)
+{
+	if (this.get_bool("isReloading") && (this.get_s8("charge_time") == 46 || this.get_s8("charge_time") == 45))
+	{
+		makeGibParticle(
+		"EmptyMag",               // file name
+		this.getPosition() + Vec2f(this.isFacingLeft() ? -3.0f : 3.0f, 2.0f),      // position
+		Vec2f(this.isFacingLeft() ? -1.5f : 1.5f, -0.75f),                          // velocity
+		0,                                  // column
+		0,                                  // row
+		Vec2f(16, 16),                      // frame size
+		1.0f,                               // scale?
+		0,                                  // ?
+		"EmptyMagSound",                    // sound
+		this.get_u8("team_color"));         // team number
+	}
+}

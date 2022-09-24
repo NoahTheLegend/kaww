@@ -210,7 +210,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	bool scoped = this.hasTag("scopedin");
 
 	InAirLogic(this);
-
+	
 	if (this.get_s8("charge_time") == 46)
 	{
 		CBitStream params;

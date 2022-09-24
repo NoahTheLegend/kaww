@@ -260,6 +260,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	CControls@ controls = this.getControls();
 	CSprite@ sprite = this.getSprite();
 	s8 charge_time = this.get_s32("my_chargetime");//archer.charge_time;
+	this.set_s8("charge_time", charge_time);
 	bool isStabbing = archer.isStabbing;
 	bool isReloading = this.get_bool("isReloading"); //archer.isReloading;
 	u8 charge_state = archer.charge_state;
@@ -314,6 +315,15 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 	const u8 inaccuracyCap = infantry.inaccuracy_cap;
 	InAirLogic(this, inaccuracyCap);
+
+	if (this.getName() == "mp5")
+	{
+		if (this.get_s8("charge_time") == 46)
+		{
+			CBitStream params;
+			this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
+		}
+	}
 
 	if (this.isKeyPressed(key_action2))
 	{
@@ -776,6 +786,18 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 				ShakeScreen(28, 10, this.getPosition());
 
 				this.set_u8("inaccuracy", this.get_u8("inaccuracy") + infantry.inaccuracy_pershot * (this.hasTag("sprinting")?2.0f:1.0f));
+			
+				makeGibParticle(
+					"EmptyShellSmall",	                    // file name
+					this.getPosition(),                 // position
+					Vec2f(this.isFacingLeft() ? 2.0f : -2.0f, 0.0f), // velocity
+					0,                                  // column
+					0,                                  // row
+					Vec2f(16, 16),                      // frame size
+					0.2f,                               // scale?
+					0,                                  // ?
+					"ShellCasing",                      // sound
+					this.get_u8("team_color"));         // team number
 			}
 		}
 	}
@@ -846,6 +868,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("sync_reload_to_server"))
 	{
+		if (isClient())
+		{
+			if (this.getName() == "revolver") onRevolverReload(this);
+			else if (this.getName() == "ranger") onRangerReload(this);
+			else if (this.getName() == "sniper") onSniperReload(this);
+			else if (this.getName() == "mp5") onMp5Reload(this);
+		}
 		if (isServer())
 		{
 			s8 reload = params.read_s8();
