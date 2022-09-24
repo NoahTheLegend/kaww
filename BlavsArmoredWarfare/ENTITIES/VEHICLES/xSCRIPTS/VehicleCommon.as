@@ -587,7 +587,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					if (angle < 80 || angle > 290)
 					{
 						f32 moveForce = v.move_speed/32;
-						f32 turnSpeed = v.turn_speed;
+						f32 turnSpeed = v.turn_speed/32;
 						Vec2f groundNormal = this.getGroundNormal();
 
 						Vec2f vel = this.getVelocity();
@@ -599,7 +599,8 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							moveForce *= 2.0f; // gear 1
 						}
 
-						const f32 engine_topspeed = v.move_speed; //5500;
+						const f32 engine_topspeed = v.move_speed;
+						const f32 engine_topspeed_reverse = v.turn_speed;
 
 						moveForce *= Maths::Clamp(this.get_f32("engine_RPM"), 0, engine_topspeed) / 4500;
 
@@ -623,7 +624,14 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						{
 							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550)
 							{
-								this.add_f32("wheelsTurnAmount", (this.getVelocity().x >= 0 ? 1 : -1) * 1 * (this.get_f32("engine_RPM")- 1900)/30000);
+								if (ap.isKeyPressed(key_action2))
+								{
+									this.add_f32("wheelsTurnAmount", (this.getVelocity().x >= 0 ? 1 : -1) * 1 * (this.get_f32("engine_RPM")- 1900)/30000);
+								}	
+								else
+								{
+									this.add_f32("wheelsTurnAmount", -1 * (this.get_f32("engine_RPM")- 1900)/30000);
+								}
 							}
 
 							if (ap.isKeyJustPressed(key_left))
@@ -656,7 +664,14 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (ap.isKeyPressed(key_action2))
 							{
-								if (right) {force.x *= -0.45f;} // reverse
+								
+								//moveForce *= Maths::Clamp(this.get_f32("engine_RPM"), 0, engine_topspeed_reverse) / 4500;
+
+								if (right)
+								{
+									this.set_f32("engine_RPM", Maths::Lerp(this.get_f32("engine_RPM"), 6200.0f, 0.001f));
+									force.x *= -0.8f;
+								} // reverse
 							}
 							else 
 							{
@@ -675,14 +690,20 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						if (!this.isFacingLeft())
 						{//spamable and has no effect
 							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550)
-							{						
-								this.add_f32("wheelsTurnAmount", (this.getVelocity().x >= 0 ? -1 : 1) * -1 * (this.get_f32("engine_RPM")- 1900)/30000);
-								//this.add_f32("wheelsTurnAmount", -1 * (this.get_f32("engine_RPM")- 1900)/30000);
+							{				
+								if (ap.isKeyPressed(key_action2))
+								{
+									this.add_f32("wheelsTurnAmount", (this.getVelocity().x >= 0 ? -1 : 1) * -1 * (this.get_f32("engine_RPM")- 1900)/30000);
+								}	
+								else
+								{
+									this.add_f32("wheelsTurnAmount", 1 * (this.get_f32("engine_RPM")- 1900)/30000);
+								}
 							}
 
 							if (ap.isKeyJustPressed(key_right))
 							{
-								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
+								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.31f);
 
 								if (isClient())
 								{	
@@ -712,7 +733,11 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (ap.isKeyPressed(key_action2))
 							{
-								if (left) {force.x *= -0.45f;} // reverse
+								if (left)
+								{
+									this.set_f32("engine_RPM", Maths::Lerp(this.get_f32("engine_RPM"), 6200.0f, 0.31f));
+									force.x *= -0.8f;
+								} // reverse
 							}
 							else
 							{
@@ -980,14 +1005,9 @@ void UpdateWheels(CBlob@ this)
 		if (wheel.name.substr(0, 2) == "!w") // this is a wheel
 		{
 			f32 wheels_angle;
-			if (0 == 1)
-			{
-				wheels_angle = ((this.getVelocity().x * 60) % 360); //Maths::Round
-			}
-			else {
-				//wheels_angle = (Maths::Round(wheel.getWorldTranslation().x * 10) % 360);
-				wheels_angle = (Maths::Round(((wheel.getWorldTranslation().x*8) + (this.get_f32("wheelsTurnAmount")*80))) % 360);
-			}
+
+			//wheels_angle = (Maths::Round(wheel.getWorldTranslation().x * 10) % 360);
+			wheels_angle = (Maths::Round(((wheel.getWorldTranslation().x*8) + (this.get_f32("wheelsTurnAmount")*80))) % 360);
 						
 			wheel.ResetTransform();
 			wheel.RotateBy(wheels_angle + i * i * 16.0f, Vec2f_zero);
