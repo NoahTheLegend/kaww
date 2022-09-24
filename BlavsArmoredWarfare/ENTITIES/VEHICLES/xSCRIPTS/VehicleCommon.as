@@ -703,7 +703,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (ap.isKeyJustPressed(key_right))
 							{
-								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.31f);
+								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
 
 								if (isClient())
 								{	
