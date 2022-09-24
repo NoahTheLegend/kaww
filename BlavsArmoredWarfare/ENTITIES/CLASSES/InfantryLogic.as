@@ -722,6 +722,7 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
+	if (this.isKeyPressed(key_action1)) this.set_u32("no_reload", getGameTime()+10);
 
 	this.set_bool("is_a1", false);
 	this.set_bool("just_a1", false);
