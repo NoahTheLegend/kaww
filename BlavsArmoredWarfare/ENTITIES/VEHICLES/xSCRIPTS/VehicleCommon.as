@@ -666,12 +666,12 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								
 								//moveForce *= Maths::Clamp(this.get_f32("engine_RPM"), 0, engine_topspeed_reverse) / 4500;
-
+								// reverse
 								if (right)
 								{
 									this.set_f32("engine_RPM", Maths::Lerp(this.get_f32("engine_RPM"), 6200.0f, 0.001f));
-									force.x *= -0.8f;
-								} // reverse
+									force.x *= -0.5f;
+								}
 							}
 							else 
 							{
@@ -735,8 +735,8 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								if (left)
 								{
-									this.set_f32("engine_RPM", Maths::Lerp(this.get_f32("engine_RPM"), 6200.0f, 0.31f));
-									force.x *= -0.8f;
+									this.set_f32("engine_RPM", Maths::Lerp(this.get_f32("engine_RPM"), 6200.0f, 0.001f));
+									force.x *= -0.5f;
 								} // reverse
 							}
 							else
