@@ -303,6 +303,30 @@ void onTick(CBlob@ this)
 		}
 	}
 
+	// angling
+	CSprite@ sprite = this.getSprite();
+	if (Maths::Abs(this.getVelocity().x) > 0.5f && sprite !is null)
+	{
+		bool fl = this.getVelocity().x < -1.0f;
+		bool slow_down = Maths::Abs(this.getVelocity().x) < Maths::Abs(this.getOldVelocity().x);
+
+		f32 speed = Maths::Abs(this.getVelocity().x);
+		f32 max_speed = v.move_speed/1000;
+
+		f32 max_diff = fl ? 3.0f : -3.0f; // basic value
+		if (this.exists("max_angle_diff")) max_diff = (fl ? this.get_f32("max_angle_diff") : -1 * this.get_f32("max_angle_diff"));
+		if (slow_down) max_diff *= -1;
+
+		max_diff *= speed/max_speed;
+
+		if (Maths::Abs(max_diff) > 0.1f)
+		{
+			sprite.ResetTransform();
+			sprite.RotateBy(max_diff, Vec2f(0,0));
+		}
+	}
+	else if (sprite !is null) sprite.ResetTransform();
+
 	this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
 
 	this.set_f32("engine_RPM", Maths::Clamp(this.get_f32("engine_RPM"), 0.0f, 30000.0f));
