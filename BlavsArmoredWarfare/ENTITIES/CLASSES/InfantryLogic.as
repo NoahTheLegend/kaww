@@ -807,6 +807,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
+		if (this is null || this.hasTag("dead")) return;
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
 		ArcherInfo@ archer;
