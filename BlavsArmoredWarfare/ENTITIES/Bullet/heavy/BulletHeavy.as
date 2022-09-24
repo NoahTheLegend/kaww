@@ -194,6 +194,10 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 	if (blob !is null)
 	{
+		if (blob.hasTag("vehicle"))
+		{
+			if (isServer()) this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.34f, Hitters::builder);
+		}
 		// play sound
 		if (blob.hasTag("flesh"))
 		{
@@ -298,7 +302,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
-	if (blob.hasTag("turret"))
+	if (blob.hasTag("turret") && blob.getTeamNum() != this.getTeamNum())
 	{
 		return true;
 	}
