@@ -25,6 +25,14 @@ void onTick(CBlob@ this)
 	if (this.getTickSinceCreated() == 1)
 	{
 		InitClasses(this);
+		CBlob@[] tents;
+		getBlobsByName("tent", tents);
+		for (u8 i = 0; i < tents.length; i++)
+		{
+			CBlob@ t = tents[i];
+			if (t is null || t.getTeamNum() != this.getTeamNum()) continue;
+			if (t.getNetworkID() > this.getNetworkID()) this.server_Die();
+		}
 	}
 	if (enable_quickswap)
 	{
@@ -54,6 +62,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	{
 		caller.CreateGenericButton("$change_class$", Vec2f(0, 0), this, buildSpawnMenu, getTranslatedString("Swap Class"));
 	}
+	return;
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
