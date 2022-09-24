@@ -18,6 +18,12 @@ void onTick(CBlob@ this)
 {
 	const f32 initialHealth = this.getInitialHealth();
 
+	if (this.isAttachedToPoint("DRIVER"))
+	{
+		this.Tag("driver_vision");
+		this.set_u32("dont_change_zoom", getGameTime()+1);
+	}
+
 	// match to real hp
 	if ((this.get_f32(linadj_hp) != this.getHealth()))
 	{
