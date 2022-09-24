@@ -173,7 +173,7 @@ void onTick(CBlob@ this)
 	}
 
 	// wheels
-	if (this.getShape().vellen > 0.01f && !this.isAttached())
+	if (this.getShape().vellen > 0.11f && !this.isAttached())
 	{
 		UpdateWheels(this);
 	}
@@ -631,7 +631,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 				}
 				else //very dead
 				{
-					damage = 100.0f;
+					damage = 10.0f;
 				}
 
 				this.server_Hit(this, point1, normal, damage, Hitters::fall);
