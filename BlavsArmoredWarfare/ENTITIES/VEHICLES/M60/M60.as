@@ -1,6 +1,7 @@
 #include "VehicleCommon.as"
 #include "Explosion.as";
 #include "Hitters.as"
+#include "MakeDirtParticles.as"
 
 void onInit(CBlob@ this)
 {
