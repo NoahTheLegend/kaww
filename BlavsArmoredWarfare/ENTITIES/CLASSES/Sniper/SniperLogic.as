@@ -6,7 +6,6 @@
 #include "Hitters.as";
 #include "Recoil.as";
 #include "InfantryCommon.as";
-#include "InfantryCommon.as";
 
 void onInit(CBlob@ this)
 {
