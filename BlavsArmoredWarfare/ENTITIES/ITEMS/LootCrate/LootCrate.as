@@ -2,6 +2,7 @@
 
 void onInit(CBlob@ this)
 {
+    this.Tag("trap");
 	this.getSprite().SetZ(-10.0f);
 }
 

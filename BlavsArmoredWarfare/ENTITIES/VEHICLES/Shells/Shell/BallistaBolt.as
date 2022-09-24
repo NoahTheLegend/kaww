@@ -75,7 +75,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	CBlob@ carrier = blob.getCarriedBlob();
 
-	if (blob.hasTag("structure"))
+	if (blob.hasTag("structure") || blob.getName() == "log" || blob.hasTag("trap"))
 	{
 		return false;
 	}
