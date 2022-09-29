@@ -596,7 +596,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						// more force when starting
 						if (this.getShape().vellen < 1.75f)
 						{
-							moveForce *= 2.0f; // gear 1
+							moveForce *= 1.5f; // gear 1
 						}
 
 						const f32 engine_topspeed = v.move_speed;

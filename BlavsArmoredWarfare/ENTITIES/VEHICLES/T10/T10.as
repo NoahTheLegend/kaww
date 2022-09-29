@@ -63,6 +63,26 @@ void onInit(CBlob@ this)
 		front.SetOffset(Vec2f(0.0f, 0.0f));
 	}
 
+	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", sprite.getConsts().filename, 80, 80);
+	if (tracks !is null)
+	{
+		int[] frames = { 15, 16, 17 };
+
+		int[] frames2 = { 17, 16, 15 };
+
+		Animation@ animdefault = tracks.addAnimation("default", 1, true);
+		animdefault.AddFrames(frames);
+		Animation@ animslow = tracks.addAnimation("slow", 3, true);
+		animslow.AddFrames(frames);
+		Animation@ animrev = tracks.addAnimation("reverse", 2, true);
+		animrev.AddFrames(frames2);
+		Animation@ animstopped = tracks.addAnimation("stopped", 1, true);
+		animstopped.AddFrame(15);
+
+		tracks.SetRelativeZ(50.8f);
+		tracks.SetOffset(Vec2f(0.0f, 0.0f));
+	}
+
 	// turret
 	if (getNet().isServer())
 	{
@@ -88,6 +108,31 @@ void onInit(CBlob@ this)
 			bow.SetFacingLeft(facing_left);
 		}
 	}	
+
+	{
+		CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 1
+
+		if (soundmanager !is null)
+		{
+			soundmanager.set_bool("manager_Type", false);
+			soundmanager.Init();
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+
+			this.set_u16("followid", soundmanager.getNetworkID());
+		}
+	}
+	{
+		CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 2
+
+		if (soundmanager !is null)
+		{
+			soundmanager.set_bool("manager_Type", true);
+			soundmanager.Init();
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+			
+			this.set_u16("followid2", soundmanager.getNetworkID());
+		}
+	}
 }
 
 void onTick(CBlob@ this)
@@ -125,6 +170,79 @@ void onTick(CBlob@ this)
 				}
 			}
 		}
+		
+		CSpriteLayer@ tracks = this.getSprite().getSpriteLayer("tracks");
+		if (tracks !is null)
+		{
+			if (Maths::Abs(this.getVelocity().x) > 0.3f)
+			{
+				if ((this.getVelocity().x) > 0)
+				{
+					if (!this.isFacingLeft())
+					{
+						if ((this.getVelocity().x) > 1.5f)
+						{
+							if (!tracks.isAnimation("default"))
+							{
+								tracks.SetAnimation("default");
+								tracks.animation.timer = 1;
+								tracks.SetFrameIndex(0);
+							}
+						}
+						else
+						{
+							if (!tracks.isAnimation("slow"))
+							{
+								tracks.SetAnimation("slow");
+								tracks.animation.timer = 1;
+								tracks.SetFrameIndex(0);
+							}
+						}
+					}
+					else if (!tracks.isAnimation("reverse"))
+					{
+						tracks.SetAnimation("reverse");
+						tracks.animation.timer = 1;
+						tracks.SetFrameIndex(0);
+					}
+					
+				}
+				else{
+					if (this.isFacingLeft())
+					{
+						if ((this.getVelocity().x) > -1.5f)
+						{
+							if (!tracks.isAnimation("slow"))
+							{
+								tracks.SetAnimation("slow");
+								tracks.animation.timer = 1;
+								tracks.SetFrameIndex(0);
+							}
+						}
+						else
+						{
+							if (!tracks.isAnimation("default"))
+							{
+								tracks.SetAnimation("default");
+								tracks.animation.timer = 1;
+								tracks.SetFrameIndex(0);
+							}
+						}
+					}
+					else if (!tracks.isAnimation("reverse"))
+					{
+						tracks.SetAnimation("reverse");
+						tracks.animation.timer = 1;
+						tracks.SetFrameIndex(0);
+					}
+				}
+			}
+			else
+			{
+				tracks.SetAnimation("slow");
+				tracks.animation.timer = 0;
+			}
+		}
 	}
 
 	// Crippled
@@ -158,6 +276,31 @@ void onTick(CBlob@ this)
 	}
 
 	Vehicle_LevelOutInAir(this);
+
+	if (this.exists("followid"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
+			soundmanager.setVelocity(this.getVelocity());
+			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+		}
+	}
+	if (this.exists("followid2"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid2"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 10 : -10, -6));
+			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
+			soundmanager.setVelocity(this.getVelocity());
+			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+		}
+	}
 }
 
 // Blow up
@@ -173,6 +316,24 @@ void onDie(CBlob@ this)
 		if (bow !is null)
 		{
 			bow.server_Die();
+		}
+	}
+	if (this.exists("followid"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.server_Die();
+		}
+	}
+	if (this.exists("followid2"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid2"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.server_Die();
 		}
 	}
 	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
