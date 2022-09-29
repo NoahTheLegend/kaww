@@ -325,7 +325,7 @@ void onTick(CBlob@ this)
 			sprite.ResetTransform();
 			sprite.RotateBy((this.getPosition().x - this.getOldPosition().x)*-max_speed, Vec2f(this.isFacingLeft() ? 6 : -6,0));
 
-			print("angle " + (this.getPosition().x - this.getOldPosition().x)*-max_speed);
+			//print("angle " + (this.getPosition().x - this.getOldPosition().x)*-max_speed);
 		}
 	}
 	else if (sprite !is null) sprite.ResetTransform();

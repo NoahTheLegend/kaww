@@ -634,7 +634,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								}
 							}
 
-							if (ap.isKeyJustPressed(key_left))
+							if (ap.isKeyJustPressed(key_left) && this.hasTag("tank"))
 							{
 								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
 
@@ -701,7 +701,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								}
 							}
 
-							if (ap.isKeyJustPressed(key_right))
+							if (ap.isKeyJustPressed(key_right) && this.hasTag("tank"))
 							{
 								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
 
