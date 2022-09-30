@@ -127,31 +127,32 @@ void onInit(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	const bool is_explosive = customData == Hitters::explosion || customData == Hitters::keg;
+	
 	if (this.isAttached())
 	{
-		if (customData == Hitters::explosion)
+		if (is_explosive)
 			return damage*0.05f;
 		else if (customData == Hitters::arrow)
 			return damage*0.5f;
 		else return 0;
 	}
-	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") && hitterBlob.getName() != "grenade")
+
+	CMap@ map = getMap();
+	if (map == null) return damage;
+	
+	if (is_explosive && hitterBlob.getName() != "grenade")
 	{
-		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
-		if (hitterBlob.exists("explosion_damage_scale")) damage *= hitterBlob.get_f32("explosion_damage_scale");
-		bool at_bunker = false;
+		bool has_cover = false;
 		Vec2f pos = this.getPosition();
 		Vec2f hit_pos = hitterBlob.getPosition();
 
-		CBlob@[] bunkers;
-		getMap().getBlobsInRadius(this.getPosition(), this.getRadius(), @bunkers);
-
-		if (!getMap().rayCastSolidNoBlobs(pos, hit_pos))
+		if (!map.rayCastSolidNoBlobs(pos, hit_pos))
 		{
 			HitInfo@[] infos;
 			Vec2f hitvec = hit_pos - pos;
 
-			if (getMap().getHitInfosFromRay(pos, -hitvec.Angle(), hitvec.getLength(), this, @infos))
+			if (map.getHitInfosFromRay(pos, -hitvec.Angle(), hitvec.getLength(), this, @infos))
 			{
 				for (u16 i = 0; i < infos.length; i++)
 				{
@@ -159,16 +160,15 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 					if (hi is null) continue;
 					if (hi.hasTag("bunker") || hi.hasTag("tank")) 
 					{
-						at_bunker = true;
+						has_cover = true;
 						break;
 					}
 				}
 			}
-			if (at_bunker) return 0;
+			
+			if (has_cover) return 0;
 
-			u16 dist_blocks = Maths::Floor((pos-hitterBlob.get_Vec2f("from_pos")).Length()/8);
-			// printf(""+dist_blocks);
-			return damage * Maths::Min(0.2f, 0.2f - (0.0025 * (dist_blocks/25)));
+			return damage * 0.1f;
 		}
 	}
 
