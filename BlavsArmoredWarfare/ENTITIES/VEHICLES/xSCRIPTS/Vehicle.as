@@ -74,10 +74,6 @@ void onInit(CBlob@ this)
 	switch(blobHash) // weapon rating and length of linear (map) and circled explosion damage
 	{
 		case _mausturret: // MAUS Shell cannon
-		{
-			weaponRating = 3;
-			break;
-		}
 		case _t10turret: // T10 Shell cannon
 		{
 			weaponRating = 3;
