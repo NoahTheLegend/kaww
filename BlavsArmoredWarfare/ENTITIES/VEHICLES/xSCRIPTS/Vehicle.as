@@ -551,42 +551,36 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		damage *= 1.5f;
 	}
 
-	// reduce damage if it hits turret (for maus)
-	if (this.hasTag("reduce_upper_dmg") && hitterBlob.getPosition().y < thisPos.y && hitterBlob.getPosition().y > thisPos.y-24.0f)
-	{
-		damage *= 0.5;
-	}
-
 	switch (finalRating)
 	{
 		// negative armor, trickles up
 		case -2:
 		{
 			if (is_explosive && damage != 0) damage += 1.5f; // suffer bonus base damage (you just got your entire vehicle burned)
-			damage *= 2.0f;
+			damage *= 1.5f;
 		}
 		case -1:
 		{
-			damage *= 1.5f;
+			damage *= 1.3f;
 		}
 		break;
 
 		// positive armor, trickles down
 		case 5:
 		{
-			damageNegation += 0.3f; // reduction to final damage, extremely tanky
+			damageNegation += 0.5f; // reduction to final damage, extremely tanky
 		}
 		case 4:
 		{
-			damage *= 0.85f;
+			damage *= 0.6f;
 		}
 		case 3:
 		{
-			damage *= 1.0f;
+			damage *= 0.7f;
 		}
 		case 2:
 		{
-			damage *= 1.25f;
+			damage *= 0.7f;
 		}
 		case 1:
 		{

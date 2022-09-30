@@ -7,7 +7,6 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("tank");
 	this.Tag("deal_bunker_dmg");
-	this.Tag("reduce_upper_dmg");
 
 	if (XORRandom(5) == 0)
 	{
