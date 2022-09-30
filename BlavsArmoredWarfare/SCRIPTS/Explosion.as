@@ -325,7 +325,7 @@ void WarfareExplode(CBlob@ this, f32 radius, f32 damage)
 		map_damage_radius = this.get_f32("map_damage_radius");
 	}
 
-	f32 map_damage_ratio = 0.45f;
+	f32 map_damage_ratio = 0.3f;
 
 	if (this.exists("map_damage_ratio"))
 	{

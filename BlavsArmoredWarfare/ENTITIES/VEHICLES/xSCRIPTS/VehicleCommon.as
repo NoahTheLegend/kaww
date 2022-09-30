@@ -496,6 +496,8 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 					if (bullet !is null)
 					{
 						bullet.set_s8(penRatingString, this.get_s8(weaponRatingString));
+
+						this.set_f32("map_damage_ratio", 0.45f); //higher damage to blocks
 						
 						bullet.setPosition(bulletPos);
 						bullet.server_setTeamNum(team);
