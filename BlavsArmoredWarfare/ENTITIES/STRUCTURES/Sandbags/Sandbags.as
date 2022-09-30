@@ -5,8 +5,6 @@ void onInit(CBlob@ this)
 {
 	this.getShape().getConsts().mapCollisions = false;
 
-    this.Tag("destructable");
-
 	this.setPosition(this.getPosition()+Vec2f(0,8));
 
 	//this.SetFacingLeft(this.getTeamNum() == 1);

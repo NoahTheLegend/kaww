@@ -1,5 +1,6 @@
 // generic ordinance logic
 
+#include "WarfareGlobal.as"
 #include "OrdnanceCommon.as"
 #include "ComputerCommon.as"
 

@@ -9,9 +9,6 @@ const string robotechHeightString = "robotech_height";
 
 const string targetUpdateCommandID = "target_update";
 
-const string firstTickString = "first_tick";
-const string clientFirstTickString = "first_tick_client";
-
 const SColor greenConsoleColor = SColor(200, 0, 255, 0);
 const SColor redConsoleColor = SColor(200, 255, 20, 20);
 const SColor yellowConsoleColor = SColor(200, 255, 255, 0);

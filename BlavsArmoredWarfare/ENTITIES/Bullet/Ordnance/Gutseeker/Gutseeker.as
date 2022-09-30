@@ -1,5 +1,6 @@
 // small artillery
 
+#include "WarfareGlobal.as"
 #include "Hitters.as"
 #include "ComputerCommon.as"
 #include "Explosion.as"

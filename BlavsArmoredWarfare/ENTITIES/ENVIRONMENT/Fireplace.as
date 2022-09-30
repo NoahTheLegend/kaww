@@ -8,8 +8,6 @@
 
 void onInit(CBlob@ this)
 {
-	this.Tag("destructable_nosoak");
-	
 	this.getCurrentScript().tickFrequency = 9;
 	this.getSprite().SetEmitSound("CampfireSound.ogg");
 	this.getSprite().SetAnimation("fire");

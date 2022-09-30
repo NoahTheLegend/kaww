@@ -10,8 +10,6 @@
 
 	this.set_bool("light", true);
 
-	this.Tag("destructable_nosoak");
-
 	this.getSprite().SetZ(-5);
 
 	if (this !is null) this.Sync("light", true);

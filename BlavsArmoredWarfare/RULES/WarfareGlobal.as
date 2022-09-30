@@ -20,6 +20,9 @@ const s8 maxArmor = 5;
 const string projExplosionRadiusString = "proj_ex_radius";
 const string projExplosionDamageString = "proj_ex_damage";
 
+const string firstTickString = "first_tick";
+const string clientFirstTickString = "first_tick_client";
+
 s8 getFinalRating( s8 armorRating, s8 penRating, bool hardShelled, CBlob@ blob = null, Vec2f hitPos = Vec2f_zero, bool &out isHitUnderside = false, bool &out isHitBackside = false )
 {
 	s8 finalRating = armorRating;
