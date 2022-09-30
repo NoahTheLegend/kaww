@@ -17,8 +17,6 @@ const string backsideOffsetString = "backside_offset";
 const s8 minArmor = -2;
 const s8 maxArmor = 5;
 
-const string projDamageString = "proj_damage";
-
 const string projExplosionRadiusString = "proj_ex_radius";
 const string projExplosionDamageString = "proj_ex_damage";
 

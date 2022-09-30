@@ -10,7 +10,6 @@ void onInit(CBlob@ this)
 {
 	this.Tag("projectile");
 
-	this.set_f32(projDamageString, 1.0f);
 	this.set_f32(projExplosionRadiusString, 30.0f);
 	this.set_f32(projExplosionDamageString, 15.0f);
 
@@ -108,7 +107,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 	CMap@ map = this.getMap();
 
 	const f32 speed = velocity.getLength();
-	const f32 damage = this.get_f32(projDamageString);
+	const f32 damage = 1.0f;
 
 	Vec2f direction = velocity;
 	direction.Normalize();
@@ -176,9 +175,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
 	float projExplosionDamage = this.get_f32(projExplosionDamageString);
-	f32 length = this.get_f32("linear_length");
-	//printf(""+projExplosionRadius);
-	//printf(""+length);
+	
 	WarfareExplode(this, projExplosionRadius, projExplosionDamage);
 	//LinearExplosion(this, velocity, projExplosionRadius, length, 2+Maths::Floor(length/6), 0.01f, Hitters::fall);//only for damaging map
 	

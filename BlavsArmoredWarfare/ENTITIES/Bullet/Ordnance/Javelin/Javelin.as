@@ -27,7 +27,7 @@ void onInit(CBlob@ this)
 	this.set_f32(projExplosionRadiusString, 30.0f);
 	this.set_f32(projExplosionDamageString, 15.0f);
 
-	this.set_s8(penRatingString, 3);
+	this.set_s8(penRatingString, 3); // armor penetration is high for javelins
 
 	this.set_f32(robotechHeightString, 64.0f); // pixels
 
