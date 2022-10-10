@@ -1100,7 +1100,7 @@ void onTick(CRules@ this)
 		for (u16 i = 0; i < getPlayerCount(); i++)
         {
             CPlayer@ player = getPlayer(i);
-			if (player is null) continue;
+			if (player is null || player.getBlob() is null) continue;
             if (isServer())
             {
                 player.server_setCoins(player.getCoins()+1);
