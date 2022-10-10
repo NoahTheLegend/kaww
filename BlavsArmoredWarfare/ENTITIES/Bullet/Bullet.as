@@ -100,7 +100,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 	// chance to break a block. Will not touch "strong" tag for now.
 	bool isStrong = this.hasTag("strong");
-	if (XORRandom(100) < 36)
+	if (XORRandom(100) < 11)
 	{
 		if (map.getSectorAtPosition(end, "no build") is null)
 		{
