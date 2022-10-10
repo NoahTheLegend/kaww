@@ -103,6 +103,7 @@ void onInit(CBlob@ this)
 			if (soundmanager !is null)
 			{
 				soundmanager.set_bool("manager_Type", false);
+				soundmanager.set_f32("custom_pitch", 1.075f);
 				soundmanager.Init();
 				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
 
@@ -115,6 +116,7 @@ void onInit(CBlob@ this)
 			if (soundmanager !is null)
 			{
 				soundmanager.set_bool("manager_Type", true);
+				soundmanager.set_f32("custom_pitch", 1.075f);
 				soundmanager.Init();
 				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
 				
