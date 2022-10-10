@@ -810,6 +810,8 @@ void onSniperReload(CBlob@ this)
 {
 	if (this.get_bool("isReloading") && (this.get_s8("charge_time") == 0)) //  || this.get_s8("charge_time") == 17)
 	{
+		this.getSprite().PlaySound("Sniper_reload.ogg", 0.8);
+		
 		makeGibParticle(
 		"EmptyMag",               // file name
 		this.getPosition() + Vec2f(this.isFacingLeft() ? -4.0f : 4.0f, 1.0f),      // position
@@ -826,6 +828,8 @@ void onSniperReload(CBlob@ this)
 
 void onMp5Reload(CBlob@ this)
 {
+	if (this.get_s8("charge_time") == 0) this.getSprite().PlaySound("Mp5_reload.ogg", 0.8);
+
 	if (this.get_bool("isReloading") && (this.get_s8("charge_time") == 46 || this.get_s8("charge_time") == 45))
 	{
 		makeGibParticle(

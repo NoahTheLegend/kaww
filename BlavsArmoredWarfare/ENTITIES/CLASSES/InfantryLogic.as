@@ -123,6 +123,11 @@ void onInit(CBlob@ this)
 	this.getShape().SetRotationsAllowed(false);
 	this.addCommandID("shoot bullet");
 	this.getShape().getConsts().net_threshold_multiplier = 0.5f;
+
+	if (this.getName() == "shotgun") // set "simple" reload tags for only-sound reload code
+	{
+		this.Tag("simple reload");
+	}
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
@@ -379,11 +384,13 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				sprite.PlaySound("NoAmmo.ogg", 0.85);
 			}
 
-			if (reloadistrue)
-			{
+			if (this.hasTag("simple reload") && reloadistrue) // simple reload is used when you have nothing else 
+			{ // besides reload sound, look for onBlobNameReload() in this file and InfantryCommon.as otherwise
 				charge_time = reloadTime;
 				//archer.isReloading = true;
 				this.set_bool("isReloading", true);
+
+				//printf(""+infantry.reload_sfx);
 
 				sprite.PlaySound(infantry.reload_sfx, 0.8);
 			}
