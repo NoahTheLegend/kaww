@@ -1059,7 +1059,11 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
     player.server_setCoins(40);
 
-    print("New player joined.");
+	if (isServer())
+	{
+    	print("New player joined.");
+		print("Username: "+player.getUsername()+" IP: "+player.server_getIP());
+	}
 }
 
 void onTick(CRules@ this)
