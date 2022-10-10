@@ -46,19 +46,27 @@ void onTick(CBlob@ this)
         {
             sprite.SetEmitSound("EngineRun_low.ogg");
 
+            f32 pitchMod = this.get_f32("custom_pitch");
+            if (!this.get_bool("isThisOnGround")) pitchMod *= 0.75f;
+            if (pitchMod < 0.01f) pitchMod = 1.0f;
+
             sprite.SetEmitSoundSpeed(
-                Maths::Min(0.01f + Maths::Abs((idleRestingPitch - rpm) / 2000), 1.15f) * 1.0);
+                Maths::Min(0.01f + Maths::Abs((idleRestingPitch - rpm) / 2000), 1.15f) * 1.0 * pitchMod);
         }
         else // high rpm
         {
             sprite.SetEmitSound("EngineRun_high.ogg");
 
+            f32 pitchMod = this.get_f32("custom_pitch");
+            if (!this.get_bool("isThisOnGround")) pitchMod *= 0.75f;
+            if (pitchMod < 0.01f) pitchMod = 1.0f;
+
             sprite.SetEmitSoundSpeed(
-                Maths::Min(0.01f + Maths::Abs((5500 - rpm) / 3000), 1.15f) * 1.0);
+                Maths::Min(0.01f + Maths::Abs((5500 - rpm) / 3000), 1.15f) * 1.0 * pitchMod);
 
             if(!this.get_bool(isThisOnGroundString))
             {
-                sprite.SetEmitSoundSpeed( sprite.getEmitSoundSpeed()*1.15f);
+                sprite.SetEmitSoundSpeed( sprite.getEmitSoundSpeed() * 1.15f * pitchMod);
             }
             
            
@@ -68,13 +76,17 @@ void onTick(CBlob@ this)
     }
     else{ 
         // middle ground
+        f32 pitchMod = this.get_f32("custom_pitch");
+        if (!this.get_bool("isThisOnGround")) pitchMod *= 0.75f;
+        if (pitchMod < 0.01f) pitchMod = 1.0f;
+
         sprite.SetEmitSoundSpeed(
-            Maths::Min(0.01f + Maths::Abs((3000 - rpm) / 3000), 1.2f) * 1.0);
+            Maths::Min(0.01f + Maths::Abs((3000 - rpm) / 3000), 1.2f) * 1.0 * pitchMod);
         //print("--------- " + sprite.getEmitSoundSpeed());
 
         if(!this.get_bool(isThisOnGroundString))
         {
-            sprite.SetEmitSoundSpeed( sprite.getEmitSoundSpeed()*1.25f);
+            sprite.SetEmitSoundSpeed( sprite.getEmitSoundSpeed() * 1.25f * pitchMod);
         }
     }
    

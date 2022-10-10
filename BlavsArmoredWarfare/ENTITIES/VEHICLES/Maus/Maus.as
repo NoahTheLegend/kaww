@@ -75,6 +75,36 @@ void onInit(CBlob@ this)
 		front.SetRelativeZ(-0.88f);
 		front.SetOffset(Vec2f(6.0f, 5.0f));
 	}
+
+	if (getNet().isServer())
+	{
+		{
+			CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 1
+
+			if (soundmanager !is null)
+			{
+				soundmanager.set_bool("manager_Type", false);
+				soundmanager.set_f32("custom_pitch", 0.815f);
+				soundmanager.Init();
+				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+
+				this.set_u16("followid", soundmanager.getNetworkID());
+			}
+		}
+		{
+			CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 2
+
+			if (soundmanager !is null)
+			{
+				soundmanager.set_bool("manager_Type", true);
+				soundmanager.set_f32("custom_pitch", 0.815f);
+				soundmanager.Init();
+				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+				
+				this.set_u16("followid2", soundmanager.getNetworkID());
+			}
+		}
+	}
 }
 
 void onTick(CBlob@ this)
@@ -163,6 +193,32 @@ void onTick(CBlob@ this)
 	}
 
 	Vehicle_LevelOutInAir(this);
+
+	// feed info and attach sound managers
+	if (this.exists("followid"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
+			soundmanager.setVelocity(this.getVelocity());
+			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+		}
+	}
+	if (this.exists("followid2"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid2"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 10 : -10, -6));
+			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
+			soundmanager.setVelocity(this.getVelocity());
+			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+		}
+	}
 }
 
 // Blow up
@@ -182,6 +238,25 @@ void onDie(CBlob@ this)
 	{
 		CBlob@ tur = point.getOccupied();
 		if (isServer() && tur !is null) tur.server_Die();
+	}
+
+	if (this.exists("followid"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.server_Die();
+		}
+	}
+	if (this.exists("followid2"))
+	{
+		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid2"));
+
+		if (soundmanager !is null)
+		{	
+			soundmanager.server_Die();
+		}
 	}
 }
 
