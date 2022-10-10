@@ -309,7 +309,7 @@ namespace RevolverParams
 	const ::u8 INACCURACY_PER_SHOT 		= 54; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
-	const ::bool SEMIAUTO 				= true;
+	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s8 RELOAD_TIME 				= 64; // time to reload
@@ -351,7 +351,7 @@ namespace SniperParams
 	const ::u8 INACCURACY_PER_SHOT 		= 50; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
-	const ::bool SEMIAUTO 				= true;
+	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s8 RELOAD_TIME 				= 58; // time to reload
