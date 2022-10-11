@@ -182,6 +182,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 {
+	if (this.hasTag("dead")) return;
 	if (!getNet().isServer()) { return; }
 	if (aimangle < 0.0f) { aimangle += 360.0f; }
 
@@ -204,7 +205,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 
 	// this gathers HitInfo objects which contain blob or tile hit information
 	HitInfo@[] hitMapInfos;
-	if (map.getHitInfosFromRay(blobPos, -exact_aimangle, radius + attack_distance, this, @hitMapInfos))
+	if (this.getName() == "shotgun" && map.getHitInfosFromRay(blobPos, -exact_aimangle, radius + attack_distance, this, @hitMapInfos))
 	{
 		bool dontHitMore = false;
 		for (uint i = 0; i < hitMapInfos.length; i++)
