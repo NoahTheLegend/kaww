@@ -6,6 +6,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
+	this.Tag("weak vehicle");
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();

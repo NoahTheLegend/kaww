@@ -49,10 +49,13 @@ void onTick(CBlob@ this)
 		for (u16 i = 0; i < blobs.length; i++)
 		{
 			CBlob@ b = blobs[i];
-			if (b is null || !b.hasTag("flesh")) return;
-			if (getGameTime() % 10 == 0)
+			if (b is null) return;
+			if (b.hasTag("flesh") || b.hasTag("weak vehicle") || b.hasTag("apc"))
 			{
-				this.server_Hit(b, this.getPosition(), Vec2f(0, 2), 0.4f, Hitters::fire, true);
+				if (getGameTime() % 10 == 0)
+				{
+					this.server_Hit(b, this.getPosition(), Vec2f(0, 2), 0.1f, Hitters::fire, true);
+				}
 			}
 		}
 	}

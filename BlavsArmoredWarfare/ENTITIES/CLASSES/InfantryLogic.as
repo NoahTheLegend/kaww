@@ -140,6 +140,10 @@ void onInit(CBlob@ this)
 	{
 		this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
 	}
+	else if (this.getName() == "sniper")
+	{
+		this.Tag("simple reload");
+	}
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
