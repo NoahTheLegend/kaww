@@ -828,7 +828,7 @@ void onSniperReload(CBlob@ this)
 
 void onMp5Reload(CBlob@ this)
 {
-	if (this.get_s8("charge_time") == 0) this.getSprite().PlaySound("Mp5_reload.ogg", 0.8);
+	if (this.get_s8("charge_time") <= 5) this.getSprite().PlaySound("Mp5_reload.ogg", 0.8);
 
 	if (this.get_bool("isReloading") && (this.get_s8("charge_time") == 46 || this.get_s8("charge_time") == 45))
 	{
