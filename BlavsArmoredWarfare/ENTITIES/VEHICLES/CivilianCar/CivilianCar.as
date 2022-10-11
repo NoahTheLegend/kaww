@@ -8,6 +8,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
+	this.Tag("weak vehicle");
 
 	Vehicle_Setup(this,
 	              6000.0f, // move speed

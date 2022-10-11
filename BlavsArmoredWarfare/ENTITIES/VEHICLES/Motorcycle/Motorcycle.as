@@ -7,6 +7,7 @@ void onInit(CBlob@ this)
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
 	this.Tag("shootseat");
+	this.Tag("weak vehicle");
 
 	//print("" + this.getName().getHash());
 
