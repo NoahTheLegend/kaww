@@ -31,6 +31,7 @@ void onTick(CBlob@ this)
 		{
 			CBlob@ t = tents[i];
 			if (t is null || t.getTeamNum() != this.getTeamNum()) continue;
+			if (t.getDistanceTo(this) > 16.0f) return;
 			if (t.getNetworkID() > this.getNetworkID()) this.server_Die();
 		}
 	}
