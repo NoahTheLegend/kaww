@@ -124,9 +124,21 @@ void onInit(CBlob@ this)
 	this.addCommandID("shoot bullet");
 	this.getShape().getConsts().net_threshold_multiplier = 0.5f;
 
-	if (this.getName() == "shotgun") // set "simple" reload tags for only-sound reload code
+	if (this.getName() == "revolver")
 	{
-		this.Tag("simple reload");
+		this.set_u8("stab time", 16);
+		this.set_u8("stab timing", 13);
+		this.set_f32("stab damage", 1.5f);
+	}
+	else if (this.getName() == "ranger")
+	{
+		this.set_u8("stab time", 33);
+		this.set_u8("stab timing", 14);
+		this.set_f32("stab damage", 1.5f);
+	}
+	else if (this.getName() == "shotgun")
+	{
+		this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
 	}
 }
 
@@ -294,15 +306,21 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 	if (!this.hasTag(medicTagString))
 	{
+		u8 time = 21;
+		u8 timing = 13;
+		f32 damage = 0.85f;
+		if (this.exists("stab time")) time = this.get_u8("stab time");
+		if (this.exists("stab timing")) timing = this.get_u8("stab timing");
+		if (this.exists("stab damage")) damage = this.get_f32("stab damage");
 		if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
 		{
-			this.set_u32("end_stabbing", getGameTime()+21);
+			this.set_u32("end_stabbing", getGameTime()+time);
 			this.Tag("attacking");
 		}
-		if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-13)
+		if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-timing)
 		{
 			f32 attackarc = 45.0f;
-			DoAttack(this, 0.5f, (this.isFacingLeft() ? 180.0f : 0.0f), attackarc, Hitters::sword);
+			DoAttack(this, damage, (this.isFacingLeft() ? 180.0f : 0.0f), attackarc, Hitters::sword);
 			this.Untag("attacking");
 		}
 		if (this.get_u32("end_stabbing") > getGameTime())
@@ -783,7 +801,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 		{
 			CPlayer@ ply = local.getPlayer();
 
-			if (ply !is null && ply.isMyPlayer())
+			if (ply !is null && this.isMyPlayer())
 			{
 				f32 mod = 0.5; // make some smart stuff here?
 				if (this.isKeyPressed(key_action2)) mod *= 0.25;
