@@ -325,8 +325,8 @@ namespace SniperParams
 {
 	const ::string CLASSNAME 			= "Sniper"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 1.0f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 2.0f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 1.5f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 2.45f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.85f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
