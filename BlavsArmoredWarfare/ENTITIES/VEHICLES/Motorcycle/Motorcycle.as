@@ -252,7 +252,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))
 	{
-		return true;
+		return false;
 	}
 
 	if (blob.hasTag("flesh") && !blob.isAttached())

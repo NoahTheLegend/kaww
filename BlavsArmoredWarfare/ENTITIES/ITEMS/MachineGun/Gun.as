@@ -4,6 +4,8 @@ const Vec2f arm_offset = Vec2f(-2, 0);
 
 void onInit(CBlob@ this)
 {
+	this.Tag("gun");
+	
 	Vehicle_Setup(this,
 	              0.0f, // move speed
 	              0.1f,  // turn speed

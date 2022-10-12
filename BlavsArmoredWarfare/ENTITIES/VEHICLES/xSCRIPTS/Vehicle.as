@@ -559,7 +559,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	// reduce damage if it hits turret (for maus)
 	if (this.hasTag("reduce_upper_dmg") && hitterBlob.getPosition().y < thisPos.y && hitterBlob.getPosition().y > thisPos.y-24.0f)
 	{
-		damage *= 0.5;
+		damage *= 0.5f;
+	}
+
+	if (this.hasTag("gun") && is_explosive)
+	{
+		damage *= 0.25f;
 	}
 
 	switch (finalRating)

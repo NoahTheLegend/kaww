@@ -189,7 +189,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 			u16 dist_blocks = Maths::Floor((pos-hitterBlob.get_Vec2f("from_pos")).Length()/8);
 			// printf(""+dist_blocks);
-			return damage * Maths::Min(0.2f, 0.2f - (0.0025 * (dist_blocks/25)));
+			return damage * Maths::Min(0.125f, 0.125f - (0.0015 * (dist_blocks/25)));
 		}
 	}
 
