@@ -62,8 +62,8 @@ void DoExplosion(CBlob@ this)
 
 	f32 angle = -this.get_f32("bomb angle");
 
-	this.set_f32("map_damage_radius", 17.0f);
-	this.set_f32("map_damage_ratio", 0.01f);
+	this.set_f32("map_damage_radius", 40.0f);
+	this.set_f32("map_damage_ratio", 0.5f);
 	
 	WarfareExplode(this, this.get_f32(projExplosionRadiusString), this.get_f32(projExplosionDamageString));
 	
