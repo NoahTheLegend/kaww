@@ -47,7 +47,7 @@ void onTick(CBlob@ this)
             sprite.SetEmitSound("EngineRun_low.ogg");
 
             f32 pitchMod = this.get_f32("custom_pitch");
-            if (!this.get_bool("isThisOnGround")) pitchMod *= 0.75f;
+            if (!this.get_bool("isThisOnGround")) pitchMod *= 0.85f;
             if (pitchMod < 0.01f) pitchMod = 1.0f;
 
             sprite.SetEmitSoundSpeed(
@@ -58,7 +58,7 @@ void onTick(CBlob@ this)
             sprite.SetEmitSound("EngineRun_high.ogg");
 
             f32 pitchMod = this.get_f32("custom_pitch");
-            if (!this.get_bool("isThisOnGround")) pitchMod *= 0.75f;
+            if (!this.get_bool("isThisOnGround")) pitchMod *= 0.85f;
             if (pitchMod < 0.01f) pitchMod = 1.0f;
 
             sprite.SetEmitSoundSpeed(
@@ -77,7 +77,7 @@ void onTick(CBlob@ this)
     else{ 
         // middle ground
         f32 pitchMod = this.get_f32("custom_pitch");
-        if (!this.get_bool("isThisOnGround")) pitchMod *= 0.75f;
+        if (!this.get_bool("isThisOnGround")) pitchMod *= 0.85f;
         if (pitchMod < 0.01f) pitchMod = 1.0f;
 
         sprite.SetEmitSoundSpeed(

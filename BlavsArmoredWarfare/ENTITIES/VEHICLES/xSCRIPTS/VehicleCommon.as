@@ -802,7 +802,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							if (down)
 							{
 								f32 mod = 1.0f;
-								if (isFlipped(this)) mod = 4.33f;
+								if (isFlipped(this)) mod = 6.0f;
 								{
 									this.AddTorque(faceleft ? torque*mod : -torque*mod);
 								}
