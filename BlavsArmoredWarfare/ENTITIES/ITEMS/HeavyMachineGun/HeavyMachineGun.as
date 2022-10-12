@@ -113,21 +113,28 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		//print(".");
-		gunner.offsetZ = -9.0f;
+		gunner.offsetZ = -9.0f;   //5.0f
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 
-		if ((!facing_left && aim_vec.x < 0) ||
-				(facing_left && aim_vec.x > 0))
+		if (this.isAttached())
 		{
-			if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
-
+			if (facing_left) { aim_vec.x = -aim_vec.x; }
 			angle = (-(aim_vec).getAngle() + 180.0f);
-			angle = Maths::Max(-80.0f , Maths::Min(angle , 80.0f));
 		}
 		else
 		{
-			this.SetFacingLeft(!facing_left);
+			if ((!facing_left && aim_vec.x < 0) ||
+			        (facing_left && aim_vec.x > 0))
+			{
+				if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
+
+				angle = (-(aim_vec).getAngle() + 180.0f);
+				angle = Maths::Max(-80.0f , Maths::Min(angle , 80.0f));
+			}
+			else
+			{
+				this.SetFacingLeft(!facing_left);
+			}
 		}
 	}
 
