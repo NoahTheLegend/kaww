@@ -35,11 +35,11 @@ void onInit(CBlob@ this)
 		const PickupWheelOption[] molotovs = {PickupWheelOption("molotov", 1), PickupWheelOption("mat_molotov", 0)};
 		menu.add_entry(PickupWheelMenuEntry("Molotov", "$mat_molotov$", molotovs, Vec2f(0, -8.0f)));
 		menu.add_entry(PickupWheelMenuEntry("Medkit", "$medkit$", "medkit"));
-		menu.add_entry(PickupWheelMenuEntry("Nuke", "$nuke$", "mat_nuke", Vec2f(8.0f, 8.0f)));
 		//ammo
 		menu.add_entry(PickupWheelMenuEntry("7.62mm Ammo", "$mat_7mmround$", "mat_7mmround", Vec2f(0, 2.0f)));
 		menu.add_entry(PickupWheelMenuEntry("14.5mm", "$mat_14mmround$", "mat_14mmround", Vec2f(0, -6.0f)));
 		menu.add_entry(PickupWheelMenuEntry("105mm Ammo", "$mat_105mmround$", "mat_bolts"));
+		menu.add_entry(PickupWheelMenuEntry("HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", Vec2f(8.0f, 8.0f)));
 		//resources
 		menu.add_entry(PickupWheelMenuEntry("Scrap", "$scrap$", "mat_scrap"));
 		menu.add_entry(PickupWheelMenuEntry("Gold", "$mat_gold$", "mat_gold", Vec2f(0, -6.0f)));
