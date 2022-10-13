@@ -681,8 +681,11 @@ shared class TDMCore : RulesCore
 				//BLUE
 				if (!getMap().getMarkers("blue main spawn", respawnPositions))
 				{
-					respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
-					if (spawn_prop != "armory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
+					if (map.tilesize > 0)
+					{
+						respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
+						if (spawn_prop != "armory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
+					}
 				}
 				else
 				{
