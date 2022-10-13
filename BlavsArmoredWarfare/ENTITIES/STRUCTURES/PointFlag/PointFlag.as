@@ -103,12 +103,16 @@ void onTick(CBlob@ this)
 	
 	u8 sieging_team = getRules().get_u8("siege");
 	bool is_siege = sieging_team != 255;
+	//printf("steam "+sieging_team);
 
     for (u16 i = 0; i < blobs.size(); i++)
     {
         if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead")) // Only players and builders    && blobs[i].getName() != "slave"
         {
-			if (is_siege && blobs[i].getTeamNum() != sieging_team) continue;
+			if (is_siege && blobs[i].getTeamNum() != sieging_team)
+			{
+				continue;
+			}
         	if (blobs[i].getTeamNum() == 0)
         	{
         		num_blue++;

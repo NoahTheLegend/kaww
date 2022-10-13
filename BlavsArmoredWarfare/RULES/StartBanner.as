@@ -58,12 +58,6 @@ void onTick(CRules@ this)
                 if (vehbuilders.length == 1) 
                 {
                     this.set_string("bannertext", "Siege enemy team or defend flags until time passes!");
-                    if (vehbuilders[0] !is null && !this.hasTag("synced_siege"))
-                    {
-                        this.set_u8("siege", vehbuilders[0].getTeamNum()); // mark the sieging team
-                        this.Sync("siege", true);
-                        this.Tag("synced_siege");
-                    }
                 }
                 else // capture the flags
                     this.set_string("bannertext", "Control all flags to win!");

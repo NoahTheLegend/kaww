@@ -90,17 +90,20 @@ void onInit(CBlob@ this)
 
 	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_right);
 
-	CBlob@ bow = server_CreateBlob("heavygun");	
-
-	if (bow !is null)
+	if (isServer())
 	{
-		bow.server_setTeamNum(this.getTeamNum());
-		this.server_AttachTo( bow, "BOW" );
-		this.set_u16("bowid", bow.getNetworkID());
-		bow.SetFacingLeft(this.isFacingLeft());
+		CBlob@ bow = server_CreateBlob("heavygun");	
+	
+		if (bow !is null)
+		{
+			bow.server_setTeamNum(this.getTeamNum());
+			this.server_AttachTo( bow, "BOW" );
+			this.set_u16("bowid", bow.getNetworkID());
+			bow.SetFacingLeft(this.isFacingLeft());
+		}
+	
+		this.inventoryButtonPos = Vec2f(-8.0f, 0);
 	}
-
-	this.inventoryButtonPos = Vec2f(-8.0f, 0);
 }
 
 void onInit(CSprite@ this)

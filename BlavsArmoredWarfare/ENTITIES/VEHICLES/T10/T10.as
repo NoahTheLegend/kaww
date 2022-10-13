@@ -107,7 +107,7 @@ void onInit(CBlob@ this)
 
 			bow.SetFacingLeft(facing_left);
 		}
-	}	
+		
 
 	{
 		CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 1
@@ -134,6 +134,7 @@ void onInit(CBlob@ this)
 			
 			this.set_u16("followid2", soundmanager.getNetworkID());
 		}
+	}
 	}
 }
 
