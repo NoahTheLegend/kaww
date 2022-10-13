@@ -183,6 +183,30 @@ void onTick(CBlob@ this)
 			this.AddForce(Vec2f(0, 220.0f));
 		}
 
+		for (u8 i = 0; i < 2; i++)
+		{
+			{
+				AttachmentPoint@ pass = this.getAttachments().getAttachmentPointByName("PASSENGER");
+				if (i == 0) @pass = this.getAttachments().getAttachmentPointByName("PASSENGER1");
+				if (pass !is null && pass.getOccupied() !is null)
+				{
+					CBlob@ b = pass.getOccupied();
+					if (b !is null)
+					{
+						if (pass.isKeyPressed(key_action1)) b.set_bool("is_a1", true);
+						if (pass.isKeyJustPressed(key_action1)) b.set_bool("just_a1", true);
+						b.Tag("show_gun");
+						b.Tag("can_shoot_if_attached");
+
+						//if (b.isKeyPressed(key_action1)) printf("e");
+
+						if (b.getAimPos().x < b.getPosition().x) b.SetFacingLeft(true);
+						else b.SetFacingLeft(false);
+					}
+				}
+			}
+		}
+
 		bool has_ammo = false;
 
 		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("JAVLAUNCHER");
@@ -446,6 +470,8 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint @attachedPoint)
 	}
 	if (detached !is null)
 	{
+		detached.Untag("show_gun");
+	detached.Untag("can_shoot_if_attached");
 		detached.Untag("invincible");
 		detached.Untag("invincibilityByVehicle");
 	}
