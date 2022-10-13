@@ -988,6 +988,7 @@ void Reset(CRules@ this)
 	SetCorrectMapType(); // has a one map delay on adjusting to player population
 
 	this.set_u8("siege", 255);
+
 	this.Sync("siege", true);
 	this.Untag("synced_time");
 	this.Untag("synced_siege");
@@ -1068,6 +1069,18 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
 void onTick(CRules@ this)
 {
+	if (!this.hasTag("synced_siege"))
+	{
+		CBlob@[] vehbuilders;
+    	getBlobsByName("vehiclebuilder", @vehbuilders);
+		if (vehbuilders.length > 0 && vehbuilders[0] !is null)
+    	{
+    	    this.set_u8("siege", vehbuilders[0].getTeamNum()); // mark the sieging team
+    	    this.Sync("siege", true);
+    	    this.Tag("synced_siege");
+    	}
+		else this.Tag("synced_siege");
+	}
 	if (getGameTime() % 1800 == 0)
     {
     	uint16 i;
