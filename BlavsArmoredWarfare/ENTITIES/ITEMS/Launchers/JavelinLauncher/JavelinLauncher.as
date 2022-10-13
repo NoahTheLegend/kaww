@@ -25,7 +25,6 @@ void onTick(CBlob@ this)
 
 	const bool is_client = isClient();
 	const bool is_dead = this.hasTag("dead");
-	const bool draw_robotech = !heli_launcher;
 	s8 launcherFrame = this.get_s8("launcher_frame");
 	float launcherAngle = this.get_f32("launcher_angle");
 
@@ -78,6 +77,7 @@ void onTick(CBlob@ this)
 	// binoculars effect
 	ownerBlob.set_u32("dont_change_zoom", getGameTime()+3);
 	ownerBlob.Tag("binoculars");
+	const bool draw_robotech = !heli_launcher && ownerBlob.isMyPlayer();
 
 	if (is_dead)
 	{
