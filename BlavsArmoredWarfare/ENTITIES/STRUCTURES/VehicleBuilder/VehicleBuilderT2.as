@@ -33,15 +33,15 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 18);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nUses 105mm & 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 45);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nUses 105mm & 7.62mm.");
@@ -49,15 +49,15 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nUses 105mm");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 120);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 100);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 45);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build UH1 Helicoptrer", "$uh1$", "uh1", "A helicopter with heavy machinegun.\nPress SPACEBAR to launch HEAT warheads.");
@@ -75,7 +75,7 @@ void onInit(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 22);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 18);
 	}
 	/*
 	{
