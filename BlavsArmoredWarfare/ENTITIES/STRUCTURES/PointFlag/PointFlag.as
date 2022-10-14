@@ -102,7 +102,7 @@ void onTick(CBlob@ this)
     map.getBlobsInRadius(this.getPosition() + Vec2f(4.0f,20.0f), capture_distance, blobs);
 	
 	u8 sieging_team = getRules().get_u8("siege");
-	bool is_siege = sieging_team != 255;
+	bool is_siege =  false; //sieging_team != 255;
 	//printf("steam "+sieging_team);
 
     for (u16 i = 0; i < blobs.size(); i++)
