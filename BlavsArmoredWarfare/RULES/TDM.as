@@ -1060,7 +1060,7 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
     }
 
 	this.SyncToPlayer("siege", player);
-	CBlob@ b = player.getBlob();
+	CBlob@ blob = player.getBlob();
 	if (blob !is null)
 	{
 		blob.Sync("siege", true);
