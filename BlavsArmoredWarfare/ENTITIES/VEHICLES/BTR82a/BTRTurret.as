@@ -11,6 +11,7 @@ string[] smoke =
 
 const u8 cooldown_time = 70; //75 old 
 const u8 recoil = 250;
+const f32 damage_modifier = 0.65f;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
@@ -24,6 +25,8 @@ void onInit(CBlob@ this)
 	this.Tag("turret");
 	this.Tag("apc");
 	this.Tag("blocks bullet");
+
+	this.set_f32("damage_modifier", damage_modifier);
 
 	Vehicle_Setup(this,
 	    0.0f, // move speed
