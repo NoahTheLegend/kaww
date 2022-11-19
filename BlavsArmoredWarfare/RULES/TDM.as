@@ -1142,6 +1142,6 @@ void onInit(CRules@ this)
 
 	//this.addCommandID("flag_cap_won"); //breaks chat and other stuff!!!
 
-this.addCommandID("toggle colored name");
+
 	Reset(this);
 }
