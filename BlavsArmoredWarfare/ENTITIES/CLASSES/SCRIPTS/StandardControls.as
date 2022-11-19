@@ -92,7 +92,7 @@ bool ClickGridMenu(CBlob@ this, int button)
 			{
 				if (pickBlob !is null && gbutton is null)    // carrying something, put it in
 				{
-					server_PutIn(this, gmenu.getOwner(), pickBlob);
+					pickBlob.server_PutInInventory(this);
 				}
 				else // take something
 				{
@@ -235,7 +235,7 @@ void onTick(CBlob@ this)
 				CInventory@ inv = this.getInventory();
 				if (carryBlob !is null && !carryBlob.hasTag("temp blob") && inv.canPutItem(carryBlob))
 				{
-					server_PutIn(this, this, carryBlob);
+					carryBlob.server_PutInInventory(this);
 				}
 				else
 				{
