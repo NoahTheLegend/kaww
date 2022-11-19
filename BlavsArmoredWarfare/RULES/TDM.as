@@ -996,12 +996,12 @@ void Reset(CRules@ this)
 	this.Untag("synced_time");
 	this.Untag("synced_siege");
 
-	string configstr = "Rules/CTF/ctf_vars.cfg";
-	ConfigFile cfg = ConfigFile(configstr);
-	if (cfg.read_s32("game_time") != -2)
-	{
-		Reset(this);
-	}
+	//string configstr = "Rules/CTF/ctf_vars.cfg";
+	//ConfigFile cfg = ConfigFile(configstr);
+	//if (cfg.read_s32("game_time") != -2)
+	//{
+	//	Reset(this);
+	//}
 
 	TDMSpawns spawns();
 	TDMCore core(this, spawns);
@@ -1142,5 +1142,6 @@ void onInit(CRules@ this)
 
 	//this.addCommandID("flag_cap_won"); //breaks chat and other stuff!!!
 
+this.addCommandID("toggle colored name");
 	Reset(this);
 }
