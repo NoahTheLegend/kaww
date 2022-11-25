@@ -50,21 +50,28 @@ void onTick(CBlob@ this)
 		if (holder is null) return;
 		if (holder.isAttached()) return;
 
-		if (this.get_u32("next repair") > getGameTime())
+		CSprite@ sprite = this.getSprite();
+		if (sprite !is null && this.get_u32("next repair") > getGameTime())
 		{
-			if (this.get_u32("next repair") - getGameTime() > 6)
+			f32 l = this.isFacingLeft() ? -1.0f : 1.0f;
+			if (this.get_u32("next repair") == getGameTime() + 19)
+				sprite.RotateBy(24.0f*l, Vec2f(0, 2));
+			else if (this.get_u32("next repair") == getGameTime() + 18)
+				sprite.RotateBy(24.0f*l, Vec2f(0, 2));
+			else if (this.get_u32("next repair") == getGameTime() + 17)
+				sprite.RotateBy(16.0f*l, Vec2f(0, 2));
+			else if (this.get_u32("next repair") == getGameTime() + 14)
+				sprite.RotateBy(-16.0f*l, Vec2f(0, 2));
+			else if (this.get_u32("next repair") == getGameTime() + 11)
+				sprite.RotateBy(16.0f*l, Vec2f(0, 2));
+			else if (this.get_u32("next repair") == getGameTime() + 8)
+				sprite.RotateBy(-16.0f*l, Vec2f(0, 2));
+			else if (this.get_u32("next repair") == getGameTime() + 7)
+				sprite.RotateBy(-24.0f*l, Vec2f(0, 2));
+			else if (this.get_u32("next repair") == getGameTime() + 6)
 			{
-				float mul = (7 - (this.get_u32("next repair") - getGameTime() -44))*2;
-
-				this.getSprite().ResetTransform();
-				this.getSprite().SetOffset(Vec2f(((holder.isFacingLeft() ? -1 : 1) * (this.getPosition().x - holder.getAimPos().x))/mul, (-1*(this.getPosition().y - holder.getAimPos().y))/mul));
-
-				this.getSprite().RotateBy((holder.isFacingLeft() ? 9 : -9)*(this.get_u32("next repair") - getGameTime()), Vec2f());
-			}
-			else 
-			{
-				this.getSprite().SetOffset(Vec2f());
-				this.getSprite().ResetTransform();
+				sprite.RotateBy(-24.0f*l, Vec2f(0, 2));
+				sprite.ResetTransform();
 			}
 			
 			return;
@@ -86,6 +93,7 @@ void onTick(CBlob@ this)
 						{
 							if (blob.hasTag("vehicle") || blob.hasTag("bunker") || blob.hasTag("structure"))
 							{
+								if (blob.hasTag("respawn")) continue; // dont repair outposts
 								if (team == blob.getTeamNum())
 								{
 
