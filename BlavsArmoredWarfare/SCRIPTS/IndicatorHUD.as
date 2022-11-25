@@ -211,6 +211,9 @@ u8 getIndicatorFrame( int hash )
 
 		case _motorcycle:
 		frame = 8; break;
+
+		case _outpost:
+		frame = 9; break;
 	}
 
 	return frame;

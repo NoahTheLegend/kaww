@@ -3,6 +3,7 @@
 #include "TDM_Structs.as";
 #include "RulesCore.as";
 #include "RespawnSystem.as";
+#include "Hitters.as";
 //#include "Alert.as";
 
 shared int ticketsRemaining(CRules@ this, int team){
@@ -294,7 +295,9 @@ shared class TDMSpawns : RespawnSystem
 		if (p !is null && getBlobByNetworkID(p.get_u16("spawnpick")) !is null)
 		{// && getBlobByNetworkID(p.get_u16("spawnpick")).hasTag("spawn")
 			//printf("done");
-			return getBlobByNetworkID(p.get_u16("spawnpick")).getPosition();
+			CBlob@ b = getBlobByNetworkID(p.get_u16("spawnpick"));
+			b.server_Hit(b, b.getPosition(), Vec2f(0,0), b.getInitialHealth()/b.get_u16("max_respawns"), Hitters::builder);
+			return b.getPosition();
 		}
 		else if (getBlobsByName("tent", @spawns) || getBlobsByName("armory", @spawns))
 		{
