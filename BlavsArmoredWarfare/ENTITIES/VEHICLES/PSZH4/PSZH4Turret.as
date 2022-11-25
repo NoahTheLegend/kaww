@@ -88,7 +88,7 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(0.5f);
-			arm.SetOffset(Vec2f(-0.0f, -2.0f));
+			arm.SetOffset(Vec2f(-0.0f, -1.5f));
 		}
 	}
 	this.set_f32("gunelevation", (this.getTeamNum() == 1 ? 270 : 90) - init_gunoffset_angle);
@@ -212,7 +212,7 @@ void onTick(CBlob@ this)
 		{
 			arm.ResetTransform();
 			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(-2.5f, -24.0f));
+			arm.SetOffset(Vec2f(-2.5f, -24.0f + (this.isFacingLeft() ? -1.0f : 0.0f)));
 			arm.SetRelativeZ(-101.0f);
 		}
 
@@ -227,7 +227,7 @@ void onTick(CBlob@ this)
 					CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
 					if (front !is null)
 					{
-						front.SetVisible(!local.isAttachedTo(this));
+						//front.setVisible(!local.isAttachedTo(this));
 					}
 				}
 			}

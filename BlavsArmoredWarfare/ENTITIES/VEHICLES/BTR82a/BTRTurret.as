@@ -220,7 +220,7 @@ void onTick(CBlob@ this)
 		{
 			arm.ResetTransform();
 			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(-0.0f, -22.0f));
+			arm.SetOffset(Vec2f(-0.0f, -22.0f + (this.isFacingLeft() ? -1.0f : 0.0f)));
 			arm.SetRelativeZ(-101.0f);
 		}
 
@@ -235,7 +235,7 @@ void onTick(CBlob@ this)
 					CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
 					if (front !is null)
 					{
-						front.SetVisible(!local.isAttachedTo(this));
+						//front.setVisible(!local.isAttachedTo(this));
 					}
 				}
 			}
