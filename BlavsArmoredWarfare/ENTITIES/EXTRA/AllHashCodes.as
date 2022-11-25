@@ -19,6 +19,7 @@ enum EntityHash
 	
 	_transporttruck = -384075523, // vanilla truck?
 	_armory = -2000954281, // shop truck
+	_outpost = 1262542481, // outpost
 	
 	_bf109 = 948257107, // plane
 	_jourcop = 1406825361, // journalist
