@@ -82,7 +82,7 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(2.5f);
-			arm.SetOffset(Vec2f(-90.0f, -7.0f));
+			arm.SetOffset(Vec2f(-90.0f, -5.0f));
 		}
 	}
 
@@ -265,7 +265,7 @@ void onTick(CBlob@ this)
 					CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
 					if (front !is null)
 					{
-						front.SetVisible(!local.isAttachedTo(this));
+						//front.setVisible(!local.isAttachedTo(this));
 					}
 				}
 			}

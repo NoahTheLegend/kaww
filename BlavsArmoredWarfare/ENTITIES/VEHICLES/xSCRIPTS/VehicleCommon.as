@@ -775,7 +775,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					}
 
 					// tilt 
-					const bool down = ap.isKeyPressed(key_down) || ap.isKeyPressed(key_action3);
+					const bool down = ap.isKeyPressed(key_down);
 					if (down)
 					{
 						this.Tag("holding_down");

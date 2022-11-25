@@ -256,7 +256,7 @@ void onTick(CBlob@ this)
 					CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
 					if (front !is null)
 					{
-						front.SetVisible(!local.isAttachedTo(this));
+						//front.setVisible(!local.isAttachedTo(this));
 					}
 				}
 			}
