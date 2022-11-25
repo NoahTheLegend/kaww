@@ -6,8 +6,6 @@ void onInit(CBlob@ this)
 {
 	this.getSprite().SetZ(-50.0f);
 
-	this.CreateRespawnPoint("tent", Vec2f(0.0f, -4.0f));
-
 	this.Tag("respawn");
 	this.Tag("ignore_arrow");
 

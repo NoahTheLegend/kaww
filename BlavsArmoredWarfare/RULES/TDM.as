@@ -285,7 +285,18 @@ shared class TDMSpawns : RespawnSystem
 		CBlob@[] spawns;
 		CBlob@[] teamspawns;
 
-		if (getBlobsByName("tent", @spawns) || getBlobsByName("armory", @spawns))
+		CPlayer@ p = getPlayerByUsername(p_info.username);
+		//printf(""+p.get_u16("spawnpick"));
+		//if (p is null || getBlobByNetworkID(p.get_u16("spawnpick")) is null)
+		//{
+		//	printf("NULL");
+		//}
+		if (p !is null && getBlobByNetworkID(p.get_u16("spawnpick")) !is null)
+		{// && getBlobByNetworkID(p.get_u16("spawnpick")).hasTag("spawn")
+			//printf("done");
+			return getBlobByNetworkID(p.get_u16("spawnpick")).getPosition();
+		}
+		else if (getBlobsByName("tent", @spawns) || getBlobsByName("armory", @spawns))
 		{
 			for (uint step = 0; step < spawns.length; ++step)
 			{
@@ -294,7 +305,9 @@ shared class TDMSpawns : RespawnSystem
 					teamspawns.push_back(spawns[step]);
 				}
 			}
+			//printf("wtf?");
 		}
+		//printf("out");
 
 		if (teamspawns.length > 0)
 		{
