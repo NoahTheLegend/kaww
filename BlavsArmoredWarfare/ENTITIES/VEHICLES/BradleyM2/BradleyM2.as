@@ -8,6 +8,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("tank");
 	this.Tag("deal_bunker_dmg");
+	this.Tag("ignore fall");
 
 	this.set_u32("next_shoot", 0);
 
