@@ -328,6 +328,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 	attached.getShape().getConsts().collidable = false;
 	attached.SetFacingLeft(true);
 	attached.AddScript("WakeOnHit.as");
+	attached.Tag("collidewithbullets");
 
 	if (not getNet().isClient()) return;
 
@@ -388,6 +389,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	detached.getShape().getConsts().collidable = true;
 	detached.AddForce(Vec2f(0, -20));
 	detached.RemoveScript("WakeOnHit.as");
+	detached.Untag("collidewithbullets");
 
 	CSprite@ detached_sprite = detached.getSprite();
 	if (detached_sprite !is null)

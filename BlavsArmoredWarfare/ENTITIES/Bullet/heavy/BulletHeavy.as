@@ -315,6 +315,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	
 	if (this.getTickSinceCreated() > 1 && blob.isAttached())
 	{
+		if (blob.hasTag("collidewithbullets")) return true;
 		if (XORRandom(9) == 0)
 		{
 			return true;
@@ -331,6 +332,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	
 	if (blob.isAttached())
 	{
+		if (blob.hasTag("collidewithbullets")) return true;
 		return false;
 	}
 

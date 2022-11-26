@@ -1013,6 +1013,15 @@ void Reset(CRules@ this)
 	this.Untag("synced_time");
 	this.Untag("synced_siege");
 
+	if (this.get_s16("blueTickets") < 1)
+	{
+		this.set_s16("blueTickets", 1);
+	}
+	if (this.get_s16("redTickets") < 1)
+	{
+		this.set_s16("redTickets", 1);
+	}
+
 	//string configstr = "Rules/CTF/ctf_vars.cfg";
 	//ConfigFile cfg = ConfigFile(configstr);
 	//if (cfg.read_s32("game_time") != -2)
