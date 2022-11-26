@@ -18,7 +18,7 @@ void onInit(CBlob@ this)
 	this.inventoryButtonPos = Vec2f(4.0f, -8.0f);
 
 	Vehicle_Setup(this,
-	    4750.0f, // move speed
+	    5500.0f, // move speed
 	    1.0f,  // turn speed
 	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    true);  // inventory access
@@ -26,8 +26,8 @@ void onInit(CBlob@ this)
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
 
 	Vehicle_SetupGroundSound(this, v, "TracksSound",  // movement sound
-	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
-	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
+	    0.2f,   // movement sound volume modifier   0.0f = no manipulation
+	    0.25f); // movement sound pitch modifier     0.0f = no manipulation
 
 	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(30.0f, 4.0f)); if (w !is null) w.SetRelativeZ(20.0f);   w.ScaleBy(Vec2f(0.75f, 0.75f));}
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(26.0f, 4.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}

@@ -126,7 +126,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 2;
 			linear_length = 8.0f;
-			scale_damage = 1.75f;
+			scale_damage = 1.33f;
 			break;
 		}
 	}
