@@ -1103,18 +1103,18 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
 void onTick(CRules@ this)
 {
-	if (!this.hasTag("synced_siege"))
-	{
-		CBlob@[] vehbuilders;
-    	getBlobsByName("vehiclebuilder", @vehbuilders);
-		if (vehbuilders.length > 0 && vehbuilders[0] !is null)
-    	{
-    	    this.set_u8("siege", vehbuilders[0].getTeamNum()); // mark the sieging team
-    	    this.Sync("siege", true);
-    	    this.Tag("synced_siege");
-    	}
-		else this.Tag("synced_siege");
-	}
+	//if (!this.hasTag("synced_siege"))
+	//{
+	//	CBlob@[] vehbuilders;
+    //	getBlobsByName("vehiclebuilder", @vehbuilders);
+	//	if (vehbuilders.length > 0 && vehbuilders[0] !is null)
+    //	{
+    //	    this.set_u8("siege", vehbuilders[0].getTeamNum()); // mark the sieging team
+    //	    this.Sync("siege", true);
+    //	    this.Tag("synced_siege");
+    //	}
+	//	else this.Tag("synced_siege");
+	//}
 	if (getGameTime() % 1800 == 0)
     {
     	uint16 i;
