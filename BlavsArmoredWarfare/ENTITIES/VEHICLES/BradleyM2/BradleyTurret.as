@@ -9,7 +9,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u8 cooldown_time = 150;//210;
+const u8 cooldown_time = 180;//210;
 const u8 recoil = 250;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
@@ -38,7 +38,7 @@ void onInit(CBlob@ this)
 	    1, // fire bullets amount
 	    1, // fire cost
 	    "mat_bolts", // bullet ammo config name
-	    "14mm Rounds", // name for ammo selection
+	    "105mm Shells", // name for ammo selection
 	    "ballista_bolt", // bullet config name
 	    //"sound_100mm", // fire sound
 		"sound_105mm",

@@ -81,9 +81,9 @@ void onInit(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 - Vehicle builder.\n\nUnlocks stronger vehicles and aircraft.", false, false);
 		s.customButton = true;
-		s.buttonwidth = 1;
+		s.buttonwidth = 2;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 100);
 	}
 }
 
