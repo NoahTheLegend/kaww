@@ -341,7 +341,7 @@ void onTick(CBlob@ this)
 	}
 	else if (sprite !is null) sprite.ResetTransform();
 
-	this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
+	if (this.get_f32("engine_rpm") > 2000) this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
 
 	this.set_f32("engine_RPM", Maths::Clamp(this.get_f32("engine_RPM"), 0.0f, 30000.0f));
 }
