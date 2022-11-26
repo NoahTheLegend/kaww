@@ -51,7 +51,7 @@ void onTick(CBlob@ this)
             if (pitchMod < 0.01f) pitchMod = 1.0f;
 
             sprite.SetEmitSoundSpeed(
-                Maths::Min(0.01f + Maths::Abs((idleRestingPitch - rpm) / 2000), 1.15f) * 1.0 * pitchMod);
+                Maths::Min(0.01f + Maths::Abs((idleRestingPitch - rpm) / 2000), 1.00f) * 1.0 * pitchMod);
         }
         else // high rpm
         {
