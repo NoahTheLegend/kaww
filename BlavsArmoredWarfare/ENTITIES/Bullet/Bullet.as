@@ -330,6 +330,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 	if (this.getTickSinceCreated() > 1 && blob.isAttached())
 	{
+		if (blob.hasTag("collidewithbullets")) return true;
 		AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
 		if (point !is null && point.getOccupied() !is null && (point.getOccupied().getName() == "heavygun" || point.getOccupied().getName() == "gun"))
 			return true;
@@ -346,6 +347,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	
 	if (blob.isAttached())
 	{
+		if (blob.hasTag("collidewithbullets")) return true;
 		return false;
 	}
 
