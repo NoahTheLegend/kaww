@@ -13,6 +13,7 @@ void onInit(CRules@ this)
 
 void BuildRespawnMenu(CRules@ this, CPlayer@ player)
 {
+	if (getGameTime() < 90) return;
 	getHUD().ClearMenus(true); // kill all even modal
 
 	const int teamNum = player.getTeamNum();

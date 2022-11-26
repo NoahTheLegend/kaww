@@ -297,6 +297,7 @@ shared class TDMSpawns : RespawnSystem
 			//printf("done");
 			CBlob@ b = getBlobByNetworkID(p.get_u16("spawnpick"));
 			b.server_Hit(b, b.getPosition(), Vec2f(0,0), b.getInitialHealth()/b.get_u16("max_respawns"), Hitters::builder);
+			teamspawns.push_back(b);
 			return b.getPosition();
 		}
 		else if (getBlobsByName("tent", @spawns) || getBlobsByName("armory", @spawns))
