@@ -16,7 +16,7 @@ enum EntityHash
 
 	_pszh4 = 1117406230, // smol APC
 	_btr82a = 1873450872, // big APC
-	
+	_bradley = -1543244522, // bradley m2
 	_transporttruck = -384075523, // vanilla truck?
 	_armory = -2000954281, // shop truck
 	_outpost = 1262542481, // outpost
@@ -31,6 +31,7 @@ enum EntityHash
 
 	_pszh4turret = -561402448, // smol APC cannon
 	_btrturret = 2047864813, // big APC cannon
+	_bradleyturret = 1562236592, // bradley m2 turret
 	_m60turret = -627481976, // M60 Shell cannon
 	_t10turret = -616940740, // T10 Shell cannon
 	_mausturret = 56012293, // MAUS Shell cannon

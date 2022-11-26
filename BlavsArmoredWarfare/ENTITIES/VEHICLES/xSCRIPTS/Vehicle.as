@@ -46,6 +46,8 @@ void onInit(CBlob@ this)
 		case _armory: // shop truck
 		case _btr82a: // big APC
 		case _btrturret: // big APC cannon
+		case _bradley:
+		case _bradleyturret:
 		case _heavygun: // MG
 		armorRating = 2; break;
 
@@ -120,6 +122,13 @@ void onInit(CBlob@ this)
 			scale_damage = 0.8f;
 			break;
 		}
+		case _bradleyturret:
+		{
+			weaponRating = 2;
+			linear_length = 8.0f;
+			scale_damage = 1.75f;
+			break;
+		}
 	}
 	this.set_f32("linear_length", linear_length);
 	this.set_f32("explosion_damage_scale", scale_damage);
@@ -137,6 +146,7 @@ void onInit(CBlob@ this)
 		backsideOffset = 16.0f; break;
 
 		case _btr82a: // big APC
+		case _bradley:
 		backsideOffset = 16.0f; break;
 
 		case _pszh4: // smol APC
@@ -166,6 +176,7 @@ void onInit(CBlob@ this)
 		intake = 75.0f; break;
 
 		case _pszh4: // smol APC
+		case _bradley:
 		intake = 100.0f; break;
 
 		case _techtruck: // truck
