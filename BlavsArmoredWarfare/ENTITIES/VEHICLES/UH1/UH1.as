@@ -523,7 +523,7 @@ void onDie(CBlob@ this)
 	DoExplosion(this);
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("JAVLAUNCHER");
-	if (this.get_u32("next_shoot") < getGameTime() && ap !is null)
+	if (ap !is null)
 	{
 		CBlob@ launcher = ap.getOccupied();
 		if (launcher !is null) launcher.server_Die();

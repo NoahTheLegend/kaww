@@ -6,7 +6,7 @@
 
 const u16 MIN_RESPAWNS = 5;
 const u8 ADD_RESPAWN_PER_PLAYERS = 2;
-const u8 respawn_immunity_time = 30 * 2;
+const u8 respawn_immunity_time = 30 * 1.5;
 
 void onInit(CBlob@ this)
 {

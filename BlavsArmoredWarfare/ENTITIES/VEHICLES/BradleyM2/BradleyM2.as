@@ -18,7 +18,7 @@ void onInit(CBlob@ this)
 	this.inventoryButtonPos = Vec2f(4.0f, -8.0f);
 
 	Vehicle_Setup(this,
-	    5000.0f, // move speed
+	    4750.0f, // move speed
 	    1.0f,  // turn speed
 	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    true);  // inventory access
@@ -333,6 +333,13 @@ void onTick(CBlob@ this)
 void onDie(CBlob@ this)
 {
 	Explode(this, 72.0f, 1.0f);
+
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("JAVLAUNCHER");
+	if (ap !is null)
+	{
+		CBlob@ launcher = ap.getOccupied();
+		if (launcher !is null) launcher.server_Die();
+	}
 
 	this.getSprite().PlaySound("/vehicle_die");
 

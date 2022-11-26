@@ -40,20 +40,24 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Build a Bradley M2", "$bradley$", "bradley", "Light but armed with medium cannon APC.\nAlso has a javelin on the turret.\n\nUses 105mm and optionally HEAT warheads..");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 45);
+	}
+	{
 		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nUses 105mm & 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 45);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nUses 105mm & 7.62mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
-	}
-	{
 		ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nUses 105mm");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 100);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
@@ -61,7 +65,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build UH1 Helicoptrer", "$uh1$", "uh1", "A helicopter with heavy machinegun.\nPress SPACEBAR to launch HEAT warheads.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 65);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy MachineGun.\n\nUses 7.62mm.", false, true);

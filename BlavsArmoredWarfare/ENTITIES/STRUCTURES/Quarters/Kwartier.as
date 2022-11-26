@@ -21,7 +21,7 @@ void onInit(CSprite@ this)
 			int[] frames = {14, 15};
 			bed.animation.AddFrames(frames);
 		}
-		bed.SetOffset(Vec2f(1, 4));
+		bed.SetOffset(Vec2f(-2, 4));
 		bed.SetVisible(true);
 	}
 
@@ -33,7 +33,7 @@ void onInit(CSprite@ this)
 			int[] frames = {14, 15};
 			bed2.animation.AddFrames(frames);
 		}
-		bed2.SetOffset(Vec2f(1, -7));
+		bed2.SetOffset(Vec2f(-2, -7));
 		bed2.SetVisible(true);
 	}
 
@@ -45,7 +45,7 @@ void onInit(CSprite@ this)
 			int[] frames = {96, 97, 98, 98, 99};
 			zzz.animation.AddFrames(frames);
 		}
-		zzz.SetOffset(Vec2f(-3, -6));
+		zzz.SetOffset(Vec2f(-6, -6));
 		zzz.SetLighting(false);
 		zzz.SetVisible(false);
 	}
@@ -58,7 +58,7 @@ void onInit(CSprite@ this)
 			int[] frames = {26};
 			backpack.animation.AddFrames(frames);
 		}
-		backpack.SetOffset(Vec2f(-14, 7));
+		backpack.SetOffset(Vec2f(-2, 7));
 		backpack.SetVisible(false);
 	}
 
@@ -73,6 +73,7 @@ void onInit(CBlob@ this)
 
 	this.getSprite().SetZ(-50); //background
 	this.getShape().getConsts().mapCollisions = false;
+	this.addCommandID("shop made item");
 	{
 		AttachmentPoint@ bed = this.getAttachments().getAttachmentPointByName("BED");
 		if (bed !is null)
@@ -374,9 +375,9 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 	bed_head.SetAnimation(bed_head_animation);
 	bed_head.RotateBy(80, Vec2f_zero);
 	if(attachedPoint.name == "BED")
-		bed_head.SetOffset(Vec2f(1, 2));
+		bed_head.SetOffset(Vec2f(3, 2));
 	else
-		bed_head.SetOffset(Vec2f(1, -6));
+		bed_head.SetOffset(Vec2f(3, -6));
 	bed_head.SetFacingLeft(true);
 	bed_head.SetVisible(true);
 	bed_head.SetRelativeZ(2);
