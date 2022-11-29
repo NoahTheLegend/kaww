@@ -221,7 +221,7 @@ void onTick(CBlob@ this)
 					has_ammo = true;
 					if (isServer()) inv.server_RemoveItems("mat_heatwarhead", 1);
 					launcher.Untag("dead");
-					this.set_u32("next_shoot", getGameTime()+30);
+					this.set_u32("next_shoot", getGameTime()+75);
 				}
 			}
 		}
