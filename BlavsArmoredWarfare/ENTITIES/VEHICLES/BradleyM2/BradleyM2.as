@@ -56,7 +56,7 @@ void onInit(CBlob@ this)
 		int[] frames = { 0, 1, 2 };
 		front.animation.AddFrames(frames);
 		front.SetRelativeZ(0.8f);
-		front.SetOffset(Vec2f(0.0f, 0.0f));
+		front.SetOffset(Vec2f(0.0f, 1.0f));
 	}
 
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "UHT_Launcher", 16, 16);
@@ -70,7 +70,7 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(5.5f);
-			arm.SetOffset(Vec2f(8.0f, -18.0f));
+			arm.SetOffset(Vec2f(8.0f, -19.0f));
 		}
 	}
 
