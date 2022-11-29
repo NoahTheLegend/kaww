@@ -125,6 +125,15 @@ void onTick(CBlob@ this)
 			}
 		}
 
+		//stabilize rotation
+		f32 deg = this.getAngleDegrees();
+		printf(""+deg);
+		if ((!this.isFacingLeft() && deg < 315 && deg > 45)
+		|| (this.isFacingLeft() && deg < 115 && deg > 225))
+		{
+			this.AddTorque(this.isFacingLeft() ? -420.0f : 420.0f);
+		}
+
 		CSprite@ sprite = this.getSprite();
 		if (getNet().isClient())
 		{
