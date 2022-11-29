@@ -40,7 +40,7 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Bradley M2", "$bradley$", "bradley", "Light but armed with medium cannon APC.\nAlso has a javelin on the turret.\n\nUses 105mm and optionally HEAT warheads..");
+		ShopItem@ s = addShopItem(this, "Build a Bradley M2", "$bradley$", "bradley", "Light but armed with medium cannon APC.\nAlso has a javelin on the turret.\n\nUses 105mm and optionally HEAT warheads.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 45);
 	}
 	{

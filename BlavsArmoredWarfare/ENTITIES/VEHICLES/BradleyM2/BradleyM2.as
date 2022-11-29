@@ -19,7 +19,7 @@ void onInit(CBlob@ this)
 	this.inventoryButtonPos = Vec2f(4.0f, -8.0f);
 
 	Vehicle_Setup(this,
-	    5500.0f, // move speed
+	    5000.0f, // move speed
 	    1.0f,  // turn speed
 	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    true);  // inventory access
