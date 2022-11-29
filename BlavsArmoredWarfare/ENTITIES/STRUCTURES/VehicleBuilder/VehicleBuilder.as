@@ -33,7 +33,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a BTR82a APC", "$btr82a$", "btr82a", "Armored transport with cannon.\n\nUses 14.5mm.");
@@ -50,6 +50,10 @@ void onInit(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
 	//{
 	//	ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\n\nUses 7.62mm.");
