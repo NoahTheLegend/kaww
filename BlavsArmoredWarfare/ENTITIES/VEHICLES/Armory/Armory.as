@@ -163,6 +163,18 @@ void onTick(CBlob@ this)
 {
 	if (this.getTickSinceCreated() == 1)
 	{
+		this.Tag("respawn");
+		CBlob@[] tents;
+   		getBlobsByName("tent", @tents);
+		for (u8 i = 0; i < tents.length; i++)
+		{
+			if (tents[i] !is null && tents[i].getTeamNum() == this.getTeamNum())
+			{
+				this.Untag("respawn");
+				break;
+			}
+		}
+		
 		InitClasses(this);
 	}
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
