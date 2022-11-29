@@ -4,8 +4,8 @@
 
 const Vec2f upVelo = Vec2f(0.00f, -0.015f);
 const Vec2f downVelo = Vec2f(0.00f, 0.0050f);
-const Vec2f leftVelo = Vec2f(-0.0275f, 0.00f);
-const Vec2f rightVelo = Vec2f(0.0275f, 0.00f);
+const Vec2f leftVelo = Vec2f(-0.0225f, 0.00f);
+const Vec2f rightVelo = Vec2f(0.0225f, 0.00f);
 
 const Vec2f minClampVelocity = Vec2f(-0.40f, -0.70f);
 const Vec2f maxClampVelocity = Vec2f( 0.40f, 0.00f);
