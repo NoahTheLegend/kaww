@@ -1,10 +1,12 @@
 #include "Hitters.as";
+#include "WarfareGlobal.as";
 
 void onInit(CBlob@ this)
 {
 	this.set_TileType("background tile", CMap::tile_castle_back);
 	this.Tag("builder always hit");
 	this.Tag("bunker");
+	this.set_s8(armorRatingString, 2);
 
 	this.getShape().getConsts().mapCollisions = false;
 
@@ -70,15 +72,61 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	const bool is_explosive = customData == Hitters::explosion || customData == Hitters::keg;
+	s8 armorRating = this.get_s8(armorRatingString);
+	s8 penRating = hitterBlob.get_s8(penRatingString);
+	bool hardShelled = this.get_bool(hardShelledString);
+
+	float damageNegation = 0.0f;
+	s8 finalRating = getFinalRating(armorRating, penRating, false, this, hitterBlob.getPosition(), false, false);
+	switch (finalRating)
+	{
+		// negative armor, trickles up
+		case -2:
+		{
+			if (is_explosive && damage != 0) damage += 1.5f; // suffer bonus base damage (you just got your entire vehicle burned)
+			damage *= 2.5f;
+		}
+		case -1:
+		case 0:
+		{
+			damage *= 2.0f;
+		}
+		break;
+
+		// positive armor, trickles down
+		case 5:
+		{
+			damageNegation += 0.15f; // reduction to final damage, extremely tanky
+		}
+		case 4:
+		{
+			damage *= 0.35f;
+		}
+		case 3:
+		{
+			damage *= 0.75f;
+		}
+		case 2:
+		{
+			damage *= 1.0f;
+		}
+		case 1:
+		{
+			damage *= 1.25f;
+		}
+		break;
+	}
+
 	if (hitterBlob.getName() == "grenade")
 	{
-		return damage * 3;
+		return damage * 1.5f;
 	}
 	if (customData == Hitters::flying || customData == Hitters::flying)
 	{
 		this.server_Hit(hitterBlob, hitterBlob.getPosition(), this.getOldVelocity(), 3.5f, Hitters::flying, true);
 		if (!hitterBlob.hasTag("deal_bunker_dmg")) return 0;
-		return damage / 35;
+		return damage / 30;
 	}
 	if (customData == Hitters::arrow)
 	{

@@ -16,7 +16,7 @@ void onInit(CBlob@ this)
 {
 	this.set_s8(penRatingString, 4);
 	this.set_f32(projExplosionRadiusString, 64.0f);
-	this.set_f32(projExplosionDamageString, 5.0f);
+	this.set_f32(projExplosionDamageString, 6.0f);
 
 	this.set_bool("map_damage_raycast", true);
 	this.set_bool("explosive_teamkill", true);
