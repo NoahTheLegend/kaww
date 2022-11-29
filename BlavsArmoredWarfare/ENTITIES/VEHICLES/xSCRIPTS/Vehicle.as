@@ -119,7 +119,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 0;
 			linear_length = 4.0f;
-			scale_damage = 0.8f;
+			scale_damage = 0.75f;
 			break;
 		}
 		case _bradleyturret:

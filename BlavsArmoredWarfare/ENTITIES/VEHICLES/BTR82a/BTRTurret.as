@@ -9,7 +9,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u8 cooldown_time = 70; //75 old 
+const u8 cooldown_time = 90;
 const u8 recoil = 250;
 const f32 damage_modifier = 0.65f;
 
