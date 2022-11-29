@@ -1,5 +1,5 @@
 // stun
-#include "/Entities/Common/Attacks/Hitters.as";
+#include "Hitters.as";
 #include "KnockedCommon.as";
 #include "ShieldCommon.as";
 #include "KnightCommon.as";
