@@ -6,7 +6,7 @@ const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
 const u32 shootDelay = 2; // Ticks
-const f32 projDamage = 0.3f;
+const f32 projDamage = 0.75f;
 
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);
@@ -44,6 +44,17 @@ void onInit(CBlob@ this)
 
 	this.getShape().SetRotationsAllowed(true);
 	this.set_Vec2f("direction", Vec2f(0, 0));
+
+
+	// causes command no found errors (added manually)
+	this.addCommandID("load_ammo");
+	this.addCommandID("swap_ammo");
+	this.addCommandID("putin_mag");
+	this.addCommandID("fire");
+	this.addCommandID("flip_over");
+	this.addCommandID("getin_mag");
+	this.addCommandID("vehicle getout");
+	this.addCommandID("recount ammo");
 }
 
 void onInit(CSprite@ this)

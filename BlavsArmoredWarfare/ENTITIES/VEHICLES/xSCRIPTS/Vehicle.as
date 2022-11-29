@@ -110,21 +110,21 @@ void onInit(CBlob@ this)
 		}
 		case _pszh4turret: // smol APC cannon
 		{
-			weaponRating = 0;
-			linear_length = 3.0f;
+			weaponRating = -1;
+			linear_length = 34.0f;
 			scale_damage = 0.75f;
 			break;
 		}
 		case _btrturret: // big APC cannon
 		{
-			weaponRating = 0;
+			weaponRating = -1;
 			linear_length = 4.0f;
 			scale_damage = 0.75f;
 			break;
 		}
 		case _bradleyturret:
 		{
-			weaponRating = 2;
+			weaponRating = -1;
 			linear_length = 8.0f;
 			scale_damage = 1.33f;
 			break;
@@ -600,15 +600,15 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		case 4:
 		{
-			damage *= 0.85f;
+			damage *= 0.5f;
 		}
 		case 3:
 		{
-			damage *= 1.0f;
+			damage *= 0.75f;
 		}
 		case 2:
 		{
-			damage *= 1.25f;
+			damage *= 1.0f;
 		}
 		case 1:
 		{
