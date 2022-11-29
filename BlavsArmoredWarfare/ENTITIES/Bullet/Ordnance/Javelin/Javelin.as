@@ -32,10 +32,12 @@ void onInit(CBlob@ this)
 	this.set_f32(robotechHeightString, 64.0f); // pixels
 
 	this.getShape().SetGravityScale(missile.gravity_scale);
+	if (this.getSprite() !is null) this.getSprite().PlaySound("CruiseMissile_Launch.ogg", 0.5f, 1.5f);
 }
 
 void onTick(CBlob@ this)
 {
+	if (this.getTickSinceCreated() == 0) this.server_SetTimeToDie(10);
 	CMap@ map = getMap(); //standard map check
 	if (map is null)
 	{ return; }
@@ -278,8 +280,6 @@ void doMuzzleFlash(Vec2f thisPos = Vec2f_zero, Vec2f flashVec = Vec2f_zero)
 			p.timeout = 10;
 		}
 	}
-	
-	Sound::Play("RPGFire.ogg", thisPos, 0.6f , 0.8f + (0.1f * _missile_r.NextFloat()));
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
