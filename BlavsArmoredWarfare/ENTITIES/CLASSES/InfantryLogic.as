@@ -198,7 +198,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 {
-	if (this.hasTag("dead")) return;
+	if (this.hasTag("dead") || this.isAttached()) return;
 	if (!getNet().isServer()) { return; }
 	if (aimangle < 0.0f) { aimangle += 360.0f; }
 
