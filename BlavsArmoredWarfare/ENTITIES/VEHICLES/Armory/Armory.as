@@ -59,7 +59,6 @@ void onInit(CBlob@ this)
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
 	this.set_Vec2f("shop menu size", Vec2f(9, 2));
-	if (tents.length == 0) this.set_Vec2f("shop menu size", Vec2f(8, 2));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
@@ -98,17 +97,14 @@ void onInit(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Lantern", "$lantern$", "lantern", "A source of light.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
 	}
-	if (tents.length != 0)
 	{
-		{
-			ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 275);
+		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 300);
 
-			s.customButton = true;
+		s.customButton = true;
 
-			s.buttonwidth = 1;
-			s.buttonheight = 2;
-		}
+		s.buttonwidth = 1;
+		s.buttonheight = 2;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
