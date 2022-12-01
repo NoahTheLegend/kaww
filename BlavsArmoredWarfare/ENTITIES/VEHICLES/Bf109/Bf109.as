@@ -36,6 +36,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("aerial");
 	this.Tag("wooden");
+	this.Tag("pass_bullet");
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetEmitSound("Aircraft_Loop.ogg");
@@ -486,4 +487,12 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 	}
 	else return true;
 }
-			
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (hitterBlob.hasTag("bullet"))
+	{
+		return damage *= 0.33f;
+	}
+	return damage;
+}
