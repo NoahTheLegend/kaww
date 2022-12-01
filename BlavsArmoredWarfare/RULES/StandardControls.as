@@ -378,7 +378,7 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 		switch (zoomLevel) {
 			//case 0: zoom_target = 0.5f; zoomModifierLevel = 0; break;
 			case 1: zoom_target = 1.0f; zoomModifierLevel = 4; break;
-			//case 2:	zoom_target = 2.0f; zoomModifierLevel = 6; break;
+			case 2:	zoom_target = 2.0f; zoomModifierLevel = 6; break;
 		}
 	}
 
@@ -387,6 +387,8 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 		zoom_target = 1.0f; //1.25f
 		zoomSpeed *= 0.55f; //0.4f
 	}
+
+	zoom_target = (this.hasTag("increase_max_zoom") ? 0.5f : zoom_target);
 
 	if (zoom > zoom_target)
 	{

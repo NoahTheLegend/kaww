@@ -470,12 +470,14 @@ void onAttach(CBlob@ this,CBlob@ attached,AttachmentPoint @attachedPoint)
 
 	attached.Tag("invincible");
 	attached.Tag("invincibilityByVehicle");
+	attached.Tag("increase_max_zoom");
 }
 
 void onDetach(CBlob@ this,CBlob@ detached,AttachmentPoint@ attachedPoint)
 {
 	detached.Untag("invincible");
 	detached.Untag("invincibilityByVehicle");
+	detached.Untag("increase_max_zoom");
 }
 
 bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
