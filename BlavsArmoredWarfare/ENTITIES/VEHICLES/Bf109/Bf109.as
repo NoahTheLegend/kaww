@@ -5,7 +5,7 @@
 const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
-const u32 shootDelay = 2; // Ticks
+const u32 shootDelay = 1; // Ticks
 const f32 projDamage = 0.75f;
 
 //ICONS
@@ -97,6 +97,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				for (u8 i = 0; i < inv.getItemsCount(); i++)
 				{
 					if (inv.getItem(i) is null || inv.getItem(i).getName() != "mat_7mmround") continue;
+					if (XORRandom(3) != 0) continue;
 					inv.getItem(i).server_SetQuantity(inv.getItem(0).getQuantity()-1);
 					break;
 				}
@@ -150,7 +151,7 @@ void onTick(CBlob@ this)
 				if (can_attack)
 				{
 					if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("AssaultFire.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
-					ShootBullet(this, (this.getPosition() - Vec2f(0,1)), this.getPosition()+Vec2f(this.isFacingLeft() ? -32.0f : 32.0f, 0).RotateBy(this.getAngleDegrees() + (this.isFacingLeft() ? -7.5f : 7.5f)), 17.59f * 1.75f);
+					ShootBullet(this, (this.getPosition() - Vec2f(0,1)), this.getPosition()+Vec2f(this.isFacingLeft() ? -32.0f : 32.0f, 0).RotateBy(this.getAngleDegrees() + (this.isFacingLeft() ? -2.5f : 2.5f)), 17.59f * 1.75f);
 					this.Tag("no_more_shooting");
 				}
 			}

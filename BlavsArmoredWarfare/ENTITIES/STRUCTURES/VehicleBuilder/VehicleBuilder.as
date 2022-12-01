@@ -53,7 +53,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 35);
 	}
 	//{
 	//	ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\n\nUses 7.62mm.");
