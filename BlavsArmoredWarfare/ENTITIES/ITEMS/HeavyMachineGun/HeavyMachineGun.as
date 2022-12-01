@@ -1,4 +1,5 @@
 #include "VehicleCommon.as"
+#include "Hitters.as"
 
 const Vec2f arm_offset = Vec2f(-2, 0);
 
@@ -321,4 +322,14 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 {
 	return false;
+}
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (!this.isAttached())
+	{
+		if (customData == Hitters::explosion || customData == Hitters::keg) damage *= 2.5f;
+		damage *= 2.5f;
+	}
+	return damage;
 }
