@@ -688,7 +688,9 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 		const f32 base = 5.0f;
 		const f32 ramp = 1.2f;
 
-		if (getNet().isServer() && vellen > base) // server only
+		bool pass_bullet = this.hasTag("pass_bullet") && blob !is null && blob.hasTag("bullet");
+
+		if (getNet().isServer() && vellen > base && !pass_bullet) // server only
 		{
 			if (vellen > base * ramp)
 			{
