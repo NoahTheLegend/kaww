@@ -157,13 +157,13 @@ namespace ShotgunParams
 {
 	const ::string CLASSNAME 			= "Shotgun"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.35f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.42f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.375f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.45f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.9f; // walk
+	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
-	const ::f32 JUMP_STAT 				= 0.87f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.05f; // walk (sprint)
+	const ::f32 JUMP_STAT 				= 0.9f; // jump
+	const ::f32 WALK_STAT_SPRINT 		= 1.075f; // walk (sprint)
 	const ::f32 AIRWALK_STAT_SPRINT 	= 2.9f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 0.87f; // jump (sprint)
 	// SHAKE
@@ -172,7 +172,7 @@ namespace ShotgunParams
 	const ::f32 RECOIL_LENGTH 			= 180.0f; // how long to recoil (?)
 	// RECOIL
 	const ::f32 RECOIL_FORCE 			= 0.2f; // amount to push player
-	const ::u8 RECOIL_CURSOR 			= 13; // amount to raise mouse pos
+	const ::u8 RECOIL_CURSOR 			= 11; // amount to raise mouse pos
 	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
@@ -186,7 +186,7 @@ namespace ShotgunParams
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 5; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s8 RELOAD_TIME 				= 90; // time to reload
+	const ::s8 RELOAD_TIME 				= 80; // time to reload
 	const ::u32 MAG_SIZE 				= 4; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 20; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
@@ -283,8 +283,8 @@ namespace RevolverParams
 {
 	const ::string CLASSNAME 			= "Revolver"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.35f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 1.05f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.4f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 1.25f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
