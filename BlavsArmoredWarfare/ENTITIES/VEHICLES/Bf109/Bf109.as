@@ -491,6 +491,10 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (hitterBlob.getName() == "missile_javelin")
+	{
+		return damage * 0.5f;
+	}
 	if (hitterBlob.hasTag("bullet"))
 	{
 		return damage *= 0.33f;

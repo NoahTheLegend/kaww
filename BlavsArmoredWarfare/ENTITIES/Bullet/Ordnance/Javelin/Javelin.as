@@ -111,7 +111,7 @@ void onTick(CBlob@ this)
 	
 	//homing logic
 	const float mainEngineForce = missile.main_engine_force;
-	const float maxSpeed = missile.max_speed;
+	const float maxSpeed = missile.max_speed * (targetBlob.hasTag("aerial") ? 1.5f : 1.0f);
 	const float turnSpeed = missile.turn_speed;
 	
 	Vec2f targetPos = targetBlob.getPosition();
