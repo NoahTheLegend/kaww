@@ -45,7 +45,7 @@ void onTick(CBlob@ this)
 			map.server_setFireWorldspace(bpos, true);
 		}
 		CBlob@[] blobs;
-		getMap().getBlobsInRadius(this.getPosition(), this.getRadius()*2, blobs);
+		getMap().getBlobsInRadius(this.getPosition(), this.getRadius()*3, blobs);
 		for (u16 i = 0; i < blobs.length; i++)
 		{
 			CBlob@ b = blobs[i];
@@ -54,7 +54,7 @@ void onTick(CBlob@ this)
 			{
 				if (getGameTime() % 10 == 0)
 				{
-					this.server_Hit(b, this.getPosition(), Vec2f(0, 2), 0.1f, Hitters::fire, true);
+					this.server_Hit(b, this.getPosition(), Vec2f(0, 2), 0.25f, Hitters::fire, true);
 				}
 			}
 		}
