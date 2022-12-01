@@ -12,7 +12,7 @@ void onInit(CBlob@ this)
 		
 	this.Tag("invincible");
 	this.set_f32("map_damage_ratio", 0.5f);
-	this.getCurrentScript().tickFrequency = 8;
+	this.getCurrentScript().tickFrequency = 7;
 	
 	this.Tag("explosive");
 	
@@ -28,7 +28,7 @@ void DoExplosion(CBlob@ this, Vec2f velocity)
 	
 	for (int i = 0; i < 4; i++)
 	{
-		Explode(this, 128.0f * modifier, 32.0f);
+		Explode(this, 92.0f * modifier, 32.0f);
 		//guarantly hit blobs
 		if (getNet().isServer())
 		{
