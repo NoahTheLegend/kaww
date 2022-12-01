@@ -6,6 +6,7 @@ void onInit(CBlob@ this)
 	this.getShape().getConsts().mapCollisions = false;
 
     this.Tag("destructable");
+	this.Tag("builder always hit");
 
 	this.setPosition(this.getPosition()+Vec2f(0,8));
 
