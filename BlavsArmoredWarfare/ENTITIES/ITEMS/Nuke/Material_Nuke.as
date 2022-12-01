@@ -89,7 +89,7 @@ void ExplosionEffects( CBlob@ this )
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (blob !is null ? !blob.isCollidable() : !solid) return;
+	if (blob !is null && !blob.hasTag("flesh") ? !blob.isCollidable() : !solid) return;
 
 	f32 vellen = this.getOldVelocity().Length();
 
