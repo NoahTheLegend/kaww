@@ -324,17 +324,13 @@ void onTick(CBlob@ this)
 		f32 speed = Maths::Abs(this.getVelocity().x);
 		f32 max_speed = v.move_speed/20000;
 
-		f32 max_diff = fl ? 3.0f : -3.0f; // basic value
-		if (this.exists("max_angle_diff")) max_diff = (fl ? this.get_f32("max_angle_diff") : -1 * this.get_f32("max_angle_diff"));
-		if (slow_down) max_diff *= -1;
-
-		//max_diff *= speed/max_speed;
-		max_diff *= 2;
+		f32 max_diff = 1.0f;
+		if (this.exists("max_angle_diff")) max_diff = this.get_f32("max_angle_diff");
 
 		//if (Maths::Abs(max_diff) > 0.1f)
 		{
 			sprite.ResetTransform();
-			sprite.RotateBy((this.getPosition().x - this.getOldPosition().x)*-max_speed, Vec2f(this.isFacingLeft() ? 6 : -6,0));
+			sprite.RotateBy((this.getPosition().x - this.getOldPosition().x)*-max_speed*max_diff, Vec2f(this.isFacingLeft() ? 6 : -6, 0));
 
 			//print("angle " + (this.getPosition().x - this.getOldPosition().x)*-max_speed);
 		}
