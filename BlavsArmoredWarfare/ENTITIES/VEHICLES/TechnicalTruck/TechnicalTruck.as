@@ -8,6 +8,8 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("weak vehicle");
 
+	this.set_f32("max_angle_diff", 0.5f);
+
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;
@@ -39,15 +41,6 @@ void onInit(CBlob@ this)
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
-	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
-	if (front !is null)
-	{
-		front.addAnimation("default", 0, false);
-		int[] frames = { 0, 1, 2 };
-		front.animation.AddFrames(frames);
-		front.SetRelativeZ(0.8f);
-		front.SetOffset(Vec2f(0.0f, 0.0f));
-	}
 
 	// Add machine gun on top
 	if (getNet().isServer())

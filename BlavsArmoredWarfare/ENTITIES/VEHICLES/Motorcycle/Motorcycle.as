@@ -9,6 +9,8 @@ void onInit(CBlob@ this)
 	this.Tag("shootseat");
 	this.Tag("weak vehicle");
 
+	this.set_f32("max_angle_diff", 1.25f);
+
 	//print("" + this.getName().getHash());
 
 	CShape@ shape = this.getShape();
@@ -42,15 +44,15 @@ void onInit(CBlob@ this)
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
-	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
-	if (front !is null)
-	{
-		front.addAnimation("default", 0, false);
-		int[] frames = { 0, 1, 2 };
-		front.animation.AddFrames(frames);
-		front.SetRelativeZ(0.8f);
-		front.SetOffset(Vec2f(0.0f, 0.0f));
-	}
+	//CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
+	//if (front !is null)
+	//{
+	//	front.addAnimation("default", 0, false);
+	//	int[] frames = { 0, 1, 2 };
+	//	front.animation.AddFrames(frames);
+	//	front.SetRelativeZ(0.8f);
+	//	front.SetOffset(Vec2f(0.0f, 0.0f));
+	//}
 
 	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
 
