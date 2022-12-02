@@ -62,10 +62,10 @@ void onDie(CBlob@ this)
     };
     array<float> _chances =
     {
-        0.7,
-        0.25,
-        0.25,
-        0.01,
+        0.5,
+        0.5,
+        0.5,
+        0.025,
 
         0.08,
         0.08,
@@ -76,10 +76,10 @@ void onDie(CBlob@ this)
     };
     array<u8> _amount =
     {
-        (XORRandom(5)+2),
-        (XORRandom(6)+1)*20,
-        (XORRandom(4)+1)*20,
-        50,
+        (XORRandom(3)+2),
+        (XORRandom(10)+6)*10,
+        (XORRandom(8)+3)*10,
+        50 + (XORRandom(26)*2),
 
         1,
         1,
