@@ -948,22 +948,88 @@ shared class TDMCore : RulesCore
 		}
 	}
 
+	string[] small_maps = {
+		"DesertedTDM.png",
+		"AztecTDM.png",
+		"LandscapingTDM.png",
+		"SmallSoldiercombatTDM.png",
+		"TheSmallCityTDM.png",
+		"BridgeTDM.png",
+		"TrainTDM.png",
+		"FarmTDM.png",
+		"FarmOldTDM.png",
+		"DesertedTDM.png",
+		"DesertedFlagTDM.png",
+		"TesfoMineTDM.png",
+		"TomeTDM.png"
+	};
 
-	void SetCorrectMapTypeShared()
+	string[] average_maps = {
+		"SmallDesert.png",
+		"SmallTouge.png",
+		"SmallMortar.png",
+		"SmallFactory.png",
+		"SmallClassic.png",
+		"SmallMoats.png",
+		"TheCityTDM.png",
+		"TheSmallCityTDM.png",
+		"SoldiercombatTDM.png",
+		"Worldwar.png",
+		"DesertedTDM.png",
+		"LandscapingTDM.png",
+		"FarmTDM.png",
+		"BridgeTDM.png",
+		"TrainTDM.png",
+		"HolyBombTDM.png",
+		"TesfoMineTDM.png",
+		"FarmOldTDM.png",
+		"Rockslide.png",
+		"KingslyCastleTDM.png"
+	};
+
+	string[] large_maps = {
+		"Desert.png",
+		"Touge.png",
+		"Mortar.png",
+		"Selfish_goldy.png",
+		"Syria.png",
+		"Factory.png",
+		"Valley.png",
+		"Foothills.png",
+		"Worldwar.png",
+		"Classic.png",
+		"Moats.png",
+		"TrainTDM.png",
+		"TheCityTDM.png",
+		"SiegeBeach.png",
+		"SoldiercombatTDM.png",
+		"KnollTDM.png",
+		"TriPointTDM.png",
+		"Stratego.png",
+		"Rockslide.png",
+		"KingslyCastleTDM.png",
+		"Cavern.png",
+		"Avantgarde.png"
+	};
+
+	void SetCorrectMapTypeShared() // LOADING MAPCYCLE MAKES THE CLOSER MAPS TO BEGINNING MORE FREQUENT THAN OTHER!
 	{
-		if (getPlayersCount() <= 4)
+		if (getPlayersCount() <= 5)
 		{
-			LoadMapCycle("MAPS/mapcyclesmaller.cfg");
+			LoadMap(small_maps[XORRandom(small_maps.length)]);
+			//LoadMapCycle("MAPS/mapcyclesmaller.cfg");
 			print(">Loading smaller map");
 		}
-		else if (getPlayersCount() < 11)
+		else if (getPlayersCount() <= 11)
 		{
-			LoadMapCycle("MAPS/mapcycle.cfg");
+			LoadMap(average_maps[XORRandom(average_maps.length)]);
+			//LoadMapCycle("MAPS/mapcycle.cfg");
 			print(">Loading medium map");
 		}
 		else
 		{
-			LoadMapCycle("MAPS/mapcyclelarger.cfg");
+			LoadMap(large_maps[XORRandom(large_maps.length)]);
+			//LoadMapCycle("MAPS/mapcyclelarger.cfg");
 			print(">Loading larger map");
 		}
 	}
@@ -971,7 +1037,7 @@ shared class TDMCore : RulesCore
 
 void SetCorrectMapType()
 {
-	if (getPlayersCount() <= 4)
+	if (getPlayersCount() <= 5)
 	{
 		LoadMapCycle("MAPS/mapcyclesmaller.cfg");
 		print(">Loading smaller map");
