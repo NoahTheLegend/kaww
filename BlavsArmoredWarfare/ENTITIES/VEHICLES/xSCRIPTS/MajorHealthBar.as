@@ -105,10 +105,10 @@ void onRender(CSprite@ this)
 		}
 	}
 
-	GUI::SetFont("menu");
-	GUI::DrawShadowedText("RPM: " + Maths::Round(blob.get_f32("engine_RPM")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 65), SColor(0xffffffff));
-	GUI::DrawShadowedText("RPM TARGET: " + Maths::Round(blob.get_f32("engine_RPMtarget")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 80), SColor(0xffffffff));
-	GUI::DrawShadowedText("ENGINE THROTTLE: " + Maths::Round(blob.get_f32("engine_throttle")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 95), SColor(0xffffffff));
+	//GUI::SetFont("menu");
+	//GUI::DrawShadowedText("RPM: " + Maths::Round(blob.get_f32("engine_RPM")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 65), SColor(0xffffffff));
+	//GUI::DrawShadowedText("RPM TARGET: " + Maths::Round(blob.get_f32("engine_RPMtarget")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 80), SColor(0xffffffff));
+	//GUI::DrawShadowedText("ENGINE THROTTLE: " + Maths::Round(blob.get_f32("engine_throttle")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 95), SColor(0xffffffff));
 
 	//GUI::DrawLine2D(Vec2f(pos2d.x, pos2d.y + y - 1 + 165), Vec2f(pos2d.x + ((blob.get_f32("engine_throttle")-0.35) * 1000), pos2d.y + y - 1 + 165), SColor(0xffffffff));
 	//GUI::DrawLine2D(Vec2f(pos2d.x - dim.x, pos2d.y + y - 1 + 169), Vec2f(pos2d.x - dim.x + 500, pos2d.y + y - 1 + 169), SColor(0xffcdb692));

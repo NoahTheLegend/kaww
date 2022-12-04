@@ -1169,6 +1169,24 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
 void onTick(CRules@ this)
 {
+	if (getGameTime() == 1)
+	{
+		if (this.get_s16("blueTickets") == 0 && this.get_s16("redTickets") == 0)
+		{
+			this.set_s16("blueTickets", 10);
+			this.set_s16("redTickets", 10);
+			this.Sync("blueTickets", true);
+			this.Sync("redTickets", true);
+		}
+		else if (this.get_s16("blueTickets") > 50 && this.get_s16("redTickets") > 50
+		&& getMap() !is null && getMap().tilemapwidth <= 300)
+		{
+			this.set_s16("blueTickets", 50);
+			this.set_s16("redTickets", 50);
+			this.Sync("blueTickets", true);
+			this.Sync("redTickets", true);
+		}
+	}
 	//if (!this.hasTag("synced_siege"))
 	//{
 	//	CBlob@[] vehbuilders;
@@ -1204,14 +1222,14 @@ void onTick(CRules@ this)
 	}
 	if (getGameTime()%150==0) //every 5 seconds give a coin
 	{
-		if (this.get_s16("blueTickets") > 120) 
+		if (this.get_s16("blueTickets") > 125) 
 		{
-			this.set_s16("blueTickets", 120);
+			this.set_s16("blueTickets", 125);
 			this.Sync("blueTickets", true);
 		}
-		if (this.get_s16("redTickets") > 120)
+		if (this.get_s16("redTickets") > 125)
 		{
-			this.set_s16("redTickets", 120);
+			this.set_s16("redTickets", 125);
 			this.Sync("redTickets", true);
 		}
 		for (u16 i = 0; i < getPlayerCount(); i++)
