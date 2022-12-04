@@ -293,8 +293,10 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	if (this.get_f32("engine_RPMtarget") > this.get_f32("engine_RPM"))
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");
+	if (ap !is null && this.get_f32("engine_RPMtarget") > this.get_f32("engine_RPM"))
 	{
+		if (ap.getOccupied() is null) this.set_f32("engine_RPMtarget", 0); // turn engine off
 		f32 custom_add = this.get_f32("add_gas_intake");
 		u32 gas_intake = 230 + custom_add + XORRandom(70+custom_add/3.5f); // gas flow variance  (needs equation)
 		if (this.get_f32("engine_RPM") > 2000) {gas_intake += 100;}
@@ -337,7 +339,6 @@ void onTick(CBlob@ this)
 	}
 	else if (sprite !is null) sprite.ResetTransform();
 
-	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");
 	if (this.get_f32("engine_RPM") > 2000 || (ap !is null && ap.getOccupied() is null)) this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
 
 	this.set_f32("engine_RPM", Maths::Clamp(this.get_f32("engine_RPM"), 0.0f, 30000.0f));
