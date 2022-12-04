@@ -163,9 +163,9 @@ namespace ShotgunParams
 	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.9f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.075f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 2.9f; // airwalk (sprint)
-	const ::f32 JUMP_STAT_SPRINT 		= 0.87f; // jump (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.175f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 3.1f; // airwalk (sprint)
+	const ::f32 JUMP_STAT_SPRINT 		= 0.95f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 20.0f; // x shake (20)
 	const ::f32 RECOIL_Y 				= 80.0f; // y shake (45)
@@ -205,9 +205,9 @@ namespace RangerParams
 	const ::f32 WALK_STAT 				= 0.9f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.87f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.05f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 3.0f; // airwalk (sprint)
-	const ::f32 JUMP_STAT_SPRINT 		= 0.87f; // jump (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.15f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 3.1f; // airwalk (sprint)
+	const ::f32 JUMP_STAT_SPRINT 		= 0.95f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 0.0f; // x shake (20)
 	const ::f32 RECOIL_Y 				= 65.0f; // y shake (45)
@@ -247,8 +247,8 @@ namespace Mp5Params
 	const ::f32 WALK_STAT 				= 0.85f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.87f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.0f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 2.95f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.1f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 3.1f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.0f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 22.0f; // x shake (20)
@@ -289,8 +289,8 @@ namespace RevolverParams
 	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.87f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.1f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 3.15f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.2f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 3.25f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.0f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 4.0f; // x shake (20)
@@ -331,8 +331,8 @@ namespace SniperParams
 	const ::f32 WALK_STAT 				= 0.85f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 1.0f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 0.95f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 2.9f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.0f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 3.1f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.0f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 48.0f; // x shake (20)
