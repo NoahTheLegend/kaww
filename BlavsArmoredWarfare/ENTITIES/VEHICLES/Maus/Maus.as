@@ -9,12 +9,6 @@ void onInit(CBlob@ this)
 	this.Tag("deal_bunker_dmg");
 	this.Tag("reduce_upper_dmg");
 
-	if (XORRandom(5) == 0)
-	{
-		this.setInventoryName("Panzerkampfwagen VIII Maus 'Minnie Mouse'");
-		this.Tag("pink");
-	}
-
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;
@@ -62,16 +56,6 @@ void onInit(CBlob@ this)
 	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", "MausFrontLayer.png", 64, 8);
 	if (front !is null)
 	{
-		if (!this.hasTag("pink"))
-		{
-			front.SetFrameIndex(0);
-			sprite.SetFrameIndex(0);
-		}
-		else
-		{
-			front.SetFrameIndex(1);
-			sprite.SetFrameIndex(1);
-		}
 		front.SetRelativeZ(-0.88f);
 		front.SetOffset(Vec2f(6.0f, 5.0f));
 	}
@@ -105,6 +89,22 @@ void onInit(CBlob@ this)
 			}
 		}
 	}
+
+	this.addCommandID("sync_color");
+	sync_Color(this);
+}
+
+void sync_Color(CBlob@ this)
+{
+	if (isServer())
+	{
+		AttachmentPoint@ turret = this.getAttachments().getAttachmentPointByName("TURRET");
+		bool pink = (XORRandom(4) == 0 || this.hasTag("pink"));
+
+		CBitStream params;
+		params.write_bool(pink);
+		this.SendCommand(this.getCommandID("sync_color"), params);
+	}
 }
 
 void onTick(CBlob@ this)
@@ -126,7 +126,7 @@ void onTick(CBlob@ this)
 
 				turret.SetFacingLeft(this.isFacingLeft());
 			}
-		}	
+		}
 	}
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
@@ -217,6 +217,36 @@ void onTick(CBlob@ this)
 			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
 			soundmanager.setVelocity(this.getVelocity());
 			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+		}
+	}
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
+{
+	if (isClient() && cmd == this.getCommandID("sync_color"))
+	{
+		bool pink = params.read_bool();
+		if (pink)
+		{
+			this.setInventoryName("Panzerkampfwagen VIII Maus 'Minnie Mouse'");
+			this.Tag("pink");
+			CSprite@ sprite = this.getSprite();
+			if (sprite is null) return;
+
+			CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
+			if (front !is null)
+			{
+				if (!this.hasTag("pink"))
+				{
+					front.SetFrameIndex(0);
+					sprite.SetFrameIndex(0);
+				}
+				else
+				{
+					front.SetFrameIndex(1);
+					sprite.SetFrameIndex(1);
+				}
+			}
 		}
 	}
 }
