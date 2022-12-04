@@ -107,7 +107,7 @@ void onRender(CSprite@ this)
 
 	GUI::SetFont("menu");
 	
-	GUI::DrawShadowedText("WP", pos2d + Vec2f(this.isFacingLeft() ? 128.0f : -128.0f, 0).RotateBy(blob.getAngleDegrees()), SColor(0xffffffff));
+	//GUI::DrawShadowedText("WP", pos2d + Vec2f(this.isFacingLeft() ? 128.0f : -128.0f, 0).RotateBy(blob.getAngleDegrees()), SColor(0xffffffff));
 	//GUI::DrawShadowedText("RPM: " + Maths::Round(blob.get_f32("engine_RPM")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 65), SColor(0xffffffff));
 	//GUI::DrawShadowedText("RPM TARGET: " + Maths::Round(blob.get_f32("engine_RPMtarget")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 80), SColor(0xffffffff));
 	//GUI::DrawShadowedText("ENGINE THROTTLE: " + Maths::Round(blob.get_f32("engine_throttle")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 95), SColor(0xffffffff));
