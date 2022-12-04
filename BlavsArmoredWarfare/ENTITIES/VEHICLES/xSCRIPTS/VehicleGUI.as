@@ -24,6 +24,16 @@ void onRender(CSprite@ this)
 		return;
 	}
 
+	AttachmentPoint@ driver = blob.getAttachments().getAttachmentPointByName("DRIVER");
+	if (getGameTime() <= 60*30 && driver !is null && driver.getOccupied() !is null)
+	{
+		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, -40);
+		const f32 y = blob.getHeight() * 7.8f;
+		Vec2f dim = Vec2f(115, 15); //95
+		GUI::SetFont("menu");
+		GUI::DrawShadowedText("Engines starting in: "+(60-(getGameTime()/30))+" seconds." , Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 55), SColor(0xffffffff));
+	}
+
 	AttachmentPoint@ gunner = blob.getAttachments().getAttachmentPointByName("GUNNER");
 	if (gunner !is null	&& gunner.getOccupied() is localBlob)
 	{
