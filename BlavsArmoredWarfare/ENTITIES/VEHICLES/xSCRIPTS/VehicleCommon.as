@@ -605,8 +605,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						moveForce *= Maths::Clamp(this.get_f32("engine_RPM"), 0, engine_topspeed) / 4500;
 
-						
-
 						if (this.isOnGround() || this.wasOnGround())
 						{
 							this.AddForce(Vec2f(0.0f, this.getMass()*-0.24f)); // this is nice
@@ -631,13 +629,17 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								}	
 								else
 								{
-									this.add_f32("wheelsTurnAmount", -1 * (this.get_f32("engine_RPM")- 1900)/30000);
+									this.add_f32("wheelsTurnAmount", -1 * (this.get_f32("engine_RPM") - 1900)/30000);
 								}
 							}
 
 							if (ap.isKeyJustPressed(key_left) && this.hasTag("tank"))
 							{
-								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
+								if (this.get_u32("next_engine_turnon") <= getGameTime())
+								{
+									this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
+									this.set_u32("next_engine_turnon", getGameTime()+20);
+								}
 
 								if (isClient())
 								{	
@@ -704,7 +706,11 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (ap.isKeyJustPressed(key_right) && this.hasTag("tank"))
 							{
-								this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
+								if (this.get_u32("next_engine_turnon") <= getGameTime())
+								{
+									this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
+									this.set_u32("next_engine_turnon", getGameTime()+20);
+								}
 
 								if (isClient())
 								{	
