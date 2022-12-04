@@ -186,7 +186,12 @@ void onRender(CRules@ this)
 		{
 			if (spawn == 254)
 			{
-				GUI::DrawText(getTranslatedString("In Queue to Respawn...") , Vec2f(getScreenWidth() / 2 - 70, getScreenHeight() / 3 + Maths::Sin(getGameTime() / 3.0f) * 5.0f), SColor(255, 255, 255, 55));
+				if ((p.getTeamNum() == 0 && this.get_s16("blueTickets") == 0)
+				|| (p.getTeamNum() == 1 && this.get_s16("redTickets") == 0))
+				{
+					GUI::DrawText(getTranslatedString("Your team ran out of respawns! Please, be patient and wait till game ends.") , Vec2f(getScreenWidth() / 2 - 265, getScreenHeight() / 4 + Maths::Sin(getGameTime() / 3.0f) * 5.0f), SColor(255, 255, 255, 55));
+				}
+				else GUI::DrawText(getTranslatedString("In Queue to Respawn...") , Vec2f(getScreenWidth() / 2 - 70, getScreenHeight() / 3 + Maths::Sin(getGameTime() / 3.0f) * 5.0f), SColor(255, 255, 255, 55));
 			}
 			else if (spawn == 253)
 			{
