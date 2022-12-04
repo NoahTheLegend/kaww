@@ -26,7 +26,6 @@ void onInit(CBlob@ this)
 	int blobHash = blobName.getHash();
 	switch(blobHash)
 	{
-		case _maus: // maus
 		case _mausturret: // MAUS Shell cannon
 		{
 			armorRating = 5;
@@ -34,6 +33,7 @@ void onInit(CBlob@ this)
 		}
 		break;
 
+		case _maus: // maus
 		case _t10: // T10
 		case _t10turret: // T10 Shell cannon
 		armorRating = 4; break;

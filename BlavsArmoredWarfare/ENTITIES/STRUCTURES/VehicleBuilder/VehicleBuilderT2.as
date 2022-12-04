@@ -32,31 +32,31 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nUses 14.5mm.");
+		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nPLUSES: Very fast, medium firerate\nMINUSES: Very fragile armor, bad elevation angles\n\nUses 14.5mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nUses 14.5mm.");
+		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nPLUSES: Fast, good firerate\nMINUSES: Weak armor, bad elevation angles\n\nUses 14.5mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Bradley M2", "$bradley$", "bradley", "Light but armed with medium cannon APC.\nAlso has a javelin on the turret.\n\nUses 105mm and optionally HEAT warheads.");
+		ShopItem@ s = addShopItem(this, "Build a Bradley M2", "$bradley$", "bradley", "Light but armed with medium cannon APC.\nAlso has a javelin on the turret.\n\nPLUSES: Excellent engine power, fast, good elevation angles\nMINUSES: Weak armor\n\nUses 105mm and optionally HEAT warheads.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 45);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nUses 105mm & 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nPLUSES: Good engine power, fast, good elevation angles\nMINUSES: Medium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nUses 105mm & 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nPLUSES: Thick armor, big cannon damage.\nMINUSES: Slow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses 105mm & 7.62mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nUses 105mm");
+		ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nPLUSES: Thick armor, best turret armor, big cannon damage, good elevation angles\nMINUSES: Very slow, slow fire rate, very fragile lower armor plate (weakpoint)\n\nUses 105mm");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 115);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.");
+		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.\nAllows to switch class.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
