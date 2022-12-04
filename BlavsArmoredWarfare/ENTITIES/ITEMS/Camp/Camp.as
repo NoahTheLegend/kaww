@@ -12,22 +12,23 @@ void onTick(CBlob@ this)
 	if (this.get_s16("spawn_timer") <= 0)
 	{
 		CBlob@[] crateblobs;
-		getBlobsByName("lootcrate", @crateblobs);
+		getBlobsByTag(""+this.getNetworkID(), @crateblobs);
 
-		if (crateblobs.length <= 16)
+		if (crateblobs.length <= 1)
 		{
-			if (!isServer())
-				return;
-
-			CBlob@ b = server_CreateBlob("lootcrate",-1,this.getPosition() + Vec2f(XORRandom(24) - 12, XORRandom(8) - 8));
-
-			if (b !is null)
+			if (isServer())
 			{
-				b.setVelocity(Vec2f(XORRandom(3)-1.0f, -1.5f));
-			}
+				CBlob@ b = server_CreateBlob("lootcrate",-1,this.getPosition() + Vec2f(XORRandom(24) - 12, XORRandom(8) - 8));
 
-			this.set_s16("spawn_timer", 60); // one minute,    or 30 sec with higher pop
-			this.Sync("spawn_timer", true);
+				if (b !is null)
+				{
+					b.Tag(""+this.getNetworkID());
+					b.setVelocity(Vec2f(XORRandom(3)-1.0f, -1.5f));
+				}
+
+				this.set_s16("spawn_timer", 50); // one minute,    or 30 sec with higher pop
+				this.Sync("spawn_timer", true);
+			}
 		}
 	}
 	else
