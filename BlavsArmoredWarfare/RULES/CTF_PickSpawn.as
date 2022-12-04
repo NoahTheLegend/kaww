@@ -20,14 +20,12 @@ void BuildRespawnMenu(CRules@ this, CPlayer@ player)
 	const u16 localID = getLocalPlayer().getNetworkID();
 
     CBlob@ oldrespawn = getBlobByNetworkID(LAST_PICK);
-    if(oldrespawn !is null) //don't use last pick if it's under raid
+    if(oldrespawn !is null ) //don't use last pick if it's under raid
     {
-        if(isUnderRaid(oldrespawn))
+        if(isUnderRaid(oldrespawn) || player.getTeamNum() != oldrespawn.getTeamNum())
         {
             LAST_PICK = 0;
-
         }
-
     }
 
 	if (teamNum != this.getSpectatorTeamNum())
