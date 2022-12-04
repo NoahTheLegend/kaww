@@ -21,8 +21,6 @@ void onInit(CBlob@ this)
 	this.addCommandID("sync_reload_to_server");
 	this.Tag("3x2");
 
-	
-
 	this.set_s32("my_chargetime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
 

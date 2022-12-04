@@ -335,9 +335,9 @@ namespace SniperParams
 	const ::f32 AIRWALK_STAT_SPRINT 	= 2.9f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.0f; // jump (sprint)
 	// SHAKE
-	const ::f32 RECOIL_X 				= 14.0f; // x shake (20)
-	const ::f32 RECOIL_Y 				= 80.0f; // y shake (45)
-	const ::f32 RECOIL_LENGTH 			= 600.0f; // how long to recoil (?)
+	const ::f32 RECOIL_X 				= 48.0f; // x shake (20)
+	const ::f32 RECOIL_Y 				= 140.0f; // y shake (45)
+	const ::f32 RECOIL_LENGTH 			= 750.0f; // how long to recoil (?)
 	// RECOIL
 	const ::f32 RECOIL_FORCE 			= 0.03f; // amount to push player
 	const ::u8 RECOIL_CURSOR 			= 13; // amount to raise mouse pos
@@ -347,8 +347,8 @@ namespace SniperParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 80; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 50; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_CAP 			= 30; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 30; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
