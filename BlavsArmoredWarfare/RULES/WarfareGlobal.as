@@ -22,17 +22,20 @@ const string projDamageString = "proj_damage";
 const string projExplosionRadiusString = "proj_ex_radius";
 const string projExplosionDamageString = "proj_ex_damage";
 
-s8 getFinalRating( s8 armorRating, s8 penRating, bool hardShelled, CBlob@ blob = null, Vec2f hitPos = Vec2f_zero, bool &out isHitUnderside = false, bool &out isHitBackside = false )
+s8 getFinalRating(CBlob@ this, s8 armorRating, s8 penRating, bool hardShelled, CBlob@ blob = null, Vec2f hitPos = Vec2f_zero, bool &out isHitUnderside = false, bool &out isHitBackside = false )
 {
 	s8 finalRating = armorRating;
 
 	if (blob != null)
 	{
 		Vec2f blobPos = blob.getPosition();
+		f32 bd = blob.getAngleDegrees();
 		float backsideOffset = blob.get_f32(backsideOffsetString);
 		if (backsideOffset > 0)
 		{
-			isHitUnderside = hitPos.y > blobPos.y + 4.0f;
+			blobPos = blobPos.RotateBy(bd);
+			hitPos = hitPos.RotateBy(bd);
+			isHitUnderside = hitPos.y > (blobPos + Vec2f(0, 4.0f).RotateBy(bd)).y;
 			isHitBackside = blob.isFacingLeft() ? hitPos.x > (blobPos.x + backsideOffset) : hitPos.x < (blobPos.x - backsideOffset);
 		}
 		

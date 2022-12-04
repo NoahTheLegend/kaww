@@ -66,7 +66,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	bool hardShelled = this.get_bool(hardShelledString);
 
 	float damageNegation = 0.0f;
-	s8 finalRating = getFinalRating(armorRating, penRating, true, this, hitterBlob.getPosition(), false, false);
+	s8 finalRating = getFinalRating(this, armorRating, penRating, true, this, hitterBlob.getPosition(), false, false);
 	switch (finalRating)
 	{
 		// negative armor, trickles up
