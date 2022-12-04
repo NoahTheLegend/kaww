@@ -99,7 +99,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 300);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 400);
 
 		s.customButton = true;
 
