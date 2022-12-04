@@ -78,11 +78,12 @@ void onInit(CBlob@ this)
 		f32 angle = low_angle;
 
 		Animation@ anim = arm.addAnimation("default", 0, false);
-		if (!this.hasTag("pink"))
+		if (anim !is null)
+		{
 			anim.AddFrame(10);
-		else
 			anim.AddFrame(11);
-
+		}
+		
 		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
 		if (arm !is null)
 		{
@@ -136,6 +137,22 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 void onTick(CBlob@ this)
 {
 	CSprite@ sprite = this.getSprite();
+	if (this.getTickSinceCreated() == 1)
+	{
+		if (sprite !is null)
+		{
+			if (!this.hasTag("pink"))
+				sprite.SetFrameIndex(2);
+			else 
+				sprite.SetFrameIndex(1);
+
+			CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+			if (arm !is null)
+			{
+				arm.SetFrameIndex(this.hasTag("pink") ? 1 : 0);
+			}
+		}
+	}
 	if (this.isFacingLeft() && !this.hasTag("facing left"))
 	{
 		this.getShape().SetOffset(Vec2f(8.0f, -15.0f));
@@ -149,13 +166,6 @@ void onTick(CBlob@ this)
 		this.Tag("facing right");
 	}
 
-	if (sprite !is null)
-	{
-		if (!this.hasTag("pink"))
-			sprite.SetFrameIndex(2);
-		else 
-			sprite.SetFrameIndex(1);
-	}
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		VehicleInfo@ v;
