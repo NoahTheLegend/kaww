@@ -208,7 +208,7 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (getGameTime() < 60*30) return; // turn engines off!
+	if (!(isClient() && isServer()) && getGameTime() < 60*30) return; // turn engines off!
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{

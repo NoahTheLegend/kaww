@@ -790,7 +790,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						{
 							f32 rotvel = 0;
 
-							this.AddTorque(this.isFacingLeft() ? 420.0f : -420.0f);
+							this.AddTorque(this.isFacingLeft() ? 275.0f : -275.0f);
 
 							this.setAngleDegrees(this.getAngleDegrees() + rotvel);
 						}
@@ -805,7 +805,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						if (angle > 330 || angle < 30)
 						{
 							f32 wallMultiplier = (this.isOnWall() && (angle > 350 || angle < 10)) ? 4.0f : 1.0f;
-							f32 torque = 450.0f * wallMultiplier;
+							f32 torque = 420.0f * wallMultiplier;
 							if (down)
 							{
 								f32 mod = 1.0f;
@@ -822,9 +822,9 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						{
 							f32 angle = this.getAngleDegrees();
 							if (!left && !right)
-								this.AddTorque(angle < 180 ? -900 : 900);
+								this.AddTorque(angle < 180 ? -1250 : 1250);
 							else
-								this.AddTorque(((faceleft && left) || (!faceleft && right)) ? 500 : -500);
+								this.AddTorque(((faceleft && left) || (!faceleft && right)) ? 1500 : -1500);
 							this.AddForce(Vec2f(0, -1800));
 						}
 					}
