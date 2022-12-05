@@ -108,12 +108,12 @@ void onRender(CSprite@ this)
 	GUI::SetFont("menu");
 	
 	//GUI::DrawShadowedText("WP", pos2d + Vec2f(this.isFacingLeft() ? 128.0f : -128.0f, 0).RotateBy(blob.getAngleDegrees()), SColor(0xffffffff));
-	if (blob.getName() == "t10" && getLocalPlayer() !is null && getLocalPlayer().getUsername() == "NoahTheLegend" && getLocalPlayer().isMyPlayer())
-	{
-	GUI::DrawShadowedText("RPM: " + Maths::Round(blob.get_f32("engine_RPM")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 65), SColor(0xffffffff));
-	GUI::DrawShadowedText("RPM TARGET: " + Maths::Round(blob.get_f32("engine_RPMtarget")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 80), SColor(0xffffffff));
-	GUI::DrawShadowedText("ENGINE THROTTLE: " + Maths::Round(blob.get_f32("engine_throttle")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 95), SColor(0xffffffff));
-	}
+	//if (blob.getName() == "t10" && getLocalPlayer() !is null && getLocalPlayer().getUsername() == "NoahTheLegend" && getLocalPlayer().isMyPlayer())
+	//{
+	//GUI::DrawShadowedText("RPM: " + Maths::Round(blob.get_f32("engine_RPM")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 65), SColor(0xffffffff));
+	//GUI::DrawShadowedText("RPM TARGET: " + Maths::Round(blob.get_f32("engine_RPMtarget")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 80), SColor(0xffffffff));
+	//GUI::DrawShadowedText("ENGINE THROTTLE: " + Maths::Round(blob.get_f32("engine_throttle")), Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 95), SColor(0xffffffff));
+	//}
 	//GUI::DrawLine2D(Vec2f(pos2d.x, pos2d.y + y - 1 + 165), Vec2f(pos2d.x + ((blob.get_f32("engine_throttle")-0.35) * 1000), pos2d.y + y - 1 + 165), SColor(0xffffffff));
 	//GUI::DrawLine2D(Vec2f(pos2d.x - dim.x, pos2d.y + y - 1 + 169), Vec2f(pos2d.x - dim.x + 500, pos2d.y + y - 1 + 169), SColor(0xffcdb692));
 }

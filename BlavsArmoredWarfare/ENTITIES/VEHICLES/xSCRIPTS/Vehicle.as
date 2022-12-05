@@ -341,9 +341,17 @@ void onTick(CBlob@ this)
 	}
 	else if (sprite !is null) sprite.ResetTransform();
 
-	if (this.get_f32("engine_RPM") > 2000 || (ap !is null && ap.getOccupied() is null)) this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
+	if (this.get_f32("engine_RPM") > 2000 || (ap !is null && ap.getOccupied() is null))
+	{
+		if (this.get_f32("engine_RPM") <= 150)
+			this.set_f32("engine_RPM", 0);
+		else
+			this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
+	}
 
 	this.set_f32("engine_RPM", Maths::Clamp(this.get_f32("engine_RPM"), 0.0f, 30000.0f));
+	if (this.getName() == "t10" && getGameTime() % 30 == 0 && (isServer() || (getLocalPlayer() !is null && getLocalPlayer().getUsername() == "NoahTheLegend" && getLocalPlayer().isMyPlayer())))
+		printf(""+this.get_f32("engine_RPM"));
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
