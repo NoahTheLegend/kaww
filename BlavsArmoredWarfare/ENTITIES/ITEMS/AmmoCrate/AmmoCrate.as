@@ -70,6 +70,11 @@ void onInit(CBlob@ this)
 		}
 		if (XORRandom(3) == 0)
 		{
+			CBlob@ b = server_CreateBlob("mat_14mmround", -1, this.getPosition());
+			this.server_PutInInventory(b);
+		}
+		if (XORRandom(3) == 0)
+		{
 			CBlob@ b = server_CreateBlob("mat_bolts", -1, this.getPosition());
 			this.server_PutInInventory(b);
 		}

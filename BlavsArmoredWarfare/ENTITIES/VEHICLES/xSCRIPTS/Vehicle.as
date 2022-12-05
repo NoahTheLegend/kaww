@@ -48,12 +48,12 @@ void onInit(CBlob@ this)
 		case _btrturret: // big APC cannon
 		case _bradley:
 		case _bradleyturret:
+		case _pszh4: // smol APC
+		case _pszh4turret: // smol APC cannon
 		case _heavygun: // MG
 		armorRating = 2; break;
 
 		case _uh1: // heli
-		case _pszh4: // smol APC
-		case _pszh4turret: // smol APC cannon
 		case _techtruck: // MG truck
 		case _gun: // light MG
 		armorRating = 1; break;
@@ -110,16 +110,16 @@ void onInit(CBlob@ this)
 		}
 		case _pszh4turret: // smol APC cannon
 		{
-			weaponRating = -1;
-			linear_length = 34.0f;
-			scale_damage = 0.75f;
+			weaponRating = 1;
+			linear_length = 4.0f;
+			scale_damage = 0.85f;
 			break;
 		}
 		case _btrturret: // big APC cannon
 		{
-			weaponRating = -1;
+			weaponRating = 1;
 			linear_length = 4.0f;
-			scale_damage = 0.75f;
+			scale_damage = 0.85f;
 			break;
 		}
 		case _bradleyturret:
@@ -537,7 +537,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {
 	if (customData == Hitters::fire)
 	{
-		return damage;
+		return damage*2;
 	}
 	
 	Vec2f thisPos = this.getPosition();
@@ -583,19 +583,16 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		case -2:
 		{
 			if (is_explosive && damage != 0) damage += 1.5f; // suffer bonus base damage (you just got your entire vehicle burned)
-			damage *= 2.0f;
+			damage *= 1.5f;
 		}
 		case -1:
 		{
-			damage *= 1.5f;
+			damage *= 1.25f;
 		}
 		break;
 
 		// positive armor, trickles down
 		case 5:
-		{
-			damageNegation += 0.3f; // reduction to final damage, extremely tanky
-		}
 		case 4:
 		{
 			damage *= 0.5f;
@@ -616,6 +613,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		break;
 	}
 
+	//printf("finalrating " + finalRating);
 	//print ("finalDamage: "+damage);
 
 	// if damage is not insignificant, prevent repairs for a time
