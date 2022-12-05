@@ -539,6 +539,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage*2;
 	}
+	else if (hitterBlob.getName() == "grenade") return damage * 2.5;
 	
 	Vec2f thisPos = this.getPosition();
 	Vec2f hitterBlobPos = hitterBlob.getPosition();
