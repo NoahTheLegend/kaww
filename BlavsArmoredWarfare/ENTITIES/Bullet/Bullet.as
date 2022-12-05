@@ -198,7 +198,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 	{
 		if (blob.hasTag("vehicle"))
 		{
-			if (isServer()) this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 0.75f : 0.15f, Hitters::builder);
+			if (isServer()) this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 0.75f : 0.25f, Hitters::builder);
 		}
 		// play sound
 		if (blob.hasTag("flesh"))

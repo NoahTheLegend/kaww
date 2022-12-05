@@ -647,6 +647,7 @@ shared class TDMCore : RulesCore
 		"HolyBombTDM.png",
 		"TesfoMineTDM.png",
 		"FarmOldTDM.png",
+		"Bridge.png",
 		"Rockslide.png",
 		"KingslyCastleTDM.png"
 	};
@@ -655,6 +656,7 @@ shared class TDMCore : RulesCore
 		"Touge.png",
 		"Mortar.png",
 		"Selfish_goldy.png",
+		"Bridge.png",
 		"Syria.png",
 		"Factory.png",
 		"Valley.png",
