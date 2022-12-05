@@ -613,9 +613,102 @@ shared class TDMCore : RulesCore
 		ChangeTeamPlayerCount(p.team, 1);
 	}
 
+	string[] small_maps = {
+		"DesertedTDM.png",
+		"AztecTDM.png",
+		"LandscapingTDM.png",
+		"SmallSoldiercombatTDM.png",
+		"TheSmallCityTDM.png",
+		"BridgeTDM.png",
+		"TrainTDM.png",
+		"FarmTDM.png",
+		"FarmOldTDM.png",
+		"DesertedTDM.png",
+		"DesertedFlagTDM.png",
+		"TesfoMineTDM.png",
+		"TomeTDM.png"
+	};
+	string[] average_maps = {
+		"SmallDesert.png",
+		"SmallTouge.png",
+		"SmallMortar.png",
+		"SmallFactory.png",
+		"SmallClassic.png",
+		"SmallMoats.png",
+		"TheCityTDM.png",
+		"TheSmallCityTDM.png",
+		"SoldiercombatTDM.png",
+		"Worldwar.png",
+		"DesertedTDM.png",
+		"LandscapingTDM.png",
+		"FarmTDM.png",
+		"BridgeTDM.png",
+		"TrainTDM.png",
+		"HolyBombTDM.png",
+		"TesfoMineTDM.png",
+		"FarmOldTDM.png",
+		"Rockslide.png",
+		"KingslyCastleTDM.png"
+	};
+	string[] large_maps = {
+		"Desert.png",
+		"Touge.png",
+		"Mortar.png",
+		"Selfish_goldy.png",
+		"Syria.png",
+		"Factory.png",
+		"Valley.png",
+		"Foothills.png",
+		"Worldwar.png",
+		"Classic.png",
+		"Moats.png",
+		"TrainTDM.png",
+		"TheCityTDM.png",
+		"SiegeBeach.png",
+		"SoldiercombatTDM.png",
+		"KnollTDM.png",
+		"TriPointTDM.png",
+		"Stratego.png",
+		"Rockslide.png",
+		"KingslyCastleTDM.png",
+		"Cavern.png",
+		"Avantgarde.png"
+	};
+	
+	string getRandomMap()// LOADING MAPCYCLE MAKES THE CLOSER MAPS TO BEGINNING MORE FREQUENT THAN OTHER!
+	{
+		if (getRules() is null) return "";
+		if (getPlayersCount() <= 5)
+		{
+			u16 rand = XORRandom(small_maps.length);
+			string map = small_maps[rand];
+			while (map == rules.get_string("last_map")) map = small_maps[rand];
+	
+			return map;
+		}
+		else if (getPlayersCount() <= 11)
+		{
+			u16 rand = XORRandom(average_maps.length);
+			string map = average_maps[rand];
+			while (map == rules.get_string("last_map")) map = average_maps[rand];
+	
+			return map;
+		}
+		else
+		{
+			u16 rand = XORRandom(large_maps.length);
+			string map = large_maps[rand];
+			while (map == rules.get_string("last_map")) map = large_maps[rand];
+	
+			return map;
+		}
+	}
+
 	void onPlayerDie(CPlayer@ victim, CPlayer@ killer, u8 customData)
     {
         if (!rules.isMatchRunning() && !all_death_counts_as_kill) return;
+
+		rules.set_string("next_random_map", getRandomMap());
 
         if (victim !is null)
         {
@@ -948,89 +1041,25 @@ shared class TDMCore : RulesCore
 		}
 	}
 
-	string[] small_maps = {
-		"DesertedTDM.png",
-		"AztecTDM.png",
-		"LandscapingTDM.png",
-		"SmallSoldiercombatTDM.png",
-		"TheSmallCityTDM.png",
-		"BridgeTDM.png",
-		"TrainTDM.png",
-		"FarmTDM.png",
-		"FarmOldTDM.png",
-		"DesertedTDM.png",
-		"DesertedFlagTDM.png",
-		"TesfoMineTDM.png",
-		"TomeTDM.png"
-	};
-
-	string[] average_maps = {
-		"SmallDesert.png",
-		"SmallTouge.png",
-		"SmallMortar.png",
-		"SmallFactory.png",
-		"SmallClassic.png",
-		"SmallMoats.png",
-		"TheCityTDM.png",
-		"TheSmallCityTDM.png",
-		"SoldiercombatTDM.png",
-		"Worldwar.png",
-		"DesertedTDM.png",
-		"LandscapingTDM.png",
-		"FarmTDM.png",
-		"BridgeTDM.png",
-		"TrainTDM.png",
-		"HolyBombTDM.png",
-		"TesfoMineTDM.png",
-		"FarmOldTDM.png",
-		"Rockslide.png",
-		"KingslyCastleTDM.png"
-	};
-
-	string[] large_maps = {
-		"Desert.png",
-		"Touge.png",
-		"Mortar.png",
-		"Selfish_goldy.png",
-		"Syria.png",
-		"Factory.png",
-		"Valley.png",
-		"Foothills.png",
-		"Worldwar.png",
-		"Classic.png",
-		"Moats.png",
-		"TrainTDM.png",
-		"TheCityTDM.png",
-		"SiegeBeach.png",
-		"SoldiercombatTDM.png",
-		"KnollTDM.png",
-		"TriPointTDM.png",
-		"Stratego.png",
-		"Rockslide.png",
-		"KingslyCastleTDM.png",
-		"Cavern.png",
-		"Avantgarde.png"
-	};
-
 	void SetCorrectMapTypeShared() // LOADING MAPCYCLE MAKES THE CLOSER MAPS TO BEGINNING MORE FREQUENT THAN OTHER!
 	{
 		if (getPlayersCount() <= 5)
 		{
 			LoadMap(small_maps[XORRandom(small_maps.length)]);
 			//LoadMapCycle("MAPS/mapcyclesmaller.cfg");
-			print(">Loading smaller map");
+			print(">Loading smaller map s");
 		}
 		else if (getPlayersCount() <= 11)
 		{
 			LoadMap(average_maps[XORRandom(average_maps.length)]);
 			//LoadMapCycle("MAPS/mapcycle.cfg");
-			print(">Loading medium map");
+			print(">Loading medium map s");
 		}
 		else
 		{
 			LoadMap(large_maps[XORRandom(large_maps.length)]);
 			//LoadMapCycle("MAPS/mapcyclelarger.cfg");
-			print(">Loading larger map");
+			print(">Loading larger map s");
 		}
 	}
 };
@@ -1071,7 +1100,16 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 //pass stuff to the core from each of the hooks
 void Reset(CRules@ this)
 {
-	SetCorrectMapType(); // has a one map delay on adjusting to player population
+	if (this.get_string("next_random_map") == "")
+		SetCorrectMapType(); // has a one map delay on adjusting to player population
+	else
+	{
+		string map = this.get_string("next_random_map");
+		this.set_string("next_random_map", "");
+		LoadMap(map);
+	}
+	
+	if (getMap() !is null) this.set_string("last_map", getMap().getMapName());
 
 	this.set_u8("siege", 255);
 

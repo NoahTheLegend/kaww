@@ -97,6 +97,16 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 			AddBot("Henry");
 			return true;
 		}
+		else if (text_in == "!teamwon blue")
+		{
+			this.SetTeamWon(0);
+			this.SetCurrentState(GAME_OVER);
+		}
+		else if (text_in == "!teamwon red")
+		{
+			this.SetTeamWon(1);
+			this.SetCurrentState(GAME_OVER);
+		}
 		else if (text_in == "!debug")
 		{
 			CBlob@[] all;
