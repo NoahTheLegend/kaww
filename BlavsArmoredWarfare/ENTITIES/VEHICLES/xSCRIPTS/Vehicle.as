@@ -350,8 +350,8 @@ void onTick(CBlob@ this)
 	}
 
 	this.set_f32("engine_RPM", Maths::Clamp(this.get_f32("engine_RPM"), 0.0f, 30000.0f));
-	if (this.getName() == "t10" && getGameTime() % 30 == 0 && (isServer() || (getLocalPlayer() !is null && getLocalPlayer().getUsername() == "NoahTheLegend" && getLocalPlayer().isMyPlayer())))
-		printf(""+this.get_f32("engine_RPM"));
+	//if (this.getName() == "t10" && getGameTime() % 30 == 0 && (isServer() || (getLocalPlayer() !is null && getLocalPlayer().getUsername() == "NoahTheLegend" && getLocalPlayer().isMyPlayer())))
+	//	printf(""+this.get_f32("engine_RPM")); // crashing server?
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
