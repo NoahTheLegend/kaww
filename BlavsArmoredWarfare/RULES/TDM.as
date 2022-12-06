@@ -684,7 +684,7 @@ shared class TDMCore : RulesCore
 		{
 			u16 rand = XORRandom(small_maps.length);
 			string map = small_maps[rand];
-			while (map == rules.get_string("last_map")) map = small_maps[rand];
+			while (map == rules.get_string("last_map")) map = small_maps[XORRandom(small_maps.length)];
 	
 			return map;
 		}
@@ -692,7 +692,7 @@ shared class TDMCore : RulesCore
 		{
 			u16 rand = XORRandom(average_maps.length);
 			string map = average_maps[rand];
-			while (map == rules.get_string("last_map")) map = average_maps[rand];
+			while (map == rules.get_string("last_map")) map = average_maps[XORRandom(average_maps.length)];
 	
 			return map;
 		}
@@ -700,7 +700,7 @@ shared class TDMCore : RulesCore
 		{
 			u16 rand = XORRandom(large_maps.length);
 			string map = large_maps[rand];
-			while (map == rules.get_string("last_map")) map = large_maps[rand];
+			while (map == rules.get_string("last_map")) map = large_maps[XORRandom(large_maps.length)];
 	
 			return map;
 		}
