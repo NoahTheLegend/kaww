@@ -266,7 +266,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		// hit helmet
 		if (blob.get_string("equipment_head") == "helmet")
 		{
-			dmg *= 0.6;
+			dmg *= 0.45;
 
 			if (XORRandom(100) < 25)
 			{
