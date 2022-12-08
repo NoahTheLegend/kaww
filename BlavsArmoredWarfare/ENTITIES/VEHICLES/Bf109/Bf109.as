@@ -28,7 +28,6 @@ void onInit(CBlob@ this)
 {
 	this.set_f32("velocity", 0.0f);
 	
-	this.set_string("custom_explosion_sound", "bigbomb_explosion.ogg");
 	this.set_bool("map_damage_raycast", true);
 	this.Tag("map_damage_dirt");
 	this.addCommandID("shoot bullet");
@@ -108,6 +107,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onTick(CBlob@ this)
 {
+	if (this.hasTag("falling"))
+	{
+		if (isServer() && this.isOnGround()) this.server_Die();
+	}
 	if (getGameTime() == this.get_u32("next_shoot"))
 	{
 		this.Untag("no_more_shooting");
@@ -118,7 +121,7 @@ void onTick(CBlob@ this)
 	{
 		CBlob@ pilot = ap_pilot.getOccupied();
 		
-		if (pilot !is null && this.getHealth() > 2.00f)
+		if (pilot !is null)
 		{
 			Vec2f dir = pilot.getPosition() - pilot.getAimPos();
 			const f32 len = dir.Length();
@@ -133,6 +136,18 @@ void onTick(CBlob@ this)
 			bool pressed_w = ap_pilot.isKeyPressed(key_up);
 			bool pressed_s = ap_pilot.isKeyPressed(key_down);
 			bool pressed_lm = ap_pilot.isKeyPressed(key_action1);
+
+			//if (this.getTickSinceCreated() == 5*30)
+			//{
+			//	this.Tag('falling');
+			//	this.set_u32("falling_time", getGameTime());
+			//}
+			if (this.hasTag("falling"))
+			{
+				Vec2f old_pos = this.getOldPosition();
+				Vec2f pos = this.getPosition();
+				dir.RotateBy(this.isFacingLeft() ? -1.0f * (getGameTime()-this.get_u32("falling_time")) * 2 : 2 * (getGameTime()-this.get_u32("falling_time")));
+			}
 			
 			
 			if (!this.hasTag("no_more_shooting") && pilot.isMyPlayer() && pressed_lm && this.get_u32("next_shoot") < getGameTime())
@@ -176,9 +191,11 @@ void onTick(CBlob@ this)
 		this.set_f32("velocity", Maths::Max(0, this.get_f32("velocity") - 1.00f));
 	}
 
-	if (this.getHealth() <= this.getInitialHealth() * 0.25f)
+	if (this.hasTag("falling") || this.getHealth() <= this.getInitialHealth() * 0.33f)
 	{
-		if (getGameTime() % 3 == 0 && XORRandom(5) == 0)
+		u8 rand = 5;
+		if (this.hasTag("falling")) rand = 1;
+		if (XORRandom(rand) == 0)
 		{
 			const Vec2f pos = this.getPosition() + getRandomVelocity(0, this.getRadius()*0.4f, 360);
 			CParticle@ p = ParticleAnimated("BlackParticle.png", pos, Vec2f(0,0), -0.5f, 1.0f, 5.0f, 0.0f, false);
@@ -189,7 +206,7 @@ void onTick(CBlob@ this)
 
 			ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
 
-			if (isClient() && XORRandom(2) == 0)
+			if (isClient())
 			{
 				Vec2f pos = this.getPosition();
 				CMap@ map = getMap();
@@ -422,6 +439,12 @@ bool doesCollideWithBlob( CBlob@ this, CBlob@ blob )
 	return false;
 }
 
+void onCollision(CBlob@ this, CBlob@ blob, bool solid)
+{
+	if (isServer() && solid && this.hasTag("falling"))
+		this.server_Die();
+}
+
 void DoExplosion(CBlob@ this)
 {
 	if (this.hasTag("exploded")) return;
@@ -493,6 +516,14 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (this.hasTag("ignore damage")) return 0;
+	if (damage >= this.getHealth())
+	{
+		this.Tag("ignore damage");
+		this.Tag("falling");
+		this.set_u32("falling_time", getGameTime());
+		return 0;
+	}
 	if (hitterBlob.getName() == "missile_javelin")
 	{
 		return damage * 0.5f;
