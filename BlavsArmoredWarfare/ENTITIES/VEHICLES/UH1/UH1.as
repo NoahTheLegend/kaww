@@ -29,6 +29,8 @@ void onInit(CBlob@ this)
 
 	this.Tag("vehicle");
 	this.Tag("aerial");
+	this.Tag("has machinegun");
+	
 	this.set_bool("lastTurn", false);
 	this.set_bool("music", false);
 	this.set_bool("glide", false);
