@@ -98,7 +98,7 @@ void onInit(CBlob@ this)
 			turret.SetFacingLeft(facing_left);
 		}
 
-		CBlob@ bow = null;//server_CreateBlob("heavygun");	
+		CBlob@ bow = server_CreateBlob("heavygun");	
 
 		if (bow !is null)
 		{
