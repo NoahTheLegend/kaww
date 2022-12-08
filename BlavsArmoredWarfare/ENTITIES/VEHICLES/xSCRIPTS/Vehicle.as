@@ -300,7 +300,7 @@ void onTick(CBlob@ this)
 		if (ap.getOccupied() is null) this.set_f32("engine_RPMtarget", 0); // turn engine off
 		f32 custom_add = this.get_f32("add_gas_intake");
 		if (custom_add == 0) custom_add = 1.0f;
-		u32 gas_intake = 230 + custom_add + XORRandom(70+custom_add/3.5f); // gas flow variance  (needs equation)
+		f32 gas_intake = 230 + custom_add + XORRandom(70+custom_add/3.5f); // gas flow variance  (needs equation)
 		if (this.get_f32("engine_RPM") > 2000) {gas_intake += 100;}
 		this.add_f32("engine_RPM", this.get_f32("engine_throttle") * gas_intake); 
 
