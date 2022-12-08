@@ -673,7 +673,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								if (right)
 								{
 									this.set_f32("engine_RPM", Maths::Lerp(this.get_f32("engine_RPM"), 6200.0f, 0.001f));
-									force.x *= -0.5f;
+									force.x *= 0.5f;
 								}
 							}
 							else 
@@ -683,7 +683,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 									this.SetFacingLeft(true);
 								}
 
-								if (right && getGameTime() % 4 == 0)
+								if (right && vel.x > turnSpeed && getGameTime() % 4 == 0)
 								{
 									this.SetFacingLeft(false);
 								}
@@ -743,7 +743,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								if (left)
 								{
 									this.set_f32("engine_RPM", Maths::Lerp(this.get_f32("engine_RPM"), 6200.0f, 0.001f));
-									force.x *= -0.5f;
+									force.x *= 0.5f;
 								} // reverse
 							}
 							else
@@ -753,31 +753,19 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 									this.SetFacingLeft(false);
 								}
 
-								if (left && getGameTime() % 4 == 0)
+								if (left && vel.x < -turnSpeed && getGameTime() % 4 == 0)
 								{
 									this.SetFacingLeft(true);
 								}
 							}
 						}
 
-						
-
-
-						if (Maths::Abs(vel.x) < 3.0f) // range of speed to be in neutral
-						{
-							if ((left or right))
-							{
-								this.AddForce(force);
-								force.RotateBy(this.getShape().getAngleDegrees());
-							}
-						}
-						else 
-						{
-							this.AddForce(force);
-							force.RotateBy(this.getShape().getAngleDegrees());
-						}
-					
-						
+						bool faceleft = this.isFacingLeft();
+						if (left)
+							this.AddForce(force * (faceleft ? 1.0f : -1.0f));
+						else if (right)
+							this.AddForce(force * (faceleft ? -1.0f : 1.0f));
+						force.RotateBy(this.getShape().getAngleDegrees());
 					}
 
 					// tilt 

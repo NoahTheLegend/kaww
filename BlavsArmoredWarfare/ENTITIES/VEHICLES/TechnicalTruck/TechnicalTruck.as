@@ -7,6 +7,7 @@ void onInit(CBlob@ this)
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
 	this.Tag("weak vehicle");
+	this.Tag("has machinegun");
 
 	this.set_f32("max_angle_diff", 0.5f);
 
@@ -45,7 +46,7 @@ void onInit(CBlob@ this)
 	// Add machine gun on top
 	if (getNet().isServer())
 	{
-		CBlob@ bow = server_CreateBlob("gun");	
+		CBlob@ bow = server_CreateBlob("heavygun");	
 
 		if (bow !is null)
 		{

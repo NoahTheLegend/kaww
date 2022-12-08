@@ -26,7 +26,7 @@ void onInit(CBlob@ this)
 	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
 	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
-	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(29.0f, 2.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
+	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(27.0f, 2.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(20.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(12.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(4.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }

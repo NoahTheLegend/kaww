@@ -84,7 +84,7 @@ void onInit(CBlob@ this)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
-	if (attached.getName() != "m60turret" && attached.getName() != "t10turret") return;
+	if (!attached.hasTag("has machinegun")) return;
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
 	if (cage !is null)
 	{
@@ -114,27 +114,25 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 	{
 		gunner.offsetZ = -9.0f;   //5.0f
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
-
-		if (this.isAttached())
+		
+		if (gunner.getAimPos().x < gunner.getPosition().x)
 		{
-			if (facing_left) { aim_vec.x = -aim_vec.x; }
-			angle = (-(aim_vec).getAngle() + 180.0f);
+			this.SetFacingLeft(true);
+			gunner.getOccupied().SetFacingLeft(true);
 		}
 		else
 		{
-			if ((!facing_left && aim_vec.x < 0) ||
-			        (facing_left && aim_vec.x > 0))
-			{
-				if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
-
-				angle = (-(aim_vec).getAngle() + 180.0f);
-				angle = Maths::Max(-80.0f , Maths::Min(angle , 80.0f));
-			}
-			else
-			{
-				this.SetFacingLeft(!facing_left);
-			}
+			this.SetFacingLeft(false);
+			gunner.getOccupied().SetFacingLeft(false);
 		}
+	
+		{
+			if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
+			
+			angle = (-(aim_vec).getAngle() + 180.0f);
+			angle = Maths::Max(-75.0f , Maths::Min(angle , 75.0f));
+		}
+		
 	}
 
 	return angle;
