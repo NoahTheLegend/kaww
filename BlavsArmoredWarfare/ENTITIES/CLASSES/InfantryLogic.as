@@ -305,6 +305,12 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 	if (this.getCarriedBlob() !is null)
 	{
+		if (this.getCarriedBlob().getName() == "medkit")
+		{
+			just_action1 = false;
+			is_action1 = false;
+			was_action1 = false;
+		}
 		if (this.getCarriedBlob().hasTag("hidesgunonhold"))
 		{
 			hidegun = true;
