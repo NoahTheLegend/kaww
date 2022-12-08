@@ -169,9 +169,14 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 }
 
 void onTick(CBlob@ this)
-{	
+{
 	if (this !is null)
 	{
+		if (this.hasTag("falling"))
+		{
+			if (getGameTime()%9==0)
+				this.getSprite().PlaySound("FallingAlarm.ogg", 1.5f, 1.15f);
+		}
 		if (getGameTime() >= this.get_u32("next_shoot"))
 		{
 			this.Untag("no_more_shooting");
@@ -277,32 +282,42 @@ void onTick(CBlob@ this)
 							}
 						}
 						*/
-						
 						const f32 mass = this.getMass();
 
-						if (pressed_a) newForce += leftVelo;
-						if (pressed_d) newForce += rightVelo;
-							
-						if (pressed_m1)this.set_bool("glide", true);
+						if (!this.hasTag("falling"))
+						{
+							if (pressed_a) newForce += leftVelo;
+							if (pressed_d) newForce += rightVelo;
+
+							if (pressed_m1) this.set_bool("glide", true);
+							else
+							{
+								this.set_bool("glide", false);
+								if (pressed_w) newForce += upVelo;
+								if (pressed_s) newForce += downVelo;
+							}
+						}
 						else
 						{
+							newForce -= Vec2f(upVelo.x*0.45f, upVelo.y*0.45f);
 							this.set_bool("glide", false);
-							if (pressed_w) newForce += upVelo;
-							if (pressed_s) newForce += downVelo;
 						}
 
 						Vec2f mousePos = ap.getAimPos();
 						CBlob@ pilot = ap.getBlob();
 						
-						if (pilot !is null && pressed_m2 && (this.getVelocity().x < 5.00f || this.getVelocity().x > -5.00f))
+						if (!this.hasTag("falling"))
 						{
-							if (mousePos.x < pilot.getPosition().x) this.SetFacingLeft(true);
-							else if (mousePos.x > pilot.getPosition().x) this.SetFacingLeft(false);
+							if (pilot !is null && pressed_m2 && (this.getVelocity().x < 5.00f || this.getVelocity().x > -5.00f))
+							{
+								if (mousePos.x < pilot.getPosition().x) this.SetFacingLeft(true);
+								else if (mousePos.x > pilot.getPosition().x) this.SetFacingLeft(false);
+							}
+							else if (this.getVelocity().x < -0.50f)
+								this.SetFacingLeft(true);
+							else if (this.getVelocity().x > 0.50f)
+								this.SetFacingLeft(false);
 						}
-						else if (this.getVelocity().x < -0.50f)
-							this.SetFacingLeft(true);
-						else if (this.getVelocity().x > 0.50f)
-							this.SetFacingLeft(false);
 					}
 				}
 			}
@@ -316,7 +331,7 @@ void onTick(CBlob@ this)
 		f32 targetForce_y = Maths::Clamp(targetForce.y, minClampVelocity.y, maxClampVelocity.y);
 
 		Vec2f clampedTargetForce = Vec2f(Maths::Clamp(targetForce.x, Maths::Max(minClampVelocity.x, -Maths::Abs(targetForce_y)), Maths::Min(maxClampVelocity.x, Maths::Abs(targetForce_y))), targetForce_y);
-		
+
 		Vec2f resultForce;
 		if(!this.get_bool("glide"))
 		{
@@ -329,10 +344,21 @@ void onTick(CBlob@ this)
 			this.set_Vec2f("current_force", resultForce);
 		}
 
+		if (this.hasTag("falling") && !this.hasTag("set_force"))
+		{
+			this.Tag("set_force");
+			this.set_Vec2f("result_force", resultForce);
+		}
+
 		this.AddForce(resultForce * thrust);
 		this.setAngleDegrees(resultForce.x * 75.00f);
+		if (this.hasTag("falling"))
+		{
+			this.setAngleDegrees(this.get_Vec2f("result_force").x * 75.00f);
+		}
 		
 		int anim_time_formula = Maths::Floor(1.00f + (1.00f - Maths::Abs(resultForce.getLength())) * 3) % 4;
+		if (this.hasTag("falling")) anim_time_formula = Maths::Floor(1.00f + (1.00f - Maths::Abs(this.get_Vec2f("result_force").getLength())) * 3) % 4;
 		blade.ResetTransform();
 		blade.SetOffset(Vec2f(-4, -26));
 		blade.animation.time = anim_time_formula;
@@ -343,6 +369,14 @@ void onTick(CBlob@ this)
 			blade.RotateBy(180, Vec2f(0.0f,2.0f));
 		}
 		
+		if (sprite !is null && this.hasTag("falling"))
+		{
+			if (getGameTime() % 8 == 0)
+			{
+				sprite.SetFacingLeft(!sprite.isFacingLeft());
+			}
+		}
+
 		tailrotor.animation.time = anim_time_formula;
 		if (tailrotor.animation.time == 0)
 		{
@@ -350,6 +384,7 @@ void onTick(CBlob@ this)
 		}
 		
 		sprite.SetEmitSoundSpeed(Maths::Min(0.00005f + Maths::Abs(resultForce.getLength() * 1.00f), 0.85f) * 1.55);
+		if (this.hasTag("falling")) sprite.SetEmitSoundSpeed(Maths::Min(0.00005f + Maths::Abs(this.get_Vec2f("result_force").getLength() * 1.00f), 0.85f) * 1.55);
 
 		this.set_Vec2f("target_force", clampedTargetForce);
 	}
@@ -365,6 +400,12 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 	params.write_Vec2f(arrowVel);
 
 	this.SendCommand(this.getCommandID("shoot bullet"), params);
+}
+
+void onCollision(CBlob@ this, CBlob@ blob, bool solid)
+{
+	if (isServer() && solid && this.hasTag("falling"))
+		this.server_Die();
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
@@ -530,6 +571,12 @@ void onDie(CBlob@ this)
 		CBlob@ launcher = ap.getOccupied();
 		if (launcher !is null) launcher.server_Die();
 	}
+	AttachmentPoint@ ap1 = this.getAttachments().getAttachmentPointByName("bow");
+	if (ap1 !is null)
+	{
+		CBlob@ launcher = ap.getOccupied();
+		if (launcher !is null) launcher.server_Die();
+	}
 	
 	if (this.exists("bladeid"))
 	{
@@ -551,6 +598,14 @@ void onDie(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (this.hasTag("ignore damage")) return 0;
+	if (damage >= this.getHealth())
+	{
+		this.Tag("ignore damage");
+		this.Tag("falling");
+		this.set_u32("falling_time", getGameTime());
+		return 0;
+	}
 	if (hitterBlob.getName() == "missile_javelin")
 	{
 		return damage * 0.85f;
