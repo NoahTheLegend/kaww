@@ -98,13 +98,11 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 400);
-
+		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
 		s.customButton = true;
-
 		s.buttonwidth = 1;
-		s.buttonheight = 2;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
@@ -133,6 +131,15 @@ void onInit(CBlob@ this)
 		s.customButton = true;
 
 		s.buttonwidth = 3;
+		s.buttonheight = 1;
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 375);
+
+		s.customButton = true;
+
+		s.buttonwidth = 1;
 		s.buttonheight = 1;
 	}
 	
