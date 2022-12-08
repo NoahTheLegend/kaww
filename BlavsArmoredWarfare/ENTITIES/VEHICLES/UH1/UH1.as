@@ -174,8 +174,8 @@ void onTick(CBlob@ this)
 	{
 		if (this.hasTag("falling"))
 		{
-			if (getGameTime()%9==0)
-				this.getSprite().PlaySound("FallingAlarm.ogg", 1.5f, 1.15f);
+			if (getGameTime()%8==0)
+				this.getSprite().PlaySound("FallingAlarm.ogg", 1.0f, 1.25f);
 		}
 		if (getGameTime() >= this.get_u32("next_shoot"))
 		{
