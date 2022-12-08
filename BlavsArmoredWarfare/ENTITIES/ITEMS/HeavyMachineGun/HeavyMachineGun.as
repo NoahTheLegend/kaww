@@ -64,8 +64,6 @@ void onInit(CBlob@ this)
 
 	sprite.SetZ(20.0f);
 
-	this.getCurrentScript().runFlags |= Script::tick_hasattached;
-
 	// auto-load some ammo initially
 	if (getNet().isServer())
 	{
@@ -144,6 +142,23 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
+	if (this.getTickSinceCreated() == 1 && !this.isAttached())
+	{
+		CBlob@[] turrets;
+    	getMap().getBlobsInRadius(this.getPosition(), 64.0f, @turrets);
+    	for (u16 i = 0; i < turrets.length; i++)
+    	{
+    	    CBlob@ tur = turrets[i];
+    	    if (tur is null || !tur.hasTag("has machinegun") || tur.getTeamNum() != this.getTeamNum() || tur.getDistanceTo(this) > 64.0f) continue;
+    	    AttachmentPoint@ ap = tur.getAttachments().getAttachmentPointByName("BOW");
+    	    if (ap !is null && ap.getOccupied() is null)
+    	    {
+				tur.server_AttachTo(this, ap);
+			}
+    	}
+		this.getCurrentScript().runFlags |= Script::tick_hasattached;
+	}
+
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{
