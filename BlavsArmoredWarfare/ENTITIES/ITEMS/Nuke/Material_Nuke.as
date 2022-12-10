@@ -28,7 +28,7 @@ void DoExplosion(CBlob@ this, Vec2f velocity)
 	
 	for (int i = 0; i < 4; i++)
 	{
-		Explode(this, 92.0f * modifier, 32.0f);
+		Explode(this, 86.0f * modifier, 32.0f);
 		//guarantly hit blobs
 		if (getNet().isServer())
 		{
