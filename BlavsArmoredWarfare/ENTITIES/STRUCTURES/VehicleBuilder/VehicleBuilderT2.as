@@ -49,11 +49,11 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nPLUSES: Thick armor, big cannon damage.\nMINUSES: Slow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses 105mm & 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 65);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nPLUSES: Thick armor, best turret armor, big cannon damage, good elevation angles\nMINUSES: Very slow, slow fire rate, very fragile lower armor plate (weakpoint)\n\nUses 105mm");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 115);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 110);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.\nAllows to switch class.");
