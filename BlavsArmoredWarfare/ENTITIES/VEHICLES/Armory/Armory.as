@@ -168,7 +168,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 void onTick(CBlob@ this)
 {
-	if (this.getTickSinceCreated() == 1)
+	if (this.getTickSinceCreated() == 60)
 	{
 		this.Tag("respawn");
 		CBlob@[] tents;
