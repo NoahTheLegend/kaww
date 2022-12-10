@@ -10,11 +10,6 @@ void onInit(CBlob@ this)
 	this.Tag("projectile");
 	this.Tag("bullet");
 
-	// glow
-	this.SetLight(true);
-	this.SetLightRadius(30.0f);
-	this.SetLightColor(SColor(255, 255, 240, 210));
-
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.mapCollisions = false;

@@ -83,8 +83,11 @@ void onInit(CBlob@ this)
 		}
 	}
 
-	{
+	this.SetLight(true);
+	this.SetLightRadius(48.0f);
+	this.SetLightColor(SColor(255, 255, 240, 155));
 
+	{
 		AttachmentPoint@ bed = this.getAttachments().getAttachmentPointByName("BED2");
 		if (bed !is null)
 		{

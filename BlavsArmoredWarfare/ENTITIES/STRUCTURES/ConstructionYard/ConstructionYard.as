@@ -31,7 +31,7 @@ void onInit(CBlob@ this)
 
 	{
 		ShopItem@ s = addShopItem(this, "Quarters", "$quarters$", "quarters", "Two beds for rest and healing.");
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 250);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 150);
 		s.customButton = true;
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
