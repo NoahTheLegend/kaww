@@ -40,7 +40,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	{
 		return true;
 	}
-	if (blob.hasTag("structure") || blob.hasTag("bunker"))
+	if (blob.hasTag("structure") && !blob.hasTag("bunker"))
 	{
 		return false;
 	}
