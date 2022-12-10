@@ -1000,7 +1000,7 @@ shared class TDMCore : RulesCore
 
 	void GiveSpawnResources(CBlob@ blob, CPlayer@ player)
 	{
-		if (!(blob.getName() == "antitank") && blob.getName() == "revolver" || blob.getName() == "medic" || blob.getName() == "mp5" || blob.getName() == "sniper" || blob.getName() == "ranger" || blob.getName() == "shotgun")
+		if (!(blob.getName() == "antitank" || blob.getName() == "slave") && blob.getName() == "revolver" || blob.getName() == "medic" || blob.getName() == "mp5" || blob.getName() == "sniper" || blob.getName() == "ranger" || blob.getName() == "shotgun")
 		{
 			// first check if its in surroundings
 			CBlob@[] blobsInRadius;
@@ -1008,7 +1008,7 @@ shared class TDMCore : RulesCore
 			bool found = false;
 			if (!blob.hasBlob("mat_7mmround", 1))
 			{
-				if (map.getBlobsInRadius(blob.getPosition(), 100.0f, @blobsInRadius))
+				if (map.getBlobsInRadius(blob.getPosition(), 128.0f, @blobsInRadius))
 				{
 					for (uint i = 0; i < blobsInRadius.length; i++)
 					{
@@ -1033,6 +1033,7 @@ shared class TDMCore : RulesCore
 					CBlob@ mat = server_CreateBlob("mat_7mmround");
 					if (mat !is null)
 					{
+						if (blob.getName() == "mp5" || blob.getName() == "ranger") mat.server_SetQuantity(100);
 						if (!blob.server_PutInInventory(mat))
 						{
 							mat.setPosition(blob.getPosition());
