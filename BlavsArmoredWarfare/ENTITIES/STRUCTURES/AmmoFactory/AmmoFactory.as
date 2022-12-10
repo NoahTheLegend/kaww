@@ -18,10 +18,7 @@ void onInit(CBlob@ this)
 
 	//commands
 	this.addCommandID("add metal");
-	this.addCommandID("7mm");
-	this.addCommandID("14mm");
-	this.addCommandID("105mm");
-	this.addCommandID("heat");
+
 	this.set_s16(metal_prop, 0);
 	this.set_bool(working_prop, false);
 	this.set_u8(unique_prop, XORRandom(getTicksASecond() * 30));
@@ -30,7 +27,19 @@ void onInit(CBlob@ this)
 	this.Tag("structure");
 
 	this.set_string("prod_blob", "mat_7mmround");
-	this.set_u8("prod_amount", 36);
+	this.set_u8("prod_amount", 50);
+	this.set_u8("prod_time", 0);
+	this.set_u8("cost", 1);
+
+	this.addCommandID("select");
+	this.addCommandID("7mm");
+	this.addCommandID("14mm");
+	this.addCommandID("105mm");
+	this.addCommandID("heats");
+	this.addCommandID("molotov");
+	this.addCommandID("grenade");
+	this.addCommandID("mine");
+	this.addCommandID("helmet");
 }
 
 void onTick(CBlob@ this)
@@ -45,23 +54,12 @@ void onTick(CBlob@ this)
 			this.set_bool(working_prop, true);
 
 			//only convert every conversion_frequency seconds
-			if (getGameTime() % (15 * getTicksASecond()) == this.get_u8(unique_prop))
+			if (getGameTime() % ((10 + (this.get_u8("prod_time"))) * getTicksASecond()) == this.get_u8(unique_prop))
 			{
-				if(blobCount >= 1)this.sub_s16(metal_prop,1);
-				else this.TakeBlob(metal_prop, 1);
-				
-				if (this.get_string("prod_blob") != "mat_heatwarhead")
-				{
-					spawnMetal(this);
-				}
-				else
-				{
-					if (!this.hasTag("skip"))
-					{
-						spawnMetal(this);
-					}
-					this.hasTag("skip") ? this.Untag("skip") : this.Tag("skip");
-				}
+				if(blobCount >= this.get_u8("cost"))this.sub_s16(metal_prop, this.get_u8("cost"));
+				else this.TakeBlob(metal_prop, this.get_u8("cost"));
+			
+				spawnMetal(this);
 
 				this.set_bool(working_prop, false);
 
@@ -116,10 +114,8 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 		button.deleteAfterClick = false;
 		button.SetEnabled(caller.hasBlob(metal, 1));
 	}
-	CButton@ button2 = caller.CreateGenericButton("$mat_7mmround$", Vec2f(-10.0f, 10.0f), this, this.getCommandID("7mm"), getTranslatedString("Set factory to produce 7mm rounds."), params);
-	CButton@ button3 = caller.CreateGenericButton("$mat_14mmround$", Vec2f(10.0f, 10.0f), this, this.getCommandID("14mm"), getTranslatedString("Set factory to produce 14mm rounds."), params);
-	CButton@ button4 = caller.CreateGenericButton("$mat_bolts$", Vec2f(-10.0f, -10.0f), this, this.getCommandID("105mm"), getTranslatedString("Set factory to produce 105mm shells."), params);
-	CButton@ button5 = caller.CreateGenericButton("$mat_heatwarhead$", Vec2f(10.0f, -10.0f), this, this.getCommandID("heat"), getTranslatedString("Set factory to produce heat warheads."), params);
+
+	caller.CreateGenericButton(16, Vec2f(0.0f, -9.0f), this, this.getCommandID("select"), "Select product", params);
 }
 
 void spawnMetal(CBlob@ this)
@@ -145,7 +141,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (caller is null) return;
 
 		//amount we'd _like_ to insert
-		int requestedAmount = Maths::Max(0, 10 - this.get_s16(metal_prop));
+		int requestedAmount = Maths::Max(0, 20 - this.get_s16(metal_prop));
 		//(possible with laggy commands from 2 players, faster to early out here if we can)
 		if (requestedAmount <= 0) return;
 
@@ -158,32 +154,98 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		//can we even insert anything?
 		if (ammountToStore > 0)
 		{
-			print("added "+ammountToStore);
+			//print("added "+ammountToStore);
 			caller.TakeBlob(metal, ammountToStore);
 			this.add_s16(metal_prop, ammountToStore);
 
 			this.getSprite().PlaySound("FireFwoosh.ogg");
 		}
 	}
+	else if (cmd == this.getCommandID("select"))
+	{
+		u16 blobid = params.read_u16();
+		CBlob@ blob = getBlobByNetworkID(blobid);
+		SelectMenu(this, blob);
+	}
 	else if (cmd == this.getCommandID("7mm"))
 	{
-		this.set_string("prod_blob", "mat_7mmround");
-		this.set_u8("prod_amount", 36);
+		this.set_string("prod_blob", "mat_7mmround"); // blob cfg name
+		this.set_u8("prod_amount", 50); // how many
+		this.set_u8("prod_time", 2); // extra seconds time (10 sec for default)
+		this.set_u8("cost", 1); // how many scrap to take
 	}
 	else if (cmd == this.getCommandID("14mm"))
 	{
 		this.set_string("prod_blob", "mat_14mmround");
 		this.set_u8("prod_amount", 15);
+		this.set_u8("prod_time", 10);
+		this.set_u8("cost", 1);
 	}
 	else if (cmd == this.getCommandID("105mm"))
 	{
 		this.set_string("prod_blob", "mat_bolts");
-		this.set_u8("prod_amount", 6);
+		this.set_u8("prod_amount", 4);
+		this.set_u8("prod_time", 15);
+		this.set_u8("cost", 1);
 	}
-	else if (cmd == this.getCommandID("heat"))
+	else if (cmd == this.getCommandID("heats"))
 	{
 		this.set_string("prod_blob", "mat_heatwarhead");
+		this.set_u8("prod_amount", 3);
+		this.set_u8("prod_time", 15);
+		this.set_u8("cost", 6);
+	}
+	else if (cmd == this.getCommandID("molotov"))
+	{
+		this.set_string("prod_blob", "mat_molotov");
 		this.set_u8("prod_amount", 1);
+		this.set_u8("prod_time", 10);
+		this.set_u8("cost", 2);
+	}
+	else if (cmd == this.getCommandID("grenade"))
+	{
+		this.set_string("prod_blob", "grenade");
+		this.set_u8("prod_amount", 1);
+		this.set_u8("prod_time", 15);
+		this.set_u8("cost", 3);
+	}
+	else if (cmd == this.getCommandID("mine"))
+	{
+		this.set_string("prod_blob", "mine");
+		this.set_u8("prod_amount", 1);
+		this.set_u8("prod_time", 20);
+		this.set_u8("cost", 2);
+	}
+	else if (cmd == this.getCommandID("helmet"))
+	{
+		this.set_string("prod_blob", "helmet");
+		this.set_u8("prod_amount", 1);
+		this.set_u8("prod_time", 15);
+		this.set_u8("cost", 2);
+	}
+}
+
+void SelectMenu(CBlob@ this, CBlob@ caller)
+{
+	if (caller !is null && caller.isMyPlayer())
+	{
+		CBitStream params;
+		params.write_u16(caller.getNetworkID());
+		CGridMenu@ menu = CreateGridMenu(getDriver().getScreenCenterPos() + Vec2f(0.0f, 0.0f), this, Vec2f(4, 2), "Select product");
+		
+		if (menu !is null)
+		{
+			menu.deleteAfterClick = true;
+
+			CGridButton@ button  = menu.AddButton("$mat_7mmround$", "7mm Rounds", this.getCommandID("7mm"), Vec2f(1, 1), params);
+			CGridButton@ button1 = menu.AddButton("$mat_14mmround$", "14mm Shells", this.getCommandID("14mm"), Vec2f(1, 1), params);
+			CGridButton@ button2 = menu.AddButton("$mat_bolts$", "105mm Shells", this.getCommandID("105mm"), Vec2f(1, 1), params);
+			CGridButton@ button3 = menu.AddButton("$mat_heatwarhead$", "HEAT Warheads", this.getCommandID("heats"), Vec2f(1, 1), params);
+			CGridButton@ button4 = menu.AddButton("$mat_molotov$", "Molotov", this.getCommandID("molotov"), Vec2f(1, 1), params);
+			CGridButton@ button5 = menu.AddButton("$grenade$", "Grenade", this.getCommandID("grenade"), Vec2f(1, 1), params);
+			CGridButton@ button6 = menu.AddButton("$mine$", "Mine", this.getCommandID("mine"), Vec2f(1, 1), params);
+			CGridButton@ button7 = menu.AddButton("$helmet$", "Helmet", this.getCommandID("helmet"), Vec2f(1, 1), params);
+		}
 	}
 }
 
@@ -232,7 +294,7 @@ void onRender(CSprite@ this)
 		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 30);
 		Vec2f dim = Vec2f(24, 8);
 		const f32 y = blob.getHeight() * 2.4f;
-		const f32 perc = blob.get_s16(metal_prop) / 10.0f;
+		const f32 perc = blob.get_s16(metal_prop) / 20.0f;
 
 		if (perc >= 0.0f)
 		{
