@@ -111,7 +111,7 @@ void onTick(CBlob@ this)
 	{
 		if (isServer() && this.isOnGround()) this.server_Die();
 	}
-	if (getGameTime() == this.get_u32("next_shoot"))
+	if (getGameTime() >= this.get_u32("next_shoot"))
 	{
 		this.Untag("no_more_shooting");
 		this.Untag("no_more_proj");
