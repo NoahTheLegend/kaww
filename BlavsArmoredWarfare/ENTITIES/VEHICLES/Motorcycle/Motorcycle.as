@@ -129,10 +129,16 @@ void onTick(CBlob@ this)
 
 		//stabilize rotation
 		f32 deg = this.getAngleDegrees();
-		if ((!this.isFacingLeft() && deg > 270 && deg > 45)
-		|| (this.isFacingLeft() && deg > 135 && deg < 270))
+		printf(""+deg);
+		if ((!this.isFacingLeft() && deg > 270)
+		|| (this.isFacingLeft() && deg < 90))
 		{
-			this.AddTorque(this.isFacingLeft() ? -800.0f : 800.0f);
+			this.AddTorque(this.isFacingLeft() ? -250.0f : 250.0f);
+		}
+		else if ((!this.isFacingLeft() && deg < 90)
+		|| (this.isFacingLeft() && deg > 270))
+		{
+			this.AddTorque(this.isFacingLeft() ? 250.0f : -250.0f);
 		}
 
 		CSprite@ sprite = this.getSprite();
