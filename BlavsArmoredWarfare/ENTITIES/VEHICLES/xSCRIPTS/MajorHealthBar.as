@@ -28,6 +28,7 @@ void onTick(CBlob@ this)
 void onRender(CSprite@ this)
 {
 	CBlob@ blob = this.getBlob();
+	if (blob.hasTag("falling")) return;
 
 	Vec2f center = blob.getPosition();
 	Vec2f mouseWorld = getControls().getMouseWorldPos();

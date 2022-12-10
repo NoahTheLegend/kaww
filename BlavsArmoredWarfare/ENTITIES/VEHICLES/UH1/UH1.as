@@ -171,11 +171,6 @@ void onTick(CBlob@ this)
 {
 	if (this !is null)
 	{
-		if (this.hasTag("falling"))
-		{
-			if (getGameTime()%8==0)
-				this.getSprite().PlaySound("FallingAlarm.ogg", 1.0f, 1.3f);
-		}
 		if (getGameTime() >= this.get_u32("next_shoot"))
 		{
 			this.Untag("no_more_shooting");
@@ -380,6 +375,14 @@ void onTick(CBlob@ this)
 		if (this.hasTag("falling")) sprite.SetEmitSoundSpeed(Maths::Min(0.00005f + Maths::Abs(this.get_Vec2f("result_force").getLength() * 1.00f), 0.85f) * 1.55);
 
 		this.set_Vec2f("target_force", clampedTargetForce);
+	
+		if (this.hasTag("falling"))
+		{
+			if (getGameTime()%8==0)
+				this.getSprite().PlaySound("FallingAlarm.ogg", 1.0f, 1.3f);
+
+			this.setAngleDegrees(this.getAngleDegrees() + (Maths::Sin(getGameTime() / 5.0f) * 8.5f));
+		}
 	}
 }
 
@@ -597,7 +600,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		this.Tag("ignore damage");
 		this.Tag("falling");
 		this.set_u32("falling_time", getGameTime());
-		this.server_SetTimeToDie(30);
+		if (isServer())
+		{
+			this.server_SetTimeToDie(30);
+			this.server_SetHealth(this.getInitialHealth());
+		}
 		return 0;
 	}
 	if (hitterBlob.getName() == "missile_javelin")
