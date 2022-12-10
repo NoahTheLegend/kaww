@@ -215,7 +215,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		if (blob.getName() != "stone_door")
 		{
 			// destroy doors. Will not touch "strong" tag for now.
-			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 1.0f : 0.2f, Hitters::builder);
+			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 1.25f : 0.15f, Hitters::builder);
 			this.server_Die();
 		}
 	}
