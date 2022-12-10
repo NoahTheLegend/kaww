@@ -72,14 +72,14 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Tank Trap", "$tanktrap$", "tanktrap", "Czech hedgehog, will harm any enemy vehicle that collides with it.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press E to heal. 6 uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 2);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "Heal to full health instantly.", false);
@@ -106,7 +106,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 2);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "14mm Rounds", "$mat_14mmround$", "mat_14mmround", "Used by APCs", false);
