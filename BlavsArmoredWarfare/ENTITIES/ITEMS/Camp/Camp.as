@@ -5,6 +5,7 @@
 	this.getCurrentScript().tickFrequency = 30;
 
 	this.set_s16("spawn_timer", 5 + XORRandom(10));
+	this.addCommandID("sync_timer");
 }
 
 void onTick(CBlob@ this)
@@ -27,7 +28,10 @@ void onTick(CBlob@ this)
 				}
 
 				this.set_s16("spawn_timer", 45+XORRandom(11));
-				this.Sync("spawn_timer", true);
+				CBitStream params;
+				params.write_s16(this.get_s16("spawn_timer"));
+				this.SendCommand(this.getCommandID("sync_timer"), params);
+				//this.Sync("spawn_timer", true);
 			}
 		}
 	}
@@ -35,6 +39,19 @@ void onTick(CBlob@ this)
 	{
 		this.set_s16("spawn_timer", this.get_s16("spawn_timer") - (getPlayersCount() > 12 ? 2 : 1 ));
 	}			
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
+{
+	if (cmd == this.getCommandID("sync_timer"))
+	{
+		if (isClient())
+		{
+			s16 timer;
+			if (!params.saferead_s16(timer)) return;
+			this.set_s16("spawn_timer", timer);
+		}
+	}
 }
 
 void onRender(CSprite@ this)
