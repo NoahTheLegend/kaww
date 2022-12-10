@@ -1228,6 +1228,27 @@ void onTick(CRules@ this)
 			this.Sync("redTickets", true);
 		}
 	}
+	if (getGameTime() % 30 == 0)
+	{
+		CBlob@[] flags;
+		getBlobsByName("pointflag", @flags);
+
+		u8 blue_flags = 0;
+		u8 red_flags = 0;
+		for (u8 i = 0; i < flags.length; i++)
+		{
+			if (flags[i] !is null)
+			{
+				if (flags[i].getTeamNum() == 0) blue_flags++;
+				else if (flags[i].getTeamNum() == 1) red_flags++;
+			}
+		}
+		if (blue_flags != red_flags && getGameTime() < (this.get_u32("game_end_time") - 60*30))
+		{
+			printf("b "+blue_flags+" r "+red_flags);
+			this.set_u32("game_end_time", this.get_u32("game_end_time") - 30);
+		}
+	}
 	//if (!this.hasTag("synced_siege"))
 	//{
 	//	CBlob@[] vehbuilders;
