@@ -219,6 +219,27 @@ void onTick(CBlob@ this)
 	}
 
 	Vehicle_StandardControls(this, v);
+	
+	if (this.get_bool("overheated") && getGameTime() % 3 == 0)
+	{
+		if (this.getSprite() !is null)
+		{
+			if (this.get_f32("overheat") >= this.get_f32("max_overheat")-this.get_f32("overheat_per_shot"))
+				this.getSprite().PlaySound("DrillOverheat.ogg", 1.0f, 0.95f);
+			else if (getGameTime() % 3 + XORRandom(2) == 0) this.getSprite().PlaySound("Steam.ogg", 0.85f, 1.075f);
+		}
+		MakeParticle(this, Vec2f(0, -0.5), v);
+	}
+}
+
+void MakeParticle(CBlob@ this, const Vec2f vel, VehicleInfo@ v, const string filename = "SmallSteam")
+{
+	if (isClient())
+	{
+		f32 angle = getAimAngle(this, v);
+		Vec2f offset = Vec2f((11+XORRandom(10)) * (this.isFacingLeft() ? -1 : 1), 0).RotateBy(this.isFacingLeft() ? -angle : angle);
+		ParticleAnimated(filename, this.getPosition() + offset, vel, float(XORRandom(360)), 0.35f+(XORRandom(10)*0.1f), 2 + XORRandom(3), -0.1f, false);
+	}
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
