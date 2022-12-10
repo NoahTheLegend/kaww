@@ -45,6 +45,27 @@ void onRender(CSprite@ this)
 			drawCooldownBar(blob, v);
 		}
 
+		if (blob.getName() == "heavygun")
+		{
+			f32 overheat = blob.get_f32("overheat");
+			f32 max_overheat = blob.get_f32("max_overheat");
+			f32 percent = overheat / max_overheat;
+
+			Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 0);
+			const f32 y = blob.getHeight() * 4.0f;
+			Vec2f dim = Vec2f(40, 10); //95
+			Vec2f heatdim = Vec2f(40*percent, 10); //95
+
+			SColor color = SColor(255, 200+55*percent, 135-100*percent, 85-85*percent);
+
+			// Border
+			GUI::DrawRectangle(Vec2f(pos2d.x - dim.x - 2,                        pos2d.y + y - 4),
+							   Vec2f(pos2d.x + dim.x + 2,                        pos2d.y + y + dim.y + 4));
+
+			GUI::DrawRectangle(Vec2f(pos2d.x - heatdim.x + 2,                    pos2d.y + y + 0),
+							   Vec2f(pos2d.x + heatdim.x - 1,                    pos2d.y + y + heatdim.y - 1), color);
+		}
+
 		// no one feels the angle count is necessary, so im taking it out to reduce GUI clutter
 		//if (blob.getName() == "ballista")
 		//drawAngleCount(blob, v);

@@ -2,6 +2,10 @@
 #include "Hitters.as"
 
 const Vec2f arm_offset = Vec2f(-2, 0);
+const f32 MAX_OVERHEAT = 2.0f;
+const f32 OVERHEAT_PER_SHOT = 0.05f;
+const f32 COOLDOWN_RATE = 0.06f;
+const u8 COOLDOWN_TICKRATE = 5;
 
 void onInit(CBlob@ this)
 {
@@ -63,6 +67,12 @@ void onInit(CBlob@ this)
 	this.set_string("autograb blob", "mat_7mmround");
 
 	sprite.SetZ(20.0f);
+
+	this.set_f32("overheat", 0);
+	this.set_f32("max_overheat", MAX_OVERHEAT);
+	this.set_f32("overheat_per_shot", OVERHEAT_PER_SHOT);
+	this.set_f32("cooldown_rate", COOLDOWN_RATE);
+	this.set_bool("overheated", false);
 
 	// auto-load some ammo initially
 	if (getNet().isServer())
@@ -155,13 +165,30 @@ void onTick(CBlob@ this)
 				tur.server_AttachTo(this, ap);
 			}
     	}
-		this.getCurrentScript().runFlags |= Script::tick_hasattached;
 	}
 
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{
 		return;
+	}
+
+	if ((!v.firing || this.get_bool("overheated")) && getGameTime() % COOLDOWN_TICKRATE == 0)
+	{
+		if (this.get_f32("overheat") > COOLDOWN_RATE)
+		{
+			this.add_f32("overheat", -COOLDOWN_RATE);
+		}
+		else if (this.get_f32("overheat") <= COOLDOWN_RATE)
+		{
+			this.set_f32("overheat", 0);
+			this.set_bool("overheated", false);
+		}
+	}
+	else if (this.get_f32("overheat") >= this.get_f32("max_overheat") - this.get_f32("overheat_per_shot"))
+	{
+		this.set_bool("overheated", true);
+		v.firing = false;
 	}
 
 	f32 angle = getAimAngle(this, v);
@@ -201,6 +228,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
 {
+	if (this.get_bool("overheated")) return false;
 	v.firing = v.firing || isActionPressed;
 
 	bool hasammo = v.getCurrentAmmo().loaded_ammo > 0;
@@ -242,6 +270,8 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 		Vec2f offset = arm_offset;
 		offset.RotateBy(angle);
 		bullet.setPosition(pos + offset * 0.2f);
+
+		this.add_f32("overheat", this.get_f32("overheat_per_shot"));
 		
 		CBlob@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER").getOccupied();
 		if (gunner !is null)
