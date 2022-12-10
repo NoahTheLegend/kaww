@@ -50,6 +50,11 @@ void onTick(CBlob@ this)
 		{
 			CBlob@ b = blobs[i];
 			if (b is null) return;
+			if (b.getName() == "mat_molotov" && !b.get_bool("active"))
+			{
+				CBitStream params;
+				b.SendCommand(b.getCommandID("activate"), params);
+			}
 			if (b.hasTag("flesh") || b.hasTag("weak vehicle") || b.hasTag("apc"))
 			{
 				if (getGameTime() % 10 == 0)

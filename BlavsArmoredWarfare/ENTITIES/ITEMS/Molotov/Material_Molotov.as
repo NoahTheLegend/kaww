@@ -49,6 +49,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		}
 
 		this.Tag("activated");
+		this.set_bool("active", true);
 		
         if(isServer())
         {
@@ -65,6 +66,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					CPlayer@ activator = holder.getPlayer();
 					string activatorName = activator !is null ? (activator.getUsername() + " (team " + activator.getTeamNum() + ")") : "<unknown>";
 					//printf(activatorName + " has activated " + this.getName());
+				}
+				else 
+				{
+					CBlob@ blob = server_CreateBlob("molotov", this.getTeamNum(), this.getPosition());
+					this.server_Die();
 				}
 			}
         }
