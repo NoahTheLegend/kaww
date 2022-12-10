@@ -14,6 +14,10 @@ void onInit(CBlob@ this)
 	this.Tag("builder always hit");
 	this.Tag("vehicle"); // required for minimap
 
+	this.SetLight(true);
+	this.SetLightRadius(86.0f);
+	this.SetLightColor(SColor(255, 255, 240, 155));
+
 	this.set_u16("max_respawns", MIN_RESPAWNS+(getPlayerCount()/ADD_RESPAWN_PER_PLAYERS));
 	//printf(""+this.get_u16("max_respawns"));
 
@@ -27,7 +31,7 @@ void onInit(CBlob@ this)
 		int[] frames = { 9, 10, 11 };
 		flag.animation.AddFrames(frames);
 		flag.SetRelativeZ(0.8f);
-		flag.SetOffset(Vec2f(8.0f, 0.0f));
+		flag.SetOffset(Vec2f(8.0f, -4.0f));
 		flag.SetAnimation("default");
 	}
 
