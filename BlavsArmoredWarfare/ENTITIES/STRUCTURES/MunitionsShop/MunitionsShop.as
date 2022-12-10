@@ -49,7 +49,7 @@ void onInit(CBlob@ this)
 		{
 			if (map.tilemapwidth > 140)
 			{
-				u8 cost = map.tilemapwidth > 200 ? 30 : 60;
+				u8 cost = map.tilemapwidth > 200 ? 40 : 60;
 				ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
 				AddRequirement(s.requirements, "coin", "", "Coins", cost);
 			}
@@ -65,11 +65,11 @@ void onInit(CBlob@ this)
 			}
 			{
 				ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas an small explosion radius.", false);
-				AddRequirement(s.requirements, "coin", "", "Coins", 60);
+				AddRequirement(s.requirements, "coin", "", "Coins", 50);
 			}
 			{
 				ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
-				AddRequirement(s.requirements, "coin", "", "Coins", 60);
+				AddRequirement(s.requirements, "coin", "", "Coins", 40);
 			}
 		}
 	}

@@ -7,7 +7,7 @@ void onInit(CBlob@ this)
 	
 	this.getShape().getConsts().mapCollisions = false;
 
-	this.getCurrentScript().tickFrequency = 48;
+	this.getCurrentScript().tickFrequency = 60;
 
 	this.Tag("builder always hit");
 	this.Tag("structure");
@@ -25,8 +25,8 @@ void onTick(CBlob@ this)
 		}
 	}
 
-    float repair_distance = 21.0f; //Distance from this blob where other blobs are repaired
-    float repair_amount = 1.30f;   //Amount the blob is repaired every 15 ticks
+    float repair_distance = 16.0f; //Distance from this blob where other blobs are repaired
+    float repair_amount = 1.2f;   //Amount the blob is repaired every 15 ticks
 
     array<CBlob@> blobs;//Blob array full of blobs
     CMap@ map = getMap();
@@ -41,6 +41,7 @@ void onTick(CBlob@ this)
             if (blobs[i].getHealth() + repair_amount <= blobs[i].getInitialHealth())//This will only happen if the health does not go above the inital (max health) when repair_amount is added. 
             {
                 blobs[i].server_SetHealth(blobs[i].getHealth() + repair_amount); //Add the repair amount.
+				blobs[i].set_u32("no_heal", getGameTime() + 60);
 
                 if (XORRandom(2) == 0)
                 {
@@ -72,11 +73,11 @@ void onTick(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (hitterBlob.getTeamNum() == this.getTeamNum()) damage *= 5;
+	if (hitterBlob.getTeamNum() == this.getTeamNum()) damage *= 2;
 	switch (customData)
 	{
      	case Hitters::builder:
-			damage *= 4.00f;
+			damage *= 3.00f;
 			break;
 	}
 	if (hitterBlob.getName() == "grenade")

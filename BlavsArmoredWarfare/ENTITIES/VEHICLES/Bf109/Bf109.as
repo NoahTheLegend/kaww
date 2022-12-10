@@ -521,16 +521,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		this.Tag("ignore damage");
 		this.Tag("falling");
+		this.server_SetTimeToDie(30);
 		this.set_u32("falling_time", getGameTime());
 		return 0;
 	}
 	if (hitterBlob.getName() == "missile_javelin")
 	{
-		return damage * 0.5f;
+		return damage * 0.75f;
 	}
 	if (hitterBlob.hasTag("bullet"))
 	{
-		return damage *= 0.33f;
+		return damage *= 0.45f;
 	}
 	return damage;
 }
