@@ -25,7 +25,6 @@ void onInit(CBlob@ this)
 {
 	this.set_bool("map_damage_raycast", true);
 	this.set_u32("duration", 0);
-	//this.getSprite().SetRelativeZ(-60.0f);
 
 	this.Tag("vehicle");
 	this.Tag("aerial");

@@ -112,27 +112,28 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		gunner.offsetZ = -9.0f;   //5.0f
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
-		
-		if (gunner.getAimPos().x < gunner.getPosition().x)
+
+		if (this.isAttached())
 		{
-			this.SetFacingLeft(true);
-			gunner.getOccupied().SetFacingLeft(true);
+			if (facing_left) { aim_vec.x = -aim_vec.x; }
+			angle = (-(aim_vec).getAngle() + 180.0f);
 		}
 		else
 		{
-			this.SetFacingLeft(false);
-			gunner.getOccupied().SetFacingLeft(false);
+			if ((!facing_left && aim_vec.x < 0) ||
+			        (facing_left && aim_vec.x > 0))
+			{
+				if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
+
+				angle = (-(aim_vec).getAngle() + 180.0f);
+				angle = Maths::Max(-75.0f , Maths::Min(angle , 75.0f));
+			}
+			else
+			{
+				this.SetFacingLeft(!facing_left);
+			}
 		}
-	
-		{
-			if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
-			
-			angle = (-(aim_vec).getAngle() + 180.0f);
-			angle = Maths::Max(-75.0f , Maths::Min(angle , 75.0f));
-		}
-		
 	}
 
 	return angle;
@@ -185,9 +186,9 @@ void onTick(CBlob@ this)
 		}
 
 		arm.ResetTransform();
-		arm.SetFacingLeft(facing_left);
+		arm.SetFacingLeft((rotation > -90 && rotation < 90) ? facing_left : !facing_left);
 		arm.SetOffset(arm_offset);
-		arm.RotateBy(rotation, Vec2f(facing_left ? -4.0f : 4.0f, 0.0f));
+		arm.RotateBy(rotation + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -4.0f : 4.0f, 0.0f));
 	}
 
 	Vehicle_StandardControls(this, v);
