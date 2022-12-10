@@ -14,7 +14,7 @@ void onTick(CBlob@ this)
 		CBlob@[] crateblobs;
 		getBlobsByTag(""+this.getNetworkID(), @crateblobs);
 
-		if (crateblobs.length <= 1)
+		if (crateblobs.length == 0)
 		{
 			if (isServer())
 			{
@@ -26,7 +26,7 @@ void onTick(CBlob@ this)
 					b.setVelocity(Vec2f(XORRandom(3)-1.0f, -1.5f));
 				}
 
-				this.set_s16("spawn_timer", 50); // one minute,    or 30 sec with higher pop
+				this.set_s16("spawn_timer", 45+XORRandom(11));
 				this.Sync("spawn_timer", true);
 			}
 		}
@@ -53,6 +53,6 @@ void onRender(CSprite@ this)
 		Vec2f pos2d = blob.getScreenPos() + Vec2f(-32, 34);
 		GUI::SetFont("text");
 
-		GUI::DrawText("next crate: " + (blob.get_s16("spawn_timer")*(getPlayersCount() > 12 ? 0.5 : 1 )), pos2d, color_white);
+		GUI::DrawText("next crate: " + blob.get_s16("spawn_timer"), pos2d, color_white);
 	}
 }
