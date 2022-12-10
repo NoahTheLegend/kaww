@@ -631,7 +631,7 @@ shared class TDMCore : RulesCore
 	string[] average_maps = {
 		"SmallDesert.png",
 		"SmallTouge.png",
-		"SmallMortar.png",
+		"Mortar.png",
 		"SmallFactory.png",
 		"SmallClassic.png",
 		"SmallMoats.png",
