@@ -13,7 +13,7 @@ void onInit(CBlob@ this)
 	f32 damage_mod = 1.0f;
 	if (this.exists("damage_modifier") && this.get_f32("damage_modifier") > 0.05f) damage_mod = this.get_f32("damage_modifier");
 	this.set_f32(projDamageString, 1.0f);
-	this.set_f32(projExplosionRadiusString, 22.0f);
+	this.set_f32(projExplosionRadiusString, 24.0f);
 	this.set_f32(projExplosionDamageString, 15.0f*damage_mod);
 
 	this.set_u8("blocks_pierced", 0);
