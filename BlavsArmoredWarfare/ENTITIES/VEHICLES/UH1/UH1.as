@@ -629,7 +629,7 @@ void DoExplosion(CBlob@ this)
 	this.set_f32("map_damage_ratio", 0.4f);
 	f32 angle = this.get_f32("bomb angle");
 
-	Explode(this, 100.0f, 50.0f);
+	Explode(this, 100.0f, 100.0f);
 
 	for (int i = 0; i < 4; i++) 
 	{
