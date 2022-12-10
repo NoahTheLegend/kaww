@@ -56,7 +56,7 @@ void onRender(CSprite@ this)
 			Vec2f dim = Vec2f(40, 10); //95
 			Vec2f heatdim = Vec2f(40*percent, 10); //95
 
-			SColor color = SColor(255, 200+55*percent, 125-100*percent, 115-85*percent);
+			SColor color = SColor(255, 200+55*percent, 125-100*percent, 75-75*percent);
 
 			// Border
 			GUI::DrawRectangle(Vec2f(pos2d.x - dim.x - 2,                        pos2d.y + y - 4),
