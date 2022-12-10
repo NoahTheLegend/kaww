@@ -102,7 +102,15 @@ void onTick(CBlob@ this)
 										holder.server_Hit(this, this.getPosition(), Vec2f(), 0.2f, Hitters::fall, true);
 									}
 
-									float repair_amount = 0.275f;
+									float repair_amount = 0.35f;
+									if (blob.hasTag("bunker"))
+									{
+										repair_amount *= 4;
+									}
+									else if (blob.hasTag("structure"))
+									{
+										repair_amount *= 20;
+									}
 
 									if (blob.getHealth() + repair_amount <= blob.getInitialHealth())
 						            {
