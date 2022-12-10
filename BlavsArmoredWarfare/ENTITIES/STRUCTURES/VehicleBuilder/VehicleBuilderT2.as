@@ -41,7 +41,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a Bradley M2", "$bradley$", "bradley", "Light but armed with medium cannon APC.\nAlso has a javelin on the turret.\n\nPLUSES: Excellent engine power, fast, good elevation angles\nMINUSES: Weak armor\n\nUses 105mm and optionally HEAT warheads.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 45);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nPLUSES: Good engine power, fast, good elevation angles\nMINUSES: Medium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.");
