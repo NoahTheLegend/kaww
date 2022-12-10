@@ -72,7 +72,7 @@ void onTick(CBlob@ this)
 		@ownerBlob = @pilot;
 	}
 	else if (!ownerBlob.isMyPlayer() || ownerBlob.isAttached()) return; // only player holding this
-	CControls@ controls = getControls();
+	CControls@ controls = ownerBlob.getControls();
 	
 	// binoculars effect
 	ownerBlob.set_u32("dont_change_zoom", getGameTime()+3);
