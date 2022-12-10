@@ -175,7 +175,7 @@ void onTick(CBlob@ this)
 		if (this.hasTag("falling"))
 		{
 			if (getGameTime()%8==0)
-				this.getSprite().PlaySound("FallingAlarm.ogg", 1.0f, 1.25f);
+				this.getSprite().PlaySound("FallingAlarm.ogg", 1.0f, 1.3f);
 		}
 		if (getGameTime() >= this.get_u32("next_shoot"))
 		{
@@ -604,15 +604,20 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		this.Tag("ignore damage");
 		this.Tag("falling");
 		this.set_u32("falling_time", getGameTime());
+		this.server_SetTimeToDie(30);
 		return 0;
 	}
 	if (hitterBlob.getName() == "missile_javelin")
 	{
-		return damage * 0.85f;
+		return damage * 1.25f;
+	}
+	else if (hitterBlob.getName() == "ballista_bolt")
+	{
+		return damage * 1.75f;
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
-		return damage * (hitterBlob.hasTag("strong") ? 0.5f : 0.25f);
+		return damage * (hitterBlob.hasTag("strong") ? 0.45f : 0.33f);
 	}
 	return damage;
 }

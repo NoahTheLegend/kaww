@@ -153,7 +153,7 @@ void onInit(CBlob@ this)
 		backsideOffset = 16.0f; break;
 
 		case _uh1: // heli
-		backsideOffset = 24.0f; break;
+		backsideOffset = 48.0f; break;
 
 		case _bf109: // plane
 		backsideOffset = 8.0f; break;
@@ -629,7 +629,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	// if damage is not insignificant, prevent repairs for a time
 	if (damage > 0.25f)
 	{
-		this.set_u32("no_heal", getGameTime()+10*30);
+		this.set_u32("no_heal", getGameTime()+15*30);
 
 		if (isClient())
 		{

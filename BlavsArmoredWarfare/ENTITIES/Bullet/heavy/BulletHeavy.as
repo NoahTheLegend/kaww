@@ -9,6 +9,7 @@ void onInit(CBlob@ this)
 
 	this.Tag("projectile");
 	this.Tag("bullet");
+	this.Tag("strong");
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
