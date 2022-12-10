@@ -99,7 +99,7 @@ void sync_Color(CBlob@ this)
 	if (isServer())
 	{
 		AttachmentPoint@ turret = this.getAttachments().getAttachmentPointByName("TURRET");
-		bool pink = (XORRandom(4) == 0 || this.hasTag("pink"));
+		bool pink = (XORRandom(3) == 0 || this.hasTag("pink"));
 
 		CBitStream params;
 		params.write_bool(pink);
