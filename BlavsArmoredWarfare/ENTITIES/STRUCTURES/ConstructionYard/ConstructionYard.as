@@ -22,7 +22,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f(0, 0));
-	this.set_Vec2f("shop menu size", Vec2f(8, 4));
+	this.set_Vec2f("shop menu size", Vec2f(10, 4));
 	this.set_string("shop description", "Construct");
 	this.set_u8("shop icon", 12);
 	this.Tag("builder always hit");
@@ -52,13 +52,19 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Repair Station", "$repairstation$", "repairstation", "Build in an open area, it will repair friendly vehicles nearby it.");
-		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 150);
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 250);
+		ShopItem@ s = addShopItem(this, "Quarry", "$quarry$", "quarry", "A quarry to generate stone in exchange of wood.");
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 500);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 500);
+		AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 50);
 
 		s.customButton = true;
 		s.buttonwidth = 2;
-		s.buttonheight = 2;
+		s.buttonheight = 4;
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Repair Station", "$repairstation$", "repairstation", "Build in an open area, it will repair friendly vehicles nearby it.");
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 150);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 250);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Refinery", "$refinery$", "refinery", "Supply it with stone to produce scrap, which is used to build vehicles at the vehicle builder.");
