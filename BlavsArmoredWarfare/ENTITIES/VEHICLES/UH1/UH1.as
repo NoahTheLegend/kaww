@@ -33,7 +33,6 @@ void onInit(CBlob@ this)
 	
 	this.set_bool("lastTurn", false);
 	this.set_bool("music", false);
-	this.set_bool("glide", false);
 
 	this.addCommandID("shoot bullet");
 
@@ -289,18 +288,12 @@ void onTick(CBlob@ this)
 							if (pressed_a) newForce += leftVelo;
 							if (pressed_d) newForce += rightVelo;
 
-							if (pressed_m1) this.set_bool("glide", true);
-							else
-							{
-								this.set_bool("glide", false);
-								if (pressed_w) newForce += upVelo;
-								if (pressed_s) newForce += downVelo;
-							}
+							if (pressed_w) newForce += upVelo;
+							if (pressed_s) newForce += downVelo;
 						}
 						else
 						{
 							newForce -= Vec2f(upVelo.x*0.45f, upVelo.y*0.45f);
-							this.set_bool("glide", false);
 						}
 
 						Vec2f mousePos = ap.getAimPos();
