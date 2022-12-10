@@ -58,6 +58,7 @@ void onDie(CBlob@ this)
     	"medkit",
         "food",
         "mat_7mmround",
+        "mat_14mmround",
         "mat_bolts"
     };
     array<float> _chances =
@@ -67,19 +68,20 @@ void onDie(CBlob@ this)
         0.5,
         0.025,
 
-        0.08,
-        0.08,
-        0.02,
+        0.05,
+        0.05,
+        0.03,
+        0.04,
         0.03,
         0.02,
         0.01
     };
     array<u8> _amount =
     {
-        (XORRandom(3)+2),
-        (XORRandom(10)+6)*10,
-        (XORRandom(8)+3)*10,
-        50 + (XORRandom(26)*2),
+        (XORRandom(3)+1),
+        (XORRandom(5)+6)*10,
+        (XORRandom(5)+3)*10,
+        20 + (XORRandom(26)*2),
 
         1,
         1,
