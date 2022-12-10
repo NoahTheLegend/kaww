@@ -49,7 +49,7 @@ void onInit(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Heavy Bunker", "$heavybunker$", "heavybunker", "A terrifying reinforcement, ideal for holding landmarks.");
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 350);
 		AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 25);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Repair Station", "$repairstation$", "repairstation", "Build in an open area, it will repair friendly vehicles nearby it.");
