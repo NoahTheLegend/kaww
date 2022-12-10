@@ -110,6 +110,7 @@ void onTick(CBlob@ this)
 	if (this.hasTag("falling"))
 	{
 		if (isServer() && this.isOnGround()) this.server_Die();
+		this.setAngleDegrees(this.getAngleDegrees() + (Maths::Sin(getGameTime() / 5.0f) * 8.5f));
 	}
 	if (getGameTime() >= this.get_u32("next_shoot"))
 	{
@@ -237,6 +238,10 @@ void onTick(CBlob@ this)
 		this.getSprite().SetEmitSoundSpeed(0.5f + (this.get_f32("velocity") / SPEED_MAX * 0.4f) * (this.getVelocity().Length() * 0.15f));
 		
 		if (hmod < 0.7 && u32(getGameTime() % 20 * hmod) == 0) ParticleAnimated(CFileMatcher(smokes[XORRandom(smokes.length)]).getFirst(), this.getPosition(), Vec2f(0, 0), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 3 + XORRandom(4), XORRandom(100) * -0.001f, true);
+	}
+	if (this.hasTag("falling"))
+	{
+		this.setAngleDegrees(this.getAngleDegrees() + (Maths::Sin(getGameTime() / 5.0f) * 6.0f));
 	}
 }
 
@@ -521,7 +526,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		this.Tag("ignore damage");
 		this.Tag("falling");
-		this.server_SetTimeToDie(30);
+		if (isServer())
+		{
+			this.server_SetTimeToDie(30);
+			this.server_SetHealth(this.getInitialHealth());
+		}
 		this.set_u32("falling_time", getGameTime());
 		return 0;
 	}

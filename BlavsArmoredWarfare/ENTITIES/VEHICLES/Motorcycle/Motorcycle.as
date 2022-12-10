@@ -129,7 +129,6 @@ void onTick(CBlob@ this)
 
 		//stabilize rotation
 		f32 deg = this.getAngleDegrees();
-		printf(""+deg);
 		if ((!this.isFacingLeft() && deg > 270)
 		|| (this.isFacingLeft() && deg < 90))
 		{
