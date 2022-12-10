@@ -1,6 +1,6 @@
 #include "AllHashCodes.as"
 
-const float timelineHeight = 6.0f;
+const float timelineHeight = 22.0f;
 const float timelineLeftEnd = 0.34f;
 const float timelineRightEnd = 0.66f;
 
@@ -169,8 +169,10 @@ void onRender( CRules@ this )
 		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
 		
 		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
+		Vec2f custom_offset = Vec2f(0,0);
+		if (frame == 10 || frame == 11) custom_offset = Vec2f(0, -48);
 
-		GUI::DrawIcon("indicator_sheet.png", frame, Vec2f(16, 25), indicatorPos, 1.0f, vehicleTeamnum);
+		GUI::DrawIcon("indicator_sheet.png", frame, Vec2f(16, 25), indicatorPos + custom_offset, 1.0f, vehicleTeamnum);
 	}
 }
 
@@ -212,6 +214,12 @@ u8 getIndicatorFrame( int hash )
 
 		case _motorcycle:
 		frame = 8; break;
+		
+		case _bf109:
+		frame = 11; break;
+
+		case _uh1:
+		frame = 10; break;
 
 		case _outpost:
 		frame = 9; break;
