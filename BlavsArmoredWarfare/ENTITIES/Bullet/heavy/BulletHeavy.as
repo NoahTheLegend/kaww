@@ -5,7 +5,7 @@
 void onInit(CBlob@ this)
 {
 	if (!this.exists("bullet_damage_body")) { this.set_f32("bullet_damage_body", 0.33f); }
-	if (!this.exists("bullet_damage_head")) { this.set_f32("bullet_damage_head", 1.0f); }
+	if (!this.exists("bullet_damage_head")) { this.set_f32("bullet_damage_head", 0.75f); }
 
 	this.Tag("projectile");
 	this.Tag("bullet");
