@@ -157,7 +157,7 @@ namespace ShotgunParams
 {
 	const ::string CLASSNAME 			= "Shotgun"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.375f; // damage dealt to body
+	const ::f32 DAMAGE_BODY 			= 0.35f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.45f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.95f; // walk
@@ -199,8 +199,8 @@ namespace RangerParams
 {
 	const ::string CLASSNAME 			= "Ranger"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.35f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.6f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.375f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.65f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.9f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
@@ -284,7 +284,7 @@ namespace RevolverParams
 	const ::string CLASSNAME 			= "Revolver"; // case sensitive
 	// DAMAGE
 	const ::f32 DAMAGE_BODY 			= 0.4f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 1.25f; // damage dealt on headshot
+	const ::f32 DAMAGE_HEAD 			= 1.0f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
