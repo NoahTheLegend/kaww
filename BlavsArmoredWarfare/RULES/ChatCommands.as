@@ -107,6 +107,14 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 			this.SetTeamWon(1);
 			this.SetCurrentState(GAME_OVER);
 		}
+		else if (text_in == "!loadmapcycle")
+		{
+			string[] sub = text_in.split(" ");
+			if (sub.length > 1)
+			{
+				LoadMapCycle(sub[1]);
+			}
+		}
 		else if (text_in == "!debug")
 		{
 			CBlob@[] all;
