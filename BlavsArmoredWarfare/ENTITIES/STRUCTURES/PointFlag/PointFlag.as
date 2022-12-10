@@ -107,7 +107,7 @@ void onTick(CBlob@ this)
 
     for (u16 i = 0; i < blobs.size(); i++)
     {
-        if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead")) // Only players and builders    && blobs[i].getName() != "slave"
+        if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead") && !blobs[i].isAttached()) // Only players and builders    && blobs[i].getName() != "slave"
         {
 			if (is_siege && blobs[i].getTeamNum() != sieging_team)
 			{
@@ -136,15 +136,15 @@ void onTick(CBlob@ this)
     		this.set_s8(teamcapping, 1);
 
     		num_red = Maths::Min(num_red, 2);
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red * (getMap() !is null && isTDM ? 1 : 2.5));
+    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red * (getMap() !is null && isTDM ? 1 : 2));
 		}
     	else if (num_blue > 0 && num_red == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == 1 || this.getTeamNum() == 255)) // blue capping
     	{
     		this.set_u8("numcapping", num_blue);
     		this.set_s8(teamcapping, 0);
 
-    		num_red = Maths::Min(num_blue, 2);
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue * (getMap() !is null && isTDM ? 1 : 2.5));
+    		num_blue = Maths::Min(num_blue, 2);
+    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue * (getMap() !is null && isTDM ? 1 : 2));
 		}
     }
 	else if (this.get_u16(capture_prop) > 0
