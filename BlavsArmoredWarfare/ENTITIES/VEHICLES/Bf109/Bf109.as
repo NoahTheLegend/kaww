@@ -6,7 +6,7 @@ const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
 const u32 shootDelay = 1; // Ticks
-const f32 projDamage = 1.0f;
+const f32 projDamage = 0.85f;
 
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);
@@ -96,7 +96,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				for (u8 i = 0; i < inv.getItemsCount(); i++)
 				{
 					if (inv.getItem(i) is null || inv.getItem(i).getName() != "mat_7mmround") continue;
-					if (XORRandom(3) != 0) continue;
+					if (XORRandom(3) != 0) break;
 					inv.getItem(i).server_SetQuantity(inv.getItem(0).getQuantity()-1);
 					break;
 				}
@@ -540,7 +540,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (hitterBlob.hasTag("bullet"))
 	{
-		return damage *= 0.45f;
+		return damage *= 0.5f;
 	}
 	return damage;
 }
