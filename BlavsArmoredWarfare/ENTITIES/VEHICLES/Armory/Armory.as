@@ -373,3 +373,21 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		}
 	}
 }
+
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (hitterBlob.getName() == "missile_javelin" || hitterBlob.getName() == "ballista_bolt")
+	{
+		return damage * 1.25f;
+	}
+	if (hitterBlob.getName() == "grenade")
+	{
+		return damage * 0.5f;
+	}
+	if (hitterBlob.hasTag("bullet") && hitterBlob.hasTag("strong"))
+	{
+		return damage *= 1.5f;
+	}
+	return damage;
+}
