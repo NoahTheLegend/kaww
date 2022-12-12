@@ -608,7 +608,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (hitterBlob.getName() == "missile_javelin")
 	{
-		return damage * 1.25f;
+		return damage * 1.5f;
 	}
 	else if (hitterBlob.getName() == "ballista_bolt")
 	{
@@ -616,7 +616,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
-		return damage * (hitterBlob.hasTag("strong") ? 0.45f : 0.33f);
+		return damage * (hitterBlob.hasTag("strong") ? 0.6f : 0.4f);
 	}
 	return damage;
 }
