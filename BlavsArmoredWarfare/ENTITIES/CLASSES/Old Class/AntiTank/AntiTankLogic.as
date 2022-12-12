@@ -689,6 +689,15 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 	return proj;
 }
 
+void onDie(CBlob@ this)
+{
+	if (isServer() && this.get_u32("mag_bullets") > 0)
+	{
+		CBlob@ b = server_CreateBlob("mat_heatwarhead", -1, this.getPosition());
+		if (b !is null) b.server_SetQuantity(1);
+	}
+}
+
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
