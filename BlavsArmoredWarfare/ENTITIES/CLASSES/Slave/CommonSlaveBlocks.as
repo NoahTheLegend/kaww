@@ -109,13 +109,13 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 	}
 	{
 		BuildBlock b(0, "spikes", "$spikes$", "Spikes\nPlace on Stone Block\nfor Retracting Trap");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", BuilderCosts::spikes);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
 		blocks[0].push_back(b);
 	}
 	{
 		AddIconToken("$sandbags_icon$", "SandbagIcon.png", Vec2f(16, 16), 0);
-		BuildBlock b(0, "sandbags", "$sandbags_icon$", "Sandbags\nStand in an open space\nand tap this button.");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 75);
+		BuildBlock b(0, "sandbags", "$sandbags_icon$", "Sandbags\nBags densely filled with sand, great for stopping bullets");
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 50);
 		b.buildOnGround = true;
 		b.size.Set(24, 8);
 		blocks[0].push_back(b);
