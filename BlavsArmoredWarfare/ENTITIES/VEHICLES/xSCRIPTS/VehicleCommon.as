@@ -639,7 +639,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								if (this.get_u32("next_engine_turnon") <= getGameTime())
 								{
 									this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
-									this.set_u32("next_engine_turnon", getGameTime()+20);
+									this.set_u32("next_engine_turnon", getGameTime() + 40);
 								}
 
 								if (isClient())
@@ -710,7 +710,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								if (this.get_u32("next_engine_turnon") <= getGameTime())
 								{
 									this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
-									this.set_u32("next_engine_turnon", getGameTime()+20);
+									this.set_u32("next_engine_turnon", getGameTime() + 40);
 								}
 
 								if (isClient())

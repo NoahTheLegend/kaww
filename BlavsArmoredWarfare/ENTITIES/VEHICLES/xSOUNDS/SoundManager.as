@@ -16,8 +16,8 @@ void onInit(CBlob@ this)
     sprite.SetEmitSound(type ? "EngineRun_mid.ogg" : "EngineRun_low.ogg");
 
 	sprite.SetEmitSoundSpeed(1.0f);
-    sprite.SetEmitSoundVolume(1.0f);
-	sprite.SetEmitSoundPaused(false);
+    sprite.SetEmitSoundVolume(0.1f);
+	sprite.SetEmitSoundPaused(true);
 
     this.getShape().SetGravityScale(0.0f);
 }
