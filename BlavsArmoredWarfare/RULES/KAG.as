@@ -1,5 +1,5 @@
-#include "Default/DefaultGUI.as"
-#include "Default/DefaultLoaders.as"
+#include "DefaultGUI.as"
+#include "DefaultLoaders.as"
 #include "PrecacheTextures.as"
 #include "EmotesCommon.as"
 

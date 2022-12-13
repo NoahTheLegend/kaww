@@ -1,6 +1,6 @@
 // brain
 
-#include "/Entities/Common/Emotes/EmotesCommon.as"
+#include "EmotesCommon.as"
 
 namespace Strategy
 {
