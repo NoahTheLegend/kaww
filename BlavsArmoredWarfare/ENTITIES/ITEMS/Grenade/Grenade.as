@@ -67,7 +67,7 @@ void DoExplosion(CBlob@ this)
 	
 	WarfareExplode(this, this.get_f32(projExplosionRadiusString), this.get_f32(projExplosionDamageString));
 	
-	//if (isClient())
+	if (isClient())
 	{
 		for (int i = 0; i < 30; i++)
 		{
@@ -103,7 +103,7 @@ void onTick(CBlob@ this)
 {
 	if (isClient()) // a try to fix clientsideonly activation
 	{
-		if (this.hasTag("activated") && this.get_u8("exploding_2") == 0)
+		if (this.hasTag("activated") && this.get_u8("exploding_2") <= 1)
 		{
 			this.Untag("activated");
 		}
@@ -174,7 +174,7 @@ void onTick(CBlob@ this)
 
 void onTick(CSprite@ this)
 {
-	if (this.getBlob().hasTag("activated") && XORRandom(100) < 35)
+	if (this.getBlob().hasTag("activated"))
 	{
 		sparks(this.getBlob().getPosition(), this.getBlob().getAngleDegrees(), 3.5f + (XORRandom(10) / 5.0f), SColor(255, 255, 230, 0));
 	}
@@ -206,13 +206,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
             if (holder !is null && this !is null)
             {
-                this.Tag("activated");
 				this.set_bool("sync_tag", true);
 				this.Sync("sync_tag", true);
                 this.set_u8("exploding_2", 110);
                 this.Sync("exploding_2", true);
             }
         }
+		this.Tag("activated");
     }
 }
 
