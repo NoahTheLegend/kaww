@@ -16,7 +16,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 
 	Vehicle_Setup(this,
-	              3750.0f, // move speed  //103
+	              5000.0f, // move speed  //103
 	              0.4f,  // turn speed
 	              Vec2f(0.0f, 0.57f), // jump out velocity
 	              true  // inventory access
@@ -58,91 +58,82 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(9, 2));
+	this.set_Vec2f("shop menu size", Vec2f(8, 5));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
 	{
-		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press LMB while holding to arm, ~4 seconds until boom.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
+		ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
+		AddRequirement(s.requirements, "coin", "", "Coins", 5);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
+		ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC.", false);
+		AddRequirement(s.requirements, "coin", "", "Coins", 25);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Tank Trap", "$tanktrap$", "tanktrap", "Czech hedgehog, will harm any enemy vehicle that collides with it.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
+		ShopItem@ s = addShopItem(this, "105mm Shells", "$mat_bolts$", "mat_bolts", "Ammo for a tank's main gun.", false);
+		AddRequirement(s.requirements, "coin", "", "Coins", 50);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total. Bonus: allows medics to perform healing faster.", false);
+		AddRequirement(s.requirements, "coin", "", "Coins", 30);
+	}
+	{
+		u8 cost = 40;
+		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
+		AddRequirement(s.requirements, "coin", "", "Coins", cost);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
+		AddRequirement(s.requirements, "coin", "", "Coins", 25);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas an small explosion radius.", false);
+		AddRequirement(s.requirements, "coin", "", "Coins", 60);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
+		AddRequirement(s.requirements, "coin", "", "Coins", 40);
+	}
+
+	{
+		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nPLUSES: Very fast, medium firerate\nMINUSES: Very fragile armor, bad elevation angles\n\nUses 14.5mm.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nPLUSES: Fast, good firerate\nMINUSES: Weak armor, bad elevation angles\n\nUses 14.5mm.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 35);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nPLUSES: Good engine power, fast, good elevation angles\nMINUSES: Medium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nPLUSES: Thick armor, big cannon damage.\nMINUSES: Slow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses 105mm & 7.62mm.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 75);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy MachineGun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press E to heal. 6 uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "Heal to full health instantly.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue helmet, take 40% less bullet damage, and occasionally bounce bullets.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Lantern", "$lantern$", "lantern", "A source of light.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$crate$", "launcher_javelin", "Homing Missile launcher.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
-	{
-		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "14mm Rounds", "$mat_14mmround$", "mat_14mmround", "Used by APCs", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "105mm Rounds", "$mat_bolts$", "mat_bolts", "Ammunition for tank main guns.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "HEAT War Heads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammunition for anti-tank guns, helis, javelins, etc..", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 7);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "M22 Binoculars", "$binoculars$", "binoculars", "A pair of glasses with optical zooming.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$launcher_javelin$", "launcher_javelin", "Homing rocket launcher.\n\nUses HEAT warheads.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
-
-		s.customButton = true;
-
-		s.buttonwidth = 3;
-		s.buttonheight = 1;
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 375);
-
-		s.customButton = true;
-
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-	}
-	
 
 	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
 }
@@ -170,6 +161,18 @@ void onTick(CBlob@ this)
 {
 	if (this.getTickSinceCreated() == 60)
 	{
+		this.Tag("respawn");
+		CBlob@[] tents;
+   		getBlobsByName("tent", @tents);
+		for (u8 i = 0; i < tents.length; i++)
+		{
+			if (tents[i] !is null && tents[i].getTeamNum() == this.getTeamNum())
+			{
+				this.Untag("respawn");
+				break;
+			}
+		}
+		
 		InitClasses(this);
 	}
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
