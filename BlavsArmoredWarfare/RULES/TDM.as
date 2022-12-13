@@ -1019,6 +1019,16 @@ void Reset(CRules@ this)
 	//	Reset(this);
 	//}
 
+	for (u16 i = 0; i < getPlayerCount(); i++)
+    {
+        CPlayer@ player = getPlayer(i);
+		if (player is null) continue;
+        if (isServer())
+        {
+            player.server_setCoins(40);
+        }
+    }
+
 	TDMSpawns spawns();
 	TDMCore core(this, spawns);
 	Config(core);
