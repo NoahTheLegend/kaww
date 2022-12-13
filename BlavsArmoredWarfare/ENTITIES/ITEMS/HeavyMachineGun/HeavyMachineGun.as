@@ -139,10 +139,6 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 				angle = (-(aim_vec).getAngle() + 180.0f);
 				angle = Maths::Max(-75.0f , Maths::Min(angle , 75.0f));
 			}
-			else
-			{
-				this.SetFacingLeft(!facing_left);
-			}
 		}
 	}
 
