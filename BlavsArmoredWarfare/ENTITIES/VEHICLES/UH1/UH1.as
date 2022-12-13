@@ -606,7 +606,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		return 0;
 	}
-	if (hitterBlob.getName() == "missile_javelin")
+	else if (hitterBlob.getName() == "missile_javelin")
 	{
 		return damage * 1.5f;
 	}
