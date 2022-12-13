@@ -16,7 +16,8 @@ void onInit(CBlob@ this)
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;
 
-	this.inventoryButtonPos = Vec2f(4.0f, -8.0f);
+
+	this.inventoryButtonPos = Vec2f(-8.0f, -12.0f);
 
 	Vehicle_Setup(this,
 	    5000.0f, // move speed
