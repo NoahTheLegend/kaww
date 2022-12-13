@@ -238,10 +238,6 @@ void onTick(CBlob@ this)
 				this.set_u16(targetNetIDString, 0);
 			}
 		}
-		else
-		{
-			this.getSprite().PlaySound("NoAmmo.ogg", 0.55);
-		}
 	}
 
 	/*
