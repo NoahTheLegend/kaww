@@ -177,14 +177,13 @@ void onRender(CRules@ this)
 		serialised_team_hud.Reset();
 	}
 
-	string gamemode = this.get_string("bannertext");
-
-	GUI::DrawText(gamemode, Vec2f(15, getScreenHeight() / 6.25), SColor(255, 255, 255, 255));
-
 	string propname = "tdm spawn time " + p.getUsername();
 	if (p.getBlob() is null && this.exists(propname))
 	{
 		u8 spawn = this.get_u8(propname);
+
+		string gamemode = this.get_string("bannertext");
+		GUI::DrawText(gamemode, Vec2f(15, getScreenHeight() / 6.25), SColor(255, 255, 255, 255));
 
 		if (spawn != 255)
 		{
@@ -195,7 +194,10 @@ void onRender(CRules@ this)
 				{
 					GUI::DrawText(getTranslatedString("Your team ran out of respawns! Please, be patient and wait till game ends.") , Vec2f(getScreenWidth() / 2 - 265, getScreenHeight() / 4 + Maths::Sin(getGameTime() / 3.0f) * 5.0f), SColor(255, 255, 255, 55));
 				}
-				else GUI::DrawText(getTranslatedString("In Queue to Respawn...") , Vec2f(getScreenWidth() / 2 - 70, getScreenHeight() / 3 + Maths::Sin(getGameTime() / 3.0f) * 5.0f), SColor(255, 255, 255, 55));
+				else
+				{
+					GUI::DrawText(getTranslatedString("In Queue to Respawn...") , Vec2f(getScreenWidth() / 2 - 70, getScreenHeight() / 3 + Maths::Sin(getGameTime() / 3.0f) * 5.0f), SColor(255, 255, 255, 55));
+				}
 			}
 			else if (spawn == 253)
 			{
