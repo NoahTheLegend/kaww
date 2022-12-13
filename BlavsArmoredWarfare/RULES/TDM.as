@@ -300,7 +300,7 @@ shared class TDMSpawns : RespawnSystem
 			teamspawns.push_back(b);
 			return b.getPosition();
 		}
-		else if (getBlobsByName("tent", @spawns) || getBlobsByName("armory", @spawns))
+		else if (getBlobsByName("tent", @spawns) || getBlobsByName("importantarmory", @spawns))
 		{
 			for (uint step = 0; step < spawns.length; ++step)
 			{
@@ -671,13 +671,13 @@ shared class TDMCore : RulesCore
         getBlobsByName("tent", @tents);
 		string spawn_prop = "tent";
 		if (!getMap().getMarkers("blue main spawn", respawnPositions) && !getMap().getMarkers("red main spawn", respawnPositions))
-			spawn_prop = "armory";
+			spawn_prop = "importantarmory";
 		const string base_name = spawn_prop;
 
 		string map_name = getMap().getMapName();
 		
 		// destroy all previous spawns if present
-		if (spawn_prop != "armory")
+		if (spawn_prop != "importantarmory")
 		{
 			CBlob@[] oldBases;
 			getBlobsByName(base_name, @oldBases);
@@ -700,7 +700,7 @@ shared class TDMCore : RulesCore
 				if (!getMap().getMarkers("training main spawn", respawnPositions))
 				{
 					respawnPos = Vec2f(50.0f, map.getLandYAtX(50.0f / map.tilesize) * map.tilesize - 32.0f);
-					if (spawn_prop != "armory") SetupBase(server_CreateBlob(base_name, 2, respawnPos));
+					if (spawn_prop != "importantarmory") SetupBase(server_CreateBlob(base_name, 2, respawnPos));
 				}
 			}
 			else
@@ -711,7 +711,7 @@ shared class TDMCore : RulesCore
 					if (map.tilesize > 0)
 					{
 						respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
-						if (spawn_prop != "armory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
+						if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
 					}
 				}
 				else
@@ -719,7 +719,7 @@ shared class TDMCore : RulesCore
 					for (uint i = 0; i < respawnPositions.length; i++)
 					{
 						respawnPos = respawnPositions[i];
-						if (spawn_prop != "armory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
+						if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
 					}
 				}
 
@@ -729,14 +729,14 @@ shared class TDMCore : RulesCore
 				if (!getMap().getMarkers("red main spawn", respawnPositions))
 				{
 					respawnPos = Vec2f(map.tilemapwidth * map.tilesize - 150.0f, map.getLandYAtX(map.tilemapwidth - (150.0f / map.tilesize)) * map.tilesize - 32.0f);
-					if (spawn_prop != "armory")  SetupBase(server_CreateBlob(base_name, 1, respawnPos));
+					if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 1, respawnPos));
 				}
 				else
 				{
 					for (uint i = 0; i < respawnPositions.length; i++)
 					{
 						respawnPos = respawnPositions[i];
-						if (spawn_prop != "armory") SetupBase(server_CreateBlob(base_name, 1, respawnPos));
+						if (spawn_prop != "importantarmory") SetupBase(server_CreateBlob(base_name, 1, respawnPos));
 					}
 				}
 			}
