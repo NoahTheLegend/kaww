@@ -177,6 +177,10 @@ void onRender(CRules@ this)
 		serialised_team_hud.Reset();
 	}
 
+	string gamemode = this.get_string("bannertext");
+
+	GUI::DrawText(gamemode, Vec2f(15, getScreenHeight() / 6.25), SColor(255, 255, 255, 255));
+
 	string propname = "tdm spawn time " + p.getUsername();
 	if (p.getBlob() is null && this.exists(propname))
 	{
