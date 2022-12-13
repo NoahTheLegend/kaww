@@ -622,18 +622,15 @@ shared class TDMCore : RulesCore
             if (killer !is null && killer.getTeamNum() != victim.getTeamNum())
             {
                 addKill(killer.getTeamNum()); 
-				if (victim.getTeamNum() != killer.getTeamNum())
+				if (victim.getTeamNum() == 1)
 				{
-					if (victim.getTeamNum() == 1)
-					{
-						getRules().add_u16("blue_kills", 1);
-						victim.Sync("blue_kills", true);
-					}
-					else if (victim.getTeamNum() == 0)
-					{
-						getRules().add_u16("red_kills", 1);
-						victim.Sync("red_kills", true);
-					}
+					getRules().add_u16("blue_kills", 1);
+					getRules().Sync("blue_kills", true);
+				}
+				else if (victim.getTeamNum() == 0)
+				{
+					getRules().add_u16("red_kills", 1);
+					getRules().Sync("red_kills", true);
 				}
 			}
             else if (all_death_counts_as_kill)
