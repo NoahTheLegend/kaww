@@ -29,7 +29,7 @@ void onTick(CBlob@ this)
 	if (this.isAttached() && !this.hasTag("activated"))
 	{
 		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
-		if (ap !is null && ap.isKeyJustPressed(key_action3))
+		if (ap !is null && ap.isKeyJustPressed(key_action3) && ap.getOccupied() !is null && ap.getOccupied().isMyPlayer())
 		{
 			//if (!this.hasTag("no_pin")) Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
 			CBitStream params;
@@ -47,9 +47,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.getSprite().PlaySound("Lighter_Use", 1.00f, 0.90f + (XORRandom(100) * 0.30f));
 			sparks(this.getPosition(), 1, 0.25f);
 		}
-
-		this.Tag("activated");
-		this.set_bool("active", true);
 		
         if(isServer())
         {
@@ -57,7 +54,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
             if (point !is null)
 			{
 				CBlob@ holder = point.getOccupied();
-				if (holder !is null && this !is null)
+				if (holder !is null && this !is null && !this.hasTag("activated"))
 				{
 					CBlob@ blob = server_CreateBlob("molotov", this.getTeamNum(), this.getPosition());
 					holder.server_Pickup(blob);
@@ -74,5 +71,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				}
 			}
         }
+
+		this.Tag("activated");
+		this.set_bool("active", true);
     }
 }
