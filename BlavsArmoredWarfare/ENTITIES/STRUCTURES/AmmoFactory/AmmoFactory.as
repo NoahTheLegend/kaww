@@ -40,10 +40,72 @@ void onInit(CBlob@ this)
 	this.addCommandID("grenade");
 	this.addCommandID("mine");
 	this.addCommandID("helmet");
+
+	if (sprite is null) return;
+	CSpriteLayer@ icon = sprite.addSpriteLayer("icon", "AmmoFactoryIcons.png", 8, 8);
+	if (icon !is null)
+	{
+		int[] frames = {0,1,2,3,4,5,6,7};
+		icon.SetOffset(Vec2f(0,-11));
+		Animation@ anim = icon.addAnimation("default", 0, false);
+		if (anim !is null)
+		{
+			anim.AddFrames(frames);
+			icon.SetAnimation(anim);
+			icon.SetFrameIndex(0);
+		}
+	}
 }
 
 void onTick(CBlob@ this)
 {
+	if (isClient())
+	{
+		CSprite@ sprite = this.getSprite();
+		if (sprite !is null)
+		{
+			CSpriteLayer@ icon = sprite.getSpriteLayer("icon");
+			if (icon !is null)
+			{
+				u8 index = 0;
+				string b = this.get_string("prod_blob");
+				if (b == "mat_7mmround")
+				{
+					index = 0;
+				}
+				else if (b == "mat_14mmround")
+				{
+					index = 1;
+				}
+				else if (b == "mat_bolts")
+				{
+					index = 2;
+				}
+				else if (b == "mat_heatwarhead")
+				{
+					index = 3;
+				}
+				else if (b == "mat_molotov")
+				{
+					index = 4;
+				}
+				else if (b == "grenade")
+				{
+					index = 5;
+				}
+				else if (b == "mine")
+				{
+					index = 6;
+				}
+				else if (b == "helmet")
+				{
+					index = 7;
+				}
+				icon.SetAnimation("default");
+				icon.SetFrameIndex(index);
+			}
+		}
+	}
 	if (getNet().isServer())
 	{
 		int blobCount = this.get_s16(metal_prop);
@@ -60,6 +122,7 @@ void onTick(CBlob@ this)
 				else this.TakeBlob(metal_prop, this.get_u8("cost"));
 			
 				spawnMetal(this);
+				this.set_u32("last_prod", getGameTime());
 
 				this.set_bool(working_prop, false);
 
@@ -237,7 +300,7 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 		{
 			menu.deleteAfterClick = true;
 
-			CGridButton@ button  = menu.AddButton("$mat_7mmround$", "7mm Rounds", this.getCommandID("7mm"), Vec2f(1, 1), params);
+			CGridButton@ button0 = menu.AddButton("$mat_7mmround$", "7mm Rounds", this.getCommandID("7mm"), Vec2f(1, 1), params);
 			CGridButton@ button1 = menu.AddButton("$mat_14mmround$", "14mm Shells", this.getCommandID("14mm"), Vec2f(1, 1), params);
 			CGridButton@ button2 = menu.AddButton("$mat_bolts$", "105mm Shells", this.getCommandID("105mm"), Vec2f(1, 1), params);
 			CGridButton@ button3 = menu.AddButton("$mat_heatwarhead$", "HEAT Warheads", this.getCommandID("heats"), Vec2f(1, 1), params);
@@ -245,6 +308,43 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 			CGridButton@ button5 = menu.AddButton("$grenade$", "Grenade", this.getCommandID("grenade"), Vec2f(1, 1), params);
 			CGridButton@ button6 = menu.AddButton("$mine$", "Mine", this.getCommandID("mine"), Vec2f(1, 1), params);
 			CGridButton@ button7 = menu.AddButton("$helmet$", "Helmet", this.getCommandID("helmet"), Vec2f(1, 1), params);
+		
+			if (button0 !is null && button1 !is null && button2 !is null && button3 !is null && button4 !is null && button5 !is null && button6 !is null && button7 !is null)
+			{
+				if (this.get_string("prod_blob") == "mat_7mmround")
+				{
+					button0.SetEnabled(false);
+				}
+				else if (this.get_string("prod_blob") == "mat_14mmround")
+				{
+					button1.SetEnabled(false);
+				}
+				else if (this.get_string("prod_blob") == "mat_bolts")
+				{
+					button2.SetEnabled(false);
+				}
+				else if (this.get_string("prod_blob") == "mat_heatwarhead")
+				{
+					button3.SetEnabled(false);
+				}
+				else if (this.get_string("prod_blob") == "mat_molotov")
+				{
+					button4.SetEnabled(false);
+				}
+				else if (this.get_string("prod_blob") == "grenade")
+				{
+					button5.SetEnabled(false);
+				}
+				else if (this.get_string("prod_blob") == "mine")
+				{
+					button6.SetEnabled(false);
+				}
+				else if (this.get_string("prod_blob") == "helmet")
+				{
+					button7.SetEnabled(false);
+				}
+			}
+
 		}
 	}
 }
@@ -288,7 +388,8 @@ void onRender(CSprite@ this)
 	Vec2f mouseWorld = getControls().getMouseWorldPos();
 	const f32 renderRadius = (blob.getRadius()) * 0.95f;
 	bool mouseOnBlob = (mouseWorld - center).getLength() < renderRadius;
-	if (mouseOnBlob)
+	if (!mouseOnBlob) return;
+
 	{
 		//VV right here VV
 		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 30);
@@ -302,6 +403,30 @@ void onRender(CSprite@ this)
 			GUI::DrawRectangle(Vec2f(pos2d.x - dim.x + 2, pos2d.y + y + 2), Vec2f(pos2d.x - dim.x + perc * 2.0f * dim.x - 2, pos2d.y + y + dim.y - 2), SColor(0xff8bbc7e));
 		}
 	}
+
+	u32 time = blob.get_u32("last_prod");
+	f32 req_time = (blob.get_u8("prod_time")+10) * 30;
+	f32 time_left = time + req_time;
+	f32 percent = (time_left - getGameTime()) / req_time;
+
+	//printf("time "+time);
+	//printf("req_time "+req_time);
+	//printf("time_left "+time_left);
+	//printf("getgametime "+getGameTime());
+	//printf("perc "+percent);
+
+	Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 0);
+	const f32 y = blob.getHeight() * 3.7f;
+	Vec2f dim = Vec2f(24, 5); //95
+	Vec2f percdim = Vec2f(Maths::Min(24-24*percent, 24), 5); //95
+
+	SColor color = blob.getTeamNum() == 1 ? SColor(255, 255, 55, 55) : SColor(200, 55, 55, 255);
+	// Border
+	GUI::DrawRectangle(Vec2f(pos2d.x - dim.x - 2,                        pos2d.y + y - 4),
+						Vec2f(pos2d.x + dim.x + 2,                        pos2d.y + y + dim.y + 4));
+
+	GUI::DrawRectangle(Vec2f(pos2d.x - percdim.x + 2,                    pos2d.y + y + 0),
+						Vec2f(pos2d.x + percdim.x - 1,                    pos2d.y + y + percdim.y - 1), color);
 }
 
 void onDie(CBlob@ this)
