@@ -15,7 +15,6 @@ void onInit(CSprite@ this)
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (caller is null) return;
-	if (this.isAttached() && caller.getTeamNum() != this.getTeamNum()) return; // prevent using from hands
 
 	if (caller.getHealth() < caller.getInitialHealth())
 	{
