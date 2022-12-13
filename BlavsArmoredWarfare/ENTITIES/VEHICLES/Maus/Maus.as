@@ -91,20 +91,20 @@ void onInit(CBlob@ this)
 	}
 
 	this.addCommandID("sync_color");
-	sync_Color(this);
+	if (isServer())
+	{
+		sync_Color(this);
+	}
 }
 
 void sync_Color(CBlob@ this)
 {
-	if (isServer())
-	{
-		AttachmentPoint@ turret = this.getAttachments().getAttachmentPointByName("TURRET");
-		bool pink = (XORRandom(3) == 0 || this.hasTag("pink"));
+	AttachmentPoint@ turret = this.getAttachments().getAttachmentPointByName("TURRET");
+	bool pink = (XORRandom(3) == 0 || this.hasTag("pink"));
 
-		CBitStream params;
-		params.write_bool(pink);
-		this.SendCommand(this.getCommandID("sync_color"), params);
-	}
+	CBitStream params;
+	params.write_bool(pink);
+	this.SendCommand(this.getCommandID("sync_color"), params);
 }
 
 void onTick(CBlob@ this)
@@ -223,7 +223,7 @@ void onTick(CBlob@ this)
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-	if (isClient() && cmd == this.getCommandID("sync_color"))
+	if (cmd == this.getCommandID("sync_color"))
 	{
 		bool pink = params.read_bool();
 		if (pink)
@@ -240,11 +240,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				{
 					front.SetFrameIndex(0);
 					sprite.SetFrameIndex(0);
+					front.SetAnimation("default");
+					sprite.SetAnimation("default");
 				}
 				else
 				{
 					front.SetFrameIndex(1);
 					sprite.SetFrameIndex(1);
+					front.SetAnimation("default");
+					sprite.SetAnimation("default");
 				}
 			}
 		}
