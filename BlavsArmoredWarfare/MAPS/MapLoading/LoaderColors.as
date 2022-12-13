@@ -291,6 +291,8 @@ namespace map_colors
 
 		blue_armory            = 0xff0d6f98,
 		red_armory             = 0xff980f0d,
+		blue_iarmory           = 0xff0d6faa, // armory for break the truck gamemode
+		red_iarmory            = 0xff980faa,
 
 		blue_cruiser		   = 0xffb4cbd6,
 		red_cruiser		       = 0xffded1d1,
