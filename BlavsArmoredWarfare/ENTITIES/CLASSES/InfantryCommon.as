@@ -188,7 +188,7 @@ namespace ShotgunParams
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s8 RELOAD_TIME 				= 80; // time to reload
 	const ::u32 MAG_SIZE 				= 4; // max bullets in mag
-	const ::u8 DELAYAFTERFIRE 			= 20; // time between shots
+	const ::u8 DELAYAFTERFIRE 			= 15; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 18.0f; // speed that bullets fly
 	const ::f32 BULLET_LIFETIME 		= 0.5f; // in seconds, time for bullet to die
