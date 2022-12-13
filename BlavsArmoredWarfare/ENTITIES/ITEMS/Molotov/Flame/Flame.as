@@ -50,14 +50,14 @@ void onTick(CBlob@ this)
 		{
 			CBlob@ b = blobs[i];
 			if (b is null) return;
-			if (b.getName() == "mat_molotov" && !b.get_bool("active"))
+			if (b.getName() == "mat_molotov" && !b.get_bool("active") && !b.isAttached() && !b.isInInventory())
 			{
 				CBitStream params;
 				b.SendCommand(b.getCommandID("activate"), params);
 			}
 			if (b.hasTag("flesh") || b.hasTag("weak vehicle") || b.hasTag("apc"))
 			{
-				if (getGameTime() % 10 == 0)
+				if (getGameTime() % 8 == 0)
 				{
 					this.server_Hit(b, this.getPosition(), Vec2f(0, 2), 0.25f, Hitters::fire, true);
 				}
