@@ -131,13 +131,23 @@ void ClientFire(CBlob@ this)
 
 		ParticleAnimated("SmallExplosion3", (pos_2) + vel*0.8, getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 
-		if (this.isFacingLeft())
+
+		bool no_muzzle = false;
+
+		#ifdef STAGING
+			no_muzzle = true;
+		#endif
+
+		if (!no_muzzle)
 		{
-			ParticleAnimated("Muzzleflashflip", pos_2 - Vec2f(0.0f, 3.0f) + vel*0.16, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-		}
-		else
-		{
-			ParticleAnimated("Muzzleflashflip", pos_2 + Vec2f(0.0f, 3.0f) + vel*0.16, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			if (this.isFacingLeft())
+			{
+				ParticleAnimated("Muzzleflashflip", pos_2 - Vec2f(0.0f, 3.0f) + vel*0.16, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			}
+			else
+			{
+				ParticleAnimated("Muzzleflashflip", pos_2 + Vec2f(0.0f, 3.0f) + vel*0.16, getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			}
 		}
 	}
 }
