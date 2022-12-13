@@ -43,7 +43,7 @@ void InitClasses(CBlob@ this)
 	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper", "---- Sniper ----\n\nLong range sniper.\nHP: 175\nLMB: Shoot\nRMB: Scope in\nSPACEBAR: Knife");
 	addPlayerClass(this, "---- Anti-Tank ----", "$antitank_class_icon$", "antitank", "---- Anti-Tank ----\n\nEliminate tanks onfoot\nHP: 225.\nLMB: RPG\nRMB: Aim\nSPACEBAR: Knife");
 	//addPlayerClass(this, "---- Medic ----", "$medic_class_icon$", "mp5", "---- Medic ----\n\nHeal nearby teammates.\nLMB: MP5\nRMB: Knife");
-	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5", "---- MP5 ----\n\nHigh rate of fire.\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Heal pack");
+	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5", "---- MP5 ----\n\nHigh rate of fire\nTakes only 50% HP healed from food.\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Heal pack");
 	//addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg", "---- LMG ----\n\nExtreme firepower.\nLMB: LMG\nRMB: ADS");
 	//addPlayerClass(this, "---- Paratrooper ----", "$paratrooper_class_icon$", "paratrooper", "---- Paratrooper ----\n\nUse a parachute.\nLMB: Ak47\nRMB: Knife");
 }
