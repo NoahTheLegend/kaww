@@ -621,8 +621,21 @@ shared class TDMCore : RulesCore
         {
             if (killer !is null && killer.getTeamNum() != victim.getTeamNum())
             {
-                addKill(killer.getTeamNum());
-            }
+                addKill(killer.getTeamNum()); 
+				if (victim.getTeamNum() != killer.getTeamNum())
+				{
+					if (victim.getTeamNum() == 1)
+					{
+						getRules().add_u16("blue_kills", 1);
+						victim.Sync("blue_kills", true);
+					}
+					else if (victim.getTeamNum() == 0)
+					{
+						getRules().add_u16("red_kills", 1);
+						victim.Sync("red_kills", true);
+					}
+				}
+			}
             else if (all_death_counts_as_kill)
             {
                 for (int i = 0; i < rules.getTeamsNum(); i++)
@@ -786,6 +799,36 @@ shared class TDMCore : RulesCore
 				}
 			}
 		}
+		else if (getGameTime() >= rules.get_u32("game_end_time"))
+		{
+			if (rules.getCurrentState() != GAME_OVER)
+			{
+				u16 blue_kills = getRules().get_u16("blue_kills");
+				u16 red_kills = getRules().get_u16("red_kills");
+
+				if (red_kills != blue_kills)
+				{
+					u8 team_won = (red_kills > blue_kills ? 1 : 0);
+					team_wins_on_end = team_won;
+					CTeam@ teamis = rules.getTeam(team_won);
+					rules.SetTeamWon(team_won);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );
+				}
+				else
+				{
+					rules.SetTeamWon(-1);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					rules.SetGlobalMessage("It's a tie!");
+					return;
+				}
+				rules.set_s8("team_wins_on_end", team_wins_on_end);
+				return;
+			}
+		}
+		
+		
+
 		if (!flags_wincondition)
 		{
 			int highkills = 0;
@@ -1003,6 +1046,9 @@ void Reset(CRules@ this)
 	this.Untag("synced_time");
 	this.Untag("synced_siege");
 
+	this.set_u16("blue_kills", 0);
+	this.set_u16("red_kills", 0);
+
 	//if (this.get_s16("blueTickets") < 1)
 	//{
 	//	this.set_s16("blueTickets", 1);
@@ -1149,7 +1195,7 @@ void onTick(CRules@ this)
 		}
 		if (blue_flags != red_flags && getGameTime() < (this.get_u32("game_end_time") - 60*30))
 		{
-			printf("b "+blue_flags+" r "+red_flags);
+			//printf("b "+blue_flags+" r "+red_flags);
 			this.set_u32("game_end_time", this.get_u32("game_end_time") - 30);
 		}
 	}

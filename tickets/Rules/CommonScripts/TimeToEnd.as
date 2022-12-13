@@ -62,9 +62,34 @@ void onTick(CRules@ this)
 		{
 			if(redTickets>blueTickets)
 				teamWonNumber = 1;
-
 			else if(blueTickets>redTickets)
 				teamWonNumber = 0;
+			else teamWonNumber = -1;
+		}
+
+		if (redTickets == 0 && blueTickets == 0)
+		{
+			u8 players_blue;
+			u8 players_red;
+			for (u8 i = 0; i < getPlayersCount(); i++)
+			{
+				if (getPlayer(i) !is null && getPlayer(i).getBlob() !is null)
+				{
+					if (getPlayer(i).getTeamNum() == 0) players_blue++;
+					else if (getPlayer(i).getTeamNum() == 1) players_red++;
+				}
+			}
+
+			if (players_blue > players_red) teamWonNumber = 0;
+			else if (players_red > players_blue) teamWonNumber = 1;
+			else
+			{
+				u16 blue_kills = this.get_u16("blue_kills");
+				u16 red_kills = this.get_u16("red_kills");
+				if (blue_kills > red_kills) teamWonNumber = 0;
+				else if (red_kills > blue_kills) teamWonNumber = 1;
+				else teamWonNumber = -1;
+			}
 		}
 
 		if (teamWonNumber >= 0)
