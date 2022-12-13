@@ -1,4 +1,4 @@
-#include "/Entities/Common/GUI/ActorHUDCON.as";
+#include "ActorHUDCON.as";
 
 const int slotsSize = 6;
 
