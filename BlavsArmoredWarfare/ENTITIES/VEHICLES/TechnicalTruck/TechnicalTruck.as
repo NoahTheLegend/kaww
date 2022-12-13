@@ -67,10 +67,7 @@ void onTick(CBlob@ this)
 		if (point !is null)
 		{
 			CBlob@ tur = point.getOccupied();
-			if (isServer() && tur !is null)
-			{
-				tur.server_setTeamNum(this.getTeamNum());
-			}
+			if (isServer() && tur !is null) tur.server_setTeamNum(this.getTeamNum());
 		}
 	}
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
