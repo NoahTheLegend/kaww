@@ -382,7 +382,11 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 		}
 	}
 
-	if (this.hasTag("scopedin"))
+	bool javelin = false;
+	CBlob@ b = this.getCarriedBlob();
+	if (b !is null && b.getName() == "launcher_javelin") javelin = true;
+
+	if (this.hasTag("scopedin") || javelin)
 	{
 		zoom_target = 1.0f; //1.25f
 		zoomSpeed *= 0.55f; //0.4f
