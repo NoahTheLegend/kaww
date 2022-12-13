@@ -215,6 +215,19 @@ void onTick(CBlob@ this)
 		return;
 	}
 
+	if (getGameTime() % 30 == 0 && this.hasTag("engine_can_get_stuck") && this.getHealth() <= this.getInitialHealth()/6 && XORRandom(15) == 0) // jam engine on low hp
+	{
+		this.set_bool("engine_stuck", true);
+		this.set_u32("engine_stuck_time", getGameTime()+90+XORRandom(90));
+		this.getSprite().PlaySound("EngineStart_tank", 1.5f, 0.75f + XORRandom(11)*0.01f);
+	}
+	else if (this.get_u32("engine_stuck_time") <= getGameTime())
+	{
+		if (this.get_u32("engine_stuck_time") == getGameTime())
+			this.getSprite().PlaySound("EngineStart_tank", 2.5f, 1.0f + XORRandom(11)*0.01f);
+		this.set_bool("engine_stuck", false);
+	}
+
 	// wheels
 	if (this.getShape().vellen > 0.11f && !this.isAttached())
 	{
