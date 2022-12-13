@@ -534,11 +534,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		this.set_u32("falling_time", getGameTime());
 		return 0;
 	}
-	if (hitterBlob.getName() == "missile_javelin")
+	else if (hitterBlob.getName() == "missile_javelin")
 	{
 		return damage * 0.75f;
 	}
-	if (hitterBlob.hasTag("bullet"))
+	else if (hitterBlob.hasTag("bullet"))
 	{
 		return damage *= 0.5f;
 	}
