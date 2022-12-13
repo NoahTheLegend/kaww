@@ -313,13 +313,23 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 
 		float _angle = this.isFacingLeft() ? -anglereal+180 : anglereal; // on turret spawn it works wrong otherwise
 		_angle += -0.099f + (XORRandom(4) * 0.01f);
-		if (this.isFacingLeft())
+
+		bool no_muzzle = false;
+
+		#ifdef STAGING
+			no_muzzle = true;
+		#endif
+
+		if (!no_muzzle)
 		{
-			ParticleAnimated("Muzzleflash", pos + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), _angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-		}
-		else
-		{
-			ParticleAnimated("Muzzleflashflip", pos + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), _angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			if (this.isFacingLeft())
+			{
+				ParticleAnimated("Muzzleflash", pos + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), _angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			}
+			else
+			{
+				ParticleAnimated("Muzzleflashflip", pos + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), _angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+			}
 		}
 
 		CPlayer@ p = getLocalPlayer();
