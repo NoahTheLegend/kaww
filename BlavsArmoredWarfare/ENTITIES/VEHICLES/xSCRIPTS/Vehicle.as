@@ -16,6 +16,7 @@ const u8 turretShowHPSeconds = 8;
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
+	this.addCommandID("jam_engine");
 
 	s8 armorRating = 0;
 	bool hardShelled = false;
@@ -217,16 +218,23 @@ void onTick(CBlob@ this)
 		return;
 	}
 
-	if (getGameTime() % 30 == 0 && this.hasTag("engine_can_get_stuck") && this.getHealth() <= this.getInitialHealth()/6 && XORRandom(15) == 0) // jam engine on low hp
+	if (isServer())
 	{
-		this.set_bool("engine_stuck", true);
-		this.set_u32("engine_stuck_time", getGameTime()+90+XORRandom(90));
-		this.getSprite().PlaySound("EngineStart_tank", 1.5f, 0.75f + XORRandom(11)*0.01f);
+		if (getGameTime() % 30 == 0 && this.hasTag("engine_can_get_stuck") && this.getHealth() <= this.getInitialHealth()/6 && XORRandom(15) == 0) // jam engine on low hp
+		{
+			this.set_bool("engine_stuck", true);
+			this.set_u32("engine_stuck_time", getGameTime()+90+XORRandom(90));
+			
+			CBitStream params;
+			params.write_u32(this.get_u32("engine_stuck_time"));
+			this.SendCommand(this.getCommandID("jam_engine"), params);
+		}
 	}
-	else if (this.get_u32("engine_stuck_time") <= getGameTime())
+	printf(""+this.get_u32("engine_stuck_time"));
+
+	if (this.get_bool("engine_stuck") && this.get_u32("engine_stuck_time") <= getGameTime())
 	{
-		if (this.get_u32("engine_stuck_time") == getGameTime())
-			this.getSprite().PlaySound("EngineStart_tank", 2.5f, 1.0f + XORRandom(11)*0.01f);
+		this.getSprite().PlaySound("EngineStart_tank", 2.5f, 1.0f + XORRandom(11)*0.01f);
 		this.set_bool("engine_stuck", false);
 	}
 
@@ -554,6 +562,17 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		u8 current_recounted = params.read_u8();
 		v.ammo_types[current_recounted].ammo_stocked = params.read_u16();
 		v.ammo_types[current_recounted].loaded_ammo = params.read_u8();
+	}
+	else if (cmd == this.getCommandID("jam_engine"))
+	{
+		if (isClient())
+		{
+			u32 time;
+			if (!params.saferead_u32(time)) return;
+			this.set_bool("engine_stuck", true);
+			this.set_u32("engine_stuck_time", time);
+			this.getSprite().PlaySound("EngineStart_tank", 1.5f, 0.725f + XORRandom(11)*0.01f);
+		}
 	}
 }
 
