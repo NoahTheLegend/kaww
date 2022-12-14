@@ -1045,6 +1045,8 @@ void Reset(CRules@ this)
 
 	this.set_u16("blue_kills", 0);
 	this.set_u16("red_kills", 0);
+	this.Sync("blue_kills", true);
+	this.Sync("red_kills", true);
 
 	//if (this.get_s16("blueTickets") < 1)
 	//{
