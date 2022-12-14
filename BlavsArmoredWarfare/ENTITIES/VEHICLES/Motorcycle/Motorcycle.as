@@ -268,7 +268,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
-	if (blob.hasTag("vehicle"))
+	if (blob.hasTag("vehicle") || blob.hasTag("flesh"))
 	{
 		return false;
 	}
