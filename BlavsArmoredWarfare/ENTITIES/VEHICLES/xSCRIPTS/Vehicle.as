@@ -44,6 +44,7 @@ void onInit(CBlob@ this)
 
 		case _transporttruck: // vanilla truck?
 		case _armory: // shop truck
+		case _importantarmory:
 		case _btr82a: // big APC
 		case _btrturret: // big APC cannon
 		case _bradley:
@@ -182,7 +183,8 @@ void onInit(CBlob@ this)
 		case _techtruck: // truck
 		intake = 150.0f; break;
 
-		case _armory :// armory
+		case _armory: // armory
+		case _importantarmory:
 		intake = 100.0f; break;
 
 		case _motorcycle: // bike!
