@@ -79,7 +79,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press E to heal. 6 uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 2);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "Heal to full health instantly.", false);
@@ -118,7 +118,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "HEAT War Heads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammunition for anti-tank guns, helis, javelins, etc..", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 7);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "M22 Binoculars", "$binoculars$", "binoculars", "A pair of glasses with optical zooming.", false);
@@ -255,17 +255,17 @@ void onDie(CBlob@ this)
 {
     Explode(this, 64.0f, 1.0f);
 
-	CBlob@[] tents;
-	getBlobsByName("tent", @tents);
-
-	if (tents.length == 0)
-	{
-		u8 team = (this.getTeamNum() == 0 ? 1 : 0);
-		getRules().SetTeamWon(team);
-		getRules().SetCurrentState(GAME_OVER);
-		CTeam@ teamis = getRules().getTeam(team);
-		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
-	}
+	//CBlob@[] tents;
+	//getBlobsByName("tent", @tents);
+//
+	//if (tents.length == 0)
+	//{
+	//	u8 team = (this.getTeamNum() == 0 ? 1 : 0);
+	//	getRules().SetTeamWon(team);
+	//	getRules().SetCurrentState(GAME_OVER);
+	//	CTeam@ teamis = getRules().getTeam(team);
+	//	if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
+	//}
 }
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)

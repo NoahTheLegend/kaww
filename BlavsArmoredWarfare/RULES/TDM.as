@@ -121,7 +121,7 @@ void Config(TDMCore@ this)
 	this.sudden_death = this.kills_to_win_per_player <= 0;
 
 	//how long for the game to play out?
-	f32 gameDurationMinutes = 15.0f + getPlayersCount()*1.5; //cfg.read_f32("gameDurationMinutes", 7.0f)
+	f32 gameDurationMinutes = 15.0f + getPlayersCount()*2.5; //cfg.read_f32("gameDurationMinutes", 7.0f)
 	
 	// basic time
 	this.gameDuration = (getTicksASecond() * 60 * gameDurationMinutes) + this.warmUpTime;
@@ -1045,6 +1045,8 @@ void Reset(CRules@ this)
 
 	this.set_u16("blue_kills", 0);
 	this.set_u16("red_kills", 0);
+	this.Sync("blue_kills", true);
+	this.Sync("red_kills", true);
 
 	//if (this.get_s16("blueTickets") < 1)
 	//{
@@ -1231,14 +1233,14 @@ void onTick(CRules@ this)
 	}
 	if (getGameTime()%150==0) //every 5 seconds give a coin
 	{
-		if (this.get_s16("blueTickets") > 125) 
+		if (this.get_s16("blueTickets") > 200) 
 		{
-			this.set_s16("blueTickets", 125);
+			this.set_s16("blueTickets", 200);
 			this.Sync("blueTickets", true);
 		}
-		if (this.get_s16("redTickets") > 125)
+		if (this.get_s16("redTickets") > 200)
 		{
-			this.set_s16("redTickets", 125);
+			this.set_s16("redTickets", 200);
 			this.Sync("redTickets", true);
 		}
 		for (u16 i = 0; i < getPlayerCount(); i++)

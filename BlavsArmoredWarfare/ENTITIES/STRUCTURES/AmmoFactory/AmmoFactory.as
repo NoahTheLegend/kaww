@@ -111,18 +111,19 @@ void onTick(CBlob@ this)
 		int blobCount = this.get_s16(metal_prop);
 		CInventory@ inventory = this.getInventory();
 
-		if((this.getBlobCount(metal) > 0 || blobCount >= 1) && inventory.getItemsCount() <= 24)
+		if(blobCount >= this.get_u8("cost"))
 		{
 			this.set_bool(working_prop, true);
 
 			//only convert every conversion_frequency seconds
 			if (getGameTime() % ((10 + (this.get_u8("prod_time"))) * getTicksASecond()) == this.get_u8(unique_prop))
 			{
-				if(blobCount >= this.get_u8("cost"))this.sub_s16(metal_prop, this.get_u8("cost"));
+				if(blobCount >= this.get_u8("cost")) this.sub_s16(metal_prop, this.get_u8("cost"));
 				else this.TakeBlob(metal_prop, this.get_u8("cost"));
 			
 				spawnMetal(this);
 				this.set_u32("last_prod", getGameTime());
+				this.Sync("last_prod", true);
 
 				this.set_bool(working_prop, false);
 
@@ -255,8 +256,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "mat_heatwarhead");
 		this.set_u8("prod_amount", 3);
-		this.set_u8("prod_time", 15);
-		this.set_u8("cost", 6);
+		this.set_u8("prod_time", 20);
+		this.set_u8("cost", 7);
 	}
 	else if (cmd == this.getCommandID("molotov"))
 	{
@@ -350,16 +351,19 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (hitterBlob.getTeamNum() == this.getTeamNum()) damage *= 5;
+{  
 	switch (customData)
 	{
 	
      	case Hitters::builder:
-			damage *= 7.00f;
+			damage *= 2.00f;
 			break;
 
 	}
+	if (hitterBlob.getName() == "balista_bolt" || hitterBlob.getName() == "grenade")
+	{
+		damage *= 5.0f;
+	} 
 	return damage;
 }
 

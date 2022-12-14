@@ -8,6 +8,7 @@ void onInit(CBlob@ this)
 	this.Tag("tank");
 	this.Tag("deal_bunker_dmg");
 	this.Tag("reduce_upper_dmg");
+	this.Tag("engine_can_get_stuck");
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
@@ -205,6 +206,7 @@ void onTick(CBlob@ this)
 			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
 			soundmanager.setVelocity(this.getVelocity());
 			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+			soundmanager.set_bool("engine_stuck", this.get_bool("engine_stuck"));
 		}
 	}
 	if (this.exists("followid2"))
@@ -217,6 +219,7 @@ void onTick(CBlob@ this)
 			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
 			soundmanager.setVelocity(this.getVelocity());
 			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+			soundmanager.set_bool("engine_stuck", this.get_bool("engine_stuck"));
 		}
 	}
 }
