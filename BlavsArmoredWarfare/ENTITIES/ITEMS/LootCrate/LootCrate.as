@@ -79,17 +79,17 @@ void onDie(CBlob@ this)
     array<u8> _amount =
     {
         (XORRandom(3)+1),
-        (XORRandom(5)+6)*10,
-        (XORRandom(5)+3)*10,
+        (XORRandom(8)+6)*10,
+        (XORRandom(8)+3)*10,
         20 + (XORRandom(26)*2),
 
         1,
         1,
         1,
         1,
-        1,
-        1,
-        1
+        50+(XORRandom(2)==0?50:0),
+        15,
+        4
     };
 
     if (getNet().isServer())
