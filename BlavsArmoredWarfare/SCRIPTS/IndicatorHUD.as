@@ -206,6 +206,7 @@ u8 getIndicatorFrame( int hash )
 		case _antitank:
 		case _transporttruck:
 		case _armory:
+		case _importantarmory:
 		frame = 6; break;
 
 		case _mp5:

@@ -19,6 +19,7 @@ enum EntityHash
 	_bradley = -1543244522, // bradley m2
 	_transporttruck = -384075523, // vanilla truck?
 	_armory = -2000954281, // shop truck
+	_importantarmory = -1712154697, // break the truck truck
 	_outpost = 1262542481, // outpost
 	
 	_bf109 = 948257107, // plane
