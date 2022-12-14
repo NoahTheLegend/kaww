@@ -350,16 +350,19 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (hitterBlob.getTeamNum() == this.getTeamNum()) damage *= 5;
+{  
 	switch (customData)
 	{
 	
      	case Hitters::builder:
-			damage *= 7.00f;
+			damage *= 2.00f;
 			break;
 
 	}
+	if (hitterBlob.getName() == "balista_bolt" || hitterBlob.getName() == "grenade")
+	{
+		damage *= 5.0f;
+	} 
 	return damage;
 }
 
