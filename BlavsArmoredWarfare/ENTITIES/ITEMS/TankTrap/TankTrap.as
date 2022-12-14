@@ -13,11 +13,15 @@ bool canBePickedUp(CBlob@ this, CBlob@ blob)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (customData == Hitters::fall)
+	{
+		return 0;
+	}
 	if (customData == Hitters::explosion)
 	{
-		return damage * 0.35;
+		return damage * 0.25;
 	}
-	return customData == Hitters::builder? this.getInitialHealth() / 3 : damage;
+	return customData == Hitters::builder ? this.getInitialHealth() / 4 : damage;
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)

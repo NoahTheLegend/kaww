@@ -580,10 +580,15 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					const f32 angle = this.getAngleDegrees();
 					// set facing
 					blob.SetFacingLeft(this.isFacingLeft());
-					const bool left = ap.isKeyPressed(key_left);
-					const bool right = ap.isKeyPressed(key_right);
+					bool left = ap.isKeyPressed(key_left);
+					bool right = ap.isKeyPressed(key_right);
 					const bool onground = this.isOnGround();
 					const bool onwall = this.isOnWall();
+					if (this.get_bool("engine_stuck"))
+					{
+						left = false;
+						right = false;
+					}
 
 					// left / right
 					if (angle < 80 || angle > 290)

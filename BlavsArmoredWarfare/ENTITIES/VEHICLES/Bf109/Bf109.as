@@ -6,7 +6,7 @@ const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
 const u32 shootDelay = 1; // Ticks
-const f32 projDamage = 0.85f;
+const f32 projDamage = 0.5f;
 
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);
@@ -96,7 +96,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				for (u8 i = 0; i < inv.getItemsCount(); i++)
 				{
 					if (inv.getItem(i) is null || inv.getItem(i).getName() != "mat_7mmround") continue;
-					if (XORRandom(3) != 0) break;
+					if (XORRandom(5) != 0) continue;
 					inv.getItem(i).server_SetQuantity(inv.getItem(0).getQuantity()-1);
 					break;
 				}
@@ -112,7 +112,7 @@ void onTick(CBlob@ this)
 		if (isServer() && this.isOnGround()) this.server_Die();
 		this.setAngleDegrees(this.getAngleDegrees() + (Maths::Sin(getGameTime() / 5.0f) * 8.5f));
 	}
-	if (getGameTime() == this.get_u32("next_shoot"))
+	if (getGameTime() >= this.get_u32("next_shoot"))
 	{
 		this.Untag("no_more_shooting");
 		this.Untag("no_more_proj");
@@ -128,7 +128,7 @@ void onTick(CBlob@ this)
 			const f32 len = dir.Length();
 			dir.Normalize();
 			dir.RotateBy(this.isFacingLeft() ? 30 : -30); // make it fly directly to cursor, works weird vertically
-			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, 0.15f);
+			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, 0.175f);
 
 			// this.SetFacingLeft(dir.x > 0);
 			this.SetFacingLeft(this.getVelocity().x < -0.1f);

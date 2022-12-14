@@ -8,6 +8,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("shootseat");
 	this.Tag("weak vehicle");
+	this.Tag("engine_can_get_stuck");
 
 	this.set_f32("max_angle_diff", 1.25f);
 
@@ -203,6 +204,7 @@ void onTick(CBlob@ this)
 			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
 			soundmanager.setVelocity(this.getVelocity());
 			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+			soundmanager.set_bool("engine_stuck", this.get_bool("engine_stuck"));
 		}
 	}
 	if (this.exists("followid2"))
@@ -215,6 +217,7 @@ void onTick(CBlob@ this)
 			soundmanager.set_bool("isThisOnGround", this.isOnGround() && this.wasOnGround());
 			soundmanager.setVelocity(this.getVelocity());
 			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
+			soundmanager.set_bool("engine_stuck", this.get_bool("engine_stuck"));
 		}
 	}
 }
@@ -265,7 +268,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
-	if (blob.hasTag("vehicle"))
+	if (blob.hasTag("vehicle") || blob.hasTag("flesh"))
 	{
 		return false;
 	}

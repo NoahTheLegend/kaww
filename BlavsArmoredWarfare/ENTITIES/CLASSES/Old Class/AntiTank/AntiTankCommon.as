@@ -1,8 +1,8 @@
 const string classname = "AntiTank"; // case sensitive
 
 // DAMAGE
-const float damage_body = 2.0f;
-const float damage_head = 3.0f;
+const float damage_body = 1.5f;
+const float damage_head = 2.5f;
 // SHAKE
 const float recoilx = 120; // x shake (20)
 const float recoily = 150; // y shake (45)
