@@ -92,6 +92,27 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 
 	if (isMod)
 	{
+		{
+			string[] sub = text_in.split(" ");
+			if (sub.length > 0 && sub[0] == "!loadmapcycle")
+			{
+				if (sub.length > 1)
+				{
+					LoadMapCycle(sub[1]);
+				}
+			}
+			else if (sub.length > 1)
+			{
+				if (sub[0] == "!scrap")
+				{
+					CBlob@ b = server_CreateBlob("mat_scrap", -1, blob.getPosition());
+					if (b !is null && parseInt(sub[1]) > 0)
+					{
+						b.server_SetQuantity(parseInt(sub[1]));
+					}
+				}
+			}
+		}
 		if (text_in == "!bot")
 		{
 			AddBot("Henry");
@@ -106,14 +127,6 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 		{
 			this.SetTeamWon(1);
 			this.SetCurrentState(GAME_OVER);
-		}
-		else if (text_in == "!loadmapcycle")
-		{
-			string[] sub = text_in.split(" ");
-			if (sub.length > 1)
-			{
-				LoadMapCycle(sub[1]);
-			}
 		}
 		else if (text_in == "!debug")
 		{
