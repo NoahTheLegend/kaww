@@ -79,7 +79,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press E to heal. 6 uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 2);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "Heal to full health instantly.", false);
