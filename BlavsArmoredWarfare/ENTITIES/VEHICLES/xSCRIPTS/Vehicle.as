@@ -230,7 +230,6 @@ void onTick(CBlob@ this)
 			this.SendCommand(this.getCommandID("jam_engine"), params);
 		}
 	}
-	printf(""+this.get_u32("engine_stuck_time"));
 
 	if (this.get_bool("engine_stuck") && this.get_u32("engine_stuck_time") <= getGameTime())
 	{
