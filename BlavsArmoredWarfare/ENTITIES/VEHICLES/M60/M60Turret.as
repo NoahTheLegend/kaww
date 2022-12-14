@@ -271,30 +271,6 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-
-	// Crippled
-	if (this.getHealth() <= this.getInitialHealth() * 0.25f)
-	{
-		if (getGameTime() % 4 == 0 && XORRandom(5) == 0)
-		{
-			const Vec2f pos = this.getPosition() + getRandomVelocity(0, this.getRadius()*0.4f, 360);
-			CParticle@ p = ParticleAnimated("BlackParticle.png", pos, Vec2f(0,0), -0.5f, 1.0f, 5.0f, 0.0f, false);
-			if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
-
-			Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
-			velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
-
-			ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
-
-			if (isClient() && XORRandom(2) == 0)
-			{
-				Vec2f pos = this.getPosition();
-				CMap@ map = getMap();
-				
-				ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(60) - 30, XORRandom(48) - 24), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, 90), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 7 + XORRandom(8), XORRandom(70) * -0.00005f, true);
-			}
-		}
-	}
 }
 
 // Blow up
