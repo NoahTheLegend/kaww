@@ -47,14 +47,14 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy Bunker", "$heavybunker$", "heavybunker", "A terrifying reinforcement, ideal for holding landmarks.");
-		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 350);
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 300);
 		AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 25);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Quarry", "$quarry$", "quarry", "A quarry to generate stone in exchange of wood.");
-		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 500);
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 500);
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 350);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 350);
 		AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 50);
 
 		s.customButton = true;
@@ -64,11 +64,11 @@ void onInit(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, "Repair Station", "$repairstation$", "repairstation", "Build in an open area, it will repair friendly vehicles nearby it.");
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 150);
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 250);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 200);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Refinery", "$refinery$", "refinery", "Supply it with stone to produce scrap, which is used to build vehicles at the vehicle builder.");
-		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 250);
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 150);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Advanced Refinery", "$advancedrefinery$", "advancedrefinery", "An improved refinery for increased output.");
