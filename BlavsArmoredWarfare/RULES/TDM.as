@@ -140,8 +140,6 @@ void Config(TDMCore@ this)
 		}
 	}
 
-	this.gameDuration = (getTicksASecond() * 60 * 2.1f);
-
 	//spawn after death time - set in gamemode.cfg, or override here
 	f32 spawnTimeSeconds = cfg.read_f32("spawnTimeSeconds", 3);//Maths::Min(3, 8-(getPlayersCount()/3))); //rules.playerrespawn_seconds
 	this.spawnTime = (getTicksASecond() * spawnTimeSeconds);
