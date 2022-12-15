@@ -137,7 +137,11 @@ void GameMusicLogic(CBlob@ this, CMixer@ mixer)
 	CRules @rules = getRules();
 	u32 gameEndTime = rules.get_u32("game_end_time");
 
-	if (mixer.getPlayingCount() == 0 && (gameEndTime - getGameTime())/30 == 60)
+	if ((gameEndTime - getGameTime())/30 == 70)
+	{
+		mixer.FadeOutAll(0.0f, 7.0f);
+	}
+	else if ((gameEndTime - getGameTime())/30 == 60)
 	{
 		mixer.FadeInRandom(world_timer , 0.0f);
 	}
