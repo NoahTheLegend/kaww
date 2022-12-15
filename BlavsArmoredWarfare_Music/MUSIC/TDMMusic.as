@@ -145,16 +145,16 @@ void GameMusicLogic(CBlob@ this, CMixer@ mixer)
 	{
 		mixer.FadeInRandom(world_timer , 0.0f);
 	}
-	else if (rules.isWarmup())
+	else if (getGameTime() == 120) //rules.isWarmup() && 
 	{
 		if (mixer.getPlayingCount() == 0)
 		{
 			mixer.FadeInRandom(world_intro , 0.0f);
 		}
 	}
-	else if (rules.isMatchRunning()) //chance for battle music every 22000 ticks (every 12 m)
+	else if (rules.isMatchRunning()) //chance for battle music every 18000 ticks
 	{
-		if (mixer.getPlayingCount() == 0 && getGameTime() % 22000 == 0 && XORRandom(4) != 0)
+		if (mixer.getPlayingCount() == 0 && getGameTime() % 18000 == 0 && XORRandom(4) != 0)
 		{
 			mixer.FadeInRandom(world_battle , 0.0f);
 		}
