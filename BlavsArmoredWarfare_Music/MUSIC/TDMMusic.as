@@ -95,8 +95,7 @@ void AddGameMusic(CBlob@ this, CMixer@ mixer)
 	mixer.AddTrack("Kaww_10_theme.ogg", world_intro);
 	mixer.AddTrack("Kaww_13_theme.ogg", world_intro);
 	mixer.AddTrack("Kaww_14_theme.ogg", world_intro);
-
-
+	mixer.AddTrack("Kaww_15_theme.ogg", world_intro);
 }
 
 //uint timer = 0;
