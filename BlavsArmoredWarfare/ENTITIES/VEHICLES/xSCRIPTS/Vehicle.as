@@ -685,7 +685,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	// if damage is not insignificant, prevent repairs for a time
 	if (damage > 0.25f)
 	{
-		this.set_u32("no_heal", getGameTime()+15*30);
+		this.set_u32("no_heal", getGameTime()+(15+(this.exists("extra_no_heal") ? this.get_u16("extra_no_heal") : 0))*30);
 
 		if (isClient())
 		{
