@@ -81,7 +81,7 @@ void onTick(CBlob@ this)
 
 	if (is_dead)
 	{
-		if (controls.isKeyJustPressed(KEY_KEY_R))
+		if (controls !is null && controls.isKeyJustPressed(KEY_KEY_R))
 		{
 			launcherSetDeath( this, false );
 		}
