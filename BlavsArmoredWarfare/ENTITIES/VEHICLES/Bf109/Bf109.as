@@ -26,6 +26,19 @@ string[] smokes =
 
 void onInit(CBlob@ this)
 {
+	// causes command no found errors (added manually)
+	this.addCommandID("load_ammo");
+	this.addCommandID("swap_ammo");
+	this.addCommandID("putin_mag");
+	this.addCommandID("fire");
+	this.addCommandID("flip_over");
+	this.addCommandID("getin_mag");
+	this.addCommandID("vehicle getout");
+	this.addCommandID("recount ammo");
+	this.addCommandID("sync_last_fired");
+	this.addCommandID("sync_ammo");
+	this.addCommandID("reload");
+
 	this.set_f32("velocity", 0.0f);
 	
 	this.set_bool("map_damage_raycast", true);
@@ -44,17 +57,6 @@ void onInit(CBlob@ this)
 
 	this.getShape().SetRotationsAllowed(true);
 	this.set_Vec2f("direction", Vec2f(0, 0));
-
-
-	// causes command no found errors (added manually)
-	this.addCommandID("load_ammo");
-	this.addCommandID("swap_ammo");
-	this.addCommandID("putin_mag");
-	this.addCommandID("fire");
-	this.addCommandID("flip_over");
-	this.addCommandID("getin_mag");
-	this.addCommandID("vehicle getout");
-	this.addCommandID("recount ammo");
 }
 
 void onInit(CSprite@ this)
