@@ -8,15 +8,15 @@ const string ore = "mat_stone";
 const string rare_ore = "mat_gold";
 
 //balance
-const int input = 125;					// input cost in fuel
-const int stone_amount = 60;
-const int initial_output = 125;			// output amount in ore
-const int min_output = 125;				// minimal possible output in ore
+const int input = 50;					// input cost in fuel
+const int stone_amount = 50;
+const int initial_output = 100;			// output amount in ore
+const int min_output = 50;				// minimal possible output in ore
 const int output_decrease = 0;			// by how much output decreases every time ore is dropped
-const bool enable_rare = true;			// enable/disable
+const bool enable_rare = false;			// enable/disable
 const int rare_chance = 10;				// one-in
 const int rare_output = 40;				// output for rare ore
-const int conversion_frequency = 15;	// how often to convert, in seconds
+const int conversion_frequency = 8;	// how often to convert, in seconds
 
 const int min_input = Maths::Ceil(input/initial_output);
 
@@ -98,7 +98,8 @@ void onTick(CBlob@ this)
 	if (getNet().isServer())
 	{
 		int blobCount = this.get_s16(fuel_prop);
-		if ((blobCount >= 125))
+
+		if ((blobCount >= 50))
 		{
 			this.set_bool(working_prop, true);
 
@@ -115,6 +116,12 @@ void onTick(CBlob@ this)
 				this.Sync(fuel_prop, true);
 			}
 
+			this.Sync(working_prop, true);
+		}
+
+		if (blobCount < 50)
+		{			
+			this.set_bool(working_prop, false);
 			this.Sync(working_prop, true);
 		}
 	}
@@ -180,6 +187,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.set_s16(fuel_prop, this.get_s16(fuel_prop) + ammountToStore);
 
 			updateWoodLayer(this.getSprite());
+
+			this.getSprite().PlaySound("hit_wood.ogg");
 		}
 	}
 }
@@ -266,5 +275,31 @@ void animateBelt(CBlob@ this, bool isActive)
 			if (anim.time == 6) anim.time = 0;
 			if (anim.time > 0 && anim.time < 6) anim.time++;
 		}
+	}
+}
+
+void onRender(CSprite@ this)
+{
+	if (g_videorecording)
+		return;
+
+	CBlob@ blob = this.getBlob();
+	Vec2f center = blob.getPosition();
+	Vec2f mouseWorld = getControls().getMouseWorldPos();
+	const f32 renderRadius = (blob.getRadius()) * 0.95f;
+	bool mouseOnBlob = (mouseWorld - center).getLength() < renderRadius;
+	if (mouseOnBlob)
+	{
+		//VV right here VV
+		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 30);
+		Vec2f dim = Vec2f(24, 8);
+		const f32 y = blob.getHeight() * 2.4f;
+		const f32 perc = blob.get_s16(fuel_prop)/1000.0f ;
+		
+		GUI::DrawRectangle(Vec2f(pos2d.x - dim.x - 2, pos2d.y + y - 2), Vec2f(pos2d.x + dim.x + 2, pos2d.y + y + dim.y + 2));
+		GUI::DrawRectangle(Vec2f(pos2d.x - dim.x + 2, pos2d.y + y + 2), Vec2f(pos2d.x - dim.x + perc * 2.0f * dim.x - 2, pos2d.y + y + dim.y - 2), SColor(0xff8bbc7e));
+
+		//GUI::SetFont("menu");
+		//GUI::DrawText("Wood: " + blob.get_s16(fuel_prop), Vec2f(pos2d.x - dim.x - 7, pos2d.y + y + 9), color_white);
 	}
 }
