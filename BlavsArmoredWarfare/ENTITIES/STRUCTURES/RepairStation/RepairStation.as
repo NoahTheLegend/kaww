@@ -40,6 +40,10 @@ void onTick(CBlob@ this)
 			if (blobs[i].get_u32("no_heal") > getGameTime()) continue; 
             if (blobs[i].getHealth() + repair_amount <= blobs[i].getInitialHealth())//This will only happen if the health does not go above the inital (max health) when repair_amount is added. 
             {
+				if (blobs[i].getName() == "importantarmory")
+				{
+					repair_amount *= 0.5f;
+				}
                 blobs[i].server_SetHealth(blobs[i].getHealth() + repair_amount); //Add the repair amount.
 				blobs[i].set_u32("no_heal", getGameTime() + 60);
 

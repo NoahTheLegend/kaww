@@ -14,6 +14,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
+	this.set_u16("extra_no_heal", 15);
 
 	Vehicle_Setup(this,
 	              5000.0f, // move speed  //103
