@@ -149,14 +149,14 @@ void GameMusicLogic(CBlob@ this, CMixer@ mixer)
 	{
 		if (mixer.getPlayingCount() == 0)
 		{
-			mixer.FadeInRandom(world_intro , 0.0f);
+			mixer.FadeInRandom(world_intro , 5.0f);
 		}
 	}
 	else if (rules.isMatchRunning()) //chance for battle music every 18000 ticks
 	{
 		if (mixer.getPlayingCount() == 0 && getGameTime() % 18000 == 0 && XORRandom(4) != 0)
 		{
-			mixer.FadeInRandom(world_battle , 0.0f);
+			mixer.FadeInRandom(world_battle , 5.0f);
 		}
 		
 	}
