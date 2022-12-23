@@ -25,6 +25,8 @@ void onInit(CBlob@ this)
 	this.Tag("tank");
 	this.Tag("blocks bullet");
 
+	this.Tag("fireshe");
+
 	this.set_f32("damage_modifier", damage_modifier);
 
 	Vehicle_Setup(this,

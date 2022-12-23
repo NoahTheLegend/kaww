@@ -45,33 +45,41 @@ void onRender( CRules@ this )
     {
     	GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(24, 24), SColor(0xbbffffff));
     }
-
-	/*                                Height map wip
-	u8 accuracy = 8; // 8: 1 to 1
-
+	/*
+	                                //Height map wip
+	u8 accuracy = 4; // 8: 1 to 1
+//if (!getMap().rayCastSolidNoBlobs(pos, hit_pos))
 	//generate rough heightmap
 	array<int> heightmap(mapWidth/accuracy);
-	for (int x = 0; x*accuracy < mapWidth; ++x)
+	for (int x = 0; x*accuracy < mapWidth; x++)
 	{
-		heightmap[x] = map.getLandYAtX((x*accuracy) / map.tilesize);
+		Vec2f end;
+		getMap().rayCastSolidNoBlobs(Vec2f(x*accuracy, 0), Vec2f(x*accuracy, map.tilemapheight * map.tilesize), end);
+		heightmap[x] = end.y;
+		//heightmap[x] = map.getLandYAtX((x*accuracy) / map.tilesize);
 	}
+	
 	heightmap.removeAt(heightmap.length-1); // remove last point
-
-	u8 map_multiplier = (mapWidth/1) * 0.0037;
-
+// goal 445 width
+	u8 map_multiplier = mapWidth * 0.00022;
+	//map_multiplier = (200 / heightmap.length);
+	//print("s " + 200 / x);
+	//print("S " + heightmap.length);
+	//(mapWidth/1) * 0.00022;
+	
 	Vec2f map_offset = timelineLPos;
 	for (int i = 0; i < heightmap.length; ++i)
 	{
 		float x1 = i * map_multiplier;
 		float x2 = Maths::Min((i+1) * map_multiplier, mapWidth);
-		float height1 = heightmap[i] * 1;
-		float height2 = heightmap[i+1] * 1;
+		float height1 = heightmap[i] * 0.1;
+		float height2 = heightmap[i+1] * 0.1;
 
 		GUI::DrawLine2D(Vec2f(x1, height1) + map_offset,
 						Vec2f(x2, height2) + map_offset,
 						SColor(0xbbffffff));
-	}*/
-
+	}
+	*/
 	//indicate objectives
 	CBlob@[] objectiveList;
 	getBlobsByName("pointflag", @objectiveList);

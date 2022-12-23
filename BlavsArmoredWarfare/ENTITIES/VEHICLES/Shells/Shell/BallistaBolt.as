@@ -16,6 +16,11 @@ void onInit(CBlob@ this)
 	this.set_f32(projExplosionRadiusString, 24.0f);
 	this.set_f32(projExplosionDamageString, 15.0f*damage_mod);
 
+	if (this.hasTag("HE_shell"))
+	{
+		this.set_f32(projExplosionRadiusString, 38.0f);
+	}
+
 	this.set_u8("blocks_pierced", 0);
 
 	this.server_SetTimeToDie(12);

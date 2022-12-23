@@ -8,6 +8,8 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	if (g_videorecording) return;
+	
 	// Get init hp
 	const f32 initialHealth = this.getInitialHealth();
 
@@ -27,6 +29,8 @@ void onTick(CBlob@ this)
 
 void onRender(CSprite@ this)
 {
+	if (g_videorecording) return;
+
 	CBlob@ blob = this.getBlob();
 	if (blob.hasTag("falling")) return;
 

@@ -6,10 +6,18 @@
 
 enum GameMusicTags
 {
+	world_ambient_start,
+
+	world_ambient,
+	world_ambient_underground,
+	world_ambient_mountain,
+	world_ambient_night,
+
+	world_ambient_end,
+
 	world_intro,
 	world_tension,
 	world_domination,
-	world_ambient,
 	world_battle,
 	world_timer,
 };
@@ -53,10 +61,15 @@ void AddGameMusic(CBlob@ this, CMixer@ mixer)
 	this.set_bool("initialized game", true);
 	mixer.ResetMixer();
 
+	mixer.AddTrack("Sounds/Music/ambient_forest.ogg", world_ambient);
+	mixer.AddTrack("Sounds/Music/ambient_mountain.ogg", world_ambient_mountain);
+	mixer.AddTrack("Sounds/Music/ambient_cavern.ogg", world_ambient_underground);
+	mixer.AddTrack("Sounds/Music/ambient_night.ogg", world_ambient_night);
+
 	// world_intro Intro: randomly selected to play at new match start
 	// world_tension Tension: plays when team first caps middle point | or maybe when both teams have 0 tickets remaining
 	// world_domination Domination: when one team controls all points for the first time
-	// world_ambient Ambient: plays randomly but respects buffers, usually not music
+	// world_ambient
 	// world_battle
 
 	mixer.AddTrack("Music1.ogg", world_intro);
@@ -122,46 +135,97 @@ void AddGameMusic(CBlob@ this, CMixer@ mixer)
 
 	mixer.AddTrack("Kaww_17_theme.ogg", world_intro);
 
+	mixer.AddTrack("Kaww_18_theme.ogg", world_intro);
+	mixer.AddTrack("Kaww_18_theme.ogg", world_battle);
+
 
 	mixer.AddTrack("Kaww_timesup_theme.ogg", world_timer);
 }
 
-//uint timer = 0;
+uint timer = 0;
 
 void GameMusicLogic(CBlob@ this, CMixer@ mixer)
 {
+	timer++;
 	if (mixer is null)
 		return;
 
-	//warmup
 	CRules @rules = getRules();
 	u32 gameEndTime = rules.get_u32("game_end_time");
+	/*
+	CBlob @blob = getLocalPlayerBlob();
+	if (blob is null)
+	{
+		mixer.FadeOutAll(0.0f, 3.0f);
+		return;
+	}
 
-	if ((gameEndTime - getGameTime())/30 == 70)
+	CMap@ map = blob.getMap();
+	if (map is null)
+		return;
+
+	Vec2f pos = blob.getPosition();*/
+	/*
+	//calc ambience
+	if (timer % 30 == 0)
+	{
+		bool isNight = map.getDayTime() < 0.09f;
+		bool isUnderground = map.rayCastSolid(pos, Vec2f(pos.x, pos.y - 60.0f));
+		if (isUnderground)
+		{
+			changeAmbience(mixer, world_ambient_underground, 4.0f, 4.0f);
+		}
+		else if (pos.y < map.tilemapheight * map.tilesize * 0.2f) // top one fifth of map is windy
+		{
+			changeAmbience(mixer, world_ambient_mountain, 4.0f, 4.0f);
+		}
+		else if (isNight)
+		{
+			changeAmbience(mixer, world_ambient_night, 4.0f, 4.0f);
+		}
+		else
+		{
+			changeAmbience(mixer, world_ambient, 4.0f, 4.0f);
+		}
+	}*/
+	//print("g : " + mixer.getPlayingTag(world_intro));
+	if ((gameEndTime - getGameTime())/30 == 70) // fade out all current music
 	{
 		mixer.FadeOutAll(0.0f, 7.0f);
 	}
-	else if ((gameEndTime - getGameTime())/30 == 60)
+	else if ((gameEndTime - getGameTime())/30 == 60) // play ending music
 	{
 		mixer.FadeInRandom(world_timer , 0.0f);
 	}
-	else if (getGameTime() == 120) //rules.isWarmup() && 
+	else if (getGameTime() == 120 && mixer.getPlayingCount() < 1 ) // intro theme
 	{
-		if (mixer.getPlayingCount() == 0)
-		{
-			mixer.FadeInRandom(world_intro , 5.0f);
-		}
+		mixer.FadeInRandom(world_intro , 5.0f);
+		
 	}
-	else if (rules.isMatchRunning()) //chance for battle music every 18000 ticks
+	else if (rules.isMatchRunning()) // chance for random battle music every 20000 ticks
 	{
-		if (mixer.getPlayingCount() == 0 && getGameTime() % 18000 == 0 && XORRandom(4) != 0)
+		if (mixer.getPlayingCount() < 1 && getGameTime() % 20000 == 0 && XORRandom(4) != 0)
 		{
 			mixer.FadeInRandom(world_battle , 5.0f);
 		}
-		
 	}
 	else
 	{
-		mixer.FadeOutAll(0.0f, 1.0f);
+		if (mixer.getPlayingCount() >= 0)
+		{
+			mixer.FadeOutAll(0.0f, 1.0f);
+		}
 	}
+}
+
+// handle fadeouts / fadeins dynamically
+void changeAmbience(CMixer@ mixer, int nextTrack, f32 fadeoutTime = 0.0f, f32 fadeinTime = 0.0f)
+{
+	if (!mixer.isPlaying(nextTrack))
+	{
+		for (u32 i = world_ambient_start + 1; i < world_ambient_end; i++)
+			mixer.FadeOut(i, fadeoutTime);
+	}
+
+	mixer.FadeInRandom(nextTrack, fadeinTime);
 }
