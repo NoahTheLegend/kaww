@@ -99,6 +99,8 @@ void onRender(CRules@ this){
 	s16 blueTickets=0;
 	s16 redTickets=0;
 
+	if (g_videorecording) return;
+
 	blueTickets=this.get_s16("blueTickets");
 	redTickets=this.get_s16("redTickets");
 

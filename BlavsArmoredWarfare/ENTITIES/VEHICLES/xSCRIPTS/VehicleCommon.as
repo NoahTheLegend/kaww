@@ -503,6 +503,7 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 						bullet.set_f32("linear_length", this.get_f32("linear_length"));
 						bullet.set_f32("explosion_damage_scale", this.get_f32("explosion_damage_scale"));
 						if (this.hasTag("apc")) bullet.Tag("small_bolt");
+						if (this.hasTag("fireshe")) bullet.Tag("HE_shell");
 						bullet.SetDamageOwnerPlayer(caller.getPlayer());
 						bullet.Init();
 					}
@@ -603,7 +604,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						// more force when starting
 						if (this.getShape().vellen < 1.75f)
 						{
-							moveForce *= 1.5f; // gear 1
+							moveForce *= 1.55f; // gear 1
 						}
 
 						const f32 engine_topspeed = v.move_speed;
@@ -627,6 +628,8 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						if (this.isFacingLeft())
 						{
+		
+
 							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550)
 							{
 								if (ap.isKeyPressed(key_action2))
@@ -664,12 +667,13 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (onground && groundNormal.y < -0.4f && groundNormal.x > 0.05f && vel.x < 1.0f && slopeangle)   // put more force when going up
 							{
-								force.x -= 4.0f * moveForce;
+								force.x -= 4.5f * moveForce;
 							}
 							else
 							{
 								force.x -= moveForce;
 							}
+
 
 							if (ap.isKeyPressed(key_action2))
 							{
@@ -697,7 +701,8 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						}
 
 						if (!this.isFacingLeft())
-						{//spamable and has no effect
+						{ //spamable and has no effect
+
 							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550)
 							{				
 								if (ap.isKeyPressed(key_action2))
@@ -734,10 +739,11 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.5f));
 
 							
-
+							
 							if (onground && groundNormal.y < -0.4f && groundNormal.x < -0.05f && vel.x > -1.0f && slopeangle)   // put more force when going up
 							{
-								force.x += 4.0f * moveForce;
+								force.x += 4.5f * moveForce;
+								
 							}
 							else
 							{

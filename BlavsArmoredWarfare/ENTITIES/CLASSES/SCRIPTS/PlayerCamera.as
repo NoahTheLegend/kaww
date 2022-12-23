@@ -62,13 +62,10 @@ void onPlayerChangedTeam(CRules@ this, CPlayer@ player, u8 oldteam, u8 newteam)
 
 			camera.setPosition(playerBlob.getPosition());
 			deathTime = getGameTime();
-
 		}
-
 	}
 	else if (getLocalPlayer() is player)
 		spectatorTeam = false;
-
 }
 
 void resetHelpText()
