@@ -10,11 +10,11 @@ void onInit(CBlob@ this)
 	this.set_bool("booming", false);
 	this.Tag("heavy weight");
 		
-	this.Tag("invincible");
 	this.set_f32("map_damage_ratio", 0.5f);
-	this.getCurrentScript().tickFrequency = 7;
+	this.getCurrentScript().tickFrequency = 5;
 	
 	this.Tag("explosive");
+	this.Tag("always bullet collide");
 	
 	this.maxQuantity = 1;
 }
@@ -24,7 +24,7 @@ void DoExplosion(CBlob@ this, Vec2f velocity)
 	ShakeScreen(512, 64, this.getPosition());
 	f32 modifier = this.get_u8("boom_start") / 3.0f;
 	
-	this.set_f32("map_damage_radius", 20.0f * this.get_u8("boom_start"));
+	this.set_f32("map_damage_radius", 12.0f * this.get_u8("boom_start"));
 	
 	for (int i = 0; i < 4; i++)
 	{
@@ -62,7 +62,11 @@ void onTick(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (this.getHealth() < 1.0f && !this.get_bool("booming")) this.set_bool("booming", true);
+	if (hitterBlob.getTeamNum() != this.getTeamNum() || hitterBlob is null)
+	{
+		if (!this.get_bool("booming")) ExplosionEffects(this);
+		this.set_bool("booming", true);
+	}
 	return damage;
 }
 

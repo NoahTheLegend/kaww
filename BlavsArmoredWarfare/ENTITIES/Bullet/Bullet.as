@@ -307,6 +307,10 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (blob.hasTag("always bullet collide"))
+	{
+		return true;
+	}
 	// too many tag checks?
 	if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
 	{
