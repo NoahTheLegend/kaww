@@ -140,7 +140,6 @@ void onInit(CBlob@ this)
 	else if (this.getName() == "shotgun")
 	{
 		this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
-		this.Tag("no bulletgib on shot");
 	}
 	else if (this.getName() == "sniper")
 	{
