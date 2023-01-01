@@ -95,7 +95,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Lantern", "$lantern$", "lantern", "A source of light.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 20);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
