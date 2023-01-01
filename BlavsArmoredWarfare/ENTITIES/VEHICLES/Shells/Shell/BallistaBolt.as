@@ -48,7 +48,7 @@ void onTick(CBlob@ this)
 	//this.setPosition(Vec2f(this.getPosition().x, this.getOldPosition().y)); // useful for debugging
 	f32 angle = 0;
 
-	if (this.getTickSinceCreated() <= 4) // make it fly straight some time before falling
+	if (this.getTickSinceCreated() <= 5) // make it fly straight some time before falling
 	{
 		this.setVelocity(this.getOldVelocity());
 	}
