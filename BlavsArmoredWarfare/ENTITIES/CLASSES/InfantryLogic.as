@@ -129,6 +129,7 @@ void onInit(CBlob@ this)
 		this.set_u8("stab time", 16);
 		this.set_u8("stab timing", 13);
 		this.set_f32("stab damage", 1.5f);
+		this.Tag("no bulletgib on shot");
 	}
 	else if (this.getName() == "ranger")
 	{
@@ -139,6 +140,7 @@ void onInit(CBlob@ this)
 	else if (this.getName() == "shotgun")
 	{
 		this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
+		this.Tag("no bulletgib on shot");
 	}
 	else if (this.getName() == "sniper")
 	{
@@ -835,17 +837,20 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 
 				this.set_u8("inaccuracy", this.get_u8("inaccuracy") + infantry.inaccuracy_pershot * (this.hasTag("sprinting")?2.0f:1.0f));
 			
-				makeGibParticle(
-					"EmptyShellSmall",	                    // file name
-					this.getPosition(),                 // position
-					Vec2f(this.isFacingLeft() ? 2.0f : -2.0f, 0.0f), // velocity
-					0,                                  // column
-					0,                                  // row
-					Vec2f(16, 16),                      // frame size
-					0.2f,                               // scale?
-					0,                                  // ?
-					"ShellCasing",                      // sound
-					this.get_u8("team_color"));         // team number
+				if (!this.hasTag("no bulletgib on shot"))
+				{
+					makeGibParticle(
+						"EmptyShellSmall",	                    // file name
+						this.getPosition(),                 // position
+						Vec2f(this.isFacingLeft() ? 2.0f : -2.0f, 0.0f), // velocity
+						0,                                  // column
+						0,                                  // row
+						Vec2f(16, 16),                      // frame size
+						0.2f,                               // scale?
+						0,                                  // ?
+						"ShellCasing",                      // sound
+						this.get_u8("team_color"));         // team number
+				}
 			}
 		}
 	}
