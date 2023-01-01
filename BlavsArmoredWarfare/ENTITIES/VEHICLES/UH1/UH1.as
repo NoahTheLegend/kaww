@@ -598,6 +598,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		this.Tag("ignore damage");
 		this.Tag("falling");
+		this.Tag("invincible");
 		this.set_u32("falling_time", getGameTime());
 		if (isServer())
 		{
