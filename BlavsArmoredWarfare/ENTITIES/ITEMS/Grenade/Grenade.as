@@ -32,6 +32,7 @@ void onInit(CBlob@ this)
 		ap.SetKeysToTake(key_action3);
 	}
 	this.set_u8("death_timer", 120);
+	this.Tag("change team on pickup");
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -40,7 +41,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	{
 		return true;
 	}
-	if (blob.hasTag("structure") && !blob.hasTag("bunker"))
+	if (blob.hasTag("structure") && (!blob.hasTag("bunker") || blob.getTeamNum() == this.getTeamNum()))
 	{
 		return false;
 	}

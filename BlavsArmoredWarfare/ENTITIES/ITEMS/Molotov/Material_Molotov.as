@@ -10,6 +10,7 @@ void onInit(CBlob@ this)
 	{
 		ap.SetKeysToTake(key_action3);
 	}
+	this.Tag("change team on pickup");
 }
 
 bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)

@@ -5,6 +5,7 @@ void onInit(CBlob@ this)
 	this.Tag("trap");
 
 	this.addCommandID("usemed");
+	this.Tag("change team on pickup");
 }
 
 void onInit(CSprite@ this)
