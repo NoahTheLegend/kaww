@@ -264,7 +264,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "mat_molotov");
 		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 10);
+		this.set_u8("prod_time", 12);
 		this.set_u8("cost", 2);
 	}
 	else if (cmd == this.getCommandID("grenade"))
