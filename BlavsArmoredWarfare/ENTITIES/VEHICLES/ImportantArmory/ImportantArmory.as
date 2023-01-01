@@ -96,7 +96,6 @@ void onInit(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 40);
 	}
-
 	{
 		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
@@ -134,6 +133,10 @@ void onInit(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 
 	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
