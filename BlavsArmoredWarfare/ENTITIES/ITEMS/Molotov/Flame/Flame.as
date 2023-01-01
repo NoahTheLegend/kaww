@@ -59,7 +59,7 @@ void onTick(CBlob@ this)
 			{
 				if (getGameTime() % 8 == 0)
 				{
-					this.server_Hit(b, this.getPosition(), Vec2f(0, 2), 0.25f, Hitters::fire, true);
+					this.server_Hit(b, this.getPosition(), Vec2f(0, 1), 0.25f, Hitters::fire, true);
 				}
 			}
 		}

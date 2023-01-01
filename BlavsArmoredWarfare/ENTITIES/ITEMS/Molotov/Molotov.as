@@ -28,6 +28,34 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 				this.server_Die();
 			}
 		}
+		if (blob !is null && blob.isCollidable())
+		{
+			f32 vellen = this.getOldVelocity().Length();
+			if (blob.getName() == "wooden_platform")
+			{
+				f32 velx = this.getOldVelocity().x;
+				f32 vely = this.getOldVelocity().y;
+				f32 deg = blob.getAngleDegrees();
+
+				if ((deg < 45.0f || deg > 315.0f) && vely > 0.0f) //up		
+				{
+					this.server_Die();
+				}
+				if (deg > 45.0f && deg < 135.0f && velx < 0.0f) //right
+				{
+					this.server_Die();
+				}
+				if (deg > 135.0f && deg < 225.0f && vely < 0.0f) //down
+				{
+					this.server_Die();
+				}
+				if (deg > 225.0f && deg < 315.0f && velx > 0.0f) //left
+				{
+					this.server_Die();
+				}
+			}
+			else if (vellen > 2.0f) this.server_Die();
+		}
 	}
 }
 
