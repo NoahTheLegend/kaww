@@ -529,6 +529,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		this.Tag("ignore damage");
 		this.Tag("falling");
+		this.Tag("invincible");
 		if (isServer())
 		{
 			this.server_SetTimeToDie(30);
