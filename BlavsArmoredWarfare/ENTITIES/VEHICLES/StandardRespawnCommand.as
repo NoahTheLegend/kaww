@@ -99,6 +99,7 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				// build menu for them
 				CBlob@ caller = getBlobByNetworkID(params.read_u16());
+				bool single_switch = this.getName() == "outpost";
 
 				if (caller !is null && canChangeClass(this, caller))
 				{
@@ -107,6 +108,12 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 					if (newBlob !is null)
 					{
+						if (single_switch)
+						{
+							CBitStream stream;
+							stream.write_u16(newBlob.getNetworkID());
+							this.SendCommand(this.getCommandID("lock_classchange"), stream);
+						}
 						// copy health and inventory
 						// make sack
 						CInventory @inv = caller.getInventory();
