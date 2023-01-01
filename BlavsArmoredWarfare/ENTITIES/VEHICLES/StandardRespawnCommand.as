@@ -37,7 +37,7 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$butt_icon$", "butt.png", Vec2f(500, 22), 0, 255);
 	
 	addPlayerClass(this, "---- Mechanic ----", "$slave_class_icon$", "slave", "---- Mechanic ----\n\nBuild and break.\nCan't capture flags.\n\nHP: 200\nLMB: Build\nRMB: Mine");
-	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver", "---- Python ----\n\nGreat headshot damage.\nHP: 275\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
+	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver", "---- Python ----\n\nGreat headshot damage and HP.\nHP: 350\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
 	addPlayerClass(this, "---- Ak47 ----", "$ranger_class_icon$", "ranger", "---- Ak47 ----\n\nExcellent damage.\nHP: 200\nLMB: Shoot\nRMB: Aim\nSPACEBAR:\n\n\n"+"Skemonde — Today at 6:10 PM\nbtw descriprion of ranger lies space is for knife when ak shooter uses butt stock instead of a knife (edited)");
 	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun", "---- Shotgunner ----\n\nDeadly at close range.\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Dig");
 	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper", "---- Sniper ----\n\nLong range sniper.\nHP: 175\nLMB: Shoot\nRMB: Scope in\nSPACEBAR: Knife");
