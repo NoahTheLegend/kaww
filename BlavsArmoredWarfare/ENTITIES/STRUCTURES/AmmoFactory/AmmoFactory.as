@@ -257,7 +257,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "mat_heatwarhead");
 		this.set_u8("prod_amount", 3);
-		this.set_u8("prod_time", 20);
+		this.set_u8("prod_time", 30);
 		this.set_u8("cost", 7);
 	}
 	else if (cmd == this.getCommandID("molotov"))
