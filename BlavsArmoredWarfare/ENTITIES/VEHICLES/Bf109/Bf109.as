@@ -276,7 +276,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 			proj.set_f32("bullet_damage_head", projDamage*1.5f);
 			proj.IgnoreCollisionWhileOverlapped(this);
 			proj.server_setTeamNum(this.getTeamNum());
-			proj.setVelocity(arrowVel);
+			proj.setVelocity(arrowVel.RotateBy(0.125f*(XORRandom(21)-10)));
 			proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
 			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -16.0f : 16.0f), 8.0f).RotateBy(this.getAngleDegrees()));
 		}
