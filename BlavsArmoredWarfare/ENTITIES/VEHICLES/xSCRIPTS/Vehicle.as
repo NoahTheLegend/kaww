@@ -618,6 +618,32 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (this.hasTag("turret")) this.set_u32("show_hp", getGameTime() + turretShowHPSeconds * 30);
 
 	const bool is_explosive = customData == Hitters::explosion || customData == Hitters::keg;
+	bool at_bunker;
+
+	if (is_explosive && !getMap().rayCastSolidNoBlobs(thisPos, hitterBlobPos))
+	{
+		HitInfo@[] infos;
+		Vec2f hitvec = hitterBlobPos - thisPos;
+		if (getMap().getHitInfosFromRay(thisPos, -hitvec.Angle(), hitvec.getLength(), this, @infos))
+		{
+			for (u16 i = 0; i < infos.length; i++)
+			{
+				CBlob@ hi = infos[i].blob;
+				if (hi is null) continue;
+				if (hi.hasTag("bunker")) 
+				{
+					at_bunker = true;
+					break;
+				}
+			}
+		}
+	}
+
+	if (at_bunker)
+	{
+		if (XORRandom(100) < 33) return 0;
+		else damage *= 0.33f;
+	}
 
 	bool isHitUnderside = false;
 	bool isHitBackside = false;
