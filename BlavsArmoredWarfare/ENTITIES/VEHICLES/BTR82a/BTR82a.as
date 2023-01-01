@@ -111,6 +111,14 @@ void onTick(CBlob@ this)
 				}
 			}
 		}
+		if (isServer() && this.isInWater())
+		{
+			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");
+			if (ap !is null && ap.getOccupied() is null && (getGameTime() + this.getNetworkID())%120 == 0)
+			{
+				if (isServer()) this.server_Hit(this, this.getPosition(), Vec2f(0,0), this.getInitialHealth()/(20+XORRandom(11)), Hitters::builder);
+			}
+		}
 	}
 
 	Vehicle_LevelOutInAir(this);
