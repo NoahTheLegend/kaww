@@ -65,5 +65,18 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 		return damage / 3;
 	}
+	if (hitterBlob.getName() == "ballista_bolt")
+	{
+		Sound::Play("/BulletSandbag", this.getPosition(), 1.55f, 0.85f + XORRandom(40) * 0.01f);
+		MakeDustParticle((hitterBlob.getPosition() + this.getPosition())/2, "/dust2.png");
+
+		return damage / 6;
+	}
+	if (hitterBlob.getName() == "grenade")
+	{
+		MakeDustParticle((hitterBlob.getPosition() + this.getPosition())/2, "/dust2.png");
+		
+		return damage / 2.5;
+	}
 	return damage;
 }
