@@ -40,6 +40,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("grenade");
 	this.addCommandID("mine");
 	this.addCommandID("helmet");
+	this.addCommandID("playsound");
 
 	if (sprite is null) return;
 	CSpriteLayer@ icon = sprite.addSpriteLayer("icon", "AmmoFactoryIcons.png", 8, 8);
@@ -184,8 +185,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 void spawnMetal(CBlob@ this)
 {
-	this.getSprite().PlaySound("MakeAmmo.ogg");
-			
 	if (isServer())
 	{
 		CBlob@ b = server_CreateBlob(this.get_string("prod_blob"), -1, this.getPosition());
@@ -194,6 +193,8 @@ void spawnMetal(CBlob@ this)
 		{
 			b.setPosition(this.getPosition());
 		}
+		CBitStream params;
+		this.SendCommand(this.getCommandID("playsound"), params);
 	}
 }
 
@@ -286,6 +287,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 15);
 		this.set_u8("cost", 2);
+	}
+	else if (cmd == this.getCommandID("playsound"))
+	{
+		this.getSprite().PlaySound("MakeAmmo.ogg");
 	}
 }
 
