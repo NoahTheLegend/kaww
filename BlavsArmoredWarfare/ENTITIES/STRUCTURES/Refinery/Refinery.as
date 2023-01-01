@@ -241,4 +241,10 @@ void onDie(CBlob@ this)
 	if (!isServer())
 		return;
 	server_CreateBlob("constructionyard",this.getTeamNum(),this.getPosition());
+
+	CBlob@ b = server_CreateBlob("mat_stone",this.getTeamNum(),this.getPosition());
+	if (b !is null)
+	{
+		b.server_SetQuantity(75+XORRandom(51));
+	}
 }
