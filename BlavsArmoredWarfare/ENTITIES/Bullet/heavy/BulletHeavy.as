@@ -349,23 +349,23 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if (blob.getName() == "wooden_platform")
 	{
 		//printf("enter");
-		f32 velx = this.getVelocity().x;
-		f32 vely = this.getVelocity().y;
+		f32 velx = this.getOldVelocity().x;
+		f32 vely = this.getOldVelocity().y;
 		f32 deg = blob.getAngleDegrees();
 
 		if (deg < 45.0f || deg > 315.0f && vely > 0.0f) //up		
 		{
 			return true;
 		}
-		else if (deg > 45.0f && deg < 135.0f && velx < 0.0f) //right
+		if (deg > 45.0f && deg < 135.0f && velx < 0.0f) //right
 		{
 			return true;
 		}
-		else if (deg > 135.0f && deg < 225.0f && vely < 0.0f) //down
+		if (deg > 135.0f && deg < 225.0f && vely < 0.0f) //down
 		{
 			return true;
 		}
-		else if (deg > 225.0f && deg < 315.0f && velx > 0.0f) //left
+		if (deg > 225.0f && deg < 315.0f && velx > 0.0f) //left
 		{
 			return true;
 		}
