@@ -144,10 +144,10 @@ void onRender(CSprite@ this)
 	else if (ammo_amt_max.length() == 1)
 	{
 		GUI::DrawIcon("FontNum.png", ammo_amt_max[0]+2, pngsize, Vec2f(-10.0f, getHUDY() - dim.y - 8.0f), 0.3f);
-	}
+	}*/
 
 	//GUI::DrawIcon("Separator.png", 0, Vec2f(400, 300), Vec2f(-136.0f, getHUDY() - dim.y - 153.0f), 0.5f);
-	*/
+	
 
 	// combining images would reduce lag
 	if (blob.getHealth() <= blob.getInitialHealth() / 1.5f)

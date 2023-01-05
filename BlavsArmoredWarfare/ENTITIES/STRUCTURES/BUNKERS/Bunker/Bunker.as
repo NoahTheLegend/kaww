@@ -26,19 +26,6 @@ void onInit(CBlob@ this)
 	this.SetFacingLeft(this.getTeamNum() == 1);
 }
 
-void onTick(CBlob@ this)
-{
-	//if (isServer() && this.getTickSinceCreated() == 180 && getGameTime() <= 210)
-	//{
-	//	CMap@ map = this.getMap();
-	//	if (map !is null)
-	//	{//dont rotate it depending on side after constructing map
-	//		this.server_setTeamNum(this.getPosition().x > map.tilemapwidth*4 ? 1 : 0);
-	//		this.SetFacingLeft(this.getPosition().x > map.tilemapwidth*4);
-	//	}
-	//}
-}
-
 void onHealthChange(CBlob@ this, f32 health_old)
 {
 	CSprite@ sprite = this.getSprite();
@@ -52,6 +39,21 @@ void onHealthChange(CBlob@ this, f32 health_old)
 
 void onDie(CBlob@ this)
 {
+	for (uint i = 0; i < 4; i++)
+	{
+		makeGibParticle(
+		"Bunker",               			// file name
+		this.getPosition() + Vec2f(0, -6),  // position
+		getRandomVelocity(180, 1.5, 360) - Vec2f(0,2.5),      // velocity
+		i,                                  // column
+		6,                                  // row
+		Vec2f(16, 16),                      // frame size
+		1.0f,                               // scale?
+		0,                                  // ?
+		"",                     			// sound
+		this.get_u8("team_color"));         // team number
+	}
+
 	if (!isServer())
 		return;
 	server_CreateBlob("constructionyard",this.getTeamNum(),this.getPosition());

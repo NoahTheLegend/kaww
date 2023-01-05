@@ -20,12 +20,24 @@ void onRender(CSprite@ this)
 	}
 	else
 	{
+		getHUD().SetCursorImage("GunCursor.png", Vec2f(32, 32));
+		getHUD().SetCursorOffset(Vec2f(-32, -32));
+
+		if (blob.getName() != "slave") // is not a builder
 		{
-			getHUD().SetCursorImage("GunCursor.png", Vec2f(32, 32));
-			getHUD().SetCursorOffset(Vec2f(-32, -32));
-		}
-		{
-			//getHUD().SetCursorImage("Entities/Characters/Builder/BuilderCursor.png");
+			CControls@ controls = blob.getControls();
+			if (controls !is null)
+			{
+				CInventory@ inv = blob.getInventory();
+				
+				if (inv !is null && (
+					blob.getName() != "antitank" && inv.getItem("mat_7mmround") is null) || // is any normal class
+					blob.getName() == "antitank" && inv.getItem("mat_heatwarhead") is null) // is antitank
+				{
+					GUI::SetFont("menu");
+					GUI::DrawTextCentered("No Ammo", controls.getInterpMouseScreenPos() + Vec2f(4,41), controls.isKeyPressed(KEY_KEY_R) ? SColor(0xfff20101) : SColor(0xffffffff));
+				}
+			}
 		}
 	}
 

@@ -25,7 +25,7 @@ const u8 inaccuracypershot = 110; // aim inaccuracy  (+3 per shot)
 
 const bool semiauto = true;
 
-const s8 reloadtime = 41; // time to reload 45
+const s8 reloadtime = 100; // time to reload 45
 const string reloadsfx = classname + "_reload.ogg";
 const string shootsfx = "AntiTank_shoot.ogg";
 

@@ -628,8 +628,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						if (this.isFacingLeft())
 						{
-		
-
 							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550)
 							{
 								if (ap.isKeyPressed(key_action2))
@@ -845,9 +843,17 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					// set facing
 					blob.SetFacingLeft(this.isFacingLeft());
 
-					if (blob.isMyPlayer() && ap.isKeyJustPressed(key_inventory) && v.charge == 0)
+					if (blob.isMyPlayer())
 					{
-						this.SendCommand(this.getCommandID("swap_ammo"));
+						if (ap.isKeyJustPressed(key_inventory) && v.charge == 0)
+						{
+							this.SendCommand(this.getCommandID("swap_ammo"));
+						}
+
+						if (this.hasTag("tank") && v.cooldown_time == 110)
+						{
+							Sound::Play("TankReload.ogg", this.getPosition(), 0.7f, 0.9f + (0.01f * XORRandom(30)));
+						}
 					}
 
 					u8 style = v.getCurrentAmmo().fire_style;
@@ -877,7 +883,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								v.firing = true;
 								CBlob@ b = ap.getOccupied();
-
 							}
 
 							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && blob.isMyPlayer())
