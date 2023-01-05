@@ -146,7 +146,6 @@ void onTick(CBlob@ this)
 		}
 		else if (this.get_u8("exploding_2") < 3)
 		{
-			
 			for (int i = 0; i < 3; i++)
 			{
 				MakeParticle(this, Vec2f( XORRandom(100) - 50, XORRandom(100) - 50), getRandomVelocity(-angle, XORRandom(125) * 0.01f, 90));
@@ -162,8 +161,6 @@ void onTick(CBlob@ this)
 			{
 				ParticleAnimated("Smoke", pos, getRandomVelocity(0, XORRandom(10) * 0.12f, 360), 0.0f, 2.0f, 8+XORRandom(4), XORRandom(70) * -0.0003f, true);
 			}
-
-			
 		}
 
 		if (this.get_u8("exploding_2") == 1)
@@ -171,13 +168,10 @@ void onTick(CBlob@ this)
 			this.server_Die();
 		}
 	}
-}
 
-void onTick(CSprite@ this)
-{
-	if (this.getBlob().hasTag("activated"))
+	if (this.hasTag("activated"))
 	{
-		sparks(this.getBlob().getPosition(), this.getBlob().getAngleDegrees(), 3.5f + (XORRandom(10) / 5.0f), SColor(255, 255, 230, 0));
+		sparks(this.getPosition(), this.getAngleDegrees(), 3.5f + (XORRandom(10) / 5.0f), SColor(255, 255, 230, 120));
 	}
 }
 

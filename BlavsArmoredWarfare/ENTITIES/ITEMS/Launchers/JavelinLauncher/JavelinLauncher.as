@@ -215,7 +215,7 @@ void onTick(CBlob@ this)
 	CBlob@ targetBlob = getBlobByNetworkID(curTargetNetID);
 	if (curTargetNetID == 0 || targetBlob == null && ownerBlob.isMyPlayer())
 	{
-		makeTargetSquare(ownerAimpos, 0, Vec2f(32.0f, 20.0f), 2.0f, 1.0f, greenConsoleColor);
+		makeTargetSquare(ownerAimpos, 0, Vec2f(28.0f, 20.0f), 2.0f, 1.0f, greenConsoleColor);
 	}
 	else if (draw_robotech)
 	{

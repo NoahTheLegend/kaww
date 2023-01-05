@@ -48,20 +48,16 @@ void onTick(CBlob@ this)
 	//this.setPosition(Vec2f(this.getPosition().x, this.getOldPosition().y)); // useful for debugging
 	f32 angle = 0;
 
-	if (this.getTickSinceCreated() <= 5) // make it fly straight some time before falling
+	if (this.getTickSinceCreated() <= 6) // make it fly straight some time before falling
 	{
 		this.setVelocity(this.getOldVelocity());
 	}
 
 	if (isClient())
 	{
-		const Vec2f pos = this.getPosition() + getRandomVelocity(0, this.getRadius()*0.12f, 360);
-		CParticle@ p = ParticleAnimated("YellowParticle.png", pos, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(3), 0.0f, false);
-		if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
-
-		if (XORRandom(2) == 0)
+		if (this.hasTag("rpg"))
 		{
-			ParticleAnimated("LargeSmoke", this.getPosition(), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, 90), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 3 + XORRandom(2), XORRandom(70) * -0.00005f, true);
+			ParticleAnimated("LargeSmoke", this.getPosition(), this.getVelocity() * -0.4f + getRandomVelocity(0.0f, XORRandom(80) * 0.01f, 90), float(XORRandom(360)), 0.4f + XORRandom(40) * 0.01f, 1, XORRandom(70) * -0.00005f, true);
 		}
 	}
 
@@ -194,14 +190,19 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	//printf(""+projExplosionRadius);
 	//printf(""+length);
 	WarfareExplode(this, projExplosionRadius*1.35, projExplosionDamage);
-	LinearExplosion(this, velocity, projExplosionRadius, length, 2+Maths::Floor(length/6), 0.01f, Hitters::fall);//only for damaging map
+	LinearExplosion(this, velocity, projExplosionRadius, length, 2+Maths::Floor(length/6), 0.01f, Hitters::fall); // only for damaging map
 	
 	if (this.hasTag("rpg"))
 	{
 		this.getSprite().PlaySound("/RpgExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
 	}
-	else {
+	else if (this.get_f32(projExplosionDamageString) > 11.0f)
+	{
 		this.getSprite().PlayRandomSound("/ShellExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
+	}
+	else // smaller shell
+	{ // why tf is this not working? sounds are not playing
+		this.getSprite().PlayRandomSound("/MediumShellExplosion.ogg", 1.0, 0.9f + XORRandom(20) * 0.01f);
 	}
 
 	Vec2f pos = this.getPosition();
@@ -294,10 +295,11 @@ void Boom(CBlob@ this)
 
 	    CCamera @camera = getCamera();
 		if (camera !is null) {
-			
+			float mod = 1.0f;
 			// If the player is a spectating, base their location off of their camera.	
 			if (player !is null && player.getTeamNum() == getRules().getSpectatorTeamNum())
 			{
+				mod *= 0.6; // less shake
 				pos = camera.getPosition();
 			}
 			else if (blob !is null)
@@ -309,10 +311,14 @@ void Boom(CBlob@ this)
 				return;
 			}
 
+			mod *= this.get_f32(projExplosionDamageString) / 10;
+
+			
+
 			pos -= this.getPosition();
 			f32 dist = pos.Length();
-			if (dist < 350) {
-				ShakeScreen((350 - dist) * (this.hasTag("HE_shell") ? 1.4 : 1.0), 50, this.getPosition());
+			if (dist < 400) {
+				ShakeScreen((250 - dist/2) * mod, 50, this.getPosition());
 			}
 		}
 	}
