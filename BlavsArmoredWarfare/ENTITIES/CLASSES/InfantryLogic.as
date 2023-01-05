@@ -46,6 +46,7 @@ void onInit(CBlob@ this)
 	f32 bullet_velocity; // speed that bullets fly 1.6
 	f32 bullet_lifetime; // in seconds, time for bullet to die
 	s8 bullet_pen; // penRating for bullet
+	bool emptyshellonfire; // should an empty shell be released when shooting
 	// SOUND
 	string reload_sfx;
 	string shoot_sfx;
@@ -56,7 +57,7 @@ void onInit(CBlob@ this)
 	inaccuracy_cap, inaccuracy_pershot, 
 	semiauto, burst_size, burst_rate, 
 	reload_time, mag_size, delayafterfire, randdelay, 
-	bullet_velocity, bullet_lifetime, bullet_pen );
+	bullet_velocity, bullet_lifetime, bullet_pen, emptyshellonfire);
 
 	InfantryInfo infantry;
 	infantry.classname 				= classname;
@@ -88,6 +89,7 @@ void onInit(CBlob@ this)
 	infantry.bullet_velocity 		= bullet_velocity;
 	infantry.bullet_lifetime 		= bullet_lifetime;
 	infantry.bullet_pen 			= bullet_pen;
+	infantry.emptyshellonfire 		= emptyshellonfire;
 	this.set("infantryInfo", @infantry);
 
 	this.set_u32("mag_bullets_max", mag_size);
@@ -111,7 +113,6 @@ void onInit(CBlob@ this)
 	this.set_s32("my_chargetime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
 
-	this.set_u8("recoil_count", 0);
 	this.set_s8("recoil_direction", 0);
 	this.set_u8("inaccuracy", 0);
 
@@ -363,7 +364,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	bool menuopen = getHUD().hasButtons();
 	Vec2f pos = this.getPosition();
 
-	bool scoped = this.hasTag("scopedin");
+	
 
 	const u8 inaccuracyCap = infantry.inaccuracy_cap;
 	InAirLogic(this, inaccuracyCap);
@@ -391,6 +392,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	{
 		this.Untag("scopedin");
 	}
+	
+	bool scoped = this.hasTag("scopedin");
 
 	if (hidegun) return;
 	
@@ -405,9 +408,13 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		const s8 reloadTime = infantry.reload_time;
 		const u32 magSize = infantry.mag_size;
 		// reload
-		if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("no_reload") < getGameTime() && this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
+		if (controls !is null &&
+			charge_time == 0 &&
+			!archer.isReloading &&
+			controls.isKeyJustPressed(KEY_KEY_R) &&
+			this.get_u32("no_reload") < getGameTime() &&
+			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
-			//print("RELOAD!!");
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
 			if (inv !is null && inv.getItem("mat_7mmround") !is null)
@@ -415,7 +422,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				// actually reloading
 				reloadistrue = true;
 				charge_time = reloadTime;
-				//archer.isReloading = true;
+
 				isReloading = true;
 				this.set_bool("isReloading", true);
 	
@@ -464,12 +471,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			moveVars.walkFactor *= 0.75f;
 			moveVars.jumpFactor *= 0.7f;
 			moveVars.canVault = false;
-
-			CPlayer@ player = this.getPlayer();
-			if (player !is null)
-			{
-				//print("p: " + player.getCharacterName() + "  cahrge: " + charge_time);
-			}
 
 			if (charge_time == 0 && isStabbing == false)
 			{
@@ -671,21 +672,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		}
 	}
 
-	if (this.get_u8("recoil_count") > 0)
-	{
-		CPlayer@ p = this.getPlayer();
-		if (p !is null)
-		{
-			CBlob@ local = p.getBlob();
-			if (local !is null)
-			{
-				Recoil(this, local, this.get_u8("recoil_count")/3, this.get_s8("recoil_direction"));
-			}
-		}
-
-		this.set_u8("recoil_count", Maths::Floor(this.get_u8("recoil_count") / infantry.length_of_recoil_arc));
-	}
-
 	if (this.get_u8("inaccuracy") > 0)
 	{
 		s8 testnum = (this.get_u8("inaccuracy") - 5);
@@ -851,6 +837,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 
 				this.set_u8("inaccuracy", this.get_u8("inaccuracy") + infantry.inaccuracy_pershot * (this.hasTag("sprinting")?2.0f:1.0f));
 			
+<<<<<<< Updated upstream
 				if (!this.hasTag("no bulletgib on shot"))
 				{
 					makeGibParticle(
@@ -865,6 +852,20 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 						"ShellCasing",                      // sound
 						this.get_u8("team_color"));         // team number
 				}
+=======
+				if (infantry.emptyshellonfire)
+				makeGibParticle(
+					"EmptyShellSmall",	                    // file name
+					this.getPosition(),                 // position
+					Vec2f(this.isFacingLeft() ? 2.0f : -2.0f, 0.0f), // velocity
+					0,                                  // column
+					0,                                  // row
+					Vec2f(16, 16),                      // frame size
+					0.2f,                               // scale?
+					0,                                  // ?
+					"ShellCasing",                      // sound
+					this.get_u8("team_color"));         // team number
+>>>>>>> Stashed changes
 			}
 		}
 	}
@@ -941,6 +942,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			else if (this.getName() == "ranger") onRangerReload(this);
 			else if (this.getName() == "sniper") onSniperReload(this);
 			else if (this.getName() == "mp5") onMp5Reload(this);
+			else if (this.getName() == "shotgun") onShotgunReload(this);
 		}
 		if (isServer())
 		{
