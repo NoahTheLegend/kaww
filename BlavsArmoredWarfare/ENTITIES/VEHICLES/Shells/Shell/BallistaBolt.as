@@ -196,7 +196,13 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	WarfareExplode(this, projExplosionRadius*1.35, projExplosionDamage);
 	LinearExplosion(this, velocity, projExplosionRadius, length, 2+Maths::Floor(length/6), 0.01f, Hitters::fall);//only for damaging map
 	
-	this.getSprite().PlaySound("/ShellExplosion");
+	if (this.hasTag("rpg"))
+	{
+		this.getSprite().PlaySound("/RpgExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
+	}
+	else {
+		this.getSprite().PlayRandomSound("/ShellExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
+	}
 
 	Vec2f pos = this.getPosition();
 
@@ -204,19 +210,21 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	{
 		for (int i = 0; i < 8; i++)
 		{
-			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(16) - 8, XORRandom(12) - 6), getRandomVelocity(0.0f, XORRandom(35) * 0.005f, 360) + Vec2f(0.0f, -0.8f), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 3 + XORRandom(4), XORRandom(45) * -0.00005f, true);
+			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(16) - 8, XORRandom(12) - 6), getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + Vec2f(0.0f, -0.8f), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 3 + XORRandom(4), XORRandom(45) * -0.00005f, true);
 		}
 		for (int i = 0; i < 4; i++)
 		{
-			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(8) - 4, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(15) * 0.005f, 360), float(XORRandom(360)), 0.75f + XORRandom(40) * 0.01f, 5 + XORRandom(6), XORRandom(30) * -0.0001f, true);
+			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(8) - 4, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(20) * 0.005f, 360), float(XORRandom(360)), 0.75f + XORRandom(40) * 0.01f, 5 + XORRandom(6), XORRandom(30) * -0.0001f, true);
 		}
 
-		for (int i = 0; i < (15 + XORRandom(15)); i++)
+		for (int i = 0; i < (20 + XORRandom(20)); i++)
 		{
-			makeGibParticle("GenericGibs", pos, getRandomVelocity((pos + Vec2f(XORRandom(24) - 12, 0.0f)).getAngle(), 1.0f + XORRandom(4), 360.0f) + Vec2f(0.0f, -5.0f),
+			makeGibParticle("GenericGibs", pos - Vec2f(0, 2), this.getOldVelocity()/5 + getRandomVelocity((pos + Vec2f(XORRandom(24) - 12, 0.0f)).getAngle(), 1.0f + XORRandom(4), 360.0f) + Vec2f(0.0f, -5.0f),
 	                2, 4 + XORRandom(4), Vec2f(8, 8), 2.0f, 0, "", 0);
 		}
 	}
+
+	Boom(this);
 
 	this.Tag("dead");
 	this.server_Die();
@@ -271,6 +279,41 @@ void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f vel
 		if (speed > 10.0f && map.isTileWood(type))
 		{
 			this.set_u8("blocks_pierced", blocks_pierced + 1);
+		}
+	}
+}
+
+void Boom(CBlob@ this)
+{
+	if (getNet().isClient()) {
+		// screenshake effect when close to the explosion
+
+		CBlob @blob = getLocalPlayerBlob();
+		CPlayer @player = getLocalPlayer();
+		Vec2f pos;
+
+	    CCamera @camera = getCamera();
+		if (camera !is null) {
+			
+			// If the player is a spectating, base their location off of their camera.	
+			if (player !is null && player.getTeamNum() == getRules().getSpectatorTeamNum())
+			{
+				pos = camera.getPosition();
+			}
+			else if (blob !is null)
+			{
+				pos = blob.getPosition();
+			} 
+			else 
+			{
+				return;
+			}
+
+			pos -= this.getPosition();
+			f32 dist = pos.Length();
+			if (dist < 350) {
+				ShakeScreen((350 - dist) * (this.hasTag("HE_shell") ? 1.4 : 1.0), 50, this.getPosition());
+			}
 		}
 	}
 }

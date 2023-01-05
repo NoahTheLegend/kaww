@@ -760,13 +760,13 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 	{
 		f32 volume = Maths::Min(1.0f, Maths::Max(0.2f, (vellen - soundbase) / soundbase));
 
-		if (vellen > 3.0f)
+		if (vellen > 3.2f)
 		{
-			this.getSprite().PlayRandomSound("/WoodHeavyBump", volume, 0.9);
+			this.getSprite().PlayRandomSound("/WoodHeavyBump", volume-0.5, 0.9);
 		}
 		else
 		{
-			this.getSprite().PlayRandomSound("/WoodHeavyHit", volume, 0.9);
+			this.getSprite().PlayRandomSound("/WoodHeavyHit", volume-0.5, 0.9);
 		}
 	}
 

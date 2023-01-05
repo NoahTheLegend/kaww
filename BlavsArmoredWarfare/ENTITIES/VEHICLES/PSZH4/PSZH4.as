@@ -107,22 +107,6 @@ void onTick(CBlob@ this)
 
 		Vehicle_StandardControls(this, v);
 
-		if (getNet().isClient())
-		{
-			CPlayer@ p = getLocalPlayer();
-			if (p !is null)
-			{
-				CBlob@ local = p.getBlob();
-				if (local !is null)
-				{
-					CSpriteLayer@ front = this.getSprite().getSpriteLayer("front layer");
-					if (front !is null)
-					{
-						//front.setVisible(!local.isAttachedTo(this));
-					}
-				}
-			}
-		}
 		if (isServer() && this.isInWater())
 		{
 			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");

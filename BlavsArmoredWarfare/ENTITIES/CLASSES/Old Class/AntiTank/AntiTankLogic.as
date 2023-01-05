@@ -219,6 +219,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 
 	if (isKnocked(this))
 	{
+		this.set_u8("reloadqueue", 0);
 		charge_time = 0;
 
 		archer.isReloading = false;
@@ -226,9 +227,12 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	else
 	{
 		// reload
-		if (charge_time == 0 && controls !is null && !archer.isReloading && controls.isKeyJustPressed(KEY_KEY_R) && this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
+		if (controls !is null &&
+			!isReloading &&
+			(controls.isKeyJustPressed(KEY_KEY_R) || this.get_u8("reloadqueue") > 0) &&
+			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
-			//print("RELOAD!!");
+			this.set_u8("reloadqueue", 0);
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
 			if (inv !is null && inv.getItem("mat_heatwarhead") !is null)
@@ -280,12 +284,6 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 			moveVars.walkFactor *= 0.5f;
 			moveVars.jumpFactor *= 0.7f;
 			moveVars.canVault = false;
-
-			CPlayer@ player = this.getPlayer();
-			if (player !is null)
-			{
-				//print("p: " + player.getCharacterName() + "  cahrge: " + charge_time);
-			}
 
 			if (charge_time == 0 && isStabbing == false)
 			{
@@ -476,16 +474,6 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 		}
 	}
 
-	if (this.get_u8("hitmarker") > 0)
-	{
-		this.set_u8("hitmarker", this.get_u8("hitmarker")-1);
-
-		if (this.get_u8("hitmarker") == 20)
-		{
-			this.set_u8("hitmarker", 0);
-		}
-	}
-
 	if (this.get_u8("recoil_count") > 0)
 	{
 		CPlayer@ p = this.getPlayer();
@@ -607,6 +595,14 @@ void onTick(CBlob@ this)
 		}
 	}
 
+	if (this.get_u8("reloadqueue") > 0) this.sub_u8("reloadqueue", 1);
+	CControls@ controls = this.getControls();
+	if (controls !is null)
+	{	
+		// queue reloading timer
+		if (controls.isKeyJustPressed(KEY_KEY_R)) this.set_u8("reloadqueue", 8);
+	}
+
 	this.set_bool("is_a1", false);
 	this.set_bool("just_a1", false);
 }
@@ -685,6 +681,8 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 		proj.setPosition(arrowPos);
 		proj.setVelocity(arrowVel);
 		proj.set_s8(penRatingString, 2);
+
+		proj.Tag("rpg");
 	}
 	return proj;
 }
