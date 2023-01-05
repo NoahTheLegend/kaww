@@ -40,6 +40,7 @@ void onInit(CBlob@ this)
 	u8 burst_size; // bullets fired per click
 	u8 burst_rate; // ticks per bullet fired in a burst
 	s8 reload_time; // time to reload
+	u8 noreloadtimer; // time after each shot where you can't reload
 	u32 mag_size; // max bullets in mag
 	u8 delayafterfire; // time between shots 4
 	u8 randdelay; // + randomness
@@ -56,7 +57,7 @@ void onInit(CBlob@ this)
 	getWeaponStats( thisBlobHash, 
 	inaccuracy_cap, inaccuracy_pershot, 
 	semiauto, burst_size, burst_rate, 
-	reload_time, mag_size, delayafterfire, randdelay, 
+	reload_time, noreloadtimer, mag_size, delayafterfire, randdelay, 
 	bullet_velocity, bullet_lifetime, bullet_pen, emptyshellonfire);
 
 	InfantryInfo infantry;
@@ -83,6 +84,7 @@ void onInit(CBlob@ this)
 	infantry.burst_size 			= burst_size;
 	infantry.burst_rate 			= burst_rate;
 	infantry.reload_time 			= reload_time;
+	infantry.noreloadtimer          = noreloadtimer;
 	infantry.mag_size 				= mag_size;
 	infantry.delayafterfire 		= delayafterfire;
 	infantry.randdelay 				= randdelay;
@@ -364,8 +366,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	bool menuopen = getHUD().hasButtons();
 	Vec2f pos = this.getPosition();
 
-	
-
 	const u8 inaccuracyCap = infantry.inaccuracy_cap;
 	InAirLogic(this, inaccuracyCap);
 
@@ -407,14 +407,15 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	{
 		const s8 reloadTime = infantry.reload_time;
 		const u32 magSize = infantry.mag_size;
+	
 		// reload
 		if (controls !is null &&
-			charge_time == 0 &&
-			!archer.isReloading &&
-			controls.isKeyJustPressed(KEY_KEY_R) &&
+			!isReloading &&
+			(controls.isKeyJustPressed(KEY_KEY_R) || this.get_u8("reloadqueue") > 0) &&
 			this.get_u32("no_reload") < getGameTime() &&
 			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
+			this.set_u8("reloadqueue", 0);
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
 			if (inv !is null && inv.getItem("mat_7mmround") !is null)
@@ -772,8 +773,22 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-	if (this.isKeyPressed(key_action1)) this.set_u32("no_reload", getGameTime()+10);
-
+	
+	if (this.get_u8("reloadqueue") > 0) this.sub_u8("reloadqueue", 1);
+	CControls@ controls = this.getControls();
+	if (controls !is null)
+	{
+		// no reload timer
+		if (infantry.noreloadtimer > 0)
+		{
+			//if (this.isKeyPressed(key_action1)) this.set_u32("no_reload", getGameTime() + infantry.noreloadtimer);
+		}
+	
+		// queue reloading timer
+		if (controls.isKeyJustPressed(KEY_KEY_R)) this.set_u8("reloadqueue", 15);
+	}
+	print("q " + this.get_u8("reloadqueue"));
+	
 	this.set_bool("is_a1", false);
 	this.set_bool("just_a1", false);
 }
@@ -915,7 +930,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		const u32 magSize = infantry.mag_size;
 		if (this.get_u32("mag_bullets") > magSize) this.set_u32("mag_bullets", magSize);
-		if (isClient()) this.getSprite().PlaySound(infantry.shoot_sfx, 0.9f, 0.95f + XORRandom(35) * 0.01f);
+		if (isClient()) this.getSprite().PlaySound(infantry.shoot_sfx, 0.9f, 0.90f + XORRandom(40) * 0.01f);
 	}
 	else if (cmd == this.getCommandID("sync_reload_to_server"))
 	{
