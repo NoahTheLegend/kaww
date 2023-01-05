@@ -366,7 +366,7 @@ bool DoExplosion(CBlob@ this, Vec2f explosionVec)
 	WarfareExplode(this, projExplosionRadius, projExplosionDamage);
 	//LinearExplosion(this, explosionVec, radius, 16.0f, radius, damage, Hitters::explosion);
 	
-	this.getSprite().PlaySound("/ShellExplosion");
+	this.getSprite().PlaySound("/RpgExplosion");
 
 	if (isClient())
 	{

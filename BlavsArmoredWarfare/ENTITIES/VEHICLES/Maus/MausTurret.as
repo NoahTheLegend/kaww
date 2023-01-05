@@ -95,6 +95,10 @@ void onInit(CBlob@ this)
 	}
 
 	this.set_f32("gunelevation", (this.getTeamNum() == 1 ? 270 : 90) - init_gunoffset_angle);
+
+	sprite.SetEmitSound("Hydraulics.ogg");
+	sprite.SetEmitSoundPaused(true);
+	sprite.SetEmitSoundVolume(1.25f);
 }
 
 f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
@@ -112,13 +116,21 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 		if ((!facing_left && aim_vec.x < 0) ||
 		        (facing_left && aim_vec.x > 0))
 		{
+			this.getSprite().SetEmitSoundPaused(false);
+			this.getSprite().SetEmitSoundVolume(1.25f);
+
 			if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
+
 			aim_vec.RotateBy((facing_left ? 1 : -1) * this.getAngleDegrees());
 
 			angle = (-(aim_vec).getAngle() + 270.0f);
 			angle = Maths::Max(high_angle , Maths::Min(angle , low_angle));
 
 			not_found = false;
+		}
+		else
+		{
+			this.getSprite().SetEmitSoundPaused(true);
 		}
 	}
 
@@ -196,17 +208,9 @@ void onTick(CBlob@ this)
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 
 			bool facing_left = this.isFacingLeft();
-
-			//if (aim_vec.x > 0)
-			//{
-			//	this.SetFacingLeft(true);
-			//}
-			//else {
-			//	this.SetFacingLeft(false);
-			//}
 		}
 
-		if (angle < 0) //
+		if (angle < 0)
 		{
 			targetAngle = 360 + angle; // facing left
 		}
@@ -216,6 +220,8 @@ void onTick(CBlob@ this)
 		}
 
 		s16 currentAngle = this.get_f32("gunelevation");
+
+		this.getSprite().SetEmitSoundPaused(true);
 
 		if (!this.hasTag("nogunner"))
 		{
@@ -228,6 +234,8 @@ void onTick(CBlob@ this)
 				if (currentAngle < targetAngle) currentAngle--;
 				else currentAngle++;
 			}
+			this.getSprite().SetEmitSoundPaused(false);
+			this.getSprite().SetEmitSoundVolume(1.25f);
 
 			this.set_f32("gunelevation", ((currentAngle % 360) + 360) % 360);
 			Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);

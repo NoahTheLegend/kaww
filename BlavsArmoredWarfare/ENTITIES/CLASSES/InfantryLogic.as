@@ -107,7 +107,6 @@ void onInit(CBlob@ this)
 
 	if (thisBlobHash == _mp5) this.Tag(medicTagString);
 
-	this.set_u8("hitmarker", 0);
 	this.set_s8("reloadtime", 0); // for server
 
 	// one of these two has to go
@@ -399,6 +398,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	
 	if (isKnocked(this))
 	{
+		this.set_u8("reloadqueue", 0);
 		charge_time = 0;
 
 		archer.isReloading = false;
@@ -663,16 +663,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		}
 	}
 
-	if (this.get_u8("hitmarker") > 0)
-	{
-		this.set_u8("hitmarker", this.get_u8("hitmarker")-1);
-
-		if (this.get_u8("hitmarker") == 20)
-		{
-			this.set_u8("hitmarker", 0);
-		}
-	}
-
 	if (this.get_u8("inaccuracy") > 0)
 	{
 		s8 testnum = (this.get_u8("inaccuracy") - 5);
@@ -785,9 +775,8 @@ void onTick(CBlob@ this)
 		}
 	
 		// queue reloading timer
-		if (controls.isKeyJustPressed(KEY_KEY_R)) this.set_u8("reloadqueue", 15);
+		if (controls.isKeyJustPressed(KEY_KEY_R)) this.set_u8("reloadqueue", 8);
 	}
-	print("q " + this.get_u8("reloadqueue"));
 	
 	this.set_bool("is_a1", false);
 	this.set_bool("just_a1", false);

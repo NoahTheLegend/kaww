@@ -191,7 +191,7 @@ namespace ShotgunParams
 	const ::u8 BURST_SIZE 				= 5; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s8 RELOAD_TIME 				= 80; // time to reload
-	const ::u8 NORELOADTIMER 			= 60; // time after each shot where you can't reload
+	const ::u8 NORELOADTIMER 			= 10; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 4; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 15; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
@@ -367,7 +367,7 @@ namespace SniperParams
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s8 RELOAD_TIME 				= 58; // time to reload
-	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
+	const ::u8 NORELOADTIMER 			= 10; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 5; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 38; // time between shots
 	const ::u8 RANDDELAY 				= 4; // + randomness
@@ -842,7 +842,7 @@ void onSniperReload(CBlob@ this)
 
 void onMp5Reload(CBlob@ this)
 {
-	if (this.get_s8("charge_time") >= 60) this.getSprite().PlaySound("Mp5_reload.ogg", 0.8);
+	this.getSprite().PlaySound("Mp5_reload.ogg", 0.8); //if (this.get_s8("charge_time") >= 60) 
 	if (this.get_bool("isReloading") && (this.get_s8("charge_time") == 46 || this.get_s8("charge_time") == 45))
 	{
 		makeGibParticle(
