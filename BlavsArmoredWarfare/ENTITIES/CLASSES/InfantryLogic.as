@@ -837,22 +837,6 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 
 				this.set_u8("inaccuracy", this.get_u8("inaccuracy") + infantry.inaccuracy_pershot * (this.hasTag("sprinting")?2.0f:1.0f));
 			
-<<<<<<< Updated upstream
-				if (!this.hasTag("no bulletgib on shot"))
-				{
-					makeGibParticle(
-						"EmptyShellSmall",	                    // file name
-						this.getPosition(),                 // position
-						Vec2f(this.isFacingLeft() ? 2.0f : -2.0f, 0.0f), // velocity
-						0,                                  // column
-						0,                                  // row
-						Vec2f(16, 16),                      // frame size
-						0.2f,                               // scale?
-						0,                                  // ?
-						"ShellCasing",                      // sound
-						this.get_u8("team_color"));         // team number
-				}
-=======
 				if (infantry.emptyshellonfire)
 				makeGibParticle(
 					"EmptyShellSmall",	                    // file name
@@ -865,7 +849,6 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 					0,                                  // ?
 					"ShellCasing",                      // sound
 					this.get_u8("team_color"));         // team number
->>>>>>> Stashed changes
 			}
 		}
 	}
