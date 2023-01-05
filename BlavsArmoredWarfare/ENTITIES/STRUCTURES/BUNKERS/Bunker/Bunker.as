@@ -51,7 +51,7 @@ void onDie(CBlob@ this)
 		1.0f,                               // scale?
 		0,                                  // ?
 		"",                     			// sound
-		this.get_u8("team_color"));         // team number
+		255);         // team number
 	}
 
 	if (!isServer())

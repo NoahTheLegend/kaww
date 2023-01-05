@@ -28,6 +28,21 @@ void onInit(CBlob@ this)
 
 void onDie(CBlob@ this)
 {
+	for (uint i = 0; i < 4; i++)
+	{
+		makeGibParticle(
+		"Bunker",               			// file name
+		this.getPosition() + Vec2f(0, -6),  // position
+		getRandomVelocity(180, 1.5, 360) - Vec2f(0,2.5),      // velocity
+		i,                                  // column
+		6,                                  // row
+		Vec2f(16, 16),                      // frame size
+		1.0f,                               // scale?
+		0,                                  // ?
+		"",                     			// sound
+		255);         // team number
+	}
+
 	if (!isServer())
 		return;
 	server_CreateBlob("constructionyard",this.getTeamNum(),this.getPosition());
