@@ -300,7 +300,7 @@ void Boom(CBlob@ this)
 
 	    CCamera @camera = getCamera();
 		if (camera !is null) {
-			float mod = 1.0f;
+			float mod = 0.9f;
 			// If the player is a spectating, base their location off of their camera.	
 			if (player !is null && player.getTeamNum() == getRules().getSpectatorTeamNum())
 			{

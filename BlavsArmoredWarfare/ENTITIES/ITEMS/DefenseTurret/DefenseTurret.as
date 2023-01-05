@@ -112,11 +112,7 @@ void ClientFire(CBlob@ this)
 
 	this.SendCommand(this.getCommandID("shoot"));
 
-	if (isClient())
-	{
-		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.1f, 0.90f + XORRandom(25) * 0.01f);
-
-		makeGibParticle(
+	makeGibParticle(
 		"EmptyShellSmall",               // file name
 		this.getPosition() + Vec2f(0.0f, -6),                 // position
 		Vec2f((this.isFacingLeft() ? 1 : -1)*2+XORRandom(3),-1.2f),           // velocity
@@ -128,9 +124,11 @@ void ClientFire(CBlob@ this)
 		"ShellCasing",                      // sound
 		this.get_u8("team_color"));         // team number
 
+	if (isClient())
+	{
+		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.1f, 0.90f + XORRandom(25) * 0.01f);
 
 		ParticleAnimated("SmallExplosion3", (pos_2) + vel*0.8, getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
-
 
 		bool no_muzzle = false;
 
@@ -151,7 +149,6 @@ void ClientFire(CBlob@ this)
 		}
 	}
 }
-
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
