@@ -109,6 +109,7 @@ class InfantryInfo
 	f32 bullet_velocity; // speed that bullets fly 1.6
 	f32 bullet_lifetime; // in seconds, time for bullet to die
 	s8 bullet_pen; // penRating for bullet
+	bool emptyshellonfire; // should an empty shell be released when shooting
 	// SOUND
 	string reload_sfx;
 	string shoot_sfx;
@@ -147,6 +148,7 @@ class InfantryInfo
 		bullet_velocity 		= 1.42f; // speed that bullets fly 1.6
 		bullet_lifetime 		= 0.5f; // in seconds, time for bullet to die
 		bullet_pen 				= -1; // penRating for bullet
+		emptyshellonfire 		= false; // should an empty shell be released when shooting
 		// SOUND
 		reload_sfx 				= classname + "_reload.ogg";
 		shoot_sfx 				= "ShotgunFire.ogg";
@@ -193,6 +195,7 @@ namespace ShotgunParams
 	const ::f32 BULLET_VELOCITY 		= 18.0f; // speed that bullets fly
 	const ::f32 BULLET_LIFETIME 		= 0.5f; // in seconds, time for bullet to die
 	const ::s8 BULLET_PEN 				= -1; // penRating for bullet
+	const ::bool EMPTYSHELLONFIRE 		= false; // should an empty shell be released when shooting
 }
 
 namespace RangerParams
@@ -235,6 +238,7 @@ namespace RangerParams
 	const ::f32 BULLET_VELOCITY 		= 28.5f; // speed that bullets fly
 	const ::f32 BULLET_LIFETIME 		= 2.75f; // in seconds, time for bullet to die
 	const ::s8 BULLET_PEN 				= 1; // penRating for bullet
+	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }
 
 namespace Mp5Params
@@ -277,6 +281,7 @@ namespace Mp5Params
 	const ::f32 BULLET_VELOCITY 		= 25.0f; // speed that bullets fly
 	const ::f32 BULLET_LIFETIME 		= 2.75f; // in seconds, time for bullet to die
 	const ::s8 BULLET_PEN 				= 0; // penRating for bullet
+	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }
 
 namespace RevolverParams
@@ -319,6 +324,7 @@ namespace RevolverParams
 	const ::f32 BULLET_VELOCITY 		= 28.0f; // speed that bullets fly
 	const ::f32 BULLET_LIFETIME 		= 1.5f; // in seconds, time for bullet to die
 	const ::s8 BULLET_PEN 				= 0; // penRating for bullet
+	const ::bool EMPTYSHELLONFIRE 		= false; // should an empty shell be released when shooting
 }
 
 namespace SniperParams
@@ -361,6 +367,7 @@ namespace SniperParams
 	const ::f32 BULLET_VELOCITY 		= 37.0f; // speed that bullets fly
 	const ::f32 BULLET_LIFETIME 		= 3.0f; // in seconds, time for bullet to die
 	const ::s8 BULLET_PEN 				= 2; // penRating for bullet
+	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }
 
 void getBasicStats( int blobNameHash, string &out classname, string &out reload_sfx, string &out shoot_sfx, float &out damage_body, float &out damage_head )
@@ -492,7 +499,7 @@ void getWeaponStats( int blobNameHash,
 	u8 &out inaccuracy_cap, u8 &out inaccuracy_pershot, 
 	bool &out semiauto, u8 &out burst_size,	u8 &out burst_rate,
 	s8 &out reload_time, u32 &out mag_size, u8 &out delayafterfire, u8 &out randdelay,
-	float &out bullet_velocity, float &out bullet_lifetime, s8 &out bullet_pen )
+	float &out bullet_velocity, float &out bullet_lifetime, s8 &out bullet_pen, bool &out emptyshellonfire)
 {
 	switch (blobNameHash)
 	{
@@ -785,7 +792,7 @@ void onRevolverReload(CBlob@ this)
 		0.2f,                               // scale?
 		0,                                  // ?
 		"ShellCasing",                      // sound
-		this.get_u8("team_color"));         // team number
+		0);         // team number
 	}
 }
 
@@ -803,7 +810,7 @@ void onRangerReload(CBlob@ this)
 	1.0f,                               // scale?
 	0,                                  // ?
 	"EmptyMagSound",                    // sound
-	this.get_u8("team_color"));         // team number
+	0);         // team number
 }
 
 void onSniperReload(CBlob@ this)
@@ -822,7 +829,7 @@ void onSniperReload(CBlob@ this)
 		1.0f,                               // scale?
 		0,                                  // ?
 		"EmptyMagSound",                    // sound
-		this.get_u8("team_color"));         // team number
+		0);         // team number
 	}
 }
 
@@ -841,6 +848,25 @@ void onMp5Reload(CBlob@ this)
 		1.0f,                               // scale?
 		0,                                  // ?
 		"EmptyMagSound",                    // sound
-		this.get_u8("team_color"));         // team number
+		0);         // team number
+	}
+}
+
+void onShotgunReload(CBlob@ this)
+{
+	this.getSprite().PlaySound("Shotgun_reload.ogg", 0.8);
+	for (uint i = 0; i < 4; i++)
+	{
+		makeGibParticle(
+		"EmptyShellSmallBuckshot",      		            // file name
+		this.getPosition() + Vec2f(this.isFacingLeft() ? -6.0f : 6.0f, 0.0f), // position
+		Vec2f(this.isFacingLeft() ? 1.0f+(0.1f * XORRandom(10) - 0.5f) : -1.0f-(0.1f * XORRandom(10) - 0.5f), 0.0f), // velocity
+		0,                                  // column
+		0,                                  // row
+		Vec2f(16, 16),                      // frame size
+		0.2f,                               // scale?
+		0,                                  // ?
+		"ShellCasingBuckshot",                      // sound
+		0);         // team number
 	}
 }
