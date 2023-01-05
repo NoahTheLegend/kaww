@@ -53,23 +53,3 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		}
 	}
 }
-
-void onRender(CSprite@ this)
-{
-	if (g_videorecording)
-		return;
-
-	CBlob@ blob = this.getBlob();
-	Vec2f center = blob.getPosition();
-	Vec2f mouseWorld = getControls().getMouseWorldPos();
-	const f32 renderRadius = (blob.getRadius()) * 0.95f;
-	bool mouseOnBlob = (mouseWorld - center).getLength() < renderRadius;
-	if (mouseOnBlob)
-	{
-		//VV right here VV
-		Vec2f pos2d = blob.getScreenPos() + Vec2f(-32, 34);
-		GUI::SetFont("text");
-
-		GUI::DrawText("next crate: " + blob.get_s16("spawn_timer"), pos2d, color_white);
-	}
-}
