@@ -27,7 +27,7 @@ void onInit(CBlob@ this)
 
 	this.getShape().getConsts().mapCollisions = false;
 	this.getShape().getConsts().bullet = true;
-	this.getShape().getConsts().net_threshold_multiplier = 10.0f;
+	this.getShape().getConsts().net_threshold_multiplier = 6.0f;
 
 	LimitedAttack_setup(this);
 
