@@ -353,8 +353,11 @@ void onTick(CBlob@ this)
 		}
 	}
 
+
+	this.set_s32("engine_RPMtarget", Maths::Clamp(this.get_s32("engine_RPMtarget"), 0, 30000) );
+
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");
-	if (ap !is null && this.get_f32("engine_RPMtarget") > this.get_f32("engine_RPM"))
+	if (ap !is null && this.get_s32("engine_RPMtarget") > this.get_f32("engine_RPM"))
 	{
 		if (ap.getOccupied() is null) this.set_f32("engine_RPMtarget", 0); // turn engine off
 		f32 custom_add = this.get_f32("add_gas_intake");

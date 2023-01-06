@@ -552,7 +552,7 @@ void server_FireBlob(CBlob@ this, CBlob@ blob, const u8 charge)
 
 void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 {
-	this.set_f32("engine_RPMtarget", 0); // shut off the engine by default (longer idle time?)
+	this.set_s32("engine_RPMtarget", 0); // shut off the engine by default (longer idle time?)
 
 	v.move_direction = 0;
 	AttachmentPoint@[] aps;
@@ -829,11 +829,11 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 					if (this.get_f32("engine_throttle") >= 0.5f) // make this an equation
 					{
-						this.set_f32("engine_RPMtarget", 8000); // gas gas gas
+						this.set_s32("engine_RPMtarget", 8000); // gas gas gas
 					}
 					else
 					{
-						this.set_f32("engine_RPMtarget", 2000); // let engine idle
+						this.set_s32("engine_RPMtarget", 2000); // let engine idle
 					}
 					
 				}  // driver
