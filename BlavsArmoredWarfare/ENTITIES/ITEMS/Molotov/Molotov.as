@@ -54,7 +54,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 					this.server_Die();
 				}
 			}
-			else if (vellen > 2.0f) this.server_Die();
+			else if (vellen > 2.0f && doesCollideWithBlob(this, blob)) this.server_Die();
 		}
 	}
 }
@@ -92,7 +92,7 @@ void DoExplosion(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return blob.isCollidable() && ((blob.getName() == "wooden_platform" || blob.hasTag("door")) || (blob.getTeamNum() == this.getTeamNum() && !blob.getShape().isStatic())); 
+	return (blob.isCollidable() || (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())) && ((blob.getName() == "wooden_platform" || blob.hasTag("door")) || (blob.getTeamNum() == this.getTeamNum() && !blob.getShape().isStatic())); 
 }
 
 bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)
