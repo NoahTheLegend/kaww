@@ -47,8 +47,8 @@ void onInit(CBlob@ this)
 	
 	this.Tag("vehicle");
 	this.Tag("aerial");
-	this.Tag("wooden");
-	this.Tag("pass_bullet");
+	this.Tag("always bullet collide");
+
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetEmitSound("Aircraft_Loop.ogg");
@@ -78,33 +78,7 @@ void onInit(CSprite@ this)
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-	if (cmd == this.getCommandID("shoot bullet"))
-	{
-		this.set_u32("next_shoot", getGameTime()+shootDelay);
-		Vec2f arrowPos;
-		if (!params.saferead_Vec2f(arrowPos)) return;
-		Vec2f arrowVel;
-		if (!params.saferead_Vec2f(arrowVel)) return;
-
-		if (getNet().isServer() && !this.hasTag("no_more_proj"))
-		{
-			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
-			if (proj !is null)
-				proj.server_SetTimeToDie(3.0);
-
-			CInventory@ inv = this.getInventory();
-			if (inv !is null)
-			{
-				for (u8 i = 0; i < inv.getItemsCount(); i++)
-				{
-					if (inv.getItem(i) is null || inv.getItem(i).getName() != "mat_7mmround") continue;
-					if (XORRandom(5) != 0) continue;
-					inv.getItem(i).server_SetQuantity(inv.getItem(0).getQuantity()-1);
-					break;
-				}
-			}
-		}
-	}
+	
 }
 
 void onTick(CBlob@ this)
@@ -130,7 +104,7 @@ void onTick(CBlob@ this)
 			const f32 len = dir.Length();
 			dir.Normalize();
 			dir.RotateBy(this.isFacingLeft() ? 30 : -30); // make it fly directly to cursor, works weird vertically
-			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, 0.1f);
+			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, 0.065f);
 
 			// this.SetFacingLeft(dir.x > 0);
 			this.SetFacingLeft(this.getVelocity().x < -0.1f);
@@ -278,7 +252,7 @@ void onTick(CBlob@ this)
 	
 	if (getNet().isClient())
 	{
-		this.getSprite().SetEmitSoundSpeed(0.25f + (this.get_f32("velocity") / SPEED_MAX * 0.4f) * (this.getVelocity().Length() * 0.15f));
+		this.getSprite().SetEmitSoundSpeed(0.4f + (this.get_f32("velocity") / SPEED_MAX * 0.35f) * (this.getVelocity().Length() * 0.15f));
 		
 		if (hmod < 0.7 && u32(getGameTime() % 20 * hmod) == 0) ParticleAnimated(CFileMatcher(smokes[XORRandom(smokes.length)]).getFirst(), this.getPosition(), Vec2f(0, 0), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 3 + XORRandom(4), XORRandom(100) * -0.001f, true);
 	}
