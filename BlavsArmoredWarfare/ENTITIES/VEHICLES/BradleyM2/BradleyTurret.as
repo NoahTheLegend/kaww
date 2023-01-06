@@ -104,7 +104,7 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 	bool not_found = true;
 
-	if (gunner !is null && gunner.getOccupied() !is null)
+	if (gunner !is null && gunner.getOccupied() !is null && !this.hasTag("broken"))
 	{
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 
@@ -178,7 +178,8 @@ void onTick(CBlob@ this)
 			return;
 		}
 
-		Vehicle_StandardControls(this, v);
+		bool broken = this.hasTag("broken");
+		if (!broken) Vehicle_StandardControls(this, v);
 
 		if (v.cooldown_time > 0)
 		{
@@ -189,7 +190,7 @@ void onTick(CBlob@ this)
 		s16 targetAngle;
 
 		AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
-		if (gunner !is null && gunner.getOccupied() !is null)
+		if (gunner !is null && gunner.getOccupied() !is null && !broken)
 		{
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 
