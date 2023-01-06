@@ -454,6 +454,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			this.set_u8("reloadqueue", 0);
 			this.Sync("reloadqueue", true);
 
+			this.set_u32("no_reload", infantry.noreloadtimer);
+
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
 			if (inv !is null && inv.getItem("mat_7mmround") !is null)
