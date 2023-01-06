@@ -645,8 +645,11 @@ void onTick(CBlob@ this)
 	if (controls !is null)
 	{	
 		// queue reloading timer
-		if (controls.isKeyJustPressed(KEY_KEY_R)) this.set_u8("reloadqueue", 8);
-		this.Sync("reloadqueue", true);
+		if (controls.isKeyJustPressed(KEY_KEY_R))
+		{
+			this.set_u8("reloadqueue", 8);
+			this.Sync("reloadqueue", true);
+		}
 	}
 
 	this.set_bool("is_a1", false);
