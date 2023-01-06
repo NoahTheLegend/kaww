@@ -102,23 +102,11 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 
 void onTick(CBlob@ this)
 {
-	if (isClient()) // a try to fix clientsideonly activation
-	{
-		if (this.hasTag("activated") && this.get_u8("exploding_2") <= 1)
-		{
-			this.Untag("activated");
-		}
-	}
-	if (this.get_bool("sync_tag") && !this.hasTag("activated")) this.Tag("activated");
-	if (this.isAttached() && !this.hasTag("activated"))
+	if (this.isAttached())
 	{
 		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 		if (ap !is null && ap.isKeyJustPressed(key_action3))
 		{
-			if (!this.hasTag("no_pin")) 
-			{
-				Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
-			}
 			CBitStream params;
 			this.SendCommand(this.getCommandID("activate"), params);
 		}
@@ -192,22 +180,24 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
     if (cmd == this.getCommandID("activate"))
     {
-		this.Tag("no_pin");
         if (isServer())
         {
     		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
             if (point is null){return;}
     		CBlob@ holder = point.getOccupied();
 
-            if (holder !is null && this !is null)
+            if (holder !is null && this !is null && !this.hasTag("activated"))
             {
-				this.set_bool("sync_tag", true);
-				this.Sync("sync_tag", true);
                 this.set_u8("exploding_2", 110);
                 this.Sync("exploding_2", true);
             }
         }
 		this.Tag("activated");
+		if (!this.hasTag("no_pin")) 
+		{
+			this.Tag("no_pin");
+			Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
+		}
     }
 }
 
