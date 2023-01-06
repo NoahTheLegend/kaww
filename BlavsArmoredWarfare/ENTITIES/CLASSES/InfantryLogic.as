@@ -287,7 +287,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 	}
 }
 
-void ManageParachute( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, InfantryInfo@ infantry )
+void ManageParachute( CBlob@ this )
 {
 	if (this.isOnGround() || this.isInWater() || this.isAttached())
 	{	
@@ -452,6 +452,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
 			}
 			this.set_u8("reloadqueue", 0);
+			this.Sync("reloadqueue", true);
+
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
 			if (inv !is null && inv.getItem("mat_7mmround") !is null)
@@ -768,6 +770,8 @@ void onTick(CBlob@ this)
 
 	ArcherInfo@ archer;
 	if (!this.get("archerInfo", @archer)) return;
+
+	ManageParachute(this);
 	
 	if (isKnocked(this) || this.isInInventory())
 	{
@@ -781,8 +785,6 @@ void onTick(CBlob@ this)
 	if (!this.get("moveVars", @moveVars)) return;	
 
 	ManageGun(this, archer, moveVars, infantry);
-
-	ManageParachute(this, archer, moveVars, infantry);
 
 	if (!this.isOnGround()) // ladders sometimes dont work
 	{
@@ -805,14 +807,12 @@ void onTick(CBlob@ this)
 	CControls@ controls = this.getControls();
 	if (controls !is null)
 	{
-		// no reload timer
-		if (infantry.noreloadtimer > 0)
-		{
-			//if (this.isKeyPressed(key_action1)) this.set_u32("no_reload", getGameTime() + infantry.noreloadtimer);
-		}
-	
 		// queue reloading timer
-		if (controls.isKeyJustPressed(KEY_KEY_R)) this.set_u8("reloadqueue", 8);
+		if (controls.isKeyJustPressed(KEY_KEY_R))
+		{
+			this.set_u8("reloadqueue", 8);
+			this.Sync("reloadqueue", true);
+		}
 	}
 	
 	this.set_bool("is_a1", false);
