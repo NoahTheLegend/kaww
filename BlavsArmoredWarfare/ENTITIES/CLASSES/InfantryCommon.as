@@ -778,7 +778,7 @@ float getBulletSpread( int blobNameHash )
 		bulletSpread = 0.0f; break;
 
 		default: // _shotgun, but it'll be default stats
-		bulletSpread = 55.0f; break;
+		bulletSpread = 115.0f; break;
 	}
 
 	return bulletSpread;
