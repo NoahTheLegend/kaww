@@ -544,7 +544,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
-		return damage *= 0.5f;
+		return damage *= 0.65f;
 	}
 	return damage;
 }
