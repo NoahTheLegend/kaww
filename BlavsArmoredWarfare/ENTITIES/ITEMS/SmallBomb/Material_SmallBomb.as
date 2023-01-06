@@ -1,5 +1,5 @@
 #include "Hitters.as";
-#include "Explosion.as";
+#include "Explosionx.as";
 
 string[] particles = 
 {
@@ -34,6 +34,11 @@ void onDie(CBlob@ this)
 	}
 }
 
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	return false;
+}
+
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (damage >= this.getHealth() && !this.hasTag("dead"))
@@ -48,10 +53,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal)
 {
-	if (blob !is null ? !blob.isCollidable() : !solid)
-	{
-		return;
-	}
+	if (!solid) return;
 
 	f32 vellen = this.getOldVelocity().Length();
 	if (vellen >= 8.0f) 
@@ -71,19 +73,10 @@ void DoExplosion(CBlob@ this)
 
 	// print("Modifier: " + modifier + "; Quantity: " + this.getQuantity());
 
-	this.set_f32("map_damage_radius", (32.0f + random) * modifier);
-	this.set_f32("map_damage_ratio", 0.05f);
+	this.set_f32("map_damage_radius", (16.0f + random) * modifier);
+	this.set_f32("map_damage_ratio", -1.0f);
 
-	Explode(this, 32.0f + random, 8.0f);
-
-	for (int i = 0; i < 4 * modifier; i++) 
-	{
-		Vec2f dir = getRandomVelocity(angle, 1, 120);
-		dir.x *= 2;
-		dir.Normalize();
-
-		LinearExplosion(this, dir, 8.0f + XORRandom(16) + (modifier * 8), 8 + XORRandom(24), 3, 0.125f, Hitters::explosion);
-	}
+	Explode(this, 24.0f + random, 4.0f+(XORRandom(41)*0.1f), XORRandom(10)==0?true:false);
 
 	if(isClient())
 	{

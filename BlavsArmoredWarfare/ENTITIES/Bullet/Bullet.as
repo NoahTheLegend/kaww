@@ -281,14 +281,17 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		}
 	}
 
-	int creationTicks = this.getTickSinceCreated();
-	if (creationTicks > 20) // less dmg offscreen
+	if (!this.hasTag("strong"))
 	{
-		dmg *= 0.75f;
-	}
-	else if  (creationTicks > 14)
-	{
-		dmg *= 0.5f;
+		int creationTicks = this.getTickSinceCreated();
+		if (creationTicks > 20) // less dmg offscreen
+		{
+			dmg *= 0.75f;
+		}
+		else if  (creationTicks > 14)
+		{
+			dmg *= 0.5f;
+		}
 	}
 
 	if (!blob.hasTag("weakprop"))

@@ -130,7 +130,7 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	print("rpm " + this.get_f32("engine_RPM"));
+	//print("rpm " + this.get_f32("engine_RPM"));
 	
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
