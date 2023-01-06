@@ -242,46 +242,36 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 
 	// this gathers HitInfo objects which contain blob or tile hit information
 	HitInfo@[] hitMapInfos;
-	if (this.getName() == "shotgun" && map.getHitInfosFromRay(blobPos, -exact_aimangle, radius + attack_distance, this, @hitMapInfos))
+	if (map.getHitInfosFromRay(blobPos, -exact_aimangle, radius + attack_distance, this, @hitMapInfos))
 	{
 		bool dontHitMore = false;
+		
 		for (uint i = 0; i < hitMapInfos.length; i++)
 		{
 			HitInfo@ hi = hitMapInfos[i];
 			CBlob@ b = hi.blob;
-			if (!dontHitMore)
-			{
-				Vec2f tpos = map.getTileWorldPosition(hi.tileOffset) + Vec2f(4, 4);
-				//bool canhit = canhit && map.getSectorAtPosition(tpos, "no build") is null;
-				if (!map.isTileCastle(map.getTile(tpos).type))
-					map.server_DestroyTile(hi.hitpos, 0.1f, this);
-			}
-		}
-	}
-	HitInfo@[] hitInfos;
-	if (map.getHitInfosFromArc(pos, aimangle, arcdegrees, radius + attack_distance, this, @hitInfos))
-	{
-		//HitInfo objects are sorted, first come closest hits
-		for (uint i = 0; i < hitInfos.length; i++)
-		{
-			HitInfo@ hi = hitInfos[i];
-			CBlob@ b = hi.blob;
 
 			if (b !is null) // blob
 			{
+				const bool large = b.hasTag("blocks sword") && !b.isAttached() && b.isCollidable();
 				if (b.hasTag("ignore sword")) continue;
 				if (b.getTeamNum() == this.getTeamNum()) continue;
 				if (b.getName() == "wooden_platform" || b.hasTag("door")) damage *= 1.5;
 
 				//big things block attacks
-				const bool large = b.hasTag("blocks sword") && !b.isAttached() && b.isCollidable();
-
-				if (!dontHitMore)
 				{
 					this.server_Hit(b, hi.hitpos, Vec2f(0,0), damage, type, true); 
 					
 					// end hitting if we hit something solid, don't if its flesh
 				}
+			}
+
+			if (!dontHitMore && this.getName() == "shotgun")
+			{
+				Vec2f tpos = map.getTileWorldPosition(hi.tileOffset) + Vec2f(4, 4);
+				//bool canhit = canhit && map.getSectorAtPosition(tpos, "no build") is null;
+				if (!map.isTileCastle(map.getTile(tpos).type))
+					map.server_DestroyTile(hi.hitpos, 0.1f, this);
 			}
 		}
 	}
