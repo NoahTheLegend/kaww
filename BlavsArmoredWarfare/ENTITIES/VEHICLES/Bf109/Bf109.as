@@ -6,7 +6,7 @@ const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
 const u32 shootDelay = 1; // Ticks
-const f32 projDamage = 0.6f;
+const f32 projDamage = 0.75f;
 
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);
@@ -130,7 +130,7 @@ void onTick(CBlob@ this)
 			const f32 len = dir.Length();
 			dir.Normalize();
 			dir.RotateBy(this.isFacingLeft() ? 30 : -30); // make it fly directly to cursor, works weird vertically
-			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, 0.125f);
+			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, 0.1f);
 
 			// this.SetFacingLeft(dir.x > 0);
 			this.SetFacingLeft(this.getVelocity().x < -0.1f);
@@ -277,7 +277,14 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 			proj.IgnoreCollisionWhileOverlapped(this);
 			proj.server_setTeamNum(this.getTeamNum());
 			arrowVel.RotateBy(this.isFacingLeft() ? -2.5 : 2.5);
-			proj.setVelocity(arrowVel.RotateBy(0.125f*(XORRandom(21)-10)));
+			proj.setVelocity(arrowVel.RotateBy(0.125f*(XORRandom(36)-17.5f)));
+
+			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PILOT");
+			if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null) //getting player is necessary in case when player leaves
+			{
+				proj.SetDamageOwnerPlayer(ap.getOccupied().getPlayer());
+			}
+			
 			proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
 			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -16.0f : 16.0f), 8.0f).RotateBy(this.getAngleDegrees()));
 		}
@@ -545,7 +552,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
-		return damage *= 0.65f;
+		return damage *= 0.6f;
 	}
 	return damage;
 }
