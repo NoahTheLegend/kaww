@@ -270,7 +270,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 		// reload
 		if (controls !is null &&
 			!isReloading &&
-			(controls.isKeyJustPressed(KEY_KEY_R) || this.get_u8("reloadqueue") > 0) &&
+			(controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient())) &&
 			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
 			this.set_u8("reloadqueue", 0);
