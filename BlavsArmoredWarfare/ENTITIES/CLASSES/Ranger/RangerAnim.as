@@ -44,7 +44,7 @@ void LoadSprites(CSprite@ this)
 	if (backarm !is null)
 	{
 		Animation@ anim = backarm.addAnimation("default", 0, false);
-		anim.AddFrame(131); //131
+		anim.AddFrame(131);
 		backarm.SetOffset(Vec2f(-10.0f, 5.0f + config_offset));
 		backarm.SetAnimation("default");
 		backarm.SetVisible(false);
@@ -227,14 +227,7 @@ void onTick(CSprite@ this)
 		
 		if (vy < -0.0f && moveVars.walljumped)
 		{
-			if (blob.isKeyPressed(key_action2))
-			{
-				//this.SetAnimation("walk");
-			}
-			else
-			{
-				//this.SetAnimation("run");
-			}
+
 		}
 		else
 		{
@@ -370,7 +363,6 @@ void onTick(CSprite@ this)
 	else
 	{
 		setArmValues(this.getSpriteLayer("frontarm"), false, 0.0f, 0.1f, "default", Vec2f(0, 0), armOffset);
-		//setArmValues(this.getSpriteLayer("backarm"), false, 0.0f, -0.1f, "default", Vec2f(0, 0), armOffset);
 	}
 
 	//set the head anim
