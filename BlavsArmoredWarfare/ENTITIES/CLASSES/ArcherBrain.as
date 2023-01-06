@@ -135,7 +135,7 @@ void onTick(CBrain@ this)
 
 		blob.set_u8("strategy", strategy);
 
-		if (XORRandom(600) == 0)
+		if (XORRandom(700) == 0)
 		{
 			@target = null;
 		}
