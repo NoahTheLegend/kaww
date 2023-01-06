@@ -287,7 +287,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 	}
 }
 
-void ManageParachute( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, InfantryInfo@ infantry )
+void ManageParachute( CBlob@ this )
 {
 	if (this.isOnGround() || this.isInWater() || this.isAttached())
 	{	
@@ -768,6 +768,8 @@ void onTick(CBlob@ this)
 
 	ArcherInfo@ archer;
 	if (!this.get("archerInfo", @archer)) return;
+
+	ManageParachute(this);
 	
 	if (isKnocked(this) || this.isInInventory())
 	{
@@ -781,8 +783,6 @@ void onTick(CBlob@ this)
 	if (!this.get("moveVars", @moveVars)) return;	
 
 	ManageGun(this, archer, moveVars, infantry);
-
-	ManageParachute(this, archer, moveVars, infantry);
 
 	if (!this.isOnGround()) // ladders sometimes dont work
 	{
