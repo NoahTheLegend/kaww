@@ -1,6 +1,7 @@
 #include "VehicleCommon.as"
 #include "Explosion.as";
 #include "Hitters.as"
+#include "MakeDirtParticles.as"
 
 void onInit(CBlob@ this)
 {
@@ -15,38 +16,25 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    4750.0f, // move speed         125 is a good fast speed
-	    0.7f,  // turn speed
-	    Vec2f(0.0f, 0.56f), // jump out velocity
+	    5000.0f, // move speed
+	    1.0f,  // turn speed
+	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    false);  // inventory access
 
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
-
-	Vehicle_AddAmmo(this, v,
-        325, // fire delay (ticks)
-        1, // fire bullets amount
-        1, // fire cost
-        "mat_arrows", // bullet ammo config name
-        "Arrows", // name for ammo selection
-        "arrow", // bullet config name
-        "BowFire", // fire sound
-        "EmptyFire" // empty fire sound
-       );
-
-	v.charge = 400;
 
 	Vehicle_SetupGroundSound(this, v, "TracksSound",  // movement sound
 	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
 	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
-	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(27.0f, 3.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(27.0f, 2.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(20.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(12.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(4.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-4.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-12.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-20.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-29.0f, 3.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-29.0f, 2.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
 
 	this.getShape().SetOffset(Vec2f(0, 2));
 
@@ -55,6 +43,7 @@ void onInit(CBlob@ this)
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
+
 	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
 	if (front !is null)
 	{
@@ -85,7 +74,7 @@ void onInit(CBlob@ this)
 		tracks.SetOffset(Vec2f(0.0f, 0.0f));
 	}
 
-	// turret
+	// attach turret & machine gun
 	if (getNet().isServer())
 	{
 		CBlob@ turret = server_CreateBlob("t10turret");	
@@ -109,48 +98,50 @@ void onInit(CBlob@ this)
 
 			bow.SetFacingLeft(facing_left);
 		}
-		
 
-	{
-		CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 1
-
-		if (soundmanager !is null)
 		{
-			soundmanager.set_bool("manager_Type", false);
-			soundmanager.set_f32("custom_pitch", 0.875f);
-			soundmanager.Init();
-			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+			CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 1
 
-			this.set_u16("followid", soundmanager.getNetworkID());
+			if (soundmanager !is null)
+			{
+				soundmanager.set_bool("manager_Type", false);
+				soundmanager.set_f32("custom_pitch", 0.875f);
+				soundmanager.Init();
+				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+
+				this.set_u16("followid", soundmanager.getNetworkID());
+			}
 		}
-	}
-	{
-		CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 2
-
-		if (soundmanager !is null)
 		{
-			soundmanager.set_bool("manager_Type", true);
-			soundmanager.set_f32("custom_pitch", 0.875f);
-			soundmanager.Init();
-			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
-			
-			this.set_u16("followid2", soundmanager.getNetworkID());
+			CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 2
+
+			if (soundmanager !is null)
+			{
+				soundmanager.set_bool("manager_Type", true);
+				soundmanager.set_f32("custom_pitch", 0.875f);
+				soundmanager.Init();
+				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
+				
+				this.set_u16("followid2", soundmanager.getNetworkID());
+			}
 		}
-	}
-	}
+	}	
 }
 
 void onTick(CBlob@ this)
 {
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
-		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
-		if (point !is null)
+		if (getGameTime()%30==0)
 		{
-			CBlob@ tur = point.getOccupied();
-			if (isServer() && tur !is null) tur.server_setTeamNum(this.getTeamNum());
+			AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
+			if (point !is null)
+			{
+				CBlob@ tur = point.getOccupied();
+				if (isServer() && tur !is null) tur.server_setTeamNum(this.getTeamNum());
+			}
 		}
-		
+
 		VehicleInfo@ v;
 		if (!this.get("VehicleInfo", @v))
 		{
@@ -175,7 +166,7 @@ void onTick(CBlob@ this)
 				}
 			}
 		}
-		
+
 		CSpriteLayer@ tracks = this.getSprite().getSpriteLayer("tracks");
 		if (tracks !is null)
 		{
@@ -283,7 +274,7 @@ void onTick(CBlob@ this)
 // Blow up
 void onDie(CBlob@ this)
 {
-	Explode(this, 64.0f, 1.0f);
+	Explode(this, 72.0f, 1.0f);
 
 	this.getSprite().PlaySound("/vehicle_die");
 
@@ -338,7 +329,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return Vehicle_doesCollideWithBlob_ground(this, blob);
 	}
 }
-
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
 	VehicleInfo@ v;
