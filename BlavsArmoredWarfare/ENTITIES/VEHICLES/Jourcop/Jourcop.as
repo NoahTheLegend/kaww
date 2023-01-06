@@ -504,16 +504,6 @@ void DoExplosion(CBlob@ this)
 	Vec2f pos = this.getPosition() + this.get_Vec2f("explosion_offset").RotateBy(this.getAngleDegrees());
 	CMap@ map = getMap();
 
-	if (isServer())
-	{
-		for (int i = 0; i < (5 + XORRandom(5)); i++)
-		{
-			CBlob@ blob = server_CreateBlob("flame", -1, this.getPosition());
-			blob.setVelocity(Vec2f(XORRandom(10) - 5, -XORRandom(10)));
-			blob.server_SetTimeToDie(10 + XORRandom(5));
-		}
-	}
-
 	if (isClient())
 	{
 		for (int i = 0; i < 40; i++)

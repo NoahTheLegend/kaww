@@ -16,6 +16,11 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 	return false;
 }
 
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	return false;
+}
+
 void DoExplosion(CBlob@ this)
 {
 	if (this.hasTag("exploded")) return;
@@ -51,6 +56,16 @@ void onDie(CBlob@ this)
 	for (int i = 0; i < 15; i++)
 	{
 		CParticle@ p = ParticleAnimated("BulletHitParticle1.png", this.getPosition() + getRandomVelocity(0, XORRandom(40) * 1.0f, 360), Vec2f(0,0), XORRandom(360), 1.0f + XORRandom(50)*0.01f, 4+XORRandom(4), 0.0f, true);
+	}
+
+	if (isServer())
+	{
+		for (int i = 0; i < (7 + XORRandom(7)); i++)
+		{
+			CBlob@ blob = server_CreateBlob("flame", -1, this.getPosition());
+			blob.setVelocity(Vec2f(XORRandom(10) - 5, -XORRandom(10)));
+			blob.server_SetTimeToDie(10 + XORRandom(5));
+		}
 	}
 
 	// glow
