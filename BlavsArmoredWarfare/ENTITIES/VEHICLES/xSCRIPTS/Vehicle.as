@@ -225,7 +225,11 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (!(isClient() && isServer()) && getGameTime() < 60*30) return; // turn engines off!
+	if (!(isClient() && isServer()) && getGameTime() < 60*30)
+	{
+		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
+		return; // turn engines off!
+	}
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{
@@ -246,7 +250,7 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-	else if (this.hasTag("broken") && this.getHealth() >= this.getInitialHealth()*0.25f) this.Untag("broken");
+	else if (this.hasTag("broken") && this.getHealth() >= this.getInitialHealth()*0.2f) this.Untag("broken");
 
 	AttachmentPoint@ drv = this.getAttachments().getAttachmentPointByName("DRIVER");
 	if (drv !is null && drv.getOccupied() !is null)
