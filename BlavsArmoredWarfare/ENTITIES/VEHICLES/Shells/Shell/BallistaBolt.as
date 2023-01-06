@@ -206,10 +206,6 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	{
 		this.getSprite().PlaySound("/RpgExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
 	}
-	else if (this.get_f32(projExplosionDamageString) > 11.0f)
-	{
-		this.getSprite().PlayRandomSound("/ShellExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
-	}
 	else // smaller shell
 	{ // why tf is this not working? sounds are not playing
 		this.getSprite().PlayRandomSound("/MediumShellExplosion.ogg", 1.0, 0.9f + XORRandom(20) * 0.01f);
@@ -264,6 +260,11 @@ void BallistaHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, f32 damage
 
 void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f velocity, const f32 damage, u8 customData)
 {
+	if (!this.hasTag("soundplayed"))
+	{
+		this.getSprite().PlayRandomSound("/ShellExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
+		this.Tag("soundplayed");
+	}
 	if (DoExplosion(this, velocity)) return;
 
 	CMap@ map = getMap();
