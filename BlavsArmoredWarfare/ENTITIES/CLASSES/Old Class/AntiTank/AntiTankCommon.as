@@ -6,7 +6,7 @@ const float damage_head = 2.5f;
 // SHAKE
 const float recoilx = 120; // x shake (20)
 const float recoily = 150; // y shake (45)
-const float recoillength = 430; // how long to recoil (?)
+const float recoillength = 100; // how long to recoil (?)
 // RECOIL
 const float recoilforce = 1.13f; // amount to push player
 const u8 recoilcursor = 13; // amount to raise mouse pos
