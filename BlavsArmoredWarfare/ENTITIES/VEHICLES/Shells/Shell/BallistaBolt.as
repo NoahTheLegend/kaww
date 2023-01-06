@@ -89,7 +89,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
-	if (blob.hasTag("structure") || blob.getName() == "log" || blob.hasTag("trap"))
+	if (blob.hasTag("structure") || blob.getName() == "log" || blob.hasTag("trap") || blob.hasTag("material"))
 	{
 		return false;
 	}
