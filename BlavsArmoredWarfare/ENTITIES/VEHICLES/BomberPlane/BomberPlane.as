@@ -2,7 +2,7 @@
 #include "Hitters.as";
 #include "Explosion.as";
 // const u32 fuel_timer_max = 30 * 600;
-const f32 SPEED_MAX = 62.5;
+const f32 SPEED_MAX = 57.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
 const u32 shootDelay = 1; // Ticks
@@ -104,7 +104,7 @@ void onTick(CBlob@ this)
 			const f32 len = dir.Length();
 			dir.Normalize();
 			dir.RotateBy(this.isFacingLeft() ? 30 : -30); // make it fly directly to cursor, works weird vertically
-			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, 0.065f);
+			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, 0.05f);
 
 			// this.SetFacingLeft(dir.x > 0);
 			this.SetFacingLeft(this.getVelocity().x < -0.1f);
@@ -145,10 +145,11 @@ void onTick(CBlob@ this)
 				if (inv !is null) 
 				{
 					u32 itemCount = inv.getItemsCount();
+					bool can_drop =  this.getAngleDegrees() > 335 || this.getAngleDegrees() < 45;
 
 					if (isClient()) 
 					{
-						if (itemCount > 0)
+						if (itemCount > 0 && can_drop)
 						{ 
 							this.getSprite().PlaySound("bridge_open", 1.0f, 1.0f);
 						}
@@ -158,7 +159,7 @@ void onTick(CBlob@ this)
 						}
 					}
 
-					if (itemCount > 0) 
+					if (itemCount > 0 && can_drop) 
 					{
 						if (isServer()) 
 						{
