@@ -807,12 +807,6 @@ void onTick(CBlob@ this)
 	CControls@ controls = this.getControls();
 	if (controls !is null)
 	{
-		// no reload timer
-		if (infantry.noreloadtimer > 0)
-		{
-			//if (this.isKeyPressed(key_action1)) this.set_u32("no_reload", getGameTime() + infantry.noreloadtimer);
-		}
-	
 		// queue reloading timer
 		if (controls.isKeyJustPressed(KEY_KEY_R))
 		{
