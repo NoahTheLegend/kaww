@@ -445,6 +445,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			this.Sync("reloadqueue", true);
 
 			this.set_u32("no_reload", getGameTime()+15);
+			printf("gt "+getGameTime());
+			printf("tt "+this.get_u32("no_reload"));
 
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
