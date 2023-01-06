@@ -452,6 +452,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
 			}
 			this.set_u8("reloadqueue", 0);
+			this.Sync("reloadqueue", true);
+
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
 			if (inv !is null && inv.getItem("mat_7mmround") !is null)
@@ -812,7 +814,11 @@ void onTick(CBlob@ this)
 		}
 	
 		// queue reloading timer
-		if (controls.isKeyJustPressed(KEY_KEY_R)) this.set_u8("reloadqueue", 8);
+		if (controls.isKeyJustPressed(KEY_KEY_R))
+		{
+			this.set_u8("reloadqueue", 8);
+			this.Sync("reloadqueue", true);
+		}
 	}
 	
 	this.set_bool("is_a1", false);
