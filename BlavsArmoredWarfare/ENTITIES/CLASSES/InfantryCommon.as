@@ -843,7 +843,7 @@ void onSniperReload(CBlob@ this)
 void onMp5Reload(CBlob@ this)
 {
 	this.getSprite().PlaySound("Mp5_reload.ogg", 0.8); //if (this.get_s8("charge_time") >= 60) 
-	if (this.get_bool("isReloading") && (this.get_s8("charge_time") == 46 || this.get_s8("charge_time") == 45))
+	/*if (this.get_bool("isReloading") && (this.get_s8("charge_time") == 46 || this.get_s8("charge_time") == 45))
 	{
 		makeGibParticle(
 		"EmptyMag",               // file name
@@ -856,7 +856,7 @@ void onMp5Reload(CBlob@ this)
 		0,                                  // ?
 		"EmptyMagSound",                    // sound
 		0);         // team number
-	}
+	}*/
 }
 
 void onShotgunReload(CBlob@ this)
