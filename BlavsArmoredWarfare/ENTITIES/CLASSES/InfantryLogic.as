@@ -485,7 +485,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 				//printf(""+infantry.reload_sfx);
 
-				sprite.PlaySound(infantry.reload_sfx, 55.0);
+				//sprite.PlaySound(infantry.reload_sfx, 55.0);
 			}
 		}
 		if (isServer() && this.hasTag("sync_reload"))
