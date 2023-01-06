@@ -146,7 +146,6 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 		tail_position
 	};
 
-	printf("e");
 	for (uint i = 0; i < positions.length; i ++)
 	{
 		Vec2f temp_position = positions[i];
@@ -168,7 +167,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 
 	HitInfo@[] infos;
 
-	if (speed > 0.1f && map.getHitInfosFromArc(tail_position, -angle, 10, (tip_position - tail_position).getLength(), this, true, @infos))
+	if (speed > 0.1f && map.getHitInfosFromArc(tail_position, -angle, 10, (((tip_position+this.getVelocity()) - tail_position)).getLength(), this, true, @infos))
 	{
 		for (uint i = 0; i < infos.length; i ++)
 		{
