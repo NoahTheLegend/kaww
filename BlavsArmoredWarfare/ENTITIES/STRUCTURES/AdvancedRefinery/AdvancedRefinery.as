@@ -176,7 +176,7 @@ void onTick(CBlob@ this)
 			{
 				CBlob @b = blobsInRadius[i];
 
-				if (b.isOnGround() && !b.isAttached() && b.getName() == "mat_stone") // stone on floor
+				if (b.isOnGround() && !b.isAttached() && b.getName() == "mat_gold") // stone on floor
 				{
 					if (b is null) return;
 
