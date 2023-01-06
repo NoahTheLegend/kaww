@@ -146,7 +146,6 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 		tail_position
 	};
 
-	printf("e");
 	for (uint i = 0; i < positions.length; i ++)
 	{
 		Vec2f temp_position = positions[i];
