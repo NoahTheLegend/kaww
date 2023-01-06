@@ -55,14 +55,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal)
 
 	f32 vellen = this.getOldVelocity().Length();
 	if (vellen >= 8.0f) 
-	{
-		if (blob !is null)
-		{
-			if (blob.getName() != "triplane" && blob.getName() != "jetfighter"
-			&& !blob.isInInventory() && !blob.isAttached())
-				return;
-		}
-		
+	{	
 		this.Tag("DoExplode");
 		this.server_Die();
 	}
@@ -78,10 +71,10 @@ void DoExplosion(CBlob@ this)
 
 	// print("Modifier: " + modifier + "; Quantity: " + this.getQuantity());
 
-	this.set_f32("map_damage_radius", (40.0f + random) * modifier);
-	this.set_f32("map_damage_ratio", 0.25f);
+	this.set_f32("map_damage_radius", (32.0f + random) * modifier);
+	this.set_f32("map_damage_ratio", 0.05f);
 
-	Explode(this, 40.0f + random, 15.0f);
+	Explode(this, 32.0f + random, 8.0f);
 
 	for (int i = 0; i < 4 * modifier; i++) 
 	{
