@@ -96,7 +96,7 @@ void onInit(CBlob@ this)
 		case _mausturret: // MAUS Shell cannon
 		{
 			weaponRating = 3;
-			linear_length = 20.0f;
+			linear_length = 16.0f;
 			scale_damage = 2.5f;
 			break;
 		}
@@ -110,7 +110,7 @@ void onInit(CBlob@ this)
 		case _m60turret: // M60 Shell cannon
 		{
 			weaponRating = 2;
-			linear_length = 12.0f;
+			linear_length = 10.0f;
 			scale_damage = 1.75f;
 			break;
 		}
@@ -231,6 +231,22 @@ void onTick(CBlob@ this)
 	{
 		return;
 	}
+
+	if (this.hasTag("turret") && this.getHealth() <= 0.01f)
+	{
+		if (this.hasTag("broken"))
+		{
+			if (isClient() && getGameTime()%(10+XORRandom(11)) == 0)
+			{
+				Vec2f pos = this.getPosition();
+				CMap@ map = getMap();
+				if (map is null) return;
+
+				ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(30) - 20, XORRandom(25) - 25), getRandomVelocity(0.0f, XORRandom(100) * 0.01f, 90), float(XORRandom(360)), 0.25f + XORRandom(75) * 0.01f, 4 + XORRandom(2), XORRandom(25) * -0.00005f, true);
+			}
+		}
+	}
+	else if (this.hasTag("broken") && this.getHealth() >= this.getInitialHealth()*0.5f) this.Untag("broken");
 
 	AttachmentPoint@ drv = this.getAttachments().getAttachmentPointByName("DRIVER");
 	if (drv !is null && drv.getOccupied() !is null)
@@ -801,6 +817,7 @@ void DoExplosion(CBlob@ this, f32 damage, f32 map_damage, f32 radius)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (this.hasTag("broken") || this.hasTag("falling")) return 0;
 	if (customData == Hitters::fire)
 	{
 		return damage*2;
@@ -913,6 +930,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	//printf("finalrating " + finalRating);
 	//print ("finalDamage: "+damage);
+
+	if (this.hasTag("turret"))
+	{
+		if (this.getHealth()-damage <= 0.0f)
+		{
+			this.Tag("broken");
+			this.server_SetHealth(0.01f);
+
+			return 0;
+		}
+	}
 
 	// if damage is not insignificant, prevent repairs for a time
 	if (damage > 0.25f)
