@@ -830,7 +830,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		return damage*2;
 	}
 	else if (hitterBlob.getName() == "grenade") return damage * 2.5;
-	
+ 	
 	if (isClient() && customData == Hitters::builder)
 	{
 		this.getSprite().PlaySound("dig_stone.ogg", 1.0f, (0.975f - (this.getMass()*0.000075f))-(XORRandom(11)*0.01f));
@@ -842,6 +842,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	s8 armorRating = this.get_s8(armorRatingString);
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
+
+	if (hitterBlob.getName() == "mat_smallbomb")
+	{
+		return damage * (2.25f-(armorRating*0.5f));
+	}
 
 	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor
 

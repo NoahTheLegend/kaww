@@ -48,7 +48,7 @@ void makeLargeExplosionParticle(Vec2f pos)
 	                 -0.1f, true);
 }
 
-void Explode(CBlob@ this, f32 radius, f32 damage)
+void Explode(CBlob@ this, f32 radius, f32 damage, bool map_damage = true)
 {
 	Vec2f pos = this.getPosition();
 	CMap@ map = this.getMap();
@@ -206,7 +206,7 @@ void Explode(CBlob@ this, f32 radius, f32 damage)
                                 continue;
 
 							//do we need to raycast?
-							bool canHit = !map_damage_raycast || (dist < 0.1f);
+							bool canHit = (!map_damage_raycast || (dist < 0.1f));
 
 							if (!canHit)
 							{
@@ -258,7 +258,7 @@ void Explode(CBlob@ this, f32 radius, f32 damage)
                                 }
 							}
 
-							if (canHit)
+							if (canHit && map_damage)
 							{
 								if (canExplosionDamage(map, tpos, tile))
 								{
