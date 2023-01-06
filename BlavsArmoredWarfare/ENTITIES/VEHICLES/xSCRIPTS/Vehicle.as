@@ -5,6 +5,20 @@
 #include "VehicleAttachmentCommon.as"
 #include "GenericButtonCommon.as"
 #include "Hitters.as";
+#include "Explosionx.as";
+
+string[] particles = 
+{
+	"LargeSmoke",
+	"Explosion.png"
+};
+
+string[] smokes = 
+{
+	"LargeSmoke.png",
+	"SmallSmoke1.png",
+	"SmallSmoke2.png"
+};
 
 const string wheelsTurnAmountString = "wheelsTurnAmount";
 const string engineRPMString = "engine_RPM";
@@ -218,23 +232,26 @@ void onTick(CBlob@ this)
 		return;
 	}
 
-	if (isServer())
+	AttachmentPoint@ drv = this.getAttachments().getAttachmentPointByName("DRIVER");
+	if (drv !is null && drv.getOccupied() !is null)
 	{
-		if (getGameTime() % 30 == 0 && this.hasTag("engine_can_get_stuck") && this.getHealth() <= this.getInitialHealth()/6 && XORRandom(15) == 0) // jam engine on low hp
+		if (isServer())
 		{
-			this.set_bool("engine_stuck", true);
-			this.set_u32("engine_stuck_time", getGameTime()+90+XORRandom(90));
-			
-			CBitStream params;
-			params.write_u32(this.get_u32("engine_stuck_time"));
-			this.SendCommand(this.getCommandID("jam_engine"), params);
-		}
-	}
+			if (getGameTime() % 30 == 0 && this.hasTag("engine_can_get_stuck") && this.getHealth() <= this.getInitialHealth()/6 && XORRandom(15) == 0) // jam engine on low hp
+			{
+				this.set_bool("engine_stuck", true);
+				this.set_u32("engine_stuck_time", getGameTime()+90+XORRandom(90));
 
-	if (this.get_bool("engine_stuck") && this.get_u32("engine_stuck_time") <= getGameTime())
-	{
-		this.getSprite().PlaySound("EngineStart_tank", 2.5f, 1.0f + XORRandom(11)*0.01f);
-		this.set_bool("engine_stuck", false);
+				CBitStream params;
+				params.write_u32(this.get_u32("engine_stuck_time"));
+				this.SendCommand(this.getCommandID("jam_engine"), params);
+			}
+		}
+		if (this.get_bool("engine_stuck") && this.get_u32("engine_stuck_time") <= getGameTime())
+		{
+			this.getSprite().PlaySound("EngineStart_tank", 2.5f, 1.0f + XORRandom(11)*0.01f);
+			this.set_bool("engine_stuck", false);
+		}
 	}
 
 	// wheels
@@ -598,6 +615,190 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 }
 
+void onDie(CBlob@ this)
+{
+	if (isServer())
+	{
+		this.Tag("explosion always teamkill");
+		f32 explosion_radius = 0.0f;
+		f32 explosion_map_damage = 0.0f;
+		f32 explosion_damage = 0.0f;
+		u8 scrap_amount = 0;
+		switch (this.getName().getHash())
+		{
+			case _m60:
+			{
+				scrap_amount = 8+XORRandom(8);
+				explosion_radius = 64.0f;
+				explosion_map_damage = 0.2f;
+				explosion_damage = 3.0f;
+				break;
+			} // normal tank
+			case _t10:
+			{
+				scrap_amount = 13+XORRandom(8);
+				explosion_radius = 72.0f;
+				explosion_map_damage = 0.25f;
+				explosion_damage = 4.0f;
+				break;
+			} // T10
+			case _maus:
+			{
+				scrap_amount = 17+XORRandom(9);
+				explosion_radius = 92.0f;
+				explosion_map_damage = 0.3f;
+				explosion_damage = 6.0f;
+				break;
+			} // mouse
+			case _pszh4:
+			{
+				scrap_amount = 3+XORRandom(6);
+				explosion_radius = 32.0f;
+				explosion_map_damage = 0.1f;
+				explosion_damage = 1.5f;
+				break;
+			} // smol APC
+			case _btr82a:
+			{
+				scrap_amount = 7+XORRandom(6);
+				explosion_radius = 48.0f;
+				explosion_map_damage = 0.15f;
+				explosion_damage = 2.25f;
+				break;
+			} // big APC
+			case _bradley:
+			{
+				scrap_amount = 6+XORRandom(8);
+				explosion_radius = 64.0f;
+				explosion_map_damage = 0.175f;
+				explosion_damage = 3.0f;
+				break;
+			} // bradley m2
+			case _transporttruck:
+			{
+				scrap_amount = 4+XORRandom(4);
+				explosion_radius = 32.0f;
+				explosion_map_damage = 0.15f;
+				explosion_damage = 1.5f;
+				break;
+			} // vanilla truck?
+			case _armory:
+			{
+				scrap_amount = 5+XORRandom(6);
+				explosion_radius = 48.0f;
+				explosion_map_damage = 0.15f;
+				explosion_damage = 1.5f;
+				break;
+			} // shop truck
+			case _importantarmory:
+			{
+				scrap_amount = 5+XORRandom(6);
+				explosion_radius = 48.0f;
+				explosion_map_damage = 0.15f;
+				explosion_damage = 1.5f;
+				break;
+			} // break the truck truck
+			case _outpost:
+			{
+				break;
+			} // outpost
+			case _bf109:
+			{
+				scrap_amount = 5+XORRandom(8);
+				// it already has explosion script in its file
+				break;
+			} // plane
+			case _jourcop:
+			{
+				break;
+			} // journalist
+			case _uh1:
+			{
+				scrap_amount = 10+XORRandom(9);
+				// same as bf109
+				break;
+			} // heli
+			case _techtruck:
+			{
+				scrap_amount = 4+XORRandom(4);
+				explosion_radius = 32.0f;
+				explosion_map_damage = 0.1f;
+				explosion_damage = 1.5f;
+				break;
+			} // MG truck
+			case _motorcycle:
+			{
+				scrap_amount = 1+XORRandom(2);
+				// no explosion, too small
+				break;
+			} // bike
+			case _civcar:
+			{
+				scrap_amount = 2+XORRandom(3);
+				explosion_radius = 24.0f;
+				explosion_map_damage = 0.1f;
+				explosion_damage = 0.5f;
+				break;
+			} // car
+			case _pszh4turret:
+			case _btrturret:
+			case _bradleyturret:
+			case _m60turret:
+			case _t10turret:
+			case _mausturret:
+			case _bunker:
+			case _heavybunker:
+				break;
+		}
+
+		if (explosion_damage > 0.0f) // explode if damage set 
+		{
+			DoExplosion(this, explosion_damage, explosion_map_damage, explosion_radius);
+		}
+		for (u8 i = 0; i < scrap_amount; i++) // drop scrap via cool velocity
+		{
+			CBlob@ b = server_CreateBlob("mat_scrap", this.getTeamNum(), this.getPosition());
+			if (b !is null)
+			{
+				b.server_SetQuantity(1);
+				b.setVelocity(Vec2f(XORRandom(9)-4.0f, XORRandom(5)-6.0f));
+			}
+		}
+	}
+}
+
+void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string filename = "SmallSteam")
+{
+	if (!getNet().isClient()) return;
+
+	ParticleAnimated(CFileMatcher(filename).getFirst(), this.getPosition() + pos, vel, float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 1 + XORRandom(4), XORRandom(100) * -0.00005f, true);
+}
+
+void DoExplosion(CBlob@ this, f32 damage, f32 map_damage, f32 radius)
+{
+	if (this.hasTag("exploded")) return;
+
+	f32 random = XORRandom(radius);
+	f32 angle = this.getAngleDegrees();
+	// print("Modifier: " + modifier + "; Quantity: " + this.getQuantity());
+
+	this.set_f32("map_damage_radius", (radius + random));
+	this.set_f32("map_damage_ratio", map_damage);
+	
+	Explode(this, radius + random, damage);
+	
+	Vec2f pos = this.getPosition();
+	CMap@ map = getMap();
+	
+	for (int i = 0; i < 35; i++)
+	{
+		MakeParticle(this, Vec2f( XORRandom(64) - 32, XORRandom(80) - 60), getRandomVelocity(-angle, XORRandom(220) * 0.01f, 90), particles[XORRandom(particles.length)]);
+	}
+	
+	this.Tag("exploded");
+	this.getSprite().Gib();
+}
+
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (customData == Hitters::fire)
@@ -605,6 +806,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		return damage*2;
 	}
 	else if (hitterBlob.getName() == "grenade") return damage * 2.5;
+	
+	if (isClient() && customData == Hitters::builder)
+	{
+		this.getSprite().PlaySound("dig_stone.ogg", 1.0f, (0.975f - (this.getMass()*0.000075f))-(XORRandom(11)*0.01f));
+	}
 	
 	Vec2f thisPos = this.getPosition();
 	Vec2f hitterBlobPos = hitterBlob.getPosition();
