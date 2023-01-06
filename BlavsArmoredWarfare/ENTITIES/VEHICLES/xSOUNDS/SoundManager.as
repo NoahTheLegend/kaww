@@ -29,6 +29,8 @@ void onTick(CBlob@ this)
     const bool type = this.get_bool("manager_Type");
     const float rpm = this.get_f32(engineRPMString_Manager);
 
+    
+
     if (rpm == 0)
     {
         sprite.SetEmitSoundPaused(true);
