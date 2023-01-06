@@ -313,6 +313,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (blob.hasTag("always bullet collide"))
 	{
+		if (blob.getTeamNum() != this.getTeamNum()) return false;
 		return true;
 	}
 	// too many tag checks?

@@ -22,6 +22,7 @@ void onInit(CBlob@ this)
 
 	this.Tag("explosive");
 	this.Tag("medium weight");
+	this.Tag("always bullet collide");
 
 	this.maxQuantity = 4;
 }
@@ -76,7 +77,7 @@ void DoExplosion(CBlob@ this)
 	this.set_f32("map_damage_radius", (16.0f + random) * modifier);
 	this.set_f32("map_damage_ratio", -1.0f);
 
-	Explode(this, 24.0f + random, 4.0f+(XORRandom(41)*0.1f), XORRandom(10)==0?true:false);
+	Explode(this, 24.0f + random, 4.0f+(XORRandom(41)*0.1f), true);
 
 	if(isClient())
 	{

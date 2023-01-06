@@ -61,6 +61,7 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shop menu size", Vec2f(9, 2));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
+	AddIconToken("$icon_bomberbomb$", "Materials.as", Vec2f(16,16), 50, 0);
 
 	{
 		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press LMB while holding to arm, ~4 seconds until boom.", false);
@@ -134,14 +135,23 @@ void onInit(CBlob@ this)
 		s.buttonheight = 1;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 375);
+		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$icon_bomberbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 
 		s.customButton = true;
 
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 	}
+	//{
+	//	ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
+	//	AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 375);
+//
+	//	s.customButton = true;
+//
+	//	s.buttonwidth = 1;
+	//	s.buttonheight = 1;
+	//}
 	
 
 	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
@@ -339,6 +349,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			if (callerBlob is null)
 			{
 				return;
+			}
+		}
+		if (name == "mat_smallbomb")
+		{
+			CBlob@ bitem = getBlobByNetworkID(item);
+			if (bitem !is null)
+			{
+				bitem.server_SetQuantity(4);
+				bitem.server_setTeamNum(this.getTeamNum());
 			}
 		}
 	}
