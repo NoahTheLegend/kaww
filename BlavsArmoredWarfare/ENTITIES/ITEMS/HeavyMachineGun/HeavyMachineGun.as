@@ -123,6 +123,7 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+		//aim_vec.RotateBy(-this.getAngleDegrees());
 
 		if (this.isAttached())
 		{
@@ -216,6 +217,8 @@ void onTick(CBlob@ this)
 		arm.SetFacingLeft((rotation > -90 && rotation < 90) ? facing_left : !facing_left);
 		arm.SetOffset(arm_offset);
 		arm.RotateBy(rotation + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -4.0f : 4.0f, 0.0f));
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+		if (ap !is null && ap.getOccupied() !is null) arm.RotateBy(-this.getAngleDegrees(), Vec2f(0,0));
 	}
 
 	Vehicle_StandardControls(this, v);
