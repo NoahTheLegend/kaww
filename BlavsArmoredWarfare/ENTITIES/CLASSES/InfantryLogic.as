@@ -408,15 +408,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	const u8 inaccuracyCap = infantry.inaccuracy_cap;
 	InAirLogic(this, inaccuracyCap);
 
-	if (this.getName() == "mp5")
-	{
-		if (this.get_s8("charge_time") == 46)
-		{
-			CBitStream params;
-			this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
-		}
-	}
-
 	if (this.isKeyPressed(key_action2))
 	{
 		this.Untag("scopedin");
@@ -455,6 +446,11 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			this.get_u32("no_reload") < getGameTime() &&
 			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
+			if (this.getName() == "mp5")
+			{
+				CBitStream params;
+				this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
+			}
 			this.set_u8("reloadqueue", 0);
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
