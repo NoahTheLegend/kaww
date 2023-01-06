@@ -279,7 +279,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (blob.hasTag("projectile")) return true;
+	if (blob.hasTag("projectile") && blob.getTeamNum() == this.getTeamNum()) return true;
 
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))

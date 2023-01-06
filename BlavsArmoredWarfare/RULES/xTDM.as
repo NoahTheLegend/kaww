@@ -95,6 +95,9 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 	return false;			//team not red or blue (probably spectator so dont want to check game over)
 }
 
+ConfigFile cfg_playercoins;
+ConfigFile cfg_playertechs;
+
 string cost_config_file = "tdm_vars.cfg";
 
 void Config(TDMCore@ this)
@@ -429,7 +432,7 @@ shared class TDMCore : RulesCore
 		RulesCore::Setup(_rules, _respawns);
 		gametime = getGameTime() + 100;
 		@tdm_spawns = cast < TDMSpawns@ > (_respawns);
-		//server_CreateBlob("Entities/Meta/TDMMusic.cfg");
+		server_CreateBlob("Entities/Meta/TDMMusic.cfg");
 		players_in_small_team = -1;
 		all_death_counts_as_kill = false;
 		sudden_death = false;
@@ -952,7 +955,7 @@ shared class TDMCore : RulesCore
 			bool found = false;
 			if (!blob.hasBlob("mat_7mmround", 1))
 			{
-				if (map.getBlobsInRadius(blob.getPosition(), 164.0f, @blobsInRadius))
+				if (map.getBlobsInRadius(blob.getPosition(), 128.0f, @blobsInRadius))
 				{
 					for (uint i = 0; i < blobsInRadius.length; i++)
 					{
@@ -988,22 +991,50 @@ shared class TDMCore : RulesCore
 		}
 	}
 
-	void SetCorrectMapTypeShared() // LOADING MAPCYCLE MAKES THE CLOSER MAPS TO BEGINNING MORE FREQUENT THAN OTHER!     but its random?
+	void SetCorrectMapTypeShared() // LOADING MAPCYCLE MAKES THE CLOSER MAPS TO BEGINNING MORE FREQUENT THAN OTHER!     only if its not random?
 	{
 		if (getPlayersCount() <= 5)
 		{
 			LoadMapCycle("MAPS/mapcyclesmaller.cfg");
+			print(">Loading smaller map");
 		}
 		else if (getPlayersCount() < 11)
 		{
 			LoadMapCycle("MAPS/mapcycle.cfg");
+			print(">Loading medium map");
 		}
 		else
 		{
 			LoadMapCycle("MAPS/mapcyclelarger.cfg");
+			print(">Loading larger map");
 		}
 	}
 };
+
+void onPlayerLeave(CRules@ this, CPlayer@ player)
+{
+	if (getPlayersCount() == 5)
+	{
+		LoadMapCycle("MAPS/mapcyclesmaller.cfg");
+		print("> Loading small map");
+	}
+	else if (getPlayersCount() == 8)
+	{
+		LoadMapCycle("MAPS/mapcycle.cfg");
+		print("> Loading medium map");
+	}
+
+    if (player == null) { return; }
+
+    if (player.getCoins() != 0)
+    {
+        cfg_playercoins.add_u32(player.getUsername(), player.getCoins());
+    }
+    else if (cfg_playercoins.exists(player.getUsername()))
+    {
+        cfg_playercoins.remove(player.getUsername());
+    }
+}
 
 //pass stuff to the core from each of the hooks
 void Reset(CRules@ this)
@@ -1062,17 +1093,21 @@ void Reset(CRules@ this)
 	u8 randtime = XORRandom(100) + 1; // 1 to 100
 	if (randtime < 11) // bad conditions / night
 	{
+		printf("night");
 		getMap().SetDayTime(Maths::Abs(-0.18 + XORRandom(5)*0.05f));
 	}
 	else if (randtime < 38) // moderate or normal
 	{
+		printf("moderate");
 		getMap().SetDayTime(0.4f + XORRandom(30)*0.05f);
 	}
 	else // normal daytime
 	{
+		printf("normal");
 		getMap().SetDayTime(0.8f);
 	}
 
+	print("p " + brightmod);
 	if (brightmod == 100)
 	{
 		getMap().SetDayTime(0.5f);
@@ -1081,6 +1116,7 @@ void Reset(CRules@ this)
 	{
 		getMap().SetDayTime(0.03f);
 	}
+	print("TIME: " + getMap().getDayTime());
 }
 
 void onRestart(CRules@ this)
@@ -1090,13 +1126,21 @@ void onRestart(CRules@ this)
 
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
+    uint32 playercoins = 0;
+    if (cfg_playercoins.exists(player.getUsername()))
+    {
+        playercoins = cfg_playercoins.read_u32(player.getUsername());
+    }
+
 	if (getPlayersCount() == 5)
 	{
 		LoadMapCycle("MAPS/mapcycle.cfg");
+		print("> Loading medium map");
 	}
 	else if (getPlayersCount() == 8)
 	{
 		LoadMapCycle("MAPS/mapcyclelarger.cfg");
+		print("> Loading larger map");
 	}
 
 	this.SyncToPlayer("siege", player);
@@ -1110,7 +1154,8 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
 	if (isServer())
 	{
-		print("New player joined ----------- Username: " + player.getUsername() + " IP: " + player.server_getIP());
+    	print("New player joined.");
+		print("Username: "+player.getUsername()+" IP: "+player.server_getIP());
 	}
 }
 
@@ -1167,7 +1212,19 @@ void onTick(CRules@ this)
     //	}
 	//	else this.Tag("synced_siege");
 	//}
-
+	if (getGameTime() % 1800 == 0)
+    {
+    	uint16 i;
+    	
+        for (i = 0; i < getPlayerCount(); i++)
+        {
+            CPlayer@ player = getPlayer(i);
+            if ((player.getTeamNum() == 0 || player.getTeamNum() == 1) && player.getCoins() != 0)
+            {
+                cfg_playercoins.add_u32(player.getUsername(), (player.getCoins()));
+            }
+        }
+    }
 	if (getGameTime() >= 1 && !this.hasTag("synced_time"))
 	{
 		TDMSpawns spawns();
@@ -1202,6 +1259,11 @@ void onTick(CRules@ this)
 void onInit(CRules@ this)
 {
 	this.set_u8("current_round", 1);
+
+	//this.addCommandID("send_chat");
+
+	//this.addCommandID("flag_cap_won"); //breaks chat and other stuff!!!
+
 
 	Reset(this);
 }

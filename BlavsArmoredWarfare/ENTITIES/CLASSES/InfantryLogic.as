@@ -8,6 +8,7 @@
 #include "Recoil.as";
 #include "InfantryCommon.as";
 #include "MedicisCommon.as";
+#include "TeamColour.as";
 
 void onInit(CBlob@ this)
 {
@@ -281,6 +282,45 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 					
 					// end hitting if we hit something solid, don't if its flesh
 				}
+			}
+		}
+	}
+}
+
+void ManageParachute( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, InfantryInfo@ infantry )
+{
+	if (this.isOnGround() || this.isInWater() || this.isAttached())
+	{	
+		if (this.hasTag("parachute"))
+		{
+			this.Untag("parachute");
+
+			for (uint i = 0; i < 45; i ++)
+			{
+				Vec2f vel = getRandomVelocity(90.0f, 3.5f + (XORRandom(10) / 10.0f), 25.0f) + Vec2f(0, 2);
+				ParticlePixel(this.getPosition() - Vec2f(0,20) + getRandomVelocity(90.0f, 7.5f + (XORRandom(20) / 10.0f), 25.0f), vel, getTeamColor(this.getTeamNum()), true, 119);
+			}
+		}
+	}
+	
+	if (this.hasTag("parachute"))
+	{
+		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
+		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * 0.73f));
+	}
+}
+
+void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
+{
+	// Deploy parachute!
+	if (detached.hasTag("aerial"))
+	{
+		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 150.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
+		{
+			if (!this.hasTag("parachute"))
+			{
+				Sound::Play("/ParachuteOpen", detached.getPosition());
+				this.Tag("parachute");
 			}
 		}
 	}
@@ -736,7 +776,6 @@ void onTick(CBlob@ this)
 	if (isKnocked(this) || this.isInInventory())
 	{
 		archer.charge_state = 0;
-		//archer.charge_time = 0;
 		this.set_s32("my_chargetime", 0);
 		getHUD().SetCursorFrame(0);
 		return;
@@ -746,6 +785,8 @@ void onTick(CBlob@ this)
 	if (!this.get("moveVars", @moveVars)) return;	
 
 	ManageGun(this, archer, moveVars, infantry);
+
+	ManageParachute(this, archer, moveVars, infantry);
 
 	if (!this.isOnGround()) // ladders sometimes dont work
 	{

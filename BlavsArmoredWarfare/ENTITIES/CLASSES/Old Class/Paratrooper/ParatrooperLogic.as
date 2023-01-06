@@ -157,15 +157,7 @@ void ManageBow(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 		}
 	}
 
-	// Parachute!
-	if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 150.0f)) && this.getVelocity().y > 0.25f && !this.isOnGround() && !this.isInWater() && !this.isAttached())
-	{
-		if (!this.hasTag("parachute"))
-		{
-			Sound::Play("/ParachuteOpen", this.getPosition());
-			this.Tag("parachute");
-		}
-	}
+	
 
 	if (this.isOnGround() || this.isInWater() || this.isAttached())
 	{
@@ -318,6 +310,19 @@ void ManageBow(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	archer.charge_time = charge_time;
 	archer.charge_state = charge_state;
 	archer.has_arrow = hasarrow;
+}
+
+void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
+{
+	// Parachute!
+	if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 150.0f)) && this.getVelocity().y > 0.25f && !this.isOnGround() && !this.isInWater() && !this.isAttached())
+	{
+		if (!this.hasTag("parachute"))
+		{
+			Sound::Play("/ParachuteOpen", this.getPosition());
+			this.Tag("parachute");
+		}
+	}
 }
 
 void onTick(CBlob@ this)
