@@ -90,6 +90,45 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	return damage;
 }
 
+void ManageParachute( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, InfantryInfo@ infantry )
+{
+	if (this.isOnGround() || this.isInWater() || this.isAttached())
+	{	
+		if (this.hasTag("parachute"))
+		{
+			this.Untag("parachute");
+
+			for (uint i = 0; i < 50; i ++)
+			{
+				Vec2f vel = getRandomVelocity(90.0f, 3.5f + (XORRandom(10) / 10.0f), 25.0f) + Vec2f(0, 2);
+				ParticlePixel(this.getPosition() - Vec2f(0, 30) + getRandomVelocity(90.0f, 10 + (XORRandom(20) / 10.0f), 25.0f), vel, getTeamColor(this.getTeamNum()), true, 119);
+			}
+		}
+	}
+	
+	if (this.hasTag("parachute"))
+	{
+		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
+		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * 0.73f));
+	}
+}
+
+void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
+{
+	// Deploy parachute!
+	if (detached.hasTag("aerial"))
+	{
+		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 150.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
+		{
+			if (!this.hasTag("parachute"))
+			{
+				Sound::Play("/ParachuteOpen", detached.getPosition());
+				this.Tag("parachute");
+			}
+		}
+	}
+}
+
 void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 {
 	if (!getNet().isServer()) { return; }
