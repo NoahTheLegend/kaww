@@ -37,12 +37,19 @@ void onTick(CBrain@ this)
 		const bool visibleTarget = isVisible(blob, target, distance);
 		if (visibleTarget)
 		{
-			const s32 difficulty = blob.get_s32("difficulty");
-			if ((!blob.isKeyPressed(key_action1) && getGameTime() % 300 < 240 && distance < 30.0f + 3.0f * difficulty))
-				strategy = Strategy::attacking;
-			else
+			if (blob.get_u32("mag_bullets") == 0) // no ammo, retreat!
 			{
-				strategy = Strategy::attacking;
+				strategy = Strategy::retreating;
+			}
+			else // i have ammo, push
+			{
+				const s32 difficulty = blob.get_s32("difficulty");
+				if ((!blob.isKeyPressed(key_action1) && getGameTime() % (300 + blob.get_u8("myKey")) < 240 && distance < 30.0f + 3.0f * difficulty))
+					strategy = Strategy::attacking;
+				else
+				{
+					strategy = Strategy::attacking;
+				}
 			}
 		}
 		else
@@ -64,18 +71,16 @@ void onTick(CBrain@ this)
 
 
 
-
-
-
-		if (XORRandom(100) < 18)
+		if (blob.get_u32("mag_bullets") != blob.get_u32("mag_bullets_max")) // not 100% full on ammo
 		{
-			blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
 
-
+			if ((XORRandom(100) < 10 && blob.get_u32("mag_bullets") == 0) || XORRandom(350) < 1) // completely out of ammo
+			{
+				blob.set_u8("reloadqueue", 5);
+				//blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
+			}
 		}
-
-
-
+		
 
 
 		// unpredictable movement
@@ -128,7 +133,6 @@ void onTick(CBrain@ this)
 
 
 
-
 		blob.set_u8("strategy", strategy);
 
 		if (XORRandom(600) == 0)
@@ -175,7 +179,6 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 	JumpOverObstacles(blob);
 
 	// fire
-
 	f32 distance;
 	Vec2f col;
 	if (!getMap().rayCastSolid(blob.getPosition() + blob.getVelocity()*2.5f, targetPos + getRandomVelocity( 0, target.getRadius() , 360 ) + target.getVelocity()*5.0f, col))
@@ -200,12 +203,11 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 					blob.setKeyPressed(key_action2, true);
 				}
 			}
-			
 
 			if (target !is null)
 			{
 				blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
-									targetPos + Vec2f(0.0f, 10 -XORRandom(17)) + target.getVelocity() * 4.0f,
+									targetPos + Vec2f(0.0f, 10 -XORRandom(17)) + target.getVelocity() * 5.0f,
 									mouse_mvspd));
 			}
 		}
@@ -216,11 +218,18 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 										mouse_mvspd));
 		}
 	}
-	else if (blob.getShape().vellen > 1.6f)
+	else if (getGameTime() % (300 + blob.get_u8("myKey")) < 130 || blob.getShape().vellen < 1.6f)
 	{
+		// mouse movement type a     rng based
 		blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
-									mypos + Vec2f(0.0f, 11.0f) + blob.getVelocity()*(blob.get_u8("myKey")/9),
-									blob.get_u8("myKey")/1245.0f));
+								mypos + Vec2f(Maths::Cos(getGameTime()/(blob.get_u8("myKey")*0.5)), Maths::Sin(getGameTime()/(blob.get_u8("myKey")*0.5))),
+								blob.get_u8("myKey")/845.0f));
+	}
+	else
+	{
+		// mouse movement type b     velocity based
+		blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
+								mypos + Vec2f(0.0f, 11.0f) + blob.getVelocity()*(blob.get_u8("myKey")/9),
+								blob.get_u8("myKey")/1245.0f));
 	}
 }
-

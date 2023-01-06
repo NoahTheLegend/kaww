@@ -31,20 +31,22 @@ CBlob@ getNewTarget(CBrain@ this, CBlob @blob, const bool seeThroughWalls = fals
 	CBlob@[] players;
 	getBlobsByTag("player", @players);
 	Vec2f pos = blob.getPosition();
+
+	SortBlobsByDistance(blob, players);
+
 	for (uint i = 0; i < players.length; i++)
 	{
 		CBlob@ potential = players[i];
 		Vec2f pos2 = potential.getPosition();
-		const bool isBot = blob.getPlayer() !is null && blob.getPlayer().isBot();
-		if (potential !is blob && blob.getTeamNum() != potential.getTeamNum()
-		        && (pos2 - pos).getLength() < 3500.0f
-		        && (isBot || seeBehindBack || Maths::Abs(pos.x - pos2.x) < 40.0f || (blob.isFacingLeft() && pos.x > pos2.x) || (!blob.isFacingLeft() && pos.x < pos2.x))
-		        && !potential.hasTag("dead") && !potential.hasTag("migrant")
-		        && (XORRandom(20) == 0 || isVisible(blob, potential))
-		   )
+
+		if (potential !is blob && blob.getTeamNum() != potential.getTeamNum())
 		{
-			blob.set_Vec2f("last pathing pos", potential.getPosition());
-			return potential;
+			if ((pos2 - pos).getLength() < 6500.0f && !potential.hasTag("dead")
+				&& (XORRandom(6) == 0 || isVisible(blob, potential)))
+			{
+				blob.set_Vec2f("last pathing pos", potential.getPosition());
+				return potential;
+			}
 		}
 	}
 	return null;
@@ -112,8 +114,8 @@ void JumpOverObstacles(CBlob@ blob)
 		blob.setKeyPressed(key_up, true);
 	}
 	else if (!blob.isOnLadder())
-		if ((blob.isKeyPressed(key_right) && (getMap().isTileSolid(pos + Vec2f(1.3f * radius, radius) * 1.0f) || blob.getShape().vellen < 0.1f)) ||
-		        (blob.isKeyPressed(key_left)  && (getMap().isTileSolid(pos + Vec2f(-1.3f * radius, radius) * 1.0f) || blob.getShape().vellen < 0.1f)))
+		if ((blob.isKeyPressed(key_right) && (getMap().isTileSolid(pos + Vec2f(1.3f * radius, radius) * 1.0f))) ||
+		        (blob.isKeyPressed(key_left)  && (getMap().isTileSolid(pos + Vec2f(-1.3f * radius, radius) * 1.0f))))
 		{
 			blob.setKeyPressed(key_up, true);
 		}
@@ -205,7 +207,7 @@ bool DefaultRetreatBlob(CBlob@ blob, CBlob@ target)
 		blob.setKeyPressed(key_right, true);
 	}
 
-	if (mypos.y - blob.getRadius() > point.y)
+	if (mypos.y - blob.getRadius() > point.y || getGameTime() % (500 + blob.get_u8("myKey")) < 300)
 	{
 		blob.setKeyPressed(key_up, true);
 	}
@@ -227,7 +229,7 @@ void SearchTarget(CBrain@ this, const bool seeThroughWalls = false, const bool s
 
 	// search target if none
 
-	if (target is null || XORRandom(200) == 0)
+	if (target is null || XORRandom(30) == 0)
 	{
 		CBlob@ oldTarget = target;
 		@target = getNewTarget(this, blob, true, true);
@@ -251,7 +253,7 @@ void onChangeTarget(CBlob@ blob, CBlob@ target, CBlob@ oldTarget)
 
 bool LoseTarget(CBrain@ this, CBlob@ target)
 {
-	if (XORRandom(6) == 0 && target.hasTag("dead"))
+	if (XORRandom(10) == 0 && target.hasTag("dead"))
 	{
 		@target = null;
 		this.SetTarget(target);
@@ -340,4 +342,35 @@ void RandomTurn(CBlob@ blob)
 		CMap@ map = getMap();
 		blob.setAimPos(Vec2f(XORRandom(int(map.tilemapwidth * map.tilesize)), XORRandom(int(map.tilemapheight * map.tilesize))));
 	}
+}
+
+void SortBlobsByDistance(CBlob@ blob, CBlob@[]@ blobs)
+{
+    int n = blobs.length;
+    for (int i = 0; i < n - 1; i++)
+    {
+        // Find the minimum blob in the unsorted part of the array
+        int minIndex = i;
+        for (int j = i + 1; j < n; j++)
+        {
+            if (CompareBlobsByDistance(blob, blobs[j], blobs[minIndex]))
+            {
+                minIndex = j;
+            }
+        }
+        // Swap the minimum blob with the first blob in the unsorted part of the array
+        CBlob@ temp = blobs[minIndex];
+        @blobs[minIndex] = blobs[i];
+        @blobs[i] = temp;
+    }
+}
+
+bool CompareBlobsByDistance(CBlob@ blob, CBlob@ a, CBlob@ b)
+{
+    // Calculate the distance between the two blobs
+    float distance1 = (a.getPosition() - blob.getPosition()).Length();
+	float distance2 = (b.getPosition() - blob.getPosition()).Length();
+
+    // Return true if the distance between blob a and the origin is less than the distance between blob b and the origin
+    return (distance1 < distance2);
 }
