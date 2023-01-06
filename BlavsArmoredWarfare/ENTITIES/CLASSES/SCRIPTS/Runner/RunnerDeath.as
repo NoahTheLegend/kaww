@@ -24,7 +24,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		CBlob@ damageowner = hitterBlob.getDamageOwnerPlayer().getBlob();
 		if (damageowner !is null)
 		{
-			if (damageowner.getSprite() !is null && !this.hasTag("dead") && this !is hitterBlob)
+			if (damageowner.getSprite() !is null && !this.hasTag("dead") && this !is hitterBlob && getLocalPlayer() !is null && getLocalPlayer().getTeamNum() != this.getTeamNum())
 			{ 
 				if (hitterBlob.getPosition().y < this.getPosition().y - 3.2f && !hitterBlob.hasTag("flesh"))
 				{
