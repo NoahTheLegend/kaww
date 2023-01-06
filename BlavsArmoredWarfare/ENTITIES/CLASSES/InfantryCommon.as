@@ -861,7 +861,7 @@ void onMp5Reload(CBlob@ this)
 
 void onShotgunReload(CBlob@ this)
 {
-	this.getSprite().PlaySound("Shotgun_reload.ogg", 1.85f);
+	//this.getSprite().PlaySound("Shotgun_reload.ogg", 1.85f);
 	for (uint i = 0; i < 4; i++)
 	{
 		makeGibParticle(
