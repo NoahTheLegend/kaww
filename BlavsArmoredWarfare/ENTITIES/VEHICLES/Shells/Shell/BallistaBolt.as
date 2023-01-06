@@ -13,12 +13,12 @@ void onInit(CBlob@ this)
 	f32 damage_mod = 1.0f;
 	if (this.exists("damage_modifier") && this.get_f32("damage_modifier") > 0.05f) damage_mod = this.get_f32("damage_modifier");
 	this.set_f32(projDamageString, 1.0f);
-	this.set_f32(projExplosionRadiusString, 24.0f);
+	this.set_f32(projExplosionRadiusString, 20.0f);
 	this.set_f32(projExplosionDamageString, 15.0f*damage_mod);
 
 	if (this.hasTag("HE_shell"))
 	{
-		this.set_f32(projExplosionRadiusString, 38.0f);
+		this.set_f32(projExplosionRadiusString, 32.0f);
 	}
 
 	this.set_u8("blocks_pierced", 0);
@@ -27,7 +27,7 @@ void onInit(CBlob@ this)
 
 	this.getShape().getConsts().mapCollisions = false;
 	this.getShape().getConsts().bullet = true;
-	this.getShape().getConsts().net_threshold_multiplier = 4.0f;
+	this.getShape().getConsts().net_threshold_multiplier = 10.0f;
 
 	LimitedAttack_setup(this);
 
@@ -82,6 +82,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if (blob.hasTag("turret") && blob.getTeamNum() != this.getTeamNum())
 	{
 		return true;
+	}
+
+	if (blob.hasTag("broken"))
+	{
+		return false;
 	}
 
 	if (blob.hasTag("structure") || blob.getName() == "log" || blob.hasTag("trap"))
@@ -141,6 +146,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 		tail_position
 	};
 
+	printf("e");
 	for (uint i = 0; i < positions.length; i ++)
 	{
 		Vec2f temp_position = positions[i];

@@ -96,7 +96,6 @@ void onTick(CBlob@ this)
 								if (blob.hasTag("respawn")) continue; // dont repair outposts
 								if (team == blob.getTeamNum())
 								{
-
 									if (isServer())
 									{
 										holder.server_Hit(this, this.getPosition(), Vec2f(), 0.2f, Hitters::fall, true);
@@ -129,6 +128,7 @@ void onTick(CBlob@ this)
 										velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 
 										ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
+										break;
 						            }
 						            else //Repair amount would go above the inital health (max health). 
 						            {
