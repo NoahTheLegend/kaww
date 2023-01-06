@@ -130,7 +130,7 @@ void onTick(CBlob@ this)
 			const f32 len = dir.Length();
 			dir.Normalize();
 			dir.RotateBy(this.isFacingLeft() ? 30 : -30); // make it fly directly to cursor, works weird vertically
-			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, 0.175f);
+			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, 0.125f);
 
 			// this.SetFacingLeft(dir.x > 0);
 			this.SetFacingLeft(this.getVelocity().x < -0.1f);
@@ -276,6 +276,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 			proj.set_f32("bullet_damage_head", projDamage*1.5f);
 			proj.IgnoreCollisionWhileOverlapped(this);
 			proj.server_setTeamNum(this.getTeamNum());
+			arrowVel.RotateBy(this.isFacingLeft() ? -2.5 : 2.5);
 			proj.setVelocity(arrowVel.RotateBy(0.125f*(XORRandom(21)-10)));
 			proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
 			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -16.0f : 16.0f), 8.0f).RotateBy(this.getAngleDegrees()));
