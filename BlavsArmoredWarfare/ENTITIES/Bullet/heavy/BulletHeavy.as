@@ -99,7 +99,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	bool isStrong = this.hasTag("strong");
 	TileType tile = map.getTile(end).type;
 
-	if (tile == CMap::tile_ground && XORRandom(100) < 5 || tile != CMap::tile_ground && XORRandom(100) < 40)
+	if (tile == CMap::tile_ground && XORRandom(100) < 5 || tile != CMap::tile_ground && XORRandom(100) < 15)
 	{
 		
 		if (map.getSectorAtPosition(end, "no build") is null)
