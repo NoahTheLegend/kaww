@@ -100,11 +100,14 @@ void sync_Color(CBlob@ this)
 {
 	AttachmentPoint@ turret = this.getAttachments().getAttachmentPointByName("TURRET");
 	bool pink;
-	if (isServer()) pink = (XORRandom(3) == 0 || this.hasTag("pink"));
+	if (isServer())
+	{
+		pink = (XORRandom(3) == 0 || this.hasTag("pink"));
 
-	CBitStream params;
-	params.write_bool(pink);
-	this.SendCommand(this.getCommandID("sync_color"), params);
+		CBitStream params;
+		params.write_bool(pink);
+		this.SendCommand(this.getCommandID("sync_color"), params);
+	}
 }
 
 void onTick(CBlob@ this)
