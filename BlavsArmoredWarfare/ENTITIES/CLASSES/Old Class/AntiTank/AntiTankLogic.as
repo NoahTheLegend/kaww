@@ -6,7 +6,8 @@
 #include "Hitters.as";
 #include "Recoil.as";
 #include "InfantryCommon.as";
-#include "AntiTankCommon.as"
+#include "AntiTankCommon.as";
+#include "TeamColour.as";
 
 void onInit(CBlob@ this)
 {
@@ -90,7 +91,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	return damage;
 }
 
-void ManageParachute( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, InfantryInfo@ infantry )
+void ManageParachute( CBlob@ this )
 {
 	if (this.isOnGround() || this.isInWater() || this.isAttached())
 	{	
@@ -259,6 +260,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	if (isKnocked(this))
 	{
 		this.set_u8("reloadqueue", 0);
+		
 		charge_time = 0;
 
 		archer.isReloading = false;
@@ -272,6 +274,8 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
 			this.set_u8("reloadqueue", 0);
+			this.Sync("reloadqueue", true);
+
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
 			if (inv !is null && inv.getItem("mat_heatwarhead") !is null)
@@ -599,6 +603,8 @@ void onTick(CBlob@ this)
 	}
 
 	if (this.getTickSinceCreated() <= 1) this.set_u32("mag_bullets", 0);
+
+	ManageParachute(this);
 	
 	if (isKnocked(this) || this.isInInventory())
 	{
@@ -640,6 +646,7 @@ void onTick(CBlob@ this)
 	{	
 		// queue reloading timer
 		if (controls.isKeyJustPressed(KEY_KEY_R)) this.set_u8("reloadqueue", 8);
+		this.Sync("reloadqueue", true);
 	}
 
 	this.set_bool("is_a1", false);
