@@ -246,7 +246,7 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-	else if (this.hasTag("broken") && this.getHealth() >= this.getInitialHealth()*0.5f) this.Untag("broken");
+	else if (this.hasTag("broken") && this.getHealth() >= this.getInitialHealth()*0.25f) this.Untag("broken");
 
 	AttachmentPoint@ drv = this.getAttachments().getAttachmentPointByName("DRIVER");
 	if (drv !is null && drv.getOccupied() !is null)
@@ -401,7 +401,10 @@ void onTick(CBlob@ this)
 		if (this.get_f32("engine_RPM") <= 150)
 			this.set_f32("engine_RPM", 0);
 		else
+		{
 			this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
+			if (isClient() && this !is null) this.Sync("engine_RPM", true);
+		}
 	}
 
 	this.set_f32("engine_RPM", Maths::Clamp(this.get_f32("engine_RPM"), 0.0f, 30000.0f));

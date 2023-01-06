@@ -333,7 +333,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 		if (attached.hasTag("player"))
 		{
 			this.server_setTeamNum(100);
-			this.server_setTeamNum(attached.getTeamNum());
+			//this.server_setTeamNum(attached.getTeamNum());
 		}
 		
 		if (attached.getName() != "donotspawnthiswithacommand")
