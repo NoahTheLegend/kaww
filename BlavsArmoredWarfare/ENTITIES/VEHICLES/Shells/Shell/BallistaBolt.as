@@ -22,6 +22,7 @@ void onInit(CBlob@ this)
 	}
 
 	this.set_u8("blocks_pierced", 0);
+	this.set_bool("map_damage_raycast", true);
 
 	this.server_SetTimeToDie(12);
 
