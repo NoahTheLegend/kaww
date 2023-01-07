@@ -424,67 +424,58 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 		archer.isReloading = false;
 	}
-	else
+	else if (this.get_u32("no_reload") < getGameTime())
 	{
+		this.set_u32("no_reload", getGameTime()+15);
 		const s8 reloadTime = infantry.reload_time;
 		const u32 magSize = infantry.mag_size;
 	
 		// reload
 		if (controls !is null &&
 			!isReloading &&
-			(controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0)) &&
-			this.get_u32("no_reload") < getGameTime() &&
-			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
+			(controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient()))
+			&& this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
-			this.set_u32("no_reload", getGameTime()+15);
-			printf("gt "+getGameTime());
-			printf("tt "+this.get_u32("no_reload"));
-			if (isClient())
+			if (this.getName() == "mp5")
 			{
+				CBitStream params;
+				this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
+			}
+			this.set_u8("reloadqueue", 0);
+			this.Sync("reloadqueue", true);
 
-				if (this.getName() == "mp5")
+			bool reloadistrue = false;
+			CInventory@ inv = this.getInventory();
+			if (inv !is null && inv.getItem("mat_7mmround") !is null)
+			{
+				// actually reloading
+				reloadistrue = true;
+				charge_time = reloadTime;
+
+				isReloading = true;
+				this.set_bool("isReloading", true);
+	
+				CBitStream params; // sync to server
+				if (ismyplayer) // isClient()
 				{
-					CBitStream params;
+					params.write_s8(charge_time);
 					this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
 				}
-				this.set_u8("reloadqueue", 0);
-				this.Sync("reloadqueue", true);
+			}
+			else if (ismyplayer)
+			{
+				sprite.PlaySound("NoAmmo.ogg", 0.85);
+			}
 
+			if (this.hasTag("simple reload") && reloadistrue) // simple reload is used when you have nothing else 
+			{ // besides reload sound, look for onBlobNameReload() in this file and InfantryCommon.as otherwise
+				charge_time = reloadTime;
+				//archer.isReloading = true;
+				this.set_bool("isReloading", true);
 
+				//printf(""+infantry.reload_sfx);
 
-				bool reloadistrue = false;
-				CInventory@ inv = this.getInventory();
-				if (inv !is null && inv.getItem("mat_7mmround") !is null)
-				{
-					// actually reloading
-					reloadistrue = true;
-					charge_time = reloadTime;
-
-					isReloading = true;
-					this.set_bool("isReloading", true);
-
-					CBitStream params; // sync to server
-					if (ismyplayer) // isClient()
-					{
-						params.write_s8(charge_time);
-						this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
-					}
-				}
-				else if (ismyplayer)
-				{
-					sprite.PlaySound("NoAmmo.ogg", 0.85);
-				}
-
-				if (this.hasTag("simple reload") && reloadistrue) // simple reload is used when you have nothing else 
-				{ // besides reload sound, look for onBlobNameReload() in this file and InfantryCommon.as otherwise
-					charge_time = reloadTime;
-					//archer.isReloading = true;
-					this.set_bool("isReloading", true);
-
-					//printf(""+infantry.reload_sfx);
-
-					//sprite.PlaySound(infantry.reload_sfx, 55.0);
-				}
+				//sprite.PlaySound(infantry.reload_sfx, 55.0);
 			}
 		}
 		if (isServer() && this.hasTag("sync_reload"))
