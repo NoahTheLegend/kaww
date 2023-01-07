@@ -424,17 +424,17 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 		archer.isReloading = false;
 	}
-	else if (this.get_u32("no_reload") < getGameTime())
+	else
 	{
-		this.set_u32("no_reload", getGameTime()+15);
 		const s8 reloadTime = infantry.reload_time;
 		const u32 magSize = infantry.mag_size;
 	
 		// reload
 		if (controls !is null &&
 			!isReloading &&
-			(controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient()))
-			&& this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
+			(controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient())) &&
+			this.get_u32("no_reload") < getGameTime() &&
+			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
 			if (this.getName() == "mp5")
 			{
@@ -845,6 +845,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	
 	float bulletSpread = getBulletSpread(infantry.class_hash) + float(this.get_u8("inaccuracy"));
 	ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity, bulletSpread*targetFactor, infantry.burst_size );
+	this.set_u32("no_reload", getGameTime()+15);
 
 	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 	
