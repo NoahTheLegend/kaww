@@ -225,6 +225,7 @@ u8 getIndicatorFrame( int hash )
 		frame = 8; break;
 		
 		case _bf109:
+		case _bomberplane:
 		frame = 11; break;
 
 		case _uh1:
