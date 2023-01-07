@@ -40,6 +40,33 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	return false;
 }
 
+void onTick(CBlob@ this)
+{
+	switch (this.getQuantity())
+	{
+		case 1:
+		{
+			this.getSprite().SetFrameIndex(0);
+			break;
+		}
+		case 2:
+		{
+			this.getSprite().SetFrameIndex(1);
+			break;
+		}
+		case 3:
+		{
+			this.getSprite().SetFrameIndex(2);
+			break;
+		}
+		case 4:
+		{
+			this.getSprite().SetFrameIndex(3);
+			break;
+		}
+	}
+}
+
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (damage >= this.getHealth() && !this.hasTag("dead"))
