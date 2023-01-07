@@ -442,7 +442,8 @@ bool canBePutInInventory(CBlob@ inventoryBlob)
 
 bool doesCollideWithBlob( CBlob@ this, CBlob@ blob )
 {
-	if (blob.getName() == "bf109") return false;
+	if (blob.getName() == "bf109" || blob.getName() == "bomberplane") return false;
+	if (blob.hasTag("bullet")) return true;
 	if (!blob.isCollidable() || blob.isAttached()){
 		return false;
 	} // no colliding against people inside vehicles

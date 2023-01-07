@@ -75,6 +75,7 @@ void onInit(CBlob@ this)
 		armorRating = 1; break;
 
 		case _bf109: // plane
+		case _bomberplane:
 		case _civcar: // car
 		armorRating = 0; break;
 
@@ -172,6 +173,9 @@ void onInit(CBlob@ this)
 		backsideOffset = 48.0f; break;
 
 		case _bf109: // plane
+		backsideOffset = 8.0f; break;
+
+		case _bomberplane: // plane
 		backsideOffset = 8.0f; break;
 	}
 
@@ -734,6 +738,12 @@ void onDie(CBlob@ this)
 				// it already has explosion script in its file
 				break;
 			} // plane
+			case _bomberplane:
+			{
+				scrap_amount = 10+XORRandom(6);
+				// it already has explosion script in its file
+				break;
+			} // bomberplane
 			case _jourcop:
 			{
 				break;

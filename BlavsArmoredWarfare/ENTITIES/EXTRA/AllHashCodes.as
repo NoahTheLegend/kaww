@@ -23,6 +23,7 @@ enum EntityHash
 	_outpost = 1262542481, // outpost
 	
 	_bf109 = 948257107, // plane
+	_bomberplane = 1220259964, // bomberplane
 	_jourcop = 1406825361, // journalist
 	_uh1 = -2084182629, // heli
 	
