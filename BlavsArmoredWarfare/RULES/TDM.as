@@ -6,6 +6,8 @@
 #include "Hitters.as";
 //#include "Alert.as";
 
+ConfigFile cfg_playerexp;
+
 shared int ticketsRemaining(CRules@ this, int team){
 	if(team==0){
 		return this.get_s16("blueTickets");
@@ -631,6 +633,9 @@ shared class TDMCore : RulesCore
 					getRules().add_u16("red_kills", 1);
 					getRules().Sync("red_kills", true);
 				}
+
+				// give exp
+				//cfg_playerexp.add_u32(killer.getUsername(), 1); // 1 to 10 exp per kill
 			}
             else if (all_death_counts_as_kill)
             {
