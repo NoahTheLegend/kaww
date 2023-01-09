@@ -1,4 +1,5 @@
 #include "ActorHUDCON.as";
+#include "PlayerRankInfo.as";
 
 const int slotsSize = 6;
 
@@ -40,18 +41,12 @@ void onTick(CBlob@ this)
 
 void renderHPBar(CBlob@ blob, Vec2f origin)
 {
-	int segmentWidth = 32;
-
-	int HPs = 0;
-
-	f32 thisHP = blob.getHealth();
-
-	if (thisHP > 0)
+	if (blob.getHealth() > 0)
 	{
-		Vec2f heartoffset = Vec2f(148, 5);
-		Vec2f heartpos = origin + Vec2f((segmentWidth*0.5) * HPs, 0) + heartoffset;
+		Vec2f heartoffset = Vec2f(534, -16);
+		Vec2f heartpos = origin + heartoffset;
 
-		Vec2f dim = Vec2f(126, 24);
+		Vec2f dim = Vec2f(156, 26);
 		const f32 initialHealth = blob.getInitialHealth();
 		if (initialHealth > 0.0f)
 		{
@@ -67,32 +62,91 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 					if (blob.getHealth() <= blob.getInitialHealth() / 4.5f)
 					{
 						color.set(255, 255, 55, 22);
-						blob.getSprite().PlaySound("/Heartbeat", 1.45f);
+						blob.getSprite().PlaySound("/Heartbeat", 1.5f);
 					}
 					else if (getGameTime() % 60 == 0)
 					{
 						color.set(255, 255, 55, 22);
-						blob.getSprite().PlaySound("/Heartbeat", 1.45f);
+						blob.getSprite().PlaySound("/Heartbeat", 1.5f);
 					}	
 				}
 				else
 				{
-					color.set(255, 117, 220, 44);
+					color.set(255, 82, 210*Maths::Min((blob.getHealth() / blob.getInitialHealth())*1.5, 1.0), 10);
 				}
 
-				GUI::DrawRectangle(Vec2f(heartpos.x - dim.x - 2, heartpos.y - 2), Vec2f(heartpos.x + dim.x + 2, heartpos.y + dim.y + 2));
+				SColor color_dark;
+				color_dark.set(255, 117, 150*Maths::Clamp((blob.getHealth() / blob.getInitialHealth())*1.5, 0.2, 1.0), 44);
+
+				GUI::DrawRectangle(Vec2f(heartpos.x - dim.x - 2, heartpos.y - 2), Vec2f(heartpos.x + dim.x + 2, heartpos.y + dim.y + 3));
 				GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 2, heartpos.y + 2), Vec2f(heartpos.x + dim.x - 2, heartpos.y + dim.y - 2), SColor(0xff7f1140));
 
 				if (blob.getHealth() >= 0.25)
 				{
 					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 1, heartpos.y + 1), Vec2f(heartpos.x - dim.x + perc2 * 2.0f * dim.x - 1, heartpos.y + dim.y + 0), SColor(0xeeeeeeee));
 					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 2, heartpos.y + 2), Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 2, heartpos.y + dim.y - 2), color);
-					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 2, heartpos.y + 21), Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 2, heartpos.y + dim.y - 2), SColor(0xff2a760a));
-					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 4, heartpos.y + 4), Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 4, heartpos.y + dim.y - 16), SColor(0xffffffff));
+					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 2, heartpos.y + 21), Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 2, heartpos.y + dim.y - 2), color_dark);
+					GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 4, heartpos.y + 4), Vec2f(heartpos.x - dim.x + perc * 2.0f * dim.x - 4, heartpos.y + dim.y - 20), SColor(0xffffffff));
 				}
+
+				// plus sign
+				GUI::DrawIcon("HealthIcon", 0, Vec2f(32, 32), Vec2f(heartpos.x - dim.x - 40, heartpos.y - 18), 1.0);
+
+				// hp text
+				GUI::SetFont("menu");
+				GUI::DrawTextCentered(""+Maths::Ceil(blob.getHealth()*100), Vec2f(heartpos.x - dim.x - 12, heartpos.y + 13), SColor(0xffffffff));
 			}
 		}
 	}
+}
+
+void renderEXPBar(CBlob@ blob, Vec2f origin)
+{
+	Vec2f offset = Vec2f(57, -640);
+	Vec2f xppos = origin + offset;
+
+	Vec2f dim = Vec2f(90, 8);
+
+	float exp = 0;
+	// load exp
+	if (blob.getPlayer() !is null)
+	{
+		exp = getRules().get_u32(blob.getPlayer().getUsername() + "_exp");
+	}
+	
+
+	int level = 1;
+	string rank = RANKS[0];
+
+    // Calculate the exp required to reach each level
+    for (int i = 1; i <= RANKS.length; i++)
+    {
+        if (exp >= getExpToNextLevel(i - 0))
+        {
+            level = i + 1;
+            rank = RANKS[Maths::Min(i, RANKS.length)];
+        }
+        else
+        {
+            // The current level has been reached
+            break;
+        }
+    }
+	
+	float next_rank = getExpToNextLevel(level);
+
+	float previousrankexp = getExpToMyLevel(level);
+	
+	float expratio = (exp-previousrankexp) / (next_rank-previousrankexp); //next_rank
+
+	//getRules().set_u32("Yeti5000707" + "_exp", 5);
+
+	GUI::DrawRectangle(Vec2f(xppos.x - dim.x + 2, xppos.y + 2), Vec2f(xppos.x + dim.x - 2, xppos.y + dim.y - 2), SColor(0x505bff33)); // background pane
+
+	GUI::DrawRectangle(Vec2f(xppos.x - dim.x + 1, xppos.y + 2), Vec2f(xppos.x - dim.x + expratio * 2.0f * dim.x - 1, xppos.y + dim.y - 2), SColor(0xff76ff33)); // fill color
+
+	GUI::SetFont("menu");
+	GUI::DrawText(""+exp+" / " + next_rank, Vec2f(xppos.x / 2 - 16, xppos.y + dim.y + 0), SColor(0xffffffff));
 }
 
 void onInit(CSprite@ this)
@@ -110,6 +164,64 @@ void onInit(CSprite@ this)
 void onRender(CSprite@ this)
 {
 	CBlob@ blob = this.getBlob();
+
+	if (blob !is null)
+	{
+		CPlayer@ player = blob.getPlayer();
+
+		if (player !is null)
+		{
+			float exp = 0;
+			// load exp
+			if (blob.getPlayer() !is null)
+			{
+				exp = getRules().get_u32(blob.getPlayer().getUsername() + "_exp");
+			}
+
+			int level = 1;
+			string rank = RANKS[0];
+
+			if (exp > 0)
+			{
+				// Calculate the exp required to reach each level
+				for (int i = 1; i <= RANKS.length; i++)
+				{
+					if (exp >= getExpToNextLevel(i - 0))
+					{
+						level = i + 1;
+						rank = RANKS[Maths::Min(i, RANKS.length)];
+						//print("rank: " + RANKS[i]+ "  - exp needed to reach: " + )
+					}
+					else
+					{
+						// The current level has been reached
+						break;
+					}
+				}
+			}
+
+			GUI::DrawIcon("Ranks", level - 1, Vec2f(16, 32), Vec2f(16, -12), 1.0f, 0);
+
+			if (getGameTime() % 100 == 0)
+			{
+				//if (isClient())
+				{
+					//GUI::DrawIcon("Ranks", level - 1, Vec2f(16, 32), Vec2f(16, -12), 1.0f, 0);
+					print("part " + (level - 1) + " "  + blob.getPosition());
+					CParticle@ p = ParticleAnimated("Ranks", blob.getPosition(), Vec2f(0,-1), 0.0f, 1.0f, 0, level - 1, Vec2f(16, 32), 0, 0.01, false);
+					if (p !is null) { p.diesoncollide = true; p.fastcollision = false; p.lighting = false; }
+				}
+			}
+
+
+
+
+			// draw player username
+			GUI::SetFont("menu");
+			GUI::DrawText(rank + " | "+player.getCharacterName(), Vec2f(60, 10), SColor(0xffffffff));
+		}
+	}
+	
 	if (!blob.isMyPlayer()) return; // afaik otherwise all rectangles and images will stack over each other
 	Vec2f dim = Vec2f(302, 64); // (402, 64)
 	Vec2f ul(getHUDX() - dim.x / 2.0f, getHUDY() - dim.y + 12);
@@ -120,34 +232,39 @@ void onRender(CSprite@ this)
 	renderBox(ul + Vec2f(dim.x + 46, 0), width*1.2, 1.0f); //width*1.9
 	renderHPBar(blob, ul);
 
+	// draw xp bar
+	renderEXPBar(blob, ul - Vec2f(10,0));
+
 	string ammo_amt = blob.get_u32("mag_bullets");
 	string ammo_amt_max = blob.get_u32("mag_bullets_max");
 	Vec2f pngsize = Vec2f(98, 159);
+	
+
 
 	// display correct text
 	if (ammo_amt != "" && ammo_amt.size() > 1)
 	{	// CURRENT AMMO
-		GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-30.0f, getHUDY() - dim.y - 58.0f), 0.5f);
-		GUI::DrawIcon("FontNum.png", ammo_amt[1]+2, pngsize, Vec2f(14.0f, getHUDY() - dim.y - 58.0f), 0.5f);
+		GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-30.0f, getHUDY() - dim.y - 118.0f), 0.5f);
+		GUI::DrawIcon("FontNum.png", ammo_amt[1]+2, pngsize, Vec2f(15.0f, getHUDY() - dim.y - 118.0f), 0.5f);
 	}
 	else if (ammo_amt.length() == 1)
 	{
-		GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-10.0f, getHUDY() - dim.y - 58.0f), 0.5f);
+		GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-10.0f, getHUDY() - dim.y - 118.0f), 0.5f);
 	}
 	
-	/*
+	
 	if (ammo_amt_max != "" && ammo_amt_max.size() > 1)
 	{	// MAX AMMO
-		GUI::DrawIcon("FontNum.png", ammo_amt_max[0]+2, pngsize, Vec2f(-14.0f, getHUDY() - dim.y - 11.0f), 0.3f);
-		GUI::DrawIcon("FontNum.png", ammo_amt_max[1]+2, pngsize, Vec2f(16.0f, getHUDY() - dim.y - 11.0f), 0.3f);
+		GUI::DrawIcon("FontNum.png", ammo_amt_max[0]+2, pngsize, Vec2f(-14.0f, getHUDY() - dim.y - 11.0f), 0.35f);
+		GUI::DrawIcon("FontNum.png", ammo_amt_max[1]+2, pngsize, Vec2f(16.0f, getHUDY() - dim.y - 11.0f), 0.35f);
 	}
 	else if (ammo_amt_max.length() == 1)
 	{
-		GUI::DrawIcon("FontNum.png", ammo_amt_max[0]+2, pngsize, Vec2f(-10.0f, getHUDY() - dim.y - 8.0f), 0.3f);
-	}*/
+		GUI::DrawIcon("FontNum.png", ammo_amt_max[0]+2, pngsize, Vec2f(-10.0f, getHUDY() - dim.y - 8.0f), 0.35f);
+	}
 
-	//GUI::DrawIcon("Separator.png", 0, Vec2f(400, 300), Vec2f(-136.0f, getHUDY() - dim.y - 153.0f), 0.5f);
-	
+	GUI::DrawIcon("Separator.png", 0, Vec2f(400, 300), Vec2f(-136.0f, getHUDY() - dim.y - 153.0f), 0.5f);
+
 
 	// combining images would reduce lag
 	if (blob.getHealth() <= blob.getInitialHealth() / 1.5f)
@@ -162,4 +279,7 @@ void onRender(CSprite@ this)
 	{
 		GUI::DrawIcon("BloodOverlay.png", 0, Vec2f(960, 540), Vec2f(0, 0), (getScreenWidth()*0.5f)/960, (getScreenHeight()*0.5f)/540, SColor(255, 255, 255, 255));
 	}
+
+	
+	
 }

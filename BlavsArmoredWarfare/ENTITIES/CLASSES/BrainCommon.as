@@ -9,6 +9,7 @@ namespace Strategy
 		idle = 0,
 		chasing,
 		attacking,
+		seekcover,
 		retreating
 	}
 }
@@ -41,7 +42,7 @@ CBlob@ getNewTarget(CBrain@ this, CBlob @blob, const bool seeThroughWalls = fals
 
 		if (potential !is blob && blob.getTeamNum() != potential.getTeamNum())
 		{
-			if ((pos2 - pos).getLength() < 6500.0f && !potential.hasTag("dead")
+			if ((pos2 - pos).getLength() < 1000.0f && !potential.hasTag("dead")
 				&& (XORRandom(6) == 0 || isVisible(blob, potential)))
 			{
 				blob.set_Vec2f("last pathing pos", potential.getPosition());

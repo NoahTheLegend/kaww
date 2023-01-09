@@ -240,18 +240,6 @@ void onTick(CBlob@ this)
 void onDie(CBlob@ this)
 {
     Explode(this, 64.0f, 1.0f);
-
-	//CBlob@[] tents;
-	//getBlobsByName("tent", @tents);
-//
-	//if (tents.length == 0)
-	//{
-	//	u8 team = (this.getTeamNum() == 0 ? 1 : 0);
-	//	getRules().SetTeamWon(team);
-	//	getRules().SetCurrentState(GAME_OVER);
-	//	CTeam@ teamis = getRules().getTeam(team);
-	//	if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
-	//}
 }
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)

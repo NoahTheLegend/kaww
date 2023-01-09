@@ -14,8 +14,6 @@ void onInit(CRules@ this)
         GUI::LoadFont("AveriaSerif-Bold_32", AveriaSerif, 32, true);
     }
 
-
-
     onRestart(this);
 }
 
