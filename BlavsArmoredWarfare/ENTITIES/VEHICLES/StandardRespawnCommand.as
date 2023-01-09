@@ -30,22 +30,17 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$antitank_class_icon$", "ClassIcon.png", Vec2f(48, 48), 5);
 	AddIconToken("$medic_class_icon$", "ClassIcon.png", Vec2f(48, 48), 6);
 	AddIconToken("$lmg_class_icon$", "ClassIcon.png", Vec2f(48, 48), 7);
-	//AddIconToken("$paratrooper_class_icon$", "Class.png", Vec2f(32, 32), 28);
 	AddIconToken("$slave_class_icon$", "ClassIcon.png", Vec2f(48, 48), 0);
 	AddIconToken("$change_class$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 12, 2);
-
-	AddIconToken("$butt_icon$", "butt.png", Vec2f(500, 22), 0, 255);
 	
-	addPlayerClass(this, "---- Mechanic ----", "$slave_class_icon$", "slave", "---- Mechanic ----\n\nBuild and break.\nCan't capture flags.\n\nHP: 200\nLMB: Build\nRMB: Mine");
-	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver", "---- Python ----\n\nGreat headshot damage and HP.\nHP: 350\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
-	addPlayerClass(this, "---- Ak47 ----", "$ranger_class_icon$", "ranger", "---- Ak47 ----\n\nExcellent damage.\nHP: 200\nLMB: Shoot\nRMB: Aim\nSPACEBAR:\n\n\n"+"Skemonde — Today at 6:10 PM\nbtw descriprion of ranger lies space is for knife when ak shooter uses butt stock instead of a knife (edited)");
-	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun", "---- Shotgunner ----\n\nDeadly at close range.\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Dig");
-	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper", "---- Sniper ----\n\nLong range sniper.\nHP: 175\nLMB: Shoot\nRMB: Scope in\nSPACEBAR: Knife");
-	addPlayerClass(this, "---- Anti-Tank ----", "$antitank_class_icon$", "antitank", "---- Anti-Tank ----\n\nEliminate tanks onfoot\nHP: 225.\nLMB: RPG\nRMB: Aim\nSPACEBAR: Knife");
-	//addPlayerClass(this, "---- Medic ----", "$medic_class_icon$", "mp5", "---- Medic ----\n\nHeal nearby teammates.\nLMB: MP5\nRMB: Knife");
-	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5", "---- MP5 ----\n\nHigh rate of fire\nTakes only 50% HP healed from food.\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Heal pack");
+	addPlayerClass(this, "---- Mechanic ----", "$slave_class_icon$", "slave", "---- Mechanic ----\n\nBuild and break.\nCan't capture flags.\n\nHP: 225\nLMB: Build\nRMB: Mine");
+	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver", "---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 350\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
+	addPlayerClass(this, "---- AK-47 ----", "$ranger_class_icon$", "ranger", "---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Buttstock");
+	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun", "---- Shotgun ----\n\nDeadly at close range.\n\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Dig");
+	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper", "---- Sniper ----\n\nLong range sniper.\n\nHP: 175\nLMB: Shoot\nRMB: Scope in\nSPACEBAR: Knife");
+	addPlayerClass(this, "---- Anti-Tank ----", "$antitank_class_icon$", "antitank", "---- Anti-Tank ----\n\nArmed with a powerful RPG launcher.\n\nHP: 225.\nLMB: RPG\nRMB: Aim\nSPACEBAR: Knife");
+	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5", "---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half healing value.\n\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Heal pack");
 	//addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg", "---- LMG ----\n\nExtreme firepower.\nLMB: LMG\nRMB: ADS");
-	//addPlayerClass(this, "---- Paratrooper ----", "$paratrooper_class_icon$", "paratrooper", "---- Paratrooper ----\n\nUse a parachute.\nLMB: Ak47\nRMB: Knife");
 }
 
 void BuildRespawnMenuFor(CBlob@ this, CBlob @caller)

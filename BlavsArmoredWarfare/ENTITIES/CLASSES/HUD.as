@@ -45,5 +45,5 @@ void onRender(CSprite@ this)
 
 	// draw coins
 	const int coins = player !is null ? player.getCoins() : 0;
-	DrawCoinsOnHUD(blob, coins, getActorHUDStartPosition(blob, slotsSize+14), slotsSize - 2);
+	DrawCoinsOnHUD(blob, coins, getActorHUDStartPosition(blob, slotsSize+18), slotsSize - 2);
 }

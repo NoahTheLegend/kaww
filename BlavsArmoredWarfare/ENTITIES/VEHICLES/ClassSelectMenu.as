@@ -1,6 +1,7 @@
 //stuff for building respawn menus
 
 #include "RespawnCommandCommon.as"
+#include "PlayerRankInfo.as";
 
 //class for getting everything needed for swapping to a class at a building
 
@@ -49,38 +50,51 @@ void addClassesToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 			CBlob@ callerblob = getBlobByNetworkID(callerID);
 			CPlayer@ player = callerblob.getPlayer();
 
-			if (i == 0 && getMap().getMapName() == "KAWWTraining.png")
+			float exp = 0;
+			// load exp
+			if (player !is null)
+			{
+				exp = getRules().get_u32(player.getUsername() + "_exp");
+			}
+
+			//draw rank level
+			int level = 1;
+			string rank = RANKS[0];
+
+			// Calculate the exp required to reach each level
+			for (int i = 1; i <= RANKS.length; i++)
+			{
+				if (exp >= getExpToNextLevel(level))
+				{
+					level = i + 1;
+					rank = RANKS[Maths::Min(i, RANKS.length)];
+				}
+				else
+				{
+					// The current level has been reached
+					break;
+				}
+			}
+
+			if (level > -1 + i)
 			{
 				PlayerClass @pclass = classes[i];
 
 				CBitStream params;
 				write_classchange(params, callerID, pclass.configFilename);
 
-				CGridButton@ button = menu.AddButton("$unav_class_icon$", getTranslatedString("LOCKED"), SpawnCmd::lockedClass, Vec2f(CLASS_BUTTON_SIZE, CLASS_BUTTON_SIZE), params);
-				button.SetHoverText( "This class is unavaliable\nwhile in bootcamp." + "\n" );
+				CGridButton@ button = menu.AddButton(pclass.iconName, getTranslatedString(pclass.name), SpawnCmd::changeClass, Vec2f(CLASS_BUTTON_SIZE, CLASS_BUTTON_SIZE), params);
+				button.SetHoverText( pclass.description + "\n" );
 			}
 			else
 			{
-				if (true)
-				{
-					PlayerClass @pclass = classes[i];
+				PlayerClass @pclass = classes[i];
 
-					CBitStream params;
-					write_classchange(params, callerID, pclass.configFilename);
+				CBitStream params;
+				write_classchange(params, callerID, pclass.configFilename);
 
-					CGridButton@ button = menu.AddButton(pclass.iconName, getTranslatedString(pclass.name), SpawnCmd::changeClass, Vec2f(CLASS_BUTTON_SIZE, CLASS_BUTTON_SIZE), params);
-					button.SetHoverText( pclass.description + "\n" );
-				}
-				else
-				{
-					PlayerClass @pclass = classes[i];
-
-					CBitStream params;
-					write_classchange(params, callerID, pclass.configFilename);
-
-					CGridButton@ button = menu.AddButton("$locked_class_icon$", getTranslatedString("LOCKED"), SpawnCmd::lockedClass, Vec2f(CLASS_BUTTON_SIZE, CLASS_BUTTON_SIZE), params);
-					button.SetHoverText( "This class must be\nunlocked at bootcamp." + "\n" );
-				}
+				CGridButton@ button = menu.AddButton("$locked_class_icon$", getTranslatedString("LOCKED"), SpawnCmd::lockedClass, Vec2f(CLASS_BUTTON_SIZE, CLASS_BUTTON_SIZE), params);
+				button.SetHoverText( "You need to unlock this class first." + "\n\nUnlocks at: " + getRankName(i) + "\n");
 			}
 		}
 	}

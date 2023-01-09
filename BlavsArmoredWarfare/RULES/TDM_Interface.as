@@ -110,8 +110,8 @@ void onRender(CRules@ this)
 			while (!serialised_team_hud.isBufferEnd())
 			{
 				TDM_HUD hud(serialised_team_hud);
-				Vec2f topLeft = Vec2f(8, 8 + 64 * hud.team_num);
-				GUI::DrawIcon(gui_image_fname, 0, Vec2f(128, 32), topLeft, 1.0f, hud.team_num);
+				Vec2f topLeft = Vec2f(500, 8 + 64 * hud.team_num);
+
 				/*
 				FlagsInfo flags_info;
     			if (flags_info !is null)
@@ -158,19 +158,6 @@ void onRender(CRules@ this)
 					string time = "" + hud.spawn_time;
 					GUI::DrawText(time, topLeft + Vec2f(196, 42), SColor(255, 255, 255, 255));
 				}
-
-				string kills = getTranslatedString("WARMUP");
-
-				if (hud.kills_limit > 0)
-				{
-					kills = getTranslatedString("KILLS: {CURRENT}/{LIMIT}").replace("{CURRENT}", "" + hud.kills).replace("{LIMIT}", "" + hud.kills_limit);
-				}
-				else if (hud.kills_limit == -2)
-				{
-					kills = getTranslatedString("ARMORED WAR");
-				}
-
-				GUI::DrawText(kills, topLeft + Vec2f(64, 42), SColor(255, 255, 255, 255));
 			}
 		}
 
@@ -183,7 +170,7 @@ void onRender(CRules@ this)
 		u8 spawn = this.get_u8(propname);
 
 		string gamemode = this.get_string("bannertext");
-		GUI::DrawText(gamemode, Vec2f(15, getScreenHeight() / 6.25), SColor(255, 255, 255, 255));
+		//GUI::DrawText(gamemode, Vec2f(15, getScreenHeight() / 6.25), SColor(255, 255, 255, 255));
 
 		if (spawn != 255)
 		{

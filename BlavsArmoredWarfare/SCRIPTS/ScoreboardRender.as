@@ -1,6 +1,7 @@
 #include "ScoreboardCommon.as";
 #include "Accolades.as";
 #include "ColoredNameToggleCommon.as";
+#include "PlayerRankInfo.as";
 
 CPlayer@ hoveredPlayer;
 Vec2f hoveredPos;
@@ -8,6 +9,7 @@ Vec2f hoveredPos;
 int hovered_accolade = -1;
 int hovered_age = -1;
 int hovered_tier = -1;
+int hovered_rank = -1;
 bool draw_age = false;
 bool draw_tier = false;
 
@@ -103,6 +105,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			break;
 		}
 	}
+
 	const int tier_start = (draw_age ? age_start : accolades_start) + 70;
 
 	//draw player table header
@@ -114,6 +117,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(getTranslatedString("Assists"), Vec2f(bottomright.x - 120, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 50, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Accolades"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 100, topleft.y), SColor(0xffffffff));
 	if(draw_age)
 	{
 		GUI::DrawText(getTranslatedString("Age"), Vec2f(bottomright.x - age_start, topleft.y), SColor(0xffffffff));
@@ -385,6 +389,46 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 
 		}
 
+		float exp = 0;
+		// load exp
+		if (p !is null)
+		{
+			exp = getRules().get_u32(p.getUsername() + "_exp");
+		}
+
+		//draw rank level
+		int level = 1;
+		string rank = RANKS[0];
+
+		//if (level > 0)
+		{
+			// Calculate the exp required to reach each level
+			for (int i = 1; i <= RANKS.length; i++)
+			{
+				int expToNextLevel = getExpToNextLevel(level);
+				if (exp >= expToNextLevel)
+				{
+					level = i + 1;
+					rank = RANKS[Maths::Min(i, RANKS.length)];
+				}
+				else
+				{
+					// The current level has been reached
+					break;
+				}
+			}
+		}
+
+		int rank_icon_start = 0;
+		float x = bottomright.x - tier_start - 18;
+		float extra = 8;
+		GUI::DrawIcon("Ranks", rank_icon_start + level - 1, Vec2f(16, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
+
+		if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
+		{
+			hovered_rank = level - 1;
+		}
+
 		//draw support tier
 		if(draw_tier)
 		{
@@ -590,6 +634,7 @@ void onRenderScoreboard(CRules@ this)
 	hovered_accolade = -1;
 	hovered_age = -1;
 	hovered_tier = -1;
+	hovered_rank = -1;
 
 	//draw the scoreboards
 
@@ -666,12 +711,12 @@ void onRenderScoreboard(CRules@ this)
 
 	drawPlayerCard(hoveredPlayer, hoveredPos);
 
-	drawHoverExplanation(hovered_accolade, hovered_age, hovered_tier, Vec2f(getScreenWidth() * 0.5, topleft.y));
+	drawHoverExplanation(hovered_accolade, hovered_age, hovered_tier, hovered_rank, Vec2f(getScreenWidth() * 0.5, topleft.y));
 
 	mouseWasPressed2 = controls.mousePressed2; 
 }
 
-void drawHoverExplanation(int hovered_accolade, int hovered_age, int hovered_tier, Vec2f centre_top)
+void drawHoverExplanation(int hovered_accolade, int hovered_age, int hovered_tier, int hovered_rank, Vec2f centre_top)
 {
 	if( //(invalid/"unset" hover)
 		(hovered_accolade < 0
@@ -679,7 +724,9 @@ void drawHoverExplanation(int hovered_accolade, int hovered_age, int hovered_tie
 		(hovered_age < 0
 		 || hovered_age >= age_description.length) &&
 		(hovered_tier < 0
-		 || hovered_tier >= tier_description.length)
+		 || hovered_tier >= tier_description.length) &&
+		(hovered_rank < 0
+		 || hovered_rank >= RANKS.length)
 	) {
 		return;
 	}
@@ -687,15 +734,18 @@ void drawHoverExplanation(int hovered_accolade, int hovered_age, int hovered_tie
 	string desc = getTranslatedString(
 		(hovered_accolade >= 0) ?
 			accolade_description[hovered_accolade] :
-			hovered_age >= 0 ?
+			(hovered_age >= 0) ?
 				age_description[hovered_age] :
-				tier_description[hovered_tier]
+				(hovered_rank >= 0) ?
+					RANKS[hovered_rank] :
+					tier_description[hovered_tier]
 	);
 
 	Vec2f size(0, 0);
 	GUI::GetTextDimensions(desc, size);
 
-	Vec2f tl = centre_top - Vec2f(size.x / 2, 0);
+	CControls@ controls = getControls();
+	Vec2f tl = controls.getMouseScreenPos() + Vec2f(30,30); //centre_top - Vec2f(size.x / 2, 0);
 	Vec2f br = tl + size;
 
 	//margin
@@ -703,7 +753,7 @@ void drawHoverExplanation(int hovered_accolade, int hovered_age, int hovered_tie
 	tl -= expand;
 	br += expand;
 
-	GUI::DrawPane(tl, br, SColor(0xffffffff));
+	GUI::DrawPane(tl, br + Vec2f(4,0), SColor(0xffffffff));
 	GUI::DrawText(desc, tl + expand, SColor(0xffffffff));
 }
 

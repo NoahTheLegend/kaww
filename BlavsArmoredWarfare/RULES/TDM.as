@@ -4,7 +4,7 @@
 #include "RulesCore.as";
 #include "RespawnSystem.as";
 #include "Hitters.as";
-//#include "Alert.as";
+#include "PlayerRankInfo.as";
 
 ConfigFile cfg_playerexp;
 
@@ -92,6 +92,32 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			this.SetCurrentState(GAME_OVER);
 			this.SetGlobalMessage( this.getTeam(1).getName() + " wins the game!" );
 			return true;
+		}
+
+		if (teamNum==0 || teamNum==1)
+		{
+			if (getPlayerCount() > 3)
+			{
+				CBlob@[] players;
+				getBlobsByTag("player", @players);
+				for (uint i = 0; i < players.length; i++)
+				{
+					CPlayer@ player = players[i].getPlayer();
+					if (player !is null)
+					{
+						if (player.getTeamNum() == teamNum)
+						{
+							// winning team
+							if (players[i] !is null)
+							{
+								server_DropCoins(players[i].getPosition(), 30);
+							}
+							
+							getRules().add_u32(player.getUsername() + "_exp", 50);							
+						}
+					}
+				}
+			}
 		}
 	
 	return false;			//team not red or blue (probably spectator so dont want to check game over)
@@ -420,8 +446,40 @@ shared class TDMCore : RulesCore
             for(u16 i = 0; i < team.spawns.size(); i++)
             {
                 TDMPlayerInfo@ info = cast < TDMPlayerInfo@ > (team.spawns[i]);
-                info.blob_name = (XORRandom(100) >= 90 ? "revolver" : (XORRandom(100) >= 80 ? "shotgun" : (XORRandom(100) >= 70 ? "ranger" : (XORRandom(100) >= 60 ? "sniper" : (XORRandom(100) >= 50 ? "mp5" : "shotgun"))))); // dont ask
-                //info.blob_name = (XORRandom(100) >= 83 ? "revolver" : (XORRandom(100) >= 66 ? "mp5" : (XORRandom(100) >= 50 ? "slave" : "antitank"))); // dont ask
+
+				//print("1" + info);
+				//print("2" + team.spawns[i]);
+
+				array<string> classes = {
+				"revolver",
+				"ranger",
+				"shotgun",
+				"sniper",
+				"antitank",
+				"mp5"
+				};
+				
+				float exp = _rules.get_u32("Yeti5000707" + "_exp");
+				/*
+				string rank = RANKS[0];
+				int unlocked = 0;
+
+				// Calculate the exp required to reach each level
+				for (int i = 1; i <= RANKS.length; i++)
+				{
+					if (exp >= getExpToNextLevel(i + 1)) {
+						rank = RANKS[Maths::Min(i, RANKS.length)];
+					}
+					else {
+						break;
+					}
+				}
+
+				int index = Maths::Max(XORRandom(classes.length), unlocked);*/
+				string line = "revolver";//classes[index];
+
+
+                info.blob_name = line;//(XORRandom(100) >= 90 ? "revolver" : (XORRandom(100) >= 80 ? "shotgun" : (XORRandom(100) >= 70 ? "ranger" : (XORRandom(100) >= 60 ? "sniper" : (XORRandom(100) >= 50 ? "mp5" : "shotgun"))))); // dont ask
             }
         }
     }
@@ -609,7 +667,7 @@ shared class TDMCore : RulesCore
 
 	void AddPlayer(CPlayer@ player, u8 team = 0, string default_config = "")
 	{
-		TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), player.isBot() ? "ranger" : (XORRandom(512) >= 256 ? "ranger" : "ranger"));
+		TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), player.isBot() ? "revolver" : (XORRandom(512) >= 256 ? "revolver" : "revolver"));
 		players.push_back(p);
 		ChangeTeamPlayerCount(p.team, 1);
 	}
@@ -635,7 +693,15 @@ shared class TDMCore : RulesCore
 				}
 
 				// give exp
-				//cfg_playerexp.add_u32(killer.getUsername(), 1); // 1 to 10 exp per kill
+				getRules().add_u32(killer.getUsername() + "_exp", 5+XORRandom(6));
+
+				CheckRankUps(getRules(), // do reward coins and sfx
+							getRules().get_u32(killer.getUsername() + "_exp"), // player new exp
+							killer);	
+
+				//getRules().set_string(player.getUsername() + "_last_lvlup", rank);
+
+				//print("exp: "+getRules().get_u32(killer.getUsername() + "_exp"));
 			}
             else if (all_death_counts_as_kill)
             {
@@ -911,8 +977,7 @@ shared class TDMCore : RulesCore
 
 			if (winteamIndex >= 0)
 			{
-				// give coins to the losing team.
-				if (rules.isMatchRunning())
+				if (getPlayerCount() > 3)
 				{
 					CBlob@[] players;
 					getBlobsByTag("player", @players);
@@ -921,10 +986,16 @@ shared class TDMCore : RulesCore
 						CPlayer@ player = players[i].getPlayer();
 						if (player !is null)
 						{
-							if (player.getTeamNum() != winteamIndex)
+							if (player.getTeamNum() == winteamIndex)
 							{
-								player.server_setCoins(player.getCoins() + 60);
-							}	
+								// winning team
+								if (players[i] !is null)
+								{
+									server_DropCoins(players[i].getPosition(), 30);
+								}
+								
+								getRules().add_u32(player.getUsername() + "_exp", 50);							
+							}
 						}
 					}
 				}
@@ -1113,9 +1184,54 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
     player.server_setCoins(40);
 
+	if (cfg_playerexp.exists(player.getUsername()))
+    {
+		this.set_u32(player.getUsername() + "_exp", cfg_playerexp.read_u32(player.getUsername()));
+	}
+	else{
+		this.set_u32(player.getUsername() + "_exp", 0);
+	}
+
+	float exp = this.get_u32(player.getUsername() + "_exp");
+
+	string rank = RANKS[0];
+
+	// Calculate the exp required to reach each level
+	for (int i = 1; i <= RANKS.length; i++)
+	{
+		if (exp >= getExpToNextLevel(i + 1)) {
+			rank = RANKS[Maths::Min(i, RANKS.length)];
+		}
+		else {
+			break;
+			this.set_string(player.getUsername() + "_last_lvlup", rank);
+		}
+	}
+
 	if (isServer())
 	{
 		print("New player joined ----------- Username: " + player.getUsername() + " IP: " + player.server_getIP());
+	}
+}
+
+void onPlayerLeave(CRules@ this, CPlayer@ player)
+{
+    if (player == null)
+    	{ return; }
+
+    if (this.get_u32(player.getUsername() + "_exp") != 0) // has more than 0 exp
+    {
+        cfg_playerexp.add_u32(player.getUsername(), this.get_u32(player.getUsername() + "_exp"));
+    }
+    else if (cfg_playerexp.exists(player.getUsername())) // 0 exp for some reason, remove from cfg
+    {
+        cfg_playerexp.remove(player.getUsername()); // could be destructive
+    }
+
+
+	if (isServer())
+	{
+		print("Player left ----------- Username: " + player.getUsername() + " IP: " + player.server_getIP());
 	}
 }
 
@@ -1180,7 +1296,7 @@ void onTick(CRules@ this)
 		Config(core);
 		this.Tag("synced_time");
 	}
-	if (getGameTime()%150==0) //every 5 seconds give a coin
+	if (getGameTime()%10==0) //every 150 ticks give a coin
 	{
 		if (this.get_s16("blueTickets") > 200) 
 		{
@@ -1199,14 +1315,39 @@ void onTick(CRules@ this)
             if (isServer())
             {
                 player.server_setCoins(player.getCoins()+1);
+				//getRules().add_u32(player.getUsername() + "_exp", 1);
             }
         }
 	}
+
+	if (getGameTime() % 9000 == 0) // auto save exp every 5 minutes
+    {
+    	uint16 i;
+    	
+        for (i = 0; i < getPlayerCount(); i++)
+        {
+            CPlayer@ player = getPlayer(i);
+			if (player !is null)
+			{
+				if (this.get_u32(player.getUsername() + "_exp") != 0)
+				{
+					cfg_playerexp.add_u32(player.getUsername(), this.get_u32(player.getUsername() + "_exp"));
+				}
+			}
+        }
+
+		cfg_playerexp.saveFile("awexp.cfg");
+    }
 }
 
 void onInit(CRules@ this)
 {
 	this.set_u8("current_round", 1);
+
+    if ( !cfg_playerexp.loadFile("../Cache/awexp.cfg") )
+    {
+        cfg_playerexp = ConfigFile("awexp.cfg");
+    }
 
 	Reset(this);
 }

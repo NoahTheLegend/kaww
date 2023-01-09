@@ -249,6 +249,29 @@ void onDie(CBlob@ this)
 		getRules().SetCurrentState(GAME_OVER);
 		CTeam@ teamis = getRules().getTeam(team);
 		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
+
+		if (getPlayerCount() > 3)
+		{
+			CBlob@[] players;
+			getBlobsByTag("player", @players);
+			for (uint i = 0; i < players.length; i++)
+			{
+				CPlayer@ player = players[i].getPlayer();
+				if (player !is null)
+				{
+					if (player.getTeamNum() == team)
+					{
+						// winning team
+						if (players[i] !is null)
+						{
+							server_DropCoins(players[i].getPosition(), 30);
+						}
+						
+						getRules().add_u32(player.getUsername() + "_exp", 50);							
+					}
+				}
+			}
+		}
 	}
 }
 

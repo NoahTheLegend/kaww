@@ -5,7 +5,6 @@
 #include "SlaveCommon.as";
 #include "ThrowCommon.as";
 #include "RunnerCommon.as";
-#include "Help.as";
 #include "Requirements.as"
 #include "BuilderHittable.as";
 #include "PlacementCommon.as";
@@ -37,8 +36,6 @@ void onInit(CBlob@ this)
 	shape.getConsts().net_threshold_multiplier = 0.5f;
 
 	this.set_Vec2f("inventory offset", Vec2f(0.0f, 160.0f));
-
-	SetHelp(this, "help self action2", "builder", getTranslatedString("$Pick$Dig/Chop  $KEY_HOLD$$RMB$"), "", 3);
 
 	this.getCurrentScript().runFlags |= Script::tick_not_attached;
 	this.getCurrentScript().removeIfTag = "dead";
@@ -691,10 +688,5 @@ void onAddToInventory(CBlob@ this, CBlob@ blob)
 	{
 		blob.server_Die();
 		blob.Untag("temp blob");
-	}
-
-	if (this.isMyPlayer() && blob.hasTag("material"))
-	{
-		SetHelp(this, "help inventory", "builder", "$Help_Block1$$Swap$$Help_Block2$           $KEY_HOLD$$KEY_F$", "", 3);
 	}
 }

@@ -85,7 +85,6 @@ void AddGameMusic(CBlob@ this, CMixer@ mixer)
 
 	mixer.AddTrack("Music6.ogg", world_battle);
 
-	//mixer.AddTrack("Music7.ogg", world_battle); not good
 
 	mixer.AddTrack("Music8.ogg", world_battle);
 

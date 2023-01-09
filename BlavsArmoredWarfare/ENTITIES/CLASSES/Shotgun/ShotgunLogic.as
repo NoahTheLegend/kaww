@@ -6,6 +6,7 @@
 #include "Hitters.as";
 #include "Recoil.as";
 #include "InfantryCommon.as";
+#include "ParticleSparks.as";
 
 void onInit(CBlob@ this)
 {
@@ -117,9 +118,14 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 			if (!dontHitMore)
 			{
 				Vec2f tpos = map.getTileWorldPosition(hi.tileOffset) + Vec2f(4, 4);
-				//bool canhit = canhit && map.getSectorAtPosition(tpos, "no build") is null;
+
 				if (!map.isTileCastle(map.getTile(tpos).type))
-					map.server_DestroyTile(hi.hitpos, 0.1f, this);
+				{
+					if (getNet().isServer())
+					{
+						map.server_DestroyTile(hi.hitpos, 0.1f, this);
+					}
+				}
 			}
 		}
 	}

@@ -73,6 +73,29 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 			getRules().SetCurrentState(GAME_OVER);
 			CTeam@ teamis = getRules().getTeam(team);
 			if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
+
+			if (getPlayerCount() > 3)
+			{
+				CBlob@[] players;
+				getBlobsByTag("player", @players);
+				for (uint i = 0; i < players.length; i++)
+				{
+					CPlayer@ player = players[i].getPlayer();
+					if (player !is null)
+					{
+						if (player.getTeamNum() == team)
+						{
+							// winning team
+							if (players[i] !is null)
+							{
+								server_DropCoins(players[i].getPosition(), 30);
+							}
+							
+							getRules().add_u32(player.getUsername() + "_exp", 50);				
+						}
+					}
+				}
+			}
 		}
 		else
 		{
@@ -170,7 +193,7 @@ void onTick(CBlob@ this)
 
 		//printf(""+mod);
 
-    	this.set_u16(capture_prop, this.get_u16(capture_prop) - (1+mod));
+    	this.set_u16(capture_prop, this.get_u16(capture_prop) - (2+mod));
     }
     else if (this.get_u16(capture_prop) == 0) //returned to zero
     {
@@ -368,13 +391,14 @@ void onRender(CSprite@ this)
 	// Health meter trim
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
 					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 1, pos.y + y + dimension.y - 2), color_mid);
+	
+	// Health meter inside
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
+						Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
+	
 	if (blob.get_u8("numcapping") > 0)
 	{
-		// Health meter inside
-		GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
-						   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
+		//GUI::SetFont("menu");
+		GUI::DrawShadowedText("★ " + blob.get_u8("numcapping") + " Player" + (blob.get_u8("numcapping") > 1 ? "s" : "") + " Capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 20), SColor(0xffffffff));
 	}
-
-	//GUI::SetFont("menu");
-	GUI::DrawShadowedText("★ Capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 20), SColor(0xffffffff));
 }
