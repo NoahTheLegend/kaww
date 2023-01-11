@@ -139,7 +139,7 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
 	
 	float expratio = (exp-previousrankexp) / (next_rank-previousrankexp); //next_rank
 
-	//getRules().set_u32("Yeti5000707" + "_exp", 777);
+	getRules().set_u32("Yeti5000707" + "_exp", 2777);
 
 	GUI::DrawRectangle(Vec2f(xppos.x - dim.x + 2, xppos.y + 2), Vec2f(xppos.x + dim.x - 2, xppos.y + dim.y - 2), SColor(0x505bff33)); // background pane
 
@@ -243,7 +243,7 @@ void onRender(CSprite@ this)
 	{
 		icon_num = 5;
 	}
-	else if (blob.getName() == "medic")
+	else if (blob.getName() == "mp5")
 	{
 		icon_num = 6;
 	}
