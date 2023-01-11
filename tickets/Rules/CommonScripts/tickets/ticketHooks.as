@@ -105,8 +105,8 @@ void onRender(CRules@ this){
 	redTickets=this.get_s16("redTickets");
 
     GUI::SetFont("big score font");
-	GUI::DrawText( ""+redTickets, Vec2f(232,98), getTeamColor(1) );		//shows tickets just above bottom left HUD
-	GUI::DrawText( ""+blueTickets, Vec2f(232,34), getTeamColor(0) );
+	GUI::DrawText( ""+redTickets, Vec2f(getScreenWidth()-302,24), getTeamColor(1) );
+	GUI::DrawText( ""+blueTickets, Vec2f(260,24), getTeamColor(0) );
 
 }
 

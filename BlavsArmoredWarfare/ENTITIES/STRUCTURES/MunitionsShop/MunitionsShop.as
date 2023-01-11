@@ -22,7 +22,7 @@ void onInit(CBlob@ this)
 	{
 		if (map.tilemapwidth < 200)
 		{
-			this.set_Vec2f("shop menu size", Vec2f(4, 1));
+			this.set_Vec2f("shop menu size", Vec2f(5, 1));
 		}
 	}
 	this.set_string("shop description", "Buy");
@@ -47,12 +47,9 @@ void onInit(CBlob@ this)
 	{
 		if (map !is null)
 		{
-			if (map.tilemapwidth > 140)
-			{
-				u8 cost = map.tilemapwidth > 200 ? 30 : 60;
-				ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
-				AddRequirement(s.requirements, "coin", "", "Coins", cost);
-			}
+			u8 cost = map.tilemapwidth > 200 ? 30 : 50;
+			ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
+			AddRequirement(s.requirements, "coin", "", "Coins", cost);
 		}
 	}
 	if (map !is null)

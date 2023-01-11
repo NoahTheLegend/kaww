@@ -21,7 +21,7 @@ const string[] RANKS = {"Recruit",              // new player
                         "Staff Sergeant",       // +160 kills
                         "Master Sergeant",      // +130 kills
                         "First Sergeant",           // undeveloped yet ...
-                        "Sergeant-Major",           // grows exponentially
+                        "Sergeant-Major",           // unlock death incarnate -- grows exponentially
                         "Warrant Officer 1",
                         "Warrant Officer 2",
                         "Warrant Officer 3",
@@ -86,8 +86,8 @@ string getRankName(u32 level)
 }
 
 shared void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
-{
-    print("---check");
+{    
+    if (player is null) return;
     
     string[] RANKS = {"Recruit",              // new player
                         "Private",
@@ -98,7 +98,7 @@ shared void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
                         "Staff Sergeant",       // +160 kills
                         "Master Sergeant",      // +130 kills
                         "First Sergeant",           // undeveloped yet ...
-                        "Sergeant-Major",           // grows exponentially
+                        "Sergeant-Major",           // unlock death incarnate -- grows exponentially
                         "Warrant Officer 1",
                         "Warrant Officer 2",
                         "Warrant Officer 3",
@@ -136,23 +136,50 @@ shared void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
     string oldrank = "Na";
     if (rules.get_string(player.getUsername() + "_last_lvlup") != "")
     {
-        print("made _last    old rank");
         oldrank = rules.get_string(player.getUsername() + "_last_lvlup");
     }
-    else{
+    else {
         rules.set_string(player.getUsername() + "_last_lvlup", rank);
         oldrank = rank;
     }
 
-    //print("current rank " + rank);
-    //print("old rank " + oldrank);
-
     if (rank != oldrank) // means that we leveled up
     {
-        rules.set_string(player.getUsername() + "_last_lvlup", rank); // adjust to the current level
-
+        // flash screen
+        if (player.getBlob().isMyPlayer())
+        {
+            SetScreenFlash(15,   255,   255,   255,   2.0);
+        }
+        
+        // coins
         server_DropCoins(player.getBlob().getPosition(), 50);
-        player.getBlob().getSprite().PlaySound("UnlockClass", 3.0f, 1.5f);
+
+        // play sound
+        player.getBlob().getSprite().PlaySound("LevelUp", 5.0f, 1.0f);
+
+        if (isClient())
+        {
+            // chat message
+            if (player.isMyPlayer()) {
+                client_AddToChat("You've been promoted to " + rank.toLower() + "!", SColor(255, 50, 150, 20));
+            }
+            else {
+                client_AddToChat(player.getCharacterName() + " has been promoted to " + rank.toLower() + "!", SColor(255, 50, 140, 20));
+            }
+            
+
+            // create floating rank
+            CParticle@ p = ParticleAnimated("Ranks", player.getBlob().getPosition() + Vec2f(8,-14), Vec2f(0,-0.9), 0.0f, 1.0f, 0, level - 1, Vec2f(32, 32), 0, 0, true);
+            if(p !is null)
+            {
+                p.collides = false;
+                p.Z = 1000;
+                p.timeout = 2; // this shit doesnt work
+            }
+        }
+
+        // adjust to the current level
+        rules.set_string(player.getUsername() + "_last_lvlup", rank);
     }
 }
 

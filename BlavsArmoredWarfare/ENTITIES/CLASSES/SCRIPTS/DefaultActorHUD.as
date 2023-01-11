@@ -94,7 +94,7 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 
 				// hp text
 				GUI::SetFont("menu");
-				GUI::DrawTextCentered(""+Maths::Ceil(blob.getHealth()*100), Vec2f(heartpos.x - dim.x - 12, heartpos.y + 13), SColor(0xffffffff));
+				GUI::DrawTextCentered(""+Maths::Ceil(blob.getHealth()*100), Vec2f(heartpos.x - dim.x - 13, heartpos.y + 12), SColor(0xffffffff));
 			}
 		}
 	}
@@ -139,7 +139,7 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
 	
 	float expratio = (exp-previousrankexp) / (next_rank-previousrankexp); //next_rank
 
-	//getRules().set_u32("Yeti5000707" + "_exp", 5);
+	//getRules().set_u32("Yeti5000707" + "_exp", 777);
 
 	GUI::DrawRectangle(Vec2f(xppos.x - dim.x + 2, xppos.y + 2), Vec2f(xppos.x + dim.x - 2, xppos.y + dim.y - 2), SColor(0x505bff33)); // background pane
 
@@ -200,21 +200,7 @@ void onRender(CSprite@ this)
 				}
 			}
 
-			GUI::DrawIcon("Ranks", level - 1, Vec2f(16, 32), Vec2f(16, -12), 1.0f, 0);
-
-			if (getGameTime() % 100 == 0)
-			{
-				//if (isClient())
-				{
-					//GUI::DrawIcon("Ranks", level - 1, Vec2f(16, 32), Vec2f(16, -12), 1.0f, 0);
-					print("part " + (level - 1) + " "  + blob.getPosition());
-					CParticle@ p = ParticleAnimated("Ranks", blob.getPosition(), Vec2f(0,-1), 0.0f, 1.0f, 0, level - 1, Vec2f(16, 32), 0, 0.01, false);
-					if (p !is null) { p.diesoncollide = true; p.fastcollision = false; p.lighting = false; }
-				}
-			}
-
-
-
+			GUI::DrawIcon("Ranks", level - 1, Vec2f(32, 32), Vec2f(16, -12), 1.0f, 0);
 
 			// draw player username
 			GUI::SetFont("menu");
@@ -235,36 +221,65 @@ void onRender(CSprite@ this)
 	// draw xp bar
 	renderEXPBar(blob, ul - Vec2f(10,0));
 
+	// draw class icon
+	int icon_num = 0;
+	if (blob.getName() == "revolver")
+	{
+		icon_num = 1;
+	}
+	else if (blob.getName() == "ranger")
+	{
+		icon_num = 2;
+	}
+	else if (blob.getName() == "shotgun")
+	{
+		icon_num = 3;
+	}
+	else if (blob.getName() == "sniper")
+	{
+		icon_num = 4;
+	}
+	else if (blob.getName() == "antitank")
+	{
+		icon_num = 5;
+	}
+	else if (blob.getName() == "medic")
+	{
+		icon_num = 6;
+	}
+
+	GUI::DrawIcon("ClassIconSimple.png", icon_num, Vec2f(48, 48), Vec2f(icon_num == 0 ? -14 : 46, getScreenHeight()-166), 2);
+
 	string ammo_amt = blob.get_u32("mag_bullets");
 	string ammo_amt_max = blob.get_u32("mag_bullets_max");
 	Vec2f pngsize = Vec2f(98, 159);
 	
 
-
-	// display correct text
-	if (ammo_amt != "" && ammo_amt.size() > 1)
-	{	// CURRENT AMMO
-		GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-30.0f, getHUDY() - dim.y - 118.0f), 0.5f);
-		GUI::DrawIcon("FontNum.png", ammo_amt[1]+2, pngsize, Vec2f(15.0f, getHUDY() - dim.y - 118.0f), 0.5f);
-	}
-	else if (ammo_amt.length() == 1)
+	if (icon_num != 0)
 	{
-		GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-10.0f, getHUDY() - dim.y - 118.0f), 0.5f);
-	}
-	
-	
-	if (ammo_amt_max != "" && ammo_amt_max.size() > 1)
-	{	// MAX AMMO
-		GUI::DrawIcon("FontNum.png", ammo_amt_max[0]+2, pngsize, Vec2f(-14.0f, getHUDY() - dim.y - 11.0f), 0.35f);
-		GUI::DrawIcon("FontNum.png", ammo_amt_max[1]+2, pngsize, Vec2f(16.0f, getHUDY() - dim.y - 11.0f), 0.35f);
-	}
-	else if (ammo_amt_max.length() == 1)
-	{
-		GUI::DrawIcon("FontNum.png", ammo_amt_max[0]+2, pngsize, Vec2f(-10.0f, getHUDY() - dim.y - 8.0f), 0.35f);
-	}
+		// display correct text
+		if (ammo_amt != "" && ammo_amt.size() > 1)
+		{	// CURRENT AMMO
+			GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-30.0f, getHUDY() - dim.y - 138.0f), 0.5f);
+			GUI::DrawIcon("FontNum.png", ammo_amt[1]+2, pngsize, Vec2f(15.0f, getHUDY() - dim.y - 138.0f), 0.5f);
+		}
+		else if (ammo_amt.length() == 1)
+		{
+			GUI::DrawIcon("FontNum.png", ammo_amt[0]+2, pngsize, Vec2f(-7.0f, getHUDY() - dim.y - 138.0f), 0.5f);
+		}
+		
+		GUI::DrawIcon("Separator.png", 0, Vec2f(400, 300), Vec2f(-110.0f, getHUDY() - dim.y - 153.0f), 0.45f);
 
-	GUI::DrawIcon("Separator.png", 0, Vec2f(400, 300), Vec2f(-136.0f, getHUDY() - dim.y - 153.0f), 0.5f);
-
+		if (ammo_amt_max != "" && ammo_amt_max.size() > 1)
+		{	// MAX AMMO
+			GUI::DrawIcon("FontNum.png", ammo_amt_max[0]+2, pngsize, Vec2f(-14.0f, getHUDY() - dim.y - 26.0f), 0.35f);
+			GUI::DrawIcon("FontNum.png", ammo_amt_max[1]+2, pngsize, Vec2f(18.0f, getHUDY() - dim.y - 26.0f), 0.35f);
+		}
+		else if (ammo_amt_max.length() == 1)
+		{
+			GUI::DrawIcon("FontNum.png", ammo_amt_max[0]+2, pngsize, Vec2f(-8.0f, getHUDY() - dim.y - 26.0f), 0.35f);
+		}
+	}
 
 	// combining images would reduce lag
 	if (blob.getHealth() <= blob.getInitialHealth() / 1.5f)
@@ -279,7 +294,4 @@ void onRender(CSprite@ this)
 	{
 		GUI::DrawIcon("BloodOverlay.png", 0, Vec2f(960, 540), Vec2f(0, 0), (getScreenWidth()*0.5f)/960, (getScreenHeight()*0.5f)/540, SColor(255, 255, 255, 255));
 	}
-
-	
-	
 }

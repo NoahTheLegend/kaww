@@ -683,25 +683,30 @@ shared class TDMCore : RulesCore
                 addKill(killer.getTeamNum()); 
 				if (victim.getTeamNum() == 1)
 				{
-					getRules().add_u16("blue_kills", 1);
-					getRules().Sync("blue_kills", true);
+					rules.add_u16("blue_kills", 1);
+					rules.Sync("blue_kills", true);
 				}
 				else if (victim.getTeamNum() == 0)
 				{
-					getRules().add_u16("red_kills", 1);
-					getRules().Sync("red_kills", true);
+					rules.add_u16("red_kills", 1);
+					rules.Sync("red_kills", true);
 				}
 
 				// give exp
-				getRules().add_u32(killer.getUsername() + "_exp", 5+XORRandom(6));
+				int exp_reward = 5+XORRandom(6); // 5 - 10
+				if (rules.get_string(killer.getUsername() + "_perk") == "Death Incarnate")
+				{
+					exp_reward *= 3; // 10 - 20
+				}
+				rules.add_u32(killer.getUsername() + "_exp", exp_reward);
 
-				CheckRankUps(getRules(), // do reward coins and sfx
-							getRules().get_u32(killer.getUsername() + "_exp"), // player new exp
+				CheckRankUps(rules, // do reward coins and sfx
+							rules.get_u32(killer.getUsername() + "_exp"), // player new exp
 							killer);	
 
-				//getRules().set_string(player.getUsername() + "_last_lvlup", rank);
+				//rules.set_string(player.getUsername() + "_last_lvlup", rank);
 
-				//print("exp: "+getRules().get_u32(killer.getUsername() + "_exp"));
+				//print("exp: "+rules.get_u32(killer.getUsername() + "_exp"));
 			}
             else if (all_death_counts_as_kill)
             {
@@ -1296,7 +1301,7 @@ void onTick(CRules@ this)
 		Config(core);
 		this.Tag("synced_time");
 	}
-	if (getGameTime()%10==0) //every 150 ticks give a coin
+	if (getGameTime()%150==0) //every 150 ticks give a coin
 	{
 		if (this.get_s16("blueTickets") > 200) 
 		{
@@ -1314,8 +1319,14 @@ void onTick(CRules@ this)
 			if (player is null || player.getBlob() is null) continue;
             if (isServer())
             {
-                player.server_setCoins(player.getCoins()+1);
-				//getRules().add_u32(player.getUsername() + "_exp", 1);
+				if (this.get_string(player.getUsername() + "_perk") == "Supply Chain")
+				{
+					player.server_setCoins(player.getCoins()+2); // double
+				}
+				else
+				{
+					player.server_setCoins(player.getCoins()+1);
+				}
             }
         }
 	}

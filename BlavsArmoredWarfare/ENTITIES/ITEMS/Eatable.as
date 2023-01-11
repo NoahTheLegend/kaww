@@ -54,7 +54,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 						bool sameTeam = healer.getTeamNum() == player.getTeamNum();
 						if (!healerHealed && sameTeam)
 						{
-							int coins = 10;
+							int coins = 2;
+							if (getRules().get_string(healer.getUsername() + "_perk") == "Supply Chain")
+							{
+								coins *= 2;
+							}
 							healer.server_setCoins(healer.getCoins() + coins);
 						}
 					}

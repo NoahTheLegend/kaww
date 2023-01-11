@@ -39,7 +39,7 @@ void onRender( CRules@ this )
     }
     else
     {
-    	GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(24, 24), SColor(0xbbffffff));
+    	GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(24, 24), SColor(0x77ffffff));
     }
 	/*
 	                                //Height map wip
