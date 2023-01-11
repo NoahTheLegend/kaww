@@ -40,7 +40,7 @@ void onInit(CBlob@ this)
 	bool semiauto;
 	u8 burst_size; // bullets fired per click
 	u8 burst_rate; // ticks per bullet fired in a burst
-	s8 reload_time; // time to reload
+	s16 reload_time; // time to reload
 	u8 noreloadtimer; // time after each shot where you can't reload
 	u32 mag_size; // max bullets in mag
 	u8 delayafterfire; // time between shots 4
@@ -152,6 +152,14 @@ void onInit(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (this.getPlayer() !is null)
+	{
+		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Death Incarnate")
+		{
+			damage *= 2.0f; // take double damage
+		}
+	}
+
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
@@ -305,7 +313,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	// Deploy parachute!
 	if (detached.hasTag("aerial"))
 	{
-		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 150.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
+		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 120.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
 		{
 			if (!this.hasTag("parachute"))
 			{
@@ -396,6 +404,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	Vec2f pos = this.getPosition();
 
 	const u8 inaccuracyCap = infantry.inaccuracy_cap;
+	
 	InAirLogic(this, inaccuracyCap);
 
 	if (this.isKeyPressed(key_action2))
@@ -404,7 +413,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 		if (!isReloading && !menuopen || this.hasTag("attacking"))
 		{
-			moveVars.walkFactor *= 0.75f;
+			moveVars.walkFactor *= 0.8f;
 			this.Tag("scopedin");
 		}
 	}
@@ -426,7 +435,17 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	}
 	else
 	{
-		const s8 reloadTime = infantry.reload_time;
+		s16 reloadTime = infantry.reload_time;
+		CPlayer@ p = this.getPlayer();
+		if (p !is null)
+		{
+			if (getRules().get_string(p.getUsername() + "_perk") == "Sharp Shooter")
+			{
+				reloadTime = infantry.reload_time * 2;
+			}
+		}
+		
+		
 		const u32 magSize = infantry.mag_size;
 	
 		// reload
@@ -843,7 +862,16 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	f32 targetDistance = targetVector.Length();
 	f32 targetFactor = targetDistance / 367.0f;
 	
-	float bulletSpread = getBulletSpread(infantry.class_hash) + float(this.get_u8("inaccuracy"));
+	float perk_mod = 1;
+	if (this.getPlayer() !is null)
+	{
+		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
+		{
+			perk_mod = 1.5; // improved accuracy
+		}
+	}
+
+	float bulletSpread = getBulletSpread(infantry.class_hash) + (float(this.get_u8("inaccuracy")))/perk_mod;
 	ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity, bulletSpread*targetFactor, infantry.burst_size );
 	this.set_u32("no_reload", getGameTime()+15);
 
@@ -924,6 +952,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		float damageBody = infantry.damage_body;
 		float damageHead = infantry.damage_head;
+
+		if (this.getPlayer() !is null)
+		{
+			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
+			{
+				damageBody *= 1.5f; // 150%
+				damageHead *= 1.5f;
+			}
+		}
+
 		s8 bulletPen = infantry.bullet_pen;
 
 		bool shotOnce = false;

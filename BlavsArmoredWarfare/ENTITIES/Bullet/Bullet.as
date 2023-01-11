@@ -199,113 +199,126 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		// play sound
 		if (blob.hasTag("flesh"))
 		{
+
 			if (isClient() && XORRandom(100) < 60)
 			{
 				sprite.PlaySound("Splat.ogg");
 			}
 		}
-	}
 
-	if (isServer() && this.getTeamNum() != blob.getTeamNum() && (blob.getName() == "wooden_platform" || blob.hasTag("door")))
-	{
-		if (blob.getName() != "stone_door")
+		if (isServer() && this.getTeamNum() != blob.getTeamNum() && (blob.getName() == "wooden_platform" || blob.hasTag("door")))
 		{
-			// destroy doors. Will not touch "strong" tag for now.
-			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 1.25f : 0.15f, Hitters::builder);
-			this.server_Die();
-		}
-	}
-
-	CParticle@ p = ParticleAnimated("SparkParticle.png", hit_position, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
-	if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
-
-	if (blob.hasTag("vehicle") && !this.hasTag("rico"))
-	{
-		this.Tag("dead");
-
-		if (isClient() && XORRandom(101) < (can_pierce ? 20 : 35))
-		{
-			Vec2f velr = this.getVelocity()/(XORRandom(4)+2.5f);
-			velr += Vec2f(0.0f, -3.0f);
-			velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
-
-			ParticlePixel(this.getPosition(), velr, SColor(255, 255, 255, 0), true);
-		}
-
-		if (!can_pierce)
-		{
-			this.Tag("rico");
-			Sound::Play("/BulletRico" + (XORRandom(4) + 4), this.getPosition(), 1.4f, 0.85f + XORRandom(45) * 0.01f);
-			this.setVelocity(this.getVelocity() * 1.05f);
-			this.AddForce(Vec2f(3.5f-XORRandom(7), 5.0f-XORRandom(10)));
-		}
-		else
-		{ 
-			Vec2f pos = this.getPosition() + Vec2f(this.getOldVelocity().x * 0.65f, 0.0f);
-			pos += Vec2f(0.0f, this.getOldVelocity().y * 0.65f);
-
-			CParticle@ p = ParticleAnimated("PingParticle.png", pos, Vec2f(0,0),  0.0f, 0.75f + XORRandom(4) * 0.10f, 2, 0.0f, false);
-			if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
-
-			sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
-			
-			this.server_Die();
-		}
-
-		this.server_SetTimeToDie(0.4);
-	}
-	
-	if (blob.hasTag("flesh") && hit_position.y < blob.getPosition().y - 3.2f)
-	{
-		dmg = this.get_f32("bullet_damage_head");
-
-		// hit helmet
-		if (blob.get_string("equipment_head") == "helmet")
-		{
-			dmg *= 0.45;
-
-			if (XORRandom(100) < 25)
+			if (blob.getName() != "stone_door")
 			{
-				this.Tag("rico");
+				// destroy doors. Will not touch "strong" tag for now.
+				this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 1.25f : 0.15f, Hitters::builder);
+				this.server_Die();
+			}
+		}
 
-				Sound::Play("/BulletRico" + XORRandom(4), this.getPosition(), 1.2f, 0.7f + XORRandom(60) * 0.01f);
+		CParticle@ p = ParticleAnimated("SparkParticle.png", hit_position, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
+		if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
 
-				Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
+		if (blob.hasTag("vehicle") && !this.hasTag("rico"))
+		{
+			this.Tag("dead");
+
+			if (isClient() && XORRandom(101) < (can_pierce ? 20 : 35))
+			{
+				Vec2f velr = this.getVelocity()/(XORRandom(4)+2.5f);
+				velr += Vec2f(0.0f, -3.0f);
 				velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 
 				ParticlePixel(this.getPosition(), velr, SColor(255, 255, 255, 0), true);
-				this.server_SetTimeToDie(0.35);
+			}
 
-				dmg = 0;
+			if (!can_pierce)
+			{
+				this.Tag("rico");
+				Sound::Play("/BulletRico" + (XORRandom(4) + 4), this.getPosition(), 1.4f, 0.85f + XORRandom(45) * 0.01f);
+				this.setVelocity(this.getVelocity() * 1.05f);
+				this.AddForce(Vec2f(3.5f-XORRandom(7), 5.0f-XORRandom(10)));
+			}
+			else
+			{ 
+				Vec2f pos = this.getPosition() + Vec2f(this.getOldVelocity().x * 0.65f, 0.0f);
+				pos += Vec2f(0.0f, this.getOldVelocity().y * 0.65f);
+
+				CParticle@ p = ParticleAnimated("PingParticle.png", pos, Vec2f(0,0),  0.0f, 0.75f + XORRandom(4) * 0.10f, 2, 0.0f, false);
+				if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
+
+				sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
+				
+				this.server_Die();
+			}
+
+			this.server_SetTimeToDie(0.4);
+		}
+		
+		if (blob.hasTag("flesh") && hit_position.y < blob.getPosition().y - 3.2f)
+		{
+			dmg = this.get_f32("bullet_damage_head");
+
+			// hit helmet
+			if (blob.get_string("equipment_head") == "helmet")
+			{
+				dmg *= 0.45;
+
+				if (XORRandom(100) < 25)
+				{
+					this.Tag("rico");
+
+					Sound::Play("/BulletRico" + XORRandom(4), this.getPosition(), 1.2f, 0.7f + XORRandom(60) * 0.01f);
+
+					Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
+					velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+
+					ParticlePixel(this.getPosition(), velr, SColor(255, 255, 255, 0), true);
+					this.server_SetTimeToDie(0.35);
+
+					dmg = 0;
+				}
 			}
 		}
-	}
 
-	if (!this.hasTag("strong"))
-	{
-		int creationTicks = this.getTickSinceCreated();
-		if (creationTicks > 20) // less dmg offscreen
+		if (!this.hasTag("strong"))
 		{
-			dmg *= 0.75f;
+			int creationTicks = this.getTickSinceCreated();
+			if (creationTicks > 20) // less dmg offscreen
+			{
+				dmg *= 0.75f;
+			}
+			else if  (creationTicks > 14)
+			{
+				dmg *= 0.5f;
+			}
 		}
-		else if  (creationTicks > 14)
+
+		if (!blob.hasTag("weakprop"))
 		{
-			dmg *= 0.5f;
+			this.server_Die();
 		}
-	}
+		else
+		{
+			this.setVelocity(velocity * 0.96f);
+		}
 
-	if (!blob.hasTag("weakprop"))
-	{
-		this.server_Die();
-	}
-	else
-	{
-		this.setVelocity(velocity * 0.96f);
-	}
+		if (blob.hasTag("flesh"))
+		{
+			if (blob.getPlayer() !is null)
+			{
+				// player is using bloodthirsty
+				if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+				{
+					dmg *= 1.30f; // take extra damage
+				}
+			}
+		}
 
-	if (dmg > 0.0f && !this.hasTag("rico"))
-	{
-		this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow, false);
+		if (dmg > 0.0f && !this.hasTag("rico"))
+		{
+			this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow, false);
+		}
 	}
 }
 

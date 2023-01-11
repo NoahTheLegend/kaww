@@ -32,15 +32,78 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$lmg_class_icon$", "ClassIcon.png", Vec2f(48, 48), 7);
 	AddIconToken("$slave_class_icon$", "ClassIcon.png", Vec2f(48, 48), 0);
 	AddIconToken("$change_class$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 12, 2);
+	AddIconToken("$change_perk$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 11);
 	
-	addPlayerClass(this, "---- Mechanic ----", "$slave_class_icon$", "slave", "---- Mechanic ----\n\nBuild and break.\nCan't capture flags.\n\nHP: 225\nLMB: Build\nRMB: Mine");
-	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver", "---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 350\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
-	addPlayerClass(this, "---- AK-47 ----", "$ranger_class_icon$", "ranger", "---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Buttstock");
-	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun", "---- Shotgun ----\n\nDeadly at close range.\n\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Dig");
-	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper", "---- Sniper ----\n\nLong range sniper.\n\nHP: 175\nLMB: Shoot\nRMB: Scope in\nSPACEBAR: Knife");
-	addPlayerClass(this, "---- Anti-Tank ----", "$antitank_class_icon$", "antitank", "---- Anti-Tank ----\n\nArmed with a powerful RPG launcher.\n\nHP: 225.\nLMB: RPG\nRMB: Aim\nSPACEBAR: Knife");
-	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5", "---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half healing value.\n\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Heal pack");
+	addPlayerClass(this, "---- Mechanic ----", "$slave_class_icon$", "slave",
+						"---- Mechanic ----\n\nBuild and break.\nCan't capture flags.\n\nHP: 225\nLMB: Build\nRMB: Mine");
+
+	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver",
+						"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 350\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
+
+	addPlayerClass(this, "---- AK-47 ----", "$ranger_class_icon$", "ranger",
+						"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Buttstock");
+
+	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun",
+						"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Dig");
+
+	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper",
+						"---- Sniper ----\n\nLong range sniper.\n\nHP: 175\nLMB: Shoot\nRMB: Scope in\nSPACEBAR: Knife");
+
+	addPlayerClass(this, "---- Anti-Tank ----", "$antitank_class_icon$", "antitank",
+						"---- Anti-Tank ----\n\nArmed with a powerful RPG launcher.\n\nHP: 225.\nLMB: RPG\nRMB: Aim\nSPACEBAR: Knife");
+
+	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5",
+						"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half healing value.\n\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Heal pack");
+
 	//addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg", "---- LMG ----\n\nExtreme firepower.\nLMB: LMG\nRMB: ADS");
+	
+	AddIconToken("$0_class_icon$", "PerkIcon.png", Vec2f(36, 36), 0);
+	AddIconToken("$1_class_icon$", "PerkIcon.png", Vec2f(36, 36), 1);
+	AddIconToken("$2_class_icon$", "PerkIcon.png", Vec2f(36, 36), 2);
+	AddIconToken("$3_class_icon$", "PerkIcon.png", Vec2f(36, 36), 3);
+	AddIconToken("$4_class_icon$", "PerkIcon.png", Vec2f(36, 36), 4);
+	AddIconToken("$5_class_icon$", "PerkIcon.png", Vec2f(36, 36), 5);
+
+	addPlayerPerk(this, "No Perk", "$0_class_icon$", "No Perk", "---- No Perk ----");
+
+	addPlayerPerk(this, "---- Sharp Shooter ----", "$1_class_icon$", "Sharp Shooter",
+						"---- Perk: Sharp Shooter ----\n\n"+"$1_class_icon$"+"Marksman"
+						+"\n                   - Bullet DMG: 150%"
+						+"\n                   - Increased accuracy"
+						+"\n\n                  Long reload"
+						+"\n                   - Reload time: 200%   "
+						);
+						
+	addPlayerPerk(this, "---- Supply Chain ----", "$2_class_icon$", "Supply Chain",
+						"---- Perk: Supply Chain ----\n\n"+"$2_class_icon$"+"Wealthy"
+						+"\n                   - Twice as much cash earned"
+						+"\n\n                  Highroller"
+						+"\n                   - Lose half of all money on death          "
+						);
+
+	addPlayerPerk(this, "---- Bloodthirsty ----", "$3_class_icon$", "Bloodthirsty",
+						"---- Perk: Bloodthirsty ----\n\n"+"$3_class_icon$"+"Vampirism"
+						+"\n                   - Heal on each kill"
+						+"\n\n                  Silver bullets"
+						+"\n                   - Take 130% damage from bullets       "
+						);
+
+
+	addPlayerPerk(this, "---- Operator ----", "$4_class_icon$", "Operator",
+						"---- Perk: Operator ----\n\n"+"$4_class_icon$"+"Operator"
+						+"\n                   - Na"
+						+"\n\n                   Na"
+						+"\n                   - Na   "
+						);
+
+	
+
+	addPlayerPerk(this, "---- Death Incarnate ----", "$5_class_icon$", "Death Incarnate",
+						"---- I am Death Incarnate! ----\n\n"+"$5_class_icon$"+"Bring em' on!"
+						+"\n                   - Take twice as much damage     "
+						+"\n                   - XP Gain: 300%  "
+						);
+
 }
 
 void BuildRespawnMenuFor(CBlob@ this, CBlob @caller)
@@ -58,36 +121,61 @@ void BuildRespawnMenuFor(CBlob@ this, CBlob @caller)
 	}
 }
 
+void BuildPerkMenuFor(CBlob@ this, CBlob @caller)
+{
+	PlayerPerk[]@ perks;
+	this.get("playerperks", @perks);
+
+	if (caller !is null && caller.isMyPlayer() && perks !is null)
+	{
+		CGridMenu@ menu = CreateGridMenu(caller.getScreenPos() + Vec2f(24.0f, caller.getRadius() * 1.0f + 48.0f), this, Vec2f(perks.length * PERK_BUTTON_SIZE, PERK_BUTTON_SIZE), getTranslatedString("CHOOSE A PERK"));
+		if (menu !is null)
+		{
+			addPerksToMenu(this, menu, caller.getNetworkID());
+		}
+	}
+}
+
 void buildSpawnMenu(CBlob@ this, CBlob@ caller)
 {
 	BuildRespawnMenuFor(this, caller);
+}
+
+void buildPerkMenu(CBlob@ this, CBlob@ caller)
+{
+	BuildPerkMenuFor(this, caller);
 }
 
 void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	switch (cmd)
 	{
+		// build menus
 		case SpawnCmd::buildMenu: 
 		{
-			{
-				CBlob@ caller = getBlobByNetworkID(params.read_u16());
-				BuildRespawnMenuFor(this, caller);
-			}
+			CBlob@ caller = getBlobByNetworkID(params.read_u16());
+			BuildRespawnMenuFor(this, caller);
 		}
 		break;
-
-		case SpawnCmd::lockedClass: 
+		case SpawnCmd::buildPerkMenu: 
 		{
+			CBlob@ caller = getBlobByNetworkID(params.read_u16());
+			BuildPerkMenuFor(this, caller);
+		}
+		break;
+
+		// not unlocked yet
+		case SpawnCmd::lockedItem: 
+		{
+			CBlob@ caller = getBlobByNetworkID(params.read_u16());
+			if (caller.isMyPlayer())
 			{
-				CBlob@ caller = getBlobByNetworkID(params.read_u16());
-				if (caller.isMyPlayer())
-				{
-					this.getSprite().PlaySound("/NoAmmo", 0.5);
-				}
+				this.getSprite().PlaySound("/NoAmmo", 0.5);
 			}
 		}
 		break;
 
+		// on change class
 		case SpawnCmd::changeClass:
 		{
 			if (getNet().isServer())
@@ -96,7 +184,7 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				CBlob@ caller = getBlobByNetworkID(params.read_u16());
 				bool single_switch = this.getName() == "outpost";
 
-				if (caller !is null && canChangeClass(this, caller))
+				if (caller !is null)// && canChangeClass(this, caller))
 				{
 					string classconfig = params.read_string();
 					CBlob @newBlob = server_CreateBlob(classconfig, caller.getTeamNum(), this.getRespawnPosition());
@@ -152,7 +240,7 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 						float healthratio = caller.getHealth() / caller.getInitialHealth();
 						newBlob.server_SetHealth(newBlob.getInitialHealth() * healthratio);
 
-						//copy stun
+						// copy stun
 						if (isKnockable(caller))
 						{
 							setKnocked(newBlob, getKnockedRemaining(caller));
@@ -173,6 +261,37 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 						caller.server_SetPlayer(null);
 						caller.server_Die();
 					}
+				}
+			}
+		}
+		break;
+
+		// on change perk
+		case SpawnCmd::changePerk:
+		{
+			if (getNet().isServer())
+			{
+				// build menu for them
+				CBlob@ caller = getBlobByNetworkID(params.read_u16());
+
+				if (caller !is null)
+				{
+					string perkconfig = params.read_string();
+
+					getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
+
+					if (caller.isMyPlayer())
+					{
+						// its on server !
+						this.getSprite().PlaySound("/SwitchPerk", 1.0, perkconfig == "No Ammo" ? 0.5 : 1.1);
+
+						// chat message
+						client_AddToChat("Perk switched to " + perkconfig, SColor(255, 42, 42, 42));
+					}
+
+					
+					//CBlob @newBlob = server_CreateBlob(classconfig, caller.getTeamNum(), this.getRespawnPosition());
+
 				}
 			}
 		}

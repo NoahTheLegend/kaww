@@ -17,11 +17,12 @@ void onRender(CSprite@ this)
 	if (getHUD().hasButtons())
 	{
 		getHUD().SetDefaultCursor();
+		getHUD().SetCursorOffset(Vec2f(-6, -6));
 	}
 	else
 	{
 		getHUD().SetCursorImage("GunCursor.png", Vec2f(32, 32));
-		getHUD().SetCursorOffset(Vec2f(-32, -32));
+		getHUD().SetCursorOffset(Vec2f(-38, -38));
 
 		if (blob.getName() != "slave") // is not a builder
 		{
@@ -35,7 +36,7 @@ void onRender(CSprite@ this)
 					blob.getName() == "antitank" && inv.getItem("mat_heatwarhead") is null) // is antitank
 				{
 					GUI::SetFont("menu");
-					GUI::DrawTextCentered("No Ammo", controls.getInterpMouseScreenPos() + Vec2f(4,41), controls.isKeyPressed(KEY_KEY_R) ? SColor(0xfff20101) : SColor(0xffffffff));
+					GUI::DrawTextCentered("No Ammo", controls.getInterpMouseScreenPos() + Vec2f(-2,35), controls.isKeyPressed(KEY_KEY_R) ? SColor(0xfff20101) : SColor(0xffffffff));
 				}
 			}
 		}
@@ -45,5 +46,5 @@ void onRender(CSprite@ this)
 
 	// draw coins
 	const int coins = player !is null ? player.getCoins() : 0;
-	DrawCoinsOnHUD(blob, coins, getActorHUDStartPosition(blob, slotsSize+18), slotsSize - 2);
+	DrawCoinsOnHUD(blob, coins, getActorHUDStartPosition(blob, slotsSize+17) - Vec2f(0,22), slotsSize - 2);
 }

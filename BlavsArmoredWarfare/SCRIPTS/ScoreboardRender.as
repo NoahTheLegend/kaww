@@ -422,7 +422,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		int rank_icon_start = 0;
 		float x = bottomright.x - tier_start - 18;
 		float extra = 8;
-		GUI::DrawIcon("Ranks", rank_icon_start + level - 1, Vec2f(16, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
+		GUI::DrawIcon("Ranks", rank_icon_start + level - 1, Vec2f(32, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
 
 		if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
 		{
@@ -637,7 +637,7 @@ void onRenderScoreboard(CRules@ this)
 	hovered_rank = -1;
 
 	//draw the scoreboards
-
+	
 	if (localTeam == 0)
 		topleft.y = drawScoreboard(localPlayer, blueplayers, topleft, this.getTeam(0), Vec2f(0, 0));
 	else
