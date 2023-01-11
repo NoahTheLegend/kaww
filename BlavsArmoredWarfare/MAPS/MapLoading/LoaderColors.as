@@ -350,6 +350,7 @@ namespace map_colors
 		// map background signifier
 		map_desert             = 0xfffcd38b,
 		map_grim               = 0xff2a1830,
+		map_snow               = 0xff1c7d97,
 
 		//buildings
 		ledlight               = 0xfff5be41,

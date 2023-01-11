@@ -42,7 +42,7 @@ class PNGLoader
 		@map_random = Random();
 
 		CRules@ this = getRules();
-		this.set_u8("map_type", 0); // reset type   0 default, 1 desert, 2 grim
+		this.set_u8("map_type", 0); // reset type   0 default, 1 desert, 2 grim, 3 snow
 
 		this.set_bool("allowclouds", false);
 		this.set_u8("brightmod", 50); // 50 default
@@ -525,7 +525,7 @@ class PNGLoader
 			// Backgrounds
 			case map_colors::map_desert: autotile(offset); spawnBlob(map, "info_desert", offset); break;
 			case map_colors::map_grim: autotile(offset); spawnBlob(map, "info_grim", offset); break;
-			//case map_colors::map_desert:      map_type = 3 break;
+			case map_colors::map_snow: autotile(offset); spawnBlob(map, "info_snow", offset); break;
 
 			default:
 				HandleCustomTile( map, offset, pixel );
@@ -615,7 +615,7 @@ class PNGLoader
 				map.AddBackground("Backgrounds/BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
 				map.AddBackground("Backgrounds/BackgroundIsland.png", Vec2f(0.0f, 40.0f), Vec2f(0.5f, 0.5f), color_white);
 
-				SetScreenFlash(255,   0,   0,   0,   1.25);
+				SetScreenFlash(255,   0,   0,   0,   1.5);
 				break;
 			}
 			case 1: //desert
@@ -630,7 +630,7 @@ class PNGLoader
 				map.AddBackground("Backgrounds/BackgroundDesert.png",       Vec2f(5.0f, -8.0f), Vec2f(0.25f, 2.0f), color_white);
 				map.AddBackground("Backgrounds/BackgroundDunes.png",        Vec2f(0.0f,  -7.0f), Vec2f(0.5f, 2.5f), color_white);
 
-				SetScreenFlash(255,   0,   0,   0,   1.25);
+				SetScreenFlash(255,   0,   0,   0,   1.5);
 				break;
 			}
 			case 2: //grim
@@ -647,10 +647,20 @@ class PNGLoader
 				SetScreenFlash(255,   0,   0,   0,   3.0);
 				break;
 			}
+			case 3: //snow
+			{
+				map.CreateSky(color_black, Vec2f(1.0f, 1.0f), 200, "Sprites/Back/cloud", 0); // sky
+				map.CreateSkyGradient("Sprites/skygradient.png"); // override sky color with gradient
+				thisrules.set_bool("allowclouds", true);
+				thisrules.set_u8("brightmod", 50);
+				
+				map.AddBackground("Backgrounds/Snow_BackgroundPlains.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
+				map.AddBackground("Backgrounds/Snow_BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
+				
+				SetScreenFlash(255,   0,   0,   0,   1.5);
+				break;
+			}
 		}
-
-		//thisrules.Sync("allowclouds", true);
-		//thisrules.Sync("brightmod", true);
 	}
 
 	CBlob@ spawnLadder(CMap@ map, int offset)
