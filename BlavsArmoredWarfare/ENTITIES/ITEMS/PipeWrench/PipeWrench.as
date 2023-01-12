@@ -110,6 +110,10 @@ void onTick(CBlob@ this)
 									{
 										repair_amount *= 20;
 									}
+									else if (blob.hasTag("vehicle"))
+									{
+										repair_amount *= 2;
+									}
 
 									if (blob.getHealth() + repair_amount <= blob.getInitialHealth())
 						            {
