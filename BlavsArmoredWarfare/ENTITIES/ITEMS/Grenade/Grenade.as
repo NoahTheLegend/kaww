@@ -195,14 +195,17 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
             }
         }
 		if (is_ensure) this.Tag("activated");
-		for (u8 i = 0; i < getPlayersCount(); i++) // make sure clients receive the command after receiving by server
+		else
 		{
-			CPlayer@ p = getPlayer(i);
-			if (p is null) continue;
+			for (u8 i = 0; i < getPlayersCount(); i++) // make sure clients receive the command after receiving by server
+			{
+				CPlayer@ p = getPlayer(i);
+				if (p is null) continue;
 
-			CBitStream params;
-			params.write_bool(true);
-			this.server_SendCommandToPlayer(this.getCommandID("activate"), params, p);
+				CBitStream params;
+				params.write_bool(true);
+				this.server_SendCommandToPlayer(this.getCommandID("activate"), params, p);
+			}
 		}
 		if (!this.hasTag("no_pin")) 
 		{
