@@ -102,8 +102,8 @@ void onInit(CBlob@ this)
 			bow.SetFacingLeft(this.isFacingLeft());
 		}
 	
-		this.inventoryButtonPos = Vec2f(-8.0f, 0);
 	}
+	this.inventoryButtonPos = Vec2f(-8.0f, -4);
 }
 
 void onInit(CSprite@ this)
