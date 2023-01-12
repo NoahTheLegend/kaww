@@ -699,6 +699,7 @@ shared class TDMCore : RulesCore
 					exp_reward *= 3; // 10 - 20
 				}
 				rules.add_u32(killer.getUsername() + "_exp", exp_reward);
+				print(killer.getUsername() + "_exp given");
 
 				CheckRankUps(rules, // do reward coins and sfx
 							rules.get_u32(killer.getUsername() + "_exp"), // player new exp
