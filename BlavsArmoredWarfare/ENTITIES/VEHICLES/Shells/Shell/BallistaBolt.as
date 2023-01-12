@@ -85,6 +85,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return true;
 	}
 
+	if (blob.hasScript("IgnoreDamage.as"))
+	{
+		return false;
+	}
+
 	if (blob.hasTag("broken") || blob.hasTag("dead"))
 	{
 		return false;
