@@ -142,7 +142,7 @@ void onTick(CBlob@ this)
 		
 			bool pressed_w = ap_pilot.isKeyPressed(key_up);
 			bool pressed_s = ap_pilot.isKeyPressed(key_down);
-			bool pressed_lm = ap_pilot.isKeyPressed(key_action1);
+			bool pressed_lm = ap_pilot.isKeyPressed(key_action1) && !this.isOnGround();
 
 			//if (this.getTickSinceCreated() == 5*30)
 			//{
