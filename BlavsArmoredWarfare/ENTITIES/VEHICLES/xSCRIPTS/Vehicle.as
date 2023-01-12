@@ -844,7 +844,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.getName() == "grenade") return damage * 2.5;
  	
-	if (isClient() && customData == Hitters::builder)
+	if (isClient() && customData == Hitters::builder && hitterBlob.getName() == "slave")
 	{
 		this.getSprite().PlaySound("dig_stone.ogg", 1.0f, (0.975f - (this.getMass()*0.000075f))-(XORRandom(11)*0.01f));
 	}
@@ -855,6 +855,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	s8 armorRating = this.get_s8(armorRatingString);
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
+
+	if (armorRating >= 3 && customData == Hitters::sword) return 0;
 
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
