@@ -229,7 +229,7 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (!(isClient() && isServer()) && getGameTime() < 60*30)
+	if (!(isClient() && isServer()) && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
 	{
 		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
 		return; // turn engines off!
