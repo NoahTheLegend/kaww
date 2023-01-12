@@ -455,11 +455,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			this.get_u32("no_reload") < getGameTime() &&
 			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
-			if (this.getName() == "mp5")
-			{
-				CBitStream params;
-				this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
-			}
 			this.set_u8("reloadqueue", 0);
 			this.Sync("reloadqueue", true);
 
@@ -470,6 +465,12 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				// actually reloading
 				reloadistrue = true;
 				charge_time = reloadTime;
+
+				if (this.getName() == "mp5")
+			{
+				CBitStream params;
+				this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
+			}
 
 				isReloading = true;
 				this.set_bool("isReloading", true);
