@@ -553,7 +553,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.getName() == "missile_javelin")
 	{
-		return damage * 0.75f;
+		return damage * 1.0f;
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
