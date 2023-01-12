@@ -964,6 +964,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
 				if (this.getName() == "sniper") proj.Tag("strong");
+				else if (this.getName() == "shotgun") proj.Tag("shrapnel");
 				proj.server_SetTimeToDie(infantry.bullet_lifetime);
 			}
 			shotOnce = true;
