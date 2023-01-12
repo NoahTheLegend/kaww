@@ -351,7 +351,7 @@ namespace SniperParams
 	const ::f32 RECOIL_Y 				= 140.0f; // y shake (45)
 	const ::f32 RECOIL_LENGTH 			= 750.0f; // how long to recoil (?)
 	// RECOIL
-	const ::f32 RECOIL_FORCE 			= 0.03f; // amount to push player
+	const ::f32 RECOIL_FORCE 			= 0.00f; // amount to push player
 	const ::u8 RECOIL_CURSOR 			= 13; // amount to raise mouse pos
 	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
