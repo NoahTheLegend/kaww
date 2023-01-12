@@ -1,5 +1,5 @@
 #include "Hitters.as";
-#include "Explosionx.as";
+#include "Explosion.as";
 
 string[] particles = 
 {
@@ -105,7 +105,7 @@ void DoExplosion(CBlob@ this)
 	this.set_f32("map_damage_radius", (16.0f + random) * modifier);
 	this.set_f32("map_damage_ratio", -1.0f);
 
-	Explode(this, 24.0f + random, 3.0f+(XORRandom(31)*0.1f) * modifier, true);
+	WarfareExplode(this, 24.0f + random, (2.0f+(XORRandom(21)*0.1f)) * modifier);
 
 	if(isClient())
 	{
