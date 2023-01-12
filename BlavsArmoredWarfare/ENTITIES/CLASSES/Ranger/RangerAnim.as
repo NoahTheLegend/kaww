@@ -301,7 +301,7 @@ void onTick(CSprite@ this)
 			armangle += 360.0f;
 		}
 
-		if (!blob.isKeyPressed(key_action2)) //!inair  !blob.isKeyPressed(key_action1) && !blob.wasKeyPressed(key_action1) && 
+		if (!blob.isKeyPressed(key_action2))
 		{
 			if (this.isFacingLeft())
 			{
@@ -384,7 +384,7 @@ void onTick(CSprite@ this)
 
 void DrawGun(CSprite@ this, CBlob@ blob, ArcherInfo@ archer, f32 armangle, Vec2f armOffset)
 {
-	f32 sign = (this.isFacingLeft() ? 1.0f : -1.0f);
+	int sign = (this.isFacingLeft() ? 1 : -1);
 	CSpriteLayer@ frontarm = this.getSpriteLayer("frontarm");
 
 	frontarm.animation.frame = 4;
@@ -394,7 +394,7 @@ void DrawGun(CSprite@ this, CBlob@ blob, ArcherInfo@ archer, f32 armangle, Vec2f
 	}
 	else
 	{
-		setArmValues(frontarm, true, armangle, 0.1f, "default", Vec2f(-4.0f * sign, 0.0f), armOffset + Vec2f(0.0f, (Maths::Abs(blob.getVelocity().x) >= 1.0f && (blob.isOnGround())) ? ((getGameTime() % 8 < 4) ? -1.0f : 0.0f) : 0.0f));
+		setArmValues(frontarm, true, armangle, 0.1f, "default", Vec2f(-4.0f * sign, 0.0f), armOffset + Vec2f(0.0f, (Maths::Abs(blob.getVelocity().x) >= 1.0f && (blob.isOnGround())) ? ((getGameTime() % 8 < 4) ? -1 : 0) : 0));
 	}
 
 	if (blob.getCarriedBlob() !is null)

@@ -459,7 +459,7 @@ shared class TDMCore : RulesCore
 				"mp5"
 				};
 				
-				float exp = _rules.get_u32("Yeti5000707" + "_exp");
+				//float exp = _rules.get_u32("Yeti5000707" + "_exp");
 				/*
 				string rank = RANKS[0];
 				int unlocked = 0;
