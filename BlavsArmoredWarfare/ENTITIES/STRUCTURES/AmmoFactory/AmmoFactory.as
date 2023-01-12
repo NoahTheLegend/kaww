@@ -198,6 +198,11 @@ void spawnMetal(CBlob@ this)
 	}
 }
 
+void ResetTimer(CBlob@ this)
+{
+	this.set_u32("last_prod", getGameTime()); // TODO: probably do high maths to calculate time to next prod
+}
+
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("add metal"))
@@ -238,6 +243,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 50); // how many
 		this.set_u8("prod_time", 2); // extra seconds time (10 sec for default)
 		this.set_u8("cost", 1); // how many scrap to take
+
+		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("14mm"))
 	{
@@ -245,6 +252,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 15);
 		this.set_u8("prod_time", 10);
 		this.set_u8("cost", 1);
+
+		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("105mm"))
 	{
@@ -252,6 +261,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 4);
 		this.set_u8("prod_time", 15);
 		this.set_u8("cost", 1);
+
+		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("heats"))
 	{
@@ -259,6 +270,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 3);
 		this.set_u8("prod_time", 30);
 		this.set_u8("cost", 7);
+
+		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("molotov"))
 	{
@@ -266,6 +279,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 12);
 		this.set_u8("cost", 2);
+
+		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("grenade"))
 	{
@@ -273,6 +288,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 15);
 		this.set_u8("cost", 3);
+
+		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("mine"))
 	{
@@ -280,6 +297,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 20);
 		this.set_u8("cost", 2);
+
+		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("helmet"))
 	{
@@ -287,6 +306,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 15);
 		this.set_u8("cost", 2);
+
+		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("playsound"))
 	{
