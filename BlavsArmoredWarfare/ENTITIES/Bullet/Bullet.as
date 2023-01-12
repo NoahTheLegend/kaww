@@ -97,6 +97,14 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	// chance to break a block. Will not touch "strong" tag for now.
 	TileType tile = map.getTile(end).type;
 	bool isStrong = this.hasTag("strong");
+	if (this.hasTag("shrapnel"))
+	{
+		if (tile == CMap::tile_wood)
+		{
+			map.server_DestroyTile(end, XORRandom(4)==0 ? 15.0f : 7.5f, this);
+			this.server_Die();
+		}
+	}
 	if (tile == CMap::tile_ground && XORRandom(100) < 2 || tile != CMap::tile_ground && XORRandom(100) < 8)
 	{
 		if (map.getSectorAtPosition(end, "no build") is null)
