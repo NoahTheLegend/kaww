@@ -19,8 +19,8 @@ const float adscushionamount = 1.0f; // lower means less recoil when aiming down
 const float lengthofrecoilarc = 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 
 // ACCURACY
-const u8 inaccuracycap = 120; // max amount of inaccuracy
-const u8 inaccuracypershot = 110; // aim inaccuracy  (+3 per shot)
+const u8 inaccuracycap = 300; // max amount of inaccuracy
+const u8 inaccuracypershot = 300; // aim inaccuracy  (+3 per shot)
 // delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 
 const bool semiauto = true;
