@@ -923,6 +923,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 		}
 		
 		this.SendCommand(this.getCommandID("shoot bullet"), params);
+		this.Tag("no_more_shoot");
 	}
 
 	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
@@ -932,6 +933,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
+		this.Untag("no_more_shoot");
 		if (this is null || this.hasTag("dead")) return;
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
