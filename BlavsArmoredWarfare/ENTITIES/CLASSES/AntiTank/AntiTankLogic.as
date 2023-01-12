@@ -664,7 +664,7 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 		Vec2f targetVector = this.getAimPos() - this.getPosition();
 		f32 targetDistance = targetVector.Length();
 		f32 targetFactor = targetDistance / 367.0f;
-		f32 mod = this.isKeyPressed(key_action2) ? 0.05f : 0.2f;
+		f32 mod = this.isKeyPressed(key_action2) ? 0.2f : 0.3f;
 
 		ShootBullet(this, this.getPosition() - Vec2f(-24,0).RotateBy(angle), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((180 + this.get_u8("inaccuracy")) - 110)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(180 + this.get_u8("inaccuracy")) - 110)*mod * targetFactor, 8.0f * bulletvelocity);
 	
