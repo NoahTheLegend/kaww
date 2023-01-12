@@ -4,7 +4,6 @@
 #include "RunnerCommon.as";
 #include "BombCommon.as";
 #include "Hitters.as";
-#include "Recoil.as";
 #include "InfantryCommon.as";
 #include "AntiTankCommon.as";
 #include "TeamColour.as";
@@ -27,7 +26,6 @@ void onInit(CBlob@ this)
 	this.set_s32("my_chargetime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
 
-	this.set_u8("recoil_count", 0);
 	this.set_s8("recoil_direction", 0);
 	this.set_u8("inaccuracy", 0);
 
@@ -515,21 +513,6 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 			moveVars.walkFactor *= 0.2f;
 			moveVars.jumpFactor *= 0.8f;
 		}
-	}
-
-	if (this.get_u8("recoil_count") > 0)
-	{
-		CPlayer@ p = this.getPlayer();
-		if (p !is null)
-		{
-			CBlob@ local = p.getBlob();
-			if (local !is null)
-			{
-				Recoil(this, local, this.get_u8("recoil_count")/3, this.get_s8("recoil_direction"));
-			}
-		}
-
-		this.set_u8("recoil_count", Maths::Floor(this.get_u8("recoil_count") / lengthofrecoilarc));
 	}
 
 	if (this.get_u8("inaccuracy") > 0)

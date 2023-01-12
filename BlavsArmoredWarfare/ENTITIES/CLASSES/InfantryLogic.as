@@ -5,7 +5,6 @@
 #include "RunnerCommon.as";
 #include "BombCommon.as";
 #include "Hitters.as";
-#include "Recoil.as";
 #include "InfantryCommon.as";
 #include "MedicisCommon.as";
 #include "TeamColour.as";
