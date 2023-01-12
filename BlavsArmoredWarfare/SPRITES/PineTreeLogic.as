@@ -73,7 +73,7 @@ void GrowSprite(CSprite@ this, TreeVars@ vars)
 
 			if (segment.grown_times == 1)
 			{
-				CSpriteLayer@ newsegment = this.addSpriteLayer("segment " + i, "Entities/Natural/Trees/Trees.png" , 16, 16, 0, 0);
+				CSpriteLayer@ newsegment = this.addSpriteLayer("segment " + i, "Trees.png" , 16, 16, 0, 0);
 
 				if (newsegment !is null)
 				{
@@ -111,7 +111,7 @@ void GrowSprite(CSprite@ this, TreeVars@ vars)
 			}
 			else if (segment.grown_times == 4 && segment.height > 4)
 			{
-				CSpriteLayer@ newsegment = this.addSpriteLayer("leaves " + i, "Entities/Natural/Trees/Trees.png" , 32, 32, 0, 0);
+				CSpriteLayer@ newsegment = this.addSpriteLayer("leaves " + i, "Trees.png" , 32, 32, 0, 0);
 
 				if (newsegment !is null)
 				{
@@ -144,7 +144,7 @@ void GrowSprite(CSprite@ this, TreeVars@ vars)
 				if (i == 0) //add roots
 				{
 					f32 flipsign = 1.0f;
-					CSpriteLayer@ newsegment = this.addSpriteLayer("roots", "Entities/Natural/Trees/Trees.png" , 32, 16, 0, 0);
+					CSpriteLayer@ newsegment = this.addSpriteLayer("roots", "Trees.png" , 32, 16, 0, 0);
 
 					if (newsegment !is null)
 					{
@@ -162,7 +162,7 @@ void GrowSprite(CSprite@ this, TreeVars@ vars)
 				else if (segment.height > 2 && segment.height <= vars.max_height)  //add leaves
 				{
 					bool flip = false;
-					CSpriteLayer@ newsegment = this.addSpriteLayer("leaves side " + i, "Entities/Natural/Trees/Trees.png" , 32, 32, 0, 0);
+					CSpriteLayer@ newsegment = this.addSpriteLayer("leaves side " + i, "Trees.png" , 32, 32, 0, 0);
 
 					if (newsegment !is null)
 					{
@@ -180,7 +180,7 @@ void GrowSprite(CSprite@ this, TreeVars@ vars)
 
 					if (segment.r.NextRanged(2) == 0)
 					{
-						CSpriteLayer@ secondnewsegment = this.addSpriteLayer("leaves doubleside " + i, "Entities/Natural/Trees/Trees.png" , 32, 32, 0, 0);
+						CSpriteLayer@ secondnewsegment = this.addSpriteLayer("leaves doubleside " + i, "Trees.png" , 32, 32, 0, 0);
 
 						if (secondnewsegment !is null)
 						{
