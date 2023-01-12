@@ -7,7 +7,7 @@ void onStateChange( CRules@ this, const u8 oldState )
 		if (localplayer !is null)
 		{
 			CBlob@ playerBlob = getLocalPlayerBlob();
-			int teamNum = playerBlob !is null ? playerBlob.getTeamNum() : localplayer.getTeamNum() ; // bug fix (cause in singelplayer player team is 255)
+			int teamNum = playerBlob !is null ? playerBlob.getTeamNum() : localplayer.getTeamNum() ; // bug fix (cause in singleplayer player team is 255)
 			if (teamNum == this.getTeamWon())
 			{
 				Sound::Play("/WinSound.ogg");

@@ -303,7 +303,7 @@ void ManageParachute( CBlob@ this )
 	if (this.hasTag("parachute"))
 	{
 		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
-		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : 0.73f)));
+		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.63f : 0.73)));
 	}
 }
 
@@ -338,10 +338,10 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 	CControls@ controls = this.getControls();
 	CSprite@ sprite = this.getSprite();
-	s8 charge_time = this.get_s32("my_chargetime");//archer.charge_time;
+	s8 charge_time = this.get_s32("my_chargetime");
 	this.set_s8("charge_time", charge_time);
 	bool isStabbing = archer.isStabbing;
-	bool isReloading = this.get_bool("isReloading"); //archer.isReloading;
+	bool isReloading = this.get_bool("isReloading");
 	u8 charge_state = archer.charge_state;
 	bool just_action1;
 	bool is_action1;
@@ -519,7 +519,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			moveVars.jumpFactor *= 0.7f;
 			moveVars.canVault = false;
 
-			if (charge_time == 0 && isStabbing == false)
+			if (isStabbing == false)
 			{
 				if (menuopen) return;
 				if (isReloading) return;
@@ -740,22 +740,11 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				else
 				{
 					getHUD().SetCursorFrame(1);
-				}
-				
+				}	
 			}
 			else
 			{
-				frame = Maths::Floor(this.get_u8("inaccuracy") / 5);
-
-				if (frame > 9)
-				{
-					frame = 9;
-				}
-				if (frame < 1)
-				{
-					frame = 1;
-				}
-				getHUD().SetCursorFrame(frame);
+				getHUD().SetCursorFrame(Maths::Clamp(Maths::Floor(this.get_u8("inaccuracy") / 5), 1, 9));
 			}
 		}
 
@@ -794,6 +783,7 @@ void onTick(CBlob@ this)
 
 	ManageGun(this, archer, moveVars, infantry);
 
+	/* shouldnt need to do this
 	if (!this.isOnGround()) // ladders sometimes dont work
 	{
 		CBlob@[] blobs;
@@ -810,6 +800,7 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
+	*/
 	
 	if (this.get_u8("reloadqueue") > 0) this.sub_u8("reloadqueue", 1);
 	CControls@ controls = this.getControls();

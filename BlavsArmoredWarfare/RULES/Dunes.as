@@ -1,6 +1,4 @@
 #include "Default/DefaultGUI.as"
-//#include "Default/DefaultLoaders.as"
-//#include "PrecacheTextures.as"
 #include "EmotesCommon.as"
 
 void onInit(CRules@ this)

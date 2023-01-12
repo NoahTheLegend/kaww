@@ -139,7 +139,7 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
 	
 	float expratio = (exp-previousrankexp) / (next_rank-previousrankexp); //next_rank
 
-	//getRules().set_u32("Yeti5000707" + "_exp", 60);
+	getRules().set_u32("Yeti5000707" + "_exp", 66665555);
 
 	GUI::DrawRectangle(Vec2f(xppos.x - dim.x + 2, xppos.y + 2), Vec2f(xppos.x + dim.x - 2, xppos.y + dim.y - 2), SColor(0x505bff33)); // background pane
 
@@ -163,6 +163,7 @@ void onInit(CSprite@ this)
 
 void onRender(CSprite@ this)
 {
+	if (g_videorecording) return;
 	CBlob@ blob = this.getBlob();
 
 	if (blob !is null)
@@ -218,6 +219,8 @@ void onRender(CSprite@ this)
 	renderBox(ul + Vec2f(dim.x + 46, 0), width*1.2, 1.0f); //width*1.9
 	renderHPBar(blob, ul);
 
+	
+	
 	// draw xp bar
 	renderEXPBar(blob, ul - Vec2f(10,0));
 

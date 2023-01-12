@@ -16,7 +16,7 @@ const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
 const f32 high_angle = 71.0f; // upper depression limit
-const f32 low_angle = 101.0f; // lower depression limit
+const f32 low_angle = 104.0f; // lower depression limit
 
 void onInit(CBlob@ this)
 {

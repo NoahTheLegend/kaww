@@ -209,6 +209,4 @@ void onRender(CRules@ this)
 		GUI::DrawButtonPressed(ul - Vec2f(10, 10), lr + Vec2f(10, 10));
 		GUI::DrawText(text, ul, SColor(0xffffffff));
 	}
-
-	GUI::DrawIcon("BloodOverlay.png", 0, Vec2f(960, 540), Vec2f(0, 0), (getScreenWidth()*0.5f)/960, (getScreenHeight()*0.5f)/540, SColor(255, 255, 255, 255));
 }

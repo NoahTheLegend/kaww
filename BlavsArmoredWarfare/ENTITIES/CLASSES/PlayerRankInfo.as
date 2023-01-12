@@ -155,7 +155,7 @@ shared void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
         server_DropCoins(player.getBlob().getPosition(), 50);
 
         // play sound
-        player.getBlob().getSprite().PlaySound("LevelUp", 5.0f, 1.0f);
+        player.getBlob().getSprite().PlaySound("LevelUp", 10.0f, 1.0f);
 
         if (isClient())
         {

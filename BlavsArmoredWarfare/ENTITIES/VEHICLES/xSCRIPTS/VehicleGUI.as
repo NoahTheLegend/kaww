@@ -111,7 +111,7 @@ void drawAmmoCount(CBlob@ blob, VehicleInfo@ v)
 	upperleft -= Vec2f((float(numDigits) * 2.5f), 0);
 	lowerright += Vec2f((float(numDigits) * 2.5f), 0);
 
-	GUI::DrawRectangle(upperleft, lowerright + Vec2f(30,0));
+	GUI::DrawRectangle(upperleft, lowerright + Vec2f(39,0));
 	GUI::SetFont("menu");
 	GUI::DrawText(reqsText, upperleft + Vec2f(2, 1), color_white);
 
