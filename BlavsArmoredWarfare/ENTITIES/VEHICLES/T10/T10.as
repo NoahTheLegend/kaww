@@ -8,7 +8,6 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("tank");
 	this.Tag("deal_bunker_dmg");
-	this.Tag("has machinegun");
 	this.Tag("engine_can_get_stuck");
 
 	CShape@ shape = this.getShape();

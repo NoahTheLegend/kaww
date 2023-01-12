@@ -8,7 +8,6 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("tank");
 	this.Tag("deal_bunker_dmg");
-	this.Tag("has machinegun");
 	this.Tag("engine_can_get_stuck");
 
 	CShape@ shape = this.getShape();
@@ -267,14 +266,6 @@ void onDie(CBlob@ this)
 
 	this.getSprite().PlaySound("/vehicle_die");
 
-	if (this.exists("bowid"))
-	{
-		CBlob@ bow = getBlobByNetworkID(this.get_u16("bowid"));
-		if (bow !is null)
-		{
-			bow.server_Die();
-		}
-	}
 	if (this.exists("followid"))
 	{
 		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));

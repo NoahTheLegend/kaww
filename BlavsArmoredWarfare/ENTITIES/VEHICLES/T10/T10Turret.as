@@ -24,6 +24,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("turret");
 	this.Tag("tank");
+	this.Tag("has machinegun");
 	this.Tag("blocks bullet");
 
 	this.set_f32("damage_modifier", damage_modifier);
@@ -188,7 +189,6 @@ void onTick(CBlob@ this)
 			tur.SetFacingLeft(this.isFacingLeft());
 			if (isServer()) tur.server_setTeamNum(this.getTeamNum());
 		}
-		else this.Untag("has machinegun");
 	}
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
