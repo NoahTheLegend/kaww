@@ -190,6 +190,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				{
 					CBlob@ hi = infos[i].blob;
 					if (hi is null) continue;
+					if (hi.getTeamNum() != this.getTeamNum()) continue;
 					if (hi.hasTag("bunker") || hi.hasTag("tank")) 
 					{
 						at_bunker = true;
