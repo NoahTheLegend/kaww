@@ -48,6 +48,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("aerial");
 	this.Tag("wooden");
+	this.Tag("plane");
 	this.Tag("pass_bullet");
 	
 	CSprite@ sprite = this.getSprite();
