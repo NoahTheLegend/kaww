@@ -85,7 +85,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return true;
 	}
 
-	if (blob.hasTag("broken"))
+	if (blob.hasTag("broken") || blob.hasTag("dead"))
 	{
 		return false;
 	}

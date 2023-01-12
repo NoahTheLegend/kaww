@@ -303,7 +303,7 @@ void ManageParachute( CBlob@ this )
 	if (this.hasTag("parachute"))
 	{
 		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
-		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * 0.73f));
+		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : 0.73f)));
 	}
 }
 
