@@ -163,7 +163,6 @@ void onTick(CBlob@ this)
     	    AttachmentPoint@ ap = tur.getAttachments().getAttachmentPointByName("BOW");
     	    if (ap !is null && ap.getOccupied() is null)
     	    {
-				tur.Tag("has machinegun");
 				tur.server_AttachTo(this, ap);
 			}
     	}
