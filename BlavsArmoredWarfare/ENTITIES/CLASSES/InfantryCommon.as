@@ -359,8 +359,8 @@ namespace SniperParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 30; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 30; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_CAP 			= 20; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 20; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
