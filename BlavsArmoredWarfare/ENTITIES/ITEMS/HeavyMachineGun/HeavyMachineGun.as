@@ -168,6 +168,15 @@ void onTick(CBlob@ this)
     	}
 	}
 
+	if (isClient() && this.isAttached())
+	{
+		CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
+		if (cage !is null)
+		{
+			cage.SetVisible(false);
+		}
+	}
+
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{

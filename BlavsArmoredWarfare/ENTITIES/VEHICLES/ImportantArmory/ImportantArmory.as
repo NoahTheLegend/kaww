@@ -15,6 +15,10 @@ void onInit(CBlob@ this)
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
 	this.set_u16("extra_no_heal", 15);
+	if (isServer())
+	{
+		if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), 0);
+	}
 
 	Vehicle_Setup(this,
 	              5000.0f, // move speed  //103
@@ -307,7 +311,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (blob !is null)
 	{
-		if (blob.hasTag("material") && !blob.isAttached() && !blob.isInInventory())
+		if (blob.hasTag("material") && !blob.hasTag("no_armory_pickup") && !blob.isAttached() && !blob.isInInventory())
 		{
 			if (isServer()) this.server_PutInInventory(blob);
 			else this.getSprite().PlaySound("BridgeOpen.ogg", 1.0f);
@@ -377,6 +381,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (hitterBlob.getTeamNum() != this.getTeamNum())
+	{
+		if (isServer())
+		{
+			if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), getGameTime()+150);
+		}
+	}
 	if (hitterBlob.getName() == "missile_javelin" || hitterBlob.getName() == "ballista_bolt")
 	{
 		return damage * 1.25f;
@@ -385,9 +396,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 0.5f;
 	}
-	if (hitterBlob.hasTag("bullet") && hitterBlob.hasTag("strong"))
+	if (hitterBlob.hasTag("bullet"))
 	{
-		return damage *= 1.5f;
+		if (hitterBlob.hasTag("plane_bullet")) return damage * 0.25f;
+		else if (hitterBlob.hasTag("strong")) return damage *= 1.5f;
+		return damage;
 	}
 	return damage;
 }

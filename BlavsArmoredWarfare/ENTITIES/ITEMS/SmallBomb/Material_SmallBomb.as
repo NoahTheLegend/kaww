@@ -1,5 +1,5 @@
 #include "Hitters.as";
-#include "Explosionx.as";
+#include "Explosion.as";
 
 string[] particles = 
 {
@@ -23,6 +23,7 @@ void onInit(CBlob@ this)
 	this.Tag("explosive");
 	this.Tag("medium weight");
 	this.Tag("always bullet collide");
+	this.Tag("no_armory_pickup");
 
 	this.maxQuantity = 4;
 }
@@ -104,7 +105,7 @@ void DoExplosion(CBlob@ this)
 	this.set_f32("map_damage_radius", (16.0f + random) * modifier);
 	this.set_f32("map_damage_ratio", -1.0f);
 
-	Explode(this, 24.0f + random, 5.0f+(XORRandom(51)*0.1f), true);
+	WarfareExplode(this, 24.0f + random, (2.0f+(XORRandom(21)*0.1f)) * modifier);
 
 	if(isClient())
 	{

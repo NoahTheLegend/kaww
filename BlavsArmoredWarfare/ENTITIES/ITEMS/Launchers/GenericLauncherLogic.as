@@ -17,7 +17,7 @@ void onInit(CBlob@ this)
 
 bool canBePutInInventory( CBlob@ this, CBlob@ inventoryBlob )
 {
-	return !inventoryBlob.hasTag("flesh") && !this.hasTag("dead");
+	return true;
 }
 
 void onCommand( CBlob@ this, u8 cmd, CBitStream @params )

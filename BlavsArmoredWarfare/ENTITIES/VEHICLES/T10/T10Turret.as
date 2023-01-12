@@ -16,14 +16,15 @@ const f32 damage_modifier = 1.125f;
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
-const f32 high_angle = 71.0f; // upper depression limit
-const f32 low_angle = 97.0f; // lower depression limit
+const f32 high_angle = 75.0f; // upper depression limit
+const f32 low_angle = 97.5f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
 	this.Tag("turret");
 	this.Tag("tank");
+	this.Tag("has machinegun");
 	this.Tag("blocks bullet");
 
 	this.set_f32("damage_modifier", damage_modifier);
@@ -62,6 +63,17 @@ void onInit(CBlob@ this)
 	// auto-load on creation
 	if (getNet().isServer())
 	{
+		CBlob@ bow = server_CreateBlob("heavygun");	
+
+		if (bow !is null)
+		{
+			bow.server_setTeamNum(this.getTeamNum());
+			this.server_AttachTo( bow, "BOW" );
+			this.set_u16("bowid", bow.getNetworkID());
+
+			bow.SetFacingLeft(this.isFacingLeft());
+		}
+
 		CBlob@ ammo = server_CreateBlob("mat_bolts");
 		if (ammo !is null)
 		{
