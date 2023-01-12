@@ -79,7 +79,7 @@ void onTick(CBlob@ this)
 		
 		if (getKnocked(holder) <= 0)
 		{		
-			if (point.isKeyJustPressed(key_action1))
+			if (point.isKeyPressed(key_action1))
 			{
 				u8 team = holder.getTeamNum();
 				
