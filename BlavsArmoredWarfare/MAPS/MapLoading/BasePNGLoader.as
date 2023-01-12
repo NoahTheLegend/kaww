@@ -701,6 +701,7 @@ class PNGLoader
 				}
 			}
 			blob.getShape().SetStatic( true );
+			blob.server_setTeamNum(-1);
 		}
 		return blob;
 	}

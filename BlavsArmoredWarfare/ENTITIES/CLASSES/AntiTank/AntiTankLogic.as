@@ -108,7 +108,7 @@ void ManageParachute( CBlob@ this )
 	if (this.hasTag("parachute"))
 	{
 		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
-		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * 0.73f));
+		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.63f : 0.73)));
 	}
 }
 
@@ -606,6 +606,7 @@ void onTick(CBlob@ this)
 
 	ManageGun(this, archer, moveVars);
 
+	/*
 	if (!this.isOnGround()) // ladders sometimes dont work
 	{
 		CBlob@[] blobs;
@@ -622,6 +623,7 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
+	*/
 
 	if (this.get_u8("reloadqueue") > 0) this.sub_u8("reloadqueue", 1);
 	CControls@ controls = this.getControls();

@@ -32,6 +32,7 @@ void onRender(CSprite@ this)
 	if (g_videorecording) return;
 
 	CBlob@ blob = this.getBlob();
+
 	if (blob.hasTag("falling")) return;
 
 	Vec2f center = blob.getPosition();
