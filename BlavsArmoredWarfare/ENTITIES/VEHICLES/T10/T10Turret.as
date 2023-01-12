@@ -62,6 +62,17 @@ void onInit(CBlob@ this)
 	// auto-load on creation
 	if (getNet().isServer())
 	{
+		CBlob@ bow = server_CreateBlob("heavygun");	
+
+		if (bow !is null)
+		{
+			bow.server_setTeamNum(this.getTeamNum());
+			this.server_AttachTo( bow, "BOW" );
+			this.set_u16("bowid", bow.getNetworkID());
+
+			bow.SetFacingLeft(this.isFacingLeft());
+		}
+
 		CBlob@ ammo = server_CreateBlob("mat_bolts");
 		if (ammo !is null)
 		{
@@ -177,6 +188,7 @@ void onTick(CBlob@ this)
 			tur.SetFacingLeft(this.isFacingLeft());
 			if (isServer()) tur.server_setTeamNum(this.getTeamNum());
 		}
+		else this.Untag("has machinegun");
 	}
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{

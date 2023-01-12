@@ -88,17 +88,6 @@ void onInit(CBlob@ this)
 			turret.SetFacingLeft(facing_left);
 		}
 
-		CBlob@ bow = server_CreateBlob("heavygun");	
-
-		if (bow !is null)
-		{
-			bow.server_setTeamNum(this.getTeamNum());
-			turret.server_AttachTo( bow, "BOW" );
-			this.set_u16("bowid", bow.getNetworkID());
-
-			bow.SetFacingLeft(facing_left);
-		}
-
 		{
 			CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 1
 
