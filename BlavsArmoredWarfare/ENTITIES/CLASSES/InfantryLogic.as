@@ -268,7 +268,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 				//big things block attacks
 				{
 					this.server_Hit(b, hi.hitpos, Vec2f(0,0), damage, type, true); 
-					
+					if (b.hasTag("door") && b.getShape().getConsts().collidable) break;
 					// end hitting if we hit something solid, don't if its flesh
 				}
 			}
