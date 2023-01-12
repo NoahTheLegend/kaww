@@ -264,7 +264,7 @@ void onTick(CBlob@ this)
 			if (getGameTime() % 30 == 0 && this.hasTag("engine_can_get_stuck") && this.getHealth() <= this.getInitialHealth()/6 && XORRandom(15) == 0) // jam engine on low hp
 			{
 				this.set_bool("engine_stuck", true);
-				this.set_u32("engine_stuck_time", getGameTime()+90+XORRandom(90));
+				this.set_u32("engine_stuck_time", getGameTime()+50+XORRandom(90));
 
 				CBitStream params;
 				params.write_u32(this.get_u32("engine_stuck_time"));

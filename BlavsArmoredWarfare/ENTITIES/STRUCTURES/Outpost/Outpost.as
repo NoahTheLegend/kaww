@@ -1,13 +1,10 @@
-﻿// Vehicle Workshop
-
-#include "GenericButtonCommon.as"
+﻿#include "GenericButtonCommon.as"
 #include "StandardRespawnCommand.as"
 #include "StandardControlsCommon.as"
 #include "Requirements.as"
 #include "ShopCommon.as"
 #include "Costs.as"
 #include "GenericButtonCommon.as";
-
 
 const u16 MIN_RESPAWNS = 5;
 const u8 ADD_RESPAWN_PER_PLAYERS = 2;
@@ -41,10 +38,6 @@ void onInit(CBlob@ this)
 		flag.SetOffset(Vec2f(8.0f, -4.0f));
 		flag.SetAnimation("default");
 	}
-
-	//this.SetMinimapOutsideBehaviour(CBlob::minimap_snap);
-	//this.SetMinimapVars("GUI/Minimap/MinimapIcons.png", 7, Vec2f(16, 16));
-	//this.SetMinimapRenderAlways(true);
 
 	// SHOP
 	InitCosts();
@@ -81,7 +74,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	this.set_Vec2f("shop offset", Vec2f(-18, 0));
 
 	this.set_bool("shop available", true);
-
 
 	if (!canSeeButtons(this, caller)) return;
 
