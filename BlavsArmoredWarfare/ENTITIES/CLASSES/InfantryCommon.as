@@ -702,7 +702,6 @@ void getMovementStats( int blobNameHash, bool isSprinting,
 		}
 		break;
 	}
-	
 }
 
 void InAirLogic( CBlob@ this, u8 inaccuracyCap )
@@ -711,7 +710,7 @@ void InAirLogic( CBlob@ this, u8 inaccuracyCap )
 	{
 		u8 inaccuracyFinal = Maths::Min(this.get_u8("inaccuracy") + 6, inaccuracyCap);
 		this.set_u8("inaccuracy", inaccuracyFinal);
-		this.setVelocity(Vec2f(this.getVelocity().x*0.92f, this.getVelocity().y));
+		this.setVelocity(Vec2f(this.getVelocity().x*0.90f, this.getVelocity().y));
 	}
 }
 
