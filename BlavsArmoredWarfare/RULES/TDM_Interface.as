@@ -92,8 +92,18 @@ void onRender(CRules@ this)
 	CPlayer@ p = getLocalPlayer();
 
 	if (p is null || !p.isMyPlayer()) { return; }
-
 	GUI::SetFont("menu");
+
+	if (p.getTeamNum() == 0 && this.get_u32("iarmory_warn0") > getGameTime())
+	{
+		f32 wave = Maths::Sin(getGameTime() / 3.0f) * 5.0f - 25.0f;
+		GUI::DrawTextCentered("Your truck is under attack!", Vec2f(getDriver().getScreenWidth()/2, 220+wave), SColor(255,255,255,0));
+	}
+	else if (p.getTeamNum() == 1 && this.get_u32("iarmory_warn1") > getGameTime())
+	{
+		f32 wave = Maths::Sin(getGameTime() / 3.0f) * 5.0f - 25.0f;
+		GUI::DrawTextCentered("Your truck is under attack!", Vec2f(getDriver().getScreenWidth()/2, 220+wave), SColor(255,255,255,0));
+	}
 
 	CBitStream serialised_team_hud;
 	this.get_CBitStream("tdm_serialised_team_hud", serialised_team_hud);
