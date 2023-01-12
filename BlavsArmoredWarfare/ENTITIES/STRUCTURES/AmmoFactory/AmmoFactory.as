@@ -133,6 +133,7 @@ void onTick(CBlob@ this)
 
 			this.Sync(working_prop, true);
 		}
+		else this.set_u32("last_prod", getGameTime());
 		if (getGameTime() % (15 * getTicksASecond()) == this.get_u8(unique_prop))PickupOverlap(this);
 	}
 
@@ -200,7 +201,7 @@ void spawnMetal(CBlob@ this)
 
 void ResetTimer(CBlob@ this)
 {
-	this.set_u32("last_prod", getGameTime()); // TODO: probably do high maths to calculate time to next prod
+	this.set_u32("last_prod", getGameTime());
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
