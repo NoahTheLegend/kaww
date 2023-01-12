@@ -229,7 +229,7 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (!(isClient() && isServer()) && getGameTime() < 60*30)
+	if (!(isClient() && isServer()) && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
 	{
 		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
 		return; // turn engines off!
@@ -358,10 +358,10 @@ void onTick(CBlob@ this)
 	}
 
 
-	this.set_s32("engine_RPMtarget", Maths::Clamp(this.get_s32("engine_RPMtarget"), 0, 30000) );
+	this.set_f32("engine_RPMtarget", Maths::Clamp(this.get_f32("engine_RPMtarget"), 0, 30000) );
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");
-	if (ap !is null && this.get_s32("engine_RPMtarget") > this.get_f32("engine_RPM"))
+	if (ap !is null && this.get_f32("engine_RPMtarget") > this.get_f32("engine_RPM"))
 	{
 		if (ap.getOccupied() is null) this.set_f32("engine_RPMtarget", 0); // turn engine off
 		f32 custom_add = this.get_f32("add_gas_intake");
@@ -844,7 +844,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.getName() == "grenade") return damage * 2.5;
  	
-	if (isClient() && customData == Hitters::builder)
+	if (isClient() && customData == Hitters::builder && hitterBlob.getName() == "slave")
 	{
 		this.getSprite().PlaySound("dig_stone.ogg", 1.0f, (0.975f - (this.getMass()*0.000075f))-(XORRandom(11)*0.01f));
 	}
@@ -856,9 +856,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
 
+	if (armorRating >= 3 && customData == Hitters::sword) return 0;
+
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
-		return damage * (2.25f-(armorRating*0.5f));
+		return damage * ((this.hasTag("apc") ? 4.0f : 5.0f)-(armorRating*0.75f));
 	}
 
 	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor

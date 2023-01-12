@@ -79,7 +79,7 @@ void onTick(CBlob@ this)
 		
 		if (getKnocked(holder) <= 0)
 		{		
-			if (point.isKeyJustPressed(key_action1))
+			if (point.isKeyPressed(key_action1))
 			{
 				u8 team = holder.getTeamNum();
 				
@@ -109,6 +109,10 @@ void onTick(CBlob@ this)
 									else if (blob.hasTag("structure"))
 									{
 										repair_amount *= 20;
+									}
+									else if (blob.hasTag("vehicle"))
+									{
+										repair_amount *= 2;
 									}
 
 									if (blob.getHealth() + repair_amount <= blob.getInitialHealth())

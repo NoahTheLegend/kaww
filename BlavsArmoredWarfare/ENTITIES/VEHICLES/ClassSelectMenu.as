@@ -103,7 +103,7 @@ void addClassesToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 				}
 			}
 
-			if (level > -1 + i)
+			if ((isClient() && isServer()) || level > -1 + i)
 			{
 				PlayerClass @pclass = classes[i];
 

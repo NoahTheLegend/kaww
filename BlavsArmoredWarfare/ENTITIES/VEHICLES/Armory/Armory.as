@@ -16,7 +16,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 
 	Vehicle_Setup(this,
-	              3750.0f, // move speed  //103
+	              4500.0f, // move speed  //103
 	              0.4f,  // turn speed
 	              Vec2f(0.0f, 0.57f), // jump out velocity
 	              true  // inventory access
@@ -135,7 +135,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 
 		s.customButton = true;
 
@@ -274,7 +274,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (blob !is null)
 	{
-		if (blob.hasTag("material") && !blob.isAttached() && !blob.isInInventory())
+		if (blob.hasTag("material") && !blob.hasTag("no_armory_pickup") && !blob.isAttached() && !blob.isInInventory())
 		{
 			if (isServer()) this.server_PutInInventory(blob);
 			else this.getSprite().PlaySound("BridgeOpen.ogg", 1.0f);

@@ -48,6 +48,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("aerial");
 	this.Tag("wooden");
+	this.Tag("plane");
 	this.Tag("pass_bullet");
 	
 	CSprite@ sprite = this.getSprite();
@@ -90,7 +91,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
 			if (proj !is null)
+			{
 				proj.server_SetTimeToDie(3.0);
+				proj.Tag("plane_bullet");
+			}
 
 			CInventory@ inv = this.getInventory();
 			if (inv !is null)
@@ -139,7 +143,7 @@ void onTick(CBlob@ this)
 		
 			bool pressed_w = ap_pilot.isKeyPressed(key_up);
 			bool pressed_s = ap_pilot.isKeyPressed(key_down);
-			bool pressed_lm = ap_pilot.isKeyPressed(key_action1);
+			bool pressed_lm = ap_pilot.isKeyPressed(key_action1) && !this.isOnGround();
 
 			//if (this.getTickSinceCreated() == 5*30)
 			//{
@@ -549,11 +553,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.getName() == "missile_javelin")
 	{
-		return damage * 0.75f;
+		return damage * 1.0f;
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
-		return damage *= 0.6f;
+		if (hitterBlob.hasTag("plane_bullet")) return damage * 0.25f;
+		return damage * (hitterBlob.hasTag("strong") ? 0.85f : 0.65f);
 	}
 	return damage;
 }
