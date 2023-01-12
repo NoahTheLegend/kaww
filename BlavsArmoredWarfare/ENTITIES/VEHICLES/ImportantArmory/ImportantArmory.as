@@ -15,6 +15,10 @@ void onInit(CBlob@ this)
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
 	this.set_u16("extra_no_heal", 15);
+	if (isServer())
+	{
+		if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), 0);
+	}
 
 	Vehicle_Setup(this,
 	              5000.0f, // move speed  //103

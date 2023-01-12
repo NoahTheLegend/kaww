@@ -163,9 +163,19 @@ void onTick(CBlob@ this)
     	    AttachmentPoint@ ap = tur.getAttachments().getAttachmentPointByName("BOW");
     	    if (ap !is null && ap.getOccupied() is null)
     	    {
+				tur.Tag("has machinegun");
 				tur.server_AttachTo(this, ap);
 			}
     	}
+	}
+
+	if (isClient() && this.isAttached())
+	{
+		CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
+		if (cage !is null)
+		{
+			cage.SetVisible(false);
+		}
 	}
 
 	VehicleInfo@ v;
