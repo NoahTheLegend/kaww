@@ -617,7 +617,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
-		return damage * (hitterBlob.hasTag("strong") ? 0.75f : 0.5f);
+		if (hitterBlob.hasTag("plane_bullet")) return damage * 0.25f;
+		else if (hitterBlob.getName() == "bulletheavy") return damage * 0.75f;
+		return damage * (hitterBlob.hasTag("strong") ? 1.0f : 0.65f);
 	}
 	return damage;
 }
