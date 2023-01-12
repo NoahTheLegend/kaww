@@ -377,6 +377,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (hitterBlob.getTeamNum() == this.getTeamNum())
+	{
+		if (isServer())
+		{
+			if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), getGameTime()+150);
+		}
+	}
 	if (hitterBlob.getName() == "missile_javelin" || hitterBlob.getName() == "ballista_bolt")
 	{
 		return damage * 1.25f;
