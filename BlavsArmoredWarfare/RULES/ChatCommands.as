@@ -111,6 +111,13 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 						b.server_SetQuantity(parseInt(sub[1]));
 					}
 				}
+				else if (sub.length > 2 && sub[0] == "!spawn")
+				{
+					for (u32 i = 0; i < parseInt(sub[2]); i++)
+					{
+						server_CreateBlob(sub[1]);
+					}
+				}
 			}
 		}
 		if (text_in == "!bot")
