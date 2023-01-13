@@ -94,6 +94,7 @@ void onInit(CBlob@ this)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
+	attached.Tag("mgunner");
 	if (!attached.hasTag("has machinegun")) return;
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
 	if (cage !is null)
@@ -104,6 +105,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
+	detached.Untag("mgunner");
 	if (this.isAttached()) return;
 
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");

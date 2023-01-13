@@ -166,7 +166,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return damage*0.05f;
 		else if (customData == Hitters::arrow)
 			return damage*0.5f;
-		else return 0;
+		else return (customData == Hitters::sword ? this.hasTag("mgunner") ? damage : 0 : 0);
 	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.getName() == "grenade")
 	{
