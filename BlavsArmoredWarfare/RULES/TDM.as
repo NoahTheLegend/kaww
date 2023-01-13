@@ -113,6 +113,8 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 								server_DropCoins(players[i].getPosition(), 30);
 							}
 							
+							//testingprint
+							print("gave 50 for winning team");
 							getRules().add_u32(player.getUsername() + "_exp", 50);							
 						}
 					}
@@ -692,6 +694,9 @@ shared class TDMCore : RulesCore
 					rules.Sync("red_kills", true);
 				}
 
+				//testingprint
+				print("player died");
+
 				// give exp
 				int exp_reward = 5+XORRandom(6); // 5 - 10
 				if (rules.get_string(killer.getUsername() + "_perk") == "Death Incarnate")
@@ -699,6 +704,8 @@ shared class TDMCore : RulesCore
 					exp_reward *= 3; // 10 - 20
 				}
 				rules.add_u32(killer.getUsername() + "_exp", exp_reward);
+
+				//testingprint
 				print(killer.getUsername() + "_exp given");
 
 				CheckRankUps(rules, // do reward coins and sfx
@@ -1192,10 +1199,17 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
 	if (cfg_playerexp.exists(player.getUsername()))
     {
+		
 		this.set_u32(player.getUsername() + "_exp", cfg_playerexp.read_u32(player.getUsername()));
+
+		//testingprint
+		print(player.getUsername() + "---joined " + cfg_playerexp.read_u32(player.getUsername()));
 	}
 	else{
 		this.set_u32(player.getUsername() + "_exp", 0);
+
+		//testingprint
+		print(player.getUsername() + "---joined no exp " + 0);
 	}
 
 	float exp = this.get_u32(player.getUsername() + "_exp");

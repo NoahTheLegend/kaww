@@ -269,29 +269,25 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		// on change perk
 		case SpawnCmd::changePerk:
 		{
-			if (getNet().isServer())
+			// build menu for them
+			CBlob@ caller = getBlobByNetworkID(params.read_u16());
+
+			string perkconfig = params.read_string();
+
+			if (caller !is null)
 			{
-				// build menu for them
-				CBlob@ caller = getBlobByNetworkID(params.read_u16());
-
-				if (caller !is null)
+				if (getNet().isServer())
 				{
-					string perkconfig = params.read_string();
-
 					getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
+				}
 
-					if (caller.isMyPlayer())
-					{
-						// its on server !
-						this.getSprite().PlaySound("/SwitchPerk", 1.0, perkconfig == "No Ammo" ? 0.5 : 1.1);
+				if (caller.isMyPlayer())
+				{
+					// its on server !
+					this.getSprite().PlaySound("/SwitchPerk", 1.0, perkconfig == "No Ammo" ? 0.8 : 1.1);
 
-						// chat message
-						client_AddToChat("Perk switched to " + perkconfig, SColor(255, 42, 42, 42));
-					}
-
-					
-					//CBlob @newBlob = server_CreateBlob(classconfig, caller.getTeamNum(), this.getRespawnPosition());
-
+					// chat message
+					client_AddToChat("Perk switched to " + perkconfig, SColor(255, 42, 42, 42));
 				}
 			}
 		}
