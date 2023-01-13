@@ -427,6 +427,8 @@ class PNGLoader
 			case map_colors::red_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, 1); break;
 			case map_colors::red_bf109:        autotile(offset); spawnVehicle(map, "bf109",   offset, 1); break;
 			case map_colors::red_uh1:          autotile(offset); spawnVehicle(map, "uh1",   offset, 1); break;
+			case map_colors::blue_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, 0); break;
+			case map_colors::red_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, 1); break;
 			case map_colors::blue_armory:          autotile(offset); spawnVehicle(map, "armory",   offset, 0); break;
 			case map_colors::red_armory:          autotile(offset); spawnVehicle(map, "armory",   offset, 1); break;
 			case map_colors::blue_iarmory:          autotile(offset); spawnVehicle(map, "importantarmory",   offset, 0); break;
