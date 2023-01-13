@@ -1144,7 +1144,7 @@ void onTick(CRules@ this)
 			}
 			checked.push_back(hashes[i]);
 		}
-		if (duplicates > 0) printf("DUPLICATES OF "+hashes[i]+": "+duplicates);
+		if (duplicates > 25) printf("DUPLICATES OF "+hashes[i]+": "+duplicates);
 	}
 	string[] empty;
 	hashes = empty;
