@@ -676,25 +676,12 @@ shared class TDMCore : RulesCore
 
 	void onPlayerDie(CPlayer@ victim, CPlayer@ killer, u8 customData)
     {
-		if (isClient())
-		{
-			print("is client die");
-		}
-		else
-		{
-			print("is server die");
-		}
-
         if (!rules.isMatchRunning() && !all_death_counts_as_kill) return;
-
-		print(".1");
 
         if (victim !is null)
         {
             if (killer !is null && killer.getTeamNum() != victim.getTeamNum())
             {
-				print(".2");
-
                 addKill(killer.getTeamNum()); 
 				if (victim.getTeamNum() == 1)
 				{
@@ -706,28 +693,6 @@ shared class TDMCore : RulesCore
 					rules.add_u16("red_kills", 1);
 					rules.Sync("red_kills", true);
 				}
-
-				//testingprint
-				print("player died");
-
-				// give exp
-				int exp_reward = 5+XORRandom(6); // 5 - 10
-				if (rules.get_string(killer.getUsername() + "_perk") == "Death Incarnate")
-				{
-					exp_reward *= 3; // 10 - 20
-				}
-				rules.add_u32(killer.getUsername() + "_exp", exp_reward);
-
-				//testingprint
-				print(killer.getUsername() + "_exp given");
-
-				CheckRankUps(rules, // do reward coins and sfx
-							rules.get_u32(killer.getUsername() + "_exp"), // player new exp
-							killer);	
-
-				//rules.set_string(player.getUsername() + "_last_lvlup", rank);
-
-				//print("exp: "+rules.get_u32(killer.getUsername() + "_exp"));
 			}
             else if (all_death_counts_as_kill)
             {
@@ -1188,7 +1153,7 @@ void Reset(CRules@ this)
 void onRestart(CRules@ this)
 {
 	Reset(this);
-}join
+}
 
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
