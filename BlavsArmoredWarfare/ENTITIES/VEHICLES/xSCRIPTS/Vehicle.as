@@ -842,7 +842,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage*2;
 	}
-	else if (hitterBlob.getName() == "grenade") return damage * 2.5;
+	else if (hitterBlob.getName() == "grenade") return damage * (1.25+XORRandom(10)*0.01f);
  	
 	if (isClient() && customData == Hitters::builder && hitterBlob.getName() == "slave")
 	{
