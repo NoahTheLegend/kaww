@@ -106,16 +106,6 @@ void onTick(CBlob@ this)
 		return;
 	}
 
-	if (this.get_u8("hitmarker") > 0)
-	{
-		this.set_u8("hitmarker", this.get_u8("hitmarker")-1);
-
-		if (this.get_u8("hitmarker") == 20)
-		{
-			this.set_u8("hitmarker", 0);
-		}
-	}
-
 	// activate/throw
 	if (ismyplayer)
 	{
