@@ -842,7 +842,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage*2;
 	}
-	else if (hitterBlob.getName() == "grenade") return damage * (1.25+XORRandom(10)*0.01f);
  	
 	if (isClient() && customData == Hitters::builder && hitterBlob.getName() == "slave")
 	{
@@ -855,6 +854,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	s8 armorRating = this.get_s8(armorRatingString);
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
+
+	if (hitterBlob.getName() == "grenade") return (this.getName() == "maus" || armorRating > 4 ? damage*0.5f : damage * (1.25+XORRandom(10)*0.01f));
 
 	if (armorRating >= 3 && customData == Hitters::sword) return 0;
 

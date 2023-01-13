@@ -15,7 +15,7 @@ enum State
 void onInit(CBlob@ this)
 {
 	this.set_s8(penRatingString, 4);
-	this.set_f32(projExplosionRadiusString, 96.0f);
+	this.set_f32(projExplosionRadiusString, 80.0f);
 	this.set_f32(projExplosionDamageString, 18.0f);
 
 	this.set_bool("map_damage_raycast", true);
