@@ -446,14 +446,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			if (getRules().get_string(p.getUsername() + "_perk") == "Sharp Shooter")
 			{
 				reloadTime = infantry.reload_time * 2;
-				if (isClient())
-				{
-					print("c");
-				}
-				else
-				{
-					print("s");
-				}
 			}
 		}
 		

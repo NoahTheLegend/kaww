@@ -1,4 +1,3 @@
-//#include "Equipment.as"
 #include "ClassSelectMenu.as"
 #include "KnockedCommon.as"
 
