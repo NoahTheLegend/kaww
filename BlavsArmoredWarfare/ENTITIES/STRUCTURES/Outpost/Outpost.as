@@ -87,6 +87,12 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	}
 }
 
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (hitterBlob.getTeamNum() == this.getTeamNum()) return damage / 4.0f;
+	return damage;
+}
+
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	onRespawnCommand(this, cmd, params);
