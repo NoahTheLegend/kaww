@@ -7,10 +7,8 @@ CPlayer@ hoveredPlayer;
 Vec2f hoveredPos;
 
 int hovered_accolade = -1;
-int hovered_age = -1;
 int hovered_tier = -1;
 int hovered_rank = -1;
-bool draw_age = false;
 bool draw_tier = false;
 
 float scoreboardMargin = 52.0f;
@@ -20,35 +18,6 @@ float maxMenuWidth = 700;
 float screenMidX = getScreenWidth()/2;
 
 bool mouseWasPressed2 = false;
-
-string[] age_description = {
-	"New Player - Welcome them to the game!",
-	//first month
-	"This player has 1 to 2 weeks of experience",
-	"This player has 2 to 3 weeks of experience",
-	"This player has 3 to 4 weeks of experience",
-	//first year
-	"This player has 1 to 2 months of experience",
-	"This player has 2 to 3 months of experience",
-	"This player has 3 to 6 months of experience",
-	"This player has 6 to 9 months of experience",
-	"This player has 9 to 12 months of experience",
-	//cake day
-	"Cake Day - it's this player's KAG Birthday!",
-	//(gap in the sheet)
-	"", "", "", "", "", "",
-	//established player
-	"This player has 1 year of experience",
-	"This player has 2 years of experience",
-	"This player has 3 years of experience",
-	"This player has 4 years of experience",
-	"This player has 5 years of experience",
-	"This player has 6 years of experience",
-	"This player has 7 years of experience",
-	"This player has 8 years of experience",
-	"This player has 9 years of experience",
-	"This player has over a decade of experience"
-};
 
 string[] tier_description = {
 	"", //f2p players, no description
@@ -88,15 +57,6 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	topleft.y += stepheight * 2;
 
 	const int accolades_start = 770;
-	const int age_start = accolades_start + 80;
-
-	draw_age = false;
-	for(int i = 0; i < players.length; i++) {
-		if (players[i].getRegistrationTime() > 0) {
-			draw_age = true;
-			break;
-		}
-	}
 
 	draw_tier = false;
 	for(int i = 0; i < players.length; i++) {
@@ -106,7 +66,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		}
 	}
 
-	const int tier_start = (draw_age ? age_start : accolades_start) + 70;
+	const int tier_start = (accolades_start) + 70;
 
 	//draw player table header
 	GUI::DrawText(getTranslatedString("Player"), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
@@ -118,10 +78,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 50, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Accolades"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 100, topleft.y), SColor(0xffffffff));
-	if(draw_age)
-	{
-		GUI::DrawText(getTranslatedString("Age"), Vec2f(bottomright.x - age_start, topleft.y), SColor(0xffffffff));
-	}
+
 	if(draw_tier)
 	{
 		GUI::DrawText(getTranslatedString("Tier"), Vec2f(bottomright.x - tier_start, topleft.y), SColor(0xffffffff));
@@ -271,124 +228,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			//draw name alone
 			GUI::DrawText(playername, topleft + Vec2f(name_buffer, 0), namecolour);
 		}
-
-		//draw account age indicator
-		if (draw_age)
-		{
-			int regtime = p.getRegistrationTime();
-			if (regtime > 0)
-			{
-				int reg_month = Time_Month(regtime);
-				int reg_day = Time_MonthDate(regtime);
-				int reg_year = Time_Year(regtime);
-
-				int days = Time_DaysSince(regtime);
-
-				int age_icon_start = 32;
-				int icon = 0;
-				//less than a month?
-				if (days < 28)
-				{
-					int week = days / 7;
-					icon = week;
-				}
-				else
-				{
-					//we use 30 day "months" here
-					//for simplicity and consistency of badge allocation
-					int months = days / 30;
-					if (months < 12)
-					{
-						switch(months) {
-							case 0:
-							case 1:
-								icon = 0;
-								break;
-							case 2:
-								icon = 1;
-								break;
-							case 3:
-							case 4:
-							case 5:
-								icon = 2;
-								break;
-							case 6:
-							case 7:
-							case 8:
-								icon = 3;
-								break;
-							case 9:
-							case 10:
-							case 11:
-							default:
-								icon = 4;
-								break;
-						}
-						icon += 4;
-					}
-					else
-					{
-						//figure out birthday
-						int month_delta = Time_Month() - reg_month;
-						int day_delta = Time_MonthDate() - reg_day;
-						int birthday_delta = -1;
-
-						if (month_delta < 0 || month_delta == 0 && day_delta < 0)
-						{
-							birthday_delta = -1;
-						}
-						else if (month_delta == 0 && day_delta == 0)
-						{
-							birthday_delta = 0;
-						}
-						else
-						{
-							birthday_delta = 1;
-						}
-
-						//check if its cake day
-						if (birthday_delta == 0)
-						{
-							icon = 9;
-						}
-						else
-						{
-							//check if we're in the extra "remainder" days from using 30 month days
-							if(days < 366)
-							{
-								//(9 months badge still)
-								icon = 8;
-							}
-							else
-							{
-								//years delta
-								icon = (Time_Year() - reg_year) - 1;
-								//before or after birthday?
-								if (birthday_delta == -1)
-								{
-									icon -= 1;
-								}
-								//ensure sane
-								icon = Maths::Clamp(icon, 0, 9);
-								//shift line
-								icon += 16;
-							}
-						}
-					}
-				}
-
-				float x = bottomright.x - age_start + 8;
-				float extra = 8;
-				GUI::DrawIcon("AccoladeBadges", age_icon_start + icon, Vec2f(16, 16), Vec2f(x, topleft.y), 0.5f, p.getTeamNum());
-
-				if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
-				{
-					hovered_age = icon;
-				}
-			}
-
-		}
-
+	
 		float exp = 0;
 		// load exp
 		if (p !is null)
@@ -632,7 +472,6 @@ void onRenderScoreboard(CRules@ this)
 
 	//(reset)
 	hovered_accolade = -1;
-	hovered_age = -1;
 	hovered_tier = -1;
 	hovered_rank = -1;
 
@@ -711,18 +550,16 @@ void onRenderScoreboard(CRules@ this)
 
 	drawPlayerCard(hoveredPlayer, hoveredPos);
 
-	drawHoverExplanation(hovered_accolade, hovered_age, hovered_tier, hovered_rank, Vec2f(getScreenWidth() * 0.5, topleft.y));
+	drawHoverExplanation(hovered_accolade, hovered_tier, hovered_rank, Vec2f(getScreenWidth() * 0.5, topleft.y));
 
 	mouseWasPressed2 = controls.mousePressed2; 
 }
 
-void drawHoverExplanation(int hovered_accolade, int hovered_age, int hovered_tier, int hovered_rank, Vec2f centre_top)
+void drawHoverExplanation(int hovered_accolade, int hovered_tier, int hovered_rank, Vec2f centre_top)
 {
 	if( //(invalid/"unset" hover)
 		(hovered_accolade < 0
 		 || hovered_accolade >= accolade_description.length) &&
-		(hovered_age < 0
-		 || hovered_age >= age_description.length) &&
 		(hovered_tier < 0
 		 || hovered_tier >= tier_description.length) &&
 		(hovered_rank < 0
@@ -734,11 +571,9 @@ void drawHoverExplanation(int hovered_accolade, int hovered_age, int hovered_tie
 	string desc = getTranslatedString(
 		(hovered_accolade >= 0) ?
 			accolade_description[hovered_accolade] :
-			(hovered_age >= 0) ?
-				age_description[hovered_age] :
-				(hovered_rank >= 0) ?
-					RANKS[hovered_rank] :
-					tier_description[hovered_tier]
+			(hovered_rank >= 0) ?
+				RANKS[hovered_rank] :
+				tier_description[hovered_tier]
 	);
 
 	Vec2f size(0, 0);
