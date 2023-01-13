@@ -113,10 +113,12 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
 	{
 		exp = getRules().get_u32(blob.getPlayer().getUsername() + "_exp");
 
-		if (getGameTime() % 30 == 0) print(blob.getPlayer().getUsername() + "1 " + exp);
+		//testingprint
+		if (getGameTime() % 40 == 0) print(blob.getPlayer().getUsername() + "1 " + exp);
 	}
 
-	if (getGameTime() % 30 == 0) print("2 " + exp);
+	//testingprint
+	if (getGameTime() % 40 == 0) print("2 " + exp);
 	
 
 	int level = 1;
