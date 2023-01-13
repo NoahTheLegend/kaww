@@ -676,12 +676,25 @@ shared class TDMCore : RulesCore
 
 	void onPlayerDie(CPlayer@ victim, CPlayer@ killer, u8 customData)
     {
+		if (isClient())
+		{
+			print("is client die");
+		}
+		else
+		{
+			print("is server die");
+		}
+
         if (!rules.isMatchRunning() && !all_death_counts_as_kill) return;
+
+		print(".1");
 
         if (victim !is null)
         {
             if (killer !is null && killer.getTeamNum() != victim.getTeamNum())
             {
+				print(".2");
+
                 addKill(killer.getTeamNum()); 
 				if (victim.getTeamNum() == 1)
 				{
@@ -1175,7 +1188,7 @@ void Reset(CRules@ this)
 void onRestart(CRules@ this)
 {
 	Reset(this);
-}
+}join
 
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
