@@ -47,7 +47,7 @@ void onTick(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (blob.hasTag("projectile"))
+	if (blob.hasTag("projectile") && blob.getTickSinceCreated() > 1)
 	{
 		return true;
 	}
