@@ -147,7 +147,7 @@ void onTick(CBlob@ this)
 
 	launcherFrame = 0; // grabbed, no green ping
 
-	if (bestBlobNetID != 0) //start locking onto valid target
+	if (bestBlobNetID != 0 && ownerBlob.isMyPlayer()) //start locking onto valid target
 	{
 		CBlob@ bestBlob = getBlobByNetworkID(bestBlobNetID);
 		if (bestBlob != null)
@@ -213,7 +213,7 @@ void onTick(CBlob@ this)
 	if (draw_robotech) makeTargetSquare(robotechPos, 0, Vec2f(3.0f, 3.0f), 3.0f, 1.0f, greenConsoleColor); // turnpoint
 	
 	CBlob@ targetBlob = getBlobByNetworkID(curTargetNetID);
-	if (curTargetNetID == 0 || targetBlob == null && ownerBlob.isMyPlayer())
+	if ((curTargetNetID == 0 || targetBlob == null) && ownerBlob.isMyPlayer())
 	{
 		makeTargetSquare(ownerAimpos, 0, Vec2f(28.0f, 20.0f), 2.0f, 1.0f, greenConsoleColor);
 	}
