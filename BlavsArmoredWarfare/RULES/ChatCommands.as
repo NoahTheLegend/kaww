@@ -113,6 +113,10 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 				}
 			}
 		}
+		if (text_in == "!xp")
+		{
+			//xp
+		}
 		if (text_in == "!bot")
 		{
 			AddBot("Henry");
@@ -338,6 +342,11 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 				{
 					int money = parseInt(tokens[1]);
 					player.server_setCoins(money);
+				}
+				else if(tokens[0] == "!xp")
+				{
+					int xp = parseInt(tokens[1]);
+					getRules().set_u32(player.getUsername() + "_exp", 0);
 				}
 			}
 			else
