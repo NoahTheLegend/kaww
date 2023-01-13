@@ -1188,7 +1188,7 @@ void Reset(CRules@ this)
 void onRestart(CRules@ this)
 {
 	Reset(this);
-}join
+}
 
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
