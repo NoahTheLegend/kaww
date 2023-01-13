@@ -87,37 +87,7 @@ string getRankName(u32 level)
 
 void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
 {    
-    if (isClient())
-    {
-        print("check rank ups (client)");
-    }
-    else
-    {
-        print("check rank ups (server)");
-    }
-
     if (player is null) return;
-    
-    string[] RANKS = {"Recruit",              // new player
-                        "Private",
-                        "Gefreiter",
-                        "Corporal",
-                        "Master Corporal",      // unlock anti-tank -- takes about 100 kills total
-                        "Sergeant",             // unlock mp5 -- takes about 300 kills total
-                        "Staff Sergeant",       // +160 kills
-                        "Master Sergeant",      // +130 kills
-                        "First Sergeant",           // undeveloped yet ...
-                        "Sergeant-Major",           // unlock death incarnate -- grows exponentially
-                        "Warrant Officer 1",
-                        "Warrant Officer 2",
-                        "Warrant Officer 3",
-                        "Warrant Officer 4",
-                        "Third Lieutenant",
-                        "Second Lieutenant",
-                        "First Lieutenant",
-                        "Captain",
-                        "Major"
-                        };
 
     int level = 1;
     string rank = RANKS[0];
@@ -127,7 +97,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
         // Calculate the exp required to reach each level
         for (int i = 1; i <= RANKS.length; i++)
         {
-            if (exp >= getExpToNextLevelShared(i - 0))
+            if (exp >= getExpToNextLevel(i - 0))
             {
                 level = i + 1;
                 rank = RANKS[Maths::Min(i, RANKS.length)];
@@ -138,9 +108,6 @@ void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
             }
         }
     }
-    
-
-
 	
     string oldrank = "Na";
     if (rules.get_string(player.getUsername() + "_last_lvlup") != "")
@@ -190,26 +157,4 @@ void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
         // adjust to the current level
         rules.set_string(player.getUsername() + "_last_lvlup", rank);
     }
-}
-
-// Calculate the exp required to reach the next level
-shared int getExpToNextLevelShared(u32 level)
-{
-    int mod = ROUNDER;
-    if (level > 4)
-    {
-        mod = ROUNDER2;
-    }
-
-    float mod_plateau = PLATEAU;
-    if (level > 6)
-    {
-       mod_plateau *= 0.76f;
-    }
-    else if (level > 5)
-    {
-        mod_plateau *= 0.85f;
-    }
-    
-    return int(Maths::Round(LEVEL_2_EXP * Maths::Pow(EXP_MULTIPLIER * mod_plateau, level - 1) / mod) * mod);
 }

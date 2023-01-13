@@ -111,11 +111,14 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 							if (players[i] !is null)
 							{
 								server_DropCoins(players[i].getPosition(), 30);
-							}
-							
-							//testingprint
-							print("gave 50 for winning team");
-							getRules().add_u32(player.getUsername() + "_exp", 50);							
+
+								getRules().add_u32(player.getUsername() + "_exp", 50);	
+								getRules().Sync(player.getUsername() + "_exp", true);
+
+								CheckRankUps(getRules(), // do reward coins and sfx
+											getRules().get_u32(player.getUsername() + "_exp"), // player new exp
+											player);				
+							}		
 						}
 					}
 				}
@@ -983,9 +986,14 @@ shared class TDMCore : RulesCore
 								if (players[i] !is null)
 								{
 									server_DropCoins(players[i].getPosition(), 30);
-								}
-								
-								getRules().add_u32(player.getUsername() + "_exp", 50);							
+
+									getRules().add_u32(player.getUsername() + "_exp", 50);	
+									getRules().Sync(player.getUsername() + "_exp", true);
+
+									CheckRankUps(getRules(), // do reward coins and sfx
+												getRules().get_u32(player.getUsername() + "_exp"), // player new exp
+												player);	
+								}						
 							}
 						}
 					}
@@ -1177,17 +1185,10 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
 	if (cfg_playerexp.exists(player.getUsername()))
     {
-		
 		this.set_u32(player.getUsername() + "_exp", cfg_playerexp.read_u32(player.getUsername()));
-
-		//testingprint
-		print(player.getUsername() + "---joined " + cfg_playerexp.read_u32(player.getUsername()));
 	}
 	else{
 		this.set_u32(player.getUsername() + "_exp", 0);
-
-		//testingprint
-		print(player.getUsername() + "---joined no exp " + 0);
 	}
 
 	float exp = this.get_u32(player.getUsername() + "_exp");

@@ -112,14 +112,7 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
 	if (blob.getPlayer() !is null)
 	{
 		exp = getRules().get_u32(blob.getPlayer().getUsername() + "_exp");
-
-		//testingprint
-		if (getGameTime() % 40 == 0) print(blob.getPlayer().getUsername() + "1 " + exp);
 	}
-
-	//testingprint
-	if (getGameTime() % 40 == 0) print("2 " + exp);
-	
 
 	int level = 1;
 	string rank = RANKS[0];
@@ -140,12 +133,8 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
     }
 	
 	float next_rank = getExpToNextLevel(level);
-
 	float previousrankexp = getExpToMyLevel(level);
-	
-	float expratio = (exp-previousrankexp) / (next_rank-previousrankexp); //next_rank
-
-	//getRules().set_u32("Yeti5000707" + "_exp", 0);
+	float expratio = (exp-previousrankexp) / (next_rank-previousrankexp);
 
 	GUI::DrawRectangle(Vec2f(xppos.x - dim.x + 2, xppos.y + 2), Vec2f(xppos.x + dim.x - 2, xppos.y + dim.y - 2), SColor(0x505bff33)); // background pane
 

@@ -279,7 +279,6 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				if (getNet().isServer())
 				{
 					getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
-					getRules().Sync(caller.getPlayer().getUsername() + "_exp", true);
 				}
 
 				if (caller.isMyPlayer())

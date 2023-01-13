@@ -346,7 +346,8 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 				else if(tokens[0] == "!xp")
 				{
 					int xp = parseInt(tokens[1]);
-					getRules().set_u32(player.getUsername() + "_exp", 0);
+					getRules().set_u32(player.getUsername() + "_exp", xp);
+					getRules().Sync(player.getUsername() + "_exp", true);	
 				}
 			}
 			else

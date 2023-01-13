@@ -298,9 +298,6 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 			{
 				if (killer.getTeamNum() != victim.getTeamNum())
 				{
-					//testingprint
-					print("player died");
-
 					// give exp
 					int exp_reward = 5+XORRandom(6); // 5 - 10
 					if (getRules().get_string(killer.getUsername() + "_perk") == "Death Incarnate")
@@ -309,9 +306,6 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 					}
 					getRules().add_u32(killer.getUsername() + "_exp", exp_reward);
 					getRules().Sync(killer.getUsername() + "_exp", true);
-
-					//testingprint
-					print(killer.getUsername() + "_exp given");
 
 					CheckRankUps(getRules(), // do reward coins and sfx
 								getRules().get_u32(killer.getUsername() + "_exp"), // player new exp
