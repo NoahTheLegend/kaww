@@ -126,11 +126,12 @@ void onInit(CBlob@ this)
 	this.addCommandID("shoot bullet");
 	this.getShape().getConsts().net_threshold_multiplier = 0.5f;
 
+	this.set_f32("stab damage", 1.0f);
+
 	if (this.getName() == "revolver")
 	{
 		this.set_u8("stab time", 16);
 		this.set_u8("stab timing", 13);
-		this.set_f32("stab damage", 1.5f);
 		this.Tag("no bulletgib on shot");
 	}
 	else if (this.getName() == "ranger")
