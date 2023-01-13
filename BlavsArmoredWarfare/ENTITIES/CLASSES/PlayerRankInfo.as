@@ -87,6 +87,15 @@ string getRankName(u32 level)
 
 shared void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
 {    
+    if (isClient())
+    {
+        print("check rank ups (client)");
+    }
+    else
+    {
+        print("check rank ups (server)");
+    }
+
     if (player is null) return;
     
     string[] RANKS = {"Recruit",              // new player
