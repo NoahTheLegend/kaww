@@ -1,3 +1,5 @@
+#include "PlayerRankInfo.as"
+
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
@@ -89,9 +91,14 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 							if (players[i] !is null)
 							{
 								server_DropCoins(players[i].getPosition(), 30);
-							}
-							
-							getRules().add_u32(player.getUsername() + "_exp", 50);				
+
+								getRules().add_u32(player.getUsername() + "_exp", 50);	
+								getRules().Sync(player.getUsername() + "_exp", true);	
+
+								CheckRankUps(getRules(), // do reward coins and sfx
+									getRules().get_u32(player.getUsername() + "_exp"), // player new exp
+									player);	
+							}		
 						}
 					}
 				}
