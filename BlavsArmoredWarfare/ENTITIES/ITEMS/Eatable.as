@@ -33,7 +33,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				if (heal_amount == 255)
 				{
 					theBlob.add_f32("heal amount", theBlob.getInitialHealth() - theBlob.getHealth());
-					theBlob.server_SetHealth(theBlob.getInitialHealth());
+					theBlob.server_Heal((theBlob.getInitialHealth()-theBlob.getHealth()));
 				}
 				else
 				{
