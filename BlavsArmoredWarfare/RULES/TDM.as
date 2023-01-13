@@ -1114,8 +1114,41 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 	}
 }
 
+string[] hashes = {};
+
+void onBlobCreated( CRules@ this, CBlob@ blob )
+{
+	if (blob !is null && !blob.hasTag("bullet"))
+	{
+		hashes.push_back(blob.getName());
+	}
+}
+
 void onTick(CRules@ this)
 {
+	string[] checked;
+	for (int i = 0; i < hashes.length; i++)
+	{
+		int duplicates = 0;
+		bool cont = false;
+		for (int k = 0; k < checked.length; k++)
+		{
+			if (checked[k]==hashes[i]) cont = true;
+		}
+		if (cont) continue;
+		for (int j = 0; j < hashes.length; j++)
+		{
+			if (hashes[i] == hashes[j])
+			{
+				duplicates++;
+			}
+			checked.push_back(hashes[i]);
+		}
+		if (duplicates > 0) printf("DUPLICATES OF "+hashes[i]+": "+duplicates);
+	}
+	string[] empty;
+	hashes = empty;
+
 	if (getGameTime() == 1)
 	{
 		if (this.get_s16("blueTickets") == 0 && this.get_s16("redTickets") == 0)
