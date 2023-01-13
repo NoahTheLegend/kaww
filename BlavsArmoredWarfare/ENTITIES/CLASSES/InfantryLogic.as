@@ -377,10 +377,13 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		u8 time = 21;
 		u8 timing = 13;
 		f32 damage = 0.85f;
+		bool no_medkit = true;
+		CBlob@ carried = this.getCarriedBlob();
+		if (carried !is null && carried.getName() == "medkit") no_medkit = false;
 		if (this.exists("stab time")) time = this.get_u8("stab time");
 		if (this.exists("stab timing")) timing = this.get_u8("stab timing");
 		if (this.exists("stab damage")) damage = this.get_f32("stab damage");
-		if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
+		if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime() && no_medkit)
 		{
 			this.set_u32("end_stabbing", getGameTime()+time);
 			this.Tag("attacking");

@@ -201,7 +201,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 	bool just_action1;
 	bool is_action1;
 
-		just_action1 = (this.get_bool("just_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyJustPressed(key_action1)); // binoculars thing
+	just_action1 = (this.get_bool("just_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyJustPressed(key_action1)); // binoculars thing
 	is_action1 = (this.get_bool("is_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyPressed(key_action1));
 	bool was_action1 = this.wasKeyPressed(key_action1);
 	bool hidegun = false;
@@ -212,8 +212,11 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 			hidegun = true;
 		}
 	}
-
-	if (this.isKeyJustPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
+	bool no_medkit = true;
+	CBlob@ carried = this.getCarriedBlob();
+	if (carried !is null && carried.getName() == "medkit") no_medkit = false;
+		
+	if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime() && no_medkit)
 	{
 		this.set_u32("end_stabbing", getGameTime()+21);
 		this.Tag("attacking");
