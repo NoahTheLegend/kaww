@@ -439,13 +439,16 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	}
 	else
 	{
+		print("1");
 		s16 reloadTime = infantry.reload_time;
 		CPlayer@ p = this.getPlayer();
 		if (p !is null)
 		{
+			print("2");
 			if (getRules().get_string(p.getUsername() + "_perk") == "Sharp Shooter")
 			{
 				reloadTime = infantry.reload_time * 2;
+				print("3");
 			}
 		}
 		
