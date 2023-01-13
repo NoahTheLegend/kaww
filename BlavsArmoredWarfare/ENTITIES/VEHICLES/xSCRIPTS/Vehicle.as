@@ -229,6 +229,19 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	if (isClient()&&getGameTime()%15==0)
+	{
+		CBlob@[] bushes;
+		if (getMap() !is null) getMap().getBlobsAtPosition(this.getPosition(), @bushes);
+		bool bush = false;
+		for (u16 i = 0; i < bushes.length; i++)
+		{
+			if (bushes[i] is null || bushes[i].getName() != "bush") continue;
+			else bush = true;
+		}
+		if (bush)
+			this.set_u32("disguise", getGameTime()+30);
+	}
 	if (!(isClient() && isServer()) && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
 	{
 		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
