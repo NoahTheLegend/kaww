@@ -85,7 +85,7 @@ string getRankName(u32 level)
     return RANKS[level - 1];
 }
 
-shared void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
+void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
 {    
     if (isClient())
     {
