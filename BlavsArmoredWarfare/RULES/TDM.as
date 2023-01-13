@@ -1191,6 +1191,7 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 	}
 
 	float exp = this.get_u32(player.getUsername() + "_exp");
+	this.Sync(player.getUsername() + "_exp", true);
 
 	string rank = RANKS[0];
 
