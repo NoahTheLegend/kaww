@@ -7,6 +7,7 @@ void onInit(CBlob@ this)
 
     this.Tag("destructable");
 	this.Tag("builder always hit");
+	this.Tag("bunker");
 
 	this.setPosition(this.getPosition()+Vec2f(0,8));
 

@@ -35,7 +35,7 @@ void onInit(CBlob@ this)
 		int[] frames = { 9, 10, 11 };
 		flag.animation.AddFrames(frames);
 		flag.SetRelativeZ(0.8f);
-		flag.SetOffset(Vec2f(8.0f, -4.0f));
+		flag.SetOffset(Vec2f(8.0f, 0.0f));
 		flag.SetAnimation("default");
 	}
 

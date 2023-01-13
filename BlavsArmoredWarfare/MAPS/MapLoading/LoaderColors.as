@@ -289,6 +289,9 @@ namespace map_colors
 		blue_uh1               = 0xff133899,
 		red_uh1                = 0xff113cce,
 
+		blue_outpost           = 0xffff6f98,
+		red_outpost            = 0xff980fff,
+
 		blue_armory            = 0xff0d6f98,
 		red_armory             = 0xff980f0d,
 		blue_iarmory           = 0xff0d6faa, // armory for break the truck gamemode

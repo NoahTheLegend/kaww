@@ -108,6 +108,7 @@ void onTick(CBlob@ this)
 		if (ap !is null && ap.isKeyJustPressed(key_action3))
 		{
 			CBitStream params;
+			params.write_bool(false);
 			this.SendCommand(this.getCommandID("activate"), params);
 		}
 	}
@@ -180,7 +181,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
     if (cmd == this.getCommandID("activate"))
     {
-        if (isServer())
+		bool is_ensure = params.read_bool();
+        if (isServer() && !is_ensure)
         {
     		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
             if (point is null){return;}
@@ -192,7 +194,19 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
                 this.Sync("exploding_2", true);
             }
         }
-		this.Tag("activated");
+		if (is_ensure) this.Tag("activated");
+		else
+		{
+			for (u8 i = 0; i < getPlayersCount(); i++) // make sure clients receive the command after receiving by server
+			{
+				CPlayer@ p = getPlayer(i);
+				if (p is null) continue;
+
+				CBitStream params;
+				params.write_bool(true);
+				this.server_SendCommandToPlayer(this.getCommandID("activate"), params, p);
+			}
+		}
 		if (!this.hasTag("no_pin")) 
 		{
 			this.Tag("no_pin");
