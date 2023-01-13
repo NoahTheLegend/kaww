@@ -377,10 +377,13 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		u8 time = 21;
 		u8 timing = 13;
 		f32 damage = 0.85f;
+		bool no_medkit = true;
+		CBlob@ carried = this.getCarriedBlob();
+		if (carried !is null && carried.getName() == "medkit") no_medkit = false;
 		if (this.exists("stab time")) time = this.get_u8("stab time");
 		if (this.exists("stab timing")) timing = this.get_u8("stab timing");
 		if (this.exists("stab damage")) damage = this.get_f32("stab damage");
-		if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
+		if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime() && no_medkit)
 		{
 			this.set_u32("end_stabbing", getGameTime()+time);
 			this.Tag("attacking");
@@ -455,11 +458,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			this.get_u32("no_reload") < getGameTime() &&
 			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
 		{
-			if (this.getName() == "mp5")
-			{
-				CBitStream params;
-				this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
-			}
 			this.set_u8("reloadqueue", 0);
 			this.Sync("reloadqueue", true);
 
@@ -470,6 +468,12 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				// actually reloading
 				reloadistrue = true;
 				charge_time = reloadTime;
+
+				if (this.getName() == "mp5")
+			{
+				CBitStream params;
+				this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
+			}
 
 				isReloading = true;
 				this.set_bool("isReloading", true);
@@ -923,6 +927,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 		}
 		
 		this.SendCommand(this.getCommandID("shoot bullet"), params);
+		this.Tag("no_more_shoot");
 	}
 
 	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
@@ -932,6 +937,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
+		this.Untag("no_more_shoot");
 		if (this is null || this.hasTag("dead")) return;
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;

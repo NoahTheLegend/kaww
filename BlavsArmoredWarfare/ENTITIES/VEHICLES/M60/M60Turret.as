@@ -94,7 +94,7 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(2.5f);
-			arm.SetOffset(Vec2f(-90.0f, -5.0f));
+			arm.SetOffset(Vec2f(-90.0f, -6.0f));
 		}
 	}
 
@@ -265,7 +265,8 @@ void onTick(CBlob@ this)
 		{
 			arm.ResetTransform();
 			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(this.isFacingLeft() ? -21.0f : -20.0f, this.isFacingLeft() ? -27.5f : -26.5f));
+			arm.SetOffset(Vec2f(this.isFacingLeft() ? -19.0f : -18.0f, this.isFacingLeft() ? -28.0f : -27.0f));
+			arm.SetRelativeZ(-50.0f);
 		}
 		
 		if (getNet().isClient())
