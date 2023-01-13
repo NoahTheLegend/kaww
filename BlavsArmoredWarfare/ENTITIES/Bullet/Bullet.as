@@ -343,6 +343,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
+	if (this.getTickSinceCreated() < 2 && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
+	{
+		return false;
+	}
+
 	if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("vehicle"))
 	{
 		this.IgnoreCollisionWhileOverlapped(blob, 10);
@@ -428,11 +433,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		//printf("velx "+velx);
 		//printf("vely "+vely);
 
-		return false;
-	}
-
-	if (this.getTickSinceCreated() < 2 && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
-	{
 		return false;
 	}
 
