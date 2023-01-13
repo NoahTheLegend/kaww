@@ -128,7 +128,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
             SetScreenFlash(17,   255,   255,   255,   2.2);
         }
         
-        if (blob !is null)
+        if (blob !is null && isServer())
         {
             // play sound
             blob.getSprite().PlaySound("LevelUp", 10.0f, 1.0f);
@@ -140,7 +140,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
             }
         }
 
-        if (isClient())
+        if (isServer()) //client
         {
             // chat message
             if (player.isMyPlayer()) {
