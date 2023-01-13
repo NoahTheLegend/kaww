@@ -32,6 +32,9 @@ void onRender(CSprite@ this)
 	if (g_videorecording) return;
 
 	CBlob@ blob = this.getBlob();
+	CPlayer@ local = getLocalPlayer();
+	if (local !is null && local.getTeamNum() != blob.getTeamNum())
+		if (blob.get_u32("disguise") > getGameTime()) return;
 
 	Vec2f center = blob.getPosition();
 	Vec2f mouseWorld = getControls().getMouseWorldPos();
