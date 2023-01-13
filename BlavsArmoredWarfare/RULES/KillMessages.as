@@ -308,6 +308,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 						exp_reward *= 3; // 10 - 20
 					}
 					getRules().add_u32(killer.getUsername() + "_exp", exp_reward);
+					getRules().Sync(killer.getUsername() + "_exp", true);
 
 					//testingprint
 					print(killer.getUsername() + "_exp given");
