@@ -4,9 +4,9 @@
 #include "TeamColour.as";
 #include "HoverMessage.as";
 #include "AssistCommon.as";
+#include "PlayerRankInfo.as";
 
 int fade_time = 350;
-
 
 class KillMessage
 {
@@ -294,7 +294,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 
 		if (killer !is null)
 		{
-			if (rules.isMatchRunning() && all_death_counts_as_kill)
+			if (getRules().isMatchRunning())
 			{
 				if (killer.getTeamNum() != victim.getTeamNum())
 				{
@@ -303,17 +303,17 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 
 					// give exp
 					int exp_reward = 5+XORRandom(6); // 5 - 10
-					if (rules.get_string(killer.getUsername() + "_perk") == "Death Incarnate")
+					if (getRules().get_string(killer.getUsername() + "_perk") == "Death Incarnate")
 					{
 						exp_reward *= 3; // 10 - 20
 					}
-					rules.add_u32(killer.getUsername() + "_exp", exp_reward);
+					getRules().add_u32(killer.getUsername() + "_exp", exp_reward);
 
 					//testingprint
 					print(killer.getUsername() + "_exp given");
 
-					CheckRankUps(rules, // do reward coins and sfx
-								rules.get_u32(killer.getUsername() + "_exp"), // player new exp
+					CheckRankUps(getRules(), // do reward coins and sfx
+								getRules().get_u32(killer.getUsername() + "_exp"), // player new exp
 								killer);	
 				}
 			}
