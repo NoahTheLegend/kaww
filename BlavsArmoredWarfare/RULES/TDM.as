@@ -93,37 +93,6 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			this.SetGlobalMessage( this.getTeam(1).getName() + " wins the game!" );
 			return true;
 		}
-
-		if (teamNum==0 || teamNum==1)
-		{
-			if (getPlayerCount() > 3)
-			{
-				CBlob@[] players;
-				getBlobsByTag("player", @players);
-				for (uint i = 0; i < players.length; i++)
-				{
-					CPlayer@ player = players[i].getPlayer();
-					if (player !is null)
-					{
-						if (player.getTeamNum() == teamNum)
-						{
-							// winning team
-							if (players[i] !is null)
-							{
-								server_DropCoins(players[i].getPosition(), 30);
-
-								getRules().add_u32(player.getUsername() + "_exp", 50);	
-								getRules().Sync(player.getUsername() + "_exp", true);
-
-								CheckRankUps(getRules(), // do reward coins and sfx
-											getRules().get_u32(player.getUsername() + "_exp"), // player new exp
-											player);				
-							}		
-						}
-					}
-				}
-			}
-		}
 	
 	return false;			//team not red or blue (probably spectator so dont want to check game over)
 }
@@ -971,34 +940,6 @@ shared class TDMCore : RulesCore
 
 			if (winteamIndex >= 0)
 			{
-				if (getPlayerCount() > 3)
-				{
-					CBlob@[] players;
-					getBlobsByTag("player", @players);
-					for (uint i = 0; i < players.length; i++)
-					{
-						CPlayer@ player = players[i].getPlayer();
-						if (player !is null)
-						{
-							if (player.getTeamNum() == winteamIndex)
-							{
-								// winning team
-								if (players[i] !is null)
-								{
-									server_DropCoins(players[i].getPosition(), 30);
-
-									getRules().add_u32(player.getUsername() + "_exp", 50);	
-									getRules().Sync(player.getUsername() + "_exp", true);
-
-									CheckRankUps(getRules(), // do reward coins and sfx
-												getRules().get_u32(player.getUsername() + "_exp"), // player new exp
-												player);	
-								}						
-							}
-						}
-					}
-				}
-
 				rules.SetTeamWon(winteamIndex);   //game over!
 				rules.SetCurrentState(GAME_OVER);
 				rules.SetGlobalMessage("{WINNING_TEAM} wins the round!");

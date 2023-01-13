@@ -85,8 +85,9 @@ string getRankName(u32 level)
     return RANKS[level - 1];
 }
 
-void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
+void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
 {    
+    CPlayer@ player = blob.getPlayer();
     if (player is null) return;
 
     int level = 1;
@@ -122,16 +123,22 @@ void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
     if (rank != oldrank) // means that we leveled up
     {
         // flash screen
-        if (player.getBlob().isMyPlayer())
+        if (player.isMyPlayer())
         {
-            SetScreenFlash(15,   255,   255,   255,   2.0);
+            SetScreenFlash(17,   255,   255,   255,   2.2);
         }
         
-        // coins
-        server_DropCoins(player.getBlob().getPosition(), 50);
+        if (blob !is null)
+        {
+            // play sound
+            blob.getSprite().PlaySound("LevelUp", 10.0f, 1.0f);
 
-        // play sound
-        player.getBlob().getSprite().PlaySound("LevelUp", 10.0f, 1.0f);
+            if (isServer())
+            {
+                // coins
+                server_DropCoins(blob.getPosition(), 50);
+            }
+        }
 
         if (isClient())
         {
@@ -143,17 +150,19 @@ void CheckRankUps(CRules@ rules, u32 exp, CPlayer@ player)
                 client_AddToChat(player.getCharacterName() + " has been promoted to " + rank.toLower() + "!", SColor(255, 50, 140, 20));
             }
             
-
-            // create floating rank
-            CParticle@ p = ParticleAnimated("Ranks", player.getBlob().getPosition() + Vec2f(8,-14), Vec2f(0,-0.9), 0.0f, 1.0f, 0, level - 1, Vec2f(32, 32), 0, 0, true);
-            if(p !is null)
+            if (blob !is null)
             {
-                p.collides = false;
-                p.Z = 1000;
-                p.timeout = 2; // this shit doesnt work
+                // create floating rank
+                CParticle@ p = ParticleAnimated("Ranks", blob.getPosition() + Vec2f(8,-14), Vec2f(0,-0.9), 0.0f, 1.0f, 0, level - 1, Vec2f(32, 32), 0, 0, true);
+                if(p !is null)
+                {
+                    p.collides = false;
+                    p.Z = 1000;
+                    p.timeout = 2; // this shit doesnt work
+                }
             }
         }
-
+        
         // adjust to the current level
         rules.set_string(player.getUsername() + "_last_lvlup", rank);
     }

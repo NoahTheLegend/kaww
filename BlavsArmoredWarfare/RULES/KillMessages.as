@@ -307,9 +307,11 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 					getRules().add_u32(killer.getUsername() + "_exp", exp_reward);
 					getRules().Sync(killer.getUsername() + "_exp", true);
 
+					CBlob@ killerblob = killer.getBlob();
+
 					CheckRankUps(getRules(), // do reward coins and sfx
 								getRules().get_u32(killer.getUsername() + "_exp"), // player new exp
-								killer);	
+								killer.getBlob());	
 				}
 			}
 
