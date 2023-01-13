@@ -294,6 +294,30 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 
 		if (killer !is null)
 		{
+			if (rules.isMatchRunning() && all_death_counts_as_kill)
+			{
+				if (killer.getTeamNum() != victim.getTeamNum())
+				{
+					//testingprint
+					print("player died");
+
+					// give exp
+					int exp_reward = 5+XORRandom(6); // 5 - 10
+					if (rules.get_string(killer.getUsername() + "_perk") == "Death Incarnate")
+					{
+						exp_reward *= 3; // 10 - 20
+					}
+					rules.add_u32(killer.getUsername() + "_exp", exp_reward);
+
+					//testingprint
+					print(killer.getUsername() + "_exp given");
+
+					CheckRankUps(rules, // do reward coins and sfx
+								rules.get_u32(killer.getUsername() + "_exp"), // player new exp
+								killer);	
+				}
+			}
+
 			CBlob@ killerblob = killer.getBlob();
 			CBlob@ victimblob = victim.getBlob();
 			CPlayer@ helper = getAssistPlayer(victim, killer);
