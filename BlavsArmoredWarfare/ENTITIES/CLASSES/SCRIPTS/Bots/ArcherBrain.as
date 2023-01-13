@@ -100,6 +100,7 @@ void onTick(CBrain@ this)
 			if ((XORRandom(100) < 10 && blob.get_u32("mag_bullets") == 0) || XORRandom(350) < 1) // completely out of ammo
 			{
 				blob.set_u8("reloadqueue", 5);
+				blob.Sync("reloadqueue", true);
 				//blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
 			}
 		}
