@@ -57,8 +57,6 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 	return 1;
 }
 
-
-
 shared bool isPlayersLeft(CRules@ this, int team){			//checks if spawning players or alive players
 
 	CBlob@[] team_blobs;
@@ -82,7 +80,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 0 ); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage( this.getTeam(0).getName() + " wins the game!" );
+			this.SetGlobalMessage( this.getTeam(0).getName() + " wins the game!\n\nWell done. Loading next map..." );
 			return true;
 		}else if(teamNum==0){
 			if(this.get_s16("blueTickets")>0) return false;
@@ -90,7 +88,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 1 ); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage( this.getTeam(1).getName() + " wins the game!" );
+			this.SetGlobalMessage( this.getTeam(1).getName() + " wins the game!\n\nWell done. Loading next map..." );
 			return true;
 		}
 	
@@ -142,7 +140,7 @@ void Config(TDMCore@ this)
 	//this.gameDuration = (getTicksASecond() * 60 * 1.25f);
 
 	//spawn after death time - set in gamemode.cfg, or override here
-	f32 spawnTimeSeconds = cfg.read_f32("spawnTimeSeconds", 3);//Maths::Min(3, 8-(getPlayersCount()/3))); //rules.playerrespawn_seconds
+	f32 spawnTimeSeconds = cfg.read_f32("spawnTimeSeconds", 2); 
 	this.spawnTime = (getTicksASecond() * spawnTimeSeconds);
 
 	//how many players have to be in for the game to start
@@ -262,11 +260,6 @@ shared class TDMSpawns : RespawnSystem
 					if (b is null && tents.length > 0)
 						decrementTickets(getRules(), playerBlob.getTeamNum());
 				}
-
-				if (getMap().getMapName() == "KAWWTraining.png")
-				{	
-					playerBlob.server_setTeamNum(2);
-				}	
 			}
 		}
 	}
@@ -305,7 +298,7 @@ shared class TDMSpawns : RespawnSystem
 		{
 			for (uint step = 0; step < spawns.length; ++step)
 			{
-				if (spawns[step].getTeamNum() == s32(p_info.team) || getMap().getMapName() == "KAWWTraining.png")
+				if (spawns[step].getTeamNum() == s32(p_info.team))
 				{
 					teamspawns.push_back(spawns[step]);
 				}
@@ -524,10 +517,6 @@ shared class TDMCore : RulesCore
 			rules.SetGlobalMessage("Waiting for someone else to join the game.");
 			tdm_spawns.force = true;
 		}
-		else if (rules.isMatchRunning() && getMap().getMapName() == "KAWWTraining.png")
-		{
-			rules.SetGlobalMessage("Type !start to begin the match!");
-		}
 		else if (rules.isMatchRunning())
 		{
 			rules.SetGlobalMessage("");
@@ -728,49 +717,38 @@ shared class TDMCore : RulesCore
 		{
 			Vec2f respawnPos;
 
-			if (map_name == "KAWWTraining.png")
+			//BLUE
+			if (!getMap().getMarkers("blue main spawn", respawnPositions))
 			{
-				if (!getMap().getMarkers("training main spawn", respawnPositions))
+				if (map.tilesize > 0)
 				{
-					respawnPos = Vec2f(50.0f, map.getLandYAtX(50.0f / map.tilesize) * map.tilesize - 32.0f);
-					if (spawn_prop != "importantarmory") SetupBase(server_CreateBlob(base_name, 2, respawnPos));
+					respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
+					if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
 				}
 			}
 			else
 			{
-				//BLUE
-				if (!getMap().getMarkers("blue main spawn", respawnPositions))
+				for (uint i = 0; i < respawnPositions.length; i++)
 				{
-					if (map.tilesize > 0)
-					{
-						respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
-						if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
-					}
+					respawnPos = respawnPositions[i];
+					if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
 				}
-				else
-				{
-					for (uint i = 0; i < respawnPositions.length; i++)
-					{
-						respawnPos = respawnPositions[i];
-						if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
-					}
-				}
+			}
 
-				respawnPositions.clear();
+			respawnPositions.clear();
 
-				//RED
-				if (!getMap().getMarkers("red main spawn", respawnPositions))
+			//RED
+			if (!getMap().getMarkers("red main spawn", respawnPositions))
+			{
+				respawnPos = Vec2f(map.tilemapwidth * map.tilesize - 150.0f, map.getLandYAtX(map.tilemapwidth - (150.0f / map.tilesize)) * map.tilesize - 32.0f);
+				if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 1, respawnPos));
+			}
+			else
+			{
+				for (uint i = 0; i < respawnPositions.length; i++)
 				{
-					respawnPos = Vec2f(map.tilemapwidth * map.tilesize - 150.0f, map.getLandYAtX(map.tilemapwidth - (150.0f / map.tilesize)) * map.tilesize - 32.0f);
-					if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 1, respawnPos));
-				}
-				else
-				{
-					for (uint i = 0; i < respawnPositions.length; i++)
-					{
-						respawnPos = respawnPositions[i];
-						if (spawn_prop != "importantarmory") SetupBase(server_CreateBlob(base_name, 1, respawnPos));
-					}
+					respawnPos = respawnPositions[i];
+					if (spawn_prop != "importantarmory") SetupBase(server_CreateBlob(base_name, 1, respawnPos));
 				}
 			}
 
@@ -784,8 +762,6 @@ shared class TDMCore : RulesCore
 	void CheckTeamWon()
 	{
 		if (!rules.isMatchRunning()) { return; }
-
-		//print("ROUND: " + rules.get_u8("current_round"));
 
 		int winteamIndex = -1;
 		TDMTeamInfo@ winteam = null;
@@ -818,7 +794,7 @@ shared class TDMCore : RulesCore
 					CTeam@ teamis = rules.getTeam(team_won);
 					rules.SetTeamWon(team_won);   //game over!
 					rules.SetCurrentState(GAME_OVER);
-					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game!" );
+					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game!\nWell done. Loading next map..." );
 				}
 				else
 				{
@@ -942,7 +918,7 @@ shared class TDMCore : RulesCore
 			{
 				rules.SetTeamWon(winteamIndex);   //game over!
 				rules.SetCurrentState(GAME_OVER);
-				rules.SetGlobalMessage("{WINNING_TEAM} wins the round!");
+				rules.SetGlobalMessage("{WINNING_TEAM} wins the game!\n\nWell done. Loading next map..." );
 				rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.name);
 				SetCorrectMapTypeShared();
 			}
@@ -1068,7 +1044,7 @@ void Reset(CRules@ this)
 	this.set("core", @core);
 	this.set("start_gametime", getGameTime() + core.warmUpTime);
 	this.set_u32("game_end_time", getGameTime() + core.gameDuration);
-	this.set_s32("restart_rules_after_game_time", (core.spawnTime < 0 ? 5 : 10) * 20);
+	this.set_s32("restart_rules_after_game_time", (core.spawnTime < 0 ? 5 : 10) * 30);
 
 	u8 brightmod = getRules().get_u8("brightmod");
 	// 0 full bright
@@ -1289,8 +1265,6 @@ void onTick(CRules@ this)
 
 void onInit(CRules@ this)
 {
-	this.set_u8("current_round", 1);
-
     if ( !cfg_playerexp.loadFile("../Cache/awexp.cfg") )
     {
         cfg_playerexp = ConfigFile("awexp.cfg");
