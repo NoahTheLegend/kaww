@@ -17,7 +17,7 @@ void onInit(CBlob@ this)
 
 	this.SetMapEdgeFlags(u8(CBlob::map_collide_none | CBlob::map_collide_left | CBlob::map_collide_right | CBlob::map_collide_nodeath));
 
-	consts.net_threshold_multiplier = 1.0f;
+	consts.net_threshold_multiplier = 10.0f;
 }
 
 void onTick(CBlob@ this)
