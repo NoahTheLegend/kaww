@@ -302,7 +302,20 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		if (blob.getTeamNum() != this.getTeamNum()) return false;
 		return true;
 	}
-	
+
+	if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("friendly_bullet_pass"))
+	{
+		return false;
+	}
+
+	if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("vehicle"))
+	{
+		this.IgnoreCollisionWhileOverlapped(blob, 10);
+		if (blob.hasTag("apc") || blob.hasTag("turret") || blob.hasTag("gun")) return (XORRandom(100) > 70);
+		else if (blob.hasTag("tank")) return (XORRandom(100) > 50);
+		else return true;
+	}
+
 	if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
 	{
 		return false;
@@ -387,6 +400,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	{
 		return false;
 	}
+
 
 	if (blob.hasTag("destructable"))
 	{

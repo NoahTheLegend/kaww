@@ -334,10 +334,23 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (blob.hasTag("always bullet collide"))
 	{
-		if (blob.getTeamNum() == this.getTeamNum()) return false;
+		if (blob.getTeamNum() != this.getTeamNum()) return false;
 		return true;
 	}
-	// too many tag checks?
+
+	if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("friendly_bullet_pass"))
+	{
+		return false;
+	}
+
+	if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("vehicle"))
+	{
+		this.IgnoreCollisionWhileOverlapped(blob, 10);
+		if (blob.hasTag("apc") || blob.hasTag("turret") || blob.hasTag("gun")) return (XORRandom(100) > 70);
+		else if (blob.hasTag("tank")) return (XORRandom(100) > 50);
+		else return true;
+	}
+	
 	if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
 	{
 		return false;
@@ -353,16 +366,16 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
 		return false;
 	}
-
+	
 	if (this.getTickSinceCreated() > 1 && blob.isAttached())
 	{
 		if (blob.hasTag("collidewithbullets")) return true;
+		if (XORRandom(9) == 0)
+		{
+			return true;
+		}
 		AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
 		if (point !is null && point.getOccupied() !is null && (point.getOccupied().getName() == "heavygun" || point.getOccupied().getName() == "gun") && blob.getTeamNum() != this.getTeamNum())
-			return true;
-
-		AttachmentPoint@ point2 = blob.getAttachments().getAttachmentPointByName("DRIVER");
-		if (point2 !is null && point2.getOccupied() !is null && (point2.getOccupied().getName() == "motorcycle"))
 			return true;
 	}
 
@@ -377,7 +390,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
-	if (blob.hasTag("blocks bullet"))
+	if (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())
 	{
 		return true;
 	}
@@ -389,6 +402,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 	if (blob.getName() == "wooden_platform")
 	{
+		//printf("enter");
 		f32 velx = this.getOldVelocity().x;
 		f32 vely = this.getOldVelocity().y;
 		f32 deg = blob.getAngleDegrees();
@@ -410,6 +424,10 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 			return true;
 		}
 
+		//printf("deg "+deg);
+		//printf("velx "+velx);
+		//printf("vely "+vely);
+
 		return false;
 	}
 
@@ -417,12 +435,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	{
 		return false;
 	}
-
-	if (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())
-	{
-		return this.getTickSinceCreated() > 1;
-	}
-
 
 	if (blob.hasTag("destructable"))
 	{
@@ -442,6 +454,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if (blob.hasTag("projectile") || this.hasTag("rico"))
 	{
 		return false;
+	}
+
+	if (blob.hasTag("blocks bullet"))
+	{
+		return true;
 	}
 
 	bool check = this.getTeamNum() != blob.getTeamNum();
