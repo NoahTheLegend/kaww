@@ -308,7 +308,11 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 					rules.add_u32(killer.getUsername() + "_exp", exp_reward);
 					rules.Sync(killer.getUsername() + "_exp", true);
 
-					add_message(ExpMessage(exp_reward));
+					if(getLocalPlayer() !is null
+					&& killer is getLocalPlayer())
+					{
+						add_message(ExpMessage(exp_reward));
+					}
 
 					CBlob@ killerblob = null;
 					@killerblob = killer.getBlob();
