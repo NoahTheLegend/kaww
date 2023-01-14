@@ -150,7 +150,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
         if (blob !is null && isServer())
         {
             // play sound
-            blob.getSprite().PlaySound("LevelUp", 10.0f, 1.0f);
+            blob.getSprite().PlaySound("LevelUp", 1.6f, 1.0f);
 
             if (isServer())
             {

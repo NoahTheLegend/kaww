@@ -55,7 +55,7 @@ void updateCoinMessage(CPlayer@ player)
 	{
 		const int quantity_diff = player.getCoins() - rules.get_u32(prop_name);
 
-		if (Maths::Abs(quantity_diff) > 10)
+		if (Maths::Abs(quantity_diff) > 0)
 		{
 			add_message(MaterialMessage("Coins", quantity_diff));
 		}
@@ -185,5 +185,5 @@ void onTick(CBlob@ this)
 
 	this.set(prop_string, @current_caches);
 	
-	updateCoinMessage(@player);
+	//updateCoinMessage(@player);
 }

@@ -379,6 +379,8 @@ namespace map_colors
 		gate3         		   = 0xffaf8028,
 		gate4         		   = 0xffaf8928,
 
+		stairs                 = 0xff221e42,
+
 		///////
 
 

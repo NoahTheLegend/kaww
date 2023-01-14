@@ -352,6 +352,7 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					CheckRankUps(this, // do reward coins and sfx
 								this.get_u32(player.getUsername() + "_exp"), // player new exp
 								player.getBlob());	
+								
 				}
 			}
 			else

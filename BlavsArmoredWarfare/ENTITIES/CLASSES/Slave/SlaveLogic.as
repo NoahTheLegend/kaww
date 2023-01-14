@@ -10,6 +10,8 @@
 #include "PlacementCommon.as";
 #include "ParticleSparks.as";
 #include "MaterialCommon.as";
+#include "HoverMessage.as";
+#include "PlayerRankInfo.as";
 
 //can't be <2 - needs one frame less for gathering infos
 const s32 hit_frame = 2;
@@ -211,6 +213,33 @@ bool RecdHitCommand(CBlob@ this, CBitStream@ params)
 					map.server_DestroyTile(tilepos, 1.0f, this);
 
 					Material::fromTile(this, type, 1.0f);
+
+					if ((map.isTileThickStone(type) && XORRandom(7) == 0) or (map.isTileStone(type) && XORRandom(12) == 0) or (map.isTileGold(type) && XORRandom(5) == 0))
+					{
+						CRules@ rules = getRules();
+						CPlayer@ player = this.getPlayer();
+
+						if (player !is null)
+						{
+							// give exp
+							int exp_reward = 1;
+							if (rules.get_string(player.getUsername() + "_perk") == "Death Incarnate")
+							{
+								exp_reward *= 3;
+							}
+							rules.add_u32(player.getUsername() + "_exp", exp_reward);
+							rules.Sync(player.getUsername() + "_exp", true);
+
+							add_message(ExpMessage(exp_reward));
+
+							CheckRankUps(rules, // do reward coins and sfx
+										rules.get_u32(player.getUsername() + "_exp"), // player new exp
+										this);	
+
+										// sometimes makes a null blob not found error! test this future me
+						}
+					}
+
 				}
 
 				if (getNet().isClient())

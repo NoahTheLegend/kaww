@@ -19,15 +19,15 @@ void onRender(CSprite@ this)
 	if (getHUD().hasButtons())
 	{
 		getHUD().SetDefaultCursor();
-		getHUD().SetCursorOffset(Vec2f(-5, -5)); // -6 is perfect alignment but messes up esc cursor
+		getHUD().SetCursorOffset(Vec2f(-6, -6)); // -6 is perfect alignment but messes up esc cursor
 	}
 	else
 	{
-		getHUD().SetCursorImage("GunCursor.png", Vec2f(32, 32));
-		getHUD().SetCursorOffset(Vec2f(-37, -37)); // -38 is perfect alignment but messes up esc cursor
-
 		if (blob.getName() != "slave") // is not a builder
 		{
+			getHUD().SetCursorImage("GunCursor.png", Vec2f(32, 32));
+			getHUD().SetCursorOffset(Vec2f(-38, -38)); // -38 is perfect alignment but messes up esc cursor
+
 			CControls@ controls = blob.getControls();
 			if (controls !is null)
 			{
@@ -41,6 +41,11 @@ void onRender(CSprite@ this)
 					GUI::DrawTextCentered("No Ammo", controls.getInterpMouseScreenPos() + Vec2f(-2,35), controls.isKeyPressed(KEY_KEY_R) ? SColor(0xfff20101) : SColor(0xffffffff));
 				}
 			}
+		}
+		else{
+
+			getHUD().SetCursorImage("Entities/Characters/Builder/BuilderCursor.png");
+			getHUD().SetCursorOffset(Vec2f(0, -0));
 		}
 	}
 
