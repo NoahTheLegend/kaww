@@ -202,7 +202,7 @@ void onRender(CSprite@ this)
 
 			// draw player username
 			GUI::SetFont("menu");
-			GUI::DrawText(rank + " | "+player.getCharacterName()+"\n\nPromoting: "+RANKS[level], Vec2f(60, 10), SColor(0xffffffff));
+			GUI::DrawText(rank + " | "+player.getCharacterName()+"\n\nPromote: "+RANKS[level], Vec2f(60, 10), SColor(0xffffffff));
 		}
 	}
 	
