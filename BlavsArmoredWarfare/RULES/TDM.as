@@ -1118,7 +1118,7 @@ string[] hashes = {};
 
 void onBlobCreated( CRules@ this, CBlob@ blob )
 {
-	if (blob !is null && !blob.hasTag("bullet"))
+	if (blob !is null && !blob.hasTag("bullet") && blob.getName() != "mat_scrap")
 	{
 		hashes.push_back(blob.getName());
 	}
