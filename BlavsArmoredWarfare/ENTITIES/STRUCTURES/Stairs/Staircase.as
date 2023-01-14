@@ -32,7 +32,7 @@ CBlob@ getNextFloor(CBlob@ this, CBlob@[]@ staircase)           //Returns stairs
 
         }
     }
-    if(floor is this)
+    if(floor is this)                                                           //Returns null if "this" is last floor
     { return null; }
     else
     {
@@ -64,7 +64,7 @@ CBlob@ getPreviousFloor(CBlob@ this, CBlob@[]@ staircase)       //Returns stairs
         }
     }
 
-    if(floor is this)
+    if(floor is this)                                                           //Returns null if "this" is the first floor
     { return null; }
     else
     {
