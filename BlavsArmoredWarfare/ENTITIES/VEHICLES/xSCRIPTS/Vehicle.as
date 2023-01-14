@@ -5,7 +5,7 @@
 #include "VehicleAttachmentCommon.as"
 #include "GenericButtonCommon.as"
 #include "Hitters.as";
-#include "Explosionx.as";
+#include "Explosion.as";
 
 string[] particles = 
 {
