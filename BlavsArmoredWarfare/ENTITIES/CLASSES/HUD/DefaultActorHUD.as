@@ -107,7 +107,7 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
 {
 	Vec2f xppos = origin;
 
-	Vec2f dim = Vec2f(90, 8);
+	Vec2f dim = Vec2f(85, 6);
 
 	float exp = 0;
 	// load exp
@@ -143,7 +143,7 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
 	GUI::DrawRectangle(Vec2f(xppos.x - dim.x + 1, xppos.y + 2), Vec2f(xppos.x - dim.x + expratio * 2.0f * dim.x - 1, xppos.y + dim.y - 2), SColor(0xff76ff33)); // fill color
 
 	GUI::SetFont("menu");
-	GUI::DrawTextCentered(""+exp+" / " + next_rank, Vec2f(xppos.x / 2 + 48, xppos.y + dim.y + 8), SColor(255, 145, 255, 0));
+	GUI::DrawText(""+exp+" / " + next_rank, Vec2f(xppos.x / 2 - 13, xppos.y + dim.y + 2), SColor(0xff76ff33));
 }
 
 void onInit(CSprite@ this)
@@ -202,7 +202,9 @@ void onRender(CSprite@ this)
 
 			// draw player username
 			GUI::SetFont("menu");
-			GUI::DrawText(rank + " | "+player.getCharacterName()+"\n\nPromote: "+RANKS[level], Vec2f(60, 10), SColor(0xffffffff));
+			GUI::DrawText(rank + " | "+player.getCharacterName(), Vec2f(60, 10), SColor(0xffffffff));
+			//GUI::SetFont("text");
+			//GUI::DrawText("\n\nNext rank: "+RANKS[level].toLower(), Vec2f(60, 10), SColor(0xffffffff));
 		}
 	}
 	
@@ -248,7 +250,7 @@ void onRender(CSprite@ this)
 
 	
 	// draw xp bar
-	renderEXPBar(blob, Vec2f(105,60)); // 675
+	renderEXPBar(blob, Vec2f(147,30));
 
 	// draw class icon
 	int icon_num = 0;
@@ -278,7 +280,6 @@ void onRender(CSprite@ this)
 	}
 
 	GUI::DrawIcon("ClassIconSimple.png", icon_num, Vec2f(48, 48), Vec2f(icon_num == 0 ? -14 : 46, getScreenHeight()-166), 2);
-
 
 	CPlayer@ player = blob.getPlayer();
 
