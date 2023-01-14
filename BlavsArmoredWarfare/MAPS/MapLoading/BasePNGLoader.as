@@ -617,7 +617,7 @@ class PNGLoader
 				map.AddBackground("Backgrounds/BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
 				map.AddBackground("Backgrounds/BackgroundIsland.png", Vec2f(0.0f, 40.0f), Vec2f(0.5f, 0.5f), color_white);
 
-				SetScreenFlash(255,   0,   0,   0,   1.5);
+				SetScreenFlash(255,   0,   0,   0,   1.75);
 				break;
 			}
 			case 1: //desert
@@ -632,7 +632,7 @@ class PNGLoader
 				map.AddBackground("Backgrounds/BackgroundDesert.png",       Vec2f(5.0f, -8.0f), Vec2f(0.25f, 2.0f), color_white);
 				map.AddBackground("Backgrounds/BackgroundDunes.png",        Vec2f(0.0f,  -7.0f), Vec2f(0.5f, 2.5f), color_white);
 
-				SetScreenFlash(255,   0,   0,   0,   1.5);
+				SetScreenFlash(255,   0,   0,   0,   1.75);
 				break;
 			}
 			case 2: //grim
@@ -646,7 +646,7 @@ class PNGLoader
 				map.AddBackground("Backgrounds/City.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
 				map.AddBackground("Backgrounds/Forest.png", Vec2f(0.0f, -120.0f), Vec2f(0.35f, 0.35f), color_white);
 
-				SetScreenFlash(255,   0,   0,   0,   3.0);
+				SetScreenFlash(255,   0,   0,   0,   3.5);
 				break;
 			}
 			case 3: //snow
@@ -659,7 +659,7 @@ class PNGLoader
 				map.AddBackground("Backgrounds/Snow_BackgroundPlains.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
 				map.AddBackground("Backgrounds/Snow_BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
 				
-				SetScreenFlash(255,   0,   0,   0,   1.5);
+				SetScreenFlash(255,   0,   0,   0,   1.75);
 				break;
 			}
 		}
