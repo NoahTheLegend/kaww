@@ -392,7 +392,7 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 		zoomSpeed *= 0.55f; //0.4f
 	}
 
-	zoom_target = (this.hasTag("increase_max_zoom") ? 0.5f : zoom_target);
+	zoom_target = (zoomLevel == 0 && this.hasTag("increase_max_zoom") ? 0.5f : zoom_target);
 
 	if (zoom > zoom_target)
 	{
