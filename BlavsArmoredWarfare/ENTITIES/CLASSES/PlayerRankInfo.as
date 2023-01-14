@@ -160,7 +160,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
             }
         }
 
-        if (isServer()) //client
+        //if (isServer()) //client
         {
             // chat message
             if (player.isMyPlayer()) {
