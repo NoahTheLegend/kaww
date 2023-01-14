@@ -152,7 +152,7 @@ void onRender(CRules@ this)
 					}
 					else
 					{
-						GUI::DrawIcon("team_sheet", 1 , Vec2f(16, 16), topLeft + startSkulls + Vec2f(team_dead_count * 16, 0) , 1.0f, hud.team_num);
+						GUI::DrawIcon("DeathCountIcon.png", 0 , Vec2f(16, 16), topLeft + startSkulls + Vec2f(team_dead_count * 16, 0) , 1.0f, hud.team_num);
 						team_dead_count++;
 					}
 				}
