@@ -337,7 +337,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 	
-	if ((this.getTickSinceCreated() > 1 || blob.getTeamNum() != this.getTeamNum()) && blob.isAttached())
+	if ((this.getTickSinceCreated() > 1 || (blob.getTeamNum() != this.getTeamNum() && this.getTeamNum() < 2)) && blob.isAttached())
 	{
 		if (blob.hasTag("collidewithbullets")) return true;
 		if (XORRandom(9) == 0)
