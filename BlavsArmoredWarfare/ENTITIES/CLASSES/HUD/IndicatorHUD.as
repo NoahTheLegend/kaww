@@ -80,6 +80,7 @@ void onRender( CRules@ this )
 						SColor(0xbbffffff));
 	}
 	*/
+
 	//indicate objectives
 	CBlob@[] objectiveList;
 	getBlobsByName("pointflag", @objectiveList);
@@ -116,7 +117,7 @@ void onRender( CRules@ this )
 			}
 		}
 
-		float flag_height = -6;
+		float flag_height = -8;
 
 		if (team_state == 2)
     	{
@@ -124,8 +125,9 @@ void onRender( CRules@ this )
     		GUI::DrawIcon("KAWWGui.png", 1, Vec2f(16,32), indicatorPos + Vec2f(-2, flag_height + 64 + wave), 1.0f, team_num);
     	}
 		GUI::DrawIcon("KAWWGui.png", 0, Vec2f(16,32), indicatorPos + Vec2f(-4, flag_height), 1.0f, team_num);
-	}
 
+		RenderBar(this, point, indicatorPos + Vec2f(-4, flag_height));
+	}
 
 	int playerCount = getPlayerCount();
 	for (uint i = 0; i < playerCount; i++) // walking blobs
@@ -177,7 +179,7 @@ void onRender( CRules@ this )
 		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
 		
 		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
-		Vec2f custom_offset = Vec2f(0,0);
+		Vec2f custom_offset = Vec2f(0,8);
 		if (frame == 10 || frame == 11) custom_offset = Vec2f(0, -48);
 
 		GUI::DrawIcon("indicator_sheet.png", frame, Vec2f(16, 25), indicatorPos + custom_offset, 1.0f, vehicleTeamnum);
@@ -250,4 +252,86 @@ void onStateChange(CRules@ this, const u8 oldState)
         this.Tag("animateGameOver");
         this.minimap = false;
     }
+}
+
+void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
+{
+	if (flag is null) return;
+
+	u16 returncount = flag.get_u16("capture time");
+	if (returncount == 0) return;
+
+	GUI::SetFont("menu");
+
+	// adjust vertical offset depending on zoom
+	Vec2f pos2d = position;
+	
+	f32 wave = Maths::Sin(getGameTime() / 5.0f) * 5.0f - 25.0f;
+
+	Vec2f pos = pos2d + Vec2f(18.0f, 80.0f);
+	Vec2f dimension = Vec2f(45.0f - 8.0f, 12.0f);
+	const f32 y = 0.0f;
+	
+	f32 percentage = 1.0f - float(returncount) / float(flag.getTeamNum() == 255 ? 3000 : 3000);
+	Vec2f bar = Vec2f(pos.x + (dimension.x * percentage), pos.y + dimension.y);
+
+	const f32 perc  = float(returncount) / float(flag.getTeamNum() == 255 ? 3000/2 : 3000);
+
+	SColor color_light;
+	SColor color_mid;
+	SColor color_dark;
+
+	SColor color_team;
+
+	if (flag.getTeamNum() == 1 && returncount > 0 || flag.getTeamNum() == 0 && returncount == 0 || flag.getTeamNum() == 255 && flag.get_s8("teamcapping") == 0)
+	{
+		color_light = 0xff2cafde;
+		color_mid	= 0xff1d85ab; //  0xff1d85ab
+		color_dark	= 0xff1a4e83;
+	}
+	
+	if (flag.getTeamNum() == 0 && returncount > 0 || flag.getTeamNum() == 1 && returncount == 0 || flag.getTeamNum() == 255 && flag.get_s8("teamcapping") == 1)
+	{
+		color_light = 0xffd5543f;
+		color_mid	= 0xffb73333; // 0xffb73333
+		color_dark	= 0xff941b1b;
+	}
+
+	if (flag.getTeamNum() == 0)
+	{
+		color_team = 0xff2cafde;
+	}
+	if (flag.getTeamNum() == 1)
+	{
+		color_team = 0xffd5543f;
+	}
+	if (flag.getTeamNum() == 255)
+	{
+		color_team = 0xff1c2525;//ff36373f;
+	}
+
+	// Border
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 1,                        pos.y + y - 1),
+					   Vec2f(pos.x + dimension.x + 0,                        pos.y + y + dimension.y - 1), SColor(0xb0313131));
+
+	
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
+					   Vec2f(pos.x + dimension.x - 1,                        pos.y + y + dimension.y - 2), color_team);
+
+
+	// whiteness
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 1,                        pos.y + y + 0),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x + 0, pos.y + y + dimension.y - 2), SColor(0xffffffff));
+	// growing outline
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 1,                        pos.y + y - 1),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x + 0, pos.y + y + dimension.y - 1), SColor(perc*255, 255, 255, 255));
+
+	// Health meter trim
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 1, pos.y + y + dimension.y - 2), color_mid);
+
+	// Health meter inside
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
+
 }
