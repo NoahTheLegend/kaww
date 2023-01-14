@@ -122,13 +122,13 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 	}
 	{
 		AddIconToken("$barbedwire_icon$", "BarbedWire.png", Vec2f(16, 16), 0);
-		BuildBlock b(0, "barbedwire", "$barbedwire_icon$", "Barbed Wire:\nHard to pass through.");
+		BuildBlock b(0, "barbedwire", "$barbedwire_icon$", "Barbed Wire\nHard to pass through.");
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 15);
 		blocks[0].push_back(b);
 	}
 		{
 		AddIconToken("$bush_icon$", "BushIcon.png", Vec2f(16, 16), 0);
-		BuildBlock b(0, "bush", "$bush_icon$", "Bush:\nDisguises small area");
+		BuildBlock b(0, "bush", "$bush_icon$", "Bush\nDisguises small area");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 15);
 		blocks[0].push_back(b);
 	}
