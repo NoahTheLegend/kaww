@@ -9,12 +9,6 @@
 void onInit(CBlob@ this)
 {
 	this.CreateRespawnPoint("ruins", Vec2f(0.0f, 16.0f));
-	AddIconToken("$crewman_class_icon$", "GUI/MenuItems.png", Vec2f(32, 32), 8);
-	AddIconToken("$ranger_class_icon$", "GUI/MenuItems.png", Vec2f(32, 32), 12);
-	AddIconToken("$sniper_class_icon$", "GUI/MenuItems.png", Vec2f(32, 32), 24);
-	AddIconToken("$antitank_class_icon$", "GUI/MenuItems.png", Vec2f(32, 32), 16);
-	AddIconToken("$slave_class_icon$", "GUI/MenuItems.png", Vec2f(32, 32), 20);
-	AddIconToken("$change_class$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 12, 2);
 	//TDM classes
 	addPlayerClass(this, "Crewman", "$crewman_class_icon$", "crewman", "Crewman for a vehicle.");
 	addPlayerClass(this, "Ranger", "$ranger_class_icon$", "ranger", "Uses an Ak47.");
@@ -36,26 +30,6 @@ void onInit(CSprite@ this)
 	CBlob@ blob = this.getBlob();
 	u16 netID = blob.getNetworkID();
 	this.SetFacingLeft(((netID % 13) % 2) == 0);
-}
-
-void onTick(CBlob@ this)
-{
-	if (enable_quickswap)
-	{
-		//quick switch class
-		CBlob@ blob = getLocalPlayerBlob();
-		if (blob !is null && blob.isMyPlayer())
-		{
-			if (
-				isInRadius(this, blob) && //blob close enough to ruins
-				blob.isKeyJustReleased(key_use) && //just released e
-				isTap(blob, 7) && //tapped e
-				blob.getTickSinceCreated() > 1 //prevents infinite loop of swapping class
-			) {
-				CycleClass(this, blob);
-			}
-		}
-	}
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
