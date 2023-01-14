@@ -106,6 +106,7 @@ string getRankName(u32 level)
 
 void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
 {    
+    if (blob is null) return;
     CPlayer@ player = blob.getPlayer();
     if (player is null) return;
 
