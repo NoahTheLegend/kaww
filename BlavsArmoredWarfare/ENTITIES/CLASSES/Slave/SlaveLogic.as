@@ -213,15 +213,6 @@ bool RecdHitCommand(CBlob@ this, CBitStream@ params)
 					map.server_DestroyTile(tilepos, 1.0f, this);
 
 					Material::fromTile(this, type, 1.0f);
-				}
-
-				if (getNet().isClient())
-				{
-					if (map.isTileBedrock(type))
-					{
-						this.getSprite().PlaySound("/metal_stone.ogg");
-						sparks(tilepos, attackVel.Angle(), 1.0f);
-					}
 
 					if ((map.isTileThickStone(type) && XORRandom(7) == 0) or (map.isTileStone(type) && XORRandom(12) == 0) or (map.isTileGold(type) && XORRandom(5) == 0))
 					{
@@ -247,6 +238,16 @@ bool RecdHitCommand(CBlob@ this, CBitStream@ params)
 
 										// sometimes makes a null blob not found error! test this future me
 						}
+					}
+
+				}
+
+				if (getNet().isClient())
+				{
+					if (map.isTileBedrock(type))
+					{
+						this.getSprite().PlaySound("/metal_stone.ogg");
+						sparks(tilepos, attackVel.Angle(), 1.0f);
 					}
 				}
 			}
