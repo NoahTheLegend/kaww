@@ -169,11 +169,22 @@ void onTick(CBlob@ this)
 							CBlob@ item = inv.getItem(0);
 							u32 quantity = item.getQuantity();
 
-							if (item.maxQuantity > 8)
+							if (item.getName() != "mat_smallbomb")
 							{ 
-								// To prevent spamming 
-								this.server_PutOutInventory(item);
-								item.setPosition(this.getPosition());
+								CBlob@ b = server_CreateBlob("crate", this.getTeamNum(), this.getPosition()+Vec2f(0,8));
+								if (b !is null)
+								{
+									for (u8 i = 0; i < inv.getItemsCount(); i++)
+									{
+										CBlob@ put = inv.getItem(i);
+										if (put is null) continue;
+										if (put.getName() == "mat_smallbomb") continue;
+										
+										this.server_PutOutInventory(put);
+										b.server_PutInInventory(put);
+										i--;
+									}
+								}
 							}
 							else
 							{
