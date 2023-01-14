@@ -103,7 +103,7 @@ void addClassesToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 				}
 			}
 
-			if ((isClient() && isServer()) || level > -1 + i)
+			if (level > -1 + i) //(isClient() && isServer()) || 
 			{
 				PlayerClass @pclass = classes[i];
 
@@ -149,7 +149,7 @@ void addPerksToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 
 	if (this.get("playerperks", @perks))
 	{
-		AddIconToken("$locked_perk_icon$", "PerkIcon.png", Vec2f(36, 36), 6);
+		AddIconToken("$locked_perk_icon$", "PerkIcon.png", Vec2f(36, 36), 8);
 
 		for (uint i = 0 ; i < perks.length; i++)
 		{

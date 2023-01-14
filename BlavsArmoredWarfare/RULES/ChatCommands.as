@@ -6,6 +6,7 @@
 #include "MakeSeed.as";
 #include "MakeCrate.as";
 #include "MakeScroll.as";
+#include "PlayerRankInfo.as";
 
 const bool chatCommandCooldown = false; // enable if you want cooldown on your server
 const uint chatCommandDelay = 3 * 30; // Cooldown in seconds
@@ -348,6 +349,9 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					int xp = parseInt(tokens[1]);
 					getRules().set_u32(player.getUsername() + "_exp", xp);
 					getRules().Sync(player.getUsername() + "_exp", true);	
+					CheckRankUps(this, // do reward coins and sfx
+								this.get_u32(player.getUsername() + "_exp"), // player new exp
+								player.getBlob());	
 				}
 			}
 			else

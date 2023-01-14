@@ -1,6 +1,6 @@
 #define SERVER_ONLY
 
-// regen hp back to
+// regen hp
 
 const string max_prop = "regen maximum";
 const string rate_prop = "regen rate";
@@ -15,6 +15,15 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	CPlayer@ p = this.getPlayer();
+	if (p !is null)
+	{
+		if (getRules().get_string(p.getUsername() + "_perk") == "Bloodthirsty")
+		{
+			this.server_Heal(0.05f);
+		}
+	}
+
 	if (this.getHealth() > this.getInitialHealth() * 0.33f) // regen health when its above 33%
 		this.server_Heal(0.05f);
 }

@@ -44,9 +44,19 @@ int getExpToNextLevel(u32 level)
     }
 
     float mod_plateau = PLATEAU;
-    if (level > 6)
+
+    // i am retarded
+    if (level > 8)
     {
-       mod_plateau *= 0.76f;
+        mod_plateau *= 0.67f;
+    }
+    else if (level > 7)
+    {
+        mod_plateau *= 0.7f;
+    }
+    else if (level > 6)
+    {
+        mod_plateau *= 0.76f;
     }
     else if (level > 5)
     {
@@ -66,7 +76,16 @@ int getExpToMyLevel(u32 level)
     }
 
     float mod_plateau = PLATEAU;
-    if (level-1 > 6)
+    
+    if (level-1 > 8)
+    {
+       mod_plateau *= 0.67f;
+    }
+    else if (level-1 > 7)
+    {
+       mod_plateau *= 0.7f;
+    }
+    else if (level-1 > 6)
     {
        mod_plateau *= 0.76f;
     }
@@ -125,7 +144,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
         // flash screen
         if (player.isMyPlayer())
         {
-            SetScreenFlash(17,   255,   255,   255,   2.2);
+            SetScreenFlash(30,   255,   255,   255,   2.3);
         }
         
         if (blob !is null && isServer())
@@ -160,6 +179,9 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
                     p.Z = 1000;
                     p.timeout = 2; // this shit doesnt work
                 }
+
+                // create particle
+                ParticleAnimated("LevelUpParticle", blob.getPosition(), blob.getVelocity() - Vec2f(0,1.2), 0.0f, 1.0f, 3, 0.2f, true);
             }
         }
         
