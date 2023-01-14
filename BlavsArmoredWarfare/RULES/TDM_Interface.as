@@ -121,7 +121,7 @@ void onRender(CRules@ this)
 			while (!serialised_team_hud.isBufferEnd())
 			{
 				TDM_HUD hud(serialised_team_hud);
-				Vec2f topLeft = Vec2f(-40, 86 + 64 * hud.team_num);
+				Vec2f topLeft = Vec2f(-40, 64 + 48 * hud.team_num);
 
 				/*
 				FlagsInfo flags_info;
