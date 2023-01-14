@@ -105,8 +105,7 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 
 void renderEXPBar(CBlob@ blob, Vec2f origin)
 {
-	Vec2f offset = Vec2f(57, -640);
-	Vec2f xppos = origin + offset;
+	Vec2f xppos = origin;
 
 	Vec2f dim = Vec2f(90, 8);
 
@@ -249,8 +248,7 @@ void onRender(CSprite@ this)
 
 	
 	// draw xp bar
-	renderEXPBar(blob, ul - Vec2f(10,0));
-
+	renderEXPBar(blob, Vec2f(105,60)); // 675
 
 	// draw class icon
 	int icon_num = 0;
