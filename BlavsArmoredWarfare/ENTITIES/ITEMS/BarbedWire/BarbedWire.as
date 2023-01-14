@@ -75,6 +75,10 @@ void onTick(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (customData == Hitters::explosion || hitterBlob.getName() == "grenade")
+	{
+		return damage * Maths::Max(0.0f, 0.33f / (hitterBlob.getPosition() - this.getPosition()).Length());
+	}
 	if (hitterBlob !is null && hitterBlob !is this && (customData == Hitters::builder || customData == Hitters::sword))
 	{
 		if (isServer() && XORRandom(2)==0) this.server_Hit(hitterBlob, this.getPosition(), Vec2f(0, 0), 0.15f, Hitters::spikes, false);
