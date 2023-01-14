@@ -105,8 +105,7 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 
 void renderEXPBar(CBlob@ blob, Vec2f origin)
 {
-	Vec2f offset = Vec2f(57, -640);
-	Vec2f xppos = origin + offset;
+	Vec2f xppos = origin;
 
 	Vec2f dim = Vec2f(90, 8);
 
@@ -144,7 +143,7 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
 	GUI::DrawRectangle(Vec2f(xppos.x - dim.x + 1, xppos.y + 2), Vec2f(xppos.x - dim.x + expratio * 2.0f * dim.x - 1, xppos.y + dim.y - 2), SColor(0xff76ff33)); // fill color
 
 	GUI::SetFont("menu");
-	GUI::DrawText(""+exp+" / " + next_rank, Vec2f(xppos.x / 2 - 16, xppos.y + dim.y + 0), SColor(255, 145, 255, 0));
+	GUI::DrawTextCentered(""+exp+" / " + next_rank, Vec2f(xppos.x / 2 + 48, xppos.y + dim.y + 8), SColor(255, 145, 255, 0));
 }
 
 void onInit(CSprite@ this)
@@ -203,7 +202,7 @@ void onRender(CSprite@ this)
 
 			// draw player username
 			GUI::SetFont("menu");
-			GUI::DrawText(rank + " | "+player.getCharacterName(), Vec2f(60, 10), SColor(0xffffffff));
+			GUI::DrawText(rank + " | "+player.getCharacterName()+"\n\nPromote: "+RANKS[level], Vec2f(60, 10), SColor(0xffffffff));
 		}
 	}
 	
@@ -249,8 +248,7 @@ void onRender(CSprite@ this)
 
 	
 	// draw xp bar
-	renderEXPBar(blob, ul - Vec2f(10,0));
-
+	renderEXPBar(blob, Vec2f(105,60)); // 675
 
 	// draw class icon
 	int icon_num = 0;

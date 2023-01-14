@@ -6,6 +6,7 @@ void onInit(CBlob@ this)
     this.getSprite().getConsts().accurateLighting = false;  
 	this.getSprite().RotateBy(XORRandom(4) * 90, Vec2f(0, 0));
 	this.getSprite().SetZ(-50); //background
+	this.Tag("has damage owner");
 
 	// this.getCurrentScript().runFlags |= Script::tick_not_attached;
 	
@@ -14,9 +15,9 @@ void onInit(CBlob@ this)
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (blob !is null && blob.hasTag("flesh") && blob.getTeamNum() != this.getTeamNum())
+	if (isServer() && blob !is null && blob.hasTag("flesh") && blob.getTeamNum() != this.getTeamNum() && !blob.isAttached())
 	{
-		if (isServer()) this.server_Hit(blob, this.getPosition(), Vec2f(0, 0), 0.15f, Hitters::spikes, true);
+		this.server_Hit(blob, this.getPosition(), Vec2f(0, 0), 0.15f, Hitters::spikes, true);
 	}
 }
 
@@ -76,7 +77,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {
 	if (hitterBlob !is null && hitterBlob !is this && (customData == Hitters::builder || customData == Hitters::sword))
 	{
-		if (isServer() && XORRandom(4)==0) this.server_Hit(hitterBlob, this.getPosition(), Vec2f(0, 0), 0.15f, Hitters::spikes, false);
+		if (isServer() && XORRandom(2)==0) this.server_Hit(hitterBlob, this.getPosition(), Vec2f(0, 0), 0.15f, Hitters::spikes, false);
 	}
 	if (isClient())
 	{

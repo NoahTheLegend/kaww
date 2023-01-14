@@ -809,17 +809,36 @@ shared class TDMCore : RulesCore
 		{
 			if (rules.getCurrentState() != GAME_OVER)
 			{
-				u16 blue_kills = getRules().get_u16("blue_kills");
-				u16 red_kills = getRules().get_u16("red_kills");
+				//u16 blue_kills = getRules().get_u16("blue_kills");
+				//u16 red_kills = getRules().get_u16("red_kills");
+//
+				//if (red_kills != blue_kills)
+				//{
+				//	u8 team_won = (red_kills > blue_kills ? 1 : 0);
+				//	team_wins_on_end = team_won;
+				//	CTeam@ teamis = rules.getTeam(team_won);
+				//	rules.SetTeamWon(team_won);   //game over!
+				//	rules.SetCurrentState(GAME_OVER);
+				//	if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );
+				//}
 
-				if (red_kills != blue_kills)
+				u16 blue_tickets = getRules().get_s16("blueTickets");
+				u16 red_tickets = getRules().get_s16("redTickets");
+				if (blue_tickets > red_tickets)
 				{
-					u8 team_won = (red_kills > blue_kills ? 1 : 0);
-					team_wins_on_end = team_won;
-					CTeam@ teamis = rules.getTeam(team_won);
-					rules.SetTeamWon(team_won);   //game over!
+					team_wins_on_end = 0;
+					CTeam@ teamis = rules.getTeam(0);
+					rules.SetTeamWon(0);   //game over!
 					rules.SetCurrentState(GAME_OVER);
-					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );
+					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );		
+				}
+				else if (blue_tickets < red_tickets)
+				{
+					team_wins_on_end = 1;
+					CTeam@ teamis = rules.getTeam(1);
+					rules.SetTeamWon(1);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );		
 				}
 				else
 				{

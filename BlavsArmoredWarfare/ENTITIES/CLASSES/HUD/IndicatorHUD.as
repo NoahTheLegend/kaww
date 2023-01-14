@@ -32,6 +32,10 @@ void onRender( CRules@ this )
 	Vec2f timelineLPos = Vec2f(timelineLDist - 16, timelineHeight);
 	Vec2f timelineRPos = Vec2f(timelineRDist - 16, timelineHeight);
 
+	//draw tents
+	GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineLPos, 1.0f, 0);
+	GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineRPos, 1.0f, 1);
+
 	//draw line	
 	if (this.hasTag("animateGameOver"))
     {
@@ -77,38 +81,6 @@ void onRender( CRules@ this )
 	}
 	*/
 
-	//draw spawn tents
-	CBlob@[] tentList;
-	getBlobsByName("tent", @tentList);
-
-	int tentCount = tentList.length;
-	
-	for (uint i = 0; i < tentCount; i++)
-	{
-		CBlob@ tent = tentList[i];
-		if (tent == null) continue;
-
-		float curPointXPos = tent.getPosition().x - 28;
-		float indicatorProgress = curPointXPos / mapWidth;
-		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
-		
-		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
-
-		u8 bigger = 0;
-		for (u8 j = 0; j < tentList.length; j++) // set offset from left depending on x coordinate
-		{
-			if (tentList[j] !is null)
-			{
-				if (tent.getPosition().x > tentList[j].getPosition().x) bigger++;
-			}
-		}
-
-		float tent_height = 2;
-
-		GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), indicatorPos + Vec2f(-4, tent_height), 1.0f, tent.getTeamNum());
-	}
-
-
 	//indicate objectives
 	CBlob@[] objectiveList;
 	getBlobsByName("pointflag", @objectiveList);
@@ -145,7 +117,7 @@ void onRender( CRules@ this )
 			}
 		}
 
-		float flag_height = -6;
+		float flag_height = -8;
 
 		if (team_state == 2)
     	{
@@ -156,7 +128,6 @@ void onRender( CRules@ this )
 
 		RenderBar(this, point, indicatorPos + Vec2f(-4, flag_height));
 	}
-
 
 	int playerCount = getPlayerCount();
 	for (uint i = 0; i < playerCount; i++) // walking blobs
@@ -208,7 +179,7 @@ void onRender( CRules@ this )
 		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
 		
 		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
-		Vec2f custom_offset = Vec2f(0,0);
+		Vec2f custom_offset = Vec2f(0,8);
 		if (frame == 10 || frame == 11) custom_offset = Vec2f(0, -48);
 
 		GUI::DrawIcon("indicator_sheet.png", frame, Vec2f(16, 25), indicatorPos + custom_offset, 1.0f, vehicleTeamnum);

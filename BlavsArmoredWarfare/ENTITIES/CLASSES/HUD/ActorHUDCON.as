@@ -24,6 +24,6 @@ void DrawCoinsOnHUD(CBlob@ this, const int coins, Vec2f tl, const int slot)
 	{
 		//GUI::DrawIcon("CashIcon.png", tl + Vec2f(slot * 180, 10), 0.25f);
 		GUI::SetFont("menu");
-		GUI::DrawText("$" + coins + ".0", tl + Vec2f(slot * 180 , 0), color_white);
+		GUI::DrawText("$" + coins + ".0", tl, color_white);
 	}
 } 
