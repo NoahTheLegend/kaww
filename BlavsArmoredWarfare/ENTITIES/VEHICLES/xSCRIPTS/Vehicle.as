@@ -229,7 +229,7 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (isClient()&&getGameTime()%15==0)
+	if (getGameTime()%15==0)
 	{
 		CBlob@[] bushes;
 		if (getMap() !is null) getMap().getBlobsAtPosition(this.getPosition(), @bushes);
