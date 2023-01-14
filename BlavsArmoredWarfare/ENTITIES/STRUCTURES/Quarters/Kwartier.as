@@ -50,7 +50,7 @@ void onInit(CSprite@ this)
 		zzz.SetVisible(false);
 	}
 
-	CSpriteLayer@ backpack = this.addSpriteLayer("backpack", "Kwartier.png", 16, 16);
+	CSpriteLayer@ backpack = this.addSpriteLayer("backpack", "Kwartier.png", 9, 16);
 	if (backpack !is null)
 	{
 		{
@@ -62,6 +62,21 @@ void onInit(CSprite@ this)
 		backpack.SetVisible(false);
 	}
 
+	CSpriteLayer@ lantern = this.addSpriteLayer("lantern", "Kwartier.png", 8, 16);
+	if (lantern !is null)
+	{
+		Animation@ anim = lantern.addAnimation("light", 4, true);
+		if (anim !is null)
+		{
+			int[] frames = {32,33,34};
+			anim.AddFrames(frames);
+			lantern.SetOffset(Vec2f(-12, 4));
+			lantern.SetVisible(true);
+			lantern.SetFrameIndex(0);
+			lantern.SetAnimation(anim);
+		}
+	}
+
 	this.SetEmitSound("MigrantSleep.ogg");
 	this.SetEmitSoundPaused(true);
 	this.SetEmitSoundVolume(0.5f);
@@ -69,8 +84,6 @@ void onInit(CSprite@ this)
 
 void onInit(CBlob@ this)
 {
-	this.set_TileType("background tile", CMap::tile_wood_back);
-
 	this.getSprite().SetZ(-50); //background
 	this.getShape().getConsts().mapCollisions = false;
 	this.addCommandID("shop made item");

@@ -121,7 +121,7 @@ void onRender(CRules@ this)
 			while (!serialised_team_hud.isBufferEnd())
 			{
 				TDM_HUD hud(serialised_team_hud);
-				Vec2f topLeft = Vec2f(-40, 86 + 64 * hud.team_num);
+				Vec2f topLeft = Vec2f(-40, 64 + 48 * hud.team_num);
 
 				/*
 				FlagsInfo flags_info;
@@ -152,7 +152,7 @@ void onRender(CRules@ this)
 					}
 					else
 					{
-						GUI::DrawIcon("team_sheet", 1 , Vec2f(16, 16), topLeft + startSkulls + Vec2f(team_dead_count * 16, 0) , 1.0f, hud.team_num);
+						GUI::DrawIcon("DeathCountIcon.png", 0 , Vec2f(16, 16), topLeft + startSkulls + Vec2f(team_dead_count * 16, 0) , 1.0f, hud.team_num);
 						team_dead_count++;
 					}
 				}

@@ -163,7 +163,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
-			return damage*0.05f;
+			return damage*0.1f;
 		else if (customData == Hitters::arrow)
 			return damage*0.5f;
 		else return (customData == Hitters::sword ? this.hasTag("mgunner") ? damage : 0 : 0);
@@ -305,7 +305,7 @@ void ManageParachute( CBlob@ this )
 	if (this.hasTag("parachute"))
 	{
 		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
-		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.63f : 0.73)));
+		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.55f : 0.73)));
 	}
 }
 

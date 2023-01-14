@@ -108,6 +108,8 @@ void onTick(CBlob@ this)
 		return;
 	}
 
+	ManageParachute(this);
+
 	// activate/throw
 	if (ismyplayer)
 	{
@@ -635,8 +637,43 @@ bool canHit(CBlob@ this, CBlob@ b, Vec2f tpos, bool extra = true)
 	return true;
 }
 
+void ManageParachute( CBlob@ this )
+{
+	if (this.isOnGround() || this.isInWater() || this.isAttached())
+	{	
+		if (this.hasTag("parachute"))
+		{
+			this.Untag("parachute");
+
+			for (uint i = 0; i < 50; i ++)
+			{
+				Vec2f vel = getRandomVelocity(90.0f, 3.5f + (XORRandom(10) / 10.0f), 25.0f) + Vec2f(0, 2);
+				ParticlePixel(this.getPosition() - Vec2f(0, 30) + getRandomVelocity(90.0f, 10 + (XORRandom(20) / 10.0f), 25.0f), vel, getTeamColor(this.getTeamNum()), true, 119);
+			}
+		}
+	}
+	
+	if (this.hasTag("parachute"))
+	{
+		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
+		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.55f : 0.73)));
+	}
+}
+
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
+	// Deploy parachute!
+	if (detached.hasTag("aerial"))
+	{
+		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 150.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
+		{
+			if (!this.hasTag("parachute"))
+			{
+				Sound::Play("/ParachuteOpen", detached.getPosition());
+				this.Tag("parachute");
+			}
+		}
+	}
 	// ignore collision for built blob
 	BuildBlock[][]@ blocks;
 	if (!this.get("blocks", @blocks))

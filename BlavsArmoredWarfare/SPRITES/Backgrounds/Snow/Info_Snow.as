@@ -12,7 +12,7 @@ void onInit(CBlob@ this)
 	if (isClient())
 	{
 		CMap@ map = this.getMap();
-		
+		map.CreateTileMap(0, 0, 8.0f, "Snow_World.png");
 		map.CreateSky(color_black, Vec2f(1.0f, 1.0f), 200, "Sprites/Back/cloud", 0); // sky
 		map.CreateSkyGradient("Sprites/skygradient.png"); // override sky color with gradient
 		getRules().set_bool("allowclouds", true);
