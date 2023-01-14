@@ -22,7 +22,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 void onTick(CBlob@ this)
 {
-	if (getGameTime()%60==0)
+	if ((getGameTime()+this.getNetworkID())%300==0)
 	{
 		CMap@ map = this.getMap();
 		bool kill = true;
