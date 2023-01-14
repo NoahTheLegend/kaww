@@ -151,7 +151,7 @@ void GameMusicLogic(CBlob@ this, CMixer@ mixer)
 
 	CRules @rules = getRules();
 	u32 gameEndTime = rules.get_u32("game_end_time");
-	
+	/*
 	CBlob @blob = getLocalPlayerBlob();
 	if (blob is null)
 	{
@@ -163,8 +163,8 @@ void GameMusicLogic(CBlob@ this, CMixer@ mixer)
 	if (map is null)
 		return;
 
-	Vec2f pos = blob.getPosition();
-	
+	Vec2f pos = blob.getPosition();*/
+	/*
 	//calc ambience
 	if (timer % 30 == 0)
 	{
@@ -186,7 +186,7 @@ void GameMusicLogic(CBlob@ this, CMixer@ mixer)
 		{
 			changeAmbience(mixer, world_ambient, 4.0f, 4.0f);
 		}
-	}
+	}*/
 	//print("g : " + mixer.getPlayingTag(world_intro));
 	if ((gameEndTime - getGameTime())/30 == 70) // fade out all current music
 	{
