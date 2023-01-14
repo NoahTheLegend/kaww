@@ -43,6 +43,7 @@ enum MessageTypes
 	MESSAGE_KILLSPREE,
 	MESSAGE_ASSIST,
 	MESSAGE_MATERIAL,
+	MESSAGE_EXP,
 	MESSAGE_TOTAL
 };
 
@@ -357,6 +358,62 @@ class MaterialMessage : HoverMessage
 		if (material_name == message.material_name)
 		{
 			quantity_change += message.quantity_change;
+			return this;
+		}
+
+		return null;
+	}
+}
+
+/*
+	EXP change messages
+*/
+class ExpMessage : HoverMessage
+{
+	string name;
+	int quantity;
+
+	ExpMessage(int p_quantity)
+	{
+		name = "exp";
+		quantity = p_quantity;
+
+		category = MESSAGE_EXP;
+	}
+
+	void reset_time() override
+	{
+		time_left = 2.0f;
+	}
+
+	void generate_tokens() override
+	{
+		string quantity_string;
+		SColor quantity_color;
+
+		if (quantity > 0)
+		{
+			quantity_string = "+" + quantity;
+		}
+		else
+		{
+			return;
+		}
+
+		Vec2f quantity_dimensions;
+		GUI::GetTextDimensions(quantity_string, quantity_dimensions);
+
+		tokens.push_back(MessageToken(quantity_string, SColor(215, 145, 255, 0)));
+		tokens.push_back(MessageToken("XP", SColor(215, 145, 255, 0), Vec2f(quantity_dimensions.x + 6.0f, 0.0f)));
+	}
+
+	HoverMessage@ try_merge(HoverMessage@ other) override
+	{
+		ExpMessage@ message = cast<ExpMessage>(other);
+
+		if (name == message.name)
+		{
+			quantity += message.quantity;
 			return this;
 		}
 

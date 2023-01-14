@@ -294,27 +294,30 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 
 		if (killer !is null)
 		{
-			if (getRules().isMatchRunning())
+			CRules@ rules = getRules();
+			if (rules.isMatchRunning())
 			{
 				if (killer.getTeamNum() != victim.getTeamNum())
 				{
 					// give exp
 					int exp_reward = 5+XORRandom(6); // 5 - 10
-					if (getRules().get_string(killer.getUsername() + "_perk") == "Death Incarnate")
+					if (rules.get_string(killer.getUsername() + "_perk") == "Death Incarnate")
 					{
 						exp_reward *= 3; // 10 - 20
 					}
-					getRules().add_u32(killer.getUsername() + "_exp", exp_reward);
-					getRules().Sync(killer.getUsername() + "_exp", true);
+					rules.add_u32(killer.getUsername() + "_exp", exp_reward);
+					rules.Sync(killer.getUsername() + "_exp", true);
+
+					add_message(ExpMessage(exp_reward));
 
 					CBlob@ killerblob = null;
 					@killerblob = killer.getBlob();
 
-					CheckRankUps(getRules(), // do reward coins and sfx
-								getRules().get_u32(killer.getUsername() + "_exp"), // player new exp
+					CheckRankUps(rules, // do reward coins and sfx
+								rules.get_u32(killer.getUsername() + "_exp"), // player new exp
 								killerblob);	
 
-								// sometimes make a null blob not found error
+								// sometimes makes a null blob not found error! test this future me
 				}
 			}
 

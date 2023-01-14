@@ -489,6 +489,8 @@ class PNGLoader
 			case map_colors::red_bunker:        autotile(offset); spawnBlob(map, "bunker", offset, 1); break;
 			case map_colors::blue_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, 0); break;
 			case map_colors::red_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, 1); break;
+			case map_colors::stairs:        autotile(offset); spawnBlob(map, "stairs", offset); break;
+			
 			case map_colors::constructionyard:     autotile(offset); spawnBlob(map, "constructionyard", offset); break;
 			case map_colors::baseconstructionyard:     autotile(offset); spawnBlob(map, "baseconstructionyard", offset); break;
 			case map_colors::b_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, 0); break;

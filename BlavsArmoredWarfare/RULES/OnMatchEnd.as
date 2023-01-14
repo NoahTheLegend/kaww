@@ -1,3 +1,4 @@
+#include "HoverMessage.as";
 #include "PlayerRankInfo.as";
 
 void onStateChange( CRules@ this, const u8 oldState )
@@ -38,12 +39,17 @@ void onStateChange( CRules@ this, const u8 oldState )
 						{
 							server_DropCoins(players[i].getPosition(), 30);
 
-							this.add_u32(player.getUsername() + "_exp", 50);	
+							// give exp to winners
+							int exp_reward = 50; // death incarnate does not apply here
+							this.add_u32(player.getUsername() + "_exp", exp_reward);	
 							this.Sync(player.getUsername() + "_exp", true);
+
+							add_message(ExpMessage(exp_reward));
 
 							CheckRankUps(this, // do reward coins and sfx
 										this.get_u32(player.getUsername() + "_exp"), // player new exp
-										players[i]);				
+										players[i]);	
+							
 						}		
 					}
 				}
