@@ -1,4 +1,4 @@
-#include "ScoreboardCommon.as";
+ #include "ScoreboardCommon.as";
 #include "Accolades.as";
 #include "ColoredNameToggleCommon.as";
 #include "PlayerRankInfo.as";
@@ -7,9 +7,7 @@ CPlayer@ hoveredPlayer;
 Vec2f hoveredPos;
 
 int hovered_accolade = -1;
-int hovered_tier = -1;
 int hovered_rank = -1;
-bool draw_tier = false;
 
 float scoreboardMargin = 52.0f;
 float scrollOffset = 0.0f;
@@ -18,14 +16,6 @@ float maxMenuWidth = 700;
 float screenMidX = getScreenWidth()/2;
 
 bool mouseWasPressed2 = false;
-
-string[] tier_description = {
-	"", //f2p players, no description
-	"This player is a Squire Supporter",
-	"This player is a Knight Supporter",
-	"This player is a Royal Guard Supporter",
-	"This player is a Round Table Supporter"
-};
 
 //returns the bottom
 float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CTeam@ team, Vec2f emblem)
@@ -56,17 +46,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 
 	topleft.y += stepheight * 2;
 
-	const int accolades_start = 770;
-
-	draw_tier = false;
-	for(int i = 0; i < players.length; i++) {
-		if (players[i].getSupportTier() > 0) {
-			draw_tier = true;
-			break;
-		}
-	}
-
-	const int tier_start = (accolades_start) + 70;
+	const int accolades_start = 700;
 
 	//draw player table header
 	GUI::DrawText(getTranslatedString("Player"), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
@@ -78,11 +58,6 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 50, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Accolades"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 100, topleft.y), SColor(0xffffffff));
-
-	if(draw_tier)
-	{
-		GUI::DrawText(getTranslatedString("Tier"), Vec2f(bottomright.x - tier_start, topleft.y), SColor(0xffffffff));
-	}
 
 	topleft.y += stepheight * 0.5f;
 
@@ -156,6 +131,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
                 if (p.getBlob().getName() == "shotgun") frame = 3;
                 if (p.getBlob().getName() == "sniper") frame = 4;
                 if (p.getBlob().getName() == "mp5") frame = 5;
+				//if (p.getBlob().getName() == "gl") frame = 7;
             }
 			framesize.Set(16, 16);
 		}
@@ -240,53 +216,30 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		int level = 1;
 		string rank = RANKS[0];
 
-		//if (level > 0)
+		// Calculate the exp required to reach each level
+		for (int i = 1; i <= RANKS.length; i++)
 		{
-			// Calculate the exp required to reach each level
-			for (int i = 1; i <= RANKS.length; i++)
+			int expToNextLevel = getExpToNextLevel(level);
+			if (exp >= expToNextLevel)
 			{
-				int expToNextLevel = getExpToNextLevel(level);
-				if (exp >= expToNextLevel)
-				{
-					level = i + 1;
-					rank = RANKS[Maths::Min(i, RANKS.length)];
-				}
-				else
-				{
-					// The current level has been reached
-					break;
-				}
+				level = i + 1;
+				rank = RANKS[Maths::Min(i, RANKS.length)];
+			}
+			else
+			{
+				// The current level has been reached
+				break;
 			}
 		}
 
 		int rank_icon_start = 0;
-		float x = bottomright.x - tier_start - 18;
+		float x = bottomright.x - accolades_start - 88;
 		float extra = 8;
 		GUI::DrawIcon("Ranks", rank_icon_start + level - 1, Vec2f(32, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
 
 		if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
 		{
 			hovered_rank = level - 1;
-		}
-
-		//draw support tier
-		if(draw_tier)
-		{
-			int tier = p.getSupportTier();
-
-			if(tier > 0)
-			{
-				int tier_icon_start = 15;
-				float x = bottomright.x - tier_start + 8;
-				float extra = 8;
-				GUI::DrawIcon("AccoladeBadges", tier_icon_start + tier, Vec2f(16, 16), Vec2f(x, topleft.y), 0.5f, p.getTeamNum());
-
-				if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
-				{
-					hovered_tier = tier;
-				}
-			}
-
 		}
 
 		//render player accolades
@@ -402,14 +355,17 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 
 void onRenderScoreboard(CRules@ this)
 {
-	//sort players
+	//sort players by exp (rank)
 	CPlayer@[] blueplayers;
 	CPlayer@[] redplayers;
 	CPlayer@[] spectators;
 	for (u32 i = 0; i < getPlayersCount(); i++)
 	{
 		CPlayer@ p = getPlayer(i);
-		f32 kdr = getKDR(p);
+
+		float exp = 0;
+		exp = this.get_u32(p.getUsername() + "_exp");
+
 		bool inserted = false;
 		if (p.getTeamNum() == this.getSpectatorTeamNum())
 		{
@@ -422,7 +378,7 @@ void onRenderScoreboard(CRules@ this)
 		{
 			for (u32 j = 0; j < blueplayers.length; j++)
 			{
-				if (getKDR(blueplayers[j]) < kdr)
+				if (this.get_u32(blueplayers[j].getUsername() + "_exp") < exp)
 				{
 					blueplayers.insert(j, p);
 					inserted = true;
@@ -432,13 +388,12 @@ void onRenderScoreboard(CRules@ this)
 
 			if (!inserted)
 				blueplayers.push_back(p);
-
 		}
 		else
 		{
 			for (u32 j = 0; j < redplayers.length; j++)
 			{
-				if (getKDR(redplayers[j]) < kdr)
+				if (this.get_u32(redplayers[j].getUsername() + "_exp") < exp)
 				{
 					redplayers.insert(j, p);
 					inserted = true;
@@ -448,9 +403,7 @@ void onRenderScoreboard(CRules@ this)
 
 			if (!inserted)
 				redplayers.push_back(p);
-
 		}
-
 	}
 
 	//draw board
@@ -472,7 +425,6 @@ void onRenderScoreboard(CRules@ this)
 
 	//(reset)
 	hovered_accolade = -1;
-	hovered_tier = -1;
 	hovered_rank = -1;
 
 	//draw the scoreboards
@@ -550,18 +502,16 @@ void onRenderScoreboard(CRules@ this)
 
 	drawPlayerCard(hoveredPlayer, hoveredPos);
 
-	drawHoverExplanation(hovered_accolade, hovered_tier, hovered_rank, Vec2f(getScreenWidth() * 0.5, topleft.y));
+	drawHoverExplanation(hovered_accolade, hovered_rank, Vec2f(getScreenWidth() * 0.5, topleft.y));
 
 	mouseWasPressed2 = controls.mousePressed2; 
 }
 
-void drawHoverExplanation(int hovered_accolade, int hovered_tier, int hovered_rank, Vec2f centre_top)
+void drawHoverExplanation(int hovered_accolade, int hovered_rank, Vec2f centre_top)
 {
 	if( //(invalid/"unset" hover)
 		(hovered_accolade < 0
 		 || hovered_accolade >= accolade_description.length) &&
-		(hovered_tier < 0
-		 || hovered_tier >= tier_description.length) &&
 		(hovered_rank < 0
 		 || hovered_rank >= RANKS.length)
 	) {
@@ -569,11 +519,7 @@ void drawHoverExplanation(int hovered_accolade, int hovered_tier, int hovered_ra
 	}
 
 	string desc = getTranslatedString(
-		(hovered_accolade >= 0) ?
-			accolade_description[hovered_accolade] :
-			(hovered_rank >= 0) ?
-				RANKS[hovered_rank] :
-				tier_description[hovered_tier]
+		(hovered_accolade >= 0) ? accolade_description[hovered_accolade] : RANKS[hovered_rank]
 	);
 
 	Vec2f size(0, 0);
