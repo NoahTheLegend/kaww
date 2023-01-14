@@ -225,6 +225,7 @@ void onInit(CBlob@ this)
 	this.set_f32(wheelsTurnAmountString, 0.0f);
 
 	this.set_u32("show_hp", 0);
+	this.set_string("invname", this.getInventoryName());
 }
 
 void onTick(CBlob@ this)
@@ -240,7 +241,11 @@ void onTick(CBlob@ this)
 			else bush = true;
 		}
 		if (bush)
+		{
+			this.setInventoryName("");
 			this.set_u32("disguise", getGameTime()+30);
+		}
+		else this.setInventoryName(this.get_string("invname"));
 	}
 	if (!(isClient() && isServer()) && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
 	{
