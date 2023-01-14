@@ -6,6 +6,7 @@ void onInit(CBlob@ this)
 	
 	this.Tag("destructable");
 	this.Tag("builder always hit");
+	this.Tag("trap");
 
 	this.getCurrentScript().tickFrequency = 30;
 }
