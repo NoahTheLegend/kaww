@@ -143,7 +143,7 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
 	GUI::DrawRectangle(Vec2f(xppos.x - dim.x + 1, xppos.y + 2), Vec2f(xppos.x - dim.x + expratio * 2.0f * dim.x - 1, xppos.y + dim.y - 2), SColor(0xff76ff33)); // fill color
 
 	GUI::SetFont("menu");
-	GUI::DrawText(""+exp+" / " + next_rank, Vec2f(xppos.x / 2 - 16, xppos.y + dim.y + 0), SColor(255, 145, 255, 0));
+	GUI::DrawTextCentered(""+exp+" / " + next_rank, Vec2f(xppos.x / 2 + 48, xppos.y + dim.y + 8), SColor(255, 145, 255, 0));
 }
 
 void onInit(CSprite@ this)
