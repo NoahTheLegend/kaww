@@ -156,10 +156,10 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 		Sound::Play("/BulletDirt" + XORRandom(3), this.getPosition(), 1.7f, 0.85f + XORRandom(25) * 0.01f);
 
-		CParticle@ p = ParticleAnimated("SparkParticle.png", this.getPosition(), Vec2f(0,0),  0.0f, 1.0f, 2+XORRandom(2), 0.0f, false);
+		CParticle@ p = ParticleAnimated("SparkParticle.png", this.getPosition(), Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(2), 0.0f, false);
 		if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
 
-		{ CParticle@ p = ParticleAnimated("BulletChunkParticle.png", end, Vec2f(0.5f - XORRandom(100)*0.01f,-0.5), 0.0f, 0.55f + XORRandom(50)*0.01f, 22+XORRandom(3), 0.2f, true);
+		{ CParticle@ p = ParticleAnimated("BulletChunkParticle.png", end, Vec2f(0.5f - XORRandom(100)*0.01f,-0.5), XORRandom(360), 0.55f + XORRandom(50)*0.01f, 22+XORRandom(3), 0.2f, true);
 		if (p !is null) { p.lighting = true; }}
 
 		u16 impact_angle = 33;
@@ -204,15 +204,28 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		{
 			if (isServer()) this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 0.75f : 0.25f, Hitters::builder);
 		}
-		// play sound
-		if (blob.hasTag("flesh"))
-		{
-
-			if (isClient() && XORRandom(100) < 60)
+		else{
+			// play sound
+			if (blob.hasTag("flesh"))
 			{
-				sprite.PlaySound("Splat.ogg");
+				if (isClient() && XORRandom(100) < 60)
+				{
+					sprite.PlaySound("Splat.ogg");
+				}
+			}
+			else
+			{
+				CParticle@ p = ParticleAnimated("SparkParticle.png", hit_position, Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(5), 0.0f, false);
+				if (p !is null)
+				{
+					p.diesoncollide = true;
+					p.fastcollision = true;
+					p.lighting = false;
+					p.Z = 200.0f;
+				}
 			}
 		}
+
 
 		if (isServer() && this.getTeamNum() != blob.getTeamNum() && (blob.getName() == "wooden_platform" || blob.hasTag("door")))
 		{
@@ -223,9 +236,6 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 				this.server_Die();
 			}
 		}
-
-		CParticle@ p = ParticleAnimated("SparkParticle.png", hit_position, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
-		if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
 
 		if (blob.hasTag("vehicle") && !this.hasTag("rico"))
 		{
@@ -246,14 +256,29 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 				Sound::Play("/BulletRico" + (XORRandom(4) + 4), this.getPosition(), 1.4f, 0.85f + XORRandom(45) * 0.01f);
 				this.setVelocity(this.getVelocity() * 1.05f);
 				this.AddForce(Vec2f(3.5f-XORRandom(7), 5.0f-XORRandom(10)));
+
+				CParticle@ p = ParticleAnimated("PingParticle.png", hit_position, Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(5), 0.0f, false);
+				if (p !is null)
+				{
+					p.diesoncollide = true;
+					p.fastcollision = true;
+					p.lighting = false;
+					p.Z = 200.0f;
+				}
 			}
 			else
 			{ 
 				Vec2f pos = this.getPosition() + Vec2f(this.getOldVelocity().x * 0.65f, 0.0f);
 				pos += Vec2f(0.0f, this.getOldVelocity().y * 0.65f);
 
-				CParticle@ p = ParticleAnimated("PingParticle.png", pos, Vec2f(0,0),  0.0f, 0.75f + XORRandom(4) * 0.10f, 2, 0.0f, false);
-				if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
+				CParticle@ p = ParticleAnimated("PingParticle.png", pos, Vec2f(0,0), XORRandom(360), 0.75f + XORRandom(4) * 0.10f, 3, 0.0f, false);
+				if (p !is null)
+				{
+					p.diesoncollide = true;
+					p.fastcollision = true;
+					p.lighting = false;
+					p.Z = 200.0f;
+				}
 
 				sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
 				

@@ -109,7 +109,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 	}
 	{
 		BuildBlock b(0, "spikes", "$spikes$", "Spikes\nPlace on Stone Block\nfor Retracting Trap");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
 		blocks[0].push_back(b);
 	}
 	{
@@ -120,168 +120,17 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 		b.size.Set(24, 8);
 		blocks[0].push_back(b);
 	}
-	if (TTH)
 	{
-		{
-			BuildBlock b(0, "factory", "$building$", "Factory\nAn item-producing factory\nRequires migrant");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", WARCosts::factory_wood);
-			b.buildOnGround = true;
-			b.size.Set(40, 24);
-			blocks[0].insertAt(9, b);
-		}
-		{
-			BuildBlock b(0, "workbench", "$workbench$", "Workbench\nCreate trampolines, saws, and more");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", WARCosts::workbench_wood);
-			b.buildOnGround = true;
-			b.size.Set(32, 16);
-			blocks[0].push_back(b);
-		}
+		AddIconToken("$barbedwire_icon$", "BarbedWire.png", Vec2f(16, 16), 0);
+		BuildBlock b(0, "barbedwire", "$barbedwire_icon$", "Barbed Wire:\nHard to pass through.");
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 15);
+		blocks[0].push_back(b);
 	}
-	else if (SBX)
-	{
 		{
-			BuildBlock b(0, "building", "$building$", "Workshop\nStand in an open space\nand tap this button.");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
-			b.buildOnGround = true;
-			b.size.Set(40, 24);
-			blocks[0].insertAt(9, b);
-		}
-
-		BuildBlock[] page_1;
-		blocks.push_back(page_1);
-		{
-			BuildBlock b(0, "wire", "$wire$", "Wire");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-			blocks[1].push_back(b);
-		}
-		{
-			BuildBlock b(0, "elbow", "$elbow$", "Elbow");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-			blocks[1].push_back(b);
-		}
-		{
-			BuildBlock b(0, "tee", "$tee$", "Tee");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-			blocks[1].push_back(b);
-		}
-		{
-			BuildBlock b(0, "junction", "$junction$", "Junction");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
-			blocks[1].push_back(b);
-		}
-		{
-			BuildBlock b(0, "diode", "$diode$", "Diode");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
-			blocks[1].push_back(b);
-		}
-		{
-			BuildBlock b(0, "resistor", "$resistor$", "Resistor");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
-			blocks[1].push_back(b);
-		}
-		{
-			BuildBlock b(0, "inverter", "$inverter$", "Inverter");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
-			blocks[1].push_back(b);
-		}
-		{
-			BuildBlock b(0, "oscillator", "$oscillator$", "Oscillator");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
-			blocks[1].push_back(b);
-		}
-		{
-			BuildBlock b(0, "transistor", "$transistor$", "Transistor");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
-			blocks[1].push_back(b);
-		}
-		{
-			BuildBlock b(0, "toggle", "$toggle$", "Toggle");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
-			blocks[1].push_back(b);
-		}
-		{
-			BuildBlock b(0, "randomizer", "$randomizer$", "Randomizer");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
-			blocks[1].push_back(b);
-		}
-
-		BuildBlock[] page_2;
-		blocks.push_back(page_2);
-		{
-			BuildBlock b(0, "lever", "$lever$", "Lever");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
-			blocks[2].push_back(b);
-		}
-		{
-			BuildBlock b(0, "push_button", "$pushbutton$", "Button");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 40);
-			blocks[2].push_back(b);
-		}
-		{
-			BuildBlock b(0, "coin_slot", "$coin_slot$", "Coin Slot");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 40);
-			blocks[2].push_back(b);
-		}
-		{
-			BuildBlock b(0, "pressure_plate", "$pressureplate$", "Pressure Plate");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
-			blocks[2].push_back(b);
-		}
-		{
-			BuildBlock b(0, "sensor", "$sensor$", "Motion Sensor");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 40);
-			blocks[2].push_back(b);
-		}
-
-		BuildBlock[] page_3;
-		blocks.push_back(page_3);
-		{
-			BuildBlock b(0, "lamp", "$lamp$", "Lamp");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
-			blocks[3].push_back(b);
-		}
-		{
-			BuildBlock b(0, "emitter", "$emitter$", "Emitter");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
-			blocks[3].push_back(b);
-		}
-		{
-			BuildBlock b(0, "receiver", "$receiver$", "Receiver");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
-			blocks[3].push_back(b);
-		}
-		{
-			BuildBlock b(0, "magazine", "$magazine$", "Magazine");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Wood", 20);
-			blocks[3].push_back(b);
-		}
-		{
-			BuildBlock b(0, "bolter", "$bolter$", "Bolter");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
-			blocks[3].push_back(b);
-		}
-		{
-			BuildBlock b(0, "dispenser", "$dispenser$", "Dispenser");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
-			blocks[3].push_back(b);
-		}
-		{
-			BuildBlock b(0, "obstructor", "$obstructor$", "Obstructor");
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 50);
-			blocks[3].push_back(b);
-		}
-		{
-			BuildBlock b(0, "spiker", "$spiker$", "Spiker");
-			AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-			AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 40);
-			blocks[3].push_back(b);
-		}
+		AddIconToken("$bush_icon$", "BushIcon.png", Vec2f(16, 16), 0);
+		BuildBlock b(0, "bush", "$bush_icon$", "Bush:\nDisguises small area");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 15);
+		blocks[0].push_back(b);
 	}
 }
 

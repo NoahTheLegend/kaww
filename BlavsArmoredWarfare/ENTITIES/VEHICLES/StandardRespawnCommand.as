@@ -62,43 +62,59 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$3_class_icon$", "PerkIcon.png", Vec2f(36, 36), 3);
 	AddIconToken("$4_class_icon$", "PerkIcon.png", Vec2f(36, 36), 4);
 	AddIconToken("$5_class_icon$", "PerkIcon.png", Vec2f(36, 36), 5);
+	AddIconToken("$6_class_icon$", "PerkIcon.png", Vec2f(36, 36), 6);
+	AddIconToken("$7_class_icon$", "PerkIcon.png", Vec2f(36, 36), 7);
 
 	addPlayerPerk(this, "No Perk", "$0_class_icon$", "No Perk", "---- No Perk ----");
 
-	addPlayerPerk(this, "---- Sharp Shooter ----", "$1_class_icon$", "Sharp Shooter",
-						"---- Perk: Sharp Shooter ----\n\n"+"$1_class_icon$"+"Marksman"
-						+"\n                   - Bullet DMG: 150%"
+	addPlayerPerk(this, "Sharp Shooter", "$1_class_icon$", "Sharp Shooter",
+						"Perk: Sharp Shooter\n\n"+"$1_class_icon$"+"Marksman"
+						+"\n                   - Headshot damage: 150%       "
 						+"\n                   - Increased accuracy"
 						+"\n\n                  Long reload"
-						+"\n                   - Reload time: 200%   "
+						+"\n                   - Reload time: 150%     "
 						);
 						
-	addPlayerPerk(this, "---- Supply Chain ----", "$2_class_icon$", "Supply Chain",
-						"---- Perk: Supply Chain ----\n\n"+"$2_class_icon$"+"Wealthy"
+	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Supply Chain",
+						"Perk: Wealthy\n\n"+"$2_class_icon$"+"Supply Chain"
 						+"\n                   - Twice as much cash earned"
 						+"\n\n                  Highroller"
 						+"\n                   - Lose half of all money on death          "
 						);
 
-	addPlayerPerk(this, "---- Bloodthirsty ----", "$3_class_icon$", "Bloodthirsty",
-						"---- Perk: Bloodthirsty ----\n\n"+"$3_class_icon$"+"Vampirism"
-						+"\n                   - Heal on each kill"
-						+"\n\n                  Silver bullets"
-						+"\n                   - Take 130% damage from bullets       "
-						);
-
-
-	addPlayerPerk(this, "---- Operator ----", "$4_class_icon$", "Operator",
-						"---- Perk: Operator ----\n\n"+"$4_class_icon$"+"Operator"
+	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
+						"Perk: Lucky\n\n"+"$4_class_icon$"+"Lucky"
 						+"\n                   - Na"
 						+"\n\n                   Na"
 						+"\n                   - Na   "
 						);
 
-	
+	addPlayerPerk(this, "Bloodthirsty", "$3_class_icon$", "Bloodthirsty",
+						"Perk: Bloodthirsty\n\n"+"$3_class_icon$"+"Vampirism"
+						+"\n                   - Regenerate health on each kill"
+						+"\n\n                  Healing"
+						+"\n                   - Faster rate of regeneration   "
+						+"\n\n                  Silver bullets"
+						+"\n                   - Take 130% damage from bullets       "
+						);
 
-	addPlayerPerk(this, "---- Death Incarnate ----", "$5_class_icon$", "Death Incarnate",
-						"---- I am Death Incarnate! ----\n\n"+"$5_class_icon$"+"Bring em' on!"
+
+	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",
+						"Perk: Operator\n\n"+"$5_class_icon$"+"Operator"
+						+"\n                   - Na"
+						+"\n\n                   Na"
+						+"\n                   - Na   "
+						);
+
+	addPlayerPerk(this, "Camouflage", "$6_class_icon$", "Camouflage",
+						"Perk: Camouflage\n\n"+"$6_class_icon$"+"Ghillie netting"
+						+"\n                   - Become a mobile bush!"
+						+"\n\n                   Na"
+						+"\n                   - Na   "
+						);					
+
+	addPlayerPerk(this, "Death Incarnate", "$7_class_icon$", "Death Incarnate",
+						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
 						+"\n                   - Take twice as much damage     "
 						+"\n                   - XP Gain: 300%  "
 						);
