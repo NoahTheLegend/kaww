@@ -79,7 +79,7 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 				color_dark.set(255, 117, 150*Maths::Clamp((blob.getHealth() / blob.getInitialHealth())*1.5, 0.2, 1.0), 44);
 
 				GUI::DrawRectangle(Vec2f(heartpos.x - dim.x - 2, heartpos.y - 2), Vec2f(heartpos.x + dim.x + 2, heartpos.y + dim.y + 3));
-				GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 2, heartpos.y + 2), Vec2f(heartpos.x + dim.x - 2, heartpos.y + dim.y - 2), SColor(0xff7f1140));
+				GUI::DrawRectangle(Vec2f(heartpos.x - dim.x + 2, heartpos.y + 2), Vec2f(heartpos.x + dim.x - 2, heartpos.y + dim.y - 2), SColor(0xff7a0f27));
 
 				if (blob.getHealth() >= 0.25)
 				{
@@ -93,8 +93,11 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 				GUI::DrawIcon("HealthIcon", 0, Vec2f(32, 32), Vec2f(heartpos.x - dim.x - 40, heartpos.y - 18), 1.0);
 
 				// hp text
+				int hp = Maths::Ceil(blob.getHealth()*100);
+				int maxhp = Maths::Ceil(blob.getInitialHealth()*100);
+
 				GUI::SetFont("menu");
-				GUI::DrawTextCentered(""+Maths::Ceil(blob.getHealth()*100), Vec2f(heartpos.x - dim.x - 13, heartpos.y + 12), SColor(0xffffffff));
+				GUI::DrawShadowedTextCentered(""+hp, Vec2f(heartpos.x - dim.x - 13, heartpos.y + 12), hp < maxhp / 3 ? SColor(0xff9c1010) : (hp == maxhp ? SColor(0xffc2feb1) : SColor(0xffffffff)));
 			}
 		}
 	}
@@ -214,10 +217,40 @@ void onRender(CSprite@ this)
 	renderBox(ul + Vec2f(dim.x + 46, 0), width*1.2, 1.0f); //width*1.9
 	renderHPBar(blob, ul);
 
+	// draw inventory 
+	Vec2f tl = Vec2f(248, getScreenHeight()-66); 
 	
+	SColor col;
+	CInventory@ inv = blob.getInventory();
+	string[] drawn;
+	for (int i = 0; i < inv.getItemsCount(); i++)
+	{
+		CBlob@ item = inv.getItem(i);
+		const string name = item.getName();
+		if (drawn.find(name) == -1)
+		{
+			const int quantity = blob.getBlobCount(name);
+			drawn.push_back(name);
+
+			GUI::DrawIcon(item.inventoryIconName, item.inventoryIconFrame, item.inventoryFrameDimension, tl + Vec2f(0 + (drawn.length - 1) * 34, -6), 1.0f);
+
+			f32 ratio = float(quantity) / float(item.maxQuantity);
+			col = ratio > 0.4f ? SColor(255, 255, 255, 255) :
+			      ratio > 0.2f ? SColor(255, 255, 255, 128) :
+			      ratio > 0.1f ? SColor(255, 255, 128, 0) : SColor(255, 255, 0, 0);
+
+			GUI::SetFont("menu");
+			Vec2f dimensions(0,0);
+			string disp = "" + quantity;
+			GUI::GetTextDimensions(disp, dimensions);
+			GUI::DrawText(disp, tl + Vec2f(14 + (drawn.length - 1) * 34 - dimensions.x/2 , 24), col);
+		}
+	}
+
 	
 	// draw xp bar
 	renderEXPBar(blob, ul - Vec2f(10,0));
+
 
 	// draw class icon
 	int icon_num = 0;
@@ -247,6 +280,49 @@ void onRender(CSprite@ this)
 	}
 
 	GUI::DrawIcon("ClassIconSimple.png", icon_num, Vec2f(48, 48), Vec2f(icon_num == 0 ? -14 : 46, getScreenHeight()-166), 2);
+
+
+	CPlayer@ player = blob.getPlayer();
+
+	if (player !is null)
+	{
+		// draw perk icon
+		int icon_num = 0;
+		if (getRules().get_string(player.getUsername() + "_perk") == "Sharp Shooter")
+		{
+			icon_num = 1;
+		}
+		else if (getRules().get_string(player.getUsername() + "_perk") == "Supply Chain")
+		{
+			icon_num = 2;
+		}
+		else if (getRules().get_string(player.getUsername() + "_perk") == "Bloodthirsty")
+		{
+			icon_num = 3;
+		}
+		else if (getRules().get_string(player.getUsername() + "_perk") == "Lucky")
+		{
+			icon_num = 4;
+		}
+		else if (getRules().get_string(player.getUsername() + "_perk") == "Operator")
+		{
+			icon_num = 5;
+		}
+		else if (getRules().get_string(player.getUsername() + "_perk") == "Camouflage")
+		{
+			icon_num = 6;
+		}
+		else if (getRules().get_string(player.getUsername() + "_perk") == "Death Incarnate")
+		{
+			icon_num = 7;
+		}
+
+		if (icon_num > 0)
+		{
+			GUI::DrawIcon("PerkIcon.png", icon_num, Vec2f(36, 36), Vec2f(180, getScreenHeight()-87), 1);
+		}
+	}
+
 
 	string ammo_amt = blob.get_u32("mag_bullets");
 	string ammo_amt_max = blob.get_u32("mag_bullets_max");

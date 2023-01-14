@@ -19,12 +19,12 @@ void onRender(CSprite@ this)
 	if (getHUD().hasButtons())
 	{
 		getHUD().SetDefaultCursor();
-		getHUD().SetCursorOffset(Vec2f(-6, -6));
+		getHUD().SetCursorOffset(Vec2f(-5, -5)); // -6 is perfect alignment but messes up esc cursor
 	}
 	else
 	{
 		getHUD().SetCursorImage("GunCursor.png", Vec2f(32, 32));
-		getHUD().SetCursorOffset(Vec2f(-38, -38));
+		getHUD().SetCursorOffset(Vec2f(-37, -37)); // -38 is perfect alignment but messes up esc cursor
 
 		if (blob.getName() != "slave") // is not a builder
 		{
@@ -48,5 +48,6 @@ void onRender(CSprite@ this)
 
 	// draw coins
 	const int coins = player !is null ? player.getCoins() : 0;
-	DrawCoinsOnHUD(blob, coins, getActorHUDStartPosition(blob, slotsSize+17) - Vec2f(0,22), slotsSize - 2);
+	Vec2f tl = Vec2f(248, getScreenHeight()-66); 
+	DrawCoinsOnHUD(blob, coins, tl, slotsSize - 1);
 }

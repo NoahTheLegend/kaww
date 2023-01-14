@@ -10,7 +10,7 @@ void drawBucketHud( float bucketAmount, float bucketCost )
 {
 	u8 frame = bucketAmount / bucketCost;
 
-	Vec2f HUDpos = Vec2f(200, getScreenHeight() - 80.0f);
+	Vec2f HUDpos = Vec2f(200, getScreenHeight() - 100.0f);
 	GUI::DrawIcon("MedicHUD.png", frame, Vec2f(50, 10), HUDpos);
 }
 

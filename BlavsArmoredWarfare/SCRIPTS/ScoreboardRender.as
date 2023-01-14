@@ -11,8 +11,8 @@ int hovered_rank = -1;
 
 float scoreboardMargin = 52.0f;
 float scrollOffset = 0.0f;
-float scrollSpeed = 4.0f;
-float maxMenuWidth = 700;
+float scrollSpeed = 5.0f;
+float maxMenuWidth = 600;
 float screenMidX = getScreenWidth()/2;
 
 bool mouseWasPressed2 = false;
@@ -23,15 +23,15 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	if (players.size() <= 0 || team is null)
 		return topleft.y;
 
-
 	CRules@ rules = getRules();
 	Vec2f orig = topleft; //save for later
 
-	f32 lineheight = 16;
-	f32 padheight = 6;
+	f32 lineheight = 18;
+	f32 padheight = 7;
 	f32 stepheight = lineheight + padheight;
 	Vec2f bottomright(Maths::Min(getScreenWidth() - 100, screenMidX+maxMenuWidth), topleft.y + (players.length + 5.5) * stepheight);
 	GUI::DrawPane(topleft, bottomright, team.color);
+	
 
 	//offset border
 	topleft.x += stepheight;
@@ -44,7 +44,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(getTranslatedString(team.getName()), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Players: {PLAYERCOUNT}").replace("{PLAYERCOUNT}", "" + players.length), Vec2f(bottomright.x - 400, topleft.y), SColor(0xffffffff));
 
-	topleft.y += stepheight * 2;
+	topleft.y += stepheight * 1.5;
 
 	const int accolades_start = 700;
 
@@ -57,7 +57,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(getTranslatedString("Assists"), Vec2f(bottomright.x - 120, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 50, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Accolades"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
-	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 100, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 92, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 0.5f;
 
@@ -158,7 +158,6 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 				playername = username;
 				clantag = "";
 			}
-
 		}
 
 		//head icon
@@ -185,7 +184,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		s32 ping_in_ms = s32(p.getPing() * 1000.0f / 30.0f);
 
 		//how much room to leave for names and clantags
-		float name_buffer = 56.0f;
+		float name_buffer = 57.0f;
 		Vec2f clantag_actualsize(0, 0);
 
 		//render the player + stats
@@ -232,10 +231,9 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			}
 		}
 
-		int rank_icon_start = 0;
-		float x = bottomright.x - accolades_start - 88;
+		float x = bottomright.x - accolades_start - 80;
 		float extra = 8;
-		GUI::DrawIcon("Ranks", rank_icon_start + level - 1, Vec2f(32, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
+		GUI::DrawIcon("Ranks", level - 1, Vec2f(32, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
 
 		if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
 		{
