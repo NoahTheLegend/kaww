@@ -152,6 +152,25 @@ void onInit(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (this.getHealth() - damage/2 <= 0 && this.getHealth() != 0.01f)
+	{
+		if (this.hasBlob("aceofspades", 1))
+		{
+
+			this.TakeBlob("aceofspades", 1);
+
+			this.server_SetHealth(0.01f);
+
+			if (this.isMyPlayer())
+			{
+				this.getSprite().PlaySound("FatesFriend.ogg", 1.0);
+				SetScreenFlash(30,   255,   150,   150,   0.4);
+			}
+
+			return damage = 0;
+		}
+	}
+
 	if (this.getPlayer() !is null)
 	{
 		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Death Incarnate")
@@ -329,12 +348,40 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 {
 	bool ismyplayer = this.isMyPlayer();
 	bool responsible = ismyplayer;
-	if (isServer() && !ismyplayer)
+	if (isServer())
 	{
 		CPlayer@ p = this.getPlayer();
 		if (p !is null)
 		{
-			responsible = p.isBot();
+			if (!ismyplayer)
+			{
+				responsible = p.isBot();
+			}
+			
+			if (getGameTime() % 30 == 0 && getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+			{
+				CInventory@ inv = this.getInventory();
+				if (inv !is null)
+				{
+					int xslots = inv.getInventorySlots().x;
+					int yslots = inv.getInventorySlots().y;
+					CBlob@ item = inv.getItem(xslots * yslots - 1);
+					
+					if (item !is null) // theres an item in the last slot
+					{
+						if (!this.hasBlob("aceofspades", 1)) // but we have the ace already
+						{
+							item.server_RemoveFromInventories();
+						}
+					}
+					else if (!this.hasBlob("aceofspades", 1))  // theres no item in the last slot
+					{
+						// give ace
+						CBlob@ b = server_CreateBlob("aceofspades", -1, this.getPosition());
+						if (b !is null) this.server_PutInInventory(b);
+					}
+				}
+			}
 		}
 	}
 
@@ -788,25 +835,6 @@ void onTick(CBlob@ this)
 	if (!this.get("moveVars", @moveVars)) return;	
 
 	ManageGun(this, archer, moveVars, infantry);
-
-	/* shouldnt need to do this
-	if (!this.isOnGround()) // ladders sometimes dont work
-	{
-		CBlob@[] blobs;
-		getMap().getBlobsInRadius(this.getPosition(), this.getRadius(), blobs);
-		for (u16 i = 0; i < blobs.length; i++)
-		{
-			if (blobs[i] !is null && blobs[i].getName() == "ladder")
-			{
-				if (this.isOverlapping(blobs[i])) 
-				{
-					this.getShape().getVars().onladder = true;
-					break;
-				}
-			}
-		}
-	}
-	*/
 	
 	if (this.get_u8("reloadqueue") > 0) this.sub_u8("reloadqueue", 1);
 	CControls@ controls = this.getControls();

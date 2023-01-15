@@ -76,17 +76,18 @@ void InitClasses(CBlob@ this)
 						);
 						
 	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Supply Chain",
-						"Perk: Wealthy\n\n"+"$2_class_icon$"+"Supply Chain"
+						"Perk: Wealthy\n\n"+"$2_class_icon$"+"Highroller"
 						+"\n                   - Twice as much cash earned"
-						+"\n\n                  Highroller"
+						+"\n\n                  Health Insurance"
 						+"\n                   - Lose half of all money on death          "
 						);
 
 	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
-						"Perk: Lucky\n\n"+"$4_class_icon$"+"Lucky"
-						+"\n                   - Na"
-						+"\n\n                   Na"
-						+"\n                   - Na   "
+						"Perk: Lucky\n\n"+"$4_class_icon$"+"Fate's Friend"
+						+"\n                   - Always survive on 1 health,        "
+						+"\n                   applies to vehicles as well        "
+						+"\n\n                  Lucky Charm"
+						+"\n                   - Must always hold an Ace of Spades         "
 						);
 
 	addPlayerPerk(this, "Bloodthirsty", "$3_class_icon$", "Bloodthirsty",
