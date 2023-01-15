@@ -52,14 +52,8 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	{
 		if (blob.hasTag("vehicle") && this.getTeamNum() != blob.getTeamNum())
 		{
-			if (blob.getHealth() - 12.0f < 0.0f)
-			{
-				blob.server_Die();
-			}
-			else
-			{
-				blob.server_SetHealth(blob.getHealth() - 12.0f);
-			}
+			this.server_Hit(blob, blob.getPosition(), Vec2f_zero, 22.0f, Hitters::explosion);
+
 			if (blob.isOnMap())
 			{
 				Vec2f vel = blob.getVelocity();

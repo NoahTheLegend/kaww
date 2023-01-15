@@ -84,10 +84,10 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
 						"Perk: Lucky\n\n"+"$4_class_icon$"+"Fate's Friend"
-						+"\n                   - Always survive on 1 health,        "
-						+"\n                   applies to vehicles as well        "
+						+"\n                   - Always survive on 1 health,          "
+						+"\n                   applies to vehicles as well          "
 						+"\n\n                  Lucky Charm"
-						+"\n                   - Must carry an Ace of Spades         "
+						+"\n                   - Must carry an Ace of Spades           "
 						);
 
 	addPlayerPerk(this, "Bloodthirsty", "$3_class_icon$", "Bloodthirsty",
@@ -304,7 +304,7 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 				if (caller.isMyPlayer())
 				{
-					// its on server !
+					// sound
 					this.getSprite().PlaySound("/SwitchPerk", 1.0, perkconfig == "No Ammo" ? 0.8 : 1.1);
 
 					// chat message

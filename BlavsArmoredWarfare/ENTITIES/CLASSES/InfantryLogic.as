@@ -156,15 +156,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (this.hasBlob("aceofspades", 1))
 		{
-
 			this.TakeBlob("aceofspades", 1);
 
 			this.server_SetHealth(0.01f);
 
-			if (this.isMyPlayer())
+			if (this.isMyPlayer()) // are we on server?
 			{
-				this.getSprite().PlaySound("FatesFriend.ogg", 1.0);
-				SetScreenFlash(32,   255,   150,   150,   0.3);
+				this.getSprite().PlaySound("FatesFriend.ogg", 1.2);
+				SetScreenFlash(42,   255,   150,   150,   0.28);
 			}
 
 			return damage = 0;
