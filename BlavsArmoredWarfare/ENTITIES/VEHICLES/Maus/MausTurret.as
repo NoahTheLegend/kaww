@@ -150,6 +150,22 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
+	if (this.isFacingLeft() && !this.hasTag("facing left"))
+	{
+		this.getShape().SetOffset(Vec2f(0.0f, -14.0f));
+		this.Tag("facing left");
+		this.Untag("facing right");
+		this.set_f32("gunelevation", 360 - this.get_f32("gunelevation"));
+	}
+	
+	else if (!this.isFacingLeft() && !this.hasTag("facing right"))
+	{
+		this.getShape().SetOffset(Vec2f(0.0f, -14.0f));
+		this.Untag("facing left");
+		this.Tag("facing right");
+		this.set_f32("gunelevation", 360 - this.get_f32("gunelevation"));
+	}
+
 	CSprite@ sprite = this.getSprite();
 	if (this.getTickSinceCreated() == 1 || this.hasTag("pink"))
 	{
