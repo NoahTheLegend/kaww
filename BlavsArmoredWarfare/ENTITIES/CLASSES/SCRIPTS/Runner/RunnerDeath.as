@@ -24,7 +24,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		CBlob@ damageowner = hitterBlob.getDamageOwnerPlayer().getBlob();
 		if (damageowner !is null)
 		{
-			if (damageowner.getSprite() !is null && !this.hasTag("dead") && this !is hitterBlob && getLocalPlayer() !is null && getLocalPlayer().getTeamNum() != this.getTeamNum())
+			if (damageowner.getSprite() !is null && !this.hasTag("dead") && customData != Hitters::spikes && this !is hitterBlob && getLocalPlayer() !is null && getLocalPlayer().getTeamNum() != this.getTeamNum())
 			{ 
 				if (hitterBlob.getPosition().y < this.getPosition().y - 3.2f && !hitterBlob.hasTag("flesh"))
 				{
@@ -36,6 +36,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 					Sound::Play("Hitmarker.ogg", damageowner.getPosition(), 1.0f, 0.75f + ((60 - (this.getHealth()/this.getInitialHealth())*60) * 0.01f) + XORRandom(5)*0.01f);
 					//damageowner.set_u8("hitmarker", 7); // is actually 7
 				}
+			}
+
+			// player is using bloodthirsty, heal him/her  (this is a commentary on how the gender spectrum is nonexistent)
+			if (getRules().get_string(damageowner.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+			{
+				damageowner.server_Heal(0.05f);
 			}
 		}
 	}
