@@ -1185,8 +1185,9 @@ void onTick(CRules@ this)
 		else if (this.get_s16("blueTickets") > 50 && this.get_s16("redTickets") > 50
 		&& getMap() !is null && getMap().tilemapwidth <= 300)
 		{
-			this.set_s16("blueTickets", 50);
-			this.set_s16("redTickets", 50);
+			u16 count = 10 + getPlayersCount();
+			this.set_s16("blueTickets", count);
+			this.set_s16("redTickets", count);
 			this.Sync("blueTickets", true);
 			this.Sync("redTickets", true);
 		}
