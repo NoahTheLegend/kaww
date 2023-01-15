@@ -403,6 +403,7 @@ void onTick(CSprite@ this)
 		{
 			Animation@ anim = frontarm.getAnimation("no_arrow");
 			if (anim !is null) frontarm.SetAnimation(anim);
+			
 		}	
 		else if (blob.get_u32("mag_bullets") > 0)
 		{

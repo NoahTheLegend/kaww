@@ -19,7 +19,7 @@ void onPlayerInfoChanged(CSprite@ this)
 
 void LoadSprites(CSprite@ this)
 {
-	ensureCorrectRunnerTexture(this, "mp5", "Mp5");
+	ensureCorrectRunnerTexture(this, this.getBlob().getName(), this.getBlob().getName().toUpper());
 	string texname = getRunnerTextureName(this);
 
 	this.RemoveSpriteLayer("frontarm");
@@ -31,8 +31,12 @@ void LoadSprites(CSprite@ this)
 		animcharge.AddFrame(40);
 		Animation@ animshoot = frontarm.addAnimation("fired", 0, false);
 		animshoot.AddFrame(32);
+		Animation@ camogun = frontarm.addAnimation("camogun", 0, false);
+		camogun.AddFrame(56);
 		Animation@ animnoarrow = frontarm.addAnimation("no_arrow", 0, false);
-		animnoarrow.AddFrame(40);
+		animnoarrow.AddFrame(33);
+		Animation@ camogunnoarrow = frontarm.addAnimation("camogunno_arrow", 0, false);
+		camogunnoarrow.AddFrame(57);
 		frontarm.SetOffset(Vec2f(-1.0f, 5.0f + config_offset));
 		frontarm.SetAnimation("fired");
 		frontarm.SetVisible(false);
@@ -49,6 +53,26 @@ void LoadSprites(CSprite@ this)
 		backarm.SetAnimation("default");
 		backarm.SetVisible(false);
 	}
+
+	this.RemoveSpriteLayer("camo");
+	CSpriteLayer@ camo = this.addSpriteLayer("camo", "Camo.png" , 32, 32, 0, 0);
+
+	if (camo !is null)
+	{
+		Animation@ anim = camo.addAnimation("movement", 4, true);
+		anim.AddFrame(0);
+		anim.AddFrame(1);
+		anim.AddFrame(2);
+		anim.AddFrame(3);
+
+		Animation@ noanim = camo.addAnimation("default", 0, false);
+		noanim.AddFrame(0);
+
+		camo.SetOffset(Vec2f(0.0f, 0.0f + config_offset));
+		camo.SetAnimation("movement");
+		camo.SetVisible(true);
+		camo.SetRelativeZ(0.5f);
+	}
 }
 
 void setArmValues(CSpriteLayer@ arm, bool visible, f32 angle, f32 relativeZ, string anim, Vec2f around, Vec2f offset)
@@ -59,11 +83,6 @@ void setArmValues(CSpriteLayer@ arm, bool visible, f32 angle, f32 relativeZ, str
 
 		if (visible)
 		{
-			if (!arm.isAnimation(anim))
-			{
-				arm.SetAnimation(anim);
-			}
-
 			arm.SetOffset(offset);
 			arm.ResetTransform();
 			arm.SetRelativeZ(relativeZ);
@@ -76,6 +95,40 @@ void onTick(CSprite@ this)
 {
 	// store some vars for ease and speed
 	CBlob@ blob = this.getBlob();
+	bool isCamo = false;
+
+	// camo netting
+	if (blob.getPlayer() !is null)
+	{
+		CSpriteLayer@ camo = this.getSpriteLayer("camo");
+		CSpriteLayer@ frontarm = this.getSpriteLayer("frontarm");
+
+		if (camo !is null && frontarm !is null)
+		{
+			if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
+			{
+				isCamo = true;
+
+				if (blob.getShape().vellen > 0.1f)
+				{
+					camo.SetAnimation("movement");
+				}
+				else if (camo.isAnimationEnded())
+				{
+					camo.SetAnimation("default");
+				}
+				
+				camo.SetVisible(true);
+				camo.SetOffset(this.getOffset() + Vec2f(blob.getShape().vellen > 0.05f ? -1 : 0, 0));
+				frontarm.SetAnimation("camogun");
+			}
+			else
+			{
+				camo.SetVisible(false);
+				frontarm.SetAnimation("fired");
+			}
+		}
+	}
 
 	if (blob.hasTag("dead"))
 	{
@@ -266,13 +319,31 @@ void onTick(CSprite@ this)
 		defaultIdleAnim(this, blob, direction);
 	}
 
+	// anti tank has 2 different states
+	if (blob.getName() == "antitank")
+	{
+		CSpriteLayer@ frontarm = this.getSpriteLayer("frontarm");
+		if (frontarm !is null)
+		{
+			if (blob.get_u32("mag_bullets") == 0)
+			{
+				Animation@ anim = frontarm.getAnimation(isCamo ? "camogunno_arrow" : "no_arrow");
+				if (anim !is null) frontarm.SetAnimation(anim);
+			}	
+			else if (blob.get_u32("mag_bullets") > 0)
+			{
+				Animation@ anim = frontarm.getAnimation(isCamo ? "camogun" : "fired");
+				if (anim !is null) frontarm.SetAnimation(anim);
+			}
+		}
+	}
+
 	//arm anims
 	Vec2f armOffset = Vec2f(-1.0f, 4.0f + config_offset);
+	f32 armangle = -angle;
 
 	if (showgun)
 	{
-		f32 armangle = -angle;
-
 		if (this.isFacingLeft())
 		{
 			armangle = 180.0f - angle;
@@ -288,36 +359,64 @@ void onTick(CSprite@ this)
 			armangle += 360.0f;
 		}
 
-		if (!blob.isKeyPressed(key_action1) && !blob.isKeyPressed(key_action2)) //running/walking
+		if (!blob.isKeyPressed(key_action2))
 		{
-			armOffset -= Vec2f(0.0f,Maths::Abs(blob.getVelocity().x)*0.5f);
-
 			if (this.isFacingLeft())
 			{
-				armangle += Maths::Abs(blob.getVelocity().x)*-10.0f;
+				if (armangle > 70)
+				{
+					armOffset -= Vec2f((armangle - 70)/8, 0);
+				}
+
+				if (armangle < -40)
+				{
+					armOffset -= Vec2f(-(armangle + 40)/7, -(armangle + 40)/14);
+				}
 			}
 			else
 			{
-				armangle += Maths::Abs(blob.getVelocity().x)*10.0f;
+				if (armangle < -70)
+				{
+					armOffset -= Vec2f(-(armangle + 70)/8, 0);
+				}
+
+				if (armangle > 40)
+				{
+					armOffset -= Vec2f((armangle - 40)/7, (armangle - 40)/14);
+				}
+			}
+		}
+		else
+		{
+			if (!blob.isKeyPressed(key_action1) && !blob.isKeyPressed(key_action2)) //running/walking
+			{
+				armOffset -= Vec2f(0.0f,Maths::Abs(blob.getVelocity().x)*0.5f);
+
+				if (this.isFacingLeft())
+				{
+					armangle += Maths::Abs(blob.getVelocity().x)*-10.0f;
+				}
+				else
+				{
+					armangle += Maths::Abs(blob.getVelocity().x)*10.0f;
+				}
 			}
 		}
 		
 		if (!blob.isOnGround()) //in air
 		{
-			armOffset -= Vec2f(0,2);
+			armOffset -= Vec2f(0,1);
 		}
 		else if (blob.isKeyPressed(key_action2)) //ads
 		{
 			armOffset -= Vec2f(2.5f, 1.0f);
 		}
 		
-
 		DrawGun(this, blob, archer, armangle, armOffset);
 	}
 	else
 	{
 		setArmValues(this.getSpriteLayer("frontarm"), false, 0.0f, 0.1f, "default", Vec2f(0, 0), armOffset);
-		//setArmValues(this.getSpriteLayer("backarm"), false, 0.0f, -0.1f, "default", Vec2f(0, 0), armOffset);
 	}
 
 	//set the head anim
