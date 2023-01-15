@@ -64,14 +64,15 @@ void LoadSprites(CSprite@ this)
 		anim.AddFrame(1);
 		anim.AddFrame(2);
 		anim.AddFrame(3);
-
 		Animation@ noanim = camo.addAnimation("default", 0, false);
 		noanim.AddFrame(0);
+		Animation@ dead = camo.addAnimation("death", 0, false);
+		dead.AddFrame(4);
 
 		camo.SetOffset(Vec2f(0.0f, 0.0f + config_offset));
 		camo.SetAnimation("movement");
-		camo.SetVisible(true);
-		camo.SetRelativeZ(0.5f);
+		camo.SetVisible(false);
+		camo.SetRelativeZ(0.26f);
 	}
 }
 
@@ -100,11 +101,13 @@ void onTick(CSprite@ this)
 	// camo netting
 	if (blob.getPlayer() !is null)
 	{
+		
 		CSpriteLayer@ camo = this.getSpriteLayer("camo");
 		CSpriteLayer@ frontarm = this.getSpriteLayer("frontarm");
 
 		if (camo !is null && frontarm !is null)
 		{
+			
 			if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
 			{
 				isCamo = true;
@@ -119,7 +122,17 @@ void onTick(CSprite@ this)
 				}
 				
 				camo.SetVisible(true);
-				camo.SetOffset(this.getOffset() + Vec2f(blob.getShape().vellen > 0.05f ? -1 : 0, 0));
+				if (blob.get_bool("isReloading"))
+				{
+					camo.SetOffset(this.getOffset());
+				}
+				else
+				{
+					camo.SetOffset(this.getOffset() + Vec2f((blob.getShape().vellen > 0.05f) ? -1 : 0, 0));
+				}
+
+				//camo.SetRelativeZ(0.26f);
+				
 				frontarm.SetAnimation("camogun");
 			}
 			else
@@ -137,6 +150,9 @@ void onTick(CSprite@ this)
 			this.SetAnimation("dead");
 			this.RemoveSpriteLayer("frontarm");
 			this.RemoveSpriteLayer("backarm");
+
+			CSpriteLayer@ camo = this.getSpriteLayer("camo");
+			camo.SetAnimation("death");
 		}
 
 		Vec2f vel = blob.getVelocity();

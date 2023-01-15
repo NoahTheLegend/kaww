@@ -108,7 +108,7 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Camouflage", "$6_class_icon$", "Camouflage",
 						"Perk: Camouflage\n\n"+"$6_class_icon$"+"Ghillie netting"
-						+"\n                   - Become a mobile bush!"
+						+"\n                   - Turn into a mobile bush!     "
 						+"\n\n                   Na"
 						+"\n                   - Na   "
 						);					
