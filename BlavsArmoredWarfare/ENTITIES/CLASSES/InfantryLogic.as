@@ -853,6 +853,14 @@ void onTick(CBlob@ this)
 			this.Sync("reloadqueue", true);
 		}
 	}
+
+	if ((this.getTeamNum() == 0 && getRules().get_s16("blueTickets") == 0)
+	|| (this.getTeamNum() == 1 && getRules().get_s16("redTickets") == 0))
+	{
+		this.SetLightRadius(8.0f);
+		this.SetLightColor(SColor(255, 255, 255, 255));
+		this.SetLight(true);
+	}
 	
 	this.set_bool("is_a1", false);
 	this.set_bool("just_a1", false);
