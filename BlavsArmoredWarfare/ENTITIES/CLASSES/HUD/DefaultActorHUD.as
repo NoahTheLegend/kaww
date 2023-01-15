@@ -169,6 +169,7 @@ void onRender(CSprite@ this)
 
 		if (player !is null)
 		{
+			
 			float exp = 0;
 			// load exp
 			if (blob.getPlayer() !is null)
@@ -205,6 +206,42 @@ void onRender(CSprite@ this)
 			GUI::DrawText(rank + " | "+player.getCharacterName(), Vec2f(60, 10), SColor(0xffffffff));
 			//GUI::SetFont("text");
 			//GUI::DrawText("\n\nNext rank: "+RANKS[level].toLower(), Vec2f(60, 10), SColor(0xffffffff));
+
+			// draw perk icon
+			int icon_num = 0;
+			if (getRules().get_string(player.getUsername() + "_perk") == "Sharp Shooter")
+			{
+				icon_num = 1;
+			}
+			else if (getRules().get_string(player.getUsername() + "_perk") == "Supply Chain")
+			{
+				icon_num = 2;
+			}
+			else if (getRules().get_string(player.getUsername() + "_perk") == "Bloodthirsty")
+			{
+				icon_num = 3;
+			}
+			else if (getRules().get_string(player.getUsername() + "_perk") == "Lucky")
+			{
+				icon_num = 4;
+			}
+			else if (getRules().get_string(player.getUsername() + "_perk") == "Operator")
+			{
+				icon_num = 5;
+			}
+			else if (getRules().get_string(player.getUsername() + "_perk") == "Camouflage")
+			{
+				icon_num = 6;
+			}
+			else if (getRules().get_string(player.getUsername() + "_perk") == "Death Incarnate")
+			{
+				icon_num = 7;
+			}
+
+			if (icon_num > 0)
+			{
+				GUI::DrawIcon("PerkIcon.png", icon_num, Vec2f(36, 36), Vec2f(180, getScreenHeight()-87), 1);
+			}
 		}
 	}
 	
@@ -280,48 +317,6 @@ void onRender(CSprite@ this)
 	}
 
 	GUI::DrawIcon("ClassIconSimple.png", icon_num, Vec2f(48, 48), Vec2f(icon_num == 0 ? -14 : 46, getScreenHeight()-166), 2);
-
-	CPlayer@ player = blob.getPlayer();
-
-	if (player !is null)
-	{
-		// draw perk icon
-		int icon_num = 0;
-		if (getRules().get_string(player.getUsername() + "_perk") == "Sharp Shooter")
-		{
-			icon_num = 1;
-		}
-		else if (getRules().get_string(player.getUsername() + "_perk") == "Supply Chain")
-		{
-			icon_num = 2;
-		}
-		else if (getRules().get_string(player.getUsername() + "_perk") == "Bloodthirsty")
-		{
-			icon_num = 3;
-		}
-		else if (getRules().get_string(player.getUsername() + "_perk") == "Lucky")
-		{
-			icon_num = 4;
-		}
-		else if (getRules().get_string(player.getUsername() + "_perk") == "Operator")
-		{
-			icon_num = 5;
-		}
-		else if (getRules().get_string(player.getUsername() + "_perk") == "Camouflage")
-		{
-			icon_num = 6;
-		}
-		else if (getRules().get_string(player.getUsername() + "_perk") == "Death Incarnate")
-		{
-			icon_num = 7;
-		}
-
-		if (icon_num > 0)
-		{
-			GUI::DrawIcon("PerkIcon.png", icon_num, Vec2f(36, 36), Vec2f(180, getScreenHeight()-87), 1);
-		}
-	}
-
 
 	string ammo_amt = blob.get_u32("mag_bullets");
 	string ammo_amt_max = blob.get_u32("mag_bullets_max");

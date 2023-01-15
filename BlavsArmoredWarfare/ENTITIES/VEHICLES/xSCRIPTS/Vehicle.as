@@ -887,32 +887,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (this.hasTag("turret")) this.set_u32("show_hp", getGameTime() + turretShowHPSeconds * 30);
 
 	const bool is_explosive = customData == Hitters::explosion || customData == Hitters::keg;
-	//bool at_bunker;
-//
-	//if (is_explosive && !getMap().rayCastSolidNoBlobs(thisPos, hitterBlobPos))
-	//{
-	//	HitInfo@[] infos;
-	//	Vec2f hitvec = hitterBlobPos - thisPos;
-	//	if (getMap().getHitInfosFromRay(thisPos, -hitvec.Angle(), hitvec.getLength(), this, @infos))
-	//	{
-	//		for (u16 i = 0; i < infos.length; i++)
-	//		{
-	//			CBlob@ hi = infos[i].blob;
-	//			if (hi is null) continue;
-	//			if (hi.hasTag("bunker")) 
-	//			{
-	//				at_bunker = true;
-	//				break;
-	//			}
-	//		}
-	//	}
-	//}
-//
-	//if (at_bunker)
-	//{
-	//	if (XORRandom(100) < 33) return 0;
-	//	else damage *= 0.33f;
-	//}
 
 	bool isHitUnderside = false;
 	bool isHitBackside = false;
@@ -979,12 +953,44 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (this.hasTag("turret"))
 	{
-		if (this.getHealth()-damage <= 0.0f)
+		// broken logic for turrets
+		if (this.getHealth()-damage/2 <= 0.0f)
 		{
 			this.Tag("broken");
 			this.server_SetHealth(0.01f);
 
 			return 0;
+		}
+	}
+	else
+	{
+		// lucky perk
+		if (this.getHealth()-damage/2 <= 0.0f && this.getHealth() != 0.01f)
+		{
+			AttachmentPoint@ drv = this.getAttachments().getAttachmentPointByName("DRIVER");
+			CBlob@ driver = drv.getOccupied();
+			if (drv !is null && driver !is null)
+			{
+				if (isServer())
+				{
+					if (driver.hasBlob("aceofspades", 1))
+					{
+						driver.TakeBlob("aceofspades", 1);
+
+						this.server_SetHealth(0.01f);
+
+						if (driver.isMyPlayer()) // are we on server?
+						{
+							driver.getSprite().PlaySound("FatesFriend.ogg", 1.2);
+							SetScreenFlash(42,   255,   150,   150,   0.28);
+						}
+
+						this.server_SetHealth(0.01f);
+
+						return 0;
+					}
+				}
+			}
 		}
 	}
 
