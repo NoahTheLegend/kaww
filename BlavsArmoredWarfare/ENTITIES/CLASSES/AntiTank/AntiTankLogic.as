@@ -183,12 +183,55 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 {
 	bool ismyplayer = this.isMyPlayer();
 	bool responsible = ismyplayer;
-	if (isServer() && !ismyplayer)
+	if (isServer())
 	{
 		CPlayer@ p = this.getPlayer();
 		if (p !is null)
 		{
-			responsible = p.isBot();
+			if (!ismyplayer)
+			{
+				responsible = p.isBot();
+			}
+			
+			if (getGameTime() % 45 == 0 && getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+			{
+				CInventory@ inv = this.getInventory();
+				if (inv !is null)
+				{
+					int xslots = inv.getInventorySlots().x;
+					int yslots = inv.getInventorySlots().y;
+					CBlob@ item = inv.getItem(xslots * yslots - 1);
+					
+					if (item !is null) // theres an item in the last slot
+					{
+						if (!this.hasBlob("aceofspades", 1)) // but we have the ace already
+						{
+							item.server_RemoveFromInventories();
+						}
+					}
+					else if (!this.hasBlob("aceofspades", 1))  // theres no item in the last slot
+					{
+						// give ace
+						CBlob@ b = server_CreateBlob("aceofspades", -1, this.getPosition());
+						if (b !is null)
+						{
+							if (this.getInventory().canPutItem(b)) // if there is room to put the item, put it
+							{
+								this.server_PutInInventory(b);
+							}
+							else // no room, must be a weird inventory
+							{
+								// dump the first slot cause fuck it
+								CBlob@ _item = inv.getItem(0);
+								if (_item !is null)
+								{
+									_item.server_RemoveFromInventories();
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 

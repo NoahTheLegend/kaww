@@ -134,7 +134,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		this.getShape().setElasticity(0.2f);
 
 		// disable tags
-		this.Untag("shielding");
 		this.Untag("player");
 		this.getShape().getVars().isladder = false;
 		this.getShape().getVars().onladder = false;
