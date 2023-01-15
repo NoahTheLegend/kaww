@@ -101,13 +101,11 @@ void onTick(CSprite@ this)
 	// camo netting
 	if (blob.getPlayer() !is null)
 	{
-		
 		CSpriteLayer@ camo = this.getSpriteLayer("camo");
 		CSpriteLayer@ frontarm = this.getSpriteLayer("frontarm");
 
 		if (camo !is null && frontarm !is null)
 		{
-			
 			if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
 			{
 				isCamo = true;
@@ -131,8 +129,6 @@ void onTick(CSprite@ this)
 					camo.SetOffset(this.getOffset() + Vec2f((blob.getShape().vellen > 0.05f) ? -1 : 0, 0));
 				}
 
-				//camo.SetRelativeZ(0.26f);
-				
 				frontarm.SetAnimation("camogun");
 			}
 			else
@@ -238,9 +234,23 @@ void onTick(CSprite@ this)
 	}
 	else if (showgun)
 	{
-		if (inair)
+		if (blob.isKeyJustPressed(key_action3) || blob.get_u32("end_stabbing") > getGameTime())
+		{
+			this.SetAnimation("stab");
+		}
+		else if (inair)
 		{
 			this.SetAnimation("shoot_jump");
+
+			if (blob.getVelocity().y > -0.75f)
+			{
+				this.animation.frame = 1;
+			}
+			else
+			{
+				this.animation.frame = 0;
+			}
+			
 		}
 		else if ((left || right) ||
 		         (blob.isOnLadder() && (up || down)))
@@ -357,8 +367,9 @@ void onTick(CSprite@ this)
 	//arm anims
 	Vec2f armOffset = Vec2f(-1.0f, 4.0f + config_offset);
 	f32 armangle = -angle;
+	bool stabbing = blob.get_u32("end_stabbing") > getGameTime();
 
-	if (showgun)
+	if (showgun && !stabbing)
 	{
 		if (this.isFacingLeft())
 		{
