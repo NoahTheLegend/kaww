@@ -77,7 +77,7 @@ void InitClasses(CBlob@ this)
 						
 	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Supply Chain",
 						"Perk: Wealthy\n\n"+"$2_class_icon$"+"Highroller"
-						+"\n                   - Twice as much cash earned"
+						+"\n                   - Twice as much money earned"
 						+"\n\n                  Health Insurance"
 						+"\n                   - Lose half of all money on death          "
 						);
@@ -90,9 +90,9 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Must carry an Ace of Spades           "
 						);
 
-	addPlayerPerk(this, "Bloodthirsty", "$3_class_icon$", "Bloodthirsty",
-						"Perk: Bloodthirsty\n\n"+"$3_class_icon$"+"Vampirism"
-						+"\n                   - Regenerate health on each kill"
+	addPlayerPerk(this, "Bloodthirst", "$3_class_icon$", "Bloodthirsty",
+						"Perk: Bloodthirst\n\n"+"$3_class_icon$"+"Vampirism"
+						+"\n                   - Regenerate health when killing     "
 						+"\n\n                  Healing"
 						+"\n                   - Faster rate of regeneration   "
 						+"\n\n                  Silver bullets"
