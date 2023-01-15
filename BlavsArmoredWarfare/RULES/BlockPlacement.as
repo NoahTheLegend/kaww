@@ -1,8 +1,8 @@
 #include "PlacementCommon.as"
 #include "BuildBlock.as"
 #include "Requirements.as"
-
 #include "GameplayEvents.as"
+#include "CustomBlocks.as"
 
 // Called server side
 void PlaceBlock(CBlob@ this, u8 index, Vec2f cursorPos)
@@ -20,7 +20,7 @@ void PlaceBlock(CBlob@ this, u8 index, Vec2f cursorPos)
 	CPlayer@ p = this.getPlayer();
 	if (p !is null) 
 		name = "User " + p.getUsername();
-
+	
 	CBitStream missing;
 
 	CInventory@ inv = this.getInventory();
@@ -61,6 +61,11 @@ bool serverTileCheck(CBlob@ blob, u8 tileIndex, Vec2f cursorPos)
 
 	if (map.isTileBedrock(backtile.type) || map.isTileSolid(backtile.type) && map.isTileGroundStuff(backtile.type)) 
 		return false;
+
+	if (tileIndex == 7 && !map.isTileGroundBack(backtile.type)) // TILEINDEX FOR COMPACTED DIRT (CDIRT) IS THE PLACE IN BUILDER INVENTORY
+	{
+		return false;
+	}
 
 	// Make sure we actually have support at our cursor pos
 	if (!map.hasSupportAtPos(cursorPos)) 
@@ -179,7 +184,7 @@ void onTick(CBlob@ this)
 				params.write_Vec2f(bc.tileAimPos);
 				this.SendCommand(this.getCommandID("placeBlock"), params);
 				u32 delay = this.get_u32("build delay");
-				SetBuildDelay(this, block.tile < 255 ? delay : delay / 3);
+				SetBuildDelay(this, block.tile < 255 ? delay : delay * 2);
 				bc.blockActive = false;
 			}
 			else if (this.isKeyJustPressed(key_action1) && !bc.sameTileOnBack)

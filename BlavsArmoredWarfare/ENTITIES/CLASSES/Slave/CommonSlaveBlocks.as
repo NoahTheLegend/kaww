@@ -31,6 +31,7 @@
 #include "BuildBlock.as"
 #include "Requirements.as"
 #include "Costs.as"
+#include "CustomBlocks.as";
 
 const string blocks_property = "blocks";
 const string inventory_offset = "inventory offset";
@@ -51,6 +52,9 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 	const bool SCTF = gamemode == "SmallCTF";
 	const bool TTH = gamemode == "TTH";
 	const bool SBX = gamemode == "Sandbox";
+
+	AddIconToken("$cdirt_block$", "World.png", Vec2f(8, 8), CMap::tile_cdirt);
+	AddIconToken("$scrap_block$", "World.png", Vec2f(8, 8), CMap::tile_scrap);
 
 	BuildBlock[] page_0;
 	blocks.push_back(page_0);
@@ -85,18 +89,20 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 		blocks[0].push_back(b);
 	}
 	{
+		BuildBlock b(CMap::tile_scrap, "scrap_block", "$scrap_block$", "Scrap block\nReinforced block of stone, resistable to explosions and direct hits.");
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
+		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
+		blocks[0].push_back(b);
+	}
+	{
+		BuildBlock b(CMap::tile_cdirt, "cdirt_block", "$cdirt_block$", "Compacted dirt\nReinforced block of dirt, almost immune to explosions and bullets, also can be built only on dirt walls.");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 30);
+		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
+		blocks[0].push_back(b);
+	}
+	{
 		BuildBlock b(0, "trap_block", "$trap_block$", "Trap Block\nOnly enemies can pass");
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 25);
-		blocks[0].push_back(b);
-	}
-	{
-		BuildBlock b(0, "ladder", "$ladder$", "Ladder\nAnyone can climb it");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 5);
-		blocks[0].push_back(b);
-	}
-	{
-		BuildBlock b(0, "wooden_platform", "$wooden_platform$", "Wooden Platform\nOne way platform");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
 		blocks[0].push_back(b);
 	}
 	{
@@ -108,10 +114,20 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 		blocks[0].insertAt(9, b);
 	}
 	{
-		BuildBlock b(0, "spikes", "$spikes$", "Spikes\nPlace on Stone Block\nfor Retracting Trap");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
+		BuildBlock b(0, "ladder", "$ladder$", "Ladder\nAnyone can climb it");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 5);
 		blocks[0].push_back(b);
 	}
+	{
+		BuildBlock b(0, "wooden_platform", "$wooden_platform$", "Wooden Platform\nOne way platform");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
+		blocks[0].push_back(b);
+	}
+	//{
+	//	BuildBlock b(0, "spikes", "$spikes$", "Spikes\nPlace on Stone Block\nfor Retracting Trap");
+	//	AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
+	//	blocks[0].push_back(b);
+	//}
 	{
 		AddIconToken("$sandbags_icon$", "SandbagIcon.png", Vec2f(16, 16), 0);
 		BuildBlock b(0, "sandbags", "$sandbags_icon$", "Sandbags\nBags densely filled with sand, great for stopping bullets");
@@ -126,7 +142,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 15);
 		blocks[0].push_back(b);
 	}
-		{
+	{
 		AddIconToken("$bush_icon$", "BushIcon.png", Vec2f(16, 16), 0);
 		BuildBlock b(0, "bush", "$bush_icon$", "Bush\nDisguises small area");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 15);
