@@ -101,17 +101,19 @@ void InitClasses(CBlob@ this)
 
 
 	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",
-						"Perk: Operator\n\n"+"$5_class_icon$"+"Operator"
-						+"\n                   - Na"
-						+"\n\n                   Na"
-						+"\n                   - Na   "
+						"Perk: Operator\n\n"+"$5_class_icon$"+"Crewman"
+						+"\n                   - Improved vehicle handling"
+						+"\n                   - Improved aiming speed"
+						+"\n                   - Improved vehicle repair speed     "
+						+"\n\n                   Sluggish"
+						+"\n                   - Can't sprint     "
 						);
 
 	addPlayerPerk(this, "Camouflage", "$6_class_icon$", "Camouflage",
-						"Perk: Camouflage\n\n"+"$6_class_icon$"+"Ghillie netting"
+						"Perk: Camouflage\n\n"+"$6_class_icon$"+"Ghillie suit"
 						+"\n                   - Turn into a mobile bush!     "
-						+"\n\n                   Na"
-						+"\n                   - Na   "
+						+"\n\n                   Flammable"
+						+"\n                   - Fire is more deadly   "
 						);					
 
 	addPlayerPerk(this, "Death Incarnate", "$7_class_icon$", "Death Incarnate",

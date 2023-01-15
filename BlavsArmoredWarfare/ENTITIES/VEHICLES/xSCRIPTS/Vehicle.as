@@ -968,26 +968,29 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (this.getHealth()-damage/2 <= 0.0f && this.getHealth() != 0.01f)
 		{
 			AttachmentPoint@ drv = this.getAttachments().getAttachmentPointByName("DRIVER");
-			CBlob@ driver = drv.getOccupied();
-			if (drv !is null && driver !is null)
+			if (drv !is null)
 			{
-				if (isServer())
+				CBlob@ driver = drv.getOccupied();
+				if (driver !is null)
 				{
-					if (driver.hasBlob("aceofspades", 1))
+					if (isServer())
 					{
-						driver.TakeBlob("aceofspades", 1);
-
-						this.server_SetHealth(0.01f);
-
-						if (driver.isMyPlayer()) // are we on server?
+						if (driver.hasBlob("aceofspades", 1))
 						{
-							driver.getSprite().PlaySound("FatesFriend.ogg", 1.2);
-							SetScreenFlash(42,   255,   150,   150,   0.28);
+							driver.TakeBlob("aceofspades", 1);
+
+							this.server_SetHealth(0.01f);
+
+							if (driver.isMyPlayer()) // are we on server?
+							{
+								driver.getSprite().PlaySound("FatesFriend.ogg", 1.2);
+								SetScreenFlash(42,   255,   150,   150,   0.28);
+							}
+
+							this.server_SetHealth(0.01f);
+
+							return 0;
 						}
-
-						this.server_SetHealth(0.01f);
-
-						return 0;
 					}
 				}
 			}

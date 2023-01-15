@@ -48,7 +48,7 @@ void LoadSprites(CSprite@ this)
 	if (backarm !is null)
 	{
 		Animation@ anim = backarm.addAnimation("default", 0, false);
-		anim.AddFrame(131); //131
+		anim.AddFrame(0); //131
 		backarm.SetOffset(Vec2f(-10.0f, 5.0f + config_offset));
 		backarm.SetAnimation("default");
 		backarm.SetVisible(false);
@@ -194,7 +194,7 @@ void onTick(CSprite@ this)
 			if (down)
 			{
 				this.ResetTransform();
-				this.SetOffset(Vec2f(0, -2.5));
+				this.SetOffset(Vec2f(0, isCamo ? -1.5 : -2.5));
 			}
 			else this.SetOffset(Vec2f(0, -4.0));
 		}
@@ -477,7 +477,7 @@ void DrawGun(CSprite@ this, CBlob@ blob, ArcherInfo@ archer, f32 armangle, Vec2f
 	}
 
 	frontarm.SetRelativeZ(1.5f);
-	//setArmValues(this.getSpriteLayer("backarm"), true, armangle, -0.1f, "default", Vec2f(-4.0f * sign, 0.0f), armOffset);
+	setArmValues(this.getSpriteLayer("backarm"), true, armangle, -0.1f, "default", Vec2f(-4.0f * sign, 0.0f), armOffset + Vec2f(0.0f, (Maths::Abs(blob.getVelocity().x) >= 1.0f && blob.isOnGround()) ? ((getGameTime() % 8 < 4) ? -1.0f : 0.0f) : 0.0f));
 }
 
 bool IsFiring(CBlob@ blob)

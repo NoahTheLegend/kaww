@@ -60,7 +60,7 @@ void onTick(CBlob@ this)
 				sprite.RotateBy(24.0f*l, Vec2f(0, 2));
 			else if (this.get_u32("next repair") == getGameTime() + 17)
 				sprite.RotateBy(16.0f*l, Vec2f(0, 2));
-			else if (this.get_u32("next repair") == getGameTime() + 14)
+			else if (this.get_u32("next repair") == getGameTime() + 14)  //bruh what is this like actually
 				sprite.RotateBy(-16.0f*l, Vec2f(0, 2));
 			else if (this.get_u32("next repair") == getGameTime() + 11)
 				sprite.RotateBy(16.0f*l, Vec2f(0, 2));
@@ -102,6 +102,13 @@ void onTick(CBlob@ this)
 									}
 
 									float repair_amount = 0.35f;
+									if (holder.getPlayer() !is null)
+									{
+										if (getRules().get_string(holder.getPlayer().getUsername() + "_perk") == "Operator")
+										{
+											repair_amount *= 2;
+										}
+									}
 									if (blob.hasTag("bunker"))
 									{
 										repair_amount *= 4;

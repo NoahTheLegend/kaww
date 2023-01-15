@@ -34,29 +34,70 @@ void onTick(CBlob@ this)
 
     for (u16 i = 0; i < blobs.size(); i++)//For every blob in this array
     {
-        if (blobs[i].hasTag("vehicle") && (blobs[i].getTeamNum() == this.getTeamNum())) //If they have the repair tag
+		CBlob@ blob = blobs[i];
+
+        if (blob.hasTag("vehicle") && (blob.getTeamNum() == this.getTeamNum())) //If they have the repair tag
         {
-			if (blobs[i].getHealth() == blobs[i].getInitialHealth()) continue;
-			if (blobs[i].get_u32("no_heal") > getGameTime()) continue; 
-            if (blobs[i].getHealth() + repair_amount <= blobs[i].getInitialHealth())//This will only happen if the health does not go above the inital (max health) when repair_amount is added. 
+			if (blob.getHealth() == blob.getInitialHealth()) continue;
+			if (blob.get_u32("no_heal") > getGameTime()) continue; 
+            if (blob.getHealth() + repair_amount <= blob.getInitialHealth())//This will only happen if the health does not go above the inital (max health) when repair_amount is added. 
             {
-				if (blobs[i].getName() == "importantarmory")
+				if (blob.getName() == "importantarmory")
 				{
 					repair_amount *= 0.5f;
 				}
-                blobs[i].server_SetHealth(blobs[i].getHealth() + repair_amount); //Add the repair amount.
-				blobs[i].set_u32("no_heal", getGameTime() + 60);
 
-                if (XORRandom(2) == 0)
-                {
-                	this.getSprite().PlaySound("RepairVehicle.ogg");
-                }
-                else
-                {
-                	this.getSprite().PlaySound("RepairVehicle2.ogg");
-                }
+				AttachmentPoint@ drv = blob.getAttachments().getAttachmentPointByName("DRIVER");
+				
+				if (drv !is null)
+				{
+					CBlob@ driver = drv.getOccupied();
+					if (driver !is null)
+					{
+						CPlayer@ p = driver.getPlayer();
+						if (p !is null)
+						{
+							if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+							{
+								repair_amount *= 2.5f;
+							}
+						}
+					}
+				}
+				else{
+					AttachmentPoint@ gun = blob.getAttachments().getAttachmentPointByName("GUNNER");
 
-            	const Vec2f pos = blobs[i].getPosition() + getRandomVelocity(0, blobs[i].getRadius()*0.3f, 360);
+					if (gun !is null)
+					{
+						CBlob@ driver = gun.getOccupied();
+						if (driver !is null)
+						{
+							CPlayer@ p = driver.getPlayer();
+							if (p !is null)
+							{
+								if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+								{
+									repair_amount *= 2.5f;
+								}
+							}
+						}
+					}
+				}
+
+                blob.server_SetHealth(blob.getHealth() + repair_amount); //Add the repair amount.
+				blob.set_u32("no_heal", getGameTime() + 60);
+
+				if (repair_amount > 2.0f)
+				{
+					this.getSprite().PlayRandomSound("RepairVehicle.ogg", 1.2f, 0.7f + XORRandom(10) * 0.01f);
+				}
+				else
+				{
+					this.getSprite().PlayRandomSound("RepairVehicle.ogg", 1.2f, 0.9f + XORRandom(20) * 0.01f);
+				}
+                
+
+            	const Vec2f pos = blob.getPosition() + getRandomVelocity(0, blob.getRadius()*0.3f, 360);
 				CParticle@ p = ParticleAnimated("SparkParticle.png", pos, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
 				if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
 
@@ -69,7 +110,7 @@ void onTick(CBlob@ this)
             }
             else //Repair amount would go above the inital health (max health). 
             {
-                blobs[i].server_SetHealth(blobs[i].getInitialHealth());//Set health to the inital health (max health)
+                blob.server_SetHealth(blob.getInitialHealth());//Set health to the inital health (max health)
             }
         }
     }
