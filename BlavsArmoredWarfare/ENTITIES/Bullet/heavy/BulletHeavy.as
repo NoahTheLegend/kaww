@@ -1,6 +1,7 @@
 #include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "MakeDustParticle.as";
+#include "CustomBlocks.as";
 
 void onInit(CBlob@ this)
 {
@@ -99,9 +100,9 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	bool isStrong = this.hasTag("strong");
 	TileType tile = map.getTile(end).type;
 
-	if (tile == CMap::tile_ground && XORRandom(100) < 5 || tile != CMap::tile_ground && XORRandom(100) < 15)
+	if ((isTileCompactedDirt(tile) && XORRandom(100)<=1) || ((tile == CMap::tile_ground || isTileScrap(tile))
+	&& XORRandom(100) <= 3) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 15))
 	{
-		
 		if (map.getSectorAtPosition(end, "no build") is null)
 		{
 			map.server_DestroyTile(end, isStrong ? 1.5f : 0.65f, this);
