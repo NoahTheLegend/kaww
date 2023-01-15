@@ -217,6 +217,8 @@ class PNGLoader
 			case map_colors::tile_wood:             map.SetTile(offset, CMap::tile_wood);             break;
 			case map_colors::tile_wood_back:        map.SetTile(offset, CMap::tile_wood_back);        break;
 			case map_colors::tile_grass:            map.SetTile(offset, CMap::tile_grass + map_random.NextRanged(3)); break;
+			case map_colors::tile_cdirt:            map.SetTile(offset, CMap::tile_cdirt); break;
+			case map_colors::tile_scrap:            map.SetTile(offset, CMap::tile_scrap); break;
 
 			// Water
 			case map_colors::water_air:
@@ -532,7 +534,7 @@ class PNGLoader
 			case map_colors::map_snow: autotile(offset); spawnBlob(map, "info_snow", offset); break;
 
 			default:
-				HandleCustomTile( map, offset, pixel );
+				//HandleCustomTile( map, offset, pixel );
 			};
 		}
 	}

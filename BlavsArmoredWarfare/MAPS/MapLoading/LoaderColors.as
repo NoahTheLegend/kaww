@@ -74,6 +74,8 @@ namespace map_colors
 		water_air              = 0xFF2E81A6, // ARGB(255,  46, 129, 166);
 		water_backdirt         = 0xFF335566, // ARGB(255,  51,  85, 102);
 		tile_sand              = 0xFFECD590, // ARGB(255, 236, 213, 144);
+		tile_cdirt             = 0xFF7C3212, //
+		tile_scrap             = 0xFFB25324, //
 
 		// OTHER
 		sky                    = 0xFFA5BDC8, // ARGB(255, 165, 189, 200);
