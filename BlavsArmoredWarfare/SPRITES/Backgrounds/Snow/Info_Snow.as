@@ -20,9 +20,5 @@ void onInit(CBlob@ this)
 
 		map.AddBackground("Backgrounds/Snow_BackgroundPlains.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
 		map.AddBackground("Backgrounds/Snow_BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
-
-		setTextureSprite(this,TreeTexture,"Snow_Trees.png");
-		setTextureSprite(this,BushTexture,"Snow_Bushes.png");
-		swapBlobTextures();	
 	}
 }
