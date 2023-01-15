@@ -725,7 +725,19 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 			if (this.getPlayer() !is null)
 			{
+				float walkStat = 1.0f;
+				float airwalkStat = 1.0f;
+				float jumpStat = 1.0f;
+
 				bool sprint = this.getHealth() == this.getInitialHealth() && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+
+				// operators move slower than normal
+				if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+				{
+					sprint = false;
+					walkStat *= 0.95f;
+				}
+
 				if (sprint)
 				{
 					if (!this.hasTag("sprinting"))
@@ -742,9 +754,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					this.Untag("sprinting");
 				}
 
-				float walkStat = 1.0f;
-				float airwalkStat = 1.0f;
-				float jumpStat = 1.0f;
 				getMovementStats(this.getName().getHash(), sprint, walkStat, airwalkStat, jumpStat);
 				moveVars.walkFactor *= walkStat;
 				moveVars.walkSpeedInAir = airwalkStat;

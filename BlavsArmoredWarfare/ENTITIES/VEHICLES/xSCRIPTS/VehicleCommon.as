@@ -607,6 +607,29 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							moveForce *= 1.55f; // gear 1
 						}
 
+						// operators are better drivers
+						if (blob.getPlayer() !is null)
+						{
+							if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Operator")
+							{
+								// braking or reversing
+								if ((this.isFacingLeft() && right) || (!this.isFacingLeft() && left))
+								{
+									moveForce *= 1.45f;
+								}
+
+								if (this.getShape().vellen < 1.6f)
+								{
+									moveForce *= 2.0f;
+								}
+								else
+								{
+									moveForce *= 1.13f;
+								}
+							}
+						}
+					
+
 						const f32 engine_topspeed = v.move_speed;
 						const f32 engine_topspeed_reverse = v.turn_speed;
 
@@ -624,11 +647,18 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						if (!left && !right) //no input
 						{
 							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.0f, 0.1f));
+
+							// brake!
+							this.getShape().setFriction(0.46);
+						}
+						else{
+							// release brakes
+							this.getShape().setFriction(0.02);
 						}
 
 						if (this.isFacingLeft())
 						{
-							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550)
+							if ((this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550) && (this.getShape().getFriction() == 0.02f))
 							{
 								if (ap.isKeyPressed(key_action2))
 								{
@@ -675,8 +705,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (ap.isKeyPressed(key_action2))
 							{
-								
-								//moveForce *= Maths::Clamp(this.get_f32("engine_RPM"), 0, engine_topspeed_reverse) / 4500;
 								// reverse
 								if (right)
 								{
@@ -701,7 +729,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						if (!this.isFacingLeft())
 						{ //spamable and has no effect
 
-							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550)
+							if ((this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550) && (this.getShape().getFriction() == 0.02f))
 							{				
 								if (ap.isKeyPressed(key_action2))
 								{
@@ -1044,6 +1072,11 @@ void RemoveWheelsOnFlight(CBlob@ this)
 
 void Vehicle_LevelOutInAir(CBlob@ this)
 {
+	if (this.getShape().getFriction() > 0.1f)
+	{
+		return;
+	}
+	
 	if (this.hasTag("holding_down"))
 	{
 		return;
