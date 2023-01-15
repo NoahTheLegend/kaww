@@ -52,6 +52,21 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	if (isServer() && this.getTickSinceCreated() == 1)
+	{
+		if (getBlobByName("info_snow") !is null)
+		{
+			CBlob@ tree = server_CreateBlobNoInit("tree_pine");
+			if(tree !is null)
+			{
+				tree.Tag("startbig");
+				tree.setPosition(this.getPosition());
+				tree.Init();
+				this.Tag("no logs");
+				this.server_Die();
+			}
+		}
+	}
 	if (this.get_u16("grow check tick frequency") != 0 
 		&& this.getTickSinceCreated() % this.get_u16("grow check tick frequency") == 0)
 	{
