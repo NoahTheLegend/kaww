@@ -409,6 +409,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 			return true;
 	}
 
+	if (blob.getName() == "trap_block")
+	{
+		return blob.getShape().getConsts().collidable;
+	}
+
 	if (blob.hasTag("trap"))
 	{
 		return false;
