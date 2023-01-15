@@ -158,7 +158,7 @@ void onTick(CBlob@ this)
 			{
 				Vec2f old_pos = this.getOldPosition();
 				Vec2f pos = this.getPosition();
-				dir.RotateBy(this.isFacingLeft() ? -1.0f * (getGameTime()-this.get_u32("falling_time")) * 2 : 2 * (getGameTime()-this.get_u32("falling_time")));
+				dir.RotateBy(this.isFacingLeft() ? -1.0f * (getGameTime()-this.get_u32("falling_time")) * 0.1f : 0.1f * (getGameTime()-this.get_u32("falling_time")));
 			}
 			
 			
