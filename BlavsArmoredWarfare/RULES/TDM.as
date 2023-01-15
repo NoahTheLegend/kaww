@@ -1175,6 +1175,7 @@ void onTick(CRules@ this)
 {
 	if (getGameTime() == 1)
 	{
+		u16 count = 10 + getPlayersCount();
 		if (this.get_s16("blueTickets") == 0 && this.get_s16("redTickets") == 0)
 		{
 			this.set_s16("blueTickets", 10);
@@ -1182,10 +1183,9 @@ void onTick(CRules@ this)
 			this.Sync("blueTickets", true);
 			this.Sync("redTickets", true);
 		}
-		else if (this.get_s16("blueTickets") > 50 && this.get_s16("redTickets") > 50
+		else if (this.get_s16("blueTickets") > count && this.get_s16("redTickets") > count
 		&& getMap() !is null && getMap().tilemapwidth <= 300)
 		{
-			u16 count = 10 + getPlayersCount();
 			this.set_s16("blueTickets", count);
 			this.set_s16("redTickets", count);
 			this.Sync("blueTickets", true);
