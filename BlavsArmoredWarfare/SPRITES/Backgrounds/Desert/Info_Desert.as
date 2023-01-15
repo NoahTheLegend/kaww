@@ -24,7 +24,5 @@ void onInit(CBlob@ this)
 		map.AddBackground("Backgrounds/BackgroundDesertRocky.png",  Vec2f(27.0f, -20.0f), Vec2f(0.12f, 0.5f), color_white);
 		map.AddBackground("Backgrounds/BackgroundDesert.png",       Vec2f(5.0f, -8.0f), Vec2f(0.25f, 2.0f), color_white);
 		map.AddBackground("Backgrounds/BackgroundDunes.png",        Vec2f(0.0f,  -7.0f), Vec2f(0.5f, 2.5f), color_white);
-
-		swapBlobTextures();	
 	}
 }
