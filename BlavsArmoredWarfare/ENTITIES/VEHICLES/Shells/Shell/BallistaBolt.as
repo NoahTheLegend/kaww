@@ -3,6 +3,7 @@
 #include "ShieldCommon.as";
 #include "LimitedAttacks.as";
 #include "Explosion.as";
+#include "CustomBlocks.as";
 
 const f32 MEDIUM_SPEED = 5.0f;
 
@@ -157,7 +158,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 		Vec2f temp_position = positions[i];
 		TileType type = map.getTile(temp_position).type;
 
-		if (map.isTileSolid(type))
+		if (map.isTileSolid(type) || type > 255)
 		{
 			u32[]@ offsets;
 			this.get("offsets", @offsets);
@@ -166,8 +167,20 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 			if (offsets.find(offset) != -1)
 				continue;
 
-			BallistaHitMap(this, offset, temp_position, velocity, damage, Hitters::ballista);
-			this.server_HitMap(temp_position, velocity, damage, Hitters::ballista);
+			if (!isTileCompactedDirt(type) && !isTileScrap(type))
+			{
+				BallistaHitMap(this, offset, temp_position, velocity, damage, Hitters::ballista);
+				this.server_HitMap(temp_position, velocity, damage, Hitters::ballista);
+			}
+			else
+			{
+				{
+					this.Tag("weaken");
+					DoExplosion(this, this.getVelocity());
+					this.Tag("dead");
+					this.server_Die();
+				}
+			}
 		}
 	}
 
@@ -198,9 +211,11 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 
 bool DoExplosion(CBlob@ this, Vec2f velocity)
 {
+	
 	if (this.hasTag("dead")) return true;
 
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
+	if (this.hasTag("weaken")) projExplosionRadius *= 0.75f;
 	float projExplosionDamage = this.get_f32(projExplosionDamageString);
 	f32 length = this.get_f32("linear_length");
 	//printf(""+projExplosionRadius);
@@ -277,12 +292,14 @@ void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f vel
 	TileType type = map.getTile(offset).type;
 	const f32 angle = velocity.Angle();
 
-	if (type == CMap::tile_bedrock)
+	if (type == CMap::tile_bedrock || isTileCompactedDirt(type) || isTileScrap(type))
 	{
+		this.Tag("weaken");
 		this.Tag("dead");
 		this.server_Die();
 		this.getSprite().Gib();
 	}
+	
 	else if (!map.isTileGroundStuff(type))
 	{
 		if (map.getSectorAtPosition(hit_position, "no build") is null)

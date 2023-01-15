@@ -1,6 +1,7 @@
 #include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "MakeDustParticle.as";
+#include "CustomBlocks.as";
 
 void onInit(CBlob@ this)
 {
@@ -105,7 +106,8 @@ void onHitWorld(CBlob@ this, Vec2f end)
 			this.server_Die();
 		}
 	}
-	if (tile == CMap::tile_ground && XORRandom(100) < 2 || tile != CMap::tile_ground && XORRandom(100) < 8)
+	if (!isTileCompactedDirt(tile) && (((tile == CMap::tile_ground || isTileScrap(tile))
+	&& XORRandom(100) <= 3) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 10)))
 	{
 		if (map.getSectorAtPosition(end, "no build") is null)
 		{

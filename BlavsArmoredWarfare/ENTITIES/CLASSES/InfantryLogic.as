@@ -8,6 +8,7 @@
 #include "InfantryCommon.as";
 #include "MedicisCommon.as";
 #include "TeamColour.as";
+#include "CustomBlocks.as";
 
 void onInit(CBlob@ this)
 {
@@ -297,7 +298,9 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 			{
 				Vec2f tpos = map.getTileWorldPosition(hi.tileOffset) + Vec2f(4, 4);
 				//bool canhit = canhit && map.getSectorAtPosition(tpos, "no build") is null;
-				if (!map.isTileCastle(map.getTile(tpos).type))
+				TileType type = map.getTile(tpos).type;
+				if (!map.isTileCastle(type)
+				&& !isTileScrap(type) && (!isTileCompactedDirt(type) || XORRandom(2) == 0))
 					map.server_DestroyTile(hi.hitpos, 0.1f, this);
 			}
 		}
@@ -388,6 +391,10 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	CSprite@ sprite = this.getSprite();
 	s8 charge_time = this.get_s32("my_chargetime");
 	this.set_s8("charge_time", charge_time);
+	if (this.get_u32("end_stabbing") >= getGameTime())
+	{
+		archer.isStabbing = true;
+	}
 	bool isStabbing = archer.isStabbing;
 	bool isReloading = this.get_bool("isReloading");
 	u8 charge_state = archer.charge_state;
