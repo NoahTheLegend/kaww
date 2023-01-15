@@ -164,7 +164,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			if (this.isMyPlayer())
 			{
 				this.getSprite().PlaySound("FatesFriend.ogg", 1.0);
-				SetScreenFlash(30,   255,   150,   150,   0.4);
+				SetScreenFlash(32,   255,   150,   150,   0.3);
 			}
 
 			return damage = 0;

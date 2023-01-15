@@ -87,7 +87,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Always survive on 1 health,        "
 						+"\n                   applies to vehicles as well        "
 						+"\n\n                  Lucky Charm"
-						+"\n                   - Must always hold an Ace of Spades         "
+						+"\n                   - Must carry an Ace of Spades         "
 						);
 
 	addPlayerPerk(this, "Bloodthirsty", "$3_class_icon$", "Bloodthirsty",
@@ -248,7 +248,6 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 									addHead(newBlob, "helmet");
 									//this.getCommandID("equip_head");
 								}
-								
 							}
 						}
 
@@ -295,6 +294,12 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				if (getNet().isServer())
 				{
 					getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
+
+					// prevents doubling up on perks, although.. lucky + bloodthirsty is very fun
+					if (caller.hasBlob("aceofspades", 1))
+					{
+						caller.TakeBlob("aceofspades", 1);
+					}
 				}
 
 				if (caller.isMyPlayer())
