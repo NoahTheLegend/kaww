@@ -103,8 +103,10 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",
 						"Perk: Operator\n\n"+"$5_class_icon$"+"Crewman"
 						+"\n                   - Improved vehicle handling"
-						+"\n                   - Improved aiming speed"
 						+"\n                   - Improved vehicle repair speed     "
+						+"\n\n                   Gunner"
+						+"\n                   - Less machine gun heat"
+						+"\n                   - Improved vehicle reload speed "
 						+"\n\n                   Sluggish"
 						+"\n                   - Can't sprint     "
 						);

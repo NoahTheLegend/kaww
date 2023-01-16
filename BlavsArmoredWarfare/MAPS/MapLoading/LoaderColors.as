@@ -340,17 +340,17 @@ namespace map_colors
 		constructionyard       = 0xffdfdde2,
 		baseconstructionyard   = 0xffb9c5b5,
 
-		// dont use these
-		classvendor            = 0xff62d49e,
-		perkvendor             = 0xff2372ca,
-		wheeloffortune         = 0xfffed519,
-
 		// environmental objs
 		sandbags               = 0xffedd295,
 		redbarrel              = 0xffc40e0e,
 
 		blue_tanktrap		   = 0xff181c20,
 		red_tanktrap		   = 0xff1f1919,
+
+		barbedwire             = 0xffd5d8d0,
+		red_barbedwire         = 0xffe1c7c7,
+		blue_barbedwire        = 0xffcad6d9,
+
 
 		// map background signifier
 		map_desert             = 0xfffcd38b,

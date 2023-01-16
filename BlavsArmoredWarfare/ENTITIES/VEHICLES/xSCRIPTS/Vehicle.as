@@ -230,22 +230,29 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (getGameTime()%15==0)
+	if (getGameTime() % 45 == 0 && !this.hasTag("gun"))
 	{
 		CBlob@[] bushes;
-		if (getMap() !is null) getMap().getBlobsAtPosition(this.getPosition(), @bushes);
-		bool bush = false;
+		if (getMap() !is null) getMap().getBlobsInRadius(this.getPosition(), this.getRadius(), @bushes);
+		int bushcount = 0;
 		for (u16 i = 0; i < bushes.length; i++)
 		{
 			if (bushes[i] is null || bushes[i].getName() != "bush") continue;
-			else bush = true;
+			else bushcount ++;
 		}
-		if (bush)
+		if (bushcount > 3)
 		{
-			this.setInventoryName("");
-			this.set_u32("disguise", getGameTime()+30);
+			if (!this.hasTag("turret"))
+			{
+				this.setInventoryName("");
+			}
+			
+			this.set_u32("disguise", getGameTime() + 90);
 		}
-		else this.setInventoryName(this.get_string("invname"));
+		else if (!this.hasTag("turret"))
+		{
+			this.setInventoryName(this.get_string("invname"));
+		}
 	}
 	if (!(isClient() && isServer()) && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
 	{
