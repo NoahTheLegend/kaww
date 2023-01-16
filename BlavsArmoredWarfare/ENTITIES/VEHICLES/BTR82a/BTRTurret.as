@@ -16,7 +16,7 @@ const f32 damage_modifier = 0.65f;
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
-const f32 high_angle = 31.0f; // upper depression limit
+const f32 high_angle = 27.0f; // upper depression limit
 const f32 low_angle = 98.0f; // lower depression limit
 
 void onInit(CBlob@ this)
@@ -84,7 +84,6 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(0.5f);
-			arm.SetOffset(Vec2f(0.0f, -5.0f));
 		}
 	}
 
@@ -155,6 +154,8 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
+	s16 currentAngle = this.get_f32("gunelevation");
+
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		VehicleInfo@ v;
@@ -180,7 +181,6 @@ void onTick(CBlob@ this)
 		{
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 			
-			
 			CPlayer@ p = gunner.getOccupied().getPlayer();
 			if (p !is null)
 			{
@@ -200,17 +200,6 @@ void onTick(CBlob@ this)
 		else
 		{
 			targetAngle = angle;
-		}
-
-		s16 currentAngle = this.get_f32("gunelevation");
-
-		if (this.isFacingLeft())
-		{
-			this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
-		}
-		else
-		{
-			this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 		}
 
 		this.getSprite().SetEmitSoundPaused(true);
@@ -239,24 +228,21 @@ void onTick(CBlob@ this)
 			Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 		}
 
-		if (this.isFacingLeft())
-		{
-			this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
-		}
-		else
-		{
-			this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
-		}
+		if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+		else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
+	}
 
-		CSprite@ sprite = this.getSprite();
-		CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
-		if (arm !is null)
-		{
-			arm.ResetTransform();
-			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(-3.0f, -22.5f + (this.isFacingLeft() ? -1.0f : 0.0f)));
-			arm.SetRelativeZ(-101.0f);
-		}
+	if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+	else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
+
+	CSprite@ sprite = this.getSprite();
+	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+	if (arm !is null)
+	{
+		arm.ResetTransform();
+		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
+		arm.SetOffset(Vec2f(-9.0f, -24.0f + (this.isFacingLeft() ? -1.0f : 0.0f)));
+		arm.SetRelativeZ(-101.0f);
 	}
 }
 

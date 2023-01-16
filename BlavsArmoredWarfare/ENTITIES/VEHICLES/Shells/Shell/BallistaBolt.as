@@ -19,7 +19,7 @@ void onInit(CBlob@ this)
 
 	if (this.hasTag("HE_shell"))
 	{
-		this.set_f32(projExplosionRadiusString, 32.0f);
+		this.set_f32(projExplosionRadiusString, 42.0f);
 	}
 
 	this.set_u8("blocks_pierced", 0);

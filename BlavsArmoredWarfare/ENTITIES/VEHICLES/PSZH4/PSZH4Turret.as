@@ -147,6 +147,19 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
+	s16 currentAngle = this.get_f32("gunelevation");
+
+	if (getGameTime() % 5 == 0)
+	{
+		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("BOW");
+		if (point !is null && point.getOccupied() !is null)
+		{
+			CBlob@ tur = point.getOccupied();
+			tur.SetFacingLeft(this.isFacingLeft());
+			if (isServer()) tur.server_setTeamNum(this.getTeamNum());
+		}
+	}
+
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		VehicleInfo@ v;
@@ -172,7 +185,6 @@ void onTick(CBlob@ this)
 		{
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 			
-			
 			CPlayer@ p = gunner.getOccupied().getPlayer();
 			if (p !is null)
 			{
@@ -192,17 +204,6 @@ void onTick(CBlob@ this)
 		else
 		{
 			targetAngle = angle;
-		}
-
-		s16 currentAngle = this.get_f32("gunelevation");
-
-		if (this.isFacingLeft())
-		{
-			this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
-		}
-		else
-		{
-			this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 		}
 
 		this.getSprite().SetEmitSoundPaused(true);
@@ -231,42 +232,21 @@ void onTick(CBlob@ this)
 			Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 		}
 
-		if (this.isFacingLeft())
-		{
-			this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
-		}
-		else
-		{
-			this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
-		}
-		//this.set_f32("gunelevation", Maths::Min(360-high_angle , this.get_f32("gunelevation")));
+		if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+		else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
+	}
 
-		CSprite@ sprite = this.getSprite();
-		CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
-		if (arm !is null)
-		{
-			arm.ResetTransform();
-			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(-2.5f, -24.0f + (this.isFacingLeft() ? -1.0f : 0.0f)));
-			arm.SetRelativeZ(-101.0f);
-		}
+	if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+	else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 
-		if (getNet().isClient())
-		{
-			CPlayer@ p = getLocalPlayer();
-			if (p !is null)
-			{
-				CBlob@ local = p.getBlob();
-				if (local !is null)
-				{
-					CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
-					if (front !is null)
-					{
-						//front.setVisible(!local.isAttachedTo(this));
-					}
-				}
-			}
-		}
+	CSprite@ sprite = this.getSprite();
+	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+	if (arm !is null)
+	{
+		arm.ResetTransform();
+		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
+		arm.SetOffset(Vec2f(-2.5f, -24.0f + (this.isFacingLeft() ? -1.0f : 0.0f)));
+		arm.SetRelativeZ(-101.0f);
 	}
 }
 
@@ -336,7 +316,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
 		Vec2f vel = Vec2f(0.0f, -22.5f).RotateBy(angle);
 		bullet.setVelocity(vel);
-		bullet.setPosition(bullet.getPosition() + vel + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f));
+		bullet.setPosition(bullet.getPosition() + vel + Vec2f((this.isFacingLeft() ? -1 : 1)*4.0f, 0.0f));
 
 		if (isClient())
 		{
@@ -345,14 +325,6 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 			float _angle = this.isFacingLeft() ? -anglereal+180 : anglereal; // on turret spawn it works wrong otherwise
 			_angle += -0.099f + (XORRandom(4) * 0.01f);
-			if (this.isFacingLeft())
-			{
-				//ParticleAnimated("Muzzleflash", bullet.getPosition() + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), _angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-			}
-			else
-			{
-				//ParticleAnimated("Muzzleflashflip", bullet.getPosition() + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), _angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-			}
 			
 			for (int i = 0; i < 12; i++)
 			{
