@@ -102,13 +102,12 @@ void onTick(CBlob@ this)
 		return;
 
 	const bool ismyplayer = this.isMyPlayer();
+	ManageParachute(this);
 
 	if (ismyplayer && getHUD().hasMenus())
 	{
 		return;
 	}
-
-	ManageParachute(this);
 
 	// activate/throw
 	if (ismyplayer)
@@ -655,6 +654,7 @@ void ManageParachute( CBlob@ this )
 	
 	if (this.hasTag("parachute"))
 	{
+		this.set_u32("no_climb", getGameTime()+2);
 		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
 		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.55f : 0.73)));
 	}
