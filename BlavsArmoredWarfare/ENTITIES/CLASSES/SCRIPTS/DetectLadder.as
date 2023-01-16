@@ -10,6 +10,8 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	if (this.exists("no_climb") && this.get_u32("no_climb") > getGameTime())
+        return;
 	// const bool pressingKey = this.isKeyPressed(key_up) || this.isKeyPressed(key_down);
 	// const bool climbLadder = this.isOnLadder() || (!this.wasOnLadder() && pressingKey);
 
