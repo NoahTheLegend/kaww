@@ -11,6 +11,7 @@ const int ROUNDER = 25;
 const int ROUNDER2 = 500;
 
 const float PLATEAU = 0.82f;
+const float MAX_LEVEL = 9000.0f; //sergeant-major
 
 const string[] RANKS = {"Recruit",              // new player
                         "Private",
@@ -61,7 +62,7 @@ shared int getExpToNextLevelShared(u32 level)
     {
         mod_plateau *= 0.85f;
     }
-    
+ 
     return int(Maths::Round(LEVEL_2_EXP * Maths::Pow(EXP_MULTIPLIER * mod_plateau, level - 1) / mod) * mod);
 }
 
@@ -124,9 +125,8 @@ int getExpToMyLevel(u32 level)
     {
         mod_plateau *= 0.85f;
     }
-
 	if (level == 1) return 0;
-    return int(Maths::Round(LEVEL_2_EXP * Maths::Pow(EXP_MULTIPLIER * mod_plateau, level - 2) / mod) * mod);
+    return int(Maths::Clamp(Maths::Round(LEVEL_2_EXP * Maths::Pow(EXP_MULTIPLIER * mod_plateau, level - 2) / mod) * mod, 0, MAX_LEVEL));
 }
 
 // Get the player's current rank name
