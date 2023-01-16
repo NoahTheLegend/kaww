@@ -226,7 +226,9 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 				responsible = p.isBot();
 			}
 			
-			if (getGameTime() % 45 == 0 && getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+			if (getGameTime() % 90 == 0
+			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky"
+			&& this.getHealth() > 0.1f)
 			{
 				CInventory@ inv = this.getInventory();
 				if (inv !is null)
