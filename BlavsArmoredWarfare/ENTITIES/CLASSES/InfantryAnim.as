@@ -98,6 +98,13 @@ void onTick(CSprite@ this)
 	CBlob@ blob = this.getBlob();
 	bool isCamo = false;
 
+	if (blob !is null && blob.hasTag("reload_sprite"))
+	{
+		LoadSprites(this);
+		blob.Untag("reload_sprite");
+		return;
+	}
+
 	// camo netting
 	if (blob.getPlayer() !is null)
 	{
