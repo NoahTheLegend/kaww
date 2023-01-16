@@ -75,6 +75,7 @@ void LoadSprites(CSprite@ this)
 		camo.SetVisible(false);
 		camo.SetRelativeZ(0.26f);
 	}
+	if (this.getBlob() !is null) this.ReloadSprites(this.getBlob().getTeamNum(), 0);
 }
 
 void setArmValues(CSpriteLayer@ arm, bool visible, f32 angle, f32 relativeZ, string anim, Vec2f around, Vec2f offset)
