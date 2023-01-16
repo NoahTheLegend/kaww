@@ -4,7 +4,7 @@
 
 void onInit(CBlob@ this)
 {
-
+	this.Tag("builder always hit");
 	//this.Tag("scenary");
 }
 
