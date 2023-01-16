@@ -5,7 +5,7 @@ void onInit(CBlob@ this)
 {
     this.getSprite().getConsts().accurateLighting = false;  
 	this.getSprite().RotateBy(XORRandom(4) * 90, Vec2f(0, 0));
-	this.getSprite().SetZ(-50); //background
+	this.getSprite().SetRelativeZ(-115.0f); //background
 	this.Tag("has damage owner");
 
 	// this.getCurrentScript().runFlags |= Script::tick_not_attached;
