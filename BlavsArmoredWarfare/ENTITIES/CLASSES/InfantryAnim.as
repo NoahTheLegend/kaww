@@ -10,6 +10,73 @@ const f32 config_offset = -4.0f;
 void onInit(CSprite@ this)
 {
 	LoadSprites(this);
+	CBlob@ blob = this.getBlob();
+	if (blob !is null)
+		blob.addCommandID("load_camo");
+}
+
+void onCommand(CBlob@ blob, u8 cmd, CBitStream @params)
+{
+	CSprite@ this = blob.getSprite();
+	if (cmd == blob.getCommandID("load_camo"))
+	{
+		string texname = getRunnerTextureName(this);
+		//u16 id;
+		//if (!params.saferead_u16(id)) return;
+		//if (blob.getPlayer() !is null && getBlobByNetworkID(id) !is null && blob.getPlayer() is getBlobByNetworkID(id).getPlayer())
+		this.RemoveSpriteLayer("frontarm");
+		CSpriteLayer@ frontarm = this.addTexturedSpriteLayer("frontarm", texname , 32, 16);
+	
+		if (frontarm !is null)
+		{
+			Animation@ animcharge = frontarm.addAnimation("default", 0, false);
+			animcharge.AddFrame(40);
+			Animation@ animshoot = frontarm.addAnimation("fired", 0, false);
+			animshoot.AddFrame(32);
+			Animation@ camogun = frontarm.addAnimation("camogun", 0, false);
+			camogun.AddFrame(56);
+			Animation@ animnoarrow = frontarm.addAnimation("no_arrow", 0, false);
+			animnoarrow.AddFrame(33);
+			Animation@ camogunnoarrow = frontarm.addAnimation("camogunno_arrow", 0, false);
+			camogunnoarrow.AddFrame(57);
+			frontarm.SetOffset(Vec2f(-1.0f, 5.0f + config_offset));
+			frontarm.SetAnimation("fired");
+			frontarm.SetVisible(false);
+		}
+	
+		this.RemoveSpriteLayer("backarm");
+		CSpriteLayer@ backarm = this.addTexturedSpriteLayer("backarm", texname , 32, 16);
+	
+		if (backarm !is null)
+		{
+			Animation@ anim = backarm.addAnimation("default", 0, false);
+			anim.AddFrame(0); //131
+			backarm.SetOffset(Vec2f(-10.0f, 5.0f + config_offset));
+			backarm.SetAnimation("default");
+			backarm.SetVisible(false);
+		}
+	
+		this.RemoveSpriteLayer("camo");
+		CSpriteLayer@ camo = this.addSpriteLayer("camo", "Camo.png" , 32, 32, 0, 0);
+	
+		if (camo !is null)
+		{
+			Animation@ anim = camo.addAnimation("movement", 4, true);
+			anim.AddFrame(0);
+			anim.AddFrame(1);
+			anim.AddFrame(2);
+			anim.AddFrame(3);
+			Animation@ noanim = camo.addAnimation("default", 0, false);
+			noanim.AddFrame(0);
+			Animation@ dead = camo.addAnimation("death", 0, false);
+			dead.AddFrame(4);
+	
+			camo.SetOffset(Vec2f(0.0f, 0.0f + config_offset));
+			camo.SetAnimation("movement");
+			camo.SetVisible(false);
+			camo.SetRelativeZ(0.26f);
+		}
+	}
 }
 
 void onPlayerInfoChanged(CSprite@ this)
