@@ -368,7 +368,9 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				responsible = p.isBot();
 			}
 			
-			if (getGameTime() % 90 == 0 && getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+			if (getGameTime() % 90 == 0
+			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky"
+			&& this.getHealth() > 0.1f)
 			{
 				CInventory@ inv = this.getInventory();
 				if (inv !is null)
@@ -855,7 +857,7 @@ void onTick(CBlob@ this)
 
 	ManageParachute(this);
 
-	if (this.getTickSinceCreated() == 1 && isClient()) 
+	if (this.isBot() && this.getTickSinceCreated() == 1 && isClient()) 
 	{
 		LoadHead(this.getSprite(), XORRandom(99)); // TODO: make a way to sync between players and save when blob dies!
 	}
