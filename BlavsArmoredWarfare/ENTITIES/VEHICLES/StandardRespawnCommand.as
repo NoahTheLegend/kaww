@@ -301,18 +301,17 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			if (caller !is null)
 			{
 				CPlayer@ callerPlayer = caller.getPlayer();
+				getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
 				if (getNet().isServer())
 				{
-					getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
-
 					// prevents doubling up on perks, although.. lucky + bloodthirsty is very fun
 					if (caller.hasBlob("aceofspades", 1))
 					{
 						caller.TakeBlob("aceofspades", 1);
 					}
 				}
-				caller.Tag("reload_sprite");
-				printf("tagged");
+				//caller.Tag("reload_sprite");
+
 				if (caller.isMyPlayer())
 				{
 					// sound
