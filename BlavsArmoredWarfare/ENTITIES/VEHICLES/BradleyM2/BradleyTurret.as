@@ -188,16 +188,27 @@ void onTick(CBlob@ this)
 
 		f32 angle = getAngle(this, v.charge, v);
 		s16 targetAngle;
-
+		bool isOperator = false;
+		
 		AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
 		if (gunner !is null && gunner.getOccupied() !is null && !broken)
 		{
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+			
+			
+			CPlayer@ p = gunner.getOccupied().getPlayer();
+			if (p !is null)
+			{
+				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+				{
+					isOperator = true;
+				}
+			}
 
 			bool facing_left = this.isFacingLeft();
 		}
 
-		if (angle < 0) //
+		if (angle < 0)
 		{
 			targetAngle = 360 + angle; // facing left
 		}
@@ -221,14 +232,20 @@ void onTick(CBlob@ this)
 
 		if (!this.hasTag("nogunner"))
 		{
-			if (Maths::Abs(currentAngle - targetAngle) <= 1) return;
+			int factor = 1;
+			if (isOperator) factor = 3;
 
-			if (Maths::Abs(currentAngle - targetAngle) < 180) {
-				if (currentAngle < targetAngle) currentAngle++;
-				else currentAngle--;
+			int difference = Maths::Abs(currentAngle - targetAngle);
+
+			if (difference <= 1) return;
+			else if (difference <= factor) factor = 1;
+
+			if (difference < 180) {
+				if (currentAngle < targetAngle) currentAngle += factor;
+				else currentAngle -= factor;
 			} else {
-				if (currentAngle < targetAngle) currentAngle--;
-				else currentAngle++;
+				if (currentAngle < targetAngle) currentAngle += factor;
+				else currentAngle += factor;
 			}
 			this.getSprite().SetEmitSoundPaused(false);
 			this.getSprite().SetEmitSoundVolume(1.25f);
@@ -236,7 +253,6 @@ void onTick(CBlob@ this)
 			this.set_f32("gunelevation", ((currentAngle % 360) + 360) % 360);
 			Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 		}
-
 
 		CSprite@ sprite = this.getSprite();
 		CSpriteLayer@ arm = sprite.getSpriteLayer("arm");

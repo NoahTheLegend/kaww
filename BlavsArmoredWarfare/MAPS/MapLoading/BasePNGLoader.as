@@ -476,11 +476,6 @@ class PNGLoader
 			case map_colors::blue_russianshop:        autotile(offset); spawnBlob(map, "russianshop", offset, 0); break;
 			case map_colors::red_russianshop:         autotile(offset); spawnBlob(map, "russianshop", offset, 1); break;
 
-			case map_colors::classvendor:         autotile(offset); spawnBlob(map, "classvendor", offset, 2); break;
-			case map_colors::perkvendor:         autotile(offset); spawnBlob(map, "perkvendor", offset, 2); break;
-
-			case map_colors::wheeloffortune:         autotile(offset); spawnBlob(map, "wheeloffortune", offset, 2); break;
-
 			case map_colors::heavygun:         autotile(offset); spawnVehicle(map, "heavygun", offset); break;
 			case map_colors::crateheavygun:    autotile(offset); server_MakeCrate("heavygun", "Crate with Heavy machinegun.", 0, -1, getSpawnPosition(map, offset)); break;
 
@@ -492,7 +487,11 @@ class PNGLoader
 			case map_colors::blue_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, 0); break;
 			case map_colors::red_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, 1); break;
 			case map_colors::stairs:        autotile(offset); spawnBlob(map, "stairs", offset); break;
-			
+
+			case map_colors::barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, -1); break;
+			case map_colors::blue_barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, 0); break;
+			case map_colors::red_barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, 1); break;
+
 			case map_colors::constructionyard:     autotile(offset); spawnBlob(map, "constructionyard", offset); break;
 			case map_colors::baseconstructionyard:     autotile(offset); spawnBlob(map, "baseconstructionyard", offset); break;
 			case map_colors::b_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, 0); break;

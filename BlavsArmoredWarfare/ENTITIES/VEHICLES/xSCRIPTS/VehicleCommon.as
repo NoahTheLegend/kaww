@@ -604,7 +604,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						// more force when starting
 						if (this.getShape().vellen < 1.75f)
 						{
-							moveForce *= 1.55f; // gear 1
+							moveForce *= 1.6f; // gear 1
 						}
 
 						// operators are better drivers
@@ -1076,7 +1076,7 @@ void Vehicle_LevelOutInAir(CBlob@ this)
 	{
 		return;
 	}
-	
+
 	if (this.hasTag("holding_down"))
 	{
 		return;

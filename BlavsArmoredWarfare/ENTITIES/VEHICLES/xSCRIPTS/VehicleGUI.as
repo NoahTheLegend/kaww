@@ -120,34 +120,28 @@ void drawAmmoCount(CBlob@ blob, VehicleInfo@ v)
 
 void drawCooldownBar(CBlob@ blob, VehicleInfo@ v)
 {
-	//if (v.cooldown_time > 0)
-	{
-		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 26);
-		Vec2f dim = Vec2f(58, 7);
-		const f32 y = blob.getHeight() * 2.4f;
+	Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 26);
+	Vec2f dim = Vec2f(58, 7);
+	const f32 y = blob.getHeight() * 2.4f;
 
-		AmmoInfo@ a = v.ammo_types[v.last_fired_index];
+	AmmoInfo@ a = v.ammo_types[v.last_fired_index];
 
-		f32 modified_last_charge_percent = Maths::Min(1.0f, float(v.last_charge) / float(a.max_charge_time));
-		f32 modified_cooldown_time_percent = modified_last_charge_percent * (v.cooldown_time / float(a.fire_delay));
+	f32 modified_last_charge_percent = Maths::Min(1.0f, float(v.last_charge) / float(a.max_charge_time));
+	f32 modified_cooldown_time_percent = modified_last_charge_percent * (v.cooldown_time / float(a.fire_delay));
 
-		Vec2f ul = Vec2f(pos2d.x - dim.x, pos2d.y + y);
-		Vec2f lr = Vec2f(pos2d.x - dim.x + (modified_cooldown_time_percent) * 2.0f * dim.x, pos2d.y + y + dim.y);
+	Vec2f ul = Vec2f(pos2d.x - dim.x, pos2d.y + y);
+	Vec2f lr = Vec2f(pos2d.x - dim.x + (modified_cooldown_time_percent) * 2.0f * dim.x, pos2d.y + y + dim.y);
 
-		//if (blob.isFacingLeft())
-		{
-			ul -= Vec2f(8, 0);
-			lr -= Vec2f(8, 0);
+	ul -= Vec2f(8, 0);
+	lr -= Vec2f(8, 0);
 
-			f32 max_dist = ul.x - lr.x;
-			ul.x += max_dist + dim.x * 2.0f;
-			lr.x += max_dist + dim.x * 2.0f;
-		}
+	f32 max_dist = ul.x - lr.x;
+	ul.x += max_dist + dim.x * 2.0f;
+	lr.x += max_dist + dim.x * 2.0f;
 
-		GUI::DrawRectangle(ul + Vec2f(4, 4), lr + Vec2f(4, 4), SColor(0xff3B1406));
-		GUI::DrawRectangle(ul + Vec2f(6, 6), lr + Vec2f(2, 4), SColor(0xff941B1B));
-		GUI::DrawRectangle(ul + Vec2f(6, 6), lr + Vec2f(2, 2), SColor(0xffB73333));
-	}
+	GUI::DrawRectangle(ul + Vec2f(4, 4), lr + Vec2f(4, 4), SColor(0xff3B1406));
+	GUI::DrawRectangle(ul + Vec2f(6, 6), lr + Vec2f(2, 4), SColor(0xff941B1B));
+	GUI::DrawRectangle(ul + Vec2f(6, 6), lr + Vec2f(2, 2), SColor(0xffB73333));
 }
 
 void drawAngleCount(CBlob@ blob, VehicleInfo@ v)

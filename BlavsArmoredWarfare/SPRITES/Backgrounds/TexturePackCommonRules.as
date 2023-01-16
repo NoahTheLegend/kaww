@@ -3,7 +3,6 @@
 
 string TreeTexture = "tree_texture";
 string BushTexture = "bush_texture";
-string IvyTexture = "ivy_texture";
 
 void resetTextures(CRules@ this){
 	//Reminder: Blobs from map loading are created *before* this script is called, for whatever reason.
@@ -13,7 +12,6 @@ void resetTextures(CRules@ this){
 	//Reset textures to default.
 	getRules().set_string(TreeTexture,"Vanilla_Trees.png");
 	getRules().set_string(BushTexture,"Vanilla_Bushes.png");
-	getRules().set_string(IvyTexture,"Ivy.png");
 	
 	CBlob@[] blobs;
 	getBlobsByTag("texture_pack", @blobs); //Find our texture blob
@@ -23,7 +21,6 @@ void resetTextures(CRules@ this){
 		
 		if(pack.exists(TreeTexture))getRules().set_string(TreeTexture,pack.get_string(TreeTexture));
 		if(pack.exists(BushTexture))getRules().set_string(BushTexture,pack.get_string(BushTexture));
-		if(pack.exists(IvyTexture))getRules().set_string(IvyTexture,pack.get_string(IvyTexture));
 	}
 	
 	swapBlobTextures(); //Since blobs are created before this is fuction is called, we need to retexture everything again.
@@ -72,23 +69,6 @@ void swapBlobTextures(){
 			}
 		}
 	}
-	
-	//Ivy
-	{
-		string texture = getTextureSprite(IvyTexture);
-		
-		CBlob@[] blobs;
-		getBlobsByName("ivy", @blobs);
-		
-		for (int i = 0; i < blobs.length; i++)
-		{
-			CBlob@ b = blobs[i];
-			CSprite@ sprite = b.getSprite();
-			if(sprite !is null){
-				sprite.ReloadSprite(texture, sprite.getFrameWidth(), sprite.getFrameHeight());
-			}
-		}
-	}
 }
 
 void onBlobCreated( CRules@ this, CBlob@ blob ){
@@ -103,7 +83,6 @@ void onBlobCreated( CRules@ this, CBlob@ blob ){
 	if(blob.getName() == "bush")sprite.ReloadSprite(getTextureSprite(BushTexture), sprite.getFrameWidth(), sprite.getFrameHeight());
 }
 
-///Touch anything below this and I murder you :D
 void onInit(CRules@ this)
 {
 	resetTextures(this);
@@ -123,6 +102,5 @@ void setTextureSprite(CBlob @this, string texture_name, string texture){
 
 string getTextureSprite(string texture_name){
 	if(getRules().exists(texture_name))return getRules().get_string(texture_name);
-	return "default.png"; //Uh-oh
+	return "default.png";
 }
-
