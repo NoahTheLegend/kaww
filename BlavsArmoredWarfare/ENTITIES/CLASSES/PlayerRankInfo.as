@@ -33,6 +33,37 @@ const string[] RANKS = {"Recruit",              // new player
                         "Major"
                         };
 
+// Calculate the exp required to reach the next level
+shared int getExpToNextLevelShared(u32 level)
+{
+    int mod = ROUNDER;
+    if (level > 4)
+    {
+        mod = ROUNDER2;
+    }
+
+    float mod_plateau = PLATEAU;
+
+    // i am retarded
+    if (level > 8)
+    {
+        mod_plateau *= 0.67f;
+    }
+    else if (level > 7)
+    {
+        mod_plateau *= 0.7f;
+    }
+    else if (level > 6)
+    {
+        mod_plateau *= 0.76f;
+    }
+    else if (level > 5)
+    {
+        mod_plateau *= 0.85f;
+    }
+    
+    return int(Maths::Round(LEVEL_2_EXP * Maths::Pow(EXP_MULTIPLIER * mod_plateau, level - 1) / mod) * mod);
+}
 
 // Calculate the exp required to reach the next level
 int getExpToNextLevel(u32 level)

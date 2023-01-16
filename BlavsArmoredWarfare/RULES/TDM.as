@@ -422,29 +422,25 @@ shared class TDMCore : RulesCore
 				"ranger",
 				"shotgun",
 				"sniper",
-				"antitank",
 				"mp5"
 				};
 				
-				//float exp = _rules.get_u32("Yeti5000707" + "_exp");
-				/*
-				string rank = RANKS[0];
+				float exp = _rules.get_u32(info.username + "_exp");
+				
 				int unlocked = 0;
 
 				// Calculate the exp required to reach each level
-				for (int i = 1; i <= RANKS.length; i++)
+				for (int i = 1; i <= 6; i++)
 				{
-					if (exp >= getExpToNextLevel(i + 1)) {
-						rank = RANKS[Maths::Min(i, RANKS.length)];
-					}
-					else {
-						break;
-					}
+					if (exp >= getExpToNextLevelShared(i + 1)) unlocked ++;
+					else break;
 				}
 
-				int index = Maths::Max(XORRandom(classes.length), unlocked);*/
-				string line = "revolver";//classes[index];
+				unlocked = Maths::Min(unlocked, 4);
+				print(info.username + " u " + unlocked);
 
+				int index = Maths::Max(XORRandom(classes.length), unlocked);
+				string line = classes[index];
 
                 info.blob_name = line;//(XORRandom(100) >= 90 ? "revolver" : (XORRandom(100) >= 80 ? "shotgun" : (XORRandom(100) >= 70 ? "ranger" : (XORRandom(100) >= 60 ? "sniper" : (XORRandom(100) >= 50 ? "mp5" : "shotgun"))))); // dont ask
             }
