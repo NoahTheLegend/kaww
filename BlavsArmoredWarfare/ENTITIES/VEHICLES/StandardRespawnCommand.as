@@ -307,6 +307,81 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					{
 						caller.TakeBlob("aceofspades", 1);
 					}
+					if (perkconfig == "Camouflage")
+					{
+
+						if (caller !is null)// && canChangeClass(this, caller))
+						{
+							string classconfig = params.read_string();
+							CBlob @newBlob = server_CreateBlob(caller.getName(), caller.getTeamNum(), this.getRespawnPosition());
+
+							if (newBlob !is null)
+							{
+								// copy health and inventory
+								// make sack
+								CInventory @inv = caller.getInventory();
+
+								if (inv !is null)
+								{
+									if (this.hasTag("change class drop inventory"))
+									{
+										while (inv.getItemsCount() > 0)
+										{
+											CBlob @item = inv.getItem(0);
+											caller.server_PutOutInventory(item);
+										}
+									}
+									else if (this.hasTag("change class store inventory"))
+									{
+										if (this.getInventory() !is null)
+										{
+											caller.MoveInventoryTo(this);
+										}
+										else // find a storage
+										{
+											PutInvInStorage(caller);
+										}
+									}
+									else
+									{
+										// keep inventory if possible
+										caller.MoveInventoryTo(newBlob);
+										if (caller.get_string("equipment_head") == "helmet")
+										{
+											newBlob.set_string("equipment_head", "helmet");
+											addHead(newBlob, "helmet");
+											//this.getCommandID("equip_head");
+										}
+									}
+								}
+
+								// set health to be same ratio
+								float healthratio = caller.getHealth() / caller.getInitialHealth();
+								newBlob.server_SetHealth(newBlob.getInitialHealth() * healthratio);
+
+								// copy stun
+								if (isKnockable(caller))
+								{
+									setKnocked(newBlob, getKnockedRemaining(caller));
+								}
+
+								// plug the soul
+								newBlob.server_SetPlayer(caller.getPlayer());
+								newBlob.setPosition(caller.getPosition());
+
+								// no extra immunity after class change
+								if (caller.exists("spawn immunity time"))
+								{
+									newBlob.set_u32("spawn immunity time", caller.get_u32("spawn immunity time"));
+									newBlob.Sync("spawn immunity time", true);
+								}
+
+								caller.Tag("switch class");
+								caller.server_SetPlayer(null);
+								caller.server_Die();
+							}
+						}
+					}
 				}
 
 				if (caller.isMyPlayer())
