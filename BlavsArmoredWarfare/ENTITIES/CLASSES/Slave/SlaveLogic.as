@@ -160,8 +160,7 @@ void onTick(CBlob@ this)
 	if (isServer() && p !is null)
 	{
 		if (getGameTime() % 90 == 0
-			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky"
-			&& this.getHealth() > 0.1f)
+			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky")
 		{
 			CInventory@ inv = this.getInventory();
 			if (inv !is null)

@@ -216,7 +216,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 {
 	bool ismyplayer = this.isMyPlayer();
 	bool responsible = ismyplayer;
-	if (isServer())
+	if (isServer() && this.getHealth() > 0.01f)
 	{
 		CPlayer@ p = this.getPlayer();
 		if (p !is null)
@@ -227,8 +227,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 			}
 			
 			if (getGameTime() % 90 == 0
-			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky"
-			&& this.getHealth() > 0.1f)
+			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky")
 			{
 				CInventory@ inv = this.getInventory();
 				if (inv !is null)
