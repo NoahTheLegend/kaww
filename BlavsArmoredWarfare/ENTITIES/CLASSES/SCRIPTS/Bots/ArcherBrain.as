@@ -40,10 +40,6 @@ void onTick(CBrain@ this)
 	CBlob @blob = this.getBlob();
 	
 	// load random head
-	if (blob.getTickSinceCreated() == 1)
-	{
-		LoadHead(blob.getSprite(), XORRandom(99));
-	}
 	
 	CBlob @target = this.getTarget();
 
