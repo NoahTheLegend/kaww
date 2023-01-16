@@ -181,6 +181,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			damage *= 2.0f; // take double damage
 		}
+		else if ((hitterBlob.getName() == "grenade" || customData == Hitters::explosion) && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+		{
+			damage *= 1.75f; // take double damage
+		}
 	}
 
 	if (this.isAttached())
@@ -501,9 +505,19 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		CPlayer@ p = this.getPlayer();
 		if (p !is null)
 		{
+			u8 time = 3;
 			if (getRules().get_string(p.getUsername() + "_perk") == "Sharp Shooter")
 			{
 				reloadTime = infantry.reload_time * 1.5;
+				time = 4;
+			}
+			if (p.getBlob() !is null && p.getBlob().getSprite() !is null)
+			{
+				Animation@ anim = p.getBlob().getSprite().getAnimation("reload");
+				if (anim !is null)
+				{
+					anim.time = time;
+				}
 			}
 		}
 		

@@ -10,6 +10,11 @@ void onInit(CBlob@ this)
 
 //sprite
 
+bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
+{
+	return false;
+}
+
 void onInit(CSprite@ this)
 {
 	CBlob@ blob = this.getBlob();
