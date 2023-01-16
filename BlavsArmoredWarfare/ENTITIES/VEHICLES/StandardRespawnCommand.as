@@ -295,7 +295,8 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			// build menu for them
 			CBlob@ caller = getBlobByNetworkID(params.read_u16());
 
-			string perkconfig = params.read_string();
+			string perkconfig = "";
+			if (!params.saferead_string(perkconfig)) return;
 
 			if (caller !is null)
 			{
@@ -311,8 +312,7 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					}
 					if (perkconfig == "Camouflage" && callerPlayer !is null)
 					{
-						CBitStream stream;
-						caller.SendCommand(caller.getCommandID("load_camo"), stream);
+						caller.SendCommand(caller.getCommandID("load_camo"), params);
 					}
 				}
 
