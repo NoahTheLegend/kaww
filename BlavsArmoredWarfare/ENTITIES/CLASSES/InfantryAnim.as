@@ -19,6 +19,7 @@ void onPlayerInfoChanged(CSprite@ this)
 
 void LoadSprites(CSprite@ this)
 {
+	if (this.getBlob() !is null) this.ReloadSprites(this.getBlob().getTeamNum(), 0);
 	ensureCorrectRunnerTexture(this, this.getBlob().getName(), this.getBlob().getName().toUpper());
 	string texname = getRunnerTextureName(this);
 
