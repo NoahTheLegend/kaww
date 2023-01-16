@@ -988,9 +988,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 							this.server_SetHealth(0.01f);
 
+							driver.getSprite().PlaySound("FatesFriend.ogg", 1.6);
+
 							if (driver.isMyPlayer()) // are we on server?
 							{
-								driver.getSprite().PlaySound("FatesFriend.ogg", 1.2);
 								SetScreenFlash(42,   255,   150,   150,   0.28);
 							}
 
