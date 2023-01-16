@@ -296,7 +296,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 			if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Operator")
 			{
-				dmg *= 1.33f; // take extra damage
+				dmg *= 1.33f;
 			}
 
 			// hit helmet
