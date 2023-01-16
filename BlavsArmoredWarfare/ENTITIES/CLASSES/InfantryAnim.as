@@ -376,6 +376,21 @@ void onTick(CSprite@ this)
 			armangle = 180.0f - angle;
 		}
 
+		if (blob.getName() == "sniper")
+		{
+			if (blob.get_s32("my_chargetime")-10 > 0)
+			{
+				armangle += Maths::Min(Maths::Abs(blob.get_s32("my_chargetime")-10)*0.6, 22) * (this.isFacingLeft() ? 1 : -1);
+			}
+		}
+		else
+		{
+			if (blob.get_s32("my_chargetime") > 0)
+			{
+				armangle += Maths::Min(Maths::Abs(blob.get_s32("my_chargetime"))*3, 20) * (this.isFacingLeft() ? 1 : -1);
+			}
+		}
+
 		while (armangle > 180.0f)
 		{
 			armangle -= 360.0f;
