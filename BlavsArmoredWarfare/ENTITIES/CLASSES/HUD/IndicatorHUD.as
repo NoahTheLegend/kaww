@@ -33,17 +33,17 @@ void onRender( CRules@ this )
 	Vec2f timelineRPos = Vec2f(timelineRDist - 16, timelineHeight);
 
 	//draw tents
-	GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineLPos, 1.0f, 0);
-	GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineRPos, 1.0f, 1);
+	//GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineLPos, 1.0f, 0);
+	//GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineRPos, 1.0f, 1);
 
 	//draw line	
 	if (this.hasTag("animateGameOver"))
     {
-        GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(24, 24), this.getTeamWon() == 0 ? SColor(0xff10abe7) : SColor(0xffd23921));
+        GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(28, 24), this.getTeamWon() == 0 ? SColor(0xff10abe7) : SColor(0xffd23921));
     }
     else
     {
-    	GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(24, 24), SColor(0x77ffffff));
+    	GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(28, 24), SColor(0x77ffffff));
     }
 	/*
 	                                //Height map wip
@@ -86,6 +86,23 @@ void onRender( CRules@ this )
 	getBlobsByName("pointflag", @objectiveList);
 
 	int objectiveCount = objectiveList.length;
+
+	CBlob@[] tents;
+	getBlobsByName("tent", @tents);
+	for (uint i = 0; i < tents.length; i++)
+	{
+		CBlob@ curBlob = tents[i];
+		if (curBlob is null) continue;
+
+		float curBlobXPos = curBlob.getPosition().x - 28;
+		float curBlobYPos = curBlob.getPosition().y;
+		float indicatorProgress = curBlobXPos / mapWidth;
+		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+		float verticalDeviation = curBlobYPos; // blav's soon(tm) heightmap <------
+		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
+
+		GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), indicatorPos, 1.0f, curBlob.getTeamNum());
+	}
 	
 	for (uint i = 0; i < objectiveCount; i++)
 	{
