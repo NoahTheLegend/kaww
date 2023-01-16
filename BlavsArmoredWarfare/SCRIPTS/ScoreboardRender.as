@@ -222,7 +222,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			if (exp >= expToNextLevel)
 			{
 				level = i + 1;
-				rank = RANKS[Maths::Min(i, RANKS.length)];
+				rank = RANKS[Maths::Min(i, RANKS.length-1)];
 			}
 			else
 			{
