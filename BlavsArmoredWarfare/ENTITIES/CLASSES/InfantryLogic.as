@@ -329,6 +329,7 @@ void ManageParachute( CBlob@ this )
 	
 	if (this.hasTag("parachute"))
 	{
+		this.set_u32("no_climb", getGameTime()+2);
 		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
 		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.55f : 0.73)));
 	}
@@ -364,7 +365,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				responsible = p.isBot();
 			}
 			
-			if (getGameTime() % 30 == 0 && getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+			if (getGameTime() % 150 == 0 && getRules().get_string(p.getUsername() + "_perk") == "Lucky")
 			{
 				CInventory@ inv = this.getInventory();
 				if (inv !is null)
@@ -500,9 +501,19 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		CPlayer@ p = this.getPlayer();
 		if (p !is null)
 		{
+			u8 time = 3;
 			if (getRules().get_string(p.getUsername() + "_perk") == "Sharp Shooter")
 			{
 				reloadTime = infantry.reload_time * 1.5;
+				time = 4;
+			}
+			if (p.getBlob() !is null && p.getBlob().getSprite() !is null)
+			{
+				Animation@ anim = p.getBlob().getSprite().getAnimation("reload");
+				if (anim !is null)
+				{
+					anim.time = time;
+				}
 			}
 		}
 		

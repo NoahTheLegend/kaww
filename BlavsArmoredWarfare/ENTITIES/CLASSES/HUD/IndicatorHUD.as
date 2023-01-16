@@ -1,4 +1,5 @@
 #include "AllHashCodes.as"
+#include "TeamColour.as";
 
 const float timelineHeight = 22.0f;
 const float timelineLeftEnd = 0.34f;
@@ -10,6 +11,14 @@ const float timelineRightEnd_large = 0.76f;
 void onRender( CRules@ this )
 {
 	if (g_videorecording) return;
+
+	CBlob@ b = getBlobByName("pointflag");
+	if (b !is null) return;
+	CBlob@[] tentis;
+	getBlobsByName("tent", @tentis);
+	if (tentis.length == 0) return;
+	s16 blueTickets=0;
+	s16 redTickets=0;
 
 	CPlayer@ p = getLocalPlayer();
 	if (p is null || !p.isMyPlayer()) return;
@@ -32,18 +41,27 @@ void onRender( CRules@ this )
 	Vec2f timelineLPos = Vec2f(timelineLDist - 16, timelineHeight);
 	Vec2f timelineRPos = Vec2f(timelineRDist - 16, timelineHeight);
 
+	blueTickets=this.get_s16("blueTickets");
+	redTickets=this.get_s16("redTickets");
+
+    GUI::SetFont("big score font");
+	GUI::DrawText( ""+blueTickets, timelineLPos+Vec2f(-48.0f, 0), getTeamColor(0) );
+	GUI::DrawText( ""+redTickets, timelineRPos+Vec2f(48.0f, 0), getTeamColor(1) );
+	
+
+
 	//draw tents
-	GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineLPos, 1.0f, 0);
-	GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineRPos, 1.0f, 1);
+	//GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineLPos, 1.0f, 0);
+	//GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineRPos, 1.0f, 1);
 
 	//draw line	
 	if (this.hasTag("animateGameOver"))
     {
-        GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(24, 24), this.getTeamWon() == 0 ? SColor(0xff10abe7) : SColor(0xffd23921));
+        GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(28, 24), this.getTeamWon() == 0 ? SColor(0xff10abe7) : SColor(0xffd23921));
     }
     else
     {
-    	GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(24, 24), SColor(0x77ffffff));
+    	GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(36, 24), SColor(0x77ffffff));
     }
 	/*
 	                                //Height map wip
@@ -86,6 +104,23 @@ void onRender( CRules@ this )
 	getBlobsByName("pointflag", @objectiveList);
 
 	int objectiveCount = objectiveList.length;
+
+	CBlob@[] tents;
+	getBlobsByName("tent", @tents);
+	for (uint i = 0; i < tents.length; i++)
+	{
+		CBlob@ curBlob = tents[i];
+		if (curBlob is null) continue;
+
+		float curBlobXPos = curBlob.getPosition().x - 28;
+		float curBlobYPos = curBlob.getPosition().y;
+		float indicatorProgress = curBlobXPos / mapWidth;
+		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+		float verticalDeviation = curBlobYPos; // blav's soon(tm) heightmap <------
+		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
+
+		GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), indicatorPos, 1.0f, curBlob.getTeamNum());
+	}
 	
 	for (uint i = 0; i < objectiveCount; i++)
 	{
