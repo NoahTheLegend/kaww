@@ -344,14 +344,30 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					int money = parseInt(tokens[1]);
 					player.server_setCoins(money);
 				}
-				else if(tokens[0] == "!xp")
+				else if(tokens.length > 1 && tokens[0] == "!xp")
 				{
 					int xp = parseInt(tokens[1]);
-					getRules().set_u32(player.getUsername() + "_exp", xp);
-					getRules().Sync(player.getUsername() + "_exp", true);	
-					CheckRankUps(this, // do reward coins and sfx
-								this.get_u32(player.getUsername() + "_exp"), // player new exp
-								player.getBlob());	
+					if (tokens.length == 3)
+					{
+						string username = tokens[2];
+						CPlayer@ user = getPlayerByUsername(username);
+						if (user !is null)
+						{
+							getRules().set_u32(username + "_exp", xp);
+							getRules().Sync(username + "_exp", true);
+							CheckRankUps(this, // do reward coins and sfx
+								this.get_u32(username + "_exp"), // player new exp
+								user.getBlob());
+						}
+					}
+					else
+					{
+						getRules().set_u32(player.getUsername() + "_exp", xp);
+						getRules().Sync(player.getUsername() + "_exp", true);
+						CheckRankUps(this, // do reward coins and sfx
+							this.get_u32(player.getUsername() + "_exp"), // player new exp
+							player.getBlob());	
+					}
 								
 				}
 			}
