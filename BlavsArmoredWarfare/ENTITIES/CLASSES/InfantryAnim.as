@@ -24,7 +24,7 @@ void LoadSprites(CSprite@ this)
 
 	this.RemoveSpriteLayer("frontarm");
 	CSpriteLayer@ frontarm = this.addTexturedSpriteLayer("frontarm", texname , 32, 16);
-	printf("aeae ");
+
 	if (frontarm !is null)
 	{
 		Animation@ animcharge = frontarm.addAnimation("default", 0, false);
