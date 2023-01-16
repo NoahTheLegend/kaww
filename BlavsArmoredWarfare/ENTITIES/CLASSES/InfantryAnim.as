@@ -98,6 +98,8 @@ void onTick(CSprite@ this)
 	CBlob@ blob = this.getBlob();
 	bool isCamo = false;
 
+	if (blob.getTickSinceCreated() == 1 && isClient()) LoadSprites(this);
+
 	// camo netting
 	if (blob.getPlayer() !is null)
 	{
