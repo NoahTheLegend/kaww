@@ -181,6 +181,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			damage *= 2.0f; // take double damage
 		}
+		else if ((hitterBlob.getName() == "grenade" || customData == Hitters::explosion) && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+		{
+			damage *= 1.75f; // take double damage
+		}
 	}
 
 	if (this.isAttached())
