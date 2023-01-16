@@ -138,7 +138,9 @@ void onTick(CBlob@ this)
     		this.set_s8(teamcapping, 1);
 
     		num_red = Maths::Min(num_red, 2);
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red * (getMap() !is null && isTDM ? 1 : 2));
+    		u16 time = this.get_u16(capture_prop) + num_red * (getMap() !is null && isTDM ? 1 : 2);
+			if (time > capture_time*4) time = 0;
+    		this.set_u16(capture_prop, time);
 		}
     	else if (num_blue > 0 && num_red == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == 1 || this.getTeamNum() == 255)) // blue capping
     	{
@@ -146,7 +148,9 @@ void onTick(CBlob@ this)
     		this.set_s8(teamcapping, 0);
 
     		num_blue = Maths::Min(num_blue, 2);
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue * (getMap() !is null && isTDM ? 1 : 2));
+			u16 time = this.get_u16(capture_prop) + num_blue * (getMap() !is null && isTDM ? 1 : 2);
+			if (time > capture_time*4) time = 0;
+    		this.set_u16(capture_prop, time);
 		}
     }
 	else if (this.get_u16(capture_prop) > 0
@@ -172,7 +176,9 @@ void onTick(CBlob@ this)
 
 		//printf(""+mod);
 
-    	this.set_u16(capture_prop, this.get_u16(capture_prop) - (2+mod));
+		u16 time = this.get_u16(capture_prop) - (2+mod);
+		if (time > capture_time*4) time = 0;
+    	this.set_u16(capture_prop, time);
     }
     else if (this.get_u16(capture_prop) == 0) //returned to zero
     {
@@ -378,6 +384,6 @@ void onRender(CSprite@ this)
 	if (blob.get_u8("numcapping") > 0)
 	{
 		//GUI::SetFont("menu");
-		GUI::DrawShadowedText("★ " + blob.get_u8("numcapping") + " player" + (blob.get_u8("numcapping") > 1 ? "s are" : " is") + " capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 20), SColor(0xffffffff));
+		GUI::DrawShadowedText("★ " + blob.get_u8("numcapping") + (blob.get_u8("numcapping") > 2 ? " (2)" : "") + " player" + (blob.get_u8("numcapping") > 1 ? "s are" : " is") + " capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 20), SColor(0xffffffff));
 	}
 }
