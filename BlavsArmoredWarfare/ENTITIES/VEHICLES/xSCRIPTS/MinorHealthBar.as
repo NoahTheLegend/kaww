@@ -33,9 +33,15 @@ void onRender(CSprite@ this)
 
 	CBlob@ blob = this.getBlob();
 	CPlayer@ local = getLocalPlayer();
-	if (local !is null && local.getBlob().getTeamNum() != blob.getTeamNum())
+	if (local !is null)
 	{
-		if (blob.get_u32("disguise") > getGameTime()) return;
+		if (local.getBlob() !is null)
+		{
+			if (local.getBlob().getTeamNum() != blob.getTeamNum())
+			{
+				if (blob.get_u32("disguise") > getGameTime()) return;
+			}
+		}
 	}
 
 	Vec2f center = blob.getPosition();
