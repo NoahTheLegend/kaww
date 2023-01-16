@@ -102,13 +102,12 @@ void onTick(CBlob@ this)
 		return;
 
 	const bool ismyplayer = this.isMyPlayer();
+	ManageParachute(this);
 
 	if (ismyplayer && getHUD().hasMenus())
 	{
 		return;
 	}
-
-	ManageParachute(this);
 
 	// activate/throw
 	if (ismyplayer)
