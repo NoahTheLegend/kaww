@@ -19,7 +19,6 @@ void onPlayerInfoChanged(CSprite@ this)
 
 void LoadSprites(CSprite@ this)
 {
-	if (this.getBlob() !is null) this.ReloadSprites(this.getBlob().getTeamNum(), 0);
 	ensureCorrectRunnerTexture(this, this.getBlob().getName(), this.getBlob().getName().toUpper());
 	string texname = getRunnerTextureName(this);
 
@@ -75,7 +74,6 @@ void LoadSprites(CSprite@ this)
 		camo.SetVisible(false);
 		camo.SetRelativeZ(0.26f);
 	}
-	if (this.getBlob() !is null) this.ReloadSprites(this.getBlob().getTeamNum(), 0);
 }
 
 void setArmValues(CSpriteLayer@ arm, bool visible, f32 angle, f32 relativeZ, string anim, Vec2f around, Vec2f offset)
@@ -99,6 +97,8 @@ void onTick(CSprite@ this)
 	// store some vars for ease and speed
 	CBlob@ blob = this.getBlob();
 	bool isCamo = false;
+
+	if (blob.getTickSinceCreated() == 1 && isClient()) LoadSprites(this);
 
 	// camo netting
 	if (blob.getPlayer() !is null)
