@@ -19,6 +19,7 @@ void onPlayerInfoChanged(CSprite@ this)
 
 void LoadSprites(CSprite@ this)
 {
+	printf("load sprites");
 	ensureCorrectRunnerTexture(this, this.getBlob().getName(), this.getBlob().getName().toUpper());
 	string texname = getRunnerTextureName(this);
 
@@ -100,6 +101,7 @@ void onTick(CSprite@ this)
 
 	if (blob !is null && blob.hasTag("reload_sprite"))
 	{
+		printf("reload_sprite");
 		LoadSprites(this);
 		blob.Untag("reload_sprite");
 		return;
