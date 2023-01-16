@@ -1132,7 +1132,7 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 	for (int i = 1; i <= RANKS.length; i++)
 	{
 		if (exp >= getExpToNextLevel(i + 1)) {
-			rank = RANKS[Maths::Min(i, RANKS.length)];
+			rank = RANKS[Maths::Min(i, RANKS.length-1)];
 		}
 		else {
 			break;

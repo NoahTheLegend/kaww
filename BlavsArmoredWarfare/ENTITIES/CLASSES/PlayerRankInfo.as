@@ -152,7 +152,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
             if (exp >= getExpToNextLevel(i - 0))
             {
                 level = i + 1;
-                rank = RANKS[Maths::Min(i, RANKS.length)];
+                rank = RANKS[Maths::Min(i, RANKS.length-1)];
             }
             else
             {
