@@ -106,7 +106,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Improved vehicle repair speed     "
 						+"\n\n                   Gunner"
 						+"\n                   - Less machine gun heat"
-						+"\n                   - Improved vehicle reload speed "
+						+"\n                   - Improved vehicle aiming speed "
 						+"\n\n                   Sluggish"
 						+"\n                   - Can't sprint  "
 						+"\n\n                   Vulnerability    "
