@@ -5,6 +5,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("ignore fall");
 	this.set_u32("next repair", 0);
+	this.Tag("trap");
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)
