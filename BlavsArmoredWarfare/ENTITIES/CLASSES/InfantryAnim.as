@@ -104,9 +104,10 @@ void onTick(CSprite@ this)
 
 		this.RemoveSpriteLayer("frontarm");
 		CSpriteLayer@ frontarm = this.addTexturedSpriteLayer("frontarm", texname , 32, 16);
-	
+
 		if (frontarm !is null)
 		{
+			printf("not null");
 			Animation@ animcharge = frontarm.addAnimation("default", 0, false);
 			animcharge.AddFrame(40);
 			Animation@ animshoot = frontarm.addAnimation("fired", 0, false);
@@ -118,25 +119,25 @@ void onTick(CSprite@ this)
 			Animation@ camogunnoarrow = frontarm.addAnimation("camogunno_arrow", 0, false);
 			camogunnoarrow.AddFrame(57);
 			frontarm.SetOffset(Vec2f(-1.0f, 5.0f + config_offset));
-			frontarm.SetAnimation("fired");
-			frontarm.SetVisible(false);
+			frontarm.SetAnimation("camogun");
+			frontarm.SetVisible(true);
 		}
-	
+
 		this.RemoveSpriteLayer("backarm");
 		CSpriteLayer@ backarm = this.addTexturedSpriteLayer("backarm", texname , 32, 16);
-	
+
 		if (backarm !is null)
 		{
 			Animation@ anim = backarm.addAnimation("default", 0, false);
 			anim.AddFrame(0); //131
 			backarm.SetOffset(Vec2f(-10.0f, 5.0f + config_offset));
 			backarm.SetAnimation("default");
-			backarm.SetVisible(false);
+			backarm.SetVisible(true);
 		}
-	
+
 		this.RemoveSpriteLayer("camo");
 		CSpriteLayer@ camo = this.addSpriteLayer("camo", "Camo.png" , 32, 32, 0, 0);
-	
+
 		if (camo !is null)
 		{
 			Animation@ anim = camo.addAnimation("movement", 4, true);
@@ -148,14 +149,14 @@ void onTick(CSprite@ this)
 			noanim.AddFrame(0);
 			Animation@ dead = camo.addAnimation("death", 0, false);
 			dead.AddFrame(4);
-	
+
 			camo.SetOffset(Vec2f(0.0f, 0.0f + config_offset));
 			camo.SetAnimation("movement");
-			camo.SetVisible(false);
+			camo.SetVisible(true);
 			camo.SetRelativeZ(0.26f);
 		}
+		
 		printf("reload_sprite");
-		LoadSprites(this);
 		blob.Untag("reload_sprite");
 		return;
 	}
