@@ -150,21 +150,7 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
-	if (this.isFacingLeft() && !this.hasTag("facing left"))
-	{
-		this.getShape().SetOffset(Vec2f(0.0f, -14.0f));
-		this.Tag("facing left");
-		this.Untag("facing right");
-		this.set_f32("gunelevation", 360 - this.get_f32("gunelevation"));
-	}
-	
-	else if (!this.isFacingLeft() && !this.hasTag("facing right"))
-	{
-		this.getShape().SetOffset(Vec2f(0.0f, -14.0f));
-		this.Untag("facing left");
-		this.Tag("facing right");
-		this.set_f32("gunelevation", 360 - this.get_f32("gunelevation"));
-	}
+	s16 currentAngle = this.get_f32("gunelevation");
 
 	CSprite@ sprite = this.getSprite();
 	if (this.getTickSinceCreated() == 1 || this.hasTag("pink"))
@@ -187,17 +173,16 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-	if (this.isFacingLeft() && !this.hasTag("facing left"))
+
+	if (getGameTime() % 5 == 0)
 	{
-		this.getShape().SetOffset(Vec2f(8.0f, -15.0f));
-		this.Tag("facing left");
-		this.Untag("facing right");
-	}
-	else if (!this.isFacingLeft() && !this.hasTag("facing right"))
-	{
-		this.getShape().SetOffset(Vec2f(-8.0f, -15.0f));
-		this.Untag("facing left");
-		this.Tag("facing right");
+		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("BOW");
+		if (point !is null && point.getOccupied() !is null)
+		{
+			CBlob@ tur = point.getOccupied();
+			tur.SetFacingLeft(this.isFacingLeft());
+			if (isServer()) tur.server_setTeamNum(this.getTeamNum());
+		}
 	}
 
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
@@ -225,7 +210,6 @@ void onTick(CBlob@ this)
 		{
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 			
-			
 			CPlayer@ p = gunner.getOccupied().getPlayer();
 			if (p !is null)
 			{
@@ -245,17 +229,6 @@ void onTick(CBlob@ this)
 		else
 		{
 			targetAngle = angle;
-		}
-
-		s16 currentAngle = this.get_f32("gunelevation");
-
-		if (this.isFacingLeft())
-		{
-			this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
-		}
-		else
-		{
-			this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 		}
 
 		this.getSprite().SetEmitSoundPaused(true);
@@ -284,42 +257,20 @@ void onTick(CBlob@ this)
 			Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 		}
 
-		if (this.isFacingLeft())
-		{
-			this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
-		}
-		else
-		{
-			this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
-		}
-		//this.set_f32("gunelevation", Maths::Min(360-high_angle , this.get_f32("gunelevation")));
+		if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+		else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
+	}
 
-		CSprite@ sprite = this.getSprite();
-		CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
-		if (arm !is null)
-		{
-			arm.ResetTransform();
-			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 8.0f));
-			arm.SetOffset(Vec2f(-19.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -20.5f + (this.isFacingLeft() ? -0.5f : 0.5f)));
-			arm.SetRelativeZ(-20.0f);
-		}
+	if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+	else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 
-		if (getNet().isClient())
-		{
-			CPlayer@ p = getLocalPlayer();
-			if (p !is null)
-			{
-				CBlob@ local = p.getBlob();
-				if (local !is null)
-				{
-					CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
-					if (front !is null)
-					{
-						//front.setVisible(!local.isAttachedTo(this));
-					}
-				}
-			}
-		}
+	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+	if (arm !is null)
+	{
+		arm.ResetTransform();
+		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 8.0f));
+		arm.SetOffset(Vec2f(-19.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -20.5f + (this.isFacingLeft() ? -0.5f : 0.5f)));
+		arm.SetRelativeZ(-20.0f);
 	}
 }
 
