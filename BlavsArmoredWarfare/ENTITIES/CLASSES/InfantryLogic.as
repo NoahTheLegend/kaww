@@ -896,11 +896,11 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	{
 		if (this.isFacingLeft())
 		{ 
-			ParticleAnimated("Muzzleflash", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle, 0.075f + XORRandom(3) * 0.01f, 3 + XORRandom(2), -0.15f, false);
+			ParticleAnimated("Muzzleflash", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle, 0.075f + XORRandom(2) * 0.01f, 3 + XORRandom(2), -0.15f, false);
 		}
 		else
 		{
-			ParticleAnimated("Muzzleflashflip", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle + 180, 0.075f + XORRandom(3) * 0.01f, 3 + XORRandom(2), -0.15f, false);
+			ParticleAnimated("Muzzleflashflip", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle + 180, 0.075f + XORRandom(2) * 0.01f, 3 + XORRandom(2), -0.15f, false);
 		}
 	}
 
