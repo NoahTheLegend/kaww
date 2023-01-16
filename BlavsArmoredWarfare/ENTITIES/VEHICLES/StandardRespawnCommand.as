@@ -312,6 +312,7 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					}
 				}
 				caller.Tag("reload_sprite");
+				printf("tagged");
 				if (caller.isMyPlayer())
 				{
 					// sound
