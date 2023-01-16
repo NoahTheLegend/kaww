@@ -205,7 +205,7 @@ namespace RangerParams
 {
 	const ::string CLASSNAME 			= "Ranger"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.375f; // damage dealt to body
+	const ::f32 DAMAGE_BODY 			= 0.385f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.65f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.9f; // walk
@@ -239,7 +239,7 @@ namespace RangerParams
 	const ::u32 MAG_SIZE 				= 30; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 4; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 28.5f; // speed that bullets fly
+	const ::f32 BULLET_VELOCITY 		= 30.0f; // speed that bullets fly
 	const ::f32 BULLET_LIFETIME 		= 2.75f; // in seconds, time for bullet to die
 	const ::s8 BULLET_PEN 				= 1; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
