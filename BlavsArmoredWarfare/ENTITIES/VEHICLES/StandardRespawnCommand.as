@@ -311,7 +311,7 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 						caller.TakeBlob("aceofspades", 1);
 					}
 				}
-
+				caller.Tag("reload_sprite");
 				if (caller.isMyPlayer())
 				{
 					// sound
