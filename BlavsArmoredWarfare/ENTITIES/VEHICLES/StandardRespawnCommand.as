@@ -310,10 +310,6 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					{
 						caller.TakeBlob("aceofspades", 1);
 					}
-					if (perkconfig == "Camouflage" && callerPlayer !is null)
-					{
-						caller.SendCommand(caller.getCommandID("load_camo"), params);
-					}
 				}
 
 				if (caller.isMyPlayer())
