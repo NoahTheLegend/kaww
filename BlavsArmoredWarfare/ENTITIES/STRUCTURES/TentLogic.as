@@ -62,7 +62,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 		caller.CreateGenericButton("$change_class$", Vec2f(0, 0), this, buildSpawnMenu, getTranslatedString("Swap Class"));
 		caller.CreateGenericButton("$change_perk$", Vec2f(0, -10), this, buildPerkMenu, getTranslatedString("Switch Perk"));
 	}
-	return;
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)

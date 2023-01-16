@@ -247,7 +247,7 @@ void onTick(CBlob@ this)
 	this.AddForce(-d * v * hmod);
 
 	if (this.getVelocity().Length() > 0.5f && v > 0.25f) this.setAngleDegrees((this.isFacingLeft() ? 180 : 0) - this.getVelocity().Angle());
-	else if (this.getAngleDegrees() > 25 && this.getAngleDegrees() < 335)
+	else if (this.getAngleDegrees() > 25 && this.getAngleDegrees() < 335 && this.get_f32("velocity") < 1.0f)
 	{
 		this.setVelocity(Vec2f(0,0));
 		this.set_f32("velocity", 0);

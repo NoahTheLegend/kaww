@@ -254,7 +254,7 @@ void onTick(CBlob@ this)
 			this.setInventoryName(this.get_string("invname"));
 		}
 	}
-	if (!(isClient() && isServer()) && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
+	if (!(isClient() && isServer()) && !this.hasTag("aerial") && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
 	{
 		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
 		return; // turn engines off!

@@ -61,6 +61,38 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return damage*0.5f;
 		else return 0;
 	}
+	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
+	{
+		if (this.hasBlob("aceofspades", 1))
+		{
+			this.TakeBlob("aceofspades", 1);
+
+			this.server_SetHealth(0.01f);
+
+			if (this.isMyPlayer()) // are we on server?
+			{
+				this.getSprite().PlaySound("FatesFriend.ogg", 1.2);
+				SetScreenFlash(42,   255,   150,   150,   0.28);
+			}
+			else
+			{
+				this.getSprite().PlaySound("FatesFriend.ogg", 2.0);
+			}
+
+			return damage = 0;
+		}
+	}
+	if (this.getPlayer() !is null)
+	{
+		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Death Incarnate")
+		{
+			damage *= 2.0f; // take double damage
+		}
+		else if ((hitterBlob.getName() == "grenade" || customData == Hitters::explosion) && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+		{
+			damage *= 1.75f; // take double damage
+		}
+	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") && hitterBlob.getName() != "grenade")
 	{
 		bool at_bunker = false;
@@ -120,6 +152,35 @@ void onTick(CBlob@ this)
 			if (carried is null || !carried.hasTag("temp blob"))
 			{
 				client_SendThrowOrActivateCommand(this);
+			}
+		}
+	}
+
+	CPlayer@ p = this.getPlayer();
+	if (isServer() && p !is null)
+	{
+		if (getGameTime() % 90 == 0 && getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+		{
+			CInventory@ inv = this.getInventory();
+			if (inv !is null)
+			{
+				int xslots = inv.getInventorySlots().x;
+				int yslots = inv.getInventorySlots().y;
+				CBlob@ item = inv.getItem(xslots * yslots - 1);
+				
+				if (item !is null) // theres an item in the last slot
+				{
+					if (!this.hasBlob("aceofspades", 1)) // but we have the ace already
+					{
+						item.server_RemoveFromInventories();
+					}
+				}
+				else if (!this.hasBlob("aceofspades", 1))  // theres no item in the last slot
+				{
+					// give ace
+					CBlob@ b = server_CreateBlob("aceofspades", -1, this.getPosition());
+					if (b !is null) this.server_PutInInventory(b);
+				}
 			}
 		}
 	}

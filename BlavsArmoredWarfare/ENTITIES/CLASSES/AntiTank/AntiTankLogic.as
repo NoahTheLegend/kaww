@@ -49,6 +49,38 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return damage*0.5f;
 		else return 0;
 	}
+	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
+	{
+		if (this.hasBlob("aceofspades", 1))
+		{
+			this.TakeBlob("aceofspades", 1);
+
+			this.server_SetHealth(0.01f);
+
+			if (this.isMyPlayer()) // are we on server?
+			{
+				this.getSprite().PlaySound("FatesFriend.ogg", 1.2);
+				SetScreenFlash(42,   255,   150,   150,   0.28);
+			}
+			else
+			{
+				this.getSprite().PlaySound("FatesFriend.ogg", 2.0);
+			}
+
+			return damage = 0;
+		}
+	}
+	if (this.getPlayer() !is null)
+	{
+		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Death Incarnate")
+		{
+			damage *= 2.0f; // take double damage
+		}
+		else if ((hitterBlob.getName() == "grenade" || customData == Hitters::explosion) && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+		{
+			damage *= 1.75f; // take double damage
+		}
+	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") && hitterBlob.getName() != "grenade")
 	{
 		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
