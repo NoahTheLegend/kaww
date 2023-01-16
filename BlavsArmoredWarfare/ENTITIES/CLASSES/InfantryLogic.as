@@ -9,6 +9,7 @@
 #include "MedicisCommon.as";
 #include "TeamColour.as";
 #include "CustomBlocks.as";
+#include "RunnerHead.as"
 
 void onInit(CBlob@ this)
 {
@@ -853,6 +854,11 @@ void onTick(CBlob@ this)
 	if (!this.get("archerInfo", @archer)) return;
 
 	ManageParachute(this);
+
+	if (this.getTickSinceCreated() == 1 && isClient()) 
+	{
+		LoadHead(this.getSprite(), XORRandom(99)); // TODO: make a way to sync between players and save when blob dies!
+	}
 	
 	if (isKnocked(this) || this.isInInventory())
 	{
