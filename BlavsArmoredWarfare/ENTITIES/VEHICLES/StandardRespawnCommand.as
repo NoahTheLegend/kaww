@@ -108,7 +108,10 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Less machine gun heat"
 						+"\n                   - Improved vehicle reload speed "
 						+"\n\n                   Sluggish"
-						+"\n                   - Can't sprint     "
+						+"\n                   - Can't sprint  "
+						+"\n\n                   Vulnerability    "
+						+"\n                   - Take 133% headshot damage"
+						+"\n                   - Take 175% explosion damage"
 						);
 
 	addPlayerPerk(this, "Camouflage", "$6_class_icon$", "Camouflage",

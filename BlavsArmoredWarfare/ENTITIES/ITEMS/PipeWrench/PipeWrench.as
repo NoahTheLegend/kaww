@@ -76,7 +76,7 @@ void onTick(CBlob@ this)
 			
 			return;
 		}
-		
+		u32 repair_cd = 30;
 		if (getKnocked(holder) <= 0)
 		{		
 			if (point.isKeyPressed(key_action1))
@@ -106,7 +106,7 @@ void onTick(CBlob@ this)
 									{
 										if (getRules().get_string(holder.getPlayer().getUsername() + "_perk") == "Operator")
 										{
-											repair_amount *= 2;
+											repair_cd = 20;
 										}
 									}
 									if (blob.hasTag("bunker"))
@@ -158,7 +158,7 @@ void onTick(CBlob@ this)
 					this.getSprite().PlaySound("throw.ogg", 1.5f, 1.0f);
 				}
 
-				this.set_u32("next repair", getGameTime() + 25);
+				this.set_u32("next repair", getGameTime() + repair_cd);
 			}
 		}
 	}

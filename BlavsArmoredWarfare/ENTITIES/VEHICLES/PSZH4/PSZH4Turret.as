@@ -211,7 +211,7 @@ void onTick(CBlob@ this)
 		if (!this.hasTag("nogunner"))
 		{
 			int factor = 1;
-			if (isOperator) factor = 3;
+			if (isOperator) factor = 2;
 
 			int difference = Maths::Abs(currentAngle - targetAngle);
 
