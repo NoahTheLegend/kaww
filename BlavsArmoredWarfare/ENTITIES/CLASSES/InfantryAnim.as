@@ -130,6 +130,8 @@ void onTick(CSprite@ this)
 				}
 
 				frontarm.SetAnimation("camogun");
+
+				if (blob.isAttached()) camo.SetVisible(false);
 			}
 			else
 			{

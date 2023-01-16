@@ -153,7 +153,15 @@ void onInit(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (this.getHealth() - damage/2 <= 0 && this.getHealth() != 0.01f)
+	if (this.isAttached())
+	{
+		if (customData == Hitters::explosion)
+			return damage*0.1f;
+		else if (customData == Hitters::arrow)
+			return damage*0.5f;
+		else return (customData == Hitters::sword ? this.hasTag("mgunner") ? damage : 0 : 0);
+	}
+	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
 	{
 		if (this.hasBlob("aceofspades", 1))
 		{
@@ -174,7 +182,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return damage = 0;
 		}
 	}
-
 	if (this.getPlayer() !is null)
 	{
 		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Death Incarnate")
@@ -185,15 +192,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			damage *= 1.75f; // take double damage
 		}
-	}
-
-	if (this.isAttached())
-	{
-		if (customData == Hitters::explosion)
-			return damage*0.1f;
-		else if (customData == Hitters::arrow)
-			return damage*0.5f;
-		else return (customData == Hitters::sword ? this.hasTag("mgunner") ? damage : 0 : 0);
 	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.getName() == "grenade")
 	{
@@ -369,7 +367,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				responsible = p.isBot();
 			}
 			
-			if (getGameTime() % 150 == 0 && getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+			if (getGameTime() % 90 == 0 && getRules().get_string(p.getUsername() + "_perk") == "Lucky")
 			{
 				CInventory@ inv = this.getInventory();
 				if (inv !is null)
