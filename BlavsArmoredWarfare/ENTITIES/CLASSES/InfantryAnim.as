@@ -120,7 +120,6 @@ void onTick(CSprite@ this)
 			camo.SetRelativeZ(0.26f);
 		}
 		
-		printf("reload_sprite");
 		blob.Untag("reload_sprite");
 		return;
 	}
@@ -197,6 +196,8 @@ void onTick(CSprite@ this)
 
 		return;
 	}
+
+	printf("camo is "+isCamo);
 
 	ArcherInfo@ archer;
 	if (!blob.get("archerInfo", @archer))
