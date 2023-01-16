@@ -155,7 +155,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	this.set_bool("shop available", true);
 
-
 	if (!canSeeButtons(this, caller)) return;
 
 	// button for runner
