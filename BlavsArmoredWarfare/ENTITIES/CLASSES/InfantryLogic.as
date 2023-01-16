@@ -848,6 +848,15 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 void onTick(CBlob@ this)
 {
+	if ((this.getTeamNum() == 0 && getRules().get_s16("blueTickets") == 0)
+	|| (this.getTeamNum() == 1 && getRules().get_s16("redTickets") == 0))
+	{
+		printf("e");
+		this.SetLightRadius(8.0f);
+		this.SetLightColor(SColor(255, 255, 255, 255));
+		this.SetLight(true);
+	}
+	
 	InfantryInfo@ infantry;
 	if (!this.get( "infantryInfo", @infantry )) return;
 
@@ -884,15 +893,6 @@ void onTick(CBlob@ this)
 			this.set_u8("reloadqueue", 8);
 			this.Sync("reloadqueue", true);
 		}
-	}
-
-	if ((this.getTeamNum() == 0 && getRules().get_s16("blueTickets") == 0)
-	|| (this.getTeamNum() == 1 && getRules().get_s16("redTickets") == 0))
-	{
-		printf("e");
-		this.SetLightRadius(8.0f);
-		this.SetLightColor(SColor(255, 255, 255, 255));
-		this.SetLight(true);
 	}
 	
 	this.set_bool("is_a1", false);
