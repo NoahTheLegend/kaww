@@ -119,7 +119,8 @@ void onTick(CSprite@ this)
 			camo.SetVisible(true);
 			camo.SetRelativeZ(0.26f);
 		}
-		
+
+		getRules().set_string(blob.getPlayer().getUsername() + "_perk", "Camouflage");
 		blob.Untag("reload_sprite");
 		return;
 	}
