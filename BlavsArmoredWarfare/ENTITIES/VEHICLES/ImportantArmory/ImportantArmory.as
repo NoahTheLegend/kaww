@@ -160,9 +160,10 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	// button for runner
 	// create menu for class change
-	if (canChangeClass(this, caller) && caller.getTeamNum() == this.getTeamNum())
+	if (caller.getTeamNum() == this.getTeamNum())
 	{
-		caller.CreateGenericButton("$change_class$", Vec2f(8.5, 0), this, buildSpawnMenu, getTranslatedString("Swap Class"));
+		caller.CreateGenericButton("$change_class$", Vec2f(0, 0), this, buildSpawnMenu, getTranslatedString("Swap Class"));
+		caller.CreateGenericButton("$change_perk$", Vec2f(0, -10), this, buildPerkMenu, getTranslatedString("Switch Perk"));
 	}
 }
 

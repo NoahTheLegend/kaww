@@ -166,6 +166,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				this.getSprite().PlaySound("FatesFriend.ogg", 1.2);
 				SetScreenFlash(42,   255,   150,   150,   0.28);
 			}
+			else
+			{
+				this.getSprite().PlaySound("FatesFriend.ogg", 2.0);
+			}
 
 			return damage = 0;
 		}
