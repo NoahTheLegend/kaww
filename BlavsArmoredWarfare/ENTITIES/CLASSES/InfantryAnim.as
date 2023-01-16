@@ -70,7 +70,7 @@ void LoadSprites(CSprite@ this)
 		dead.AddFrame(4);
 
 		camo.SetOffset(Vec2f(0.0f, 0.0f + config_offset));
-		camo.SetAnimation("movement");
+		camo.SetAnimation("default");
 		camo.SetVisible(false);
 		camo.SetRelativeZ(0.26f);
 	}
@@ -104,7 +104,6 @@ void onTick(CSprite@ this)
 
 		if (frontarm !is null)
 		{
-			printf("not null");
 			frontarm.SetFrameIndex(0);
 			frontarm.SetAnimation("camogun");
 			frontarm.SetVisible(true);
@@ -197,8 +196,6 @@ void onTick(CSprite@ this)
 
 		return;
 	}
-
-	printf("camo is "+isCamo);
 
 	ArcherInfo@ archer;
 	if (!blob.get("archerInfo", @archer))
