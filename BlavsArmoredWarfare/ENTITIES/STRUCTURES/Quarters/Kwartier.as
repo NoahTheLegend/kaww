@@ -261,40 +261,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	bool isServer = (getNet().isServer());
 
-	if (cmd == this.getCommandID("shop made item"))
-	{
-		this.getSprite().PlaySound("/ChaChing.ogg");
-		u16 caller, item;
-		if (!params.saferead_netid(caller) || !params.saferead_netid(item))
-		{
-			return;
-		}
-		string name = params.read_string();
-		{
-			CBlob@ callerBlob = getBlobByNetworkID(caller);
-			if (callerBlob is null)
-			{
-				return;
-			}
-			if (name == "beer")
-			{
-				// TODO: gulp gulp sound
-				if (isServer)
-				{
-					callerBlob.server_Heal(beer_amount);
-				}
-			}
-			else if (name == "meal")
-			{
-				this.getSprite().PlaySound("/Eat.ogg");
-				if (isServer)
-				{
-					callerBlob.server_SetHealth(callerBlob.getInitialHealth());
-				}
-			}
-		}
-	}
-	else if (cmd == this.getCommandID("rest"))
+	if (cmd == this.getCommandID("rest"))
 	{
 		u16 caller_id;
 		if (!params.saferead_netid(caller_id))
