@@ -584,6 +584,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					blob.SetFacingLeft(this.isFacingLeft());
 					bool left = ap.isKeyPressed(key_left);
 					bool right = ap.isKeyPressed(key_right);
+					bool space = ap.isKeyJustPressed(key_action3);
 					const bool onground = this.isOnGround();
 					const bool onwall = this.isOnWall();
 					if (this.get_bool("engine_stuck"))
@@ -639,6 +640,55 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						if (this.isOnGround() || this.wasOnGround())
 						{
 							this.AddForce(Vec2f(0.0f, this.getMass()*-0.24f)); // this is nice
+						}
+
+						if (space)
+						{
+							AttachmentPoint@[] aps = this.getAttachments().getAttachmentPoints();
+							for (u8 i = 0; i < aps.length; i++)
+							{
+								AttachmentPoint@ ape = aps[i];
+								if (ape !is null)
+								{
+									if (ape.name == "DRIVER") continue;
+									else if (ape.name == "TURRET")
+									{
+										CBlob@ turret = ape.getOccupied();
+										if (turret !is null)
+										{
+										AttachmentPoint@ turape = turret.getAttachments().getAttachmentPointByName("GUNNER");
+										if (turape !is null)
+										{
+											CBlob@ gunner = turape.getOccupied();
+											if (gunner !is null)
+											{
+												CBitStream params;
+												gunner.SendCommand(gunner.getCommandID("bootout"), params);
+											}
+										}
+										AttachmentPoint@ bowape = turret.getAttachments().getAttachmentPointByName("BOW");
+										if (bowape !is null)
+										{
+											CBlob@ mgunner = bowape.getOccupied();
+											if (mgunner !is null)
+											{
+												CBitStream params;
+												mgunner.SendCommand(mgunner.getCommandID("bootout"), params);
+											}
+										}
+										}
+									}
+									else
+									{
+										CBlob@ pasape = ape.getOccupied();
+										if (pasape !is null)
+										{
+											CBitStream params;
+											pasape.SendCommand(pasape.getCommandID("bootout"), params);
+										}
+									}
+								}
+							}
 						}
 
 						bool slopeangle = (angle > 15 && angle < 345 && this.isOnMap());
