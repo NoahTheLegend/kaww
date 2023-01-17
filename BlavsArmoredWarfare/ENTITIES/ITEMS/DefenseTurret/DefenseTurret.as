@@ -220,7 +220,6 @@ CBlob@ getNewTarget(CBlob @blob, const bool seeThroughWalls = false, const bool 
 		        && (XORRandom(200) == 0 || isVisible(blob, potential, distance))
 		   )
 		{
-			blob.set_Vec2f("last pathing pos", potential.getPosition());
 			return potential;
 		}
 	}
