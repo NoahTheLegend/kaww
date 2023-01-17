@@ -382,11 +382,8 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	if (this.get_f32("engine_RPM") < 0.0f) this.set_f32("engine_RPM", 0.0f);
-	if (this.get_f32("engine_RPM") > this.get_f32("engine_RPMtarget"))
-	{
-		this.set_f32("engine_RPM", this.get_f32("engine_RPMtarget"));
-	}
+
+	this.set_f32("engine_RPMtarget", Maths::Clamp(this.get_f32("engine_RPMtarget"), 0, 30000) );
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");
 	if (ap !is null && this.get_f32("engine_RPMtarget") > this.get_f32("engine_RPM"))
@@ -441,26 +438,19 @@ void onTick(CBlob@ this)
 			this.set_f32("engine_RPM", 0);
 		else
 		{
-			this.sub_f32("engine_RPM", 50+XORRandom(80)); // more variance
+			this.sub_f32("engine_RPM", 50); // more variance
 			if (isServer()) this.Sync("engine_RPM", true);
 		}
 	}
 
-	if ((this.getName() == "t10" || this.getName() == "m60") && getGameTime()%30==0)
+	if ((this.getName() == "t10" || this.getName() == "m60") && getGameTime()%15==0)
 	{
 		printf("RPM "+this.get_f32("engine_RPM"));
 		printf("TARGET "+this.get_f32("engine_RPMtarget"));
 		printf("THR "+this.get_f32("engine_throttle"));
-		printf("");
 	}
 
-	if (this.get_f32("engine_RPM") < 0.0f) this.set_f32("engine_RPM", 0.0f);
-	if (this.get_f32("engine_RPM") > this.get_f32("engine_RPMtarget"))
-	{
-		this.set_f32("engine_RPM", this.get_f32("engine_RPMtarget"));
-	}
-
-	//this.set_f32("engine_RPM", Maths::Clamp(0.0f, this.get_f32("engine_RPM"), 30000.0f));
+	this.set_f32("engine_RPM", Maths::Min(Maths::Max(0.0f, this.get_f32("engine_RPM")), 30000.0f));
 	//if (this.getName() == "t10" && getGameTime() % 30 == 0 && (isServer() || (getLocalPlayer() !is null && getLocalPlayer().getUsername() == "NoahTheLegend" && getLocalPlayer().isMyPlayer())))
 	//	printf(""+this.get_f32("engine_RPM")); // crashing server?
 
