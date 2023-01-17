@@ -17,12 +17,12 @@ const string[] RANKS = {"Recruit",              // new player
                         "Private",
                         "Gefreiter",
                         "Corporal",
-                        "Master Corporal",      // unlock anti-tank -- takes about 100 kills total
-                        "Sergeant",             // unlock mp5 -- takes about 300 kills total
-                        "Staff Sergeant",       // +160 kills
-                        "Master Sergeant",      // +130 kills
-                        "First Sergeant",           // undeveloped yet ...
-                        "Sergeant-Major",           // unlock death incarnate -- grows exponentially
+                        "Master Corporal",
+                        "Sergeant",  
+                        "Staff Sergeant",
+                        "Master Sergeant",
+                        "First Sergeant", 
+                        "Sergeant-Major",
                         "Warrant Officer 1",
                         "Warrant Officer 2",
                         "Warrant Officer 3",
