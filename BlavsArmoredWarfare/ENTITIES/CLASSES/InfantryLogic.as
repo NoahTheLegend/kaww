@@ -174,7 +174,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			if (this.getPlayer() !is null)
 			{
 				CBitStream params;
-				this.SendCommandTo(this.getCommandID("aos_effects"), params, this.getPlayer());
+				this.SendCommand(this.getCommandID("aos_effects"), params);
 			}
 
 			return damage = 0;
@@ -443,7 +443,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		if (this.exists("stab time")) time = this.get_u8("stab time");
 		if (this.exists("stab timing")) timing = this.get_u8("stab timing");
 		if (this.exists("stab damage")) damage = this.get_f32("stab damage");
-		if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime() && no_medkit)
+		if (this.getName() != "mp5" && this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime() && no_medkit)
 		{
 			this.set_u32("end_stabbing", getGameTime()+time);
 			this.Tag("attacking");
