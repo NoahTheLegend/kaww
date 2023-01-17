@@ -1157,6 +1157,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
         // adjust to the current level
         rules.set_string(player.getUsername() + "_last_lvlup", rank);
 	}
+	else if (cmd == this.getCommandID("bootout"))
+	{
+		if (isClient()) this.getSprite().PlaySound("bridge_open", 1.0f, 1.25f);
+		if (isServer()) this.server_DetachFromAll();
+	}
 }
 
 bool canHit(CBlob@ this, CBlob@ b)
