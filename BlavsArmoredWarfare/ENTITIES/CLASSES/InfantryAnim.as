@@ -262,7 +262,7 @@ void onTick(CSprite@ this)
 	}
 	else if (showgun)
 	{
-		if (blob.isKeyJustPressed(key_action3) || blob.get_u32("end_stabbing") > getGameTime())
+		if ((blob.isKeyJustPressed(key_action3) && blob.getName() != "mp5") || blob.get_u32("end_stabbing") > getGameTime())
 		{
 			this.SetAnimation("stab");
 		}
