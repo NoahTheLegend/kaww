@@ -20,8 +20,7 @@ void onInit(CBlob@ this)
 	this.Tag("player");
 	this.Tag("flesh");
 	this.addCommandID("sync_reload_to_server");
-
-	
+	this.addCommandID("aos_effects");
 
 	this.set_s32("my_chargetime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
@@ -48,6 +47,34 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		else if (customData == Hitters::arrow)
 			return damage*0.5f;
 		else return 0;
+	}
+	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
+	{
+		if (this.hasBlob("aceofspades", 1))
+		{
+			this.TakeBlob("aceofspades", 1);
+
+			this.server_SetHealth(0.01f);
+
+			if (this.getPlayer() !is null)
+			{
+				CBitStream params;
+				this.server_SendCommandToPlayer(this.getCommandID("aos_effects"), params, this.getPlayer());
+			}
+
+			return damage = 0;
+		}
+	}
+	if (this.getPlayer() !is null)
+	{
+		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Death Incarnate")
+		{
+			damage *= 2.0f; // take double damage
+		}
+		else if ((hitterBlob.getName() == "grenade" || customData == Hitters::explosion) && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+		{
+			damage *= 1.75f; // take double damage
+		}
 	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") && hitterBlob.getName() != "grenade")
 	{
@@ -184,7 +211,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 {
 	bool ismyplayer = this.isMyPlayer();
 	bool responsible = ismyplayer;
-	if (isServer())
+	if (isServer() && this.getHealth() > 0.01f)
 	{
 		CPlayer@ p = this.getPlayer();
 		if (p !is null)
@@ -194,7 +221,8 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 				responsible = p.isBot();
 			}
 			
-			if (getGameTime() % 45 == 0 && getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+			if (getGameTime() % 90 == 0
+			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky")
 			{
 				CInventory@ inv = this.getInventory();
 				if (inv !is null)
@@ -811,6 +839,18 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			//printf("Synced to server: "+this.get_s8("reloadtime"));
 			this.Tag("sync_reload");
 			this.Sync("isReloading", true);
+		}
+	}
+	else if (cmd == this.getCommandID("aos_effects"))
+	{
+		if (this.isMyPlayer()) // are we on server?
+		{
+			this.getSprite().PlaySound("FatesFriend.ogg", 1.2);
+			SetScreenFlash(42,   255,   150,   150,   0.28);
+		}
+		else
+		{
+			this.getSprite().PlaySound("FatesFriend.ogg", 2.0);
 		}
 	}
 }

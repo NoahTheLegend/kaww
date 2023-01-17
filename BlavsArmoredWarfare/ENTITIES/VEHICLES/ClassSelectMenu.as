@@ -94,7 +94,7 @@ void addClassesToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 				if (exp >= getExpToNextLevel(level))
 				{
 					level = i + 1;
-					rank = RANKS[Maths::Min(i, RANKS.length)];
+					rank = RANKS[Maths::Min(i, RANKS.length-1)];
 				}
 				else
 				{
@@ -173,7 +173,7 @@ void addPerksToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 				if (exp >= getExpToNextLevel(level))
 				{
 					level = i + 1;
-					rank = RANKS[Maths::Min(i, RANKS.length)];
+					rank = RANKS[Maths::Min(i, RANKS.length-1)];
 				}
 				else
 				{

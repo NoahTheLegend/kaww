@@ -57,7 +57,7 @@ TileType server_onTileHit(CMap@ map, f32 damage, u32 index, TileType oldTileType
 			}
 
             case CMap::tile_cdirt_d3:
-                return CMap::tile_empty;
+                return CMap::tile_ground_back;
 
 			case CMap::tile_scrap:
 				return CMap::tile_scrap_d0;

@@ -247,7 +247,7 @@ void onTick(CBlob@ this)
 	this.AddForce(-d * v * hmod);
 
 	if (this.getVelocity().Length() > 0.5f && v > 0.25f) this.setAngleDegrees((this.isFacingLeft() ? 180 : 0) - this.getVelocity().Angle());
-	else if (this.getAngleDegrees() > 25 && this.getAngleDegrees() < 335)
+	else if (this.getAngleDegrees() > 25 && this.getAngleDegrees() < 335 && this.get_f32("velocity") < 1.0f)
 	{
 		this.setVelocity(Vec2f(0,0));
 		this.set_f32("velocity", 0);
@@ -594,7 +594,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	else if (hitterBlob.hasTag("bullet"))
 	{
 		if (hitterBlob.hasTag("plane_bullet")) return damage * 0.25f;
-		return damage * (hitterBlob.hasTag("strong") ? 0.85f : 0.65f);
+		return damage * (hitterBlob.hasTag("strong") ? 0.75f : 0.6f);
 	}
 	return damage;
 }

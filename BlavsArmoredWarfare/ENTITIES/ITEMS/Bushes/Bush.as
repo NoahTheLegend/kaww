@@ -4,11 +4,16 @@
 
 void onInit(CBlob@ this)
 {
-
+	this.Tag("builder always hit");
 	//this.Tag("scenary");
 }
 
 //sprite
+
+bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
+{
+	return false;
+}
 
 void onInit(CSprite@ this)
 {

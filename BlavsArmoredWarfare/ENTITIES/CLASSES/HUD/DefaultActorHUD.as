@@ -125,7 +125,7 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
         if (exp >= getExpToNextLevel(i - 0))
         {
             level = i + 1;
-            rank = RANKS[Maths::Min(i, RANKS.length)];
+            rank = RANKS[Maths::Min(i, RANKS.length-1)];
         }
         else
         {
@@ -188,7 +188,7 @@ void onRender(CSprite@ this)
 					if (exp >= getExpToNextLevel(i - 0))
 					{
 						level = i + 1;
-						rank = RANKS[Maths::Min(i, RANKS.length)];
+						rank = RANKS[Maths::Min(i, RANKS.length-1)];
 						//print("rank: " + RANKS[i]+ "  - exp needed to reach: " + )
 					}
 					else

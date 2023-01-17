@@ -180,13 +180,14 @@ void onInit(CBlob@ this)
 	}
 
 	// speedy stuff
-	f32 intake;
+	f32 intake = 0.0f;
 	switch(blobHash) // backside vulnerability point
 	{
 		case _maus: // maus
 		intake = -50.0f; break;
 
 		case _t10: // T10
+		intake = -25.0f;
 		break;
 		
 		case _m60: // normal tank
@@ -254,7 +255,7 @@ void onTick(CBlob@ this)
 			this.setInventoryName(this.get_string("invname"));
 		}
 	}
-	if (!(isClient() && isServer()) && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
+	if (!(isClient() && isServer()) && !this.hasTag("aerial") && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
 	{
 		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
 		return; // turn engines off!
@@ -391,8 +392,8 @@ void onTick(CBlob@ this)
 		if (ap.getOccupied() is null) this.set_f32("engine_RPMtarget", 0); // turn engine off
 		f32 custom_add = this.get_f32("add_gas_intake");
 		if (custom_add == 0) custom_add = 1.0f;
-		f32 gas_intake = 230 + custom_add + XORRandom(70+custom_add/3.5f); // gas flow variance  (needs equation)
-		if (this.get_f32("engine_RPM") > 2000) {gas_intake += 100;}
+		f32 gas_intake = 180 + custom_add + XORRandom(70+custom_add/3.5f); // gas flow variance  (needs equation)
+		if (this.get_f32("engine_RPM") > 2000) {gas_intake += 150;}
 		this.add_f32("engine_RPM", this.get_f32("engine_throttle") * gas_intake); 
 
 		if (XORRandom(100) < 60)
