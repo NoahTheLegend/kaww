@@ -937,7 +937,8 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 			}
         }
     }
-
+		printf("m "+myLevel);
+	printf("c "+callerLevel);
 	if (callerLevel > myLevel || this.isBot())
 	{
 		CBitStream params;
