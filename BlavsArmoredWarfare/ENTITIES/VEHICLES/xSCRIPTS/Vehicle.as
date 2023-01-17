@@ -187,7 +187,7 @@ void onInit(CBlob@ this)
 		intake = -50.0f; break;
 
 		case _t10: // T10
-		intake = 15.0f;
+		intake = -25.0f;
 		break;
 		
 		case _m60: // normal tank
@@ -392,8 +392,8 @@ void onTick(CBlob@ this)
 		if (ap.getOccupied() is null) this.set_f32("engine_RPMtarget", 0); // turn engine off
 		f32 custom_add = this.get_f32("add_gas_intake");
 		if (custom_add == 0) custom_add = 1.0f;
-		f32 gas_intake = 230 + custom_add + XORRandom(70+custom_add/3.5f); // gas flow variance  (needs equation)
-		if (this.get_f32("engine_RPM") > 2000) {gas_intake += 100;}
+		f32 gas_intake = 180 + custom_add + XORRandom(70+custom_add/3.5f); // gas flow variance  (needs equation)
+		if (this.get_f32("engine_RPM") > 2000) {gas_intake += 150;}
 		this.add_f32("engine_RPM", this.get_f32("engine_throttle") * gas_intake); 
 
 		if (XORRandom(100) < 60)
