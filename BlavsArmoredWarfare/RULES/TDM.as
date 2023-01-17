@@ -1167,7 +1167,7 @@ const string[] names = {
 
 string uppercaseFirstLetter(string str)
 {
-  return str.substr(0, 1).toUpper() + str.substr(1);
+  	return str.substr(0, 1).toUpper() + str.substr(1);
 }
 
 string getRandomCharName()
