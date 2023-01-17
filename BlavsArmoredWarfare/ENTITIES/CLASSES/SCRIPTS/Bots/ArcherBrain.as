@@ -668,7 +668,7 @@ void onTick(CBrain@ this)
 		if (getGameTime() > 60*30) // vehicles are now available
 		{
 			
-			if (blob.get_u8("myKey") % 3 != 0) // only some bots are destined to use vehicles
+			if (blob.get_u8("myKey") % 4 != 0) // only some bots are destined to use vehicles
 			{				
 				
 				CBlob@[] vehicles;
@@ -696,7 +696,7 @@ void onTick(CBrain@ this)
 										if (!vehicle.hasTag("turret") && !vehicle.hasTag("gun") && !vehicle.hasTag("aerial") // isnt a turret or machine gun or plane
 										&& vehicle.getName() != "importantarmory") // dont drive this for now
 										{
-											if (XORRandom(2) == 0 && vehicle !is null) // lets drive a vehicle
+											if (XORRandom(3) == 0 && vehicle !is null) // lets drive a vehicle
 											{
 												// let's check if the driver seat is occupied
 												AttachmentPoint@ point = vehicle.getAttachments().getAttachmentPointByName("DRIVER");
