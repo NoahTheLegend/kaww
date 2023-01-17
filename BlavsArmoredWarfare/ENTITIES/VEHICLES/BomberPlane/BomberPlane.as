@@ -171,7 +171,7 @@ void onTick(CBlob@ this)
 
 							if (item.getName() != "mat_smallbomb")
 							{ 
-								CBlob@ b = server_CreateBlob("crate", this.getTeamNum(), this.getPosition()+Vec2f(0,8));
+								CBlob@ b = server_CreateBlob("paracrate", this.getTeamNum(), this.getPosition()+Vec2f(0,8));
 								if (b !is null)
 								{
 									for (u8 i = 0; i < inv.getItemsCount(); i++)
