@@ -424,6 +424,67 @@ void RandomTurn(CBlob@ blob)
 	}
 }
 
+void DriveToPos(CBlob@ blob, CBlob@ vehicle, Vec2f position, float dist)
+{
+	//print("a " + blob.get_string("behavior"));
+	//print("b " + blob.get_u16("behaviortimer"));
+	if (blob.get_string("behavior") == "drive")
+	{
+		if ((position - blob.getPosition()).getLength() > dist)
+		{
+			if (position.x > blob.getPosition().x) blob.setKeyPressed(key_right, true);
+			else blob.setKeyPressed(key_left, true);
+		}
+		else if (getGameTime() % 120 == 0)
+		{
+			LocateGeneralEnemyDirection(blob); // new location
+		}
+
+		// lift front end to climb
+		if (vehicle.getShape().vellen < 0.5f)
+		{
+			blob.setKeyPressed(key_down, true);
+		}
+
+		bool vehicleislow = (vehicle.getHealth() < vehicle.getInitialHealth() / 3);
+
+		if (vehicle.getShape().vellen < (vehicleislow ? 0.07f : 0.35f))
+		{
+			// hmm we haven't moved, are we stuck?
+			blob.add_u16("behaviortimer", vehicleislow ? 1 : 2);
+			if (blob.get_u16("behaviortimer") > XORRandom(150)+10)
+			{
+				// we are stuck, try to unstuck
+				blob.set_string("behavior", "unstuckvehicle");
+			}	
+		}
+	}
+	else if (blob.get_string("behavior") == "unstuckvehicle")
+	{
+		if (blob.get_u16("behaviortimer") > 0) // firstly, reverse or turn around
+		{
+			if (getGameTime() % 200 + blob.get_u8("myKey") < 160)
+			{
+				blob.setKeyPressed(key_action2, true);
+			}
+			
+			if (position.x > blob.getPosition().x) blob.setKeyPressed(key_left, true);
+			else blob.setKeyPressed(key_right, true);
+		}
+		else // then go forward
+		{
+			if (position.x > blob.getPosition().x) blob.setKeyPressed(key_right, true);
+			else blob.setKeyPressed(key_left, true);
+		}
+
+		if (vehicle.getShape().vellen > 0.2f && XORRandom(30) == 0 || XORRandom(30) == 0)
+		{
+			blob.set_string("behavior", "drive"); // switch to forward
+			blob.set_u16("behaviortimer", 0);
+		}
+	}
+}
+
 void SortBlobsByDistance(CBlob@ blob, CBlob@[]@ blobs)
 {
     int n = blobs.length;
@@ -453,4 +514,31 @@ bool CompareBlobsByDistance(CBlob@ blob, CBlob@ a, CBlob@ b)
 
     // Return true if the distance between blob a and the origin is less than the distance between blob b and the origin
     return (distance1 < distance2);
+}
+
+void LocateGeneralEnemyDirection(CBlob@ blob)
+{
+	
+	CBlob@[] threats;
+	CBlob@[] enemythreats;
+	getBlobsByName("importantarmory", @threats);
+	getBlobsByName("tent", @threats);
+	getBlobsByTag("vehicle", @threats);
+	getBlobsByTag("player", @threats);
+
+	for (uint i = 0; i < threats.length; ++i)
+	{
+		if (threats[i].getTeamNum() != blob.getTeamNum()) // not on our team
+		{
+			if (!threats[i].hasTag("turret") && !threats[i].hasTag("gun") && !threats[i].hasTag("weak vehicle") && !threats[i].hasTag("dead"))
+			{
+				enemythreats.push_back(threats[i]); // enemy threat
+			}
+		}
+	}
+
+	CBlob@ chosenthreat = enemythreats[XORRandom(enemythreats.length)];
+	blob.set_Vec2f("generalenemylocation", chosenthreat.getPosition());
+	//print("the enemy threat is " + chosenthreat.getName());
+
 }
