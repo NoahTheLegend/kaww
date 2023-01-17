@@ -131,6 +131,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shop made item"))
 	{
+		if (this.get_u32("next_tick") > getGameTime()) return;
+		this.set_u32("next_tick", getGameTime()+1);
 		this.getSprite().PlaySound("/BuildVehicle.ogg");
 	}
 }
