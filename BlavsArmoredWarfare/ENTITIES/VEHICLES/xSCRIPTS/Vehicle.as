@@ -438,7 +438,7 @@ void onTick(CBlob@ this)
 			this.set_f32("engine_RPM", 0);
 		else
 		{
-			//this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
+			this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
 			if (isClient() && this !is null) this.Sync("engine_RPM", true);
 		}
 	}
