@@ -44,7 +44,7 @@ void onTick(CBlob@ this)
 				{
 					if (mydoor.getTeamNum() == this.getTeamNum())
 					{
-						if (mydoor.getNetworkID() != this.getNetworkID())
+						//if (mydoor.getNetworkID() != this.getNetworkID())
 						{
 							this.set_Vec2f("linkPos", mydoor.getPosition());
 						}
