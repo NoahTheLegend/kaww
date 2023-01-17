@@ -670,19 +670,27 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 										AttachmentPoint@ bowape = turret.getAttachments().getAttachmentPointByName("BOW");
 										if (bowape !is null)
 										{
-											CBlob@ mgunner = bowape.getOccupied();
-											if (mgunner !is null)
+										CBlob@ bow = bowape.getOccupied();
+										if (bow !is null)
+										{
+											AttachmentPoint@ bowap = bow.getAttachments().getAttachmentPointByName("GUNNER");
+											if (bowap !is null)
 											{
-												CBitStream params;
-												mgunner.SendCommand(mgunner.getCommandID("bootout"), params);
+												CBlob@ mgunner = bowap.getOccupied();
+												if (mgunner !is null)
+												{
+													CBitStream params;
+													mgunner.SendCommand(mgunner.getCommandID("bootout"), params);
+												}
 											}
+										}
 										}
 										}
 									}
 									else
 									{
 										CBlob@ pasape = ape.getOccupied();
-										if (pasape !is null)
+										if (pasape !is null && pasape.hasTag("player"))
 										{
 											CBitStream params;
 											pasape.SendCommand(pasape.getCommandID("bootout"), params);
