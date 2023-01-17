@@ -27,6 +27,7 @@ void onInit(CBlob@ this)
 	this.Tag("player");
 	this.Tag("flesh");
 	this.Tag("3x2");
+	this.set_u32("can_spot", 0);
 
 	HitData hitdata;
 	this.set("hitdata", hitdata);
@@ -35,6 +36,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("dig_exp");
 	this.addCommandID("aos_effects");
 	this.addCommandID("levelup_effects");
+	this.addCommandID("bootout");
 
 	CShape@ shape = this.getShape();
 	shape.SetRotationsAllowed(false);
@@ -56,6 +58,13 @@ void onSetPlayer(CBlob@ this, CPlayer@ player)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (isServer()) //update bots' logic
+	{
+		if (this.hasTag("disguised"))
+		{
+			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
+		}
+	}
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
@@ -447,6 +456,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
         
         // adjust to the current level
         rules.set_string(player.getUsername() + "_last_lvlup", rank);
+	}
+	else if (cmd == this.getCommandID("bootout"))
+	{
+		if (isClient()) this.getSprite().PlaySound("bridge_open", 1.0f, 1.25f);
+		if (isServer()) this.server_DetachFromAll();
 	}
 }
 
@@ -884,5 +898,50 @@ void onAddToInventory(CBlob@ this, CBlob@ blob)
 	{
 		blob.server_Die();
 		blob.Untag("temp blob");
+	}
+}
+
+void GetButtonsFor(CBlob@ this, CBlob@ caller)
+{
+	if (caller is null || caller is this) return;
+	if (caller.isAttached() || !this.isAttached()) return;
+	if (caller.getDistanceTo(this) > 16.0f) return;
+	if (this.getPlayer() is null || caller.getPlayer() is null) return;
+
+	f32 exp = getRules().get_u32(this.getPlayer().getUsername() + "_exp");
+	f32 callerexp = getRules().get_u32(caller.getPlayer().getUsername() + "_exp");
+
+	bool stop = false;
+	bool callerstop = false;
+	u16 myLevel = 0;
+	u16 callerLevel = 0;
+	if (exp > 0)
+    {
+        for (int i = 1; i <= RANKS.length; i++)
+        {
+			if (!stop)
+			{
+            	if (exp >= getExpToNextLevel(i - 0))
+            	{
+            	    myLevel = i + 1;
+            	}
+				else stop = true;
+			}
+			if (!callerstop)
+			{
+				if (callerexp >= getExpToNextLevel(i - 0))
+            	{
+            	    callerLevel = i + 1;
+            	}
+            	else callerstop = true;
+			}
+        }
+    }
+
+	if (callerLevel > myLevel || this.isBot())
+	{
+		CBitStream params;
+		params.write_u16(caller.getNetworkID());
+		CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("bootout"), "Boot this player out.", params);
 	}
 }

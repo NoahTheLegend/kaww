@@ -7,12 +7,14 @@
 #include "InfantryCommon.as";
 #include "AntiTankCommon.as";
 #include "TeamColour.as";
+#include "PlayerRankInfo.as";
 
 void onInit(CBlob@ this)
 {
 	this.set_u32("mag_bullets_max", 1); // mag size
 
 	this.set_u32("mag_bullets", 0);
+	this.set_u32("can_spot", 0);
 
 	ArcherInfo archer;
 	this.set("archerInfo", @archer);
@@ -22,6 +24,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("sync_reload_to_server");
 	this.addCommandID("aos_effects");
 	this.addCommandID("levelup_effects");
+	this.addCommandID("bootout");
 
 	this.set_s32("my_chargetime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
@@ -41,6 +44,13 @@ void onInit(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (isServer()) //update bots' logic
+	{
+		if (this.hasTag("disguised"))
+		{
+			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
+		}
+	}
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
@@ -807,6 +817,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
+		if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
 		Vec2f arrowVel;
@@ -907,6 +918,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
         // adjust to the current level
         rules.set_string(player.getUsername() + "_last_lvlup", rank);
 	}
+	else if (cmd == this.getCommandID("bootout"))
+	{
+		if (isClient()) this.getSprite().PlaySound("bridge_open", 1.0f, 1.25f);
+		if (isServer()) this.server_DetachFromAll();
+	}
 }
 
 bool canHit(CBlob@ this, CBlob@ b)
@@ -929,4 +945,49 @@ bool canHit(CBlob@ this, CBlob@ b)
 		return true;
 
 	return b.getTeamNum() != this.getTeamNum();
+}
+
+void GetButtonsFor(CBlob@ this, CBlob@ caller)
+{
+	if (caller is null || caller is this) return;
+	if (caller.isAttached() || !this.isAttached()) return;
+	if (caller.getDistanceTo(this) > 16.0f) return;
+	if (this.getPlayer() is null || caller.getPlayer() is null) return;
+
+	f32 exp = getRules().get_u32(this.getPlayer().getUsername() + "_exp");
+	f32 callerexp = getRules().get_u32(caller.getPlayer().getUsername() + "_exp");
+
+	bool stop = false;
+	bool callerstop = false;
+	u16 myLevel = 0;
+	u16 callerLevel = 0;
+	if (exp > 0)
+    {
+        for (int i = 1; i <= RANKS.length; i++)
+        {
+			if (!stop)
+			{
+            	if (exp >= getExpToNextLevel(i - 0))
+            	{
+            	    myLevel = i + 1;
+            	}
+				else stop = true;
+			}
+			if (!callerstop)
+			{
+				if (callerexp >= getExpToNextLevel(i - 0))
+            	{
+            	    callerLevel = i + 1;
+            	}
+            	else callerstop = true;
+			}
+        }
+    }
+
+	if (callerLevel > myLevel || this.isBot())
+	{
+		CBitStream params;
+		params.write_u16(caller.getNetworkID());
+		CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("bootout"), "Boot this player out.", params);
+	}
 }

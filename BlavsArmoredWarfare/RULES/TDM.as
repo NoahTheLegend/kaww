@@ -428,19 +428,16 @@ shared class TDMCore : RulesCore
 				};
 				
 				float exp = _rules.get_u32(info.username + "_exp");
-				
 				int unlocked = 0;
 
 				// Calculate the exp required to reach each level
 				for (int i = 1; i <= 6; i++)
 				{
-					if (exp >= getExpToNextLevelShared(i + 1)) unlocked ++;
+					if (exp >= getExpToNextLevelShared(i)) unlocked ++;
 					else break;
 				}
-
 				unlocked = Maths::Min(unlocked, 4);
-
-				int index = Maths::Max(XORRandom(classes.length), unlocked);
+				int index = Maths::Min(XORRandom(classes.length), unlocked);
 				string line = classes[index];
 
                 info.blob_name = line;//(XORRandom(100) >= 90 ? "revolver" : (XORRandom(100) >= 80 ? "shotgun" : (XORRandom(100) >= 70 ? "ranger" : (XORRandom(100) >= 60 ? "sniper" : (XORRandom(100) >= 50 ? "mp5" : "shotgun"))))); // dont ask
