@@ -1147,11 +1147,17 @@ const string[] names = {
 	"astro-power"
 };
 
+string uppercaseFirstLetter(string str)
+{
+  return str.substr(0, 1).toUpper() + str.substr(1);
+}
+
 string getRandomCharName()
 {
 	bool hasNumbersAtEnd = XORRandom(2)==0; // botname982
 	bool upperCase = XORRandom(2)==0; // BotName
 	bool underline = XORRandom(2)==0; // bot_name
+	bool viceVersa = XORRandom(4)==0;
 	bool shuffle = XORRandom(2)==0; // get lastname from another pair
 	
 	string finalName = "Bot";
@@ -1167,19 +1173,16 @@ string getRandomCharName()
 		string[] spltemp = temp.split("-");
 		lastName = spltemp[1];
 	}
+	if (viceVersa)
+	{
+		string temp = firstName;
+		firstName = lastName;
+		lastName = temp;
+	}
 	if (upperCase)
 	{
-		{
-			string letter = firstName.substr(0, 1);
-			letter.toUpper();
-			firstName.insert(letter);
-		}
-		{
-			string letter = lastName.substr(0, 1);
-			letter.toUpper();
-			lastName.insert(letter);
-		}
-
+		firstName = uppercaseFirstLetter(firstName);
+		lastName = uppercaseFirstLetter(lastName);
 
 		//string[] firstNameSpl = firstName.split(""); // crashes the game
 		//firstName = "";
@@ -1197,12 +1200,13 @@ string getRandomCharName()
 		//	lastName = lastName+lastNameSpl[i];
 		//}
 	}
-	if (hasNumbersAtEnd)
-	{
-		lastName = lastName+(underline?" ":"")+(XORRandom(10000));
-	}
 	
 	finalName = firstName+(underline?" ":"")+lastName;
+	
+	if (hasNumbersAtEnd)
+	{
+		finalName = finalName+(XORRandom(10000));
+	}
 
 	return finalName;
 }
