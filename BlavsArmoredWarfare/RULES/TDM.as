@@ -1030,6 +1030,7 @@ void KickBots(CRules@ this)
 		}
 		else bots++;
 	}
+	if (bots == 0) return;
 
 	s8 remaining_bots = players+bots-MAX_BOTS;
 	u8 kicked = 0;
@@ -1130,8 +1131,75 @@ void onRestart(CRules@ this)
 	Reset(this);
 }
 
+const string[] names = {
+	"narc-cop",
+	"fryer-tuck",
+	"private-wolf",
+	"megalith-goliath",
+	"trilemma-mighty",
+	"frenzy-man",
+	"dread-light",
+	"captin-cook",
+	"sweety-rat",
+	"dread-antson",
+	"para-eagle",
+	"aexetan-love",
+	"astro-power"
+};
+
+string getRandomCharName()
+{
+	bool hasNumbersAtEnd = XORRandom(2)==0; // botname982
+	bool upperCase = XORRandom(2)==0; // BotName
+	bool underline = XORRandom(2)==0; // bot_name
+	bool shuffle = XORRandom(2)==0; // get lastname from another pair
+	
+	string finalName = "Bot";
+	string name = XORRandom(names.length);
+	string[] spl = name.split("-");
+
+	string firstName = spl[0];
+	string lastName = "";
+	if (spl.length > 1) lastName = spl[1];
+
+	if (shuffle)
+	{
+		string temp = XORRandom(names.length);
+		string[] spltemp = temp.split("-");
+		lastName = spltemp[1];
+	}
+	if (upperCase)
+	{
+		string[] firstNameSpl = firstName.split("");
+		firstName = "";
+		for (u8 i = 0; i < firstNameSpl.length; i++)
+		{
+			if (i==0) firstNameSpl[i].toUpper();
+			firstName = firstName+firstNameSpl[i];
+		}
+
+		string[] lastNameSpl = lastName.split("");
+		lastName = "";
+		for (u8 i = 0; i < lastNameSpl.length; i++)
+		{
+			if (i==0) lastNameSpl[i].toUpper();
+			lastName = lastName+lastNameSpl[i];
+		}
+	}
+	if (hasNumbersAtEnd)
+	{
+		lastName = lastName+(underline?"_":"")+(XORRandom(10000));
+	}
+	
+	finalName = firstName+(underline?"_":"")+lastName;
+
+	return finalName;
+}
+
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
+	if (isServer() && player !is null && player.isBot()) player.server_setCharacterName(getRandomCharName()); 
+
 	if (getPlayersCount() == 5)
 	{
 		LoadMapCycle("MAPS/mapcycle.cfg");
@@ -1354,5 +1422,6 @@ void onInit(CRules@ this)
         cfg_playerexp = ConfigFile("awexp.cfg");
     }
 
+	if (isClient() && isServer()) this.Tag("togglebots"); // disable them on local automatically
 	Reset(this);
 }
