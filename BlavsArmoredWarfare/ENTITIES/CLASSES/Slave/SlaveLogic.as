@@ -34,6 +34,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("pickaxe");
 	this.addCommandID("dig_exp");
 	this.addCommandID("aos_effects");
+	this.addCommandID("levelup_effects");
 
 	CShape@ shape = this.getShape();
 	shape.SetRotationsAllowed(false);

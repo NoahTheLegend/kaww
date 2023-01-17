@@ -173,51 +173,9 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
 
     if (rank != oldrank) // means that we leveled up
     {
-        // flash screen
-        if (player.isMyPlayer())
-        {
-            SetScreenFlash(30,   255,   255,   255,   2.3);
-        }
-        
-        if (blob !is null && isServer())
-        {
-            // play sound
-            blob.getSprite().PlaySound("LevelUp", 1.6f, 1.0f);
-
-            if (isServer())
-            {
-                // coins
-                server_DropCoins(blob.getPosition(), 50);
-            }
-        }
-
-        //if (isServer()) //client
-        {
-            // chat message
-            if (player.isMyPlayer()) {
-                client_AddToChat("You've been promoted to " + rank.toLower() + "!", SColor(255, 50, 150, 20));
-            }
-            else {
-                client_AddToChat(player.getCharacterName() + " has been promoted to " + rank.toLower() + "!", SColor(255, 50, 140, 20));
-            }
-            
-            if (blob !is null)
-            {
-                // create floating rank
-                CParticle@ p = ParticleAnimated("Ranks", blob.getPosition() + Vec2f(8,-14), Vec2f(0,-0.9), 0.0f, 1.0f, 0, level - 1, Vec2f(32, 32), 0, 0, true);
-                if(p !is null)
-                {
-                    p.collides = false;
-                    p.Z = 1000;
-                    p.timeout = 2; // this shit doesnt work
-                }
-
-                // create particle
-                ParticleAnimated("LevelUpParticle", blob.getPosition(), blob.getVelocity() - Vec2f(0,1.2), 0.0f, 1.0f, 3, 0.2f, true);
-            }
-        }
-        
-        // adjust to the current level
-        rules.set_string(player.getUsername() + "_last_lvlup", rank);
+        CBitStream params;
+        params.write_u8(level);
+        params.write_string(rank);
+        blob.SendCommand(blob.getCommandID("levelup_effects"), params);
     }
 }
