@@ -6,6 +6,8 @@
 #include "Hitters.as";
 #include "PlayerRankInfo.as";
 
+const u8 MAX_BOTS = 8; // fills while server's pop is lesser than value
+
 ConfigFile cfg_playerexp;
 
 shared int ticketsRemaining(CRules@ this, int team){
@@ -1011,6 +1013,40 @@ shared class TDMCore : RulesCore
 	}
 };
 
+void KickBots(CRules@ this)
+{
+	u8 players = 0;
+	u8 bots = 0;
+	for (u8 i = 0; i < getPlayersCount(); i++)
+	{
+		CPlayer@ p = getPlayer(i);
+		if (p is null) continue;
+		if (!p.isBot())
+		{
+			if (p.getTeamNum() != this.getSpectatorTeamNum())
+			{
+				players++;
+			}
+		}
+		else bots++;
+	}
+
+	s8 remaining_bots = players+bots-MAX_BOTS;
+	//printf("rem "+remaining_bots);
+	for (u8 i = 0; i < remaining_bots; i++)
+	{
+		for (u8 i = 0; i < getPlayersCount(); i++)
+		{
+			CPlayer@ p = getPlayer(i);
+			if (p !is null && p.isBot())
+			{
+				KickPlayer(p);
+				break;
+			}
+		}
+	}
+}
+
 //pass stuff to the core from each of the hooks
 void Reset(CRules@ this)
 {
@@ -1024,6 +1060,8 @@ void Reset(CRules@ this)
 	this.set_u16("red_kills", 0);
 	this.Sync("blue_kills", true);
 	this.Sync("red_kills", true);
+
+	KickBots(this);
 
 	//if (this.get_s16("blueTickets") < 1)
 	//{
@@ -1206,6 +1244,39 @@ void onTick(CRules@ this)
 		{
 			//printf("b "+blue_flags+" r "+red_flags);
 			this.set_u32("game_end_time", this.get_u32("game_end_time") - 30);
+		}
+
+		if (!this.hasTag("togglebots"))
+		{
+			// Fill server with bots on lowpop
+			u8 players = 0;
+			u8 bots = 0;
+			for (u8 i = 0; i < getPlayersCount(); i++)
+			{
+				CPlayer@ p = getPlayer(i);
+				if (p is null) continue;
+				if (!p.isBot())
+				{
+					if (p.getTeamNum() != this.getSpectatorTeamNum())
+					{
+						players++;
+					}
+				}
+				else bots++;
+			}
+			
+			//printf("pl "+players);
+			//printf("bots "+bots);
+
+			// kick bots onRestart
+			if (players+bots <= MAX_BOTS)
+			{
+				s8 remaining_bots = MAX_BOTS-(players+bots);
+				for (u8 i = 0; i < remaining_bots; i++)
+				{
+					AddBot("Bot");
+				}
+			}
 		}
 	}
 	//if (!this.hasTag("synced_siege"))

@@ -381,12 +381,15 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 				}
 				else if (text_in == "!kickbots")
 				{
-					printf("e");
 					for (u8 i = 0; i < getPlayersCount(); i++)
 					{
 						CPlayer@ p = getPlayer(i);
 						if (p !is null && p.isBot()) KickPlayer(p);
 					}
+				}
+				else if (text_in == "!togglebots")
+				{
+					getRules().hasTag("togglebots") ? getRules().Untag("togglebots") : getRules().Tag("togglebots");
 				}
 				else
 				{
