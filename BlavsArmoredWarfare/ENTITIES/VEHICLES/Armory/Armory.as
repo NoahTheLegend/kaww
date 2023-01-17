@@ -317,36 +317,6 @@ bool isOverlapping(CBlob@ this, CBlob@ blob)
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	onRespawnCommand(this, cmd, params);
-
-	if (cmd == this.getCommandID("shop made item"))
-	{
-		this.getSprite().PlaySound("/ArmoryBuy.ogg");
-
-		if (!getNet().isServer()) return; /////////////////////// server only past here
-
-		u16 caller, item;
-		if (!params.saferead_netid(caller) || !params.saferead_netid(item))
-		{
-			return;
-		}
-		string name = params.read_string();
-		{
-			CBlob@ callerBlob = getBlobByNetworkID(caller);
-			if (callerBlob is null)
-			{
-				return;
-			}
-		}
-		if (name == "mat_smallbomb")
-		{
-			CBlob@ bitem = getBlobByNetworkID(item);
-			if (bitem !is null)
-			{
-				bitem.server_SetQuantity(4);
-				bitem.server_setTeamNum(this.getTeamNum());
-			}
-		}
-	}
 }
 
 
