@@ -12,11 +12,6 @@ void onRender( CRules@ this )
 {
 	if (g_videorecording) return;
 
-	CBlob@ b = getBlobByName("pointflag");
-	if (b !is null) return;
-	CBlob@[] tentis;
-	getBlobsByName("tent", @tentis);
-	if (tentis.length == 0) return;
 	s16 blueTickets=0;
 	s16 redTickets=0;
 
