@@ -84,7 +84,8 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
 						"Perk: Lucky\n\n"+"$4_class_icon$"+"Fate's Friend"
-						+"\n                   - Always survive on 1 health,          "
+						+"\n                   - Always survive on last-hit          "
+						+"\n                   if damage is higher than 10.          "
 						+"\n                   applies to vehicles as well          "
 						+"\n\n                  Lucky Charm"
 						+"\n                   - Must carry an Ace of Spades           "
@@ -96,7 +97,7 @@ void InitClasses(CBlob@ this)
 						+"\n\n                  Healing"
 						+"\n                   - Faster rate of regeneration   "
 						+"\n\n                  Silver bullets"
-						+"\n                   - Take 130% damage from bullets       "
+						+"\n                   - Take 133% damage from bullets       "
 						);
 
 
@@ -108,7 +109,10 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Less machine gun heat"
 						+"\n                   - Improved vehicle aiming speed "
 						+"\n\n                   Sluggish"
-						+"\n                   - Can't sprint     "
+						+"\n                   - Can't sprint  "
+						+"\n\n                   Vulnerability    "
+						+"\n                   - Take 133% headshot damage"
+						+"\n                   - Take 175% explosion damage"
 						);
 
 	addPlayerPerk(this, "Camouflage", "$6_class_icon$", "Camouflage",
@@ -291,20 +295,22 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			// build menu for them
 			CBlob@ caller = getBlobByNetworkID(params.read_u16());
 
-			string perkconfig = params.read_string();
+			string perkconfig = "";
+			if (!params.saferead_string(perkconfig)) return;
 
 			if (caller !is null)
 			{
+				CPlayer@ callerPlayer = caller.getPlayer();
+				getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
 				if (getNet().isServer())
 				{
-					getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
-
 					// prevents doubling up on perks, although.. lucky + bloodthirsty is very fun
 					if (caller.hasBlob("aceofspades", 1))
 					{
 						caller.TakeBlob("aceofspades", 1);
 					}
 				}
+				//caller.Tag("reload_sprite");
 
 				if (caller.isMyPlayer())
 				{

@@ -70,7 +70,7 @@ void LoadSprites(CSprite@ this)
 		dead.AddFrame(4);
 
 		camo.SetOffset(Vec2f(0.0f, 0.0f + config_offset));
-		camo.SetAnimation("movement");
+		camo.SetAnimation("default");
 		camo.SetVisible(false);
 		camo.SetRelativeZ(0.26f);
 	}
@@ -98,6 +98,32 @@ void onTick(CSprite@ this)
 	CBlob@ blob = this.getBlob();
 	bool isCamo = false;
 
+	if (blob !is null && blob.hasTag("reload_sprite"))
+	{
+		CSpriteLayer@ frontarm = this.getSpriteLayer("frontarm");
+
+		if (frontarm !is null)
+		{
+			frontarm.SetFrameIndex(0);
+			frontarm.SetAnimation("camogun");
+			frontarm.SetVisible(true);
+		}
+
+		CSpriteLayer@ camo = this.getSpriteLayer("camo");
+
+		if (camo !is null)
+		{
+			camo.SetFrameIndex(0);
+			camo.SetAnimation("movement");
+			camo.SetVisible(true);
+			camo.SetRelativeZ(0.26f);
+		}
+
+		if (blob.getPlayer() !is null) getRules().set_string(blob.getPlayer().getUsername() + "_perk", "Camouflage");
+		blob.Untag("reload_sprite");
+		return;
+	}
+
 	// camo netting
 	if (blob.getPlayer() !is null)
 	{
@@ -106,7 +132,7 @@ void onTick(CSprite@ this)
 
 		if (camo !is null && frontarm !is null)
 		{
-			if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
+			if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
 			{
 				isCamo = true;
 
@@ -130,6 +156,8 @@ void onTick(CSprite@ this)
 				}
 
 				frontarm.SetAnimation("camogun");
+
+				if (blob.isAttached()) camo.SetVisible(false);
 			}
 			else
 			{

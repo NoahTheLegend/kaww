@@ -20,7 +20,7 @@ void onTick(CBlob@ this)
 	{
 		if (getRules().get_string(p.getUsername() + "_perk") == "Bloodthirsty")
 		{
-			this.server_Heal(0.05f);
+			this.server_Heal(XORRandom(6)*0.01f);
 		}
 	}
 

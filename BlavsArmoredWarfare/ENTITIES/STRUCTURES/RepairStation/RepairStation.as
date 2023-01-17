@@ -59,7 +59,7 @@ void onTick(CBlob@ this)
 						{
 							if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
 							{
-								repair_amount *= 2.5f;
+								repair_amount *= 1.75f;
 							}
 						}
 					}
@@ -77,7 +77,7 @@ void onTick(CBlob@ this)
 							{
 								if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
 								{
-									repair_amount *= 2.5f;
+									repair_amount *= 1.75f;
 								}
 							}
 						}

@@ -13,6 +13,11 @@ void onInit(CSprite@ this)
 	this.ScaleBy(0.75f, 0.75f);
 }
 
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	return (!blob.hasTag("trap") && !blob.hasTag("flesh") && !blob.hasTag("dead") && !blob.hasTag("vehicle") && blob.isCollidable()) || (blob.hasTag("door") && blob.getShape().getConsts().collidable);
+}
+
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (caller is null) return;
