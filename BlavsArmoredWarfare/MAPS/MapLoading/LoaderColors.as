@@ -287,6 +287,9 @@ namespace map_colors
 
 		blue_bf109             = 0xff09f34e,
 		red_bf109              = 0xfffff34e,
+		
+		blue_bomberplane       = 0xff16167D,
+		red_bomberplane        = 0xff7D1616,
 
 		blue_uh1               = 0xff133899,
 		red_uh1                = 0xff113cce,
