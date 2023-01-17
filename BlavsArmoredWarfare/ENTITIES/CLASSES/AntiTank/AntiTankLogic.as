@@ -59,7 +59,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			if (this.getPlayer() !is null)
 			{
 				CBitStream params;
-				this.server_SendCommandToPlayer(this.getCommandID("aos_effects"), params, this.getPlayer());
+				this.SendCommandTo(this.getCommandID("aos_effects"), params, this.getPlayer());
 			}
 
 			return damage = 0;
