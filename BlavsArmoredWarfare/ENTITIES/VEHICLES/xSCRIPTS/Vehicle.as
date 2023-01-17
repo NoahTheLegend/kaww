@@ -231,27 +231,35 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (getGameTime() % 45 == 0 && !this.hasTag("gun") && this.getVelocity().Length() > 2.0f)
+	if (getGameTime() % 45 == 0 && !this.hasTag("gun"))
 	{
-		CBlob@[] bushes;
-		if (getMap() !is null) getMap().getBlobsInRadius(this.getPosition(), this.getRadius(), @bushes);
-		int bushcount = 0;
-		for (u16 i = 0; i < bushes.length; i++)
+		if ((this.getPosition()-this.getOldPosition()).Length() <= 0.1f)
 		{
-			if (bushes[i] is null || bushes[i].getName() != "bush") continue;
-			else bushcount ++;
-		}
-		if (bushcount > 3)
-		{
-			if (!this.hasTag("turret"))
+			CBlob@[] bushes;
+			if (getMap() !is null) getMap().getBlobsInRadius(this.getPosition(), this.getRadius(), @bushes);
+			int bushcount = 0;
+			for (u16 i = 0; i < bushes.length; i++)
 			{
-				this.setInventoryName("");
+				if (bushes[i] is null || bushes[i].getName() != "bush") continue;
+				else bushcount ++;
 			}
-			
-			this.set_u32("disguise", getGameTime() + 90);
+			if (bushcount > 3)
+			{
+				if (!this.hasTag("turret"))
+				{
+					this.setInventoryName("");
+				}
+
+				this.set_u32("disguise", getGameTime() + 90);
+			}
+			else if (!this.hasTag("turret"))
+			{
+				this.setInventoryName(this.get_string("invname"));
+			}
 		}
-		else if (!this.hasTag("turret"))
+		else
 		{
+			this.set_u32("disguise", getGameTime());
 			this.setInventoryName(this.get_string("invname"));
 		}
 	}
