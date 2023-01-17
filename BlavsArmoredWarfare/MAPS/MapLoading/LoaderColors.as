@@ -323,7 +323,6 @@ namespace map_colors
 
 		refinery               = 0xff68e95f,
 
-
 		blue_munitionsshop     = 0xffa4a2f6,
 		red_munitionsshop      = 0xfff6c2a2,
 
@@ -348,9 +347,8 @@ namespace map_colors
 		red_tanktrap		   = 0xff1f1919,
 
 		barbedwire             = 0xffd5d8d0,
-		red_barbedwire         = 0xffe1c7c7,
 		blue_barbedwire        = 0xffcad6d9,
-
+		red_barbedwire         = 0xffe1c7c7,
 
 		// map background signifier
 		map_desert             = 0xfffcd38b,
