@@ -97,7 +97,7 @@ void InitClasses(CBlob@ this)
 						+"\n\n                  Healing"
 						+"\n                   - Faster rate of regeneration   "
 						+"\n\n                  Silver bullets"
-						+"\n                   - Take 130% damage from bullets       "
+						+"\n                   - Take 133% damage from bullets       "
 						);
 
 
