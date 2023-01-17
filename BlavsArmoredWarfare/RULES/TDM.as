@@ -634,7 +634,7 @@ shared class TDMCore : RulesCore
 	{
 		if (player !is null)
 		{
-			TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), player.isBot() ? classes[XORRandom(classes.length-1)] : (XORRandom(512) >= 456 ? "builder" : "revolver"));
+			TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), player.isBot() ? classes[XORRandom(classes.length)]: (XORRandom(512) >= 256 ? "revolver" : "revolver"));
 			players.push_back(p);
 			ChangeTeamPlayerCount(p.team, 1);
 		}
