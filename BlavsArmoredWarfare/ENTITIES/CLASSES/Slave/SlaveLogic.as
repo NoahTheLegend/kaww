@@ -32,6 +32,7 @@ void onInit(CBlob@ this)
 	this.set("hitdata", hitdata);
 
 	this.addCommandID("pickaxe");
+	this.addCommandID("dig_exp");
 
 	CShape@ shape = this.getShape();
 	shape.SetRotationsAllowed(false);
@@ -287,28 +288,27 @@ bool RecdHitCommand(CBlob@ this, CBitStream@ params)
 					}
 				}
 
-				if (isServer() && (map.isTileThickStone(type) && XORRandom(7) == 0) or (map.isTileStone(type) && XORRandom(12) == 0) or (map.isTileGold(type) && XORRandom(5) == 0))
+				if ((map.isTileThickStone(type) && XORRandom(7) == 0) or (map.isTileStone(type) && XORRandom(12) == 0) or (map.isTileGold(type) && XORRandom(5) == 0))
 				{
 					CRules@ rules = getRules();
 					CPlayer@ player = this.getPlayer();
 
 					if (player !is null)
 					{
-						// give exp
-						int exp_reward = 1;
-						if (rules.get_string(player.getUsername() + "_perk") == "Death Incarnate")
+						if (isServer())
 						{
-							exp_reward *= 3;
+							// give exp
+							int exp_reward = 1;
+							if (rules.get_string(player.getUsername() + "_perk") == "Death Incarnate")
+							{
+								exp_reward *= 3;
+							}
+							CBitStream params;
+							params.write_u32(exp_reward);
+							this.server_SendCommandToPlayer(this.getCommandID("dig_exp"), params, player);
+							//rules.add_u32(player.getUsername() + "_exp", exp_reward);
+							//rules.Sync(player.getUsername() + "_exp", true);
 						}
-						rules.add_u32(player.getUsername() + "_exp", exp_reward);
-						rules.Sync(player.getUsername() + "_exp", true);
-
-						add_message(ExpMessage(exp_reward));
-
-						CheckRankUps(rules, // do reward coins and sfx
-									rules.get_u32(player.getUsername() + "_exp"), // player new exp
-									this);	
-
 									// sometimes makes a null blob not found error! test this future me
 					}
 				}
@@ -367,6 +367,22 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!RecdHitCommand(this, params))
 		{
 			warn("error when recieving pickaxe command");
+		}
+	}
+	else if (cmd == this.getCommandID("dig_exp"))
+	{
+		CRules@ rules = getRules();
+		u32 exp_reward;
+		if (!params.saferead_u32(exp_reward)) return;
+
+		add_message(ExpMessage(exp_reward));
+
+		if (this.getPlayer() !is null)
+		{
+			rules.add_u32(this.getPlayer().getUsername() + "_exp", exp_reward);
+			CheckRankUps(rules, // do reward coins and sfx
+				rules.get_u32(this.getPlayer().getUsername() + "_exp"), // player new exp
+				this);	
 		}
 	}
 }
