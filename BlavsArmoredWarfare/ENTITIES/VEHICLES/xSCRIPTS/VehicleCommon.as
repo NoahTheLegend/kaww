@@ -708,7 +708,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								// reverse
 								if (right)
 								{
-									this.set_f32("engine_RPM", Maths::Round(Maths::Lerp(this.get_f32("engine_RPM"), 6200.0f, 0.001f)));
+									this.set_f32("engine_RPM", Maths::Lerp(this.get_f32("engine_RPM"), 6200.0f, 0.001f));
 									force.x *= 0.5f;
 								}
 							}
@@ -780,7 +780,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								if (left)
 								{
-									this.set_f32("engine_RPM", Maths::Round(Maths::Lerp(this.get_f32("engine_RPM"), 6200.0f, 0.001f)));
+									this.set_f32("engine_RPM", Maths::Lerp(this.get_f32("engine_RPM"), 6200.0f, 0.001f));
 									force.x *= 0.5f;
 								} // reverse
 							}
