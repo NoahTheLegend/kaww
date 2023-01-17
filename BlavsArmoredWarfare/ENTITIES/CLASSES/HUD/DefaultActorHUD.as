@@ -136,6 +136,7 @@ void renderEXPBar(CBlob@ blob, Vec2f origin)
 	
 	float next_rank = getExpToNextLevel(level);
 	float previousrankexp = getExpToMyLevel(level);
+	if (level == 1) previousrankexp = 0;
 	float expratio = (exp-previousrankexp) / (next_rank-previousrankexp);
 
 	GUI::DrawRectangle(Vec2f(xppos.x - dim.x + 2, xppos.y + 2), Vec2f(xppos.x + dim.x - 2, xppos.y + dim.y - 2), SColor(0x505bff33)); // background pane

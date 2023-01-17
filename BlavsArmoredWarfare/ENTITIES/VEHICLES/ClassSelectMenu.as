@@ -164,7 +164,7 @@ void addPerksToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 			}
 
 			//draw rank level
-			int level = 1;
+			int level = 0;
 			string rank = RANKS[0];
 
 			// Calculate the exp required to reach each level
@@ -172,7 +172,7 @@ void addPerksToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 			{
 				if (exp >= getExpToNextLevel(level))
 				{
-					level = i + 1;
+					level = i;
 					rank = RANKS[Maths::Min(i, RANKS.length-1)];
 				}
 				else
