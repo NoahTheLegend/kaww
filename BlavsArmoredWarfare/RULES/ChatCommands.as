@@ -379,6 +379,15 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					wasCommandSuccessful = false;
 					errorMessage = "blob is currently blacklisted";
 				}
+				else if (text_in == "!kickbots")
+				{
+					printf("e");
+					for (u8 i = 0; i < getPlayersCount(); i++)
+					{
+						CPlayer@ p = getPlayer(i);
+						if (p !is null && p.isBot()) KickPlayer(p);
+					}
+				}
 				else
 				{
 					CBlob@ newBlob = server_CreateBlob(name, team, Vec2f(0, -5) + pos); // currently any blob made will come back with a valid pointer

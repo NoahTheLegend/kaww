@@ -58,7 +58,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(9, 2));
+	this.set_Vec2f("shop menu size", Vec2f(8, 2));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
@@ -97,13 +97,7 @@ void onInit(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Lantern", "$lantern$", "lantern", "A source of light.", false);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 20);
 	}
-	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
-	}
+	
 	{
 		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
@@ -125,13 +119,18 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$launcher_javelin$", "launcher_javelin", "Homing rocket launcher.\n\nUses HEAT warheads.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
-
+		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
 		s.customButton = true;
-
-		s.buttonwidth = 3;
+		s.buttonwidth = 1;
 		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$crate$", "launcher_javelin", "Homing Missile launcher.", false, true);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);

@@ -137,7 +137,7 @@ void onInit(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
