@@ -1133,7 +1133,7 @@ void onRestart(CRules@ this)
 
 const string[] names = {
 	"narc-cop",
-	"fryer-tuck",
+	"recruit-duck",
 	"private-wolf",
 	"megalith-goliath",
 	"trilemma-mighty",
@@ -1144,7 +1144,25 @@ const string[] names = {
 	"dread-antson",
 	"para-eagle",
 	"aexetan-love",
-	"astro-power"
+	"astro-power",
+	"prince-poppy",
+	"grown-man",
+	"bitchy-ranger",
+	"giga-chad",
+	"respectful-man",
+	"furry-lover",
+	"beer-enjoyer",
+	"bronze-style",
+	"sapphire-colossus",
+	"godzilla-white",
+	"duck-smith",
+	"anvil-hands",
+	"rock-listener",
+	"nova-moon",
+	"red-mushroom",
+	"customer-guy",
+	"purple-alien",
+	"jumpy-froggy"
 };
 
 string uppercaseFirstLetter(string str)
@@ -1156,9 +1174,9 @@ string getRandomCharName()
 {
 	bool hasNumbersAtEnd = XORRandom(2)==0; // botname982
 	bool upperCase = XORRandom(2)==0; // BotName
-	bool underline = XORRandom(2)==0; // bot_name
+	bool underline = XORRandom(3)==0; // bot name // actually just space between
 	bool viceVersa = XORRandom(4)==0;
-	bool shuffle = XORRandom(2)==0; // get lastname from another pair
+	bool shuffle = XORRandom(3)==0; // get lastname from another pair
 	
 	string finalName = "Bot";
 	string name = names[XORRandom(names.length)];
