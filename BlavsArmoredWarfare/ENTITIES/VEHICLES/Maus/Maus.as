@@ -59,6 +59,7 @@ void onInit(CBlob@ this)
 	{
 		front.SetRelativeZ(-0.88f);
 		front.SetOffset(Vec2f(6.0f, 5.0f));
+		front.ScaleBy(Vec2f(1.0f, 1.05f));
 	}
 
 	if (getNet().isServer())
