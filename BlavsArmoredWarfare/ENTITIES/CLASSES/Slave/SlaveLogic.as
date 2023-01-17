@@ -27,6 +27,7 @@ void onInit(CBlob@ this)
 	this.Tag("player");
 	this.Tag("flesh");
 	this.Tag("3x2");
+	this.set_u32("can_spot", 0);
 
 	HitData hitdata;
 	this.set("hitdata", hitdata);
@@ -56,6 +57,13 @@ void onSetPlayer(CBlob@ this, CPlayer@ player)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (isServer()) //update bots' logic
+	{
+		if (this.hasTag("disguised"))
+		{
+			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
+		}
+	}
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)

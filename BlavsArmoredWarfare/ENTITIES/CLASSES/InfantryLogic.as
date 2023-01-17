@@ -1,5 +1,5 @@
-#include "WarfareGlobal.as"
-#include "AllHashCodes.as"
+#include "WarfareGlobal.as";
+#include "AllHashCodes.as";
 #include "ThrowCommon.as";
 #include "KnockedCommon.as";
 #include "RunnerCommon.as";
@@ -9,7 +9,8 @@
 #include "MedicisCommon.as";
 #include "TeamColour.as";
 #include "CustomBlocks.as";
-#include "RunnerHead.as"
+#include "RunnerHead.as";
+#include "PlayerRankInfo.as";
 
 void onInit(CBlob@ this)
 {
@@ -107,6 +108,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("sync_reload_to_server");
 	this.addCommandID("aos_effects");
 	this.addCommandID("levelup_effects");
+	this.addCommandID("bootout");
 	this.Tag("3x2");
 
 	if (thisBlobHash == _mp5) this.Tag(medicTagString);
@@ -1177,4 +1179,49 @@ bool canHit(CBlob@ this, CBlob@ b)
 		return true;
 
 	return b.getTeamNum() != this.getTeamNum();
+}
+
+void GetButtonsFor(CBlob@ this, CBlob@ caller)
+{
+	if (caller is null || caller is this) return;
+	if (caller.isAttached() || !this.isAttached()) return;
+	if (caller.getDistanceTo(this) > 16.0f) return;
+	if (this.getPlayer() is null || caller.getPlayer() is null) return;
+
+	f32 exp = getRules().get_u32(this.getPlayer().getUsername() + "_exp");
+	f32 callerexp = getRules().get_u32(caller.getPlayer().getUsername() + "_exp");
+
+	bool stop = false;
+	bool callerstop = false;
+	u16 myLevel = 0;
+	u16 callerLevel = 0;
+	if (exp > 0)
+    {
+        for (int i = 1; i <= RANKS.length; i++)
+        {
+			if (!stop)
+			{
+            	if (exp >= getExpToNextLevel(i - 0))
+            	{
+            	    myLevel = i + 1;
+            	}
+				else stop = true;
+			}
+			if (!callerstop)
+			{
+				if (callerexp >= getExpToNextLevel(i - 0))
+            	{
+            	    callerLevel = i + 1;
+            	}
+            	else callerstop = true;
+			}
+        }
+    }
+
+	if (callerLevel > myLevel || this.isBot())
+	{
+		CBitStream params;
+		params.write_u16(caller.getNetworkID());
+		CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("bootout"), "Boot this player out.", params);
+	}
 }
