@@ -259,7 +259,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 	{
 		dmg = this.get_f32("bullet_damage_head");
 
-		if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Operator")
+		if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Operator")
 		{
 			dmg *= 1.33f;
 		}
