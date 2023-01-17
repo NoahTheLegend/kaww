@@ -857,11 +857,11 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 					if (this.get_f32("engine_throttle") >= 0.5f) // make this an equation
 					{
-						this.set_f32("engine_RPMtarget", 8000); // gas gas gas
+						this.set_f32("engine_RPMtarget", 8000.0f); // gas gas gas
 					}
 					else
 					{
-						this.set_f32("engine_RPMtarget", 2000); // let engine idle
+						this.set_f32("engine_RPMtarget", 2000.0f); // let engine idle
 					}
 					
 				}  // driver
