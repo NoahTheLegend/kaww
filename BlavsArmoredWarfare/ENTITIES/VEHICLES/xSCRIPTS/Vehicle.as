@@ -231,7 +231,7 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (getGameTime() % 45 == 0 && !this.hasTag("gun"))
+	if (getGameTime() % 45 == 0 && !this.hasTag("gun") && this.getVelocity().Length() > 2.0f)
 	{
 		CBlob@[] bushes;
 		if (getMap() !is null) getMap().getBlobsInRadius(this.getPosition(), this.getRadius(), @bushes);
