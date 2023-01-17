@@ -297,10 +297,10 @@ bool RecdHitCommand(CBlob@ this, CBitStream@ params)
 						{
 							// give exp
 							int exp_reward = 1;
-							if (rules.get_string(player.getUsername() + "_perk") == "Death Incarnate")
-							{
-								exp_reward *= 3;
-							}
+							//if (rules.get_string(player.getUsername() + "_perk") == "Death Incarnate")
+							//{
+							//	exp_reward *= 3;
+							//}
 							CBitStream params;
 							params.write_u32(exp_reward);
 							this.server_SendCommandToPlayer(this.getCommandID("dig_exp"), params, player);

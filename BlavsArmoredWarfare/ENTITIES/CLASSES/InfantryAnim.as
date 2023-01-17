@@ -74,6 +74,16 @@ void LoadSprites(CSprite@ this)
 		camo.SetVisible(false);
 		camo.SetRelativeZ(0.26f);
 	}
+
+	CSpriteLayer@ skull = this.addSpriteLayer("skull", "KillfeedIcons.png", 32, 16, 0, 0);
+	if (skull !is null)
+	{
+		skull.SetFrameIndex(1);
+		skull.SetOffset(Vec2f(0.0f, -16.0f));
+		skull.ScaleBy(Vec2f(0.75f,0.75f));
+		skull.SetRelativeZ(-5.0f);
+		skull.SetVisible(false);
+	}
 }
 
 void setArmValues(CSpriteLayer@ arm, bool visible, f32 angle, f32 relativeZ, string anim, Vec2f around, Vec2f offset)
@@ -239,6 +249,17 @@ void onTick(CSprite@ this)
 	if (!blob.hasTag("show_gun") && (isStabbing || isReloading || blob.isAttached()))
 	{
 		showgun = false;
+	}
+
+	CSpriteLayer@ skull = this.getSpriteLayer("skull");
+	if (skull !is null)
+	{
+		if (showgun
+		&& blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Death Incarnate")
+		{
+			skull.SetVisible(true);
+		}
+		else skull.SetVisible(false);	
 	}
 
 	if (knocked)
