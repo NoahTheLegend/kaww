@@ -624,8 +624,7 @@ shared class TDMCore : RulesCore
 
 	void AddPlayer(CPlayer@ player, u8 team = 0, string default_config = "")
 	{
-
-		TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), player.isBot() ? XORRandom(7)==0?"revolver":XORRandom(5)==0?"ranger":XORRandom(5)==0?"shotgun":XORRandom(5)==0?"sniper":"revolver" : "revolver");
+		TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), player.isBot() ? "revolver" : (XORRandom(512) >= 256 ? "revolver" : "revolver"));
 		players.push_back(p);
 		ChangeTeamPlayerCount(p.team, 1);
 	}
