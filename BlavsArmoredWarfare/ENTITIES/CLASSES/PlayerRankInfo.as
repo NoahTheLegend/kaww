@@ -34,9 +34,39 @@ const string[] RANKS = {"Recruit",              // new player
                         "Major"
                         };
 
+shared int[] getLevels() // +- LINEAR PROGRESSION
+{
+    int[] list = {25, // +25 Ranger | Private
+        100, // +75 Shotgun | Refreiter
+        250, // +150 Sniper +  Death Incarnate | Corporal
+        450, // +200 RPG + Ghillie | Master Corporal
+        800, // +350 MP5 + Sharp Shooter | Sergeant
+        1250, // +450 + Bloodthirst | Staff Sergeant
+        1800, // +550 + Operator | Master Sergeant
+        2500, // +700 + Lucky | First Sergeant
+        3350, // +850 + Wealthy | Sergeant-Major
+        5000, // +1650 Only badges from here | W. Officer 1
+        7500, // +2500 | W. Officer 2
+        11000, // +3500 | W. Officer 3
+        16500, // +5500 | W. Officer 4
+        24000, // +7500 | Third Leiutenant
+        31000, // +9000 | Second Lieutenant
+        42500, // +11500 | First Lieutenant
+        56000, // +13000 | Captain
+        72500 // +16500 | Major
+    };
+    return list;
+}
+
 // Calculate the exp required to reach the next level
 shared int getExpToNextLevelShared(u32 level)
 {
+    int[] LEVELS = getLevels();
+    if (level < LEVELS.length)
+    {
+        return LEVELS[level-1];
+    }
+
     int mod = ROUNDER;
     if (level > 4)
     {
@@ -69,6 +99,12 @@ shared int getExpToNextLevelShared(u32 level)
 // Calculate the exp required to reach the next level
 int getExpToNextLevel(u32 level)
 {
+    int[] LEVELS = getLevels();
+    if (level < LEVELS.length)
+    {
+        return LEVELS[level-1];
+    }
+
     int mod = ROUNDER;
     if (level > 4)
     {
@@ -101,6 +137,12 @@ int getExpToNextLevel(u32 level)
 // Calculate the exp required to reach my current level
 int getExpToMyLevel(u32 level)
 {
+    int[] LEVELS = getLevels();
+    if (level < LEVELS.length)
+    {
+        return LEVELS[(level-2)];
+    }
+
     int mod = ROUNDER;
     if (level-1 > 4)
     {
