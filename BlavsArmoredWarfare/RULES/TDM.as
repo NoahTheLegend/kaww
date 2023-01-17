@@ -1155,43 +1155,54 @@ string getRandomCharName()
 	bool shuffle = XORRandom(2)==0; // get lastname from another pair
 	
 	string finalName = "Bot";
-	string name = XORRandom(names.length);
+	string name = names[XORRandom(names.length)];
 	string[] spl = name.split("-");
-
+	
 	string firstName = spl[0];
-	string lastName = "";
-	if (spl.length > 1) lastName = spl[1];
+	string lastName = spl[1];
 
 	if (shuffle)
 	{
-		string temp = XORRandom(names.length);
+		string temp = names[XORRandom(names.length)];
 		string[] spltemp = temp.split("-");
 		lastName = spltemp[1];
 	}
 	if (upperCase)
 	{
-		string[] firstNameSpl = firstName.split("");
-		firstName = "";
-		for (u8 i = 0; i < firstNameSpl.length; i++)
 		{
-			if (i==0) firstNameSpl[i].toUpper();
-			firstName = firstName+firstNameSpl[i];
+			string letter = firstName.substr(0, 1);
+			letter.toUpper();
+			firstName.insert(letter);
+		}
+		{
+			string letter = lastName.substr(0, 1);
+			letter.toUpper();
+			lastName.insert(letter);
 		}
 
-		string[] lastNameSpl = lastName.split("");
-		lastName = "";
-		for (u8 i = 0; i < lastNameSpl.length; i++)
-		{
-			if (i==0) lastNameSpl[i].toUpper();
-			lastName = lastName+lastNameSpl[i];
-		}
+
+		//string[] firstNameSpl = firstName.split(""); // crashes the game
+		//firstName = "";
+		//for (u8 i = 0; i < firstNameSpl.length; i++)
+		//{
+		//	if (i==0) firstNameSpl[i].toUpper();
+		//	firstName = firstName+firstNameSpl[i];
+		//}
+
+		//string[] lastNameSpl = lastName.split("");
+		//lastName = "";
+		//for (u8 i = 0; i < lastNameSpl.length; i++)
+		//{
+		//	if (i==0) lastNameSpl[i].toUpper();
+		//	lastName = lastName+lastNameSpl[i];
+		//}
 	}
 	if (hasNumbersAtEnd)
 	{
-		lastName = lastName+(underline?"_":"")+(XORRandom(10000));
+		lastName = lastName+(underline?" ":"")+(XORRandom(10000));
 	}
 	
-	finalName = firstName+(underline?"_":"")+lastName;
+	finalName = firstName+(underline?" ":"")+lastName;
 
 	return finalName;
 }
