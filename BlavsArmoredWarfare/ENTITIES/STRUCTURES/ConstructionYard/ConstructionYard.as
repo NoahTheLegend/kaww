@@ -97,6 +97,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	bool isServer = getNet().isServer();
 	if (cmd == this.getCommandID("shop made item"))
 	{
+		if (this.get_u32("next_tick") > getGameTime()) return;
+		this.set_u32("next_tick", getGameTime()+1);
 		this.Tag("shop disabled"); //no double-builds
 
 		CBlob@ caller = getBlobByNetworkID(params.read_netid());
