@@ -1162,7 +1162,10 @@ const string[] names = {
 	"red-mushroom",
 	"customer-guy",
 	"purple-alien",
-	"jumpy-froggy"
+	"jumpy-froggy",
+	"bio-spark",
+	"burning-leo",
+	"knuckle-joe"
 };
 
 string uppercaseFirstLetter(string &in str)
