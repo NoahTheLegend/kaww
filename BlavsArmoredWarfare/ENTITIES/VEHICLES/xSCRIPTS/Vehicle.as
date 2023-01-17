@@ -438,12 +438,12 @@ void onTick(CBlob@ this)
 			this.set_f32("engine_RPM", 0);
 		else
 		{
-			this.sub_f32("engine_RPM", 50); // more variance
-			if (isServer()) this.Sync("engine_RPM", true);
+			this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
+			if (isClient() && this !is null) this.Sync("engine_RPM", true);
 		}
 	}
 
-	if ((this.getName() == "t10" || this.getName() == "m60") && getGameTime()%15==0)
+	if (this.hasTag("tank"))
 	{
 		printf("RPM "+this.get_f32("engine_RPM"));
 		printf("TARGET "+this.get_f32("engine_RPMtarget"));
