@@ -17,6 +17,7 @@ bool doesStaircaseExist;
 void onInit(CBlob@ this)
 {
     this.Tag("stairs");
+    this.Tag("builder always hit");
     this.addCommandID("go up");
     this.addCommandID("go down");
     this.set_TileType("background tile", CMap::tile_castle_back);
@@ -79,8 +80,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
     const u16 callerID = params.read_u16();
 	CBlob@ caller = getBlobByNetworkID(callerID);
-
-    
 
     if(caller !is null && this.getDistanceTo(caller) < INTERDIST && !isKnocked(caller))
     {
