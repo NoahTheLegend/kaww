@@ -33,6 +33,7 @@ void onInit(CBlob@ this)
 
 	this.addCommandID("pickaxe");
 	this.addCommandID("dig_exp");
+	this.addCommandID("aos_effects");
 
 	CShape@ shape = this.getShape();
 	shape.SetRotationsAllowed(false);
@@ -70,14 +71,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 			this.server_SetHealth(0.01f);
 
-			if (this.isMyPlayer()) // are we on server?
+			if (this.getPlayer() !is null)
 			{
-				this.getSprite().PlaySound("FatesFriend.ogg", 1.2);
-				SetScreenFlash(42,   255,   150,   150,   0.28);
-			}
-			else
-			{
-				this.getSprite().PlaySound("FatesFriend.ogg", 2.0);
+				CBitStream params;
+				this.server_SendCommandToPlayer(this.getCommandID("aos_effects"), params, this.getPlayer());
 			}
 
 			return damage = 0;
@@ -383,6 +380,18 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			CheckRankUps(rules, // do reward coins and sfx
 				rules.get_u32(this.getPlayer().getUsername() + "_exp"), // player new exp
 				this);	
+		}
+	}
+	else if (cmd == this.getCommandID("aos_effects"))
+	{
+		if (this.isMyPlayer()) // are we on server?
+		{
+			this.getSprite().PlaySound("FatesFriend.ogg", 1.2);
+			SetScreenFlash(42,   255,   150,   150,   0.28);
+		}
+		else
+		{
+			this.getSprite().PlaySound("FatesFriend.ogg", 2.0);
 		}
 	}
 }
