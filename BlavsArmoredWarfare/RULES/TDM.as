@@ -622,11 +622,22 @@ shared class TDMCore : RulesCore
 		teams.push_back(t);
 	}
 
+	array<string> classes = {
+				"revolver",
+				"ranger",
+				"shotgun",
+				"sniper",
+				"mp5"
+				};
+
 	void AddPlayer(CPlayer@ player, u8 team = 0, string default_config = "")
 	{
-		TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), player.isBot() ? "revolver" : (XORRandom(512) >= 256 ? "revolver" : "revolver"));
-		players.push_back(p);
-		ChangeTeamPlayerCount(p.team, 1);
+		if (player !is null)
+		{
+			TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), player.isBot() ? classes[XORRandom(classes.length)]: (XORRandom(512) >= 256 ? "revolver" : "revolver"));
+			players.push_back(p);
+			ChangeTeamPlayerCount(p.team, 1);
+		}
 	}
 
 	void onPlayerDie(CPlayer@ victim, CPlayer@ killer, u8 customData)

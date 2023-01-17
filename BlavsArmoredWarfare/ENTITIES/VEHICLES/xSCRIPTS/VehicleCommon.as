@@ -644,7 +644,8 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						if (space)
 						{
-							AttachmentPoint@[] aps = this.getAttachments().getAttachmentPoints();
+							AttachmentPoint@[] aps;
+							this.getAttachmentPoints(@aps);
 							for (u8 i = 0; i < aps.length; i++)
 							{
 								AttachmentPoint@ ape = aps[i];
