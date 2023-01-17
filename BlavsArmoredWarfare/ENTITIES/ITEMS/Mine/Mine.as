@@ -27,6 +27,7 @@ void onInit(CBlob@ this)
 	this.set_u8("custom_hitter", Hitters::mine);
 
 	this.Tag("trap");
+	this.getSprite().SetRelativeZ(-0.1f); //background
 
 	this.Tag("ignore fall");
 	this.Tag("ignore_saw");
