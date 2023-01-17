@@ -1108,16 +1108,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
             SetScreenFlash(30,   255,   255,   255,   2.3);
         }
         
+        // play sound
+        if (isClient()) this.getSprite().PlaySound("LevelUp", 1.6f, 1.0f);
         if (isServer())
         {
-            // play sound
-            this.getSprite().PlaySound("LevelUp", 1.6f, 1.0f);
-
-            if (isServer())
-            {
-                // coins
-                server_DropCoins(this.getPosition(), 50);
-            }
+            // coins
+            server_DropCoins(this.getPosition(), 50);
         }
 
         //if (isServer()) //client
@@ -1142,7 +1138,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
                 }
 
                 // create particle
-                ParticleAnimated("LevelUpParticle", this.getPosition(), this.getVelocity() - Vec2f(0,1.2), 0.0f, 1.0f, 3, 0.2f, true);
+                ParticleAnimated("LevelUpParticle", this.getPosition(), this.getVelocity() - Vec2f(-0.5f,1.2f), 0.0f, 1.0f, 3, 0.2f, true);
             }
         }
         
