@@ -915,7 +915,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								CBlob@ b = ap.getOccupied();
 							}
 
-							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && blob.isMyPlayer())
+							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && (blob.isMyPlayer() || blob.isBot()))
 							{
 								CBitStream fireParams;
 								fireParams.write_u16(blob.getNetworkID());

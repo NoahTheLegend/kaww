@@ -43,7 +43,7 @@ CBlob@ getNewTarget(CBrain@ this, CBlob @blob, const bool seeThroughWalls = fals
 		if (potential !is blob && blob.getTeamNum() != potential.getTeamNum())
 		{
 			if ((pos2 - pos).getLength() < 1000.0f && !potential.hasTag("dead")
-				&& (XORRandom(6) == 0 || isVisible(blob, potential)))
+				&& (XORRandom(6) == 0 || (isVisible(blob, potential) && !potential.isAttached())))
 			{
 				blob.set_Vec2f("last pathing pos", potential.getPosition());
 				return potential;

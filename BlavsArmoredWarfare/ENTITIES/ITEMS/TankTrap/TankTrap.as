@@ -4,6 +4,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("heavy weight");
 	this.Tag("trap");
+	this.getSprite().SetRelativeZ(1.0f); //background
 }
 
 bool canBePickedUp(CBlob@ this, CBlob@ blob)
