@@ -1032,17 +1032,15 @@ void KickBots(CRules@ this)
 	}
 
 	s8 remaining_bots = players+bots-MAX_BOTS;
+	u8 kicked = 0;
 	//printf("rem "+remaining_bots);
-	for (u8 i = 0; i < remaining_bots; i++)
+	for (u8 i = 0; (kicked < remaining_bots || i >= getPlayersCount()); i++)
 	{
-		for (u8 i = 0; i < getPlayersCount(); i++)
+		CPlayer@ p = getPlayer(i);
+		if (p !is null && p.isBot())
 		{
-			CPlayer@ p = getPlayer(i);
-			if (p !is null && p.isBot())
-			{
-				KickPlayer(p);
-				break;
-			}
+			KickPlayer(p);
+			kicked++;
 		}
 	}
 }
