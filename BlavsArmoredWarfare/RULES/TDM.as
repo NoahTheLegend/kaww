@@ -1142,7 +1142,7 @@ const string[] names = {
 	"captin-cook",
 	"sweety-rat",
 	"dread-antson",
-	"para-eagle",
+	"parachute-eagle",
 	"aexetan-love",
 	"astro-power",
 	"prince-poppy",
