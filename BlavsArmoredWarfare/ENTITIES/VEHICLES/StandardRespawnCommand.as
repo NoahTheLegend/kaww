@@ -67,32 +67,29 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "No Perk", "$0_class_icon$", "No Perk", "---- No Perk ----");
 
+	addPlayerPerk(this, "Death Incarnate", "$7_class_icon$", "Death Incarnate",
+						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
+						+"\n                   - Take twice as much damage     "
+						+"\n                   - Enemy kill XP gain: 300%  "
+						);
+
+	addPlayerPerk(this, "Camouflage", "$6_class_icon$", "Camouflage",
+						"Ghillie Suit:\n\n"+"$6_class_icon$"+"Ghillie suit"
+						+"\n                   - Turn into a mobile bush!     "
+						+"\n\n                   Flammable"
+						+"\n                   - Fire is more deadly   "
+						);	
+
 	addPlayerPerk(this, "Sharp Shooter", "$1_class_icon$", "Sharp Shooter",
-						"Perk: Sharp Shooter\n\n"+"$1_class_icon$"+"Marksman"
+						"Bullseye:\n\n"+"$1_class_icon$"+"Marksman"
 						+"\n                   - Headshot damage: 150%       "
 						+"\n                   - Increased accuracy"
 						+"\n\n                  Long reload"
 						+"\n                   - Reload time: 150%     "
 						);
-						
-	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Supply Chain",
-						"Perk: Wealthy\n\n"+"$2_class_icon$"+"Highroller"
-						+"\n                   - Twice as much money earned"
-						+"\n\n                  Health Insurance"
-						+"\n                   - Lose half of all money on death          "
-						);
-
-	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
-						"Perk: Lucky\n\n"+"$4_class_icon$"+"Fate's Friend"
-						+"\n                   - Always survive on last-hit          "
-						+"\n                   if damage is higher than 10.          "
-						+"\n                   applies to vehicles as well          "
-						+"\n\n                  Lucky Charm"
-						+"\n                   - Must carry an Ace of Spades           "
-						);
 
 	addPlayerPerk(this, "Bloodthirst", "$3_class_icon$", "Bloodthirsty",
-						"Perk: Bloodthirst\n\n"+"$3_class_icon$"+"Vampirism"
+						"Bloodthirst:\n\n"+"$3_class_icon$"+"Vampirism"
 						+"\n                   - Regenerate health when killing     "
 						+"\n\n                  Healing"
 						+"\n                   - Faster rate of regeneration   "
@@ -100,9 +97,8 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Take 133% damage from bullets       "
 						);
 
-
 	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",
-						"Perk: Operator\n\n"+"$5_class_icon$"+"Crewman"
+						"Operator:\n\n"+"$5_class_icon$"+"Crewman"
 						+"\n                   - Improved vehicle handling"
 						+"\n                   - Improved vehicle repair speed     "
 						+"\n\n                   Gunner"
@@ -115,19 +111,21 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Take 175% explosion damage"
 						);
 
-	addPlayerPerk(this, "Camouflage", "$6_class_icon$", "Camouflage",
-						"Perk: Camouflage\n\n"+"$6_class_icon$"+"Ghillie suit"
-						+"\n                   - Turn into a mobile bush!     "
-						+"\n\n                   Flammable"
-						+"\n                   - Fire is more deadly   "
-						);					
-
-	addPlayerPerk(this, "Death Incarnate", "$7_class_icon$", "Death Incarnate",
-						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
-						+"\n                   - Take twice as much damage     "
-						+"\n                   - XP Gain: 300%  "
+	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
+						"Lucky:\n\n"+"$4_class_icon$"+"Fate's Friend"
+						+"\n                   - Always survive on last-hit          "
+						+"\n                   if damage is higher than 10.          "
+						+"\n                   applies to vehicles as well          "
+						+"\n\n                  Lucky Charm"
+						+"\n                   - Must carry an Ace of Spades           "
 						);
 
+	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Supply Chain",
+						"Wealthy:\n\n"+"$2_class_icon$"+"Highroller"
+						+"\n                   - Twice as much money earned"
+						+"\n\n                  Health Insurance"
+						+"\n                   - Lose half of all money on death          "
+						);	
 }
 
 void BuildRespawnMenuFor(CBlob@ this, CBlob @caller)
@@ -137,7 +135,7 @@ void BuildRespawnMenuFor(CBlob@ this, CBlob @caller)
 
 	if (caller !is null && caller.isMyPlayer() && classes !is null)
 	{
-		CGridMenu@ menu = CreateGridMenu(caller.getScreenPos() + Vec2f(24.0f, caller.getRadius() * 1.0f + 48.0f), this, Vec2f(classes.length * CLASS_BUTTON_SIZE, CLASS_BUTTON_SIZE), getTranslatedString("CHANGE CLASS"));
+		CGridMenu@ menu = CreateGridMenu(caller.getScreenPos() + Vec2f(0.0f, caller.getRadius() * 1.0f + 48.0f), this, Vec2f(classes.length * CLASS_BUTTON_SIZE, CLASS_BUTTON_SIZE), getTranslatedString("CHANGE CLASS"));
 		if (menu !is null)
 		{
 			addClassesToMenu(this, menu, caller.getNetworkID());
@@ -152,7 +150,7 @@ void BuildPerkMenuFor(CBlob@ this, CBlob @caller)
 
 	if (caller !is null && caller.isMyPlayer() && perks !is null)
 	{
-		CGridMenu@ menu = CreateGridMenu(caller.getScreenPos() + Vec2f(24.0f, caller.getRadius() * 1.0f + 48.0f), this, Vec2f(perks.length * PERK_BUTTON_SIZE, PERK_BUTTON_SIZE), getTranslatedString("CHOOSE A PERK"));
+		CGridMenu@ menu = CreateGridMenu(caller.getScreenPos() + Vec2f(-0.0f, caller.getRadius() * 1.0f + 48.0f), this, Vec2f(perks.length * PERK_BUTTON_SIZE, PERK_BUTTON_SIZE), getTranslatedString("CHOOSE A PERK"));
 		if (menu !is null)
 		{
 			addPerksToMenu(this, menu, caller.getNetworkID());
