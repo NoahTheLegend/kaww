@@ -195,6 +195,8 @@ void onTick(CBlob@ this)
 				"ranger",
 				"shotgun",
 				"sniper",
+				"sniper",
+				"mp5",
 				"mp5"
 				};
 
