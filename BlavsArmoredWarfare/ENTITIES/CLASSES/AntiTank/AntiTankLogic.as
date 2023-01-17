@@ -21,6 +21,7 @@ void onInit(CBlob@ this)
 	this.Tag("flesh");
 	this.addCommandID("sync_reload_to_server");
 	this.addCommandID("aos_effects");
+	this.addCommandID("levelup_effects");
 
 	this.set_s32("my_chargetime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
