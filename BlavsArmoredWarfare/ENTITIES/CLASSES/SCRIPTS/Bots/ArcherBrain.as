@@ -19,6 +19,7 @@ void onInit(CBrain@ this)
 	blob.set_string("behavior", ""); //determines what to do
 	blob.set_u16("behaviortimer", 0); //times things
 	blob.set_u16("secondarytarget", 0); //less important objectives
+	blob.set_u16("tertiarytarget", 0); //even less important objectives
 
 	blob.set_Vec2f("generalenemylocation", Vec2f_zero); // determines what direction to move in
 	
@@ -101,6 +102,7 @@ void onTick(CBrain@ this)
 			if (blob.isAttachedToPoint("DRIVER"))
 			{
 				bool shouldigo = false;
+				bool repairsneeded = false;
 
 				// check if this vehicle has a gunner seat
 				AttachmentPoint@ gunnerseat = vehicle.getAttachments().getAttachmentPointByName("GUNNER");
@@ -165,66 +167,55 @@ void onTick(CBrain@ this)
 					}
 				}
 
-				if (shouldigo)
+				if (vehicle.getHealth() < vehicle.getInitialHealth() / 2)
 				{
-					if (blob.get_string("behavior") == "drive")
+					repairsneeded = true;
+				}
+				else
+				{
+					if (shouldigo)
 					{
-						if (blob.get_Vec2f("generalenemylocation") != Vec2f_zero)
+						if (vehicle.getHealth() < vehicle.getInitialHealth() / 3)
 						{
-							if ((blob.get_Vec2f("generalenemylocation") - blob.getPosition()).getLength() > 200.0f)
-							{
-								if (blob.get_Vec2f("generalenemylocation").x > blob.getPosition().x)
-								{
-									blob.setKeyPressed(key_right, true);
-								}
-								else {
-									blob.setKeyPressed(key_left, true);
-								}
-							}
-							else if (getGameTime() % 120 == 0)
-							{
-								LocateGeneralEnemyDirection(blob); // new location
-							}
+							repairsneeded = true;
 						}
-
-						// lift front end to climb
-						if (vehicle.getShape().vellen < 0.5f)
+						else
 						{
-							blob.setKeyPressed(key_down, true);
-						}
-
-						if (vehicle.getShape().vellen < 0.4f)
-						{
-							// hmm we haven't moved, are we stuck?
-							blob.add_u16("behaviortimer", 2);
-							if (blob.get_u16("behaviortimer") > XORRandom(150)+10)
+							if (blob.get_Vec2f("generalenemylocation") != Vec2f_zero)
 							{
-								// we are stuck, try to unstuck
-								blob.set_string("behavior", "unstuckvehicle");
-							}	
+								DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 200);
+							}
 						}
 					}
-					else if (blob.get_string("behavior") == "unstuckvehicle")
-					{
-						if (blob.get_u16("behaviortimer") > 0) // firstly, reverse or turn around
-						{
-							if (getGameTime() % 200 + blob.get_u8("myKey") < 160)
-							{
-								blob.setKeyPressed(key_action2, true);
-							}
-							
-							if (blob.getTeamNum() == 0) blob.setKeyPressed(key_left, true);
-							else blob.setKeyPressed(key_right, true);
-						}
-						else // then go forward
-						{
-							if (blob.getTeamNum() == 0) blob.setKeyPressed(key_right, true);
-							else blob.setKeyPressed(key_left, true);
-						}
+				}
 
-						if (vehicle.getShape().vellen > 0.2f && XORRandom(30) == 0 || XORRandom(40) == 0)
+				if (repairsneeded)
+				{
+					CBlob@ storedtarget = getBlobByNetworkID(blob.get_u16("tertiarytarget"));
+					if (storedtarget !is null && storedtarget.getName() == "repairstation")
+					{
+						DriveToPos(blob, vehicle, storedtarget.getPosition(), 30);
+					}
+					else
+					{
+						// choose a repair station
+						CBlob@[] repairstations;
+						getBlobsByName("repairstation", @repairstations);
+
+						if (repairstations.length > 0)
 						{
-							blob.set_string("behavior", "drive"); // switch to forward
+							SortBlobsByDistance(blob, repairstations);
+
+							for (uint i = 0; i < repairstations.length; i++)
+							{
+								CBlob@ curBlob = repairstations[i];
+
+								// find a same team repair station to use
+								if (curBlob.getTeamNum() == vehicle.getTeamNum())
+								{
+									blob.set_u16("tertiarytarget", curBlob.getNetworkID());
+								}
+							}
 						}
 					}
 				}
@@ -674,7 +665,7 @@ void onTick(CBrain@ this)
 			//RandomTurn(blob);
 		}
 
-		//if (getGameTime() > 60*30) // vehicles are now available
+		if (getGameTime() > 60*30) // vehicles are now available
 		{
 			
 			if (blob.get_u8("myKey") % 3 != 0) // only some bots are destined to use vehicles
@@ -925,29 +916,3 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 				
 			}*/
 
-void LocateGeneralEnemyDirection(CBlob@ blob)
-{
-	
-	CBlob@[] threats;
-	CBlob@[] enemythreats;
-	getBlobsByName("importantarmory", @threats);
-	getBlobsByName("tent", @threats);
-	getBlobsByTag("vehicle", @threats);
-	getBlobsByTag("player", @threats);
-
-	for (uint i = 0; i < threats.length; ++i)
-	{
-		if (threats[i].getTeamNum() != blob.getTeamNum()) // not on our team
-		{
-			if (!threats[i].hasTag("turret") && !threats[i].hasTag("gun") && !threats[i].hasTag("weak vehicle") && !threats[i].hasTag("dead"))
-			{
-				enemythreats.push_back(threats[i]); // enemy threat
-			}
-		}
-	}
-
-	CBlob@ chosenthreat = enemythreats[XORRandom(enemythreats.length)];
-	blob.set_Vec2f("generalenemylocation", chosenthreat.getPosition());
-	//print("the enemy threat is " + chosenthreat.getName());
-
-}
