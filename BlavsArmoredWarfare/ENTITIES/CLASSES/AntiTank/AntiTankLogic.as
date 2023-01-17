@@ -13,6 +13,7 @@ void onInit(CBlob@ this)
 	this.set_u32("mag_bullets_max", 1); // mag size
 
 	this.set_u32("mag_bullets", 0);
+	this.set_u32("can_spot", 0);
 
 	ArcherInfo archer;
 	this.set("archerInfo", @archer);
@@ -41,6 +42,13 @@ void onInit(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (isServer()) //update bots' logic
+	{
+		if (this.hasTag("disguised"))
+		{
+			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
+		}
+	}
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
@@ -807,6 +815,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
+		if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
 		Vec2f arrowVel;
