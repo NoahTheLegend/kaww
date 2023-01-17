@@ -42,7 +42,7 @@ CBlob@ getNewTarget(CBrain@ this, CBlob @blob, const bool seeThroughWalls = fals
 
 		if (potential !is blob && blob.getTeamNum() != potential.getTeamNum())
 		{
-			if ((pos2 - pos).getLength() < 1000.0f && !potential.hasTag("dead")
+			if ((pos2 - pos).getLength() < 800.0f && !potential.hasTag("dead")
 				&& (XORRandom(6) == 0 || (isVisible(blob, potential) && !potential.isAttached())))
 			{
 				blob.set_Vec2f("last pathing pos", potential.getPosition());
@@ -56,6 +56,11 @@ CBlob@ getNewTarget(CBrain@ this, CBlob @blob, const bool seeThroughWalls = fals
 void Repath(CBrain@ this)
 {
 	this.SetPathTo(this.getTarget().getPosition(), false);
+}
+
+void RepathPos(CBrain@ this, Vec2f pos)
+{
+	this.SetPathTo(pos, false);
 }
 
 bool isVisible(CBlob@blob, CBlob@ target)
@@ -132,14 +137,11 @@ void DefaultChaseBlob(CBlob@ blob, CBlob @target)
 	// check if we have a clear area to the target
 	bool justGo = false;
 
-	if (targetDistance < 1420.0f)
+	if (targetDistance < 1120.0f)
 	{
-		Vec2f col;
-		//if (isVisible(blob, target))
-		{
-			justGo = true;
-		}
+		justGo = true;
 	}
+	//JustGo(blob, target);
 
 	// repath if no clear path after going at it
 	if (XORRandom(50) == 0 && (blob.get_Vec2f("last pathing pos") - targetPos).getLength() > 50.0f)
@@ -154,17 +156,12 @@ void DefaultChaseBlob(CBlob@ blob, CBlob @target)
 	{
 		if (state == CBrain::has_path)
 		{
-			//if (!isFriendAheadOfMe(blob, target))
-			{
-				//brain.SetSuggestedKeys();  // set walk keys here
-			}
-			JustGo(blob, target);
+			brain.SetSuggestedKeys();  // set walk keys here
 		}
 		else
 		{
 			JustGo(blob, target);
 		}
-
 
 		// printInt("state", this.getState() );
 		switch (state)
@@ -187,12 +184,95 @@ void DefaultChaseBlob(CBlob@ blob, CBlob @target)
 				break;
 		}
 	}
+}
 
-	// face the enemy
-	//blob.setAimPos(target.getPosition());
+void GoToPos(CBlob@ blob, Vec2f pos)
+{
+	CBrain@ brain = blob.getBrain();
+	Vec2f myPos = blob.getPosition();
+	Vec2f Vector = pos - myPos;
+	f32 vecDistance = Vector.Length();
+	// check if we have a clear area to the target
+	bool justmove = false;
+	bool justjump = false;
 
-	// jump over small blocks
-	JumpOverObstacles(blob);
+	// repath if no clear path after going at it
+	if (XORRandom(20) == 0 && (blob.get_Vec2f("last pathing pos") - pos).getLength() > 40.0f)
+	{
+		RepathPos(brain, pos);
+		blob.set_Vec2f("last pathing pos", pos);
+	}
+
+	const bool stuck = brain.getState() == CBrain::stuck;
+
+	const CBrain::BrainState state = brain.getState();
+	{
+		if (state == CBrain::has_path)
+		{
+			Vec2f col;
+			bool visible = !getMap().rayCastSolid(blob.getPosition(), pos, col);
+			if (visible)
+			{
+				justmove = true;
+			}
+			else {
+				brain.SetSuggestedKeys();  // set walk keys here
+			}
+			
+			justjump = true;
+		}
+		else
+		{
+			justmove = true;
+			justjump = true;
+		}
+
+		//printInt("state", brain.getState() );
+		switch (state)
+		{
+			case CBrain::idle:
+				RepathPos(brain, pos);
+				break;
+
+			case CBrain::searching:
+				//if (sv_test)
+				//	set_emote( blob, Emotes::dots );
+				break;
+
+			case CBrain::stuck:
+				RepathPos(brain, pos);
+				break;
+
+			case CBrain::wrong_path:
+				RepathPos(brain, pos);
+				break;
+		}
+	}
+
+	if (justmove)
+	{
+		if (pos.x < myPos.x)
+		{
+			blob.setKeyPressed(key_left, true);
+		}
+		else
+		{
+			blob.setKeyPressed(key_right, true);
+		}
+
+		if (pos.y > myPos.y)
+		{
+			blob.setKeyPressed(key_down, true);
+		}
+	}
+
+	if (justjump)
+	{
+		if (pos.y + getMap().tilesize * 0.7f + 5 < myPos.y)
+		{
+			blob.setKeyPressed(key_up, true);
+		}
+	}
 }
 
 bool DefaultRetreatBlob(CBlob@ blob, CBlob@ target)
@@ -229,7 +309,6 @@ void SearchTarget(CBrain@ this, const bool seeThroughWalls = false, const bool s
 	CBlob @target = this.getTarget();
 
 	// search target if none
-
 	if (target is null || XORRandom(30) == 0)
 	{
 		CBlob@ oldTarget = target;
@@ -248,7 +327,7 @@ void onChangeTarget(CBlob@ blob, CBlob@ target, CBlob@ oldTarget)
 	// !!!
 	if (oldTarget is null)
 	{
-		//set_emote(blob, Emotes::attn, 1);
+		//set_emote(blob, Emotes::attn, 2);
 	}
 }
 
