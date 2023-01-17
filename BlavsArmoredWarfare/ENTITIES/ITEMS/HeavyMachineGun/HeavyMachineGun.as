@@ -316,7 +316,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 			{
 				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
 				{
-					overheat_mod = 0.75f;
+					overheat_mod = 0.5f;
 				}
 
 				bullet.SetDamageOwnerPlayer(p);

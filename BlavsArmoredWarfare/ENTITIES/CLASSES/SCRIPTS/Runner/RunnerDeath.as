@@ -41,7 +41,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			// player is using bloodthirsty, heal him/her  (this is a commentary on how the gender spectrum is nonexistent)
 			if (getRules().get_string(damageowner.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
 			{
-				damageowner.server_Heal(0.05f);
+				damageowner.server_Heal(damage * 0.1f);
 			}
 		}
 	}

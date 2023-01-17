@@ -615,16 +615,16 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								// braking or reversing
 								if ((this.isFacingLeft() && right) || (!this.isFacingLeft() && left))
 								{
-									moveForce *= 1.45f;
+									moveForce *= 1.35f;
 								}
 
 								if (this.getShape().vellen < 1.6f)
 								{
-									moveForce *= 2.0f;
+									moveForce *= 1.45f;
 								}
 								else
 								{
-									moveForce *= 1.13f;
+									moveForce *= 1.15f;
 								}
 							}
 						}

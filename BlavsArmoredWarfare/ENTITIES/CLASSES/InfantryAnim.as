@@ -119,7 +119,7 @@ void onTick(CSprite@ this)
 			camo.SetRelativeZ(0.26f);
 		}
 
-		getRules().set_string(blob.getPlayer().getUsername() + "_perk", "Camouflage");
+		if (blob.getPlayer() !is null) getRules().set_string(blob.getPlayer().getUsername() + "_perk", "Camouflage");
 		blob.Untag("reload_sprite");
 		return;
 	}
@@ -132,7 +132,7 @@ void onTick(CSprite@ this)
 
 		if (camo !is null && frontarm !is null)
 		{
-			if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
+			if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
 			{
 				isCamo = true;
 
