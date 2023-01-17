@@ -383,7 +383,7 @@ void onTick(CBlob@ this)
 	}
 
 	if (this.get_f32("engine_RPM") < 0.0f) this.set_f32("engine_RPM", 0.0f);
-	if (this.get_f32("engine_RPM") > this.get_f32("engine_RPMtarget"))
+	if (this.get_f32("engine_RPM") > 30000.0f)
 	{
 		this.set_f32("engine_RPM", this.get_f32("engine_RPMtarget"));
 	}
@@ -455,7 +455,7 @@ void onTick(CBlob@ this)
 	}
 
 	if (this.get_f32("engine_RPM") < 0.0f) this.set_f32("engine_RPM", 0.0f);
-	if (this.get_f32("engine_RPM") > this.get_f32("engine_RPMtarget"))
+	if (this.get_f32("engine_RPM") > 30000.0f)
 	{
 		this.set_f32("engine_RPM", this.get_f32("engine_RPMtarget"));
 	}
