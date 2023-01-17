@@ -36,12 +36,15 @@ void onRender( CRules@ this )
 	Vec2f timelineLPos = Vec2f(timelineLDist - 16, timelineHeight);
 	Vec2f timelineRPos = Vec2f(timelineRDist - 16, timelineHeight);
 
-	blueTickets=this.get_s16("blueTickets");
-	redTickets=this.get_s16("redTickets");
+	if (getBlobByName("pointflag") is null && getBlobByName("importantarmory") is null)
+	{
+		blueTickets=this.get_s16("blueTickets");
+		redTickets=this.get_s16("redTickets");
 
-    GUI::SetFont("big score font");
-	GUI::DrawText( ""+blueTickets, timelineLPos+Vec2f(-48.0f, 0), getTeamColor(0) );
-	GUI::DrawText( ""+redTickets, timelineRPos+Vec2f(48.0f, 0), getTeamColor(1) );
+    	GUI::SetFont("big score font");
+		GUI::DrawText(""+blueTickets, timelineLPos+Vec2f(-48.0f, 0), getTeamColor(0));
+		GUI::DrawText(""+redTickets, timelineRPos+Vec2f(48.0f, 0), getTeamColor(1));
+	}
 	
 
 
