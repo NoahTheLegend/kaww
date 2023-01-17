@@ -26,6 +26,7 @@ void onInit(CBlob@ this)
 	this.Tag("no_armory_pickup");
 
 	this.maxQuantity = 4;
+	if (isServer()) this.server_SetQuantity(this.maxQuantity);
 }
 
 void onDie(CBlob@ this)
