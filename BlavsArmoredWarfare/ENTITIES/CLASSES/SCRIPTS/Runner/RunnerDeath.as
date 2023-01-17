@@ -22,7 +22,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (hitterBlob.getDamageOwnerPlayer() !is null)
 	{
 		CBlob@ damageowner = hitterBlob.getDamageOwnerPlayer().getBlob();
-		if (damageowner !is null)
+		if (damageowner !is null && damageowner.getPlayer() !is null)
 		{
 			if (damageowner.getSprite() !is null && !this.hasTag("dead") && customData != Hitters::spikes && this !is hitterBlob && getLocalPlayer() !is null && getLocalPlayer().getTeamNum() != this.getTeamNum())
 			{ 
@@ -39,10 +39,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			}
 
 			// player is using bloodthirsty, heal him/her  (this is a commentary on how the gender spectrum is nonexistent)
-			if (getRules().get_string(damageowner.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
-			{
-				damageowner.server_Heal(damage * 0.1f);
-			}
+			//if (getRules().get_string(damageowner.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+			//{
+			//	damageowner.server_Heal(damage);
+			//}
+			//damage is always 0 here idk why
 		}
 	}
 
