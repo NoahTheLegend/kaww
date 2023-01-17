@@ -171,7 +171,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
         oldrank = rank;
     }
 
-    if (rank != oldrank && blob.isMyPlayer()) // means that we leveled up
+    if (rank != oldrank && isServer()) // means that we leveled up
     {
         CBitStream params;
         params.write_u8(level);
