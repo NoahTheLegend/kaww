@@ -705,7 +705,7 @@ void onTick(CBrain@ this)
 										if (!vehicle.hasTag("turret") && !vehicle.hasTag("gun") && !vehicle.hasTag("aerial") // isnt a turret or machine gun or plane
 										&& vehicle.getName() != "importantarmory") // dont drive this for now
 										{
-											if (XORRandom(2) == 0) // lets drive a vehicle
+											if (XORRandom(2) == 0 && vehicle !is null) // lets drive a vehicle
 											{
 												// let's check if the driver seat is occupied
 												AttachmentPoint@ point = vehicle.getAttachments().getAttachmentPointByName("DRIVER");
