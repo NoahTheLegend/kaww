@@ -48,6 +48,12 @@ void onTick(CBrain@ this)
 
 	CBlob @blob = this.getBlob();
 	CBlob @target = this.getTarget();
+
+	//if (target is null)
+	//{
+	//	SearchTarget(this, false, true);
+	//	return;
+	//}
 	
 	// remove secondary target if it doesnt exist anymore
 	if (getBlobByNetworkID(blob.get_u16("secondarytarget")) is null)
@@ -58,6 +64,32 @@ void onTick(CBrain@ this)
 	if (blob.get_Vec2f("generalenemylocation") == Vec2f_zero || getGameTime() % 400 == 0) // update once in a while & when needed
 	{
 		LocateGeneralEnemyDirection(blob);// lets figure out which direction we should attack
+	}
+	
+	if (isServer() && target !is null) // process only on server, for only server-side bot brain
+	{
+		CBlob@[] bushes;
+		if (target.getPlayer() !is null
+		&& getRules().get_string(target.getPlayer().getUsername() + "_perk") == "Camouflage"
+		&& target.getOverlapping(@bushes))
+		{
+			for (u16 i = 0; i < bushes.length; i++)
+			{
+				CBlob@ bush = bushes[i];
+				if (bush is null || bush.getName() != "bush") continue;
+				if (target.get_u32("can_spot") > getGameTime())
+				{
+					target.Tag("disguised"); // add a tag so blobs that werent seen by bots have a pre-check for permormance
+					target.set_u32("can_spot", getGameTime()+30); // bot sees player and renews timer for revealing
+				}
+				else
+				{
+					target.Tag("disguised");
+					@target = null;
+					break;
+				}
+			}
+		}
 	}
 
 	if (blob.isAttached()) // vehicle logic

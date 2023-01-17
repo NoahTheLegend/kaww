@@ -131,6 +131,8 @@ void onInit(CBlob@ this)
 	this.getShape().getConsts().net_threshold_multiplier = 0.5f;
 
 	this.set_f32("stab damage", 1.0f);
+	
+	this.set_u32("can_spot", 0);
 
 	if (this.getName() == "revolver")
 	{
@@ -156,6 +158,13 @@ void onInit(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (isServer()) //update bots' logic
+	{
+		if (this.hasTag("disguised"))
+		{
+			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
+		}
+	}
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
@@ -1044,6 +1053,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			if (isServer())
 			{
+				if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
 				CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
 				if (this.getName() == "sniper") proj.Tag("strong");
 				else if (this.getName() == "shotgun") proj.Tag("shrapnel");
