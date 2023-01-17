@@ -68,7 +68,7 @@ void onTick(CRules@ this)
             else
             {
                 // showdown
-                this.set_string("bannertext", "Kill the enemy team until they run out of tickets!");
+                this.set_string("bannertext", "Kill the enemy team until they run out of respawns!");
             }
         }
 
