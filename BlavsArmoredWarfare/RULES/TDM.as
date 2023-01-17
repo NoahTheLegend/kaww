@@ -437,7 +437,6 @@ shared class TDMCore : RulesCore
 				}
 
 				unlocked = Maths::Min(unlocked, 4);
-				print(info.username + " u " + unlocked);
 
 				int index = Maths::Max(XORRandom(classes.length), unlocked);
 				string line = classes[index];
