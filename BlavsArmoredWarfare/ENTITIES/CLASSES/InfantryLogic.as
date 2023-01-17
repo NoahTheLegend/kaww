@@ -893,6 +893,7 @@ void onTick(CBlob@ this)
 	
 	this.set_bool("is_a1", false);
 	this.set_bool("just_a1", false);
+
 }
 
 bool canSend( CBlob@ this )

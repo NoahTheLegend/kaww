@@ -577,6 +577,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 				// DRIVER
 				if (ap.name == "DRIVER" && !this.hasTag("immobile"))
 				{
+					//print(blob.getPlayer().getUsername() + " driver on " + this.getName());
 					bool moveUp = false;
 					const f32 angle = this.getAngleDegrees();
 					// set facing
@@ -868,6 +869,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 				if (ap.name == "GUNNER" && !isKnocked(blob))
 				{
+					//print(blob.getPlayer().getUsername() + " gunner on " + this.getName());
 					// set facing
 					blob.SetFacingLeft(this.isFacingLeft());
 
