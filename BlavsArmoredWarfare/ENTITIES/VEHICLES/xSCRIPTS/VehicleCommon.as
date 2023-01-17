@@ -682,7 +682,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 									else
 									{
 										CBlob@ pasape = ape.getOccupied();
-										if (pasape !is null)
+										if (pasape !is null && pasape.hasTag("player"))
 										{
 											CBitStream params;
 											pasape.SendCommand(pasape.getCommandID("bootout"), params);
