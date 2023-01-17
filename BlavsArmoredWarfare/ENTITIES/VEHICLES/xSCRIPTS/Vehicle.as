@@ -180,13 +180,14 @@ void onInit(CBlob@ this)
 	}
 
 	// speedy stuff
-	f32 intake;
+	f32 intake = 0.0f;
 	switch(blobHash) // backside vulnerability point
 	{
 		case _maus: // maus
 		intake = -50.0f; break;
 
 		case _t10: // T10
+		intake = 15.0f;
 		break;
 		
 		case _m60: // normal tank
