@@ -224,7 +224,7 @@ void onTick(CBrain@ this)
 					strategy = Strategy::idle;
 				}
 
-				if (getGameTime() % 10 == 0 && XORRandom(90) == 0)
+				if (getGameTime() % 10 == 0 && XORRandom(140) == 0)
 				{
 					blob.server_DetachAll(); // hop out
 				}
@@ -257,6 +257,17 @@ void onTick(CBrain@ this)
 				{
 					blob.server_DetachAll(); // hop out
 					blob.set_string("behavior", "");
+				}
+
+				if (blob.get_u32("mag_bullets") != blob.get_u32("mag_bullets_max")) // not 100% full on ammo
+				{
+
+					if ((XORRandom(100) < 10 && blob.get_u32("mag_bullets") == 0) || XORRandom(350) < 1) // completely out of ammo
+					{
+						blob.set_u8("reloadqueue", 5);
+						blob.Sync("reloadqueue", true);
+						//blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
+					}
 				}
 			}
 
@@ -484,7 +495,7 @@ void onTick(CBrain@ this)
 								blob.set_string("behavior", "random");
 							}
 
-							if (blob.get_string("behavior") == "random")
+							if (blob.get_string("behavior") == "random" || blob.get_string("behavior") == "")
 							{
 								AttachmentPoint@[] aps;
 								if (target.getAttachmentPoints(@aps))

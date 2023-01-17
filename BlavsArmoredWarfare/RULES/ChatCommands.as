@@ -120,7 +120,7 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 		}
 		if (text_in == "!bot")
 		{
-			AddBot("Henry");
+			AddBot("Bot");
 			return true;
 		}
 		else if (text_in == "!teamwon blue")
