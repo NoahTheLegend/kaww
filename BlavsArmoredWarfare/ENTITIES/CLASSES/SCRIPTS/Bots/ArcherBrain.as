@@ -523,6 +523,10 @@ void onTick(CBrain@ this)
 								AttachmentPoint@[] aps;
 								if (target.getAttachmentPoints(@aps))
 								{
+									for (uint i = 0; i < aps.length; i++)
+									{
+										//ap[i].getAttachmentPoints(@aps);
+									}
 									AttachmentPoint@ ap = aps[XORRandom(aps.length)];
 
 									if (ap.getOccupied() is null)
@@ -547,7 +551,6 @@ void onTick(CBrain@ this)
 							
 							if (choosen_seat !is null) // move to it / jump to it
 							{
-								
 								if (choosen_seat.getPosition().y + 30 > blob.getPosition().y)
 								{
 									blob.setKeyPressed(key_up, true);
