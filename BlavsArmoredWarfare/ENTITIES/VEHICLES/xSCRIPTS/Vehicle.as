@@ -438,17 +438,11 @@ void onTick(CBlob@ this)
 			this.set_f32("engine_RPM", 0);
 		else
 		{
-			if (this.getName() != "t10") this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
+			//this.sub_f32("engine_RPM", 50 + XORRandom(80)); // more variance
 			if (isClient() && this !is null) this.Sync("engine_RPM", true);
 		}
 	}
-	if (this.getName() == "t10")
-	{
-		printf("RPM "+this.get_f32("engine_RPM"));
-		printf("TARGET "+this.get_f32("engine_RPMtarget"));
-		printf("THR "+this.get_f32("engine_throttle"));
-	}
-	
+
 	this.set_f32("engine_RPM", Maths::Clamp(this.get_f32("engine_RPM"), 0.0f, 30000.0f));
 	//if (this.getName() == "t10" && getGameTime() % 30 == 0 && (isServer() || (getLocalPlayer() !is null && getLocalPlayer().getUsername() == "NoahTheLegend" && getLocalPlayer().isMyPlayer())))
 	//	printf(""+this.get_f32("engine_RPM")); // crashing server?
