@@ -409,6 +409,7 @@ void onTick(CBrain@ this)
 							// fine tuned sitting
 							AttachmentPoint@ choosen_seat = null;
 							bool sitinoccupied = false;
+							bool userealpos = false;
 							bool pickadifferentseat = false;
 							
 							//print("d " + blob.get_string("behavior"));
@@ -418,7 +419,8 @@ void onTick(CBrain@ this)
 							}
 							else if (blob.get_string("behavior") == "gun_mg")
 							{
-								@choosen_seat = target.getAttachments().getAttachmentPointByName("GUNNER");
+								@choosen_seat = target.getAttachments().getAttachmentPointByName("BOW");
+								sitinoccupied = true;
 							}
 							else if (blob.get_string("behavior") == "gun_turret")
 							{
@@ -428,10 +430,13 @@ void onTick(CBrain@ this)
 
 							if (choosen_seat !is null) // if we have a seat in mind
 							{
+								
 								if ((blob.getPosition() - choosen_seat.getPosition()).getLength() < 11)
 								{
+
 									if (getGameTime() % 6 == 0)
 									{
+										
 										blob.setKeyPressed(key_down, true); // sit
 
 										// force attachment cause bots cant sit while in air
@@ -441,7 +446,10 @@ void onTick(CBrain@ this)
 											{
 												if (choosen_seat.getOccupied() !is null)
 												{
-													AttachmentPoint@ new_seat = @choosen_seat.getOccupied().getAttachments().getAttachmentPointByName("GUNNER");
+
+													AttachmentPoint@ new_seat = choosen_seat.getOccupied().getAttachments().getAttachmentPointByName("GUNNER");
+
+													
 													
 													if (new_seat !is null)
 													{
@@ -502,10 +510,11 @@ void onTick(CBrain@ this)
 									}
 								}
 							}
-
+							
 							if (choosen_seat !is null) // move to it / jump to it
 							{
-								if (choosen_seat.getPosition().y + 14 > blob.getPosition().y)
+								
+								if (choosen_seat.getPosition().y + 30 > blob.getPosition().y)
 								{
 									blob.setKeyPressed(key_up, true);
 								}
