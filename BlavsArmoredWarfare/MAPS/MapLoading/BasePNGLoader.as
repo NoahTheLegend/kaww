@@ -417,6 +417,7 @@ class PNGLoader
 			case map_colors::blue_m60:         autotile(offset); spawnVehicle(map, "m60",   offset, 0); break;
 			case map_colors::blue_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, 0); break;
 			case map_colors::blue_bf109:         autotile(offset); spawnVehicle(map, "bf109",   offset, 0); break;
+			case map_colors::blue_bomberplane:         autotile(offset); spawnVehicle(map, "bomberplane",   offset, 0); break;
 			case map_colors::blue_uh1:       autotile(offset); spawnVehicle(map, "uh1",   offset, 0); break;
 			case map_colors::blue_tanktrap:    autotile(offset); spawnVehicle(map, "tanktrap",   offset, 0); break;
 			case map_colors::blue_cruiser:     autotile(offset); spawnVehicle(map, "cruiser",   offset, 0); break;
@@ -428,6 +429,7 @@ class PNGLoader
 			case map_colors::red_m60:          autotile(offset); spawnVehicle(map, "m60",   offset, 1); break;
 			case map_colors::red_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, 1); break;
 			case map_colors::red_bf109:        autotile(offset); spawnVehicle(map, "bf109",   offset, 1); break;
+			case map_colors::red_bomberplane:        autotile(offset); spawnVehicle(map, "bomberplane",   offset, 1); break;
 			case map_colors::red_uh1:          autotile(offset); spawnVehicle(map, "uh1",   offset, 1); break;
 			case map_colors::blue_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, 0); break;
 			case map_colors::red_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, 1); break;
