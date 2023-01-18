@@ -186,24 +186,6 @@ void onDie(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (isServer() && this.isBot() && this.getPlayer() !is null)
-	{
-		if (this.get_string("last_class") == "")
-		{
-			array<string> classes = {
-				"revolver",
-				"ranger",
-				"shotgun",
-				"sniper",
-				"sniper",
-				"mp5",
-				"mp5"
-				};
-
-			this.getPlayer().set_string("last_class", classes[XORRandom(classes.length)]);
-			this.server_Die();
-		}
-	}
 	// (drop anything attached)
 	CBlob @carried = this.getCarriedBlob();
 	if (carried !is null)
