@@ -3,7 +3,7 @@
 #define CLIENT_ONLY
 #include "ActorHUDStartPos.as";
 
-bool showHelp = true;
+bool showHelp = false;
 bool justJoined = true;
 bool mouseWasPressed1 = false;
 
@@ -24,6 +24,8 @@ const string zoomOut_key = getControls().getActionKeyKeyName(AK_ZOOMOUT);
 		
 void onInit(CRules@ this)
 {
+    CPlayer@ player = getLocalPlayer();
+    if (player !is null && getRules() !is null && getRules().get_u32(player.getUsername() + "_exp") < 25) showHelp = true;
 	CFileImage@ image = CFileImage("GameHelp.png");
 	const Vec2f imageSize = Vec2f(image.getWidth(), image.getHeight());
 	AddIconToken("$HELP$", "GameHelp.png", imageSize, 0);
@@ -78,13 +80,12 @@ void onRender(CRules@ this)
 	Vec2f controlsSize;
 	GUI::GetTextDimensions(controlsTitle + controlsInfo, controlsSize);
 
-	const Vec2f tlBox = Vec2f(sMid - imageSize.x - boxMargin, Maths::Max(10.0f, sCenter - imageSize.y - infoSize.y/2 - controlsSize.y/2 - boxMargin));
-	const Vec2f brBox = Vec2f(sMid + imageSize.x + boxMargin, sCenter + imageSize.y + infoSize.y/2 + controlsSize.y/2);
+	Vec2f tlBox = Vec2f(sMid - imageSize.x - boxMargin, Maths::Max(10.0f, sCenter - imageSize.y - infoSize.y/2 - controlsSize.y/2 - boxMargin));
+	Vec2f brBox = Vec2f(sMid + imageSize.x + boxMargin, sCenter + imageSize.y + infoSize.y/2 + controlsSize.y/2);
 	
 	//draw box
 	GUI::DrawButtonPressed(tlBox, brBox);
 	
-	if (justJoined)
 	{
 		//welcome text
 		const string intro = "\nWelcome to Armored Warfare!"; //last editor
@@ -99,13 +100,53 @@ void onRender(CRules@ this)
         GUI::DrawTextCentered("Special thanks to contributors: Nevrotik, Skemonde, PURPLExeno, Goldy, GoldenGuy (hoster), petey5 and ThinkAbout!", Vec2f(sMid, tlBox.y + 92.5f), SColor(255, 255,255,0));
     } 
 
+    {
+        GUI::SetFont("normal");
+
+        Vec2f spawnInfo = Vec2f(0,0);
+        Vec2f marketInfo = Vec2f(0,0);
+        Vec2f armoryInfo = Vec2f(0,0);
+        Vec2f digMatsInfo = Vec2f(0,0);
+        Vec2f builderInfo = Vec2f(0,0);
+        Vec2f revolverInfo = Vec2f(0,0);
+        Vec2f rangerInfo = Vec2f(0,0);
+        Vec2f shotgunInfo = Vec2f(0,0);
+        Vec2f sniperInfo = Vec2f(0,0);
+        Vec2f medicInfo = Vec2f(0,0);
+        Vec2f rpgInfo = Vec2f(0,0);
+        Vec2f craftInfo = Vec2f(0,0);
+        Vec2f passengerInfo = Vec2f(0,0);
+        Vec2f gunnerInfo = Vec2f(0,0);
+        Vec2f mechanicInfo = Vec2f(0,0);
+        Vec2f flagInfo = Vec2f(0,0);
+
+        GUI::DrawTextCentered("Your spawn point\nSwitch perks or\nclass here", tlBox+spawnInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Shop to buy\nsupplies or ammo\nCoins are gained\nwith time", tlBox+marketInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("A truck with\nextended variety\nof supplies.", tlBox+armoryInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Dig materials\n", tlBox+digMatsInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Produce scrap as builder.\nSupply your team and\nbuild defensives", tlBox+builderInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Basic fighter and a\ngood tank crewmember", tlBox+revolverInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Strong fighter with\aa good fire rate", tlBox+rangerInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Deadly in short-range\n", tlBox+shotgunInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("", tlBox+sniperInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("", tlBox+medicInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("", tlBox+rpgInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("", tlBox+craftInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("", tlBox+passengerInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("", tlBox+gunnerInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("", tlBox+mechanicInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("", tlBox+flagInfo, SColor(255, 240,240,240));
+
+        GUI::SetFont("menu");
+    }
+
 	{
 		const string shiprektVersion = "Armored Warfare 2.0\n";
 		const string lastChangesInfo = "\nChanges:\n\n"
-		+ "  * Ranks & Progression: Win, kill enemies or mine ore to open classes and perks!\n    Ranks and experience are bound to player and saved permanently\n"
+		+ "  * Ranks & Progression: Win, kill enemies or mine ore to unlock classes and perks!\n    Ranks and experience are bound to player and saved permanently\n"
 		+ "  * New perks: A set of perks with game-changing features - 'pay' something to get stronger abilities\n"
 		+ "  * Bots: Greatly written AI to fill server with small players count\n"
-        + "  * New blocks: Effective against explosions and shells - a good fair option for defensive gameplay\n"
+        + "  * New blocks: Effective against explosions and shells - a good and fair option for defensive gameplay\n"
         + "  * Most of bugs fixed: Common, rare and single-happening bugs are gone\n"
         + "  * New maps: enjoy a few new unique maps for TDM and default modes\n"
         + "  * Other: Small and different improvements, including QOL and balance\n";
