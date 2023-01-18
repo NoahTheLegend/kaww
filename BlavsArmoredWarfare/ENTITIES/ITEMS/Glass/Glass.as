@@ -31,6 +31,14 @@ f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hit
 	return damage;
 }
 
+void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f collisionPos )
+{
+	if (blob !is null && blob.hasTag("flesh"))
+	{
+		this.server_Hit(this, this.getPosition(), Vec2f(0,0), 0.175f, Hitters::builder);
+	}
+}
+
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (blob.hasTag("flesh") || blob.hasTag("collideswithglass"))

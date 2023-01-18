@@ -1262,7 +1262,7 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 	if (isServer() && player !is null && player.isBot())
 	{
 		player.server_setCharacterName(getRandomCharName());
-		getRules().set_u32(player.getUsername() + "_exp", 1250+XORRandom(1250));
+		getRules().set_u32(player.getUsername() + "_exp", 2500+XORRandom(1250));
 	}
 
 	if (getPlayersCount() == 5)
