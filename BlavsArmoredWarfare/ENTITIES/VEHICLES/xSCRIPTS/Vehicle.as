@@ -243,7 +243,7 @@ void onTick(CBlob@ this)
 				if (bushes[i] is null || bushes[i].getName() != "bush") continue;
 				else bushcount ++;
 			}
-			if (bushcount > 3)
+			if (bushcount > 4)
 			{
 				if (!this.hasTag("turret"))
 				{
