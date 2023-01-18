@@ -11,6 +11,14 @@ void onInit(CBlob@ this)
 
 	this.Tag("builder always hit");
 	this.Tag("structure");
+
+	if (this.getPosition().x < getMap().tilemapwidth * 8.0f / 2)
+	{
+		this.server_setTeamNum(0);
+	}
+	else{
+		this.server_setTeamNum(1);
+	}
 }
 
 void onTick(CBlob@ this)

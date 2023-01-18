@@ -1,10 +1,11 @@
 #define SERVER_ONLY
 
 #include "BrainCommon.as"
-#include "ArcherCommon.as"
+#include "InfantryCommon.as"
 #include "RunnerHead.as"
 
 float mouse_mvspd = 0.5f;
+const bool emotes = true;
 
 void onInit(CBrain@ this)
 {
@@ -30,7 +31,6 @@ void onInit(CBrain@ this)
 
 	blob.setAimPos(blob.getPosition() + aimposvar);
 }
-
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
@@ -59,14 +59,19 @@ void onTick(CBrain@ this)
 	// remove secondary target if it doesnt exist anymore
 	if (getBlobByNetworkID(blob.get_u16("secondarytarget")) is null)
 	{
-		blob.set_u16("secondarytarget", 0);
+		if (blob.get_u16("secondarytarget") != 0)
+		{
+			//print("target didnt exist, removing");
+			blob.set_u16("secondarytarget", 0);
+		}
 	}
 
-	if (blob.get_Vec2f("generalenemylocation") == Vec2f_zero || getGameTime() % 400 == 0) // update once in a while & when needed
+	if (blob.get_Vec2f("generalenemylocation") == Vec2f_zero || getGameTime() % 600 == 0) // update once in a while & when needed
 	{
 		LocateGeneralEnemyDirection(blob);// lets figure out which direction we should attack
 	}
 	
+	/*
 	if (isServer() && target !is null) // process only on server, for only server-side bot brain
 	{
 		CBlob@[] bushes;
@@ -91,11 +96,12 @@ void onTick(CBrain@ this)
 				}
 			}
 		}
-	}
+	}*/
 
 	if (blob.isAttached()) // vehicle logic
 	{
 		CBlob@ vehicle = getBlobByNetworkID(blob.get_u16("secondarytarget"));
+		CBlob@ tertiarytarget = getBlobByNetworkID(blob.get_u16("tertiarytarget"));
 		if (vehicle !is null)
 		{
 			// driving
@@ -167,34 +173,51 @@ void onTick(CBrain@ this)
 					}
 				}
 
-				if (vehicle.getHealth() < vehicle.getInitialHealth() / 2)
+				
+
+				if (tertiarytarget is null)
 				{
-					repairsneeded = true;
-				}
-				else
-				{
-					if (shouldigo)
+					
+					if (vehicle.getHealth() < vehicle.getInitialHealth() / 2)
 					{
-						if (vehicle.getHealth() < vehicle.getInitialHealth() / 3)
+						repairsneeded = true;
+					}
+					else
+					{
+						if (shouldigo)
 						{
-							repairsneeded = true;
+							if (vehicle.getHealth() < vehicle.getInitialHealth() / 3)
+							{
+								repairsneeded = true;
+							}
+							else
+							{
+								if (blob.get_Vec2f("generalenemylocation") != Vec2f_zero)
+								{
+									DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 200);
+								}
+							}
 						}
 						else
 						{
-							if (blob.get_Vec2f("generalenemylocation") != Vec2f_zero)
-							{
-								DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 200);
-							}
+							if (emotes) set_emote(blob, Emotes::down, 10);
 						}
 					}
+				}
+				else{
+					repairsneeded = true;
 				}
 
 				if (repairsneeded)
 				{
-					CBlob@ storedtarget = getBlobByNetworkID(blob.get_u16("tertiarytarget"));
-					if (storedtarget !is null && storedtarget.getName() == "repairstation")
+					if (tertiarytarget !is null && tertiarytarget.getName() == "repairstation")
 					{
-						DriveToPos(blob, vehicle, storedtarget.getPosition(), 30);
+						DriveToPos(blob, vehicle, tertiarytarget.getPosition(), 20);
+						
+						if (vehicle.getHealth() == vehicle.getInitialHealth())
+						{
+							blob.set_u16("tertiarytarget", 0); // stop repairing
+						}
 					}
 					else
 					{
@@ -214,6 +237,7 @@ void onTick(CBrain@ this)
 								if (curBlob.getTeamNum() == vehicle.getTeamNum())
 								{
 									blob.set_u16("tertiarytarget", curBlob.getNetworkID());
+									break;
 								}
 							}
 						}
@@ -226,9 +250,16 @@ void onTick(CBrain@ this)
 					blob.server_DetachAll(); // hop out
 					if (XORRandom(2) == 0) blob.set_string("behavior", ""); // chance to lose interest in that seat
 				}
+
+				// okay fine, ill be in this seat
+				if (blob.get_string("behavior") == "")
+				{
+					blob.set_string("behavior", "drive");
+				}
 			}
 		}
-		else {
+		else if (blob.get_u16("secondarytarget") != 0){
+			//print("target didnt exist, removing");
 			blob.set_u16("secondarytarget", 0); // doesn't exist : remove
 		}
 
@@ -258,6 +289,12 @@ void onTick(CBrain@ this)
 			{
 				blob.server_DetachAll(); // hop out
 				if (XORRandom(2) == 0) blob.set_string("behavior", ""); // chance to lose interest in that seat
+			}
+
+			// okay fine, ill be in this seat
+			if (blob.get_string("behavior") == "")
+			{
+				blob.set_string("behavior", "gun");
 			}
 		}
 
@@ -307,6 +344,7 @@ void onTick(CBrain@ this)
 		// logic for target
 		if (target !is null)
 		{
+			//print("Target: " + target.getName());
 			u8 strategy = blob.get_u8("strategy");
 
 			f32 distance;
@@ -346,14 +384,8 @@ void onTick(CBrain@ this)
 				strategy = Strategy::idle;
 			}
 
-
-
-
-
-
 			if (blob.get_u32("mag_bullets") != blob.get_u32("mag_bullets_max")) // not 100% full on ammo
 			{
-
 				if ((XORRandom(100) < 10 && blob.get_u32("mag_bullets") == 0) || XORRandom(350) < 1) // completely out of ammo
 				{
 					blob.set_u8("reloadqueue", 5);
@@ -361,9 +393,6 @@ void onTick(CBrain@ this)
 					//blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
 				}
 			}
-			
-			
-
 
 			// unpredictable movement
 			if (getGameTime() % blob.get_u8("myKey") == 0 && XORRandom(3) == 0)
@@ -391,10 +420,12 @@ void onTick(CBrain@ this)
 
 				if (blob.get_u8("moveover") == 1) // 1 == right
 				{
+					if (emotes) set_emote(blob, Emotes::right, 10);
 					blob.setKeyPressed(key_right, true);
 				}
 				else // 0 == left
 				{		
+					if (emotes) set_emote(blob, Emotes::left, 10);
 					blob.setKeyPressed(key_left, true);
 				}
 
@@ -415,17 +446,15 @@ void onTick(CBrain@ this)
 
 			blob.set_u8("strategy", strategy);
 
-			if (XORRandom(250) == 0)
+			if (XORRandom(30) == 0)
 			{
 				@target = null;
 			}
 		}
 		else
 		{
+			//print("target is null");
 			// do objective stuff?
-
-			
-			//return;
 
 			if (getGameTime() < 30 + blob.get_u8("myKey"))
 			{
@@ -435,142 +464,157 @@ void onTick(CBrain@ this)
 			{
 				if (blob.get_u16("secondarytarget") != 0) // we have a secondary objective we should be doing
 				{
-					CBlob@ target = getBlobByNetworkID(blob.get_u16("secondarytarget"));
-					if (target !is null)
+					CBlob@ secondarytarget = getBlobByNetworkID(blob.get_u16("secondarytarget"));
+					
+					if (secondarytarget !is null)
 					{
-						if ((target.getPosition() - blob.getPosition()).getLength() < 40)
+						if (secondarytarget.hasTag("vehicle")) // we are going for a vehicle seat
 						{
-							// fine tuned sitting
-							AttachmentPoint@ choosen_seat = null;
-							bool sitinoccupied = false;
-							bool userealpos = false;
-							bool pickadifferentseat = false;
-							
-							//print("d " + blob.get_string("behavior"));
-							if (blob.get_string("behavior") == "drive")
-							{
-								@choosen_seat = target.getAttachments().getAttachmentPointByName("DRIVER");
-							}
-							else if (blob.get_string("behavior") == "gun_mg")
-							{
-								@choosen_seat = target.getAttachments().getAttachmentPointByName("BOW");
-								sitinoccupied = true;
-							}
-							else if (blob.get_string("behavior") == "gun_turret")
-							{
-								@choosen_seat = target.getAttachments().getAttachmentPointByName("TURRET");
-								sitinoccupied = true;
-							}
+							if (emotes) set_emote(blob, Emotes::cog, 2);
 
-							if (choosen_seat !is null) // if we have a seat in mind
+							if ((secondarytarget.getPosition() - blob.getPosition()).getLength() < 40)
 							{
+								// fine tuned sitting
+								AttachmentPoint@ choosen_seat = null;
+								bool sitinoccupied = false;
+								bool userealpos = false;
+								bool pickadifferentseat = false;
 								
-								if ((blob.getPosition() - choosen_seat.getPosition()).getLength() < 11)
+								//print("d " + blob.get_string("behavior"));
+								if (blob.get_string("behavior") == "drive")
 								{
+									@choosen_seat = secondarytarget.getAttachments().getAttachmentPointByName("DRIVER");
+								}
+								else if (blob.get_string("behavior") == "gun_mg")
+								{
+									@choosen_seat = secondarytarget.getAttachments().getAttachmentPointByName("BOW");
+									sitinoccupied = true;
+								}
+								else if (blob.get_string("behavior") == "gun_turret")
+								{
+									@choosen_seat = secondarytarget.getAttachments().getAttachmentPointByName("TURRET");
+									sitinoccupied = true;
+								}
 
-									if (getGameTime() % 6 == 0)
+								if (choosen_seat !is null) // if we have a seat in mind
+								{
+									if ((blob.getPosition() - choosen_seat.getPosition()).getLength() < 12)
 									{
-										
-										blob.setKeyPressed(key_down, true); // sit
-
-										// force attachment cause bots cant sit while in air
-										if (!blob.isOnGround() && !blob.wasOnGround())
+										if (getGameTime() % 6 == 0)
 										{
-											if (sitinoccupied)
+											blob.setKeyPressed(key_down, true); // sit
+
+											// force attachment cause bots cant sit while in air
+											if (!blob.isOnGround() && !blob.wasOnGround())
 											{
-												if (choosen_seat.getOccupied() !is null)
+												if (sitinoccupied)
 												{
-
-													AttachmentPoint@ new_seat = choosen_seat.getOccupied().getAttachments().getAttachmentPointByName("GUNNER");
-
-													
-													
-													if (new_seat !is null)
+													if (choosen_seat.getOccupied() !is null)
 													{
-														if (new_seat.getOccupied() is null) // check if nobody is in the seat
+														AttachmentPoint@ new_seat = choosen_seat.getOccupied().getAttachments().getAttachmentPointByName("GUNNER");
+
+														if (new_seat !is null)
 														{
-															choosen_seat.getOccupied().server_AttachTo(blob, @new_seat);
-														}
-														else if (XORRandom(5) == 0) // give up
-														{
-															pickadifferentseat = true;
+															if (new_seat.getOccupied() is null) // check if nobody is in the seat
+															{
+																choosen_seat.getOccupied().server_AttachTo(blob, @new_seat);
+															}
+															else if (XORRandom(5) == 0) // give up
+															{
+																pickadifferentseat = true;
+															}
 														}
 													}
 												}
+												else {
+													if (choosen_seat.getOccupied() is null) // check if nobody is in the seat
+													{
+														secondarytarget.server_AttachTo(blob, @choosen_seat);
+													}
+													else if (XORRandom(5) == 0) // give up
+													{
+														pickadifferentseat = true;
+													}
+												}
+											}
+										}
+									}
+								}
+
+								if (pickadifferentseat)
+								{
+									blob.set_string("behavior", "random");
+								}
+
+								if (blob.get_string("behavior") == "random" || blob.get_string("behavior") == "")
+								{
+									AttachmentPoint@[] aps;
+									if (secondarytarget.getAttachmentPoints(@aps))
+									{
+										AttachmentPoint@ ap = aps[XORRandom(aps.length)];
+
+										if (ap.getOccupied() is null)
+										{
+											// random seat in the vehicle is empty
+
+											// if right next to the seat, attach
+											if ((blob.getPosition() - ap.getPosition()).getLength() < 11)
+											{
+												secondarytarget.server_AttachTo(blob, @ap);
+
+												//blob.set_string("behavior", ""); // set it to empty, so that this bot will change its behavior based on the seat type
 											}
 											else {
-												if (choosen_seat.getOccupied() is null) // check if nobody is in the seat
-												{
-													target.server_AttachTo(blob, @choosen_seat);
-												}
-												else if (XORRandom(5) == 0) // give up
-												{
-													pickadifferentseat = true;
-												}
+												@choosen_seat = @ap;
+
+												//blob.set_string("behavior", "movetorandom"); // move to it
 											}
 										}
 									}
 								}
-							}
-
-							if (pickadifferentseat)
-							{
-								blob.set_string("behavior", "random");
-							}
-
-							if (blob.get_string("behavior") == "random" || blob.get_string("behavior") == "")
-							{
-								AttachmentPoint@[] aps;
-								if (target.getAttachmentPoints(@aps))
+								
+								if (choosen_seat !is null) // move to it / jump to it
 								{
-									AttachmentPoint@ ap = aps[XORRandom(aps.length)];
-
-									if (ap.getOccupied() is null)
+									if (choosen_seat.getPosition().y + 50 > blob.getPosition().y)
 									{
-										// random seat in the vehicle is empty
+										blob.setKeyPressed(key_up, true);
+									}
 
-										// if right next to the seat, attach
-										if ((blob.getPosition() - ap.getPosition()).getLength() < 11)
-										{
-											target.server_AttachTo(blob, @ap);
-
-											//blob.set_string("behavior", ""); // set it to empty, so that this bot will change its behavior based on the seat type
-										}
-										else {
-											@choosen_seat = @ap;
-
-											//blob.set_string("behavior", "movetorandom"); // move to it
-										}
+									if (choosen_seat.getPosition().x > blob.getPosition().x)
+									{
+										blob.setKeyPressed(key_right, true);
+									}
+									else
+									{
+										blob.setKeyPressed(key_left, true);
 									}
 								}
 							}
-							
-							if (choosen_seat !is null) // move to it / jump to it
-							{
-								
-								if (choosen_seat.getPosition().y + 30 > blob.getPosition().y)
-								{
-									blob.setKeyPressed(key_up, true);
-								}
+							else{
+								GoToPos(blob, secondarytarget.getPosition());
+							}		
+						}		
+						else if (secondarytarget.getName() == "pointflag") // we are going for flag
+						{	
+							if (emotes) set_emote(blob, Emotes::redflag, 10);
 
-								if (choosen_seat.getPosition().x > blob.getPosition().x)
+							if ((secondarytarget.getPosition() - blob.getPosition()).getLength() < 70)
+							{
+								// capture the point
+
+								if (secondarytarget.getTeamNum() != blob.getTeamNum())
 								{
-									blob.setKeyPressed(key_right, true);
-								}
-								else
-								{
-									blob.setKeyPressed(key_left, true);
+									blob.set_u16("secondarytarget", 0); // capture complete
 								}
 							}
+							else{
+								GoToPos(blob, secondarytarget.getPosition());
+							}
 						}
-						else{
-							GoToPos(blob, target.getPosition());
-						}					
 					}
 				}
 				else
 				{
-
 					if (blob.getTeamNum() == 0)
 					{
 						blob.setKeyPressed(key_right, true);
@@ -579,13 +623,12 @@ void onTick(CBrain@ this)
 					{
 						blob.setKeyPressed(key_left, true);
 					}
-
 				}
 			}
 
 			Vec2f mypos = blob.getPosition();
 
-			if (getGameTime() > blob.get_u8("myKey")/4 && blob.getTickSinceCreated() > 20) // wait a little bit before aiming on match start
+			if (getGameTime() > blob.get_u8("myKey")/4 && blob.getTickSinceCreated() > 70) // wait a little bit before aiming on match start
 			{
 				Vec2f aimposvar = Vec2f(0, 0);
 
@@ -605,14 +648,10 @@ void onTick(CBrain@ this)
 					//aimposvar = 0;
 				}
 
-
-
-
 				float mousexvar = aimposvar.x;
 				float mouseyvar = aimposvar.y; //Maths::Clamp(aimposvar.y / 10,	-25, 25);
 				blob.setAimPos(Vec2f_lerp(blob.getAimPos(), Vec2f(mousexvar, mouseyvar), 0.03));
 			}
-
 
 			// unpredictable movement
 			if (getGameTime() % blob.get_u8("myKey") == 0 && XORRandom(3) == 0)
@@ -640,10 +679,12 @@ void onTick(CBrain@ this)
 
 				if (blob.get_u8("moveover") == 1) // 1 == right
 				{
+					if (emotes) set_emote(blob, Emotes::right, 10);
 					blob.setKeyPressed(key_right, true);
 				}
 				else // 0 == left
 				{		
+					if (emotes) set_emote(blob, Emotes::left, 10);
 					blob.setKeyPressed(key_left, true);
 				}
 
@@ -661,28 +702,40 @@ void onTick(CBrain@ this)
 					blob.setKeyPressed(key_down, true);
 				}
 			}
-
-			//RandomTurn(blob);
 		}
 
-		if (getGameTime() > 60*30) // vehicles are now available
+		// decide to do something
+		if (blob.get_u16("secondarytarget") == 0) // we dont have a secondary target
 		{
-			
-			if (blob.get_u8("myKey") % 4 != 0) // only some bots are destined to use vehicles
-			{				
-				
-				CBlob@[] vehicles;
-				getBlobsByTag("vehicle", @vehicles);
+			// decide to capture a point
+			if (getGameTime() % 60 == 0) // every once in a while
+			{
+				CBlob@[] points;
+				getBlobsByName("pointflag", @points);
+				SortBlobsByDistance(blob, points);
 
-				if (vehicles.length > 0) // if there are vehicles
+				if (points.length > 0) // if there are flags on this map
 				{
-					
-					if (getGameTime() % 40 == 0) // every once in a while
+					if ((blob.get_Vec2f("generalenemylocation") - blob.getPosition()).getLength() > 640 || XORRandom(50) == 0) // if threat is relatively low
 					{
-						
-						if (blob.get_u16("secondarytarget") == 0) // we dont have a secondary target
+						//wip
+						blob.set_u16("secondarytarget", points[0].getNetworkID());
+					}
+				}
+			}
+
+			// decide to sit in a vehicle
+			if (getGameTime() > 60*30) // vehicles are now available
+			{
+				if (blob.get_u8("myKey") % 4 != 0) // only some bots are destined to use vehicles
+				{				
+					CBlob@[] vehicles;
+					getBlobsByTag("vehicle", @vehicles);
+
+					if (vehicles.length > 0) // if there are vehicles
+					{
+						if (getGameTime() % 30 == 0) // every once in a while
 						{
-							
 							// choose a random vehicle to get into
 							CBlob@ vehicle = vehicles[XORRandom(vehicles.length)];
 							if (vehicle !is null)
@@ -691,7 +744,7 @@ void onTick(CBrain@ this)
 								if (vehicle.getTeamNum() == blob.getTeamNum())
 								{
 									// is it nearby me?
-									if ((vehicle.getPosition() - blob.getPosition()).getLength() < 900.0f)
+									if ((vehicle.getPosition() - blob.getPosition()).getLength() < 850.0f)
 									{
 										if (!vehicle.hasTag("turret") && !vehicle.hasTag("gun") && !vehicle.hasTag("aerial") // isnt a turret or machine gun or plane
 										&& vehicle.getName() != "importantarmory") // dont drive this for now
@@ -706,7 +759,6 @@ void onTick(CBrain@ this)
 													if (occupied is null)
 													{
 														// drivers seat is empty
-
 														// add the vehicle to secondary target
 														if (vehicle.getNetworkID() != 0)
 														{
@@ -832,6 +884,7 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 	Vec2f targetVector = targetPos - mypos;
 	f32 targetDistance = targetVector.Length();
 	const s32 difficulty = blob.get_s32("difficulty");
+	InfantryInfo infantry;
 
 	// shoot the target
 	f32 distance;
@@ -840,29 +893,37 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 	{
 		if (targetDistance > 8.0f)
 		{
-			if (targetDistance < 460.0f)
+			//if (targetDistance < infantry.bullet_velocity * (infantry.bullet_lifetime*250)) // is in bullet range why tf not work
 			{
-				blob.setKeyPressed(key_action1, true);
-
-				if (blob.get_u8("myKey") % 13 == 0)
+				if (targetDistance < 460.0f)
 				{
-					blob.setKeyPressed(key_action2, true);
+					blob.setKeyPressed(key_action1, true);
+
+					if (blob.get_u8("myKey") % 13 == 0)
+					{
+						blob.setKeyPressed(key_action2, true);
+					}
+				}
+				else if (blob.get_u8("myKey") > 120 && targetDistance < 500.0f)
+				{
+					blob.setKeyPressed(key_action1, true);
+
+					if (blob.get_u8("myKey") % 2 == 0)
+					{
+						blob.setKeyPressed(key_action2, true);
+					}
 				}
 			}
-			else if (blob.get_u8("myKey") > 120 && targetDistance < 500.0f)
+			//else
 			{
-				blob.setKeyPressed(key_action1, true);
-
-				if (blob.get_u8("myKey") % 2 == 0)
-				{
-					blob.setKeyPressed(key_action2, true);
-				}
+				//if (emotes) set_emote(blob, Emotes::cry, 10);
 			}
 
 			if (target !is null)
 			{
+				//compensation = RangerParams::BULLET_VELOCITY;
 				blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
-									targetPos - Vec2f(0, targetDistance / 40.0f) + Vec2f(0.0f, 10 -XORRandom(17)) + target.getVelocity() * 5.5f,
+									targetPos - Vec2f(0, targetDistance / (40.0f)) + Vec2f(0.0f, 10 -XORRandom(17)) + target.getVelocity() * 5.5f,
 									mouse_mvspd));
 			}
 		}

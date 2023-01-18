@@ -6,7 +6,7 @@
 #include "Hitters.as";
 #include "PlayerRankInfo.as";
 
-const u8 MAX_BOTS = 8; // fills while server's pop is lesser than value
+const u8 MAX_BOTS = 12; // fills while server's pop is lesser than value
 
 ConfigFile cfg_playerexp;
 
@@ -624,7 +624,28 @@ shared class TDMCore : RulesCore
 
 	void AddPlayer(CPlayer@ player, u8 team = 0, string default_config = "")
 	{
-		TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), player.isBot() ? "revolver" : (XORRandom(512) >= 256 ? "revolver" : "revolver"));
+		array<string> classes = {
+		"revolver",
+		"ranger",
+		"shotgun",
+		"sniper",
+		"mp5"
+		};
+		
+		float exp = getRules().get_u32(player.getUsername() + "_exp");
+		int unlocked = 0;
+
+		// Calculate the exp required to reach each level
+		for (int i = 1; i <= 6; i++)
+		{
+			if (exp >= getExpToNextLevelShared(i)) unlocked ++;
+			else break;
+		}
+		unlocked = Maths::Min(unlocked, 4);
+		int index = Maths::Min(XORRandom(classes.length), unlocked);
+		string line = classes[index];
+
+		TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), line); //player.isBot() ? "revolver" : (XORRandom(512) >= 256 ? "revolver" : "revolver")
 		players.push_back(p);
 		ChangeTeamPlayerCount(p.team, 1);
 	}
@@ -1162,7 +1183,13 @@ const string[] names = {
 	"jumpy-froggy",
 	"bio-spark",
 	"burning-leo",
-	"knuckle-joe"
+	"knuckle-joe",
+	"sir-kibble",
+	"combat-cobra",
+	"strike-viper",
+	"commando-clown",
+	"klaus-cellerman",
+	"betel-goose"
 };
 
 string uppercaseFirstLetter(string &in str)
@@ -1224,7 +1251,7 @@ string getRandomCharName()
 	
 	if (hasNumbersAtEnd)
 	{
-		finalName = finalName+(XORRandom(10000));
+		finalName = finalName+(XORRandom(1000));
 	}
 
 	return finalName;
