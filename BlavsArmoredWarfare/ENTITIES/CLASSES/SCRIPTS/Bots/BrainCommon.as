@@ -223,10 +223,11 @@ void GoToPos(CBlob@ blob, Vec2f pos)
 			{
 				justmove = true;
 			}
-			else {
-				brain.SetSuggestedKeys();  // set walk keys here
+			else if (getGameTime() % 160 + blob.get_u8("mykey") < 120) {
+				//brain.SetSuggestedKeys();  // set walk keys here
+				
 			}
-			
+			justmove = true; //temp
 			justjump = true;
 		}
 		else
