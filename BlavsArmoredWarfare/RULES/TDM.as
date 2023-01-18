@@ -1113,7 +1113,7 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 		print("New player joined ----------- Username: " + player.getUsername() + " IP: " + player.server_getIP());
 	}
 }
-
+/*
 string[] hashes = {};
 
 void onBlobCreated( CRules@ this, CBlob@ blob )
@@ -1123,10 +1123,10 @@ void onBlobCreated( CRules@ this, CBlob@ blob )
 		hashes.push_back(blob.getName());
 	}
 }
-
+*/
 void onTick(CRules@ this)
 {
-	string[] checked;
+	/*string[] checked;
 	for (int i = 0; i < hashes.length; i++)
 	{
 		int duplicates = 0;
@@ -1147,7 +1147,7 @@ void onTick(CRules@ this)
 		if (duplicates > 25) printf("DUPLICATES OF "+hashes[i]+": "+duplicates);
 	}
 	string[] empty;
-	hashes = empty;
+	hashes = empty;*/
 
 	if (getGameTime() == 1)
 	{
