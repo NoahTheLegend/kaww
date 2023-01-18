@@ -96,7 +96,7 @@ void onRender(CRules@ this)
         GUI::SetFont("menu");
         GUI::DrawTextCentered("Mod is developed with big effort by Blav (Yeti5000707) and salty Snek (NoahTheLegend)", Vec2f(sMid, tlBox.y + 60), SColor(255, 255,255,0));
         GUI::DrawTextCentered("You may thank us or donate if you wish. https://discord.gg/55yueJWy7g", Vec2f(sMid, tlBox.y + 75), SColor(255, 255,255,0));
-        GUI::DrawTextCentered("Special thanks to contributors: Nevrotik, Skemonde, PURPLExeno, Goldy, GoldenGuy (hoster), petey5, ThinkAbout", Vec2f(sMid, tlBox.y + 92.5f), SColor(255, 255,255,0));
+        GUI::DrawTextCentered("Special thanks to contributors: Nevrotik, Skemonde, PURPLExeno, Goldy, GoldenGuy (hoster), petey5 and ThinkAbout!", Vec2f(sMid, tlBox.y + 92.5f), SColor(255, 255,255,0));
     } 
 
 	{
@@ -105,7 +105,7 @@ void onRender(CRules@ this)
 		+ "  * Ranks & Progression: Win, kill enemies or mine ore to open classes and perks!\n    Ranks and experience are bound to player and saved permanently\n"
 		+ "  * New perks: A set of perks with game-changing features - 'pay' something to get stronger abilities\n"
 		+ "  * Bots: Greatly written AI to fill server with small players count\n"
-        + "  * \n"
+        + "  * New blocks: Effective against explosions and shells - a good fair option for defensive gameplay\n"
         + "  * Most of bugs fixed: Common, rare and single-happening bugs are gone\n"
         + "  * New maps: enjoy a few new unique maps for TDM and default modes\n"
         + "  * Other: Small and different improvements, including QOL and balance\n";
