@@ -22,7 +22,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (caller is null) return;
 
-	if (caller.getHealth() < caller.getInitialHealth())
+	if (caller.getHealth() < caller.getInitialHealth()-0.1f)
 	{
 		CBitStream params;
 		params.write_u16(caller.getNetworkID());
