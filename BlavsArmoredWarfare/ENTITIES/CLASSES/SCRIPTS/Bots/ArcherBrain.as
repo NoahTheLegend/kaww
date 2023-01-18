@@ -1,6 +1,7 @@
 #define SERVER_ONLY
 
 #include "BrainCommon.as"
+//#include "InfantryCommon.as"
 #include "ArcherCommon.as"
 #include "RunnerHead.as"
 
@@ -96,6 +97,7 @@ void onTick(CBrain@ this)
 	if (blob.isAttached()) // vehicle logic
 	{
 		CBlob@ vehicle = getBlobByNetworkID(blob.get_u16("secondarytarget"));
+		CBlob@ tertiarytarget = getBlobByNetworkID(blob.get_u16("tertiarytarget"));
 		if (vehicle !is null)
 		{
 			// driving
@@ -167,34 +169,44 @@ void onTick(CBrain@ this)
 					}
 				}
 
-				if (vehicle.getHealth() < vehicle.getInitialHealth() / 2)
+				if (tertiarytarget is null)
 				{
-					repairsneeded = true;
-				}
-				else
-				{
-					if (shouldigo)
+					if (vehicle.getHealth() < vehicle.getInitialHealth() / 2)
 					{
-						if (vehicle.getHealth() < vehicle.getInitialHealth() / 3)
+						repairsneeded = true;
+					}
+					else
+					{
+						if (shouldigo)
 						{
-							repairsneeded = true;
-						}
-						else
-						{
-							if (blob.get_Vec2f("generalenemylocation") != Vec2f_zero)
+							if (vehicle.getHealth() < vehicle.getInitialHealth() / 3)
 							{
-								DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 200);
+								repairsneeded = true;
+							}
+							else
+							{
+								if (blob.get_Vec2f("generalenemylocation") != Vec2f_zero)
+								{
+									DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 200);
+								}
 							}
 						}
 					}
 				}
+				else{
+					repairsneeded = true;
+				}
 
 				if (repairsneeded)
 				{
-					CBlob@ storedtarget = getBlobByNetworkID(blob.get_u16("tertiarytarget"));
-					if (storedtarget !is null && storedtarget.getName() == "repairstation")
+					if (tertiarytarget !is null && tertiarytarget.getName() == "repairstation")
 					{
-						DriveToPos(blob, vehicle, storedtarget.getPosition(), 30);
+						DriveToPos(blob, vehicle, tertiarytarget.getPosition(), 20);
+						
+						if (vehicle.getHealth() == vehicle.getInitialHealth())// || XORRandom(400) == 0)
+						{
+							blob.set_u16("tertiarytarget", 0); // stop repairing
+						}
 					}
 					else
 					{
@@ -424,9 +436,6 @@ void onTick(CBrain@ this)
 		{
 			// do objective stuff?
 
-			
-			//return;
-
 			if (getGameTime() < 30 + blob.get_u8("myKey"))
 			{
 				// wait a moment before starting
@@ -523,10 +532,6 @@ void onTick(CBrain@ this)
 								AttachmentPoint@[] aps;
 								if (target.getAttachmentPoints(@aps))
 								{
-									for (uint i = 0; i < aps.length; i++)
-									{
-										//ap[i].getAttachmentPoints(@aps);
-									}
 									AttachmentPoint@ ap = aps[XORRandom(aps.length)];
 
 									if (ap.getOccupied() is null)
@@ -551,6 +556,7 @@ void onTick(CBrain@ this)
 							
 							if (choosen_seat !is null) // move to it / jump to it
 							{
+								
 								if (choosen_seat.getPosition().y + 30 > blob.getPosition().y)
 								{
 									blob.setKeyPressed(key_up, true);
@@ -864,8 +870,9 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 
 			if (target !is null)
 			{
+				//compensation = RangerParams::BULLET_VELOCITY;
 				blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
-									targetPos - Vec2f(0, targetDistance / 40.0f) + Vec2f(0.0f, 10 -XORRandom(17)) + target.getVelocity() * 5.5f,
+									targetPos - Vec2f(0, targetDistance / (40.0f)) + Vec2f(0.0f, 10 -XORRandom(17)) + target.getVelocity() * 5.5f,
 									mouse_mvspd));
 			}
 		}

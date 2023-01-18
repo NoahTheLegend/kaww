@@ -156,7 +156,15 @@ void DefaultChaseBlob(CBlob@ blob, CBlob @target)
 	{
 		if (state == CBrain::has_path)
 		{
-			brain.SetSuggestedKeys();  // set walk keys here
+			if (targetDistance < 300.0f)
+			{
+				//print("!@#");
+				brain.SetSuggestedKeys();  // set walk keys here
+			}
+			else
+			{
+				JustGo(blob, target);
+			}
 		}
 		else
 		{
