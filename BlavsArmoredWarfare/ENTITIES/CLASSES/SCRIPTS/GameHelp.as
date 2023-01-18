@@ -100,46 +100,6 @@ void onRender(CRules@ this)
         GUI::DrawTextCentered("Special thanks to contributors: Nevrotik, Skemonde, PURPLExeno, Goldy, GoldenGuy (hoster), petey5 and ThinkAbout!", Vec2f(sMid, tlBox.y + 92.5f), SColor(255, 255,255,0));
     } 
 
-    {
-        GUI::SetFont("normal");
-
-        Vec2f spawnInfo = Vec2f(0,0);
-        Vec2f marketInfo = Vec2f(0,0);
-        Vec2f armoryInfo = Vec2f(0,0);
-        Vec2f digMatsInfo = Vec2f(0,0);
-        Vec2f builderInfo = Vec2f(0,0);
-        Vec2f revolverInfo = Vec2f(0,0);
-        Vec2f rangerInfo = Vec2f(0,0);
-        Vec2f shotgunInfo = Vec2f(0,0);
-        Vec2f sniperInfo = Vec2f(0,0);
-        Vec2f medicInfo = Vec2f(0,0);
-        Vec2f rpgInfo = Vec2f(0,0);
-        Vec2f craftInfo = Vec2f(0,0);
-        Vec2f passengerInfo = Vec2f(0,0);
-        Vec2f gunnerInfo = Vec2f(0,0);
-        Vec2f mechanicInfo = Vec2f(0,0);
-        Vec2f flagInfo = Vec2f(0,0);
-
-        GUI::DrawTextCentered("Your spawn point\nSwitch perks or\nclass here", tlBox+spawnInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("Shop to buy\nsupplies or ammo\nCoins are gained\nwith time", tlBox+marketInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("A truck with\nextended variety\nof supplies.", tlBox+armoryInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("Dig materials\n", tlBox+digMatsInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("Produce scrap as builder.\nSupply your team and\nbuild defensives", tlBox+builderInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("Basic fighter and a\ngood tank crewmember", tlBox+revolverInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("Strong fighter with\aa good fire rate", tlBox+rangerInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("Deadly in short-range\n", tlBox+shotgunInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("", tlBox+sniperInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("", tlBox+medicInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("", tlBox+rpgInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("", tlBox+craftInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("", tlBox+passengerInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("", tlBox+gunnerInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("", tlBox+mechanicInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("", tlBox+flagInfo, SColor(255, 240,240,240));
-
-        GUI::SetFont("menu");
-    }
-
 	{
 		const string shiprektVersion = "Armored Warfare 2.0\n";
 		const string lastChangesInfo = "\nChanges:\n\n"
@@ -165,6 +125,44 @@ void onRender(CRules@ this)
 		//image
 		GUI::DrawIconByName("$HELP$", Vec2f(sMid - imageSize.x, tlBox.y + boxMargin + 10));
 	}
+
+    {
+        GUI::SetFont("normal");
+
+        Vec2f spawnInfo = Vec2f(325,147.5f);
+        Vec2f marketInfo = Vec2f(500,147.5f);
+        Vec2f armoryInfo = Vec2f(716,147.5f);
+        //Vec2f digMatsInfo = Vec2f(330,225);
+        Vec2f builderInfo = Vec2f(285,222.5f);
+        Vec2f revolverInfo = Vec2f(365,250);
+        Vec2f rangerInfo = Vec2f(435,250);
+        Vec2f shotgunInfo = Vec2f(507.5f,250);
+        Vec2f sniperInfo = Vec2f(575,250);
+        Vec2f medicInfo = Vec2f(650,250);
+        Vec2f rpgInfo = Vec2f(734,250);
+        Vec2f craftInfo = Vec2f(325,375);
+        Vec2f passengerInfo = Vec2f(430,385);
+        Vec2f gunnerInfo = Vec2f(500,350);
+        Vec2f mechanicInfo = Vec2f(560,385);
+        Vec2f flagInfo = Vec2f(700,385);
+
+        GUI::DrawTextCentered("Your spawn point\nSwitch class or\nperks here", tlBox+spawnInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Shop to buy\nsupplies or ammo\nYou gain money\nwith time", tlBox+marketInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("A truck with\nextended variety\nof supplies (requires scrap)", tlBox+armoryInfo, SColor(255, 240,240,240));
+        //GUI::DrawTextCentered("Dig materials and\nresupply forges", tlBox+digMatsInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Produce scrap as builder.\nSupply your team and\nbuild defensives", tlBox+builderInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Basic fighter\nA good tank\ncrewmember", tlBox+revolverInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Strong fighter\nGood fire rate", tlBox+rangerInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Short-range\nfighter, has\na shovel", tlBox+shotgunInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Long-range\nfighter, very\naccurate", tlBox+sniperInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Medic\nHas a small\namount of HP", tlBox+medicInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("A tank cannon\nwith legs, requires\nrockets as ammo", tlBox+rpgInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Craft vehicles with scrap", tlBox+craftInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Passenger seat", tlBox+passengerInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Tank cannoneer\nShells are affected by gravity", tlBox+gunnerInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Tank driver\nIs responsible for it\nDon't lose it", tlBox+mechanicInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Some gamemodes require\nteams to capture flags\nfor winning. In case of a tie\nthe team with bigger amount of\nflags wins the game!", tlBox+flagInfo, SColor(255, 240,240,240));
+    }
 	
 	GUI::SetFont("menu");
 	
