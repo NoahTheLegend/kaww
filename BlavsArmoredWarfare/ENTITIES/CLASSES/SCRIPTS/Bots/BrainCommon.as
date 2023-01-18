@@ -156,7 +156,15 @@ void DefaultChaseBlob(CBlob@ blob, CBlob @target)
 	{
 		if (state == CBrain::has_path)
 		{
-			brain.SetSuggestedKeys();  // set walk keys here
+			if (targetDistance < 300.0f)
+			{
+				//print("!@#");
+				brain.SetSuggestedKeys();  // set walk keys here
+			}
+			else
+			{
+				JustGo(blob, target);
+			}
 		}
 		else
 		{
@@ -215,10 +223,11 @@ void GoToPos(CBlob@ blob, Vec2f pos)
 			{
 				justmove = true;
 			}
-			else {
-				brain.SetSuggestedKeys();  // set walk keys here
+			else if (getGameTime() % 160 + blob.get_u8("mykey") < 120) {
+				//brain.SetSuggestedKeys();  // set walk keys here
+				
 			}
-			
+			justmove = true; //temp
 			justjump = true;
 		}
 		else
@@ -309,7 +318,7 @@ void SearchTarget(CBrain@ this, const bool seeThroughWalls = false, const bool s
 	CBlob @target = this.getTarget();
 
 	// search target if none
-	if (target is null || target.get_u32("can_spot") < getGameTime() || XORRandom(30) == 0)
+	if (target is null)// || target.get_u32("can_spot") < getGameTime() || XORRandom(30) == 0) // breaks logic
 	{
 		CBlob@ oldTarget = target;
 		@target = getNewTarget(this, blob, true, true);
@@ -448,14 +457,15 @@ void DriveToPos(CBlob@ blob, CBlob@ vehicle, Vec2f position, float dist)
 
 		bool vehicleislow = (vehicle.getHealth() < vehicle.getInitialHealth() / 3);
 
-		if (vehicle.getShape().vellen < (vehicleislow ? 0.07f : 0.35f))
+		if (vehicle.getShape().vellen < (vehicleislow ? 0.24f : 0.36f))
 		{
 			// hmm we haven't moved, are we stuck?
-			blob.add_u16("behaviortimer", vehicleislow ? 1 : 2);
+			blob.add_u16("behaviortimer", 2);
 			if (blob.get_u16("behaviortimer") > XORRandom(150)+10)
 			{
 				// we are stuck, try to unstuck
 				blob.set_string("behavior", "unstuckvehicle");
+				
 			}	
 		}
 	}
@@ -518,7 +528,6 @@ bool CompareBlobsByDistance(CBlob@ blob, CBlob@ a, CBlob@ b)
 
 void LocateGeneralEnemyDirection(CBlob@ blob)
 {
-	
 	CBlob@[] threats;
 	CBlob@[] enemythreats;
 	getBlobsByName("importantarmory", @threats);
@@ -540,5 +549,4 @@ void LocateGeneralEnemyDirection(CBlob@ blob)
 	CBlob@ chosenthreat = enemythreats[XORRandom(enemythreats.length)];
 	blob.set_Vec2f("generalenemylocation", chosenthreat.getPosition());
 	//print("the enemy threat is " + chosenthreat.getName());
-
 }
