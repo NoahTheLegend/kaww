@@ -318,14 +318,15 @@ void SearchTarget(CBrain@ this, const bool seeThroughWalls = false, const bool s
 	CBlob @target = this.getTarget();
 
 	// search target if none
-	if (target is null)// || target.get_u32("can_spot") < getGameTime() || XORRandom(30) == 0) // breaks logic
+	if (target is null)
 	{
 		CBlob@ oldTarget = target;
 		@target = getNewTarget(this, blob, true, true);
 		this.SetTarget(target);
 
-		if (target !is oldTarget)
+		if (target !is oldTarget && target.get_u32("can_spot") < getGameTime())
 		{
+			return;
 			onChangeTarget(blob, target, oldTarget);
 		}
 	}
