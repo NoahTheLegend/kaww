@@ -70,7 +70,7 @@ void onTick(CBrain@ this)
 	{
 		LocateGeneralEnemyDirection(blob);// lets figure out which direction we should attack
 	}
-
+	/*
 	if (isServer() && target !is null) // process only on server, for only server-side bot brain
 	{
 		CBlob@[] bushes;
@@ -95,7 +95,7 @@ void onTick(CBrain@ this)
 			}
 		}
 	}
-
+	*/
 	if (blob.isAttached()) // vehicle logic
 	{
 		CBlob@ vehicle = getBlobByNetworkID(blob.get_u16("secondarytarget"));
