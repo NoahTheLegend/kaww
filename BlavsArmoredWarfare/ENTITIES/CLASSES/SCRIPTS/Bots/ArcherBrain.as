@@ -712,12 +712,14 @@ void onTick(CBrain@ this)
 			{
 				CBlob@[] points;
 				getBlobsByName("pointflag", @points);
+				SortBlobsByDistance(blob, points);
 
 				if (points.length > 0) // if there are flags on this map
 				{
-					if ((blob.get_Vec2f("generalenemylocation") - blob.getPosition()).getLength() > 640) // if threat is relatively low
+					if ((blob.get_Vec2f("generalenemylocation") - blob.getPosition()).getLength() > 640 || XORRandom(50) == 0) // if threat is relatively low
 					{
-
+						//wip
+						blob.set_u16("secondarytarget", points[0].getNetworkID());
 					}
 				}
 			}
