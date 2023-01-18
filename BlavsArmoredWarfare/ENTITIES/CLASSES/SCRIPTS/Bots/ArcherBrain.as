@@ -90,7 +90,6 @@ void onTick(CBrain@ this)
 				else
 				{
 					target.Tag("disguised");
-					LoseTarget(this, target);
 					return;
 				}
 			}
@@ -724,7 +723,7 @@ void onTick(CBrain@ this)
 			}
 
 			// decide to sit in a vehicle
-			if (getGameTime() > 60*30) // vehicles are now available
+			if (getGameTime() > 60*30 || (isClient() && isServer())) // vehicles are now available
 			{
 				if (blob.get_u8("myKey") % 4 != 0) // only some bots are destined to use vehicles
 				{				
