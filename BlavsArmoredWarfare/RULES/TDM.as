@@ -6,7 +6,7 @@
 #include "Hitters.as";
 #include "PlayerRankInfo.as";
 
-const u8 MAX_BOTS = 8; // fills while server's pop is lesser than value
+const u8 MAX_BOTS = 5; // fills while server's pop is lesser than value
 
 ConfigFile cfg_playerexp;
 
