@@ -90,14 +90,14 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 	}
 	{
 		BuildBlock b(CMap::tile_scrap, "scrap_block", "$scrap_block$", "Scrap block\nReinforced block of stone, resistable to explosions and direct hits.");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(CMap::tile_cdirt, "cdirt_block", "$cdirt_block$", "Compacted dirt\nReinforced block of dirt, almost immune to explosions\nand bullets, can be built only on dirt walls.");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 30);
-		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
+		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 1);
 		blocks[0].push_back(b);
 	}
 	{
