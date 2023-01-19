@@ -295,6 +295,18 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		this.setVelocity(velocity * 0.96f);
 	}
 
+	if (blob.hasTag("flesh"))
+	{
+		if (blob.getPlayer() !is null)
+		{
+			// player is using bloodthirsty
+			if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+			{
+				dmg *= 1.20f; // take extra damage
+			}
+		}
+	}
+
 	if (dmg > 0.0f && !this.hasTag("rico"))
 	{
 		this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow, false);
