@@ -199,7 +199,7 @@ void Land(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return (this.getName() == blob.getName())
+	return (this.getName() == blob.getName() && !blob.hasTag("flesh"))
 		|| ((blob.getShape().isStatic() || blob.hasTag("player") || blob.hasTag("projectile")) && !blob.hasTag("parachute"));
 }
 
