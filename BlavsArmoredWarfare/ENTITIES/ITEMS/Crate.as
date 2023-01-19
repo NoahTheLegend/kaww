@@ -23,6 +23,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("getout");
 	this.addCommandID("stop unpack");
 	this.addCommandID("boobytrap");
+	this.Tag("trap");
 
 	string packed = this.get_string("packed");
 
