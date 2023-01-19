@@ -6,6 +6,7 @@
 bool showHelp = false;
 bool justJoined = true;
 bool mouseWasPressed1 = false;
+bool enable_help = true;
 
 const f32 boxMargin = 100.0f;
 const SColor tipsColor = SColor(255, 255, 255, 255);
@@ -33,13 +34,14 @@ void onInit(CRules@ this)
 void onTick(CRules@ this)
 {
     CPlayer@ player = getLocalPlayer();
-    if (player !is null && player.getBlob() !is null && player.getBlob().getTickSinceCreated() <= 1)
+    if (player !is null && player.getBlob() !is null && player.getBlob().getTickSinceCreated() <= 1 && enable_help)
     {
         if (getRules() !is null && getRules().get_u32(player.getUsername() + "_exp") < 25) showHelp = true;
     }
     CControls@ controls = getControls();
 	if (controls.isKeyJustPressed(KEY_F1))
 	{
+        if (enable_help) enable_help = false;
 		showHelp = !showHelp;
 		u_showtutorial = showHelp;
 		justJoined = false;
