@@ -208,6 +208,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage *= 1.75f; // take double damage
 		}
 	}
+	if (customData != Hitters::explosion && hitterBlob.getName() == "ballista_bolt") return damage * 2;
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.getName() == "grenade")
 	{
 		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
