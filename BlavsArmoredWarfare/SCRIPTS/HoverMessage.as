@@ -411,7 +411,7 @@ class ExpMessage : HoverMessage
 	{
 		ExpMessage@ message = cast<ExpMessage>(other);
 
-		if (name == message.name)
+		if (message !is null && name == message.name)
 		{
 			quantity += message.quantity;
 			return this;
