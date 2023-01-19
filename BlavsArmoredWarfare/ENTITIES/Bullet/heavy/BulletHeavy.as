@@ -1,11 +1,12 @@
 #include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "MakeDustParticle.as";
+#include "CustomBlocks.as";
 
 void onInit(CBlob@ this)
 {
-	if (!this.exists("bullet_damage_body")) { this.set_f32("bullet_damage_body", 0.33f); }
-	if (!this.exists("bullet_damage_head")) { this.set_f32("bullet_damage_head", 0.75f); }
+	if (!this.exists("bullet_damage_body")) { this.set_f32("bullet_damage_body", 0.25f); }
+	if (!this.exists("bullet_damage_head")) { this.set_f32("bullet_damage_head", 0.5f); }
 
 	this.Tag("projectile");
 	this.Tag("bullet");
@@ -18,7 +19,7 @@ void onInit(CBlob@ this)
 
 	this.SetMapEdgeFlags(u8(CBlob::map_collide_none | CBlob::map_collide_left | CBlob::map_collide_right | CBlob::map_collide_nodeath));
 
-	consts.net_threshold_multiplier = 1.0f;
+	consts.net_threshold_multiplier = 10.0f;
 }
 
 void onTick(CBlob@ this)
@@ -99,9 +100,9 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	bool isStrong = this.hasTag("strong");
 	TileType tile = map.getTile(end).type;
 
-	if (tile == CMap::tile_ground && XORRandom(100) < 5 || tile != CMap::tile_ground && XORRandom(100) < 15)
+	if ((isTileCompactedDirt(tile) && XORRandom(100)<=1) || ((tile == CMap::tile_ground || isTileScrap(tile))
+	&& XORRandom(100) <= 3) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 15))
 	{
-		
 		if (map.getSectorAtPosition(end, "no build") is null)
 		{
 			map.server_DestroyTile(end, isStrong ? 1.5f : 0.65f, this);
@@ -258,6 +259,11 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 	{
 		dmg = this.get_f32("bullet_damage_head");
 
+		if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Operator")
+		{
+			dmg *= 1.33f;
+		}
+
 		// hit helmet
 		if (blob.get_string("equipment_head") == "helmet")
 		{
@@ -289,6 +295,18 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		this.setVelocity(velocity * 0.96f);
 	}
 
+	if (blob.hasTag("flesh"))
+	{
+		if (blob.getPlayer() !is null)
+		{
+			// player is using bloodthirsty
+			if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+			{
+				dmg *= 1.20f; // take extra damage
+			}
+		}
+	}
+
 	if (dmg > 0.0f && !this.hasTag("rico"))
 	{
 		this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow, false);
@@ -302,7 +320,25 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		if (blob.getTeamNum() != this.getTeamNum()) return false;
 		return true;
 	}
-	
+
+	if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("friendly_bullet_pass"))
+	{
+		return false;
+	}
+
+	if (this.getTickSinceCreated() < 2 && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
+	{
+		return false;
+	}
+
+	if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("vehicle"))
+	{
+		this.IgnoreCollisionWhileOverlapped(blob, 10);
+		if (blob.hasTag("apc") || blob.hasTag("turret") || blob.hasTag("gun")) return (XORRandom(100) > 70);
+		else if (blob.hasTag("tank")) return (XORRandom(100) > 50);
+		else return true;
+	}
+
 	if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
 	{
 		return false;
@@ -319,7 +355,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 	
-	if (this.getTickSinceCreated() > 1 && blob.isAttached())
+	if ((this.getTickSinceCreated() > 1 || (blob.getTeamNum() != this.getTeamNum() && this.getTeamNum() < 2)) && blob.isAttached())
 	{
 		if (blob.hasTag("collidewithbullets")) return true;
 		if (XORRandom(9) == 0)
@@ -330,6 +366,12 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		if (point !is null && point.getOccupied() !is null && (point.getOccupied().getName() == "heavygun" || point.getOccupied().getName() == "gun") && blob.getTeamNum() != this.getTeamNum())
 			return true;
 	}
+
+	if (blob.getName() == "trap_block")
+	{
+		return blob.getShape().getConsts().collidable;
+	}
+
 
 	if (blob.hasTag("trap"))
 	{
@@ -352,26 +394,25 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return true;
 	}
 
-	if (blob.getName() == "wooden_platform")
+	if (blob.getName() == "wooden_platform" && blob.isCollidable())
 	{
-		//printf("enter");
 		f32 velx = this.getOldVelocity().x;
 		f32 vely = this.getOldVelocity().y;
 		f32 deg = blob.getAngleDegrees();
 
-		if (deg < 45.0f || deg > 315.0f && vely > 0.0f) //up		
+		if ((deg < 45.0f || deg > 315.0f) && vely > 0.0f) //up		
 		{
 			return true;
 		}
-		if (deg > 45.0f && deg < 135.0f && velx < 0.0f) //right
+		if ((deg > 45.0f && deg < 135.0f) && velx < 0.0f) //right
 		{
 			return true;
 		}
-		if (deg > 135.0f && deg < 225.0f && vely < 0.0f) //down
+		if ((deg > 135.0f && deg < 225.0f) && vely < 0.0f) //down
 		{
 			return true;
 		}
-		if (deg > 225.0f && deg < 315.0f && velx > 0.0f) //left
+		if ((deg > 225.0f && deg < 315.0f) && velx > 0.0f) //left
 		{
 			return true;
 		}
@@ -380,11 +421,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		//printf("velx "+velx);
 		//printf("vely "+vely);
 
-		return false;
-	}
-
-	if (this.getTickSinceCreated() < 2 && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
-	{
 		return false;
 	}
 

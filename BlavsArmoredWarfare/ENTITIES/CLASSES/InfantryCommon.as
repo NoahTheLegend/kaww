@@ -61,20 +61,6 @@ const f32 ENEMY_RANGE = 400.0f;
 // Show emotes?
 const bool USE_EMOTES = true;
 
-namespace Strategy
-{
-	enum strategy_type
-	{
-		idle = 0,
-		attack_blob,
-		goto_blob,
-		find_healing,
-		find_drill,
-		dodge_spike,
-		runaway
-	};
-};
-
 class InfantryInfo
 {
 	string classname; // case sensitive
@@ -102,7 +88,7 @@ class InfantryInfo
 	bool semiauto;
 	u8 burst_size; // bullets fired per click
 	u8 burst_rate; // ticks per bullet fired in a burst
-	s8 reload_time; // time to reload
+	s16 reload_time; // time to reload
 	u8 noreloadtimer; // time after each shot where you can't reload
 	u32 mag_size; // max bullets in mag
 	u8 delayafterfire; // time between shots 4
@@ -121,7 +107,7 @@ class InfantryInfo
 		class_hash 				= 234279893; // hash of the name
 		// DAMAGE
 		damage_body 			= 0.35f; // damage dealt to body
-		damage_head 			= 0.42f; // damage dealt on headshot
+		damage_head 			= 0.5f; // damage dealt on headshot
 		// SHAKE
 		recoil_x 				= 20.0f; // x shake (20)
 		recoil_y 				= 80.0f; // y shake (45)
@@ -142,7 +128,7 @@ class InfantryInfo
 		semiauto 				= false;
 		burst_size 				= 5; // bullets fired per click
 		burst_rate 				= 0; // ticks per bullet fired in a burst
-		reload_time 			= 90; // time to reload
+		reload_time 			= 80; // time to reload
 		noreloadtimer           = 0; // time after each shot where you can't reload
 		mag_size 				= 4; // max bullets in mag
 		delayafterfire 			= 20; // time between shots 4
@@ -190,7 +176,7 @@ namespace ShotgunParams
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 5; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s8 RELOAD_TIME 				= 80; // time to reload
+	const ::s16 RELOAD_TIME 				= 80; // time to reload
 	const ::u8 NORELOADTIMER 			= 10; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 4; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 15; // time between shots
@@ -205,7 +191,7 @@ namespace RangerParams
 {
 	const ::string CLASSNAME 			= "Ranger"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.375f; // damage dealt to body
+	const ::f32 DAMAGE_BODY 			= 0.385f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.65f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.9f; // walk
@@ -234,12 +220,12 @@ namespace RangerParams
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s8 RELOAD_TIME 				= 60; // time to reload
+	const ::s16 RELOAD_TIME 				= 60; // time to reload
 	const ::u8 NORELOADTIMER 			= 0; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 30; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 4; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 28.5f; // speed that bullets fly
+	const ::f32 BULLET_VELOCITY 		= 30.0f; // speed that bullets fly
 	const ::f32 BULLET_LIFETIME 		= 2.75f; // in seconds, time for bullet to die
 	const ::s8 BULLET_PEN 				= 1; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
@@ -278,7 +264,7 @@ namespace Mp5Params
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s8 RELOAD_TIME 				= 65; // time to reload
+	const ::s16 RELOAD_TIME 				= 65; // time to reload
 	const ::u8 NORELOADTIMER 			= 0; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 30; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 3; // time between shots
@@ -322,7 +308,7 @@ namespace RevolverParams
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s8 RELOAD_TIME 				= 64; // time to reload
+	const ::s16 RELOAD_TIME 			= 64; // time to reload
 	const ::u8 NORELOADTIMER 			= 3; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 6; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
@@ -351,7 +337,7 @@ namespace SniperParams
 	const ::f32 RECOIL_Y 				= 140.0f; // y shake (45)
 	const ::f32 RECOIL_LENGTH 			= 750.0f; // how long to recoil (?)
 	// RECOIL
-	const ::f32 RECOIL_FORCE 			= 0.03f; // amount to push player
+	const ::f32 RECOIL_FORCE 			= 0.00f; // amount to push player
 	const ::u8 RECOIL_CURSOR 			= 13; // amount to raise mouse pos
 	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
@@ -359,14 +345,14 @@ namespace SniperParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 30; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 30; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_CAP 			= 20; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 20; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s8 RELOAD_TIME 				= 58; // time to reload
+	const ::s16 RELOAD_TIME 				= 58; // time to reload
 	const ::u8 NORELOADTIMER 			= 10; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 5; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 38; // time between shots
@@ -505,7 +491,7 @@ void getRecoilStats( int blobNameHash, float &out recoil_x, float &out recoil_y,
 void getWeaponStats( int blobNameHash,
 	u8 &out inaccuracy_cap, u8 &out inaccuracy_pershot, 
 	bool &out semiauto, u8 &out burst_size,	u8 &out burst_rate,
-	s8 &out reload_time, u8 &out noreloadtimer, u32 &out mag_size, u8 &out delayafterfire, u8 &out randdelay,
+	s16 &out reload_time, u8 &out noreloadtimer, u32 &out mag_size, u8 &out delayafterfire, u8 &out randdelay,
 	float &out bullet_velocity, float &out bullet_lifetime, s8 &out bullet_pen, bool &out emptyshellonfire)
 {
 	switch (blobNameHash)
@@ -702,7 +688,6 @@ void getMovementStats( int blobNameHash, bool isSprinting,
 		}
 		break;
 	}
-	
 }
 
 void InAirLogic( CBlob@ this, u8 inaccuracyCap )
@@ -711,7 +696,7 @@ void InAirLogic( CBlob@ this, u8 inaccuracyCap )
 	{
 		u8 inaccuracyFinal = Maths::Min(this.get_u8("inaccuracy") + 6, inaccuracyCap);
 		this.set_u8("inaccuracy", inaccuracyFinal);
-		this.setVelocity(Vec2f(this.getVelocity().x*0.92f, this.getVelocity().y));
+		this.setVelocity(Vec2f(this.getVelocity().x*0.90f, this.getVelocity().y));
 	}
 }
 

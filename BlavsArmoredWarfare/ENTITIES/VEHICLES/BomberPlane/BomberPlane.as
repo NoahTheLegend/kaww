@@ -47,6 +47,7 @@ void onInit(CBlob@ this)
 	
 	this.Tag("vehicle");
 	this.Tag("aerial");
+	this.Tag("plane");
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetEmitSound("Aircraft_Loop.ogg");
@@ -99,10 +100,23 @@ void onTick(CBlob@ this)
 		if (pilot !is null)
 		{
 			Vec2f dir = pilot.getPosition() - pilot.getAimPos();
+			if (this.get_u32("take_control") > getGameTime())
+			{
+				dir = this.isFacingLeft() ? Vec2f(-8.0f,0) : Vec2f(8.0f,0);
+			}
 			const f32 len = dir.Length();
 			dir.Normalize();
 			dir.RotateBy(this.isFacingLeft() ? 30 : -30); // make it fly directly to cursor, works weird vertically
-			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, 0.05f);
+			f32 mod = 0.05f;
+			CPlayer@ p = pilot.getPlayer();
+			if (p !is null)
+			{
+				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+				{
+					mod = 0.1f;
+				}
+			}
+			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, mod);
 
 			// this.SetFacingLeft(dir.x > 0);
 			this.SetFacingLeft(this.getVelocity().x < -0.1f);
@@ -131,11 +145,11 @@ void onTick(CBlob@ this)
 			{
 				this.set_f32("velocity", Maths::Min(SPEED_MAX, this.get_f32("velocity") + 2.5f));
 			}
-			
-			if (pressed_s) 
+			else if (this.get_f32("velocity") > 0.0f)
 			{
 				this.set_f32("velocity", Maths::Min(SPEED_MAX, this.get_f32("velocity") - 0.50f));
 			}
+			else this.set_f32("velocity", 0);
 
 			if (ap_pilot.isKeyPressed(key_action3) && this.get_u32("lastDropTime") < getGameTime()) 
 			{
@@ -164,11 +178,22 @@ void onTick(CBlob@ this)
 							CBlob@ item = inv.getItem(0);
 							u32 quantity = item.getQuantity();
 
-							if (item.maxQuantity > 8)
+							if (item.getName() != "mat_smallbomb")
 							{ 
-								// To prevent spamming 
-								this.server_PutOutInventory(item);
-								item.setPosition(this.getPosition());
+								CBlob@ b = server_CreateBlob("paracrate", this.getTeamNum(), this.getPosition()+Vec2f(0,8));
+								if (b !is null)
+								{
+									for (u8 i = 0; i < inv.getItemsCount(); i++)
+									{
+										CBlob@ put = inv.getItem(i);
+										if (put is null) continue;
+										if (put.getName() == "mat_smallbomb") continue;
+										
+										this.server_PutOutInventory(put);
+										b.server_PutInInventory(put);
+										i--;
+									}
+								}
 							}
 							else
 							{
@@ -240,14 +265,25 @@ void onTick(CBlob@ this)
 	}
 
 	const f32 hmod = 1.0f;
-	const f32 v = this.get_f32("velocity");
+	f32 v = this.get_f32("velocity");
+	//printf(""+v);
 	Vec2f d = this.get_Vec2f("direction");
+	if (v < 48.0f && this.isOnGround())
+	{
+		d = Vec2f(d.x, d.y/10);
+	}
 	// Vec2f grav = Vec2f(0, 1) * 4 * (SPEED_MAX - v);
 	
 	this.AddForce(-d * v * hmod);
 
-	if (this.getVelocity().Length() > 1.50f && v > 0.25f) this.setAngleDegrees((this.isFacingLeft() ? 180 : 0) - this.getVelocity().Angle());
-	else this.setAngleDegrees(0);
+	if (this.getVelocity().Length() > 0.5f && v > 0.25f) this.setAngleDegrees((this.isFacingLeft() ? 180 : 0) - this.getVelocity().Angle());
+	else if (this.getAngleDegrees() > 25 && this.getAngleDegrees() < 335 && this.get_f32("velocity") < 1.0f)
+	{
+		this.setVelocity(Vec2f(0,0));
+		this.set_f32("velocity", 0);
+		this.setAngleDegrees(0);
+		this.set_u32("take_control", getGameTime()+5);
+	}
 	
 	if (getNet().isClient())
 	{
@@ -263,7 +299,28 @@ void onTick(CBlob@ this)
 
 void onTick(CSprite@ this)
 {
-	if ((this.getBlob().get_u32("fireDelay") - (shootDelay - 1)) < getGameTime()) this.getSpriteLayer("tracer").SetVisible(false);
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+	
+	if (blob.hasTag("rotated") && !blob.isOnGround())
+	{
+		blob.set_u32("rotate", getGameTime()+20);
+		blob.Untag("rotated");
+	}
+	if (blob.get_u32("rotate") > getGameTime())
+	{
+		f32 diff = blob.get_u32("rotate") - getGameTime();
+		this.ResetTransform();
+		this.RotateBy(blob.isFacingLeft() ? diff : -diff, Vec2f(0,0));
+	}
+	else this.ResetTransform();
+	if (blob.isOnGround())
+	{
+		this.ResetTransform();
+		this.RotateBy(blob.isFacingLeft() ? 10 : -10, Vec2f(0,0));
+		blob.Tag("rotated");
+	}
+	if ((blob.get_u32("fireDelay") - (shootDelay - 1)) < getGameTime()) this.getSpriteLayer("tracer").SetVisible(false);
 }
 
 void onDie(CBlob@ this)
@@ -399,7 +456,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
-		return damage *= 0.6f;
+		if (hitterBlob.hasTag("plane_bullet")) return damage * 0.25f;
+		return damage * (hitterBlob.hasTag("strong") ? 0.75f : 0.6f);
 	}
 	return damage;
 }

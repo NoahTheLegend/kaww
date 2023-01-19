@@ -14,8 +14,6 @@ void onInit(CRules@ this)
         GUI::LoadFont("AveriaSerif-Bold_32", AveriaSerif, 32, true);
     }
 
-
-
     onRestart(this);
 }
 
@@ -70,7 +68,7 @@ void onTick(CRules@ this)
             else
             {
                 // showdown
-                this.set_string("bannertext", "Reduce the enemy team's lives to 0 to win!");
+                this.set_string("bannertext", "Kill the enemy team until they run out of respawns!");
             }
         }
 

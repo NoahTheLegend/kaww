@@ -5,12 +5,13 @@
 #include "SlaveCommon.as";
 #include "ThrowCommon.as";
 #include "RunnerCommon.as";
-#include "Help.as";
 #include "Requirements.as"
 #include "BuilderHittable.as";
 #include "PlacementCommon.as";
 #include "ParticleSparks.as";
 #include "MaterialCommon.as";
+#include "HoverMessage.as";
+#include "PlayerRankInfo.as";
 
 //can't be <2 - needs one frame less for gathering infos
 const s32 hit_frame = 2;
@@ -26,19 +27,22 @@ void onInit(CBlob@ this)
 	this.Tag("player");
 	this.Tag("flesh");
 	this.Tag("3x2");
+	this.set_u32("can_spot", 0);
 
 	HitData hitdata;
 	this.set("hitdata", hitdata);
 
 	this.addCommandID("pickaxe");
+	this.addCommandID("dig_exp");
+	this.addCommandID("aos_effects");
+	this.addCommandID("levelup_effects");
+	this.addCommandID("bootout");
 
 	CShape@ shape = this.getShape();
 	shape.SetRotationsAllowed(false);
 	shape.getConsts().net_threshold_multiplier = 0.5f;
 
 	this.set_Vec2f("inventory offset", Vec2f(0.0f, 160.0f));
-
-	SetHelp(this, "help self action2", "builder", getTranslatedString("$Pick$Dig/Chop  $KEY_HOLD$$RMB$"), "", 3);
 
 	this.getCurrentScript().runFlags |= Script::tick_not_attached;
 	this.getCurrentScript().removeIfTag = "dead";
@@ -54,13 +58,55 @@ void onSetPlayer(CBlob@ this, CPlayer@ player)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (isServer()) //update bots' logic
+	{
+		if (this.hasTag("disguised"))
+		{
+			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
+		}
+	}
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
-			return damage*0.05f;
+			return damage*0.1f;
 		else if (customData == Hitters::arrow)
 			return damage*0.5f;
 		else return 0;
+	}
+	if (this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage")
+	{
+		if (customData == Hitters::fire)
+		{
+			return damage * 2;
+		}
+	}
+	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
+	{
+		if (this.hasBlob("aceofspades", 1))
+		{
+			this.TakeBlob("aceofspades", 1);
+
+			this.server_SetHealth(0.01f);
+
+			if (this.getPlayer() !is null)
+			{
+				CBitStream params;
+				this.SendCommand(this.getCommandID("aos_effects"), params);
+			}
+
+			return damage = 0;
+		}
+	}
+	if (this.getPlayer() !is null)
+	{
+		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Death Incarnate")
+		{
+			damage *= 2.0f; // take double damage
+		}
+		else if ((hitterBlob.getName() == "grenade" || customData == Hitters::explosion) && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+		{
+			damage *= 1.75f; // take double damage
+		}
 	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") && hitterBlob.getName() != "grenade")
 	{
@@ -103,20 +149,11 @@ void onTick(CBlob@ this)
 		return;
 
 	const bool ismyplayer = this.isMyPlayer();
+	ManageParachute(this);
 
 	if (ismyplayer && getHUD().hasMenus())
 	{
 		return;
-	}
-
-	if (this.get_u8("hitmarker") > 0)
-	{
-		this.set_u8("hitmarker", this.get_u8("hitmarker")-1);
-
-		if (this.get_u8("hitmarker") == 20)
-		{
-			this.set_u8("hitmarker", 0);
-		}
 	}
 
 	// activate/throw
@@ -130,6 +167,36 @@ void onTick(CBlob@ this)
 			if (carried is null || !carried.hasTag("temp blob"))
 			{
 				client_SendThrowOrActivateCommand(this);
+			}
+		}
+	}
+
+	CPlayer@ p = this.getPlayer();
+	if (isServer() && p !is null)
+	{
+		if (getGameTime() % 60 == 0
+			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+		{
+			CInventory@ inv = this.getInventory();
+			if (inv !is null)
+			{
+				int xslots = inv.getInventorySlots().x;
+				int yslots = inv.getInventorySlots().y;
+				CBlob@ item = inv.getItem(xslots * yslots - 1);
+				
+				if (item !is null) // theres an item in the last slot
+				{
+					if (!this.hasBlob("aceofspades", 1)) // but we have the ace already
+					{
+						item.server_RemoveFromInventories();
+					}
+				}
+				else if (!this.hasBlob("aceofspades", 1))  // theres no item in the last slot
+				{
+					// give ace
+					CBlob@ b = server_CreateBlob("aceofspades", -1, this.getPosition());
+					if (b !is null) this.server_PutInInventory(b);
+				}
 			}
 		}
 	}
@@ -234,6 +301,31 @@ bool RecdHitCommand(CBlob@ this, CBitStream@ params)
 						sparks(tilepos, attackVel.Angle(), 1.0f);
 					}
 				}
+
+				if ((map.isTileThickStone(type) && XORRandom(6) == 0) or (map.isTileStone(type) && XORRandom(10) == 0) or (map.isTileGold(type) && XORRandom(5) == 0))
+				{
+					CRules@ rules = getRules();
+					CPlayer@ player = this.getPlayer();
+
+					if (player !is null)
+					{
+						if (isServer())
+						{
+							// give exp
+							int exp_reward = 1;
+							//if (rules.get_string(player.getUsername() + "_perk") == "Death Incarnate")
+							//{
+							//	exp_reward *= 3;
+							//}
+							CBitStream params;
+							params.write_u32(exp_reward);
+							this.server_SendCommandToPlayer(this.getCommandID("dig_exp"), params, player);
+							//rules.add_u32(player.getUsername() + "_exp", exp_reward);
+							//rules.Sync(player.getUsername() + "_exp", true);
+						}
+									// sometimes makes a null blob not found error! test this future me
+					}
+				}
 			}
 		}
 	}
@@ -290,6 +382,92 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			warn("error when recieving pickaxe command");
 		}
+	}
+	else if (cmd == this.getCommandID("dig_exp"))
+	{
+		CRules@ rules = getRules();
+		u32 exp_reward;
+		if (!params.saferead_u32(exp_reward)) return;
+
+		add_message(ExpMessage(exp_reward));
+
+		if (this.getPlayer() !is null)
+		{
+			rules.add_u32(this.getPlayer().getUsername() + "_exp", exp_reward);
+			CheckRankUps(rules, // do reward coins and sfx
+				rules.get_u32(this.getPlayer().getUsername() + "_exp"), // player new exp
+				this);	
+		}
+	}
+	else if (cmd == this.getCommandID("aos_effects"))
+	{
+		if (this.isMyPlayer()) // are we on server?
+		{
+			this.getSprite().PlaySound("FatesFriend.ogg", 1.2);
+			SetScreenFlash(42,   255,   150,   150,   0.28);
+		}
+		else
+		{
+			this.getSprite().PlaySound("FatesFriend.ogg", 2.0);
+		}
+	}
+	else if (cmd == this.getCommandID("levelup_effects"))
+	{
+		u8 level;
+		if (!params.saferead_u8(level)) return;
+		string rank;
+		if (!params.saferead_string(rank)) return;
+
+		CRules@ rules = getRules();
+		CPlayer@ player = this.getPlayer();
+		if (player is null) return;
+		// flash screen
+        if (player.isMyPlayer())
+        {
+            SetScreenFlash(30,   255,   255,   255,   2.3);
+        }
+        
+        // play sound
+        if (isClient()) this.getSprite().PlaySound("LevelUp", 1.6f, 1.0f);
+        if (isServer())
+        {
+            // coins
+            server_DropCoins(this.getPosition(), 50);
+        }
+
+        //if (isServer()) //client
+        {
+            // chat message
+            if (player.isMyPlayer()) {
+                client_AddToChat("You've been promoted to " + rank.toLower() + "!", SColor(255, 50, 150, 20));
+            }
+            else {
+                client_AddToChat(player.getCharacterName() + " has been promoted to " + rank.toLower() + "!", SColor(255, 50, 140, 20));
+            }
+            
+            if (this !is null)
+            {
+                // create floating rank
+                CParticle@ p = ParticleAnimated("Ranks", this.getPosition() + Vec2f(8.5f,-14), Vec2f(0,-0.9), 0.0f, 1.0f, 0, level - 1, Vec2f(32, 32), 0, 0, true);
+                if(p !is null)
+                {
+                    p.collides = false;
+                    p.Z = 1000;
+                    p.timeout = 2; // this shit doesnt work
+                }
+
+                // create particle
+                ParticleAnimated("LevelUpParticle", this.getPosition(), this.getVelocity() - Vec2f(0,1.2), 0.0f, 1.0f, 3, 0.2f, true);
+            }
+        }
+        
+        // adjust to the current level
+        rules.set_string(player.getUsername() + "_last_lvlup", rank);
+	}
+	else if (cmd == this.getCommandID("bootout"))
+	{
+		if (isClient()) this.getSprite().PlaySound("bridge_open", 1.0f, 1.25f);
+		if (isServer()) this.server_DetachFromAll();
 	}
 }
 
@@ -620,8 +798,44 @@ bool canHit(CBlob@ this, CBlob@ b, Vec2f tpos, bool extra = true)
 	return true;
 }
 
+void ManageParachute( CBlob@ this )
+{
+	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder())
+	{	
+		if (this.hasTag("parachute"))
+		{
+			this.Untag("parachute");
+
+			for (uint i = 0; i < 50; i ++)
+			{
+				Vec2f vel = getRandomVelocity(90.0f, 3.5f + (XORRandom(10) / 10.0f), 25.0f) + Vec2f(0, 2);
+				ParticlePixel(this.getPosition() - Vec2f(0, 30) + getRandomVelocity(90.0f, 10 + (XORRandom(20) / 10.0f), 25.0f), vel, getTeamColor(this.getTeamNum()), true, 119);
+			}
+		}
+	}
+	
+	if (this.hasTag("parachute"))
+	{
+		this.set_u32("no_climb", getGameTime()+2);
+		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
+		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.55f : 0.73)));
+	}
+}
+
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
+	// Deploy parachute!
+	if (detached.hasTag("aerial"))
+	{
+		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 150.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
+		{
+			if (!this.hasTag("parachute"))
+			{
+				Sound::Play("/ParachuteOpen", detached.getPosition());
+				this.Tag("parachute");
+			}
+		}
+	}
 	// ignore collision for built blob
 	BuildBlock[][]@ blocks;
 	if (!this.get("blocks", @blocks))
@@ -691,10 +905,5 @@ void onAddToInventory(CBlob@ this, CBlob@ blob)
 	{
 		blob.server_Die();
 		blob.Untag("temp blob");
-	}
-
-	if (this.isMyPlayer() && blob.hasTag("material"))
-	{
-		SetHelp(this, "help inventory", "builder", "$Help_Block1$$Swap$$Help_Block2$           $KEY_HOLD$$KEY_F$", "", 3);
 	}
 }

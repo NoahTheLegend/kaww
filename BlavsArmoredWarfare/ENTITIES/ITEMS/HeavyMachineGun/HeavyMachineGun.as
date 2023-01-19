@@ -94,6 +94,7 @@ void onInit(CBlob@ this)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
+	attached.Tag("mgunner");
 	if (!attached.hasTag("has machinegun")) return;
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
 	if (cage !is null)
@@ -104,6 +105,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
+	detached.Untag("mgunner");
 	if (this.isAttached()) return;
 
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
@@ -166,6 +168,15 @@ void onTick(CBlob@ this)
 				tur.server_AttachTo(this, ap);
 			}
     	}
+	}
+
+	if (isClient() && this.isAttached())
+	{
+		CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
+		if (cage !is null)
+		{
+			cage.SetVisible(false);
+		}
 	}
 
 	VehicleInfo@ v;
@@ -295,20 +306,28 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 		offset.RotateBy(angle);
 		bullet.setPosition(pos + offset * 0.2f);
 
-		this.add_f32("overheat", this.get_f32("overheat_per_shot"));
+		float overheat_mod = 1.0f;
 		
 		CBlob@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER").getOccupied();
 		if (gunner !is null)
 		{
-			if (gunner.getPlayer() !is null)
+			CPlayer@ p = gunner.getPlayer();
+			if (p !is null)
 			{
-				bullet.SetDamageOwnerPlayer(gunner.getPlayer());
+				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+				{
+					overheat_mod = 0.5f;
+				}
+
+				bullet.SetDamageOwnerPlayer(p);
 			}
 		}
 		else
 		{
 			return;
 		}
+
+		this.add_f32("overheat", this.get_f32("overheat_per_shot") * overheat_mod);
 
 		bullet.IgnoreCollisionWhileOverlapped(this);
 		bullet.server_setTeamNum(this.getTeamNum());

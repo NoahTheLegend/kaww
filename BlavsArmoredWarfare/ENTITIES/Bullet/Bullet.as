@@ -1,6 +1,7 @@
 #include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "MakeDustParticle.as";
+#include "CustomBlocks.as";
 
 void onInit(CBlob@ this)
 {
@@ -17,7 +18,7 @@ void onInit(CBlob@ this)
 
 	this.SetMapEdgeFlags(u8(CBlob::map_collide_none | CBlob::map_collide_left | CBlob::map_collide_right | CBlob::map_collide_nodeath));
 
-	consts.net_threshold_multiplier = 1.0f;
+	consts.net_threshold_multiplier = 10.0f;
 }
 
 void onTick(CBlob@ this)
@@ -97,7 +98,16 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	// chance to break a block. Will not touch "strong" tag for now.
 	TileType tile = map.getTile(end).type;
 	bool isStrong = this.hasTag("strong");
-	if (tile == CMap::tile_ground && XORRandom(100) < 2 || tile != CMap::tile_ground && XORRandom(100) < 8)
+	if (this.hasTag("shrapnel"))
+	{
+		if (tile == CMap::tile_wood)
+		{
+			map.server_DestroyTile(end, XORRandom(4)==0 ? 15.0f : 7.5f, this);
+			this.server_Die();
+		}
+	}
+	if (!isTileCompactedDirt(tile) && (((tile == CMap::tile_ground || isTileScrap(tile))
+	&& XORRandom(100) <= 3) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 10)))
 	{
 		if (map.getSectorAtPosition(end, "no build") is null)
 		{
@@ -148,10 +158,10 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 		Sound::Play("/BulletDirt" + XORRandom(3), this.getPosition(), 1.7f, 0.85f + XORRandom(25) * 0.01f);
 
-		CParticle@ p = ParticleAnimated("SparkParticle.png", this.getPosition(), Vec2f(0,0),  0.0f, 1.0f, 2+XORRandom(2), 0.0f, false);
+		CParticle@ p = ParticleAnimated("SparkParticle.png", this.getPosition(), Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(2), 0.0f, false);
 		if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
 
-		{ CParticle@ p = ParticleAnimated("BulletChunkParticle.png", end, Vec2f(0.5f - XORRandom(100)*0.01f,-0.5), 0.0f, 0.55f + XORRandom(50)*0.01f, 22+XORRandom(3), 0.2f, true);
+		{ CParticle@ p = ParticleAnimated("BulletChunkParticle.png", end, Vec2f(0.5f - XORRandom(100)*0.01f,-0.5), XORRandom(360), 0.55f + XORRandom(50)*0.01f, 22+XORRandom(3), 0.2f, true);
 		if (p !is null) { p.lighting = true; }}
 
 		u16 impact_angle = 33;
@@ -196,116 +206,159 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		{
 			if (isServer()) this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 0.75f : 0.25f, Hitters::builder);
 		}
-		// play sound
-		if (blob.hasTag("flesh"))
-		{
-			if (isClient() && XORRandom(100) < 60)
+		else{
+			// play sound
+			if (blob.hasTag("flesh"))
 			{
-				sprite.PlaySound("Splat.ogg");
+				if (isClient() && XORRandom(100) < 60)
+				{
+					sprite.PlaySound("Splat.ogg");
+				}
+			}
+			else
+			{
+				CParticle@ p = ParticleAnimated("SparkParticle.png", hit_position, Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(5), 0.0f, false);
+				if (p !is null)
+				{
+					p.diesoncollide = true;
+					p.fastcollision = true;
+					p.lighting = false;
+					p.Z = 200.0f;
+				}
 			}
 		}
-	}
 
-	if (isServer() && this.getTeamNum() != blob.getTeamNum() && (blob.getName() == "wooden_platform" || blob.hasTag("door")))
-	{
-		if (blob.getName() != "stone_door")
+
+		if (isServer() && this.getTeamNum() != blob.getTeamNum() && (blob.getName() == "wooden_platform" || blob.hasTag("door")))
 		{
-			// destroy doors. Will not touch "strong" tag for now.
-			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 1.25f : 0.15f, Hitters::builder);
-			this.server_Die();
-		}
-	}
-
-	CParticle@ p = ParticleAnimated("SparkParticle.png", hit_position, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
-	if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
-
-	if (blob.hasTag("vehicle") && !this.hasTag("rico"))
-	{
-		this.Tag("dead");
-
-		if (isClient() && XORRandom(101) < (can_pierce ? 20 : 35))
-		{
-			Vec2f velr = this.getVelocity()/(XORRandom(4)+2.5f);
-			velr += Vec2f(0.0f, -3.0f);
-			velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
-
-			ParticlePixel(this.getPosition(), velr, SColor(255, 255, 255, 0), true);
-		}
-
-		if (!can_pierce)
-		{
-			this.Tag("rico");
-			Sound::Play("/BulletRico" + (XORRandom(4) + 4), this.getPosition(), 1.4f, 0.85f + XORRandom(45) * 0.01f);
-			this.setVelocity(this.getVelocity() * 1.05f);
-			this.AddForce(Vec2f(3.5f-XORRandom(7), 5.0f-XORRandom(10)));
-		}
-		else
-		{ 
-			Vec2f pos = this.getPosition() + Vec2f(this.getOldVelocity().x * 0.65f, 0.0f);
-			pos += Vec2f(0.0f, this.getOldVelocity().y * 0.65f);
-
-			CParticle@ p = ParticleAnimated("PingParticle.png", pos, Vec2f(0,0),  0.0f, 0.75f + XORRandom(4) * 0.10f, 2, 0.0f, false);
-			if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
-
-			sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
-			
-			this.server_Die();
-		}
-
-		this.server_SetTimeToDie(0.4);
-	}
-	
-	if (blob.hasTag("flesh") && hit_position.y < blob.getPosition().y - 3.2f)
-	{
-		dmg = this.get_f32("bullet_damage_head");
-
-		// hit helmet
-		if (blob.get_string("equipment_head") == "helmet")
-		{
-			dmg *= 0.45;
-
-			if (XORRandom(100) < 25)
+			if (blob.getName() != "stone_door")
 			{
-				this.Tag("rico");
+				// destroy doors. Will not touch "strong" tag for now.
+				this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 1.25f : 0.15f, Hitters::builder);
+				this.server_Die();
+			}
+		}
 
-				Sound::Play("/BulletRico" + XORRandom(4), this.getPosition(), 1.2f, 0.7f + XORRandom(60) * 0.01f);
+		if (blob.hasTag("vehicle") && !this.hasTag("rico"))
+		{
+			this.Tag("dead");
 
-				Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
+			if (isClient() && XORRandom(101) < (can_pierce ? 20 : 35))
+			{
+				Vec2f velr = this.getVelocity()/(XORRandom(4)+2.5f);
+				velr += Vec2f(0.0f, -3.0f);
 				velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 
 				ParticlePixel(this.getPosition(), velr, SColor(255, 255, 255, 0), true);
-				this.server_SetTimeToDie(0.35);
+			}
 
-				dmg = 0;
+			if (!can_pierce)
+			{
+				this.Tag("rico");
+				Sound::Play("/BulletRico" + (XORRandom(4) + 4), this.getPosition(), 1.4f, 0.85f + XORRandom(45) * 0.01f);
+				this.setVelocity(this.getVelocity() * 1.05f);
+				this.AddForce(Vec2f(3.5f-XORRandom(7), 5.0f-XORRandom(10)));
+
+				CParticle@ p = ParticleAnimated("PingParticle.png", hit_position, Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(5), 0.0f, false);
+				if (p !is null)
+				{
+					p.diesoncollide = true;
+					p.fastcollision = true;
+					p.lighting = false;
+					p.Z = 200.0f;
+				}
+			}
+			else
+			{ 
+				Vec2f pos = this.getPosition() + Vec2f(this.getOldVelocity().x * 0.65f, 0.0f);
+				pos += Vec2f(0.0f, this.getOldVelocity().y * 0.65f);
+
+				CParticle@ p = ParticleAnimated("PingParticle.png", pos, Vec2f(0,0), XORRandom(360), 0.75f + XORRandom(4) * 0.10f, 3, 0.0f, false);
+				if (p !is null)
+				{
+					p.diesoncollide = true;
+					p.fastcollision = true;
+					p.lighting = false;
+					p.Z = 200.0f;
+				}
+
+				sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
+				
+				this.server_Die();
+			}
+
+			this.server_SetTimeToDie(0.4);
+		}
+		
+		if (blob.hasTag("flesh") && hit_position.y < blob.getPosition().y - 3.2f)
+		{
+			dmg = this.get_f32("bullet_damage_head");
+
+			if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Operator")
+			{
+				dmg *= 1.33f;
+			}
+
+			// hit helmet
+			if (blob.get_string("equipment_head") == "helmet")
+			{
+				dmg *= 0.45;
+
+				if (XORRandom(100) < 25)
+				{
+					this.Tag("rico");
+
+					Sound::Play("/BulletRico" + XORRandom(4), this.getPosition(), 1.2f, 0.7f + XORRandom(60) * 0.01f);
+
+					Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
+					velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+
+					ParticlePixel(this.getPosition(), velr, SColor(255, 255, 255, 0), true);
+					this.server_SetTimeToDie(0.35);
+
+					dmg = 0;
+				}
 			}
 		}
-	}
 
-	if (!this.hasTag("strong"))
-	{
-		int creationTicks = this.getTickSinceCreated();
-		if (creationTicks > 20) // less dmg offscreen
+		if (!this.hasTag("strong"))
 		{
-			dmg *= 0.75f;
+			int creationTicks = this.getTickSinceCreated();
+			if (creationTicks > 20) // less dmg offscreen
+			{
+				dmg *= 0.75f;
+			}
+			else if  (creationTicks > 14)
+			{
+				dmg *= 0.5f;
+			}
 		}
-		else if  (creationTicks > 14)
+
+		if (!blob.hasTag("weakprop"))
 		{
-			dmg *= 0.5f;
+			this.server_Die();
 		}
-	}
+		else
+		{
+			this.setVelocity(velocity * 0.96f);
+		}
 
-	if (!blob.hasTag("weakprop"))
-	{
-		this.server_Die();
-	}
-	else
-	{
-		this.setVelocity(velocity * 0.96f);
-	}
+		if (blob.hasTag("flesh"))
+		{
+			if (blob.getPlayer() !is null)
+			{
+				// player is using bloodthirsty
+				if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+				{
+					dmg *= 1.20f; // take extra damage
+				}
+			}
+		}
 
-	if (dmg > 0.0f && !this.hasTag("rico"))
-	{
-		this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow, false);
+		if (dmg > 0.0f && !this.hasTag("rico"))
+		{
+			this.server_Hit(blob, hit_position, velocity, dmg, Hitters::arrow, false);
+		}
 	}
 }
 
@@ -313,10 +366,28 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (blob.hasTag("always bullet collide"))
 	{
-		if (blob.getTeamNum() == this.getTeamNum()) return false;
+		if (blob.getTeamNum() != this.getTeamNum()) return false;
 		return true;
 	}
-	// too many tag checks?
+
+	if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("friendly_bullet_pass"))
+	{
+		return false;
+	}
+
+	if (this.getTickSinceCreated() < 2 && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
+	{
+		return false;
+	}
+
+	if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("vehicle"))
+	{
+		this.IgnoreCollisionWhileOverlapped(blob, 10);
+		if (blob.hasTag("apc") || blob.hasTag("turret") || blob.hasTag("gun")) return (XORRandom(100) > 70);
+		else if (blob.hasTag("tank")) return (XORRandom(100) > 50);
+		else return true;
+	}
+	
 	if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
 	{
 		return false;
@@ -332,17 +403,22 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
 		return false;
 	}
-
-	if (this.getTickSinceCreated() > 1 && blob.isAttached())
+	
+	if ((this.getTickSinceCreated() > 1 || blob.getTeamNum() != this.getTeamNum()) && blob.isAttached())
 	{
 		if (blob.hasTag("collidewithbullets")) return true;
+		if (XORRandom(9) == 0)
+		{
+			return true;
+		}
 		AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
 		if (point !is null && point.getOccupied() !is null && (point.getOccupied().getName() == "heavygun" || point.getOccupied().getName() == "gun") && blob.getTeamNum() != this.getTeamNum())
 			return true;
+	}
 
-		AttachmentPoint@ point2 = blob.getAttachments().getAttachmentPointByName("DRIVER");
-		if (point2 !is null && point2.getOccupied() !is null && (point2.getOccupied().getName() == "motorcycle"))
-			return true;
+	if (blob.getName() == "trap_block")
+	{
+		return blob.getShape().getConsts().collidable;
 	}
 
 	if (blob.hasTag("trap"))
@@ -356,7 +432,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
-	if (blob.hasTag("blocks bullet"))
+	if (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())
 	{
 		return true;
 	}
@@ -366,42 +442,35 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return true;
 	}
 
-	if (blob.getName() == "wooden_platform")
+	if (blob.getName() == "wooden_platform" && blob.isCollidable())
 	{
 		f32 velx = this.getOldVelocity().x;
 		f32 vely = this.getOldVelocity().y;
 		f32 deg = blob.getAngleDegrees();
 
-		if (deg < 45.0f || deg > 315.0f && vely > 0.0f) //up		
+		if ((deg < 45.0f || deg > 315.0f) && vely > 0.0f) //up		
 		{
 			return true;
 		}
-		if (deg > 45.0f && deg < 135.0f && velx < 0.0f) //right
+		if ((deg > 45.0f && deg < 135.0f) && velx < 0.0f) //right
 		{
 			return true;
 		}
-		if (deg > 135.0f && deg < 225.0f && vely < 0.0f) //down
+		if ((deg > 135.0f && deg < 225.0f) && vely < 0.0f) //down
 		{
 			return true;
 		}
-		if (deg > 225.0f && deg < 315.0f && velx > 0.0f) //left
+		if ((deg > 225.0f && deg < 315.0f) && velx > 0.0f) //left
 		{
 			return true;
 		}
+
+		//printf("deg "+deg);
+		//printf("velx "+velx);
+		//printf("vely "+vely);
 
 		return false;
 	}
-
-	if (this.getTickSinceCreated() < 2 && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
-	{
-		return false;
-	}
-
-	if (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())
-	{
-		return this.getTickSinceCreated() > 1;
-	}
-
 
 	if (blob.hasTag("destructable"))
 	{
@@ -421,6 +490,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if (blob.hasTag("projectile") || this.hasTag("rico"))
 	{
 		return false;
+	}
+
+	if (blob.hasTag("blocks bullet"))
+	{
+		return true;
 	}
 
 	bool check = this.getTeamNum() != blob.getTeamNum();

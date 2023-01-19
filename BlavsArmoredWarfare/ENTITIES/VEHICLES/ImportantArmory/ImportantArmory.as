@@ -7,6 +7,7 @@
 #include "Costs.as"
 #include "StandardRespawnCommand.as"
 #include "StandardControlsCommon.as"
+#include "PlayerRankInfo.as"
 
 // Armory logic
 
@@ -15,6 +16,10 @@ void onInit(CBlob@ this)
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
 	this.set_u16("extra_no_heal", 15);
+	if (isServer())
+	{
+		if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), 0);
+	}
 
 	Vehicle_Setup(this,
 	              5000.0f, // move speed  //103
@@ -132,7 +137,7 @@ void onInit(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
@@ -150,14 +155,14 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	this.set_bool("shop available", true);
 
-
 	if (!canSeeButtons(this, caller)) return;
 
 	// button for runner
 	// create menu for class change
-	if (canChangeClass(this, caller) && caller.getTeamNum() == this.getTeamNum())
+	if (caller.getTeamNum() == this.getTeamNum())
 	{
-		caller.CreateGenericButton("$change_class$", Vec2f(8.5, 0), this, buildSpawnMenu, getTranslatedString("Swap Class"));
+		caller.CreateGenericButton("$change_class$", Vec2f(0, 0), this, buildSpawnMenu, getTranslatedString("Swap Class"));
+		caller.CreateGenericButton("$change_perk$", Vec2f(0, -10), this, buildPerkMenu, getTranslatedString("Switch Perk"));
 	}
 }
 
@@ -248,7 +253,7 @@ void onDie(CBlob@ this)
 		getRules().SetTeamWon(team);
 		getRules().SetCurrentState(GAME_OVER);
 		CTeam@ teamis = getRules().getTeam(team);
-		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
+		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
 	}
 }
 
@@ -284,7 +289,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (blob !is null)
 	{
-		if (blob.hasTag("material") && !blob.isAttached() && !blob.isInInventory())
+		if (blob.hasTag("material") && !blob.hasTag("no_armory_pickup") && !blob.isAttached() && !blob.isInInventory())
 		{
 			if (isServer()) this.server_PutInInventory(blob);
 			else this.getSprite().PlaySound("BridgeOpen.ogg", 1.0f);
@@ -331,6 +336,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 	if (cmd == this.getCommandID("shop made item"))
 	{
+		if (this.get_u32("next_tick") > getGameTime()) return;
+		this.set_u32("next_tick", getGameTime()+1);
 		this.getSprite().PlaySound("/ArmoryBuy.ogg");
 
 		if (!getNet().isServer()) return; /////////////////////// server only past here
@@ -354,6 +361,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (hitterBlob.getTeamNum() != this.getTeamNum())
+	{
+		if (isServer())
+		{
+			if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), getGameTime()+150);
+		}
+	}
 	if (hitterBlob.getName() == "missile_javelin" || hitterBlob.getName() == "ballista_bolt")
 	{
 		return damage * 1.25f;
@@ -362,9 +376,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 0.5f;
 	}
-	if (hitterBlob.hasTag("bullet") && hitterBlob.hasTag("strong"))
+	if (hitterBlob.hasTag("bullet"))
 	{
-		return damage *= 1.5f;
+		if (hitterBlob.hasTag("plane_bullet")) return damage * 0.25f;
+		else if (hitterBlob.hasTag("strong")) return damage *= 1.5f;
+		return damage;
 	}
 	return damage;
 }

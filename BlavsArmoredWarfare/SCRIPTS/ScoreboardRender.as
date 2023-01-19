@@ -1,60 +1,21 @@
-#include "ScoreboardCommon.as";
+ #include "ScoreboardCommon.as";
 #include "Accolades.as";
 #include "ColoredNameToggleCommon.as";
+#include "PlayerRankInfo.as";
 
 CPlayer@ hoveredPlayer;
 Vec2f hoveredPos;
 
 int hovered_accolade = -1;
-int hovered_age = -1;
-int hovered_tier = -1;
-bool draw_age = false;
-bool draw_tier = false;
+int hovered_rank = -1;
 
 float scoreboardMargin = 52.0f;
 float scrollOffset = 0.0f;
-float scrollSpeed = 4.0f;
-float maxMenuWidth = 700;
+float scrollSpeed = 5.0f;
+float maxMenuWidth = 600;
 float screenMidX = getScreenWidth()/2;
 
 bool mouseWasPressed2 = false;
-
-string[] age_description = {
-	"New Player - Welcome them to the game!",
-	//first month
-	"This player has 1 to 2 weeks of experience",
-	"This player has 2 to 3 weeks of experience",
-	"This player has 3 to 4 weeks of experience",
-	//first year
-	"This player has 1 to 2 months of experience",
-	"This player has 2 to 3 months of experience",
-	"This player has 3 to 6 months of experience",
-	"This player has 6 to 9 months of experience",
-	"This player has 9 to 12 months of experience",
-	//cake day
-	"Cake Day - it's this player's KAG Birthday!",
-	//(gap in the sheet)
-	"", "", "", "", "", "",
-	//established player
-	"This player has 1 year of experience",
-	"This player has 2 years of experience",
-	"This player has 3 years of experience",
-	"This player has 4 years of experience",
-	"This player has 5 years of experience",
-	"This player has 6 years of experience",
-	"This player has 7 years of experience",
-	"This player has 8 years of experience",
-	"This player has 9 years of experience",
-	"This player has over a decade of experience"
-};
-
-string[] tier_description = {
-	"", //f2p players, no description
-	"This player is a Squire Supporter",
-	"This player is a Knight Supporter",
-	"This player is a Royal Guard Supporter",
-	"This player is a Round Table Supporter"
-};
 
 //returns the bottom
 float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CTeam@ team, Vec2f emblem)
@@ -62,15 +23,15 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	if (players.size() <= 0 || team is null)
 		return topleft.y;
 
-
 	CRules@ rules = getRules();
 	Vec2f orig = topleft; //save for later
 
-	f32 lineheight = 16;
-	f32 padheight = 6;
+	f32 lineheight = 18;
+	f32 padheight = 7;
 	f32 stepheight = lineheight + padheight;
 	Vec2f bottomright(Maths::Min(getScreenWidth() - 100, screenMidX+maxMenuWidth), topleft.y + (players.length + 5.5) * stepheight);
 	GUI::DrawPane(topleft, bottomright, team.color);
+	
 
 	//offset border
 	topleft.x += stepheight;
@@ -83,27 +44,9 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(getTranslatedString(team.getName()), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Players: {PLAYERCOUNT}").replace("{PLAYERCOUNT}", "" + players.length), Vec2f(bottomright.x - 400, topleft.y), SColor(0xffffffff));
 
-	topleft.y += stepheight * 2;
+	topleft.y += stepheight * 1.5;
 
-	const int accolades_start = 770;
-	const int age_start = accolades_start + 80;
-
-	draw_age = false;
-	for(int i = 0; i < players.length; i++) {
-		if (players[i].getRegistrationTime() > 0) {
-			draw_age = true;
-			break;
-		}
-	}
-
-	draw_tier = false;
-	for(int i = 0; i < players.length; i++) {
-		if (players[i].getSupportTier() > 0) {
-			draw_tier = true;
-			break;
-		}
-	}
-	const int tier_start = (draw_age ? age_start : accolades_start) + 70;
+	const int accolades_start = 700;
 
 	//draw player table header
 	GUI::DrawText(getTranslatedString("Player"), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
@@ -114,14 +57,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(getTranslatedString("Assists"), Vec2f(bottomright.x - 120, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 50, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Accolades"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
-	if(draw_age)
-	{
-		GUI::DrawText(getTranslatedString("Age"), Vec2f(bottomright.x - age_start, topleft.y), SColor(0xffffffff));
-	}
-	if(draw_tier)
-	{
-		GUI::DrawText(getTranslatedString("Tier"), Vec2f(bottomright.x - tier_start, topleft.y), SColor(0xffffffff));
-	}
+	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 92, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 0.5f;
 
@@ -195,6 +131,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
                 if (p.getBlob().getName() == "shotgun") frame = 3;
                 if (p.getBlob().getName() == "sniper") frame = 4;
                 if (p.getBlob().getName() == "mp5") frame = 5;
+				//if (p.getBlob().getName() == "gl") frame = 7;
             }
 			framesize.Set(16, 16);
 		}
@@ -221,7 +158,6 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 				playername = username;
 				clantag = "";
 			}
-
 		}
 
 		//head icon
@@ -248,7 +184,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		s32 ping_in_ms = s32(p.getPing() * 1000.0f / 30.0f);
 
 		//how much room to leave for names and clantags
-		float name_buffer = 56.0f;
+		float name_buffer = 57.0f;
 		Vec2f clantag_actualsize(0, 0);
 
 		//render the player + stats
@@ -267,142 +203,41 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			//draw name alone
 			GUI::DrawText(playername, topleft + Vec2f(name_buffer, 0), namecolour);
 		}
-
-		//draw account age indicator
-		if (draw_age)
+	
+		float exp = 0;
+		// load exp
+		if (p !is null)
 		{
-			int regtime = p.getRegistrationTime();
-			if (regtime > 0)
-			{
-				int reg_month = Time_Month(regtime);
-				int reg_day = Time_MonthDate(regtime);
-				int reg_year = Time_Year(regtime);
-
-				int days = Time_DaysSince(regtime);
-
-				int age_icon_start = 32;
-				int icon = 0;
-				//less than a month?
-				if (days < 28)
-				{
-					int week = days / 7;
-					icon = week;
-				}
-				else
-				{
-					//we use 30 day "months" here
-					//for simplicity and consistency of badge allocation
-					int months = days / 30;
-					if (months < 12)
-					{
-						switch(months) {
-							case 0:
-							case 1:
-								icon = 0;
-								break;
-							case 2:
-								icon = 1;
-								break;
-							case 3:
-							case 4:
-							case 5:
-								icon = 2;
-								break;
-							case 6:
-							case 7:
-							case 8:
-								icon = 3;
-								break;
-							case 9:
-							case 10:
-							case 11:
-							default:
-								icon = 4;
-								break;
-						}
-						icon += 4;
-					}
-					else
-					{
-						//figure out birthday
-						int month_delta = Time_Month() - reg_month;
-						int day_delta = Time_MonthDate() - reg_day;
-						int birthday_delta = -1;
-
-						if (month_delta < 0 || month_delta == 0 && day_delta < 0)
-						{
-							birthday_delta = -1;
-						}
-						else if (month_delta == 0 && day_delta == 0)
-						{
-							birthday_delta = 0;
-						}
-						else
-						{
-							birthday_delta = 1;
-						}
-
-						//check if its cake day
-						if (birthday_delta == 0)
-						{
-							icon = 9;
-						}
-						else
-						{
-							//check if we're in the extra "remainder" days from using 30 month days
-							if(days < 366)
-							{
-								//(9 months badge still)
-								icon = 8;
-							}
-							else
-							{
-								//years delta
-								icon = (Time_Year() - reg_year) - 1;
-								//before or after birthday?
-								if (birthday_delta == -1)
-								{
-									icon -= 1;
-								}
-								//ensure sane
-								icon = Maths::Clamp(icon, 0, 9);
-								//shift line
-								icon += 16;
-							}
-						}
-					}
-				}
-
-				float x = bottomright.x - age_start + 8;
-				float extra = 8;
-				GUI::DrawIcon("AccoladeBadges", age_icon_start + icon, Vec2f(16, 16), Vec2f(x, topleft.y), 0.5f, p.getTeamNum());
-
-				if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
-				{
-					hovered_age = icon;
-				}
-			}
-
+			exp = getRules().get_u32(p.getUsername() + "_exp");
 		}
 
-		//draw support tier
-		if(draw_tier)
+		//draw rank level
+		int level = 1;
+		string rank = RANKS[0];
+
+		// Calculate the exp required to reach each level
+		for (int i = 1; i <= RANKS.length; i++)
 		{
-			int tier = p.getSupportTier();
-
-			if(tier > 0)
+			int expToNextLevel = getExpToNextLevel(level);
+			if (exp >= expToNextLevel)
 			{
-				int tier_icon_start = 15;
-				float x = bottomright.x - tier_start + 8;
-				float extra = 8;
-				GUI::DrawIcon("AccoladeBadges", tier_icon_start + tier, Vec2f(16, 16), Vec2f(x, topleft.y), 0.5f, p.getTeamNum());
-
-				if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
-				{
-					hovered_tier = tier;
-				}
+				level = i + 1;
+				rank = RANKS[Maths::Min(i, RANKS.length-1)];
 			}
+			else
+			{
+				// The current level has been reached
+				break;
+			}
+		}
 
+		float x = bottomright.x - accolades_start - 80;
+		float extra = 8;
+		GUI::DrawIcon("Ranks", level - 1, Vec2f(32, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
+
+		if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
+		{
+			hovered_rank = level - 1;
 		}
 
 		//render player accolades
@@ -518,14 +353,17 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 
 void onRenderScoreboard(CRules@ this)
 {
-	//sort players
+	//sort players by exp (rank)
 	CPlayer@[] blueplayers;
 	CPlayer@[] redplayers;
 	CPlayer@[] spectators;
 	for (u32 i = 0; i < getPlayersCount(); i++)
 	{
 		CPlayer@ p = getPlayer(i);
-		f32 kdr = getKDR(p);
+
+		float exp = 0;
+		exp = this.get_u32(p.getUsername() + "_exp");
+
 		bool inserted = false;
 		if (p.getTeamNum() == this.getSpectatorTeamNum())
 		{
@@ -538,7 +376,7 @@ void onRenderScoreboard(CRules@ this)
 		{
 			for (u32 j = 0; j < blueplayers.length; j++)
 			{
-				if (getKDR(blueplayers[j]) < kdr)
+				if (this.get_u32(blueplayers[j].getUsername() + "_exp") < exp)
 				{
 					blueplayers.insert(j, p);
 					inserted = true;
@@ -548,13 +386,12 @@ void onRenderScoreboard(CRules@ this)
 
 			if (!inserted)
 				blueplayers.push_back(p);
-
 		}
 		else
 		{
 			for (u32 j = 0; j < redplayers.length; j++)
 			{
-				if (getKDR(redplayers[j]) < kdr)
+				if (this.get_u32(redplayers[j].getUsername() + "_exp") < exp)
 				{
 					redplayers.insert(j, p);
 					inserted = true;
@@ -564,9 +401,7 @@ void onRenderScoreboard(CRules@ this)
 
 			if (!inserted)
 				redplayers.push_back(p);
-
 		}
-
 	}
 
 	//draw board
@@ -588,11 +423,10 @@ void onRenderScoreboard(CRules@ this)
 
 	//(reset)
 	hovered_accolade = -1;
-	hovered_age = -1;
-	hovered_tier = -1;
+	hovered_rank = -1;
 
 	//draw the scoreboards
-
+	
 	if (localTeam == 0)
 		topleft.y = drawScoreboard(localPlayer, blueplayers, topleft, this.getTeam(0), Vec2f(0, 0));
 	else
@@ -666,36 +500,31 @@ void onRenderScoreboard(CRules@ this)
 
 	drawPlayerCard(hoveredPlayer, hoveredPos);
 
-	drawHoverExplanation(hovered_accolade, hovered_age, hovered_tier, Vec2f(getScreenWidth() * 0.5, topleft.y));
+	drawHoverExplanation(hovered_accolade, hovered_rank, Vec2f(getScreenWidth() * 0.5, topleft.y));
 
 	mouseWasPressed2 = controls.mousePressed2; 
 }
 
-void drawHoverExplanation(int hovered_accolade, int hovered_age, int hovered_tier, Vec2f centre_top)
+void drawHoverExplanation(int hovered_accolade, int hovered_rank, Vec2f centre_top)
 {
 	if( //(invalid/"unset" hover)
 		(hovered_accolade < 0
 		 || hovered_accolade >= accolade_description.length) &&
-		(hovered_age < 0
-		 || hovered_age >= age_description.length) &&
-		(hovered_tier < 0
-		 || hovered_tier >= tier_description.length)
+		(hovered_rank < 0
+		 || hovered_rank >= RANKS.length)
 	) {
 		return;
 	}
 
 	string desc = getTranslatedString(
-		(hovered_accolade >= 0) ?
-			accolade_description[hovered_accolade] :
-			hovered_age >= 0 ?
-				age_description[hovered_age] :
-				tier_description[hovered_tier]
+		(hovered_accolade >= 0) ? accolade_description[hovered_accolade] : RANKS[hovered_rank]
 	);
 
 	Vec2f size(0, 0);
 	GUI::GetTextDimensions(desc, size);
 
-	Vec2f tl = centre_top - Vec2f(size.x / 2, 0);
+	CControls@ controls = getControls();
+	Vec2f tl = controls.getMouseScreenPos() + Vec2f(30,30); //centre_top - Vec2f(size.x / 2, 0);
 	Vec2f br = tl + size;
 
 	//margin
@@ -703,7 +532,7 @@ void drawHoverExplanation(int hovered_accolade, int hovered_age, int hovered_tie
 	tl -= expand;
 	br += expand;
 
-	GUI::DrawPane(tl, br, SColor(0xffffffff));
+	GUI::DrawPane(tl, br + Vec2f(4,0), SColor(0xffffffff));
 	GUI::DrawText(desc, tl + expand, SColor(0xffffffff));
 }
 

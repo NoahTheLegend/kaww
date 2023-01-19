@@ -21,7 +21,7 @@ void onInit(CSprite@ this)
 			int[] frames = {14, 15};
 			bed.animation.AddFrames(frames);
 		}
-		bed.SetOffset(Vec2f(-2, 4));
+		bed.SetOffset(Vec2f(-2, 8));
 		bed.SetVisible(true);
 	}
 
@@ -33,7 +33,7 @@ void onInit(CSprite@ this)
 			int[] frames = {14, 15};
 			bed2.animation.AddFrames(frames);
 		}
-		bed2.SetOffset(Vec2f(-2, -7));
+		bed2.SetOffset(Vec2f(-2, -3));
 		bed2.SetVisible(true);
 	}
 
@@ -50,7 +50,7 @@ void onInit(CSprite@ this)
 		zzz.SetVisible(false);
 	}
 
-	CSpriteLayer@ backpack = this.addSpriteLayer("backpack", "Kwartier.png", 16, 16);
+	CSpriteLayer@ backpack = this.addSpriteLayer("backpack", "Kwartier.png", 9, 16);
 	if (backpack !is null)
 	{
 		{
@@ -62,6 +62,21 @@ void onInit(CSprite@ this)
 		backpack.SetVisible(false);
 	}
 
+	CSpriteLayer@ lantern = this.addSpriteLayer("lantern", "Kwartier.png", 8, 16);
+	if (lantern !is null)
+	{
+		Animation@ anim = lantern.addAnimation("light", 4, true);
+		if (anim !is null)
+		{
+			int[] frames = {32,33,34};
+			anim.AddFrames(frames);
+			lantern.SetOffset(Vec2f(-12, 4));
+			lantern.SetVisible(true);
+			lantern.SetFrameIndex(0);
+			lantern.SetAnimation(anim);
+		}
+	}
+
 	this.SetEmitSound("MigrantSleep.ogg");
 	this.SetEmitSoundPaused(true);
 	this.SetEmitSoundVolume(0.5f);
@@ -69,8 +84,6 @@ void onInit(CSprite@ this)
 
 void onInit(CBlob@ this)
 {
-	this.set_TileType("background tile", CMap::tile_wood_back);
-
 	this.getSprite().SetZ(-50); //background
 	this.getShape().getConsts().mapCollisions = false;
 	this.addCommandID("shop made item");
@@ -248,40 +261,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	bool isServer = (getNet().isServer());
 
-	if (cmd == this.getCommandID("shop made item"))
-	{
-		this.getSprite().PlaySound("/ChaChing.ogg");
-		u16 caller, item;
-		if (!params.saferead_netid(caller) || !params.saferead_netid(item))
-		{
-			return;
-		}
-		string name = params.read_string();
-		{
-			CBlob@ callerBlob = getBlobByNetworkID(caller);
-			if (callerBlob is null)
-			{
-				return;
-			}
-			if (name == "beer")
-			{
-				// TODO: gulp gulp sound
-				if (isServer)
-				{
-					callerBlob.server_Heal(beer_amount);
-				}
-			}
-			else if (name == "meal")
-			{
-				this.getSprite().PlaySound("/Eat.ogg");
-				if (isServer)
-				{
-					callerBlob.server_SetHealth(callerBlob.getInitialHealth());
-				}
-			}
-		}
-	}
-	else if (cmd == this.getCommandID("rest"))
+	if (cmd == this.getCommandID("rest"))
 	{
 		u16 caller_id;
 		if (!params.saferead_netid(caller_id))

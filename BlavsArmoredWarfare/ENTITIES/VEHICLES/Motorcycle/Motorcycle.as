@@ -9,6 +9,8 @@ void onInit(CBlob@ this)
 	this.Tag("shootseat");
 	this.Tag("weak vehicle");
 	this.Tag("engine_can_get_stuck");
+	this.Tag("pass_60sec");
+	this.Tag("friendly_bullet_pass");
 
 	this.set_f32("max_angle_diff", 1.25f);
 
@@ -29,11 +31,6 @@ void onInit(CBlob@ this)
 	{
 		return;
 	}
-
-	Vehicle_SetupGroundSound(this, v, "TechnicalTruckEngine",  // movement sound
-	                         0.7f, // movement sound volume modifier   0.0f = no manipulation
-	                         1.2f // movement sound pitch modifier     0.0f = no manipulation
-	                        );
 
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(10.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 

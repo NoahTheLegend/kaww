@@ -13,7 +13,6 @@ const f32 thrust = 1000.00f;
 
 void onInit(CBlob@ this)
 {
-	this.set_string("custom_explosion_sound", "bigbomb_explosion.ogg");
 	this.set_bool("map_damage_raycast", true);
 	this.set_bool("UPF_Skin", false);
 	this.set_u32("duration", 0);
@@ -373,44 +372,6 @@ bool doesCollideWithBlob( CBlob@ this, CBlob@ blob )
 	return false;
 }
 
-void GetButtonsFor(CBlob@ this, CBlob@ caller)
-{
-	Vec2f buttonPos;
-	buttonPos = Vec2f(-8, 2);
-	if (caller.getTeamNum() == this.getTeamNum())
-	{
-		CBlob@ carried = caller.getCarriedBlob();
-		if (carried !is null)
-		{
-			if (this.get_bool("music") == false)
-			{
-				if(carried.getName() == "musicdisc")
-				{
-					u16 carried_netid = carried.getNetworkID();
-		
-					CBitStream params;
-					params.write_u16(carried_netid);
-					
-					caller.CreateGenericButton("$musicdisc$", buttonPos, this, this.getCommandID("play_music"), "Make it play funny music.", params);
-				}
-			} else 
-			if(this.get_bool("music") == true){
-				if(carried.getName() == "wrench")
-					caller.CreateGenericButton("$icon_wrench$", buttonPos, this, this.getCommandID("stop_music"), "Stop the music.");
-			}
-			if(carried.getName() == "paper")
-			{
-				CBitStream params;
-				params.write_u16(caller.getNetworkID());
-				params.write_u16(carried.getNetworkID());
-		
-				CButton@ buttonWrite = caller.CreateGenericButton("$icon_paper$", buttonPos, this, this.getCommandID("change_skin"),
-				"Change vehicle skin.", params);
-			}
-		}
-	}
-}
-
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("change_skin"))
@@ -427,34 +388,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			}
 		}
 	}
-}
-
-void onRender(CSprite@ this)
-{
-	if (this is null) return; //can happen with bad reload
-
-	// draw only for local player
-	CBlob@ blob = this.getBlob();
-	CBlob@ localBlob = getLocalPlayerBlob();
-
-	if (blob is null)
-	{
-		return;
-	}
-
-	if (localBlob is null)
-	{
-		return;
-	}
-
-	AttachmentPoint@ gunner = blob.getAttachments().getAttachmentWithBlob(localBlob);
-	if (gunner !is null)
-	{
-
-	}
-
-	Vec2f mouseWorld = getControls().getMouseWorldPos();
-	bool mouseOnBlob = (mouseWorld - blob.getPosition()).getLength() < this.getBlob().getRadius();
 }
 
 void MakeParticle(CBlob@ this, const Vec2f vel, const string filename = "SmallSteam")

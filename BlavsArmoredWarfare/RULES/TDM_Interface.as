@@ -92,8 +92,21 @@ void onRender(CRules@ this)
 	CPlayer@ p = getLocalPlayer();
 
 	if (p is null || !p.isMyPlayer()) { return; }
-
 	GUI::SetFont("menu");
+
+	if (getBlobByName("importantarmory") !is null)
+	{
+		if (p.getTeamNum() == 0 && this.get_u32("iarmory_warn0") > getGameTime())
+		{
+			f32 wave = Maths::Sin(getGameTime() / 3.0f) * 5.0f - 25.0f;
+			GUI::DrawTextCentered("Your truck is under attack!", Vec2f(getDriver().getScreenWidth()/2, 220+wave), SColor(255,255,255,0));
+		}
+		else if (p.getTeamNum() == 1 && this.get_u32("iarmory_warn1") > getGameTime())
+		{
+			f32 wave = Maths::Sin(getGameTime() / 3.0f) * 5.0f - 25.0f;
+			GUI::DrawTextCentered("Your truck is under attack!", Vec2f(getDriver().getScreenWidth()/2, 220+wave), SColor(255,255,255,0));
+		}
+	}
 
 	CBitStream serialised_team_hud;
 	this.get_CBitStream("tdm_serialised_team_hud", serialised_team_hud);
@@ -105,13 +118,11 @@ void onRender(CRules@ this)
 
 		if (serialised_team_hud.saferead_u16(check) && check == 0x5afe)
 		{
-			const string gui_image_fname = "Rules/TDM/TDMGui.png";
-
 			while (!serialised_team_hud.isBufferEnd())
 			{
 				TDM_HUD hud(serialised_team_hud);
-				Vec2f topLeft = Vec2f(8, 8 + 64 * hud.team_num);
-				GUI::DrawIcon(gui_image_fname, 0, Vec2f(128, 32), topLeft, 1.0f, hud.team_num);
+				Vec2f topLeft = Vec2f(-40, 64 + 48 * hud.team_num);
+
 				/*
 				FlagsInfo flags_info;
     			if (flags_info !is null)
@@ -122,8 +133,8 @@ void onRender(CRules@ this)
 				int team_player_count = 0;
 				int team_dead_count = 0;
 				int step = 0;
-				Vec2f startIcons = Vec2f(64, 8);
-				Vec2f startSkulls = Vec2f(160, 8);
+				Vec2f startIcons = Vec2f(64, 60);
+				Vec2f startSkulls = Vec2f(160, 60);
 				string player_char = "";
 				int size = int(hud.unit_pattern.size());
 
@@ -136,19 +147,12 @@ void onRender(CRules@ this)
 
 					if (player_char != "s")
 					{
-						int player_frame = 1;
-
-						if (player_char == "a")
-						{
-							player_frame = 2;
-						}
-
-						GUI::DrawIcon(gui_image_fname, 12 + player_frame, Vec2f(16, 16), topLeft + startIcons + Vec2f(team_player_count * 8, 0) , 1.0f, hud.team_num);
+						GUI::DrawIcon("team_sheet", 0, Vec2f(16, 16), topLeft + startIcons + Vec2f(team_player_count * 8, 0) , 1.0f, hud.team_num);
 						team_player_count++;
 					}
 					else
 					{
-						GUI::DrawIcon(gui_image_fname, 12 , Vec2f(16, 16), topLeft + startSkulls + Vec2f(team_dead_count * 16, 0) , 1.0f, hud.team_num);
+						GUI::DrawIcon("DeathCountIcon.png", 0 , Vec2f(16, 16), topLeft + startSkulls + Vec2f(team_dead_count * 16, 0) , 1.0f, hud.team_num);
 						team_dead_count++;
 					}
 				}
@@ -158,19 +162,6 @@ void onRender(CRules@ this)
 					string time = "" + hud.spawn_time;
 					GUI::DrawText(time, topLeft + Vec2f(196, 42), SColor(255, 255, 255, 255));
 				}
-
-				string kills = getTranslatedString("WARMUP");
-
-				if (hud.kills_limit > 0)
-				{
-					kills = getTranslatedString("KILLS: {CURRENT}/{LIMIT}").replace("{CURRENT}", "" + hud.kills).replace("{LIMIT}", "" + hud.kills_limit);
-				}
-				else if (hud.kills_limit == -2)
-				{
-					kills = getTranslatedString("ARMORED WAR");
-				}
-
-				GUI::DrawText(kills, topLeft + Vec2f(64, 42), SColor(255, 255, 255, 255));
 			}
 		}
 
@@ -183,7 +174,7 @@ void onRender(CRules@ this)
 		u8 spawn = this.get_u8(propname);
 
 		string gamemode = this.get_string("bannertext");
-		GUI::DrawText(gamemode, Vec2f(15, getScreenHeight() / 6.25), SColor(255, 255, 255, 255));
+		//GUI::DrawText(gamemode, Vec2f(15, getScreenHeight() / 6.25), SColor(255, 255, 255, 255));
 
 		if (spawn != 255)
 		{
@@ -192,7 +183,7 @@ void onRender(CRules@ this)
 				if ((p.getTeamNum() == 0 && this.get_s16("blueTickets") == 0)
 				|| (p.getTeamNum() == 1 && this.get_s16("redTickets") == 0))
 				{
-					GUI::DrawText(getTranslatedString("Your team ran out of respawns! Please, be patient and wait till game ends.") , Vec2f(getScreenWidth() / 2 - 265, getScreenHeight() / 4 + Maths::Sin(getGameTime() / 3.0f) * 5.0f), SColor(255, 255, 255, 55));
+					GUI::DrawText(getTranslatedString("Your team ran out of respawns! Please, be patient and wait until game ends.") , Vec2f(getScreenWidth() / 2 - 265, getScreenHeight() / 4 + Maths::Sin(getGameTime() / 3.0f) * 5.0f), SColor(255, 255, 255, 55));
 				}
 				else
 				{

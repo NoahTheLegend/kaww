@@ -22,21 +22,28 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (hitterBlob.getDamageOwnerPlayer() !is null)
 	{
 		CBlob@ damageowner = hitterBlob.getDamageOwnerPlayer().getBlob();
-		if (damageowner !is null)
+		if (damageowner !is null && damageowner.getPlayer() !is null)
 		{
-			if (damageowner.getSprite() !is null && !this.hasTag("dead") && this !is hitterBlob && getLocalPlayer() !is null && getLocalPlayer().getTeamNum() != this.getTeamNum())
+			if (damageowner.getSprite() !is null && !this.hasTag("dead") && customData != Hitters::spikes && this !is hitterBlob && getLocalPlayer() !is null && getLocalPlayer().getTeamNum() != this.getTeamNum())
 			{ 
 				if (hitterBlob.getPosition().y < this.getPosition().y - 3.2f && !hitterBlob.hasTag("flesh"))
 				{
-					Sound::Play("HitmarkerHeadshot.ogg", damageowner.getPosition(), 0.85f, 0.75f + (15 - (this.getHealth()/this.getInitialHealth())*15) * 0.01f);
+					Sound::Play("HitmarkerHeadshot.ogg", damageowner.getPosition(), 0.85f, 0.75f + (20 - (this.getHealth()/this.getInitialHealth())*20) * 0.01f);
 					//damageowner.set_u8("hitmarker", 30); // is actually 10
 				}
 				else
 				{
-					Sound::Play("Hitmarker.ogg", damageowner.getPosition(), 1.0f, 0.75f + ((50 - (this.getHealth()/this.getInitialHealth())*50) * 0.01f) + XORRandom(10)*0.01f);
+					Sound::Play("Hitmarker.ogg", damageowner.getPosition(), 1.0f, 0.75f + ((60 - (this.getHealth()/this.getInitialHealth())*60) * 0.01f) + XORRandom(5)*0.01f);
 					//damageowner.set_u8("hitmarker", 7); // is actually 7
 				}
 			}
+
+			// player is using bloodthirsty, heal him/her  (this is a commentary on how the gender spectrum is nonexistent)
+			//if (getRules().get_string(damageowner.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+			//{
+			//	damageowner.server_Heal(damage);
+			//}
+			//damage is always 0 here idk why
 		}
 	}
 
@@ -134,7 +141,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		this.getShape().setElasticity(0.2f);
 
 		// disable tags
-		this.Untag("shielding");
 		this.Untag("player");
 		this.getShape().getVars().isladder = false;
 		this.getShape().getVars().onladder = false;

@@ -20,6 +20,7 @@
 #include "Hitters.as";
 #include "ShieldCommon.as";
 #include "SplashWater.as";
+#include "CustomBlocks.as";
 
 bool isOwnerBlob(CBlob@ this, CBlob@ that)
 {
@@ -570,7 +571,8 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32 width,
 						break;
 					}
 				}
-				else if (t != CMap::tile_empty && t != CMap::tile_ground_back)
+				else if (t != CMap::tile_empty && t != CMap::tile_ground_back
+				&& !isTileCompactedDirt(t) && (!isTileScrap(t) || XORRandom(20)==0))
 				{
 					if (canExplosionDamage(map, tpos, t))
 					{
@@ -693,14 +695,14 @@ bool canExplosionDamage(CMap@ map, Vec2f tpos, TileType t)
 		string name = blob.getName();
 		hasValidFrontBlob = (name == "wooden_door" || name == "stone_door" || name == "trap_block" || name == "wooden_platform" || name == "bridge");
 	}
-	return map.getSectorAtPosition(tpos, "no build") is null &&
+	return map.getSectorAtPosition(tpos, "no build") is null && (!isTileCompactedDirt(t) || XORRandom(8)==0) &&
 	       (t != CMap::tile_ground_d0 && t != CMap::tile_stone_d0) && //don't _destroy_ ground, hit until its almost dead tho
 		   !(hasValidFrontBlob && isBackwall); // don't destroy backwall if there is a door or trap block
 }
 
 bool canExplosionDestroy(CMap@ map, Vec2f tpos, TileType t)
 {
-	return !(map.isTileGroundStuff(t));
+	return !(map.isTileGroundStuff(t) || isTileCompactedDirt(t));
 }
 
 bool HitBlob(CBlob@ this, Vec2f mapPos, CBlob@ hit_blob, f32 radius, f32 damage, const u8 hitter,

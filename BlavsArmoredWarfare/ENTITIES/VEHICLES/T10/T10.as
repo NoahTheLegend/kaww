@@ -8,7 +8,6 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("tank");
 	this.Tag("deal_bunker_dmg");
-	this.Tag("has machinegun");
 	this.Tag("engine_can_get_stuck");
 
 	CShape@ shape = this.getShape();
@@ -130,8 +129,6 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	//print("rpm " + this.get_f32("engine_RPM"));
-	
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		if (getGameTime()%30==0)
@@ -151,23 +148,6 @@ void onTick(CBlob@ this)
 		}
 
 		Vehicle_StandardControls(this, v);
-
-		if (getNet().isClient())
-		{
-			CPlayer@ p = getLocalPlayer();
-			if (p !is null)
-			{
-				CBlob@ local = p.getBlob();
-				if (local !is null)
-				{
-					CSpriteLayer@ front = this.getSprite().getSpriteLayer("front layer");
-					if (front !is null)
-					{
-						//front.setVisible(!local.isAttachedTo(this));
-					}
-				}
-			}
-		}
 
 		CSpriteLayer@ tracks = this.getSprite().getSpriteLayer("tracks");
 		if (tracks !is null)

@@ -1,32 +1,20 @@
 void onInit(CBlob@ this)
 {
 	this.SetLight(true);
-	this.SetLightRadius(90.0f);
+	this.SetLightRadius(80.0f);
 	this.SetLightColor(SColor(255, 255, 240, 171));
+	
+	this.Tag("destructable");
+	this.Tag("builder always hit");
+	this.Tag("trap");
 
-	//this.getCurrentScript().runFlags |= Script::tick_inwater;
-	//this.getCurrentScript().tickFrequency = 4;
+	this.getCurrentScript().tickFrequency = 30;
 }
 
 void onTick(CBlob@ this)
 {
-	if (XORRandom(4) == 0)
+	if (!getMap().hasSupportAtPos(this.getPosition()))
 	{
-		this.SetLightRadius(80.0f + XORRandom(5));
+		this.server_Die();
 	}
-}
-
-void Light(CBlob@ this, bool on)
-{
-	if (!on)
-	{
-		this.SetLight(false);
-		this.getSprite().SetAnimation("nofire");
-	}
-	else
-	{
-		this.SetLight(true);
-		this.getSprite().SetAnimation("fire");
-	}
-	this.getSprite().PlaySound("SparkleShort.ogg");
 }

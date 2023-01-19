@@ -1,6 +1,6 @@
 void onInit(CBlob@ this)
 {
-  this.Tag("medium weight");
+  this.Tag("heavy weight");
 
   if (getNet().isServer())
   {

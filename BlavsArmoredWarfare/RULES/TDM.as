@@ -4,7 +4,11 @@
 #include "RulesCore.as";
 #include "RespawnSystem.as";
 #include "Hitters.as";
-//#include "Alert.as";
+#include "PlayerRankInfo.as";
+
+const u8 MAX_BOTS = 4; // fills while server's pop is lesser than value
+
+ConfigFile cfg_playerexp;
 
 shared int ticketsRemaining(CRules@ this, int team){
 	if(team==0){
@@ -55,8 +59,6 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 	return 1;
 }
 
-
-
 shared bool isPlayersLeft(CRules@ this, int team){			//checks if spawning players or alive players
 
 	CBlob@[] team_blobs;
@@ -80,7 +82,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 0 ); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage( this.getTeam(0).getName() + " wins the game!" );
+			this.SetGlobalMessage( this.getTeam(0).getName() + " wins the game!\n\nWell done. Loading next map..." );
 			return true;
 		}else if(teamNum==0){
 			if(this.get_s16("blueTickets")>0) return false;
@@ -88,7 +90,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 1 ); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage( this.getTeam(1).getName() + " wins the game!" );
+			this.SetGlobalMessage( this.getTeam(1).getName() + " wins the game!\n\nWell done. Loading next map..." );
 			return true;
 		}
 	
@@ -140,7 +142,7 @@ void Config(TDMCore@ this)
 	//this.gameDuration = (getTicksASecond() * 60 * 1.25f);
 
 	//spawn after death time - set in gamemode.cfg, or override here
-	f32 spawnTimeSeconds = cfg.read_f32("spawnTimeSeconds", 3);//Maths::Min(3, 8-(getPlayersCount()/3))); //rules.playerrespawn_seconds
+	f32 spawnTimeSeconds = cfg.read_f32("spawnTimeSeconds", 2); 
 	this.spawnTime = (getTicksASecond() * spawnTimeSeconds);
 
 	//how many players have to be in for the game to start
@@ -260,11 +262,6 @@ shared class TDMSpawns : RespawnSystem
 					if (b is null && tents.length > 0)
 						decrementTickets(getRules(), playerBlob.getTeamNum());
 				}
-
-				if (getMap().getMapName() == "KAWWTraining.png")
-				{	
-					playerBlob.server_setTeamNum(2);
-				}	
 			}
 		}
 	}
@@ -303,7 +300,7 @@ shared class TDMSpawns : RespawnSystem
 		{
 			for (uint step = 0; step < spawns.length; ++step)
 			{
-				if (spawns[step].getTeamNum() == s32(p_info.team) || getMap().getMapName() == "KAWWTraining.png")
+				if (spawns[step].getTeamNum() == s32(p_info.team))
 				{
 					teamspawns.push_back(spawns[step]);
 				}
@@ -418,8 +415,32 @@ shared class TDMCore : RulesCore
             for(u16 i = 0; i < team.spawns.size(); i++)
             {
                 TDMPlayerInfo@ info = cast < TDMPlayerInfo@ > (team.spawns[i]);
-                info.blob_name = (XORRandom(100) >= 90 ? "revolver" : (XORRandom(100) >= 80 ? "shotgun" : (XORRandom(100) >= 70 ? "ranger" : (XORRandom(100) >= 60 ? "sniper" : (XORRandom(100) >= 50 ? "mp5" : "shotgun"))))); // dont ask
-                //info.blob_name = (XORRandom(100) >= 83 ? "revolver" : (XORRandom(100) >= 66 ? "mp5" : (XORRandom(100) >= 50 ? "slave" : "antitank"))); // dont ask
+
+				//print("1" + info);
+				//print("2" + team.spawns[i]);
+
+				array<string> classes = {
+				"revolver",
+				"ranger",
+				"shotgun",
+				"sniper",
+				"mp5"
+				};
+				
+				float exp = _rules.get_u32(info.username + "_exp");
+				int unlocked = 0;
+
+				// Calculate the exp required to reach each level
+				for (int i = 1; i <= 6; i++)
+				{
+					if (exp >= getExpToNextLevelShared(i)) unlocked ++;
+					else break;
+				}
+				unlocked = Maths::Min(unlocked, 4);
+				int index = Maths::Min(XORRandom(classes.length), unlocked);
+				string line = classes[index];
+
+                info.blob_name = line;//(XORRandom(100) >= 90 ? "revolver" : (XORRandom(100) >= 80 ? "shotgun" : (XORRandom(100) >= 70 ? "ranger" : (XORRandom(100) >= 60 ? "sniper" : (XORRandom(100) >= 50 ? "mp5" : "shotgun"))))); // dont ask
             }
         }
     }
@@ -489,10 +510,6 @@ shared class TDMCore : RulesCore
 			rules.set_u32("game_end_time", gametime + gameDuration);
 			rules.SetGlobalMessage("Waiting for someone else to join the game.");
 			tdm_spawns.force = true;
-		}
-		else if (rules.isMatchRunning() && getMap().getMapName() == "KAWWTraining.png")
-		{
-			rules.SetGlobalMessage("Type !start to begin the match!");
 		}
 		else if (rules.isMatchRunning())
 		{
@@ -607,7 +624,28 @@ shared class TDMCore : RulesCore
 
 	void AddPlayer(CPlayer@ player, u8 team = 0, string default_config = "")
 	{
-		TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), player.isBot() ? "ranger" : (XORRandom(512) >= 256 ? "ranger" : "ranger"));
+		array<string> classes = {
+		"revolver",
+		"ranger",
+		"shotgun",
+		"sniper",
+		"mp5"
+		};
+		
+		float exp = getRules().get_u32(player.getUsername() + "_exp");
+		int unlocked = 0;
+
+		// Calculate the exp required to reach each level
+		for (int i = 1; i <= 6; i++)
+		{
+			if (exp >= getExpToNextLevelShared(i)) unlocked ++;
+			else break;
+		}
+		unlocked = Maths::Min(unlocked, 4);
+		int index = Maths::Min(XORRandom(classes.length), unlocked);
+		string line = classes[index];
+
+		TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), line); //player.isBot() ? "revolver" : (XORRandom(512) >= 256 ? "revolver" : "revolver")
 		players.push_back(p);
 		ChangeTeamPlayerCount(p.team, 1);
 	}
@@ -623,13 +661,13 @@ shared class TDMCore : RulesCore
                 addKill(killer.getTeamNum()); 
 				if (victim.getTeamNum() == 1)
 				{
-					getRules().add_u16("blue_kills", 1);
-					getRules().Sync("blue_kills", true);
+					rules.add_u16("blue_kills", 1);
+					rules.Sync("blue_kills", true);
 				}
 				else if (victim.getTeamNum() == 0)
 				{
-					getRules().add_u16("red_kills", 1);
-					getRules().Sync("red_kills", true);
+					rules.add_u16("red_kills", 1);
+					rules.Sync("red_kills", true);
 				}
 			}
             else if (all_death_counts_as_kill)
@@ -694,49 +732,38 @@ shared class TDMCore : RulesCore
 		{
 			Vec2f respawnPos;
 
-			if (map_name == "KAWWTraining.png")
+			//BLUE
+			if (!getMap().getMarkers("blue main spawn", respawnPositions))
 			{
-				if (!getMap().getMarkers("training main spawn", respawnPositions))
+				if (map.tilesize > 0)
 				{
-					respawnPos = Vec2f(50.0f, map.getLandYAtX(50.0f / map.tilesize) * map.tilesize - 32.0f);
-					if (spawn_prop != "importantarmory") SetupBase(server_CreateBlob(base_name, 2, respawnPos));
+					respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
+					if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
 				}
 			}
 			else
 			{
-				//BLUE
-				if (!getMap().getMarkers("blue main spawn", respawnPositions))
+				for (uint i = 0; i < respawnPositions.length; i++)
 				{
-					if (map.tilesize > 0)
-					{
-						respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
-						if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
-					}
+					respawnPos = respawnPositions[i];
+					if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
 				}
-				else
-				{
-					for (uint i = 0; i < respawnPositions.length; i++)
-					{
-						respawnPos = respawnPositions[i];
-						if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
-					}
-				}
+			}
 
-				respawnPositions.clear();
+			respawnPositions.clear();
 
-				//RED
-				if (!getMap().getMarkers("red main spawn", respawnPositions))
+			//RED
+			if (!getMap().getMarkers("red main spawn", respawnPositions))
+			{
+				respawnPos = Vec2f(map.tilemapwidth * map.tilesize - 150.0f, map.getLandYAtX(map.tilemapwidth - (150.0f / map.tilesize)) * map.tilesize - 32.0f);
+				if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 1, respawnPos));
+			}
+			else
+			{
+				for (uint i = 0; i < respawnPositions.length; i++)
 				{
-					respawnPos = Vec2f(map.tilemapwidth * map.tilesize - 150.0f, map.getLandYAtX(map.tilemapwidth - (150.0f / map.tilesize)) * map.tilesize - 32.0f);
-					if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 1, respawnPos));
-				}
-				else
-				{
-					for (uint i = 0; i < respawnPositions.length; i++)
-					{
-						respawnPos = respawnPositions[i];
-						if (spawn_prop != "importantarmory") SetupBase(server_CreateBlob(base_name, 1, respawnPos));
-					}
+					respawnPos = respawnPositions[i];
+					if (spawn_prop != "importantarmory") SetupBase(server_CreateBlob(base_name, 1, respawnPos));
 				}
 			}
 
@@ -750,8 +777,6 @@ shared class TDMCore : RulesCore
 	void CheckTeamWon()
 	{
 		if (!rules.isMatchRunning()) { return; }
-
-		//print("ROUND: " + rules.get_u8("current_round"));
 
 		int winteamIndex = -1;
 		TDMTeamInfo@ winteam = null;
@@ -784,7 +809,7 @@ shared class TDMCore : RulesCore
 					CTeam@ teamis = rules.getTeam(team_won);
 					rules.SetTeamWon(team_won);   //game over!
 					rules.SetCurrentState(GAME_OVER);
-					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game!" );
+					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game!\nWell done. Loading next map..." );
 				}
 				else
 				{
@@ -799,17 +824,36 @@ shared class TDMCore : RulesCore
 		{
 			if (rules.getCurrentState() != GAME_OVER)
 			{
-				u16 blue_kills = getRules().get_u16("blue_kills");
-				u16 red_kills = getRules().get_u16("red_kills");
+				//u16 blue_kills = getRules().get_u16("blue_kills");
+				//u16 red_kills = getRules().get_u16("red_kills");
+//
+				//if (red_kills != blue_kills)
+				//{
+				//	u8 team_won = (red_kills > blue_kills ? 1 : 0);
+				//	team_wins_on_end = team_won;
+				//	CTeam@ teamis = rules.getTeam(team_won);
+				//	rules.SetTeamWon(team_won);   //game over!
+				//	rules.SetCurrentState(GAME_OVER);
+				//	if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );
+				//}
 
-				if (red_kills != blue_kills)
+				u16 blue_tickets = getRules().get_s16("blueTickets");
+				u16 red_tickets = getRules().get_s16("redTickets");
+				if (blue_tickets > red_tickets)
 				{
-					u8 team_won = (red_kills > blue_kills ? 1 : 0);
-					team_wins_on_end = team_won;
-					CTeam@ teamis = rules.getTeam(team_won);
-					rules.SetTeamWon(team_won);   //game over!
+					team_wins_on_end = 0;
+					CTeam@ teamis = rules.getTeam(0);
+					rules.SetTeamWon(0);   //game over!
 					rules.SetCurrentState(GAME_OVER);
-					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );
+					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );		
+				}
+				else if (blue_tickets < red_tickets)
+				{
+					team_wins_on_end = 1;
+					CTeam@ teamis = rules.getTeam(1);
+					rules.SetTeamWon(1);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );		
 				}
 				else
 				{
@@ -906,27 +950,9 @@ shared class TDMCore : RulesCore
 
 			if (winteamIndex >= 0)
 			{
-				// give coins to the losing team.
-				if (rules.isMatchRunning())
-				{
-					CBlob@[] players;
-					getBlobsByTag("player", @players);
-					for (uint i = 0; i < players.length; i++)
-					{
-						CPlayer@ player = players[i].getPlayer();
-						if (player !is null)
-						{
-							if (player.getTeamNum() != winteamIndex)
-							{
-								player.server_setCoins(player.getCoins() + 60);
-							}	
-						}
-					}
-				}
-
 				rules.SetTeamWon(winteamIndex);   //game over!
 				rules.SetCurrentState(GAME_OVER);
-				rules.SetGlobalMessage("{WINNING_TEAM} wins the round!");
+				rules.SetGlobalMessage("{WINNING_TEAM} wins the game!\n\nWell done. Loading next map..." );
 				rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.name);
 				SetCorrectMapTypeShared();
 			}
@@ -1005,6 +1031,39 @@ shared class TDMCore : RulesCore
 	}
 };
 
+void KickBots(CRules@ this)
+{
+	u8 players = 0;
+	u8 bots = 0;
+	for (u8 i = 0; i < getPlayersCount(); i++)
+	{
+		CPlayer@ p = getPlayer(i);
+		if (p is null) continue;
+		if (!p.isBot())
+		{
+			if (p.getTeamNum() != this.getSpectatorTeamNum())
+			{
+				players++;
+			}
+		}
+		else bots++;
+	}
+	if (bots == 0) return;
+
+	s8 remaining_bots = players+bots-MAX_BOTS;
+	u8 kicked = 0;
+	//printf("rem "+remaining_bots);
+	for (u8 i = 0; (kicked < remaining_bots || i >= getPlayersCount()); i++)
+	{
+		CPlayer@ p = getPlayer(i);
+		if (p !is null && p.isBot())
+		{
+			KickPlayer(p);
+			kicked++;
+		}
+	}
+}
+
 //pass stuff to the core from each of the hooks
 void Reset(CRules@ this)
 {
@@ -1018,6 +1077,8 @@ void Reset(CRules@ this)
 	this.set_u16("red_kills", 0);
 	this.Sync("blue_kills", true);
 	this.Sync("red_kills", true);
+
+	KickBots(this);
 
 	//if (this.get_s16("blueTickets") < 1)
 	//{
@@ -1052,7 +1113,7 @@ void Reset(CRules@ this)
 	this.set("core", @core);
 	this.set("start_gametime", getGameTime() + core.warmUpTime);
 	this.set_u32("game_end_time", getGameTime() + core.gameDuration);
-	this.set_s32("restart_rules_after_game_time", (core.spawnTime < 0 ? 5 : 10) * 20);
+	this.set_s32("restart_rules_after_game_time", (core.spawnTime < 0 ? 5 : 10) * 30);
 
 	u8 brightmod = getRules().get_u8("brightmod");
 	// 0 full bright
@@ -1088,13 +1149,127 @@ void onRestart(CRules@ this)
 	Reset(this);
 }
 
+const string[] names = {
+	"narc-cop",
+	"recruit-duck",
+	"private-wolf",
+	"megalith-goliath",
+	"trilemma-mighty",
+	"frenzy-man",
+	"dread-light",
+	"captin-cook",
+	"sweety-rat",
+	"dread-antson",
+	"parachute-eagle",
+	"aexetan-love",
+	"astro-power",
+	"prince-poppy",
+	"grown-man",
+	"bitchy-ranger",
+	"giga-chad",
+	"respectful-man",
+	"furry-lover",
+	"beer-enjoyer",
+	"bronze-style",
+	"sapphire-colossus",
+	"godzilla-white",
+	"duck-smith",
+	"anvil-hands",
+	"rock-listener",
+	"nova-moon",
+	"red-mushroom",
+	"customer-guy",
+	"purple-alien",
+	"jumpy-froggy",
+	"bio-spark",
+	"burning-leo",
+	"knuckle-joe",
+	"sir-kibble",
+	"combat-cobra",
+	"strike-viper",
+	"commando-clown",
+	"klaus-cellerman",
+	"betel-goose"
+};
+
+string uppercaseFirstLetter(string &in str)
+{
+    str[0] = str.toUpper()[0];
+    return str;
+}
+
+string getRandomCharName()
+{
+	bool hasNumbersAtEnd = XORRandom(2)==0; // botname982
+	bool upperCase = XORRandom(2)==0; // BotName
+	bool underline = XORRandom(2)==0; // bot name // actually just space between
+	bool viceVersa = XORRandom(3)==0; // more variance
+	bool shuffle = XORRandom(2)==0; // get lastname from another pair
+	
+	string finalName = "Bot";
+	string name = names[XORRandom(names.length)];
+	string[] spl = name.split("-");
+	
+	string firstName = spl[0];
+	string lastName = spl[1];
+
+	if (shuffle)
+	{
+		string temp = names[XORRandom(names.length)];
+		string[] spltemp = temp.split("-");
+		lastName = spltemp[1];
+	}
+	if (viceVersa)
+	{
+		string temp = firstName;
+		firstName = lastName;
+		lastName = temp;
+	}
+	if (upperCase)
+	{
+		firstName = uppercaseFirstLetter(firstName);
+		lastName = uppercaseFirstLetter(lastName);
+
+		//string[] firstNameSpl = firstName.split(""); // crashes the game
+		//firstName = "";
+		//for (u8 i = 0; i < firstNameSpl.length; i++)
+		//{
+		//	if (i==0) firstNameSpl[i].toUpper();
+		//	firstName = firstName+firstNameSpl[i];
+		//}
+
+		//string[] lastNameSpl = lastName.split("");
+		//lastName = "";
+		//for (u8 i = 0; i < lastNameSpl.length; i++)
+		//{
+		//	if (i==0) lastNameSpl[i].toUpper();
+		//	lastName = lastName+lastNameSpl[i];
+		//}
+	}
+	
+	finalName = firstName+(underline?" ":"")+lastName;
+	
+	if (hasNumbersAtEnd)
+	{
+		finalName = finalName+(XORRandom(1000));
+	}
+
+	return finalName;
+}
+
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
-	if (getPlayersCount() == 5)
+	if (isServer() && player !is null && player.isBot())
+	{
+		player.server_setCharacterName(getRandomCharName());
+		getRules().set_u32(player.getUsername() + "_exp", 2500+XORRandom(1250));
+	}
+
+	if (getPlayersCount() == 5 || getPlayersCount() == 4)
 	{
 		LoadMapCycle("MAPS/mapcycle.cfg");
 	}
-	else if (getPlayersCount() == 8)
+	else if (getPlayersCount() == 8 || getPlayersCount() == 9)
 	{
 		LoadMapCycle("MAPS/mapcyclelarger.cfg");
 	}
@@ -1108,9 +1283,55 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
     player.server_setCoins(40);
 
+	if (cfg_playerexp.exists(player.getUsername()))
+    {
+		this.set_u32(player.getUsername() + "_exp", cfg_playerexp.read_u32(player.getUsername()));
+	}
+	else{
+		this.set_u32(player.getUsername() + "_exp", 0);
+	}
+
+	float exp = this.get_u32(player.getUsername() + "_exp");
+	this.Sync(player.getUsername() + "_exp", true);
+
+	string rank = RANKS[0];
+
+	// Calculate the exp required to reach each level
+	for (int i = 1; i <= RANKS.length; i++)
+	{
+		if (exp >= getExpToNextLevel(i + 1)) {
+			rank = RANKS[Maths::Min(i, RANKS.length-1)];
+		}
+		else {
+			break;
+			this.set_string(player.getUsername() + "_last_lvlup", rank);
+		}
+	}
+
 	if (isServer())
 	{
 		print("New player joined ----------- Username: " + player.getUsername() + " IP: " + player.server_getIP());
+	}
+}
+
+void onPlayerLeave(CRules@ this, CPlayer@ player)
+{
+    if (player == null)
+    	{ return; }
+
+    if (this.get_u32(player.getUsername() + "_exp") != 0) // has more than 0 exp
+    {
+        cfg_playerexp.add_u32(player.getUsername(), this.get_u32(player.getUsername() + "_exp"));
+    }
+    else if (cfg_playerexp.exists(player.getUsername())) // 0 exp for some reason, remove from cfg
+    {
+        cfg_playerexp.remove(player.getUsername()); // could be destructive
+    }
+
+
+	if (isServer())
+	{
+		print("Player left ----------- Username: " + player.getUsername() + " IP: " + player.server_getIP());
 	}
 }
 
@@ -1118,6 +1339,7 @@ void onTick(CRules@ this)
 {
 	if (getGameTime() == 1)
 	{
+		u16 count = 10 + getPlayersCount();
 		if (this.get_s16("blueTickets") == 0 && this.get_s16("redTickets") == 0)
 		{
 			this.set_s16("blueTickets", 10);
@@ -1125,11 +1347,11 @@ void onTick(CRules@ this)
 			this.Sync("blueTickets", true);
 			this.Sync("redTickets", true);
 		}
-		else if (this.get_s16("blueTickets") > 50 && this.get_s16("redTickets") > 50
+		else if (this.get_s16("blueTickets") > count && this.get_s16("redTickets") > count
 		&& getMap() !is null && getMap().tilemapwidth <= 300)
 		{
-			this.set_s16("blueTickets", 50);
-			this.set_s16("redTickets", 50);
+			this.set_s16("blueTickets", count);
+			this.set_s16("redTickets", count);
 			this.Sync("blueTickets", true);
 			this.Sync("redTickets", true);
 		}
@@ -1154,6 +1376,42 @@ void onTick(CRules@ this)
 			//printf("b "+blue_flags+" r "+red_flags);
 			this.set_u32("game_end_time", this.get_u32("game_end_time") - 30);
 		}
+
+		if (!this.hasTag("togglebots"))
+		{
+			// Fill server with bots on lowpop
+			u8 players = 0;
+			u8 bots = 0;
+			for (u8 i = 0; i < getPlayersCount(); i++)
+			{
+				CPlayer@ p = getPlayer(i);
+				if (p is null) continue;
+				if (!p.isBot())
+				{
+					if (p.getTeamNum() != this.getSpectatorTeamNum())
+					{
+						players++;
+					}
+				}
+				else bots++;
+			}
+			if (players > 0)
+			{
+				
+				//printf("pl "+players);
+				//printf("bots "+bots);
+
+				// kick bots onRestart
+				if (players+bots <= MAX_BOTS)
+				{
+					s8 remaining_bots = MAX_BOTS-(players+bots);
+					for (u8 i = 0; i < remaining_bots; i++)
+					{
+						AddBot("Bot");
+					}
+				}
+			}
+		}
 	}
 	//if (!this.hasTag("synced_siege"))
 	//{
@@ -1175,7 +1433,7 @@ void onTick(CRules@ this)
 		Config(core);
 		this.Tag("synced_time");
 	}
-	if (getGameTime()%150==0) //every 5 seconds give a coin
+	if (getGameTime()%150==0) //every 150 ticks give a coin
 	{
 		if (this.get_s16("blueTickets") > 200) 
 		{
@@ -1193,15 +1451,45 @@ void onTick(CRules@ this)
 			if (player is null || player.getBlob() is null) continue;
             if (isServer())
             {
-                player.server_setCoins(player.getCoins()+1);
+				if (this.get_string(player.getUsername() + "_perk") == "Supply Chain")
+				{
+					player.server_setCoins(player.getCoins()+2); // double
+				}
+				else
+				{
+					player.server_setCoins(player.getCoins()+1);
+				}
             }
         }
 	}
+
+	if (getGameTime() % 9000 == 0) // auto save exp every 5 minutes
+    {
+    	uint16 i;
+    	
+        for (i = 0; i < getPlayerCount(); i++)
+        {
+            CPlayer@ player = getPlayer(i);
+			if (player !is null)
+			{
+				if (this.get_u32(player.getUsername() + "_exp") != 0)
+				{
+					cfg_playerexp.add_u32(player.getUsername(), this.get_u32(player.getUsername() + "_exp"));
+				}
+			}
+        }
+
+		cfg_playerexp.saveFile("awexp.cfg");
+    }
 }
 
 void onInit(CRules@ this)
 {
-	this.set_u8("current_round", 1);
+    if ( !cfg_playerexp.loadFile("../Cache/awexp.cfg") )
+    {
+        cfg_playerexp = ConfigFile("awexp.cfg");
+    }
 
+	if (isClient() && isServer()) this.Tag("togglebots"); // disable them on local automatically
 	Reset(this);
 }

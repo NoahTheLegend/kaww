@@ -74,6 +74,8 @@ namespace map_colors
 		water_air              = 0xFF2E81A6, // ARGB(255,  46, 129, 166);
 		water_backdirt         = 0xFF335566, // ARGB(255,  51,  85, 102);
 		tile_sand              = 0xFFECD590, // ARGB(255, 236, 213, 144);
+		tile_cdirt             = 0xFF7C3212, //
+		tile_scrap             = 0xFFB25324, //
 
 		// OTHER
 		sky                    = 0xFFA5BDC8, // ARGB(255, 165, 189, 200);
@@ -285,9 +287,15 @@ namespace map_colors
 
 		blue_bf109             = 0xff09f34e,
 		red_bf109              = 0xfffff34e,
+		
+		blue_bomberplane       = 0xff16167D,
+		red_bomberplane        = 0xff7D1616,
 
 		blue_uh1               = 0xff133899,
 		red_uh1                = 0xff113cce,
+
+		blue_outpost           = 0xffff6f98,
+		red_outpost            = 0xff980fff,
 
 		blue_armory            = 0xff0d6f98,
 		red_armory             = 0xff980f0d,
@@ -318,7 +326,6 @@ namespace map_colors
 
 		refinery               = 0xff68e95f,
 
-
 		blue_munitionsshop     = 0xffa4a2f6,
 		red_munitionsshop      = 0xfff6c2a2,
 
@@ -335,11 +342,6 @@ namespace map_colors
 		constructionyard       = 0xffdfdde2,
 		baseconstructionyard   = 0xffb9c5b5,
 
-		// dont use these
-		classvendor            = 0xff62d49e,
-		perkvendor             = 0xff2372ca,
-		wheeloffortune         = 0xfffed519,
-
 		// environmental objs
 		sandbags               = 0xffedd295,
 		redbarrel              = 0xffc40e0e,
@@ -347,9 +349,14 @@ namespace map_colors
 		blue_tanktrap		   = 0xff181c20,
 		red_tanktrap		   = 0xff1f1919,
 
+		barbedwire             = 0xffd5d8d0,
+		blue_barbedwire        = 0xffcad6d9,
+		red_barbedwire         = 0xffe1c7c7,
+
 		// map background signifier
 		map_desert             = 0xfffcd38b,
 		map_grim               = 0xff2a1830,
+		map_snow               = 0xff1c7d97,
 
 		//buildings
 		ledlight               = 0xfff5be41,
@@ -374,6 +381,8 @@ namespace map_colors
 		gate2         		   = 0xffaf7e28,
 		gate3         		   = 0xffaf8028,
 		gate4         		   = 0xffaf8928,
+
+		stairs                 = 0xff221e42,
 
 		///////
 

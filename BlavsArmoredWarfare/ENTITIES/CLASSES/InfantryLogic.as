@@ -1,14 +1,16 @@
-#include "WarfareGlobal.as"
-#include "AllHashCodes.as"
+#include "WarfareGlobal.as";
+#include "AllHashCodes.as";
 #include "ThrowCommon.as";
 #include "KnockedCommon.as";
 #include "RunnerCommon.as";
 #include "BombCommon.as";
 #include "Hitters.as";
-#include "Recoil.as";
 #include "InfantryCommon.as";
 #include "MedicisCommon.as";
 #include "TeamColour.as";
+#include "CustomBlocks.as";
+#include "RunnerHead.as";
+#include "PlayerRankInfo.as";
 
 void onInit(CBlob@ this)
 {
@@ -40,7 +42,7 @@ void onInit(CBlob@ this)
 	bool semiauto;
 	u8 burst_size; // bullets fired per click
 	u8 burst_rate; // ticks per bullet fired in a burst
-	s8 reload_time; // time to reload
+	s16 reload_time; // time to reload
 	u8 noreloadtimer; // time after each shot where you can't reload
 	u32 mag_size; // max bullets in mag
 	u8 delayafterfire; // time between shots 4
@@ -104,6 +106,10 @@ void onInit(CBlob@ this)
 	this.Tag("player");
 	this.Tag("flesh");
 	this.addCommandID("sync_reload_to_server");
+	this.addCommandID("aos_effects");
+	this.addCommandID("levelup_effects");
+	this.addCommandID("bootout");
+	this.addCommandID("reload");
 	this.Tag("3x2");
 
 	if (thisBlobHash == _mp5) this.Tag(medicTagString);
@@ -127,11 +133,14 @@ void onInit(CBlob@ this)
 	this.addCommandID("shoot bullet");
 	this.getShape().getConsts().net_threshold_multiplier = 0.5f;
 
+	this.set_f32("stab damage", 1.0f);
+	
+	this.set_u32("can_spot", 0);
+
 	if (this.getName() == "revolver")
 	{
 		this.set_u8("stab time", 16);
 		this.set_u8("stab timing", 13);
-		this.set_f32("stab damage", 1.5f);
 		this.Tag("no bulletgib on shot");
 	}
 	else if (this.getName() == "ranger")
@@ -152,14 +161,61 @@ void onInit(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (isServer()) //update bots' logic
+	{
+		if (this.hasTag("disguised"))
+		{
+			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
+		}
+		if (this.isBot() && hitterBlob.getDamageOwnerPlayer() !is null && hitterBlob.hasTag("bullet"))
+		{
+			this.set_string("last_attacker", hitterBlob.getDamageOwnerPlayer().getUsername());
+		}
+	}
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
-			return damage*0.05f;
+			return damage*0.1f;
 		else if (customData == Hitters::arrow)
 			return damage*0.5f;
-		else return 0;
+		else return (customData == Hitters::sword ? this.hasTag("mgunner") ? damage : 0 : 0);
 	}
+	if (this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage")
+	{
+		if (customData == Hitters::fire)
+		{
+			return damage * 2;
+		}
+	}
+	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
+	{
+		if (this.hasBlob("aceofspades", 1))
+		{
+			this.TakeBlob("aceofspades", 1);
+
+			this.server_SetHealth(0.01f);
+
+			if (this.getPlayer() !is null)
+			{
+				CBitStream params;
+				this.SendCommand(this.getCommandID("aos_effects"), params);
+			}
+
+			return damage = 0;
+		}
+	}
+	if (this.getPlayer() !is null)
+	{
+		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Death Incarnate")
+		{
+			damage *= 2.0f; // take double damage
+		}
+		else if ((hitterBlob.getName() == "grenade" || customData == Hitters::explosion) && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+		{
+			damage *= 1.75f; // take double damage
+		}
+	}
+	if (customData != Hitters::explosion && hitterBlob.getName() == "ballista_bolt") return damage * 2;
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.getName() == "grenade")
 	{
 		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
@@ -183,6 +239,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				{
 					CBlob@ hi = infos[i].blob;
 					if (hi is null) continue;
+					if (hi.getTeamNum() != this.getTeamNum()) continue;
 					if (hi.hasTag("bunker") || hi.hasTag("tank")) 
 					{
 						at_bunker = true;
@@ -261,7 +318,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 				//big things block attacks
 				{
 					this.server_Hit(b, hi.hitpos, Vec2f(0,0), damage, type, true); 
-					
+					if (b.hasTag("door") && b.getShape().getConsts().collidable) break;
 					// end hitting if we hit something solid, don't if its flesh
 				}
 			}
@@ -270,7 +327,9 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 			{
 				Vec2f tpos = map.getTileWorldPosition(hi.tileOffset) + Vec2f(4, 4);
 				//bool canhit = canhit && map.getSectorAtPosition(tpos, "no build") is null;
-				if (!map.isTileCastle(map.getTile(tpos).type))
+				TileType type = map.getTile(tpos).type;
+				if (!(map.isTileCastle(type) || isTileScrap(type))
+				&& !isTileScrap(type) && (!isTileCompactedDirt(type) || XORRandom(2) == 0))
 					map.server_DestroyTile(hi.hitpos, 0.1f, this);
 			}
 		}
@@ -279,7 +338,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 
 void ManageParachute( CBlob@ this )
 {
-	if (this.isOnGround() || this.isInWater() || this.isAttached())
+	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder())
 	{	
 		if (this.hasTag("parachute"))
 		{
@@ -295,8 +354,9 @@ void ManageParachute( CBlob@ this )
 	
 	if (this.hasTag("parachute"))
 	{
+		this.set_u32("no_climb", getGameTime()+2);
 		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
-		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * 0.73f));
+		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.55f : 0.73)));
 	}
 }
 
@@ -305,7 +365,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	// Deploy parachute!
 	if (detached.hasTag("aerial"))
 	{
-		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 150.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
+		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 120.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
 		{
 			if (!this.hasTag("parachute"))
 			{
@@ -320,21 +380,54 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 {
 	bool ismyplayer = this.isMyPlayer();
 	bool responsible = ismyplayer;
-	if (isServer() && !ismyplayer)
+	if (isServer() && this.getHealth() > 0.01f)
 	{
 		CPlayer@ p = this.getPlayer();
 		if (p !is null)
 		{
-			responsible = p.isBot();
+			if (!ismyplayer) //always false inside isServer()
+			{
+				responsible = p.isBot();
+			}
+			
+			if (getGameTime() % 30 == 0
+			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+			{
+				CInventory@ inv = this.getInventory();
+				if (inv !is null)
+				{
+					int xslots = inv.getInventorySlots().x;
+					int yslots = inv.getInventorySlots().y;
+					CBlob@ item = inv.getItem(xslots * yslots - 1);
+					
+					if (item !is null) // theres an item in the last slot
+					{
+						if (!this.hasBlob("aceofspades", 1)) // but we have the ace already
+						{
+							item.server_RemoveFromInventories();
+						}
+					}
+					else if (!this.hasBlob("aceofspades", 1))  // theres no item in the last slot
+					{
+						// give ace
+						CBlob@ b = server_CreateBlob("aceofspades", -1, this.getPosition());
+						if (b !is null) this.server_PutInInventory(b);
+					}
+				}
+			}
 		}
 	}
 
 	CControls@ controls = this.getControls();
 	CSprite@ sprite = this.getSprite();
-	s8 charge_time = this.get_s32("my_chargetime");//archer.charge_time;
+	s8 charge_time = this.get_s32("my_chargetime");
 	this.set_s8("charge_time", charge_time);
+	if (this.get_u32("end_stabbing") >= getGameTime())
+	{
+		archer.isStabbing = true;
+	}
 	bool isStabbing = archer.isStabbing;
-	bool isReloading = this.get_bool("isReloading"); //archer.isReloading;
+	bool isReloading = this.get_bool("isReloading");
 	u8 charge_state = archer.charge_state;
 	bool just_action1;
 	bool is_action1;
@@ -369,10 +462,13 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		u8 time = 21;
 		u8 timing = 13;
 		f32 damage = 0.85f;
+		bool no_medkit = true;
+		CBlob@ carried = this.getCarriedBlob();
+		if (carried !is null && carried.getName() == "medkit") no_medkit = false;
 		if (this.exists("stab time")) time = this.get_u8("stab time");
 		if (this.exists("stab timing")) timing = this.get_u8("stab timing");
 		if (this.exists("stab damage")) damage = this.get_f32("stab damage");
-		if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime())
+		if (this.getName() != "mp5" && this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime() && no_medkit)
 		{
 			this.set_u32("end_stabbing", getGameTime()+time);
 			this.Tag("attacking");
@@ -396,6 +492,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	Vec2f pos = this.getPosition();
 
 	const u8 inaccuracyCap = infantry.inaccuracy_cap;
+	
 	InAirLogic(this, inaccuracyCap);
 
 	if (this.isKeyPressed(key_action2))
@@ -404,7 +501,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 		if (!isReloading && !menuopen || this.hasTag("attacking"))
 		{
-			moveVars.walkFactor *= 0.75f;
+			moveVars.walkFactor *= 0.8f;
 			this.Tag("scopedin");
 		}
 	}
@@ -426,24 +523,41 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	}
 	else
 	{
-		const s8 reloadTime = infantry.reload_time;
+		s16 reloadTime = infantry.reload_time;
+		CPlayer@ p = this.getPlayer();
+		if (p !is null)
+		{
+			u8 time = 3;
+			if (getRules().get_string(p.getUsername() + "_perk") == "Sharp Shooter")
+			{
+				reloadTime = infantry.reload_time * 1.5;
+				time = 4;
+			}
+			if (p.getBlob() !is null && p.getBlob().getSprite() !is null)
+			{
+				Animation@ anim = p.getBlob().getSprite().getAnimation("reload");
+				if (anim !is null)
+				{
+					anim.time = time;
+				}
+			}
+		}
+		
 		const u32 magSize = infantry.mag_size;
 	
 		// reload
 		if (controls !is null &&
 			!isReloading &&
-			(controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient())) &&
+			((controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient())) &&
 			this.get_u32("no_reload") < getGameTime() &&
-			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
+			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max") || this.hasTag("forcereload")))
 		{
-			if (this.getName() == "mp5")
+			if (this.hasTag("forcereload"))
 			{
-				CBitStream params;
-				this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
+				this.set_u32("mag_bullets", this.get_u32("mag_bullets_max"));
+				this.Untag("forcereload");
+				return;
 			}
-			this.set_u8("reloadqueue", 0);
-			this.Sync("reloadqueue", true);
-
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
 			if (inv !is null && inv.getItem("mat_7mmround") !is null)
@@ -452,20 +566,26 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				reloadistrue = true;
 				charge_time = reloadTime;
 
+				if (this.getName() == "mp5")
+				{
+					CBitStream params;
+					this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
+				}
+
 				isReloading = true;
 				this.set_bool("isReloading", true);
 	
 				CBitStream params; // sync to server
-				if (ismyplayer) // isClient()
+				if (ismyplayer && !this.isBot()) // isClient()
 				{
 					params.write_s8(charge_time);
 					this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
 				}
 			}
-			else if (ismyplayer)
-			{
-				sprite.PlaySound("NoAmmo.ogg", 0.85);
-			}
+			//else if (ismyplayer)
+			//{
+			//	sprite.PlaySound("NoAmmo.ogg", 0.85);
+			//}
 
 			if (this.hasTag("simple reload") && reloadistrue) // simple reload is used when you have nothing else 
 			{ // besides reload sound, look for onBlobNameReload() in this file and InfantryCommon.as otherwise
@@ -501,7 +621,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			moveVars.jumpFactor *= 0.7f;
 			moveVars.canVault = false;
 
-			if (charge_time == 0 && isStabbing == false)
+			if (isStabbing == false)
 			{
 				if (menuopen) return;
 				if (isReloading) return;
@@ -648,7 +768,19 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 			if (this.getPlayer() !is null)
 			{
+				float walkStat = 1.0f;
+				float airwalkStat = 1.0f;
+				float jumpStat = 1.0f;
+
 				bool sprint = this.getHealth() == this.getInitialHealth() && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+
+				// operators move slower than normal
+				if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+				{
+					sprint = false;
+					walkStat *= 0.95f;
+				}
+
 				if (sprint)
 				{
 					if (!this.hasTag("sprinting"))
@@ -665,9 +797,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					this.Untag("sprinting");
 				}
 
-				float walkStat = 1.0f;
-				float airwalkStat = 1.0f;
-				float jumpStat = 1.0f;
 				getMovementStats(this.getName().getHash(), sprint, walkStat, airwalkStat, jumpStat);
 				moveVars.walkFactor *= walkStat;
 				moveVars.walkSpeedInAir = airwalkStat;
@@ -722,22 +851,11 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				else
 				{
 					getHUD().SetCursorFrame(1);
-				}
-				
+				}	
 			}
 			else
 			{
-				frame = Maths::Floor(this.get_u8("inaccuracy") / 5);
-
-				if (frame > 9)
-				{
-					frame = 9;
-				}
-				if (frame < 1)
-				{
-					frame = 1;
-				}
-				getHUD().SetCursorFrame(frame);
+				getHUD().SetCursorFrame(Maths::Clamp(Maths::Floor(this.get_u8("inaccuracy") / 5), 1, 9));
 			}
 		}
 
@@ -755,6 +873,18 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 void onTick(CBlob@ this)
 {
+	if (isServer()&&getGameTime()%30==0)
+	{
+		if (!(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
+	}
+	if ((this.getTeamNum() == 0 && getRules().get_s16("blueTickets") == 0)
+	|| (this.getTeamNum() == 1 && getRules().get_s16("redTickets") == 0))
+	{
+		this.SetLightRadius(8.0f);
+		this.SetLightColor(SColor(255, 255, 255, 255));
+		this.SetLight(true);
+	}
+
 	InfantryInfo@ infantry;
 	if (!this.get( "infantryInfo", @infantry )) return;
 
@@ -762,6 +892,11 @@ void onTick(CBlob@ this)
 	if (!this.get("archerInfo", @archer)) return;
 
 	ManageParachute(this);
+
+	if (this.isBot() && this.getTickSinceCreated() == 1 && isClient()) 
+	{
+		LoadHead(this.getSprite(), XORRandom(99)); // TODO: make a way to sync between players and save when blob dies!
+	}
 	
 	if (isKnocked(this) || this.isInInventory())
 	{
@@ -775,23 +910,6 @@ void onTick(CBlob@ this)
 	if (!this.get("moveVars", @moveVars)) return;	
 
 	ManageGun(this, archer, moveVars, infantry);
-
-	if (!this.isOnGround()) // ladders sometimes dont work
-	{
-		CBlob@[] blobs;
-		getMap().getBlobsInRadius(this.getPosition(), this.getRadius(), blobs);
-		for (u16 i = 0; i < blobs.length; i++)
-		{
-			if (blobs[i] !is null && blobs[i].getName() == "ladder")
-			{
-				if (this.isOverlapping(blobs[i])) 
-				{
-					this.getShape().getVars().onladder = true;
-					break;
-				}
-			}
-		}
-	}
 	
 	if (this.get_u8("reloadqueue") > 0) this.sub_u8("reloadqueue", 1);
 	CControls@ controls = this.getControls();
@@ -807,11 +925,12 @@ void onTick(CBlob@ this)
 	
 	this.set_bool("is_a1", false);
 	this.set_bool("just_a1", false);
+
 }
 
 bool canSend( CBlob@ this )
 {
-	return (this.isMyPlayer() || this.getPlayer() is null || this.getPlayer().isBot());
+	return (this.isMyPlayer() || this.getPlayer() is null);
 }
 
 void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
@@ -831,11 +950,11 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	{
 		if (this.isFacingLeft())
 		{ 
-			ParticleAnimated("Muzzleflash", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle, 0.06f + XORRandom(3) * 0.01f, 3 + XORRandom(2), -0.15f, false);
+			ParticleAnimated("Muzzleflash", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle, 0.075f + XORRandom(2) * 0.01f, 3 + XORRandom(2), -0.15f, false);
 		}
 		else
 		{
-			ParticleAnimated("Muzzleflashflip", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle + 180, 0.06f + XORRandom(3) * 0.01f, 3 + XORRandom(2), -0.15f, false);
+			ParticleAnimated("Muzzleflashflip", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle + 180, 0.075f + XORRandom(2) * 0.01f, 3 + XORRandom(2), -0.15f, false);
 		}
 	}
 
@@ -843,7 +962,16 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	f32 targetDistance = targetVector.Length();
 	f32 targetFactor = targetDistance / 367.0f;
 	
-	float bulletSpread = getBulletSpread(infantry.class_hash) + float(this.get_u8("inaccuracy"));
+	float perk_mod = 1;
+	if (this.getPlayer() !is null)
+	{
+		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
+		{
+			perk_mod = 1.5; // improved accuracy
+		}
+	}
+
+	float bulletSpread = getBulletSpread(infantry.class_hash) + (float(this.get_u8("inaccuracy")))/perk_mod;
 	ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity, bulletSpread*targetFactor, infantry.burst_size );
 	this.set_u32("no_reload", getGameTime()+15);
 
@@ -888,7 +1016,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 
 void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, float bulletSpread, u8 burstSize )
 {
-	if (canSend(this))
+	if (canSend(this) || (isServer() && this.isBot()))
 	{
 		CBitStream params;
 		params.write_Vec2f(arrowPos); // only once, only one place to fire from
@@ -904,6 +1032,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 		}
 		
 		this.SendCommand(this.getCommandID("shoot bullet"), params);
+		this.Tag("no_more_shoot");
 	}
 
 	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
@@ -913,6 +1042,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
+		this.Untag("no_more_shoot");
+		if (this.get_u32("next_shoot") > getGameTime()) return;
+		this.set_u32("next_shoot", getGameTime()+1);
 		if (this is null || this.hasTag("dead")) return;
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
@@ -924,6 +1056,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		float damageBody = infantry.damage_body;
 		float damageHead = infantry.damage_head;
+
+		if (this.getPlayer() !is null)
+		{
+			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
+			{
+				damageBody *= 1.0f; // 150%
+				damageHead *= 1.5f;
+			}
+		}
+
 		s8 bulletPen = infantry.bullet_pen;
 
 		bool shotOnce = false;
@@ -933,8 +1075,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			if (isServer())
 			{
+				if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
 				CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
 				if (this.getName() == "sniper") proj.Tag("strong");
+				else if (this.getName() == "shotgun") proj.Tag("shrapnel");
 				proj.server_SetTimeToDie(infantry.bullet_lifetime);
 			}
 			shotOnce = true;
@@ -948,6 +1092,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		const u32 magSize = infantry.mag_size;
 		if (this.get_u32("mag_bullets") > magSize) this.set_u32("mag_bullets", magSize);
 		if (isClient()) this.getSprite().PlaySound(infantry.shoot_sfx, 0.9f, 0.90f + XORRandom(40) * 0.01f);
+	}
+	else if (cmd == this.getCommandID("reload"))
+	{
+		this.Tag("forcereload");
 	}
 	else if (cmd == this.getCommandID("sync_reload_to_server"))
 	{
@@ -967,6 +1115,76 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.Tag("sync_reload");
 			this.Sync("isReloading", true);
 		}
+	}
+	else if (cmd == this.getCommandID("aos_effects"))
+	{
+		if (this.isMyPlayer()) // are we on server?
+		{
+			this.getSprite().PlaySound("FatesFriend.ogg", 1.2);
+			SetScreenFlash(42,   255,   150,   150,   0.28);
+		}
+		else
+		{
+			this.getSprite().PlaySound("FatesFriend.ogg", 2.0);
+		}
+	}
+	else if (cmd == this.getCommandID("levelup_effects"))
+	{
+		u8 level;
+		if (!params.saferead_u8(level)) return;
+		string rank;
+		if (!params.saferead_string(rank)) return;
+
+		CRules@ rules = getRules();
+		CPlayer@ player = this.getPlayer();
+		if (player is null) return;
+		// flash screen
+        if (player.isMyPlayer())
+        {
+            SetScreenFlash(30,   255,   255,   255,   2.3);
+        }
+        
+        // play sound
+        if (isClient()) this.getSprite().PlaySound("LevelUp", 1.6f, 1.0f);
+        if (isServer())
+        {
+            // coins
+            server_DropCoins(this.getPosition(), 50);
+        }
+
+        //if (isServer()) //client
+        {
+            // chat message
+            if (player.isMyPlayer()) {
+                client_AddToChat("You've been promoted to " + rank.toLower() + "!", SColor(255, 50, 150, 20));
+            }
+            else {
+                client_AddToChat(player.getCharacterName() + " has been promoted to " + rank.toLower() + "!", SColor(255, 50, 140, 20));
+            }
+            
+            if (this !is null)
+            {
+                // create floating rank
+                CParticle@ p = ParticleAnimated("Ranks", this.getPosition() + Vec2f(8.5f,-14), Vec2f(0,-0.9), 0.0f, 1.0f, 0, level - 1, Vec2f(32, 32), 0, 0, true);
+                if(p !is null)
+                {
+                    p.collides = false;
+                    p.Z = 1000;
+                    p.timeout = 2; // this shit doesnt work
+                }
+
+                // create particle
+                ParticleAnimated("LevelUpParticle", this.getPosition(), this.getVelocity() - Vec2f(0,1.2), 0.0f, 1.0f, 3, 0.2f, true);
+            }
+        }
+        
+        // adjust to the current level
+        rules.set_string(player.getUsername() + "_last_lvlup", rank);
+	}
+	else if (cmd == this.getCommandID("bootout"))
+	{
+		if (isClient()) this.getSprite().PlaySound("bridge_open", 1.0f, 1.25f);
+		if (isServer()) this.server_DetachFromAll();
 	}
 }
 
