@@ -27,7 +27,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 			f32 power = blob.getShape().isStatic() ? 10.0f * vellen : 2.0f * vellen;
 			if (this.getTeamNum() == blob.getTeamNum())
 				power = 0.0f;
-			power *= vehicle_collision ? 0.10f : 0.35f;
+			power *= vehicle_collision ? 0.15f+(this.hasTag("heavy")?0.125f:0) : 0.25f;
 			this.server_Hit(blob, point1, vehicle_collision ? Vec2f(0,0) : vel, power, Hitters::flying, false);
 			blob.server_Hit(this, point1, vehicle_collision ? Vec2f(0,0) : vel, Maths::Min(power * 0.25f, 0.5f), Hitters::flying, false);
 			this.setVelocity(Vec2f(vehicle_collision ? this.getVelocity().x * 0.45f : this.getVelocity().x * 0.52f, this.getVelocity().y)); // CPHPSHAGHGRGHHGRHHHHT is the sound of running over someone in a tank
