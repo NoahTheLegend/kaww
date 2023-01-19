@@ -15,8 +15,8 @@ const f32 damage_modifier = 0.5f;
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
-const f32 high_angle = 75.0f; // upper depression limit
-const f32 low_angle = 98.0f; // lower depression limit
+f32 high_angle = 75.0f; // upper depression limit
+f32 low_angle = 98.0f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
@@ -191,6 +191,13 @@ void onTick(CBlob@ this)
 				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
 				{
 					isOperator = true;
+					f32 high_angle = 73.5f; // upper depression limit
+					f32 low_angle = 99.5f; // lower depression limit
+				}
+				else
+				{
+					f32 high_angle = 75.0f; // upper depression limit
+					f32 low_angle = 98.0f; // lower depression limit
 				}
 			}
 
