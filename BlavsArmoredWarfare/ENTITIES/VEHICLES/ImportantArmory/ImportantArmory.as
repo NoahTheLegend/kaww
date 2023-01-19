@@ -292,7 +292,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		if (blob.hasTag("material") && !blob.hasTag("no_armory_pickup") && !blob.isAttached() && !blob.isInInventory())
 		{
 			if (isServer()) this.server_PutInInventory(blob);
-			else this.getSprite().PlaySound("BridgeOpen.ogg", 1.0f);
+			//else this.getSprite().PlaySound("BridgeOpen.ogg", 1.0f);
 		}
 		TryToAttachVehicle(this, blob);
 	}

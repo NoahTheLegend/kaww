@@ -103,10 +103,10 @@ void DoExplosion(CBlob@ this)
 
 	// print("Modifier: " + modifier + "; Quantity: " + this.getQuantity());
 
-	this.set_f32("map_damage_radius", (24.0f + random) * modifier);
-	this.set_f32("map_damage_ratio", 0.3f);
+	this.set_f32("map_damage_radius", (32.0f + random) * modifier);
+	this.set_f32("map_damage_ratio", 0.5f);
 
-	WarfareExplode(this, 32.0f + random, (3.0f+(XORRandom(31)*0.1f)) * modifier);
+	WarfareExplode(this, 32.0f + random, (4.5f+(XORRandom(46)*0.1f)) * modifier);
 
 	if(isClient())
 	{
