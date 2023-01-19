@@ -107,7 +107,7 @@ class InfantryInfo
 		class_hash 				= 234279893; // hash of the name
 		// DAMAGE
 		damage_body 			= 0.35f; // damage dealt to body
-		damage_head 			= 0.42f; // damage dealt on headshot
+		damage_head 			= 0.5f; // damage dealt on headshot
 		// SHAKE
 		recoil_x 				= 20.0f; // x shake (20)
 		recoil_y 				= 80.0f; // y shake (45)
