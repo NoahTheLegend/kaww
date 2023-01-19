@@ -68,10 +68,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
-			return damage*0.05f;
+			return damage*0.1f;
 		else if (customData == Hitters::arrow)
 			return damage*0.5f;
 		else return 0;
+	}
+	if (this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage")
+	{
+		if (customData == Hitters::fire)
+		{
+			return damage * 2;
+		}
 	}
 	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
 	{
