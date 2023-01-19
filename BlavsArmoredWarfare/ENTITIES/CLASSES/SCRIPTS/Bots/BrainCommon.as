@@ -324,7 +324,7 @@ void SearchTarget(CBrain@ this, const bool seeThroughWalls = false, const bool s
 		@target = getNewTarget(this, blob, true, true);
 		this.SetTarget(target);
 
-		if (target !is oldTarget && target.get_u32("can_spot") < getGameTime())
+		if (target !is oldTarget && target.get_u32("can_spot") < getGameTime() && !target.hasTag("dead"))
 		{
 			return;
 			onChangeTarget(blob, target, oldTarget);

@@ -45,10 +45,22 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 void onTick(CBrain@ this)
 {
+	if (getRules().getCurrentState() == GAME_OVER) return;
 	SearchTarget(this, false, true);
 
 	CBlob @blob = this.getBlob();
 	CBlob @target = this.getTarget();
+	if (blob is null) return;
+
+	if (blob.get_string("last_attacker") != "" && getPlayerByUsername(blob.get_string("last_attacker")) !is null)
+	{
+		CBlob@ bs = getPlayerByUsername(blob.get_string("last_attacker")).getBlob();
+		if (bs !is null && (blob.getPosition() - bs.getPosition()).Length() < 356.0f)
+		{
+			@target = bs;
+			blob.set_string("last_attacker", "");
+		}
+	}
 
 	//if (target is null)
 	//{
@@ -317,16 +329,16 @@ void onTick(CBrain@ this)
 					blob.set_string("behavior", "");
 				}
 
-				if (blob.get_u32("mag_bullets") != blob.get_u32("mag_bullets_max")) // not 100% full on ammo
-				{
-
-					if ((XORRandom(100) < 10 && blob.get_u32("mag_bullets") == 0) || XORRandom(350) < 1) // completely out of ammo
-					{
-						blob.set_u8("reloadqueue", 5);
-						blob.Sync("reloadqueue", true);
-						//blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
-					}
-				}
+				//if (blob.get_u32("mag_bullets") != blob.get_u32("mag_bullets_max")) // not 100% full on ammo
+				//{
+//
+				//	if ((XORRandom(100) < 10 && blob.get_u32("mag_bullets") == 0) || XORRandom(350) < 1) // completely out of ammo
+				//	{
+				//		blob.set_u8("reloadqueue", 5);
+				//		blob.Sync("reloadqueue", true);
+				//		//blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
+				//	}
+				//}
 			}
 
 
@@ -349,12 +361,17 @@ void onTick(CBrain@ this)
 			const bool visibleTarget = isVisible(blob, target, distance);
 			if (visibleTarget)
 			{
-				if (blob.get_u32("mag_bullets") == 0) // low hp, seek cover
-				{
-
-				}
+				//if (blob.get_u32("mag_bullets") == 0) // low hp, seek cover
+				//{
+//
+				//}
 				if (blob.get_u32("mag_bullets") == 0) // no ammo, retreat!
 				{
+					if (blob.getControls() !is null && !blob.hasTag("forcereload") && (getGameTime()+blob.getNetworkID())%(XORRandom(30)+1)==0)
+					{
+						CBitStream params;
+						blob.SendCommand(blob.getCommandID("reload"), params);
+					}
 					strategy = Strategy::retreating;
 				}
 				else // i have ammo, push
@@ -382,18 +399,18 @@ void onTick(CBrain@ this)
 				strategy = Strategy::idle;
 			}
 
-			if (blob.get_u32("mag_bullets") != blob.get_u32("mag_bullets_max")) // not 100% full on ammo
-			{
-				if ((XORRandom(100) < 10 && blob.get_u32("mag_bullets") == 0) || XORRandom(350) < 1) // completely out of ammo
-				{
-					blob.set_u8("reloadqueue", 5);
-					blob.Sync("reloadqueue", true);
-					//blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
-				}
-			}
+			//if (blob.get_u32("mag_bullets") != blob.get_u32("mag_bullets_max")) // not 100% full on ammo
+			//{
+			//	if ((XORRandom(100) < 10 && blob.get_u32("mag_bullets") == 0) || XORRandom(350) < 1) // completely out of ammo
+			//	{
+			//		blob.set_u8("reloadqueue", 5);
+			//		blob.Sync("reloadqueue", true);
+			//		//blob.set_u32("mag_bullets", blob.get_u32("mag_bullets_max"));
+			//	}
+			//}
 
 			// unpredictable movement
-			if (getGameTime() % blob.get_u8("myKey") == 0 && XORRandom(3) == 0)
+			if (getGameTime() % blob.get_u8("myKey") == 0 && XORRandom(2) == 0 && target !is null)
 			{
 				if (blob.get_u8("moveover") == 0)
 				{
@@ -893,7 +910,7 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 		{
 			//if (targetDistance < infantry.bullet_velocity * (infantry.bullet_lifetime*250)) // is in bullet range why tf not work
 			{
-				if (targetDistance < 460.0f)
+				if ((targetDistance < 460.0f && blob.getName() != "shotgun") || targetDistance < 92.0f)
 				{
 					blob.setKeyPressed(key_action1, true);
 

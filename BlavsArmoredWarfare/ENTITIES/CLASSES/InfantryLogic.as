@@ -109,6 +109,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("aos_effects");
 	this.addCommandID("levelup_effects");
 	this.addCommandID("bootout");
+	this.addCommandID("reload");
 	this.Tag("3x2");
 
 	if (thisBlobHash == _mp5) this.Tag(medicTagString);
@@ -165,6 +166,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (this.hasTag("disguised"))
 		{
 			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
+		}
+		if (this.isBot() && hitterBlob.getDamageOwnerPlayer() !is null && hitterBlob.hasTag("bullet"))
+		{
+			this.set_string("last_attacker", hitterBlob.getDamageOwnerPlayer().getUsername());
 		}
 	}
 	if (this.isAttached())
@@ -535,13 +540,16 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		// reload
 		if (controls !is null &&
 			!isReloading &&
-			(controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient())) &&
+			((controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient())) &&
 			this.get_u32("no_reload") < getGameTime() &&
-			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max"))
+			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max") || this.hasTag("forcereload")))
 		{
-			this.set_u8("reloadqueue", 0);
-			this.Sync("reloadqueue", true);
-
+			if (this.hasTag("forcereload"))
+			{
+				this.set_u32("mag_bullets", this.get_u32("mag_bullets_max"));
+				this.Untag("forcereload");
+				return;
+			}
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
 			if (inv !is null && inv.getItem("mat_7mmround") !is null)
@@ -551,16 +559,16 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				charge_time = reloadTime;
 
 				if (this.getName() == "mp5")
-			{
-				CBitStream params;
-				this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
-			}
+				{
+					CBitStream params;
+					this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
+				}
 
 				isReloading = true;
 				this.set_bool("isReloading", true);
 	
 				CBitStream params; // sync to server
-				if (ismyplayer) // isClient()
+				if (ismyplayer && !this.isBot()) // isClient()
 				{
 					params.write_s8(charge_time);
 					this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
@@ -857,6 +865,10 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 void onTick(CBlob@ this)
 {
+	if (isServer()&&getGameTime()%30==0)
+	{
+		if (this.isBot() && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
+	}
 	if ((this.getTeamNum() == 0 && getRules().get_s16("blueTickets") == 0)
 	|| (this.getTeamNum() == 1 && getRules().get_s16("redTickets") == 0))
 	{
@@ -1072,6 +1084,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		const u32 magSize = infantry.mag_size;
 		if (this.get_u32("mag_bullets") > magSize) this.set_u32("mag_bullets", magSize);
 		if (isClient()) this.getSprite().PlaySound(infantry.shoot_sfx, 0.9f, 0.90f + XORRandom(40) * 0.01f);
+	}
+	else if (cmd == this.getCommandID("reload"))
+	{
+		this.Tag("forcereload");
 	}
 	else if (cmd == this.getCommandID("sync_reload_to_server"))
 	{
