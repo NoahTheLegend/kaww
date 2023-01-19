@@ -56,12 +56,99 @@ void LoadSprites(CSprite@ this)
 		break;
 	}
 
+	this.RemoveSpriteLayer("camo");
+	CSpriteLayer@ camo = this.addSpriteLayer("camo", "Camo.png" , 32, 32, 0, 0);
+
+	if (camo !is null)
+	{
+		Animation@ anim = camo.addAnimation("movement", 4, true);
+		anim.AddFrame(0);
+		anim.AddFrame(1);
+		anim.AddFrame(2);
+		anim.AddFrame(3);
+		Animation@ noanim = camo.addAnimation("default", 0, false);
+		noanim.AddFrame(0);
+		Animation@ dead = camo.addAnimation("death", 0, false);
+		dead.AddFrame(4);
+
+		camo.SetOffset(Vec2f(0.0f, 0.0f));
+		camo.SetAnimation("default");
+		camo.SetVisible(false);
+		camo.SetRelativeZ(0.26f);
+	}
+
+	CSpriteLayer@ skull = this.addSpriteLayer("skull", "KillfeedIcons.png", 32, 16, 0, 0);
+	if (skull !is null)
+	{
+		skull.SetFrameIndex(1);
+		skull.SetOffset(Vec2f(0.0f, -16.0f));
+		skull.ScaleBy(Vec2f(0.75f,0.75f));
+		skull.SetRelativeZ(-5.0f);
+		skull.SetVisible(false);
+	}
 }
 
 void onTick(CSprite@ this)
 {
 	// store some vars for ease and speed
 	CBlob@ blob = this.getBlob();
+	bool isCamo = false;
+
+	if (blob !is null && blob.hasTag("reload_sprite"))
+	{
+		CSpriteLayer@ camo = this.getSpriteLayer("camo");
+
+		if (camo !is null)
+		{
+			camo.SetFrameIndex(0);
+			camo.SetAnimation("movement");
+			camo.SetVisible(true);
+			camo.SetRelativeZ(0.26f);
+		}
+
+		if (blob.getPlayer() !is null) getRules().set_string(blob.getPlayer().getUsername() + "_perk", "Camouflage");
+		blob.Untag("reload_sprite");
+		return;
+	}
+
+	// camo netting
+	if (blob.getPlayer() !is null)
+	{
+		CSpriteLayer@ camo = this.getSpriteLayer("camo");
+
+		if (camo !is null)
+		{
+			if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
+			{
+				isCamo = true;
+
+				if (blob.getShape().vellen > 0.1f)
+				{
+					camo.SetAnimation("movement");
+				}
+				else if (camo.isAnimationEnded())
+				{
+					camo.SetAnimation("default");
+				}
+				
+				camo.SetVisible(true);
+				if (blob.get_bool("isReloading"))
+				{
+					camo.SetOffset(this.getOffset());
+				}
+				else
+				{
+					camo.SetOffset(this.getOffset() + (blob.isKeyJustPressed(key_down) ? Vec2f(0,2) : Vec2f_zero) + Vec2f((blob.getShape().vellen > 0.05f) ? -1 : 0, 0));
+				}
+
+				if (blob.isAttached()) camo.SetVisible(false);
+			}
+			else
+			{
+				camo.SetVisible(false);
+			}
+		}
+	}
 
 	if (blob.hasTag("dead"))
 	{

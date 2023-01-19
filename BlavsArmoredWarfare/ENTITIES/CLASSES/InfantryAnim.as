@@ -162,7 +162,7 @@ void onTick(CSprite@ this)
 				}
 				else
 				{
-					camo.SetOffset(this.getOffset() + Vec2f((blob.getShape().vellen > 0.05f) ? -1 : 0, 0));
+					camo.SetOffset(this.getOffset() + (blob.isKeyJustPressed(key_down) ? Vec2f(0,2) : Vec2f_zero) + Vec2f((blob.getShape().vellen > 0.05f) ? -1 : 0, 0));
 				}
 
 				frontarm.SetAnimation("camogun");
