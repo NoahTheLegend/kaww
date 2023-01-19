@@ -24,8 +24,7 @@ const string zoomOut_key = getControls().getActionKeyKeyName(AK_ZOOMOUT);
 		
 void onInit(CRules@ this)
 {
-    CPlayer@ player = getLocalPlayer();
-    if (player !is null && getRules() !is null && getRules().get_u32(player.getUsername() + "_exp") < 25) showHelp = true;
+    
 	CFileImage@ image = CFileImage("GameHelp.png");
 	const Vec2f imageSize = Vec2f(image.getWidth(), image.getHeight());
 	AddIconToken("$HELP$", "GameHelp.png", imageSize, 0);
@@ -33,7 +32,12 @@ void onInit(CRules@ this)
 
 void onTick(CRules@ this)
 {
-	CControls@ controls = getControls();
+    CPlayer@ player = getLocalPlayer();
+    if (player !is null && player.getBlob() !is null && player.getBlob().getTickSinceCreated() <= 1)
+    {
+        if (getRules() !is null && getRules().get_u32(player.getUsername() + "_exp") < 25) showHelp = true;
+    }
+    CControls@ controls = getControls();
 	if (controls.isKeyJustPressed(KEY_F1))
 	{
 		showHelp = !showHelp;
@@ -98,7 +102,7 @@ void onRender(CRules@ this)
         GUI::DrawTextCentered("Mod is developed with big effort by Blav (Yeti5000707) and salty Snek (NoahTheLegend)", Vec2f(sMid, tlBox.y + 60), SColor(255, 255,255,0));
         GUI::DrawTextCentered("You may thank us or donate if you wish. https://discord.gg/55yueJWy7g", Vec2f(sMid, tlBox.y + 75), SColor(255, 255,255,0));
         GUI::DrawTextCentered("Special thanks to contributors: Nevrotik, Skemonde, PURPLExeno, Goldy, GoldenGuy (hoster), petey5 and ThinkAbout!", Vec2f(sMid, tlBox.y + 92.5f), SColor(255, 255,255,0));
-    } 
+    }
 
 	{
 		const string shiprektVersion = "Armored Warfare 2.0\n";
@@ -147,7 +151,7 @@ void onRender(CRules@ this)
         Vec2f flagInfo = Vec2f(700,385);
 
         GUI::DrawTextCentered("Your spawn point\nSwitch class or\nperks here", tlBox+spawnInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("Shop to buy\nsupplies or ammo\nYou gain money\nwith time", tlBox+marketInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("A shop to buy\nsupplies or ammo\nYou gain money\nwith time", tlBox+marketInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("A truck with\nextended variety\nof supplies (requires scrap)", tlBox+armoryInfo, SColor(255, 240,240,240));
         //GUI::DrawTextCentered("Dig materials and\nresupply forges", tlBox+digMatsInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Produce scrap as builder.\nSupply your team and\nbuild defensives", tlBox+builderInfo, SColor(255, 240,240,240));
@@ -160,7 +164,7 @@ void onRender(CRules@ this)
         GUI::DrawTextCentered("Craft vehicles with scrap", tlBox+craftInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Passenger seat", tlBox+passengerInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Tank cannoneer\nShells are affected by gravity", tlBox+gunnerInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("Tank driver\nIs responsible for it\nDon't lose it", tlBox+mechanicInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Tank driver\nIs responsible for it\nDon't lose this!", tlBox+mechanicInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Some gamemodes require\nteams to capture flags\nfor winning. In case of a tie\nthe team with bigger amount of\nflags wins the game!", tlBox+flagInfo, SColor(255, 240,240,240));
     }
 	
