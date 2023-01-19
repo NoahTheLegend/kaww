@@ -180,6 +180,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return damage*0.5f;
 		else return (customData == Hitters::sword ? this.hasTag("mgunner") ? damage : 0 : 0);
 	}
+	if (this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage")
+	{
+		if (customData == Hitters::fire)
+		{
+			return damage * 2;
+		}
+	}
 	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
 	{
 		if (this.hasBlob("aceofspades", 1))
