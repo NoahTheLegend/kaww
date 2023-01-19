@@ -574,10 +574,10 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
 				}
 			}
-			else if (ismyplayer)
-			{
-				sprite.PlaySound("NoAmmo.ogg", 0.85);
-			}
+			//else if (ismyplayer)
+			//{
+			//	sprite.PlaySound("NoAmmo.ogg", 0.85);
+			//}
 
 			if (this.hasTag("simple reload") && reloadistrue) // simple reload is used when you have nothing else 
 			{ // besides reload sound, look for onBlobNameReload() in this file and InfantryCommon.as otherwise
