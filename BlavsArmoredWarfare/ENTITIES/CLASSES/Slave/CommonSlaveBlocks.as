@@ -95,7 +95,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(CMap::tile_cdirt, "cdirt_block", "$cdirt_block$", "Compacted dirt\nReinforced block of dirt, almost immune to explosions and bullets, also can be built only on dirt walls.");
+		BuildBlock b(CMap::tile_cdirt, "cdirt_block", "$cdirt_block$", "Compacted dirt\nReinforced block of dirt, almost immune to explosions\nand bullets, can be built only on dirt walls.");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 30);
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
 		blocks[0].push_back(b);

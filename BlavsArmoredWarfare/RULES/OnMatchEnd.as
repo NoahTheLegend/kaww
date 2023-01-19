@@ -23,32 +23,37 @@ void onStateChange( CRules@ this, const u8 oldState )
 		}
 
 		// award exp for winners
-		if (getPlayerCount() > 3)
+		string[] had_bonus;
+		if (isServer() && getPlayerCount() > 3)
 		{
-			CBlob@[] players;
-			getBlobsByTag("player", @players);
-			for (uint i = 0; i < players.length; i++)
+			for (uint i = 0; i < getPlayersCount(); i++)
 			{
-				CPlayer@ player = players[i].getPlayer();
+				CPlayer@ player = getPlayer(i);
 				if (player !is null)
 				{
 					if (player.getTeamNum() == this.getTeamWon())
 					{
 						// winning team
-						if (players[i] !is null)
+						//printf(""+player.getUsername());
 						{
-							server_DropCoins(players[i].getPosition(), 30);
+							bool cont = false;
+							for (u8 j = 0; j < had_bonus.length; j++)
+							{
+								if (player.getUsername() == had_bonus[j]) cont = true;
+							}
+							if (cont) continue;
 
 							// give exp to winners
 							int exp_reward = 50; // death incarnate does not apply here
 							this.add_u32(player.getUsername() + "_exp", exp_reward);	
 							this.Sync(player.getUsername() + "_exp", true);
+							had_bonus.push_back(player.getUsername());
 
-							add_message(ExpMessage(exp_reward));
+							if (player.isMyPlayer()) add_message(ExpMessage(exp_reward));
 
 							CheckRankUps(this, // do reward coins and sfx
 										this.get_u32(player.getUsername() + "_exp"), // player new exp
-										players[i]);	
+										player.getBlob());	
 							
 						}		
 					}
