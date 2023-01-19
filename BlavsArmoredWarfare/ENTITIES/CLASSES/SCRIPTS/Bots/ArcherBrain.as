@@ -764,10 +764,11 @@ void onTick(CBrain@ this)
 										if (!vehicle.hasTag("turret") && !vehicle.hasTag("gun") && !vehicle.hasTag("aerial") // isnt a turret or machine gun or plane
 										&& vehicle.getName() != "importantarmory") // dont drive this for now
 										{
-											if (XORRandom(3) == 0 && vehicle !is null) // lets drive a vehicle
+											if (XORRandom(3) == 0) // lets drive a vehicle
 											{
 												// let's check if the driver seat is occupied
-												AttachmentPoint@ point = vehicle.getAttachments().getAttachmentPointByName("DRIVER");
+												AttachmentPoint@ point;
+												if (point !is null && vehicle !is null) @point = vehicle.getAttachments().getAttachmentPointByName("DRIVER");
 												if (point !is null)
 												{
 													CBlob@ occupied = point.getOccupied();
@@ -785,7 +786,8 @@ void onTick(CBrain@ this)
 											}
 											else { // lets get in an needed gunner seat
 												// is the driver seat is occupied?
-												AttachmentPoint@ point = vehicle.getAttachments().getAttachmentPointByName("DRIVER");
+												AttachmentPoint@ point;
+												if (point !is null && vehicle !is null) @point = vehicle.getAttachments().getAttachmentPointByName("DRIVER");
 												if (point !is null)
 												{
 													CBlob@ occupied = point.getOccupied();
