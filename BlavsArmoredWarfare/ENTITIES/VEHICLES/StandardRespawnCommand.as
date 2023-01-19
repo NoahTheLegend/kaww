@@ -88,7 +88,7 @@ void InitClasses(CBlob@ this)
 						+"\n\n                  Healing"
 						+"\n                   - Faster rate of regeneration   "
 						+"\n\n                  Silver bullets"
-						+"\n                   - Take 133% damage from bullets       "
+						+"\n                   - Take 120% damage from bullets       "
 						);
 
 	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",
