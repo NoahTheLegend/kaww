@@ -338,7 +338,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 
 void ManageParachute( CBlob@ this )
 {
-	if (this.isOnGround() || this.isInWater() || this.isAttached())
+	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder())
 	{	
 		if (this.hasTag("parachute"))
 		{
