@@ -1265,11 +1265,11 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 		getRules().set_u32(player.getUsername() + "_exp", 2500+XORRandom(1250));
 	}
 
-	if (getPlayersCount() == 5)
+	if (getPlayersCount() == 5 || getPlayersCount() == 4)
 	{
 		LoadMapCycle("MAPS/mapcycle.cfg");
 	}
-	else if (getPlayersCount() == 8)
+	else if (getPlayersCount() == 8 || getPlayersCount() == 9)
 	{
 		LoadMapCycle("MAPS/mapcyclelarger.cfg");
 	}
