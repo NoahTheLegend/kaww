@@ -483,7 +483,7 @@ void onTick(CBrain@ this)
 					
 					if (secondarytarget !is null)
 					{
-						if (secondarytarget.hasTag("vehicle")) // we are going for a vehicle seat
+						if (secondarytarget.hasTag("vehicle") && (secondarytarget.hasTag("tank") || secondarytarget.hasTag("apc") || secondarytarget.getName() == "techtruck")) // we are going for a vehicle seat
 						{
 							if (emotes) set_emote(blob, Emotes::cog, 2);
 

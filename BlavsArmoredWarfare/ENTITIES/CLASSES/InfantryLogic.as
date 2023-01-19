@@ -922,7 +922,7 @@ void onTick(CBlob@ this)
 
 bool canSend( CBlob@ this )
 {
-	return (this.isMyPlayer() || this.getPlayer() is null || this.getPlayer().isBot());
+	return (this.isMyPlayer() || this.getPlayer() is null);
 }
 
 void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
@@ -1008,7 +1008,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 
 void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, float bulletSpread, u8 burstSize )
 {
-	if (canSend(this))
+	if (canSend(this) || (isServer() && this.isBot()))
 	{
 		CBitStream params;
 		params.write_Vec2f(arrowPos); // only once, only one place to fire from
