@@ -5,7 +5,7 @@
 #include "VehicleAttachmentCommon.as"
 #include "GenericButtonCommon.as"
 #include "Hitters.as";
-#include "Explosionx.as";
+#include "Explosion.as";
 
 string[] particles = 
 {
@@ -180,13 +180,14 @@ void onInit(CBlob@ this)
 	}
 
 	// speedy stuff
-	f32 intake;
+	f32 intake = 0.0f;
 	switch(blobHash) // backside vulnerability point
 	{
 		case _maus: // maus
 		intake = -50.0f; break;
 
 		case _t10: // T10
+		intake = -25.0f;
 		break;
 		
 		case _m60: // normal tank
@@ -225,11 +226,44 @@ void onInit(CBlob@ this)
 	this.set_f32(wheelsTurnAmountString, 0.0f);
 
 	this.set_u32("show_hp", 0);
+	this.set_string("invname", this.getInventoryName());
 }
 
 void onTick(CBlob@ this)
 {
-	if (!(isClient() && isServer()) && getGameTime() < 60*30)
+	if (getGameTime() % 45 == 0 && !this.hasTag("gun"))
+	{
+		if ((this.getPosition()-this.getOldPosition()).Length() <= 0.1f)
+		{
+			CBlob@[] bushes;
+			if (getMap() !is null) getMap().getBlobsInRadius(this.getPosition(), this.getRadius(), @bushes);
+			int bushcount = 0;
+			for (u16 i = 0; i < bushes.length; i++)
+			{
+				if (bushes[i] is null || bushes[i].getName() != "bush") continue;
+				else bushcount ++;
+			}
+			if (bushcount > 4)
+			{
+				if (!this.hasTag("turret"))
+				{
+					this.setInventoryName("");
+				}
+
+				this.set_u32("disguise", getGameTime() + 90);
+			}
+			else if (!this.hasTag("turret"))
+			{
+				this.setInventoryName(this.get_string("invname"));
+			}
+		}
+		else
+		{
+			this.set_u32("disguise", getGameTime());
+			this.setInventoryName(this.get_string("invname"));
+		}
+	}
+	if (!(isClient() && isServer()) && !this.hasTag("aerial") && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
 	{
 		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
 		return; // turn engines off!
@@ -264,7 +298,7 @@ void onTick(CBlob@ this)
 			if (getGameTime() % 30 == 0 && this.hasTag("engine_can_get_stuck") && this.getHealth() <= this.getInitialHealth()/6 && XORRandom(15) == 0) // jam engine on low hp
 			{
 				this.set_bool("engine_stuck", true);
-				this.set_u32("engine_stuck_time", getGameTime()+90+XORRandom(90));
+				this.set_u32("engine_stuck_time", getGameTime()+50+XORRandom(90));
 
 				CBitStream params;
 				params.write_u32(this.get_u32("engine_stuck_time"));
@@ -358,16 +392,16 @@ void onTick(CBlob@ this)
 	}
 
 
-	this.set_s32("engine_RPMtarget", Maths::Clamp(this.get_s32("engine_RPMtarget"), 0, 30000) );
+	this.set_f32("engine_RPMtarget", Maths::Clamp(this.get_f32("engine_RPMtarget"), 0, 30000) );
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");
-	if (ap !is null && this.get_s32("engine_RPMtarget") > this.get_f32("engine_RPM"))
+	if (ap !is null && this.get_f32("engine_RPMtarget") > this.get_f32("engine_RPM"))
 	{
 		if (ap.getOccupied() is null) this.set_f32("engine_RPMtarget", 0); // turn engine off
 		f32 custom_add = this.get_f32("add_gas_intake");
 		if (custom_add == 0) custom_add = 1.0f;
-		f32 gas_intake = 230 + custom_add + XORRandom(70+custom_add/3.5f); // gas flow variance  (needs equation)
-		if (this.get_f32("engine_RPM") > 2000) {gas_intake += 100;}
+		f32 gas_intake = 180 + custom_add + XORRandom(70+custom_add/3.5f); // gas flow variance  (needs equation)
+		if (this.get_f32("engine_RPM") > 2000) {gas_intake += 150;}
 		this.add_f32("engine_RPM", this.get_f32("engine_throttle") * gas_intake); 
 
 		if (XORRandom(100) < 60)
@@ -842,9 +876,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage*2;
 	}
-	else if (hitterBlob.getName() == "grenade") return damage * 2.5;
  	
-	if (isClient() && customData == Hitters::builder)
+	if (isClient() && customData == Hitters::builder && hitterBlob.getName() == "slave")
 	{
 		this.getSprite().PlaySound("dig_stone.ogg", 1.0f, (0.975f - (this.getMass()*0.000075f))-(XORRandom(11)*0.01f));
 	}
@@ -856,9 +889,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
 
+	if (hitterBlob.getName() == "grenade") return (this.getName() == "maus" || armorRating > 4 ? damage*0.5f : damage * (1.25+XORRandom(10)*0.01f));
+
+	if (armorRating >= 3 && customData == Hitters::sword) return 0;
+
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
-		return damage * (2.25f-(armorRating*0.5f));
+		return damage * ((this.hasTag("apc") ? 4.0f : 5.0f)-(armorRating*0.75f));
 	}
 
 	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor
@@ -866,32 +903,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (this.hasTag("turret")) this.set_u32("show_hp", getGameTime() + turretShowHPSeconds * 30);
 
 	const bool is_explosive = customData == Hitters::explosion || customData == Hitters::keg;
-	//bool at_bunker;
-//
-	//if (is_explosive && !getMap().rayCastSolidNoBlobs(thisPos, hitterBlobPos))
-	//{
-	//	HitInfo@[] infos;
-	//	Vec2f hitvec = hitterBlobPos - thisPos;
-	//	if (getMap().getHitInfosFromRay(thisPos, -hitvec.Angle(), hitvec.getLength(), this, @infos))
-	//	{
-	//		for (u16 i = 0; i < infos.length; i++)
-	//		{
-	//			CBlob@ hi = infos[i].blob;
-	//			if (hi is null) continue;
-	//			if (hi.hasTag("bunker")) 
-	//			{
-	//				at_bunker = true;
-	//				break;
-	//			}
-	//		}
-	//	}
-	//}
-//
-	//if (at_bunker)
-	//{
-	//	if (XORRandom(100) < 33) return 0;
-	//	else damage *= 0.33f;
-	//}
 
 	bool isHitUnderside = false;
 	bool isHitBackside = false;
@@ -958,7 +969,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (this.hasTag("turret"))
 	{
-		if (this.getHealth()-damage <= 0.0f)
+		// broken logic for turrets
+		if (this.getHealth()-damage/2 <= 0.0f)
 		{
 			this.Tag("broken");
 			this.server_SetHealth(0.01f);
@@ -966,9 +978,44 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return 0;
 		}
 	}
+	else
+	{
+		// lucky perk
+		if (this.getHealth()-damage/2 <= 0.0f && this.getHealth() != 0.01f)
+		{
+			AttachmentPoint@ drv = this.getAttachments().getAttachmentPointByName("DRIVER");
+			if (drv !is null)
+			{
+				CBlob@ driver = drv.getOccupied();
+				if (driver !is null)
+				{
+					if (isServer())
+					{
+						if (driver.hasBlob("aceofspades", 1))
+						{
+							driver.TakeBlob("aceofspades", 1);
+
+							this.server_SetHealth(0.01f);
+
+							driver.getSprite().PlaySound("FatesFriend.ogg", 1.6);
+
+							if (driver.isMyPlayer()) // are we on server?
+							{
+								SetScreenFlash(42,   255,   150,   150,   0.28);
+							}
+
+							this.server_SetHealth(0.01f);
+
+							return 0;
+						}
+					}
+				}
+			}
+		}
+	}
 
 	// if damage is not insignificant, prevent repairs for a time
-	if (damage > 0.25f)
+	if (hitterBlob.getTeamNum() == this.getTeamNum() ? damage > 0.5f : damage > 0.15f)
 	{
 		this.set_u32("no_heal", getGameTime()+(15+(this.exists("extra_no_heal") ? this.get_u16("extra_no_heal") : 0))*30);
 

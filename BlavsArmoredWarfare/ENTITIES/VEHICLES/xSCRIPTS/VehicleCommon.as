@@ -552,7 +552,7 @@ void server_FireBlob(CBlob@ this, CBlob@ blob, const u8 charge)
 
 void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 {
-	this.set_s32("engine_RPMtarget", 0); // shut off the engine by default (longer idle time?)
+	this.set_f32("engine_RPMtarget", 0); // shut off the engine by default (longer idle time?)
 
 	v.move_direction = 0;
 	AttachmentPoint@[] aps;
@@ -577,12 +577,14 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 				// DRIVER
 				if (ap.name == "DRIVER" && !this.hasTag("immobile"))
 				{
+					//print(blob.getPlayer().getUsername() + " driver on " + this.getName());
 					bool moveUp = false;
 					const f32 angle = this.getAngleDegrees();
 					// set facing
 					blob.SetFacingLeft(this.isFacingLeft());
 					bool left = ap.isKeyPressed(key_left);
 					bool right = ap.isKeyPressed(key_right);
+					bool space = ap.isKeyJustPressed(key_action3);
 					const bool onground = this.isOnGround();
 					const bool onwall = this.isOnWall();
 					if (this.get_bool("engine_stuck"))
@@ -604,8 +606,31 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						// more force when starting
 						if (this.getShape().vellen < 1.75f)
 						{
-							moveForce *= 1.55f; // gear 1
+							moveForce *= 1.6f; // gear 1
 						}
+
+						// operators are better drivers
+						if (blob.getPlayer() !is null)
+						{
+							if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Operator")
+							{
+								// braking or reversing
+								if ((this.isFacingLeft() && right) || (!this.isFacingLeft() && left))
+								{
+									moveForce *= 1.35f;
+								}
+
+								if (this.getShape().vellen < 1.6f)
+								{
+									moveForce *= 1.45f;
+								}
+								else
+								{
+									moveForce *= 1.15f;
+								}
+							}
+						}
+					
 
 						const f32 engine_topspeed = v.move_speed;
 						const f32 engine_topspeed_reverse = v.turn_speed;
@@ -617,6 +642,64 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							this.AddForce(Vec2f(0.0f, this.getMass()*-0.24f)); // this is nice
 						}
 
+						if (space)
+						{
+							AttachmentPoint@[] aps;
+							this.getAttachmentPoints(@aps);
+							for (u8 i = 0; i < aps.length; i++)
+							{
+								AttachmentPoint@ ape = aps[i];
+								if (ape !is null)
+								{
+									if (ape.name == "DRIVER") continue;
+									else if (ape.name == "TURRET")
+									{
+										CBlob@ turret = ape.getOccupied();
+										if (turret !is null)
+										{
+										AttachmentPoint@ turape = turret.getAttachments().getAttachmentPointByName("GUNNER");
+										if (turape !is null)
+										{
+											CBlob@ gunner = turape.getOccupied();
+											if (gunner !is null)
+											{
+												CBitStream params;
+												gunner.SendCommand(gunner.getCommandID("bootout"), params);
+											}
+										}
+										AttachmentPoint@ bowape = turret.getAttachments().getAttachmentPointByName("BOW");
+										if (bowape !is null)
+										{
+										CBlob@ bow = bowape.getOccupied();
+										if (bow !is null)
+										{
+											AttachmentPoint@ bowap = bow.getAttachments().getAttachmentPointByName("GUNNER");
+											if (bowap !is null)
+											{
+												CBlob@ mgunner = bowap.getOccupied();
+												if (mgunner !is null)
+												{
+													CBitStream params;
+													mgunner.SendCommand(mgunner.getCommandID("bootout"), params);
+												}
+											}
+										}
+										}
+										}
+									}
+									else
+									{
+										CBlob@ pasape = ape.getOccupied();
+										if (pasape !is null && pasape.hasTag("player"))
+										{
+											CBitStream params;
+											pasape.SendCommand(pasape.getCommandID("bootout"), params);
+										}
+									}
+								}
+							}
+						}
+
 						bool slopeangle = (angle > 15 && angle < 345 && this.isOnMap());
 
 						Vec2f pos = this.getPosition();
@@ -624,11 +707,18 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						if (!left && !right) //no input
 						{
 							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.0f, 0.1f));
+
+							// brake!
+							this.getShape().setFriction(0.46);
+						}
+						else{
+							// release brakes
+							this.getShape().setFriction(0.02);
 						}
 
 						if (this.isFacingLeft())
 						{
-							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550)
+							if ((this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550) && (this.getShape().getFriction() == 0.02f))
 							{
 								if (ap.isKeyPressed(key_action2))
 								{
@@ -675,8 +765,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (ap.isKeyPressed(key_action2))
 							{
-								
-								//moveForce *= Maths::Clamp(this.get_f32("engine_RPM"), 0, engine_topspeed_reverse) / 4500;
 								// reverse
 								if (right)
 								{
@@ -701,7 +789,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						if (!this.isFacingLeft())
 						{ //spamable and has no effect
 
-							if (this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550)
+							if ((this.getShape().vellen > 1.0f || this.get_f32("engine_RPM") > 2550) && (this.getShape().getFriction() == 0.02f))
 							{				
 								if (ap.isKeyPressed(key_action2))
 								{
@@ -829,17 +917,18 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 					if (this.get_f32("engine_throttle") >= 0.5f) // make this an equation
 					{
-						this.set_s32("engine_RPMtarget", 8000); // gas gas gas
+						this.set_f32("engine_RPMtarget", 8000); // gas gas gas
 					}
 					else
 					{
-						this.set_s32("engine_RPMtarget", 2000); // let engine idle
+						this.set_f32("engine_RPMtarget", 2000); // let engine idle
 					}
 					
 				}  // driver
 
 				if (ap.name == "GUNNER" && !isKnocked(blob))
 				{
+					//print(blob.getPlayer().getUsername() + " gunner on " + this.getName());
 					// set facing
 					blob.SetFacingLeft(this.isFacingLeft());
 
@@ -885,7 +974,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								CBlob@ b = ap.getOccupied();
 							}
 
-							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && blob.isMyPlayer())
+							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && (blob.isMyPlayer() || blob.isBot()))
 							{
 								CBitStream fireParams;
 								fireParams.write_u16(blob.getNetworkID());
@@ -1044,6 +1133,11 @@ void RemoveWheelsOnFlight(CBlob@ this)
 
 void Vehicle_LevelOutInAir(CBlob@ this)
 {
+	if (this.getShape().getFriction() > 0.1f)
+	{
+		return;
+	}
+
 	if (this.hasTag("holding_down"))
 	{
 		return;

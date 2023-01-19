@@ -147,7 +147,7 @@ void onTick(CBlob@ this)
 
 	launcherFrame = 0; // grabbed, no green ping
 
-	if (bestBlobNetID != 0) //start locking onto valid target
+	if (bestBlobNetID != 0 && ownerBlob.isMyPlayer()) //start locking onto valid target
 	{
 		CBlob@ bestBlob = getBlobByNetworkID(bestBlobNetID);
 		if (bestBlob != null)
@@ -166,7 +166,7 @@ void onTick(CBlob@ this)
 			Vec2f squareScale = Vec2f(36.0f, 36.0f) * (2.0f - targetingProgress*1.5);
 			f32 squareCornerSeparation = 4.0f;
 			makeTargetSquare(targetPos, squareAngle, squareScale, squareCornerSeparation, 1.0f, targetingProgress == 1.0f ? redConsoleColor : yellowConsoleColor); //target detected rhombus
-			this.set_f32(targetingProgressString, Maths::Min(targetingProgress+0.01f, 1.0f));
+			this.set_f32(targetingProgressString, Maths::Min(targetingProgress+(bestBlob.hasTag("plane") ? 0.02f : 0.01f), 1.0f));
 
 			launcherFrame = 1; // green ping
 			launcherAngle *= 1.55f;
@@ -213,7 +213,7 @@ void onTick(CBlob@ this)
 	if (draw_robotech) makeTargetSquare(robotechPos, 0, Vec2f(3.0f, 3.0f), 3.0f, 1.0f, greenConsoleColor); // turnpoint
 	
 	CBlob@ targetBlob = getBlobByNetworkID(curTargetNetID);
-	if (curTargetNetID == 0 || targetBlob == null && ownerBlob.isMyPlayer())
+	if ((curTargetNetID == 0 || targetBlob == null) && ownerBlob.isMyPlayer())
 	{
 		makeTargetSquare(ownerAimpos, 0, Vec2f(28.0f, 20.0f), 2.0f, 1.0f, greenConsoleColor);
 	}

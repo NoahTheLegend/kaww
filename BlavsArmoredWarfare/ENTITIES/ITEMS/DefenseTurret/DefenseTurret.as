@@ -220,7 +220,6 @@ CBlob@ getNewTarget(CBlob @blob, const bool seeThroughWalls = false, const bool 
 		        && (XORRandom(200) == 0 || isVisible(blob, potential, distance))
 		   )
 		{
-			blob.set_Vec2f("last pathing pos", potential.getPosition());
 			return potential;
 		}
 	}
@@ -246,7 +245,9 @@ f32 getAimAngle(CBlob@ this)
 
 	if (targetblob !is null)
 	{
-		Vec2f aim_vec = (this.getPosition() - Vec2f(0.0f, 10.0f)) - (targetblob.getPosition() + Vec2f(0.0f, -4.0f) + targetblob.getVelocity() * 2.0f);
+		Vec2f aim_vec = (this.getPosition() - Vec2f(0.0f, 10.0f)) - (targetblob.getPosition() + Vec2f(0.0f, -4.0f) + targetblob.getVelocity() * 5.0f);
+
+		aim_vec += Vec2f(0, (this.getPosition() - targetblob.getPosition()).getLength() / 55.0f);
 
 		if ((!facing_left && aim_vec.x < 0) ||
 		        (facing_left && aim_vec.x > 0))

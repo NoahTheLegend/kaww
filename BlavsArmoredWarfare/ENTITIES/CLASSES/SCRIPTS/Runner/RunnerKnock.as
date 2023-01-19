@@ -176,7 +176,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		setKnocked(this, Maths::Min(time, 60), true);
 	}
 
-
 //  print("KNOCK!" + this.get_u8("knocked") + " dmg " + damage );
 	return damage; //damage not affected
 }

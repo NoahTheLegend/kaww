@@ -6,8 +6,10 @@ void onInit(CBlob@ this)
 {
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
+	this.Tag("shootseat");
 	this.Tag("weak vehicle");
 	this.Tag("has machinegun");
+	this.Tag("friendly_bullet_pass");
 
 	this.set_f32("max_angle_diff", 0.5f);
 
@@ -78,6 +80,43 @@ void onTick(CBlob@ this)
 			return;
 		}
 		Vehicle_StandardControls(this, v);
+
+		{
+			AttachmentPoint@ pass = this.getAttachments().getAttachmentPointByName("PASSENGER");
+			if (pass !is null && pass.getOccupied() !is null)
+			{
+				CBlob@ b = pass.getOccupied();
+				if (b !is null)
+				{
+					if (pass.isKeyPressed(key_action1)) b.set_bool("is_a1", true);
+					if (pass.isKeyJustPressed(key_action1)) b.set_bool("just_a1", true);
+					b.Tag("show_gun");
+					b.Tag("can_shoot_if_attached");
+					//if (b.isKeyPressed(key_action1)) printf("e");
+					if (b.getAimPos().x < b.getPosition().x) b.SetFacingLeft(true);
+					else b.SetFacingLeft(false);
+				}
+			}
+		}
+		{
+			AttachmentPoint@ pass = this.getAttachments().getAttachmentPointByName("PASSENGER1");
+			if (pass !is null && pass.getOccupied() !is null)
+			{
+				CBlob@ b = pass.getOccupied();
+				if (b !is null)
+				{
+					if (pass.isKeyPressed(key_action1)) b.set_bool("is_a1", true);
+					if (pass.isKeyJustPressed(key_action1)) b.set_bool("just_a1", true);
+					b.Tag("show_gun");
+					b.Tag("can_shoot_if_attached");
+
+					//if (b.isKeyPressed(key_action1)) printf("e");
+
+					if (b.getAimPos().x < b.getPosition().x) b.SetFacingLeft(true);
+					else b.SetFacingLeft(false);
+				}
+			}
+		}
 
 		CSprite@ sprite = this.getSprite();
 		if (getNet().isClient())
@@ -153,14 +192,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	}
 }
 
-void onCollision(CBlob@ this, CBlob@ blob, bool solid)
-{
-	if (blob !is null)
-	{
-		TryToAttachVehicle(this, blob);
-	}
-}
-
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
 	VehicleInfo@ v;
@@ -179,6 +210,8 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	{
 		return;
 	}
+	detached.Untag("show_gun");
+	detached.Untag("can_shoot_if_attached");
 	Vehicle_onDetach(this, v, detached, attachedPoint);
 }
 

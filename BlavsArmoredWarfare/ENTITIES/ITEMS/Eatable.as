@@ -32,8 +32,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 				if (heal_amount == 255)
 				{
+					f32 res = (theBlob.getInitialHealth()-theBlob.getHealth())*1.5f;
 					theBlob.add_f32("heal amount", theBlob.getInitialHealth() - theBlob.getHealth());
-					theBlob.server_SetHealth(theBlob.getInitialHealth());
+					res <= 0.5f ? theBlob.server_SetHealth(theBlob.getInitialHealth()) :  theBlob.server_Heal(res);
+					if (theBlob.getHealth() > theBlob.getInitialHealth()) theBlob.server_SetHealth(theBlob.getInitialHealth());
 				}
 				else
 				{
@@ -54,7 +56,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 						bool sameTeam = healer.getTeamNum() == player.getTeamNum();
 						if (!healerHealed && sameTeam)
 						{
-							int coins = 10;
+							int coins = 2;
+							if (getRules().get_string(healer.getUsername() + "_perk") == "Supply Chain")
+							{
+								coins *= 2;
+							}
 							healer.server_setCoins(healer.getCoins() + coins);
 						}
 					}

@@ -3,7 +3,7 @@
 #include "Hitters.as";
 #include "Explosion.as";
 
-const u8 MINE_PRIMING_TIME = 100;
+const u8 MINE_PRIMING_TIME = 105;
 
 const string MINE_STATE = "mine_state";
 const string MINE_TIMER = "mine_timer";
@@ -19,7 +19,7 @@ enum State
 void onInit(CBlob@ this)
 {
 	this.set_f32("explosive_radius", 42.0f);
-	this.set_f32("explosive_damage", 2.0f);
+	this.set_f32("explosive_damage", 3.0f);
 	this.set_f32("map_damage_radius", 32.0f);
 	this.set_f32("map_damage_ratio", 0.5f);
 	this.set_bool("map_damage_raycast", true);
@@ -27,6 +27,7 @@ void onInit(CBlob@ this)
 	this.set_u8("custom_hitter", Hitters::mine);
 
 	this.Tag("trap");
+	this.getSprite().SetRelativeZ(-0.1f); //background
 
 	this.Tag("ignore fall");
 	this.Tag("ignore_saw");

@@ -7,6 +7,7 @@ void onInit(CBlob@ this)
 
     this.Tag("destructable");
 	this.Tag("builder always hit");
+	this.Tag("bunker");
 
 	this.setPosition(this.getPosition()+Vec2f(0,8));
 
@@ -23,11 +24,13 @@ void onInit(CBlob@ this)
 		front.SetRelativeZ(146.88f);
 		front.SetOffset(Vec2f(0.0f, -11.0f));
 	}
+
+	this.getCurrentScript().tickFrequency = 30;
 }
 
 void onTick(CBlob@ this)
 {
-	if (isServer() && this.getTickSinceCreated() == 180)
+	if (isServer() && this.getTickSinceCreated() == 60)
 	{
 		CMap@ map = this.getMap();
 		if (map !is null)
@@ -35,11 +38,16 @@ void onTick(CBlob@ this)
 			this.SetFacingLeft(this.getPosition().x > map.tilemapwidth*4);
 		}
 	}
+	
+	if (!getMap().hasSupportAtPos(this.getPosition()))
+	{
+		this.server_Die();
+	}
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (blob.hasTag("projectile"))
+	if (blob.hasTag("projectile") && blob.getTickSinceCreated() > 1)
 	{
 		return true;
 	}

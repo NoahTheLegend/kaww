@@ -5,6 +5,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("ignore fall");
 	this.set_u32("next repair", 0);
+	this.Tag("trap");
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)
@@ -60,7 +61,7 @@ void onTick(CBlob@ this)
 				sprite.RotateBy(24.0f*l, Vec2f(0, 2));
 			else if (this.get_u32("next repair") == getGameTime() + 17)
 				sprite.RotateBy(16.0f*l, Vec2f(0, 2));
-			else if (this.get_u32("next repair") == getGameTime() + 14)
+			else if (this.get_u32("next repair") == getGameTime() + 14)  //bruh what is this like actually
 				sprite.RotateBy(-16.0f*l, Vec2f(0, 2));
 			else if (this.get_u32("next repair") == getGameTime() + 11)
 				sprite.RotateBy(16.0f*l, Vec2f(0, 2));
@@ -76,10 +77,10 @@ void onTick(CBlob@ this)
 			
 			return;
 		}
-		
+		u32 repair_cd = 30;
 		if (getKnocked(holder) <= 0)
 		{		
-			if (point.isKeyJustPressed(key_action1))
+			if (point.isKeyPressed(key_action1))
 			{
 				u8 team = holder.getTeamNum();
 				
@@ -102,6 +103,13 @@ void onTick(CBlob@ this)
 									}
 
 									float repair_amount = 0.35f;
+									if (holder.getPlayer() !is null)
+									{
+										if (getRules().get_string(holder.getPlayer().getUsername() + "_perk") == "Operator")
+										{
+											repair_cd = 20;
+										}
+									}
 									if (blob.hasTag("bunker"))
 									{
 										repair_amount *= 4;
@@ -109,6 +117,10 @@ void onTick(CBlob@ this)
 									else if (blob.hasTag("structure"))
 									{
 										repair_amount *= 20;
+									}
+									else if (blob.hasTag("vehicle"))
+									{
+										repair_amount *= 2;
 									}
 
 									if (blob.getHealth() + repair_amount <= blob.getInitialHealth())
@@ -147,7 +159,7 @@ void onTick(CBlob@ this)
 					this.getSprite().PlaySound("throw.ogg", 1.5f, 1.0f);
 				}
 
-				this.set_u32("next repair", getGameTime() + 25);
+				this.set_u32("next repair", getGameTime() + repair_cd);
 			}
 		}
 	}

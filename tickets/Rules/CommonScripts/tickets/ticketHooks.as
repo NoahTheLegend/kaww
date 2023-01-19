@@ -89,28 +89,6 @@ void onRestart(CRules@ this){
 	reset(this);
 }
 
-void onRender(CRules@ this){
-
-	CBlob@ b = getBlobByName("pointflag");
-	if (b !is null) return;
-	CBlob@[] tents;
-	getBlobsByName("tent", @tents);
-	if (tents.length == 0) return;
-	s16 blueTickets=0;
-	s16 redTickets=0;
-
-	if (g_videorecording) return;
-
-	blueTickets=this.get_s16("blueTickets");
-	redTickets=this.get_s16("redTickets");
-
-    GUI::SetFont("big score font");
-	GUI::DrawText( ""+redTickets, Vec2f(232,98), getTeamColor(1) );		//shows tickets just above bottom left HUD
-	GUI::DrawText( ""+blueTickets, Vec2f(232,34), getTeamColor(0) );
-
-}
-
-
 void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData){
 
 	int teamNum=victim.getTeamNum();

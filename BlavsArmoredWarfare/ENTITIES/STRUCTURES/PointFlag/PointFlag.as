@@ -1,3 +1,5 @@
+#include "PlayerRankInfo.as"
+
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
@@ -72,7 +74,7 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 			getRules().SetTeamWon(team);
 			getRules().SetCurrentState(GAME_OVER);
 			CTeam@ teamis = getRules().getTeam(team);
-			if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
+			if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
 		}
 		else
 		{
@@ -136,7 +138,9 @@ void onTick(CBlob@ this)
     		this.set_s8(teamcapping, 1);
 
     		num_red = Maths::Min(num_red, 2);
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red * (getMap() !is null && isTDM ? 1 : 2));
+    		u16 time = this.get_u16(capture_prop) + num_red * (getMap() !is null && isTDM ? 1 : 2);
+			if (time > capture_time*4) time = 0;
+    		this.set_u16(capture_prop, time);
 		}
     	else if (num_blue > 0 && num_red == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == 1 || this.getTeamNum() == 255)) // blue capping
     	{
@@ -144,7 +148,9 @@ void onTick(CBlob@ this)
     		this.set_s8(teamcapping, 0);
 
     		num_blue = Maths::Min(num_blue, 2);
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue * (getMap() !is null && isTDM ? 1 : 2));
+			u16 time = this.get_u16(capture_prop) + num_blue * (getMap() !is null && isTDM ? 1 : 2);
+			if (time > capture_time*4) time = 0;
+    		this.set_u16(capture_prop, time);
 		}
     }
 	else if (this.get_u16(capture_prop) > 0
@@ -170,7 +176,9 @@ void onTick(CBlob@ this)
 
 		//printf(""+mod);
 
-    	this.set_u16(capture_prop, this.get_u16(capture_prop) - (1+mod));
+		u16 time = this.get_u16(capture_prop) - (2+mod);
+		if (time > capture_time*4) time = 0;
+    	this.set_u16(capture_prop, time);
     }
     else if (this.get_u16(capture_prop) == 0) //returned to zero
     {
@@ -368,13 +376,14 @@ void onRender(CSprite@ this)
 	// Health meter trim
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
 					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 1, pos.y + y + dimension.y - 2), color_mid);
+	
+	// Health meter inside
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
+						Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
+	
 	if (blob.get_u8("numcapping") > 0)
 	{
-		// Health meter inside
-		GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
-						   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
+		//GUI::SetFont("menu");
+		GUI::DrawShadowedText("★ " + blob.get_u8("numcapping") + (blob.get_u8("numcapping") > 2 ? " (2)" : "") + " player" + (blob.get_u8("numcapping") > 1 ? "s are" : " is") + " capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 20), SColor(0xffffffff));
 	}
-
-	//GUI::SetFont("menu");
-	GUI::DrawShadowedText("★ Capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 20), SColor(0xffffffff));
 }

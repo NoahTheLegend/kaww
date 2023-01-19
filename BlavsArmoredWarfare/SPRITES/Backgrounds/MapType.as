@@ -4,6 +4,7 @@ namespace MapType
 	{
 		normal = 0,
 		desert,
-		grim
+		grim,
+		snow
 	}
 }

@@ -6,6 +6,7 @@
 #include "MakeSeed.as";
 #include "MakeCrate.as";
 #include "MakeScroll.as";
+#include "PlayerRankInfo.as";
 
 const bool chatCommandCooldown = false; // enable if you want cooldown on your server
 const uint chatCommandDelay = 3 * 30; // Cooldown in seconds
@@ -113,9 +114,13 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 				}
 			}
 		}
+		if (text_in == "!xp")
+		{
+			//xp
+		}
 		if (text_in == "!bot")
 		{
-			AddBot("Henry");
+			AddBot("Bot");
 			return true;
 		}
 		else if (text_in == "!teamwon blue")
@@ -339,6 +344,32 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					int money = parseInt(tokens[1]);
 					player.server_setCoins(money);
 				}
+				else if(tokens.length > 1 && tokens[0] == "!xp")
+				{
+					int xp = parseInt(tokens[1]);
+					if (tokens.length == 3)
+					{
+						string username = tokens[2];
+						CPlayer@ user = getPlayerByUsername(username);
+						if (user !is null)
+						{
+							getRules().set_u32(username + "_exp", xp);
+							getRules().Sync(username + "_exp", true);
+							CheckRankUps(this, // do reward coins and sfx
+								this.get_u32(username + "_exp"), // player new exp
+								user.getBlob());
+						}
+					}
+					else
+					{
+						getRules().set_u32(player.getUsername() + "_exp", xp);
+						getRules().Sync(player.getUsername() + "_exp", true);
+						CheckRankUps(this, // do reward coins and sfx
+							this.get_u32(player.getUsername() + "_exp"), // player new exp
+							player.getBlob());	
+					}
+								
+				}
 			}
 			else
 			{
@@ -347,6 +378,22 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 				{
 					wasCommandSuccessful = false;
 					errorMessage = "blob is currently blacklisted";
+				}
+				else if (text_in == "!kickbots")
+				{
+					for (u8 i = 0; i < getPlayersCount(); i++)
+					{
+						CPlayer@ p = getPlayer(i);
+						if (p !is null && p.isBot()) KickPlayer(p);
+					}
+				}
+				else if (text_in == "!godmode")
+				{
+					blob.hasTag("invincible") ? blob.Untag("invincible") : blob.Tag("invincible");
+				}
+				else if (text_in == "!togglebots")
+				{
+					getRules().hasTag("togglebots") ? getRules().Untag("togglebots") : getRules().Tag("togglebots");
 				}
 				else
 				{

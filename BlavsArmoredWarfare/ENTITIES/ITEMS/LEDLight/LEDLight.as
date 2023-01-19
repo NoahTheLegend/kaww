@@ -8,13 +8,18 @@
 
 	this.SetFacingLeft(XORRandom(100) < 50 ? true : false);
 
-	this.set_bool("light", true);
+	if (isServer()) this.set_bool("light", true);
 
 	this.Tag("destructable_nosoak");
+	this.Tag("builder always hit");
 
 	this.getSprite().SetZ(-5);
+}
 
-	if (this !is null) this.Sync("light", true);
+void onTick(CBlob@ this)
+{
+	if (this.getTickSinceCreated() == 0) this.Sync("light", true);
+	if (!this.get_bool("light")) this.getSprite().SetAnimation("broken");
 }
 
 f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData )

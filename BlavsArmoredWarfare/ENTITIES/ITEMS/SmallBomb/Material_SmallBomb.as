@@ -1,5 +1,5 @@
 #include "Hitters.as";
-#include "Explosionx.as";
+#include "Explosion.as";
 
 string[] particles = 
 {
@@ -11,7 +11,7 @@ void onInit(CBlob@ this)
 {
 	this.getShape().SetRotationsAllowed(true);
 
-	// this.set_string("custom_explosion_sound", "bigbomb_explosion.ogg");
+
 	this.set_bool("map_damage_raycast", true);
 	this.set_Vec2f("explosion_offset", Vec2f(0, 16));
 
@@ -23,8 +23,10 @@ void onInit(CBlob@ this)
 	this.Tag("explosive");
 	this.Tag("medium weight");
 	this.Tag("always bullet collide");
+	this.Tag("no_armory_pickup");
 
 	this.maxQuantity = 4;
+	if (isServer()) this.server_SetQuantity(this.maxQuantity);
 }
 
 void onDie(CBlob@ this)
@@ -101,10 +103,10 @@ void DoExplosion(CBlob@ this)
 
 	// print("Modifier: " + modifier + "; Quantity: " + this.getQuantity());
 
-	this.set_f32("map_damage_radius", (16.0f + random) * modifier);
-	this.set_f32("map_damage_ratio", -1.0f);
+	this.set_f32("map_damage_radius", (24.0f + random) * modifier);
+	this.set_f32("map_damage_ratio", 0.3f);
 
-	Explode(this, 24.0f + random, 5.0f+(XORRandom(51)*0.1f), true);
+	WarfareExplode(this, 32.0f + random, (3.0f+(XORRandom(31)*0.1f)) * modifier);
 
 	if(isClient())
 	{

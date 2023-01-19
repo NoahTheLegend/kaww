@@ -288,6 +288,41 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	int thisTeamNum = this.getTeamNum();
 	int blobTeamNum = blob.getTeamNum();
+	
+	if (blob.hasTag("door") && blob.getShape().getConsts().collidable)
+	{
+		return true;
+	}
+
+	if (blob.getName() == "wooden_platform" && blob.isCollidable())
+	{
+		f32 velx = this.getOldVelocity().x;
+		f32 vely = this.getOldVelocity().y;
+		f32 deg = blob.getAngleDegrees();
+
+		if ((deg < 45.0f || deg > 315.0f) && vely > 0.0f) //up		
+		{
+			return true;
+		}
+		if ((deg > 45.0f && deg < 135.0f) && velx < 0.0f) //right
+		{
+			return true;
+		}
+		if ((deg > 135.0f && deg < 225.0f) && vely < 0.0f) //down
+		{
+			return true;
+		}
+		if ((deg > 225.0f && deg < 315.0f) && velx > 0.0f) //left
+		{
+			return true;
+		}
+
+		//printf("deg "+deg);
+		//printf("velx "+velx);
+		//printf("vely "+vely);
+
+		return false;
+	}
 
 	return
 	(

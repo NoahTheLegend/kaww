@@ -59,7 +59,7 @@ void onTick(CBlob@ this)
 			{
 				if (getGameTime() % 8 == 0)
 				{
-					this.server_Hit(b, this.getPosition(), Vec2f(0, 1), 0.65f, Hitters::fire, true);
+					this.server_Hit(b, this.getPosition(), Vec2f(0, 0.33f), 0.65f, Hitters::fire, true);
 				}
 			}
 		}
@@ -70,6 +70,12 @@ void onTick(CBlob@ this)
 		this.getSprite().SetFrame(XORRandom(6));
 		ParticleAnimated("SmallFire", this.getPosition() + Vec2f(XORRandom(16) - 8, XORRandom(16) - 8), Vec2f(0, 0), 0, 1.0f, 2, 0.25f, false);
 	}
+}
+
+
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	return (!blob.hasTag("flesh") && !blob.hasTag("dead") && !blob.hasTag("vehicle") && blob.isCollidable()) || (blob.hasTag("door") && blob.getShape().getConsts().collidable);
 }
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)

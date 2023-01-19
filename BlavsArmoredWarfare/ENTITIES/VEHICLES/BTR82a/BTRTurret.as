@@ -16,8 +16,8 @@ const f32 damage_modifier = 0.65f;
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
-const f32 high_angle = 75.0f; // upper depression limit
-const f32 low_angle = 98.0f; // lower depression limit
+f32 high_angle = 30.0f; // upper depression limit
+f32 low_angle = 98.0f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
@@ -84,7 +84,6 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(0.5f);
-			arm.SetOffset(Vec2f(-0.0f, -5.0f));
 		}
 	}
 
@@ -155,6 +154,8 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
+	s16 currentAngle = this.get_f32("gunelevation");
+
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		VehicleInfo@ v;
@@ -173,24 +174,32 @@ void onTick(CBlob@ this)
 
 		f32 angle = getAngle(this, v.charge, v);
 		s16 targetAngle;
-
+		bool isOperator = false;
+		
 		AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
 		if (gunner !is null && gunner.getOccupied() !is null && !broken)
 		{
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+			
+			CPlayer@ p = gunner.getOccupied().getPlayer();
+			if (p !is null)
+			{
+				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+				{
+					isOperator = true;
+					f32 high_angle = 25.0f; // upper depression limit
+					f32 low_angle = 99.0f; // lower depression limit
+				}
+				else
+				{
+					f32 high_angle = 30.0f; // upper depression limit
+					f32 low_angle = 98.0f; // lower depression limit
+				}
+			}
 
 			bool facing_left = this.isFacingLeft();
-
-			//if (aim_vec.x > 0)
-			//{
-			//	this.SetFacingLeft(true);
-			//}
-			//else {
-			//	this.SetFacingLeft(false);
-			//}
 		}
-
-		if (angle < 0) //
+		if (angle < 0)
 		{
 			targetAngle = 360 + angle; // facing left
 		}
@@ -199,20 +208,24 @@ void onTick(CBlob@ this)
 			targetAngle = angle;
 		}
 
-		s16 currentAngle = this.get_f32("gunelevation");
-
 		this.getSprite().SetEmitSoundPaused(true);
 
 		if (!this.hasTag("nogunner"))
 		{
-			if (Maths::Abs(currentAngle - targetAngle) <= 1) return;
+			int factor = 1;
+			if (isOperator) factor = 2;
 
-			if (Maths::Abs(currentAngle - targetAngle) < 180) {
-				if (currentAngle < targetAngle) currentAngle++;
-				else currentAngle--;
+			int difference = Maths::Abs(currentAngle - targetAngle);
+
+			if (difference <= 1) return;
+			else if (difference <= factor) factor = 1;
+
+			if (difference < 180) {
+				if (currentAngle < targetAngle) currentAngle += factor;
+				else currentAngle -= factor;
 			} else {
-				if (currentAngle < targetAngle) currentAngle--;
-				else currentAngle++;
+				if (currentAngle < targetAngle) currentAngle += factor;
+				else currentAngle += factor;
 			}
 			this.getSprite().SetEmitSoundPaused(false);
 			this.getSprite().SetEmitSoundVolume(1.25f);
@@ -221,41 +234,21 @@ void onTick(CBlob@ this)
 			Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 		}
 
-		if (this.isFacingLeft())
-		{
-			this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
-		}
-		else
-		{
-			this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
-		}
+		if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+		else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
+	}
 
-		CSprite@ sprite = this.getSprite();
-		CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
-		if (arm !is null)
-		{
-			arm.ResetTransform();
-			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(-0.0f, -22.0f + (this.isFacingLeft() ? -1.0f : 0.0f)));
-			arm.SetRelativeZ(-101.0f);
-		}
+	if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+	else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 
-		if (getNet().isClient())
-		{
-			CPlayer@ p = getLocalPlayer();
-			if (p !is null)
-			{
-				CBlob@ local = p.getBlob();
-				if (local !is null)
-				{
-					CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
-					if (front !is null)
-					{
-						//front.setVisible(!local.isAttachedTo(this));
-					}
-				}
-			}
-		}
+	CSprite@ sprite = this.getSprite();
+	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+	if (arm !is null)
+	{
+		arm.ResetTransform();
+		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
+		arm.SetOffset(Vec2f(-9.0f, -24.0f + (this.isFacingLeft() ? -1.0f : 0.0f)));
+		arm.SetRelativeZ(-101.0f);
 	}
 }
 
@@ -325,9 +318,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
 		Vec2f vel = Vec2f(0.0f, -22.5f).RotateBy(angle);
 		bullet.setVelocity(vel);
-		bullet.setPosition(bullet.getPosition() + vel + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f));
-
-
+		bullet.setPosition(bullet.getPosition() + vel + Vec2f((this.isFacingLeft() ? -1 : 1)*4.0f, 0.0f));
 
 		this.AddForce(Vec2f(this.isFacingLeft() ? (recoil*5.0f) : (-recoil*5.0f), 0.0f));
 
@@ -337,15 +328,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 			CMap@ map = getMap();
 
 			float _angle = this.isFacingLeft() ? -anglereal+180 : anglereal; // on turret spawn it works wrong otherwise
-			_angle += -0.099f + (XORRandom(4) * 0.01f);
-			if (this.isFacingLeft())
-			{
-				//ParticleAnimated("Muzzleflash", bullet.getPosition() + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), _angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-			}
-			else
-			{
-				//ParticleAnimated("Muzzleflashflip", bullet.getPosition() + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), _angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-			}
+			_angle += -0.098f + (XORRandom(4) * 0.01f);
 			
 			for (int i = 0; i < 12; i++)
 			{

@@ -61,7 +61,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 0 ); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage( this.getTeam(0).getName() + " wins the game!" );
+			this.SetGlobalMessage( this.getTeam(0).getName() + " wins the game!\nWell done. Loading next map..." );
 			return true;
 		}else if(teamNum==0){
 			if(this.get_s16("blueTickets")>0) return false;
@@ -69,7 +69,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 1 ); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage( this.getTeam(1).getName() + " wins the game!" );
+			this.SetGlobalMessage( this.getTeam(1).getName() + " wins the game!\nWell done. Loading next map..." );
 			return true;
 		}
 	

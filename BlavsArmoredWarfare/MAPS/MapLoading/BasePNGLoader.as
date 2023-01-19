@@ -42,7 +42,7 @@ class PNGLoader
 		@map_random = Random();
 
 		CRules@ this = getRules();
-		this.set_u8("map_type", 0); // reset type   0 default, 1 desert, 2 grim
+		this.set_u8("map_type", 0); // reset type   0 default, 1 desert, 2 grim, 3 snow
 
 		this.set_bool("allowclouds", false);
 		this.set_u8("brightmod", 50); // 50 default
@@ -217,6 +217,8 @@ class PNGLoader
 			case map_colors::tile_wood:             map.SetTile(offset, CMap::tile_wood);             break;
 			case map_colors::tile_wood_back:        map.SetTile(offset, CMap::tile_wood_back);        break;
 			case map_colors::tile_grass:            map.SetTile(offset, CMap::tile_grass + map_random.NextRanged(3)); break;
+			case map_colors::tile_cdirt:            map.SetTile(offset, CMap::tile_cdirt); break;
+			case map_colors::tile_scrap:            map.SetTile(offset, CMap::tile_scrap); break;
 
 			// Water
 			case map_colors::water_air:
@@ -415,6 +417,7 @@ class PNGLoader
 			case map_colors::blue_m60:         autotile(offset); spawnVehicle(map, "m60",   offset, 0); break;
 			case map_colors::blue_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, 0); break;
 			case map_colors::blue_bf109:         autotile(offset); spawnVehicle(map, "bf109",   offset, 0); break;
+			case map_colors::blue_bomberplane:         autotile(offset); spawnVehicle(map, "bomberplane",   offset, 0); break;
 			case map_colors::blue_uh1:       autotile(offset); spawnVehicle(map, "uh1",   offset, 0); break;
 			case map_colors::blue_tanktrap:    autotile(offset); spawnVehicle(map, "tanktrap",   offset, 0); break;
 			case map_colors::blue_cruiser:     autotile(offset); spawnVehicle(map, "cruiser",   offset, 0); break;
@@ -426,7 +429,10 @@ class PNGLoader
 			case map_colors::red_m60:          autotile(offset); spawnVehicle(map, "m60",   offset, 1); break;
 			case map_colors::red_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, 1); break;
 			case map_colors::red_bf109:        autotile(offset); spawnVehicle(map, "bf109",   offset, 1); break;
+			case map_colors::red_bomberplane:        autotile(offset); spawnVehicle(map, "bomberplane",   offset, 1); break;
 			case map_colors::red_uh1:          autotile(offset); spawnVehicle(map, "uh1",   offset, 1); break;
+			case map_colors::blue_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, 0); break;
+			case map_colors::red_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, 1); break;
 			case map_colors::blue_armory:          autotile(offset); spawnVehicle(map, "armory",   offset, 0); break;
 			case map_colors::red_armory:          autotile(offset); spawnVehicle(map, "armory",   offset, 1); break;
 			case map_colors::blue_iarmory:          autotile(offset); spawnVehicle(map, "importantarmory",   offset, 0); break;
@@ -472,11 +478,6 @@ class PNGLoader
 			case map_colors::blue_russianshop:        autotile(offset); spawnBlob(map, "russianshop", offset, 0); break;
 			case map_colors::red_russianshop:         autotile(offset); spawnBlob(map, "russianshop", offset, 1); break;
 
-			case map_colors::classvendor:         autotile(offset); spawnBlob(map, "classvendor", offset, 2); break;
-			case map_colors::perkvendor:         autotile(offset); spawnBlob(map, "perkvendor", offset, 2); break;
-
-			case map_colors::wheeloffortune:         autotile(offset); spawnBlob(map, "wheeloffortune", offset, 2); break;
-
 			case map_colors::heavygun:         autotile(offset); spawnVehicle(map, "heavygun", offset); break;
 			case map_colors::crateheavygun:    autotile(offset); server_MakeCrate("heavygun", "Crate with Heavy machinegun.", 0, -1, getSpawnPosition(map, offset)); break;
 
@@ -487,6 +488,12 @@ class PNGLoader
 			case map_colors::red_bunker:        autotile(offset); spawnBlob(map, "bunker", offset, 1); break;
 			case map_colors::blue_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, 0); break;
 			case map_colors::red_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, 1); break;
+			case map_colors::stairs:        autotile(offset); spawnBlob(map, "stairs", offset); break;
+
+			case map_colors::barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, -1); break;
+			case map_colors::blue_barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, 0); break;
+			case map_colors::red_barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, 1); break;
+
 			case map_colors::constructionyard:     autotile(offset); spawnBlob(map, "constructionyard", offset); break;
 			case map_colors::baseconstructionyard:     autotile(offset); spawnBlob(map, "baseconstructionyard", offset); break;
 			case map_colors::b_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, 0); break;
@@ -525,10 +532,10 @@ class PNGLoader
 			// Backgrounds
 			case map_colors::map_desert: autotile(offset); spawnBlob(map, "info_desert", offset); break;
 			case map_colors::map_grim: autotile(offset); spawnBlob(map, "info_grim", offset); break;
-			//case map_colors::map_desert:      map_type = 3 break;
+			case map_colors::map_snow: autotile(offset); spawnBlob(map, "info_snow", offset); break;
 
 			default:
-				HandleCustomTile( map, offset, pixel );
+				//HandleCustomTile( map, offset, pixel );
 			};
 		}
 	}
@@ -615,7 +622,7 @@ class PNGLoader
 				map.AddBackground("Backgrounds/BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
 				map.AddBackground("Backgrounds/BackgroundIsland.png", Vec2f(0.0f, 40.0f), Vec2f(0.5f, 0.5f), color_white);
 
-				SetScreenFlash(255,   0,   0,   0,   1.25);
+				SetScreenFlash(255,   0,   0,   0,   1.75);
 				break;
 			}
 			case 1: //desert
@@ -630,7 +637,7 @@ class PNGLoader
 				map.AddBackground("Backgrounds/BackgroundDesert.png",       Vec2f(5.0f, -8.0f), Vec2f(0.25f, 2.0f), color_white);
 				map.AddBackground("Backgrounds/BackgroundDunes.png",        Vec2f(0.0f,  -7.0f), Vec2f(0.5f, 2.5f), color_white);
 
-				SetScreenFlash(255,   0,   0,   0,   1.25);
+				SetScreenFlash(255,   0,   0,   0,   1.75);
 				break;
 			}
 			case 2: //grim
@@ -644,13 +651,23 @@ class PNGLoader
 				map.AddBackground("Backgrounds/City.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
 				map.AddBackground("Backgrounds/Forest.png", Vec2f(0.0f, -120.0f), Vec2f(0.35f, 0.35f), color_white);
 
-				SetScreenFlash(255,   0,   0,   0,   3.0);
+				SetScreenFlash(255,   0,   0,   0,   3.5);
+				break;
+			}
+			case 3: //snow
+			{
+				map.CreateSky(color_black, Vec2f(1.0f, 1.0f), 200, "Sprites/Back/cloud", 0); // sky
+				map.CreateSkyGradient("Sprites/skygradient.png"); // override sky color with gradient
+				thisrules.set_bool("allowclouds", true);
+				thisrules.set_u8("brightmod", 50);
+				
+				map.AddBackground("Backgrounds/Snow_BackgroundPlains.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
+				map.AddBackground("Backgrounds/Snow_BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
+				
+				SetScreenFlash(255,   0,   0,   0,   1.75);
 				break;
 			}
 		}
-
-		//thisrules.Sync("allowclouds", true);
-		//thisrules.Sync("brightmod", true);
 	}
 
 	CBlob@ spawnLadder(CMap@ map, int offset)
@@ -691,6 +708,7 @@ class PNGLoader
 				}
 			}
 			blob.getShape().SetStatic( true );
+			blob.server_setTeamNum(-1);
 		}
 		return blob;
 	}

@@ -16,7 +16,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 
 	Vehicle_Setup(this,
-	              3750.0f, // move speed  //103
+	              4500.0f, // move speed  //103
 	              0.4f,  // turn speed
 	              Vec2f(0.0f, 0.57f), // jump out velocity
 	              true  // inventory access
@@ -58,7 +58,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(9, 2));
+	this.set_Vec2f("shop menu size", Vec2f(8, 2));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
@@ -97,13 +97,7 @@ void onInit(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Lantern", "$lantern$", "lantern", "A source of light.", false);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 20);
 	}
-	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
-	}
+	
 	{
 		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
@@ -125,17 +119,22 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$launcher_javelin$", "launcher_javelin", "Homing rocket launcher.\n\nUses HEAT warheads.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
-
+		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
 		s.customButton = true;
-
-		s.buttonwidth = 3;
+		s.buttonwidth = 1;
 		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$crate$", "launcher_javelin", "Homing Missile launcher.", false, true);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 
 		s.customButton = true;
 
@@ -240,18 +239,6 @@ void onTick(CBlob@ this)
 void onDie(CBlob@ this)
 {
     Explode(this, 64.0f, 1.0f);
-
-	//CBlob@[] tents;
-	//getBlobsByName("tent", @tents);
-//
-	//if (tents.length == 0)
-	//{
-	//	u8 team = (this.getTeamNum() == 0 ? 1 : 0);
-	//	getRules().SetTeamWon(team);
-	//	getRules().SetCurrentState(GAME_OVER);
-	//	CTeam@ teamis = getRules().getTeam(team);
-	//	if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!" );
-	//}
 }
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
@@ -286,7 +273,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (blob !is null)
 	{
-		if (blob.hasTag("material") && !blob.isAttached() && !blob.isInInventory())
+		if (blob.hasTag("material") && !blob.hasTag("no_armory_pickup") && !blob.isAttached() && !blob.isInInventory())
 		{
 			if (isServer()) this.server_PutInInventory(blob);
 			else this.getSprite().PlaySound("BridgeOpen.ogg", 1.0f);
@@ -330,36 +317,6 @@ bool isOverlapping(CBlob@ this, CBlob@ blob)
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	onRespawnCommand(this, cmd, params);
-
-	if (cmd == this.getCommandID("shop made item"))
-	{
-		this.getSprite().PlaySound("/ArmoryBuy.ogg");
-
-		if (!getNet().isServer()) return; /////////////////////// server only past here
-
-		u16 caller, item;
-		if (!params.saferead_netid(caller) || !params.saferead_netid(item))
-		{
-			return;
-		}
-		string name = params.read_string();
-		{
-			CBlob@ callerBlob = getBlobByNetworkID(caller);
-			if (callerBlob is null)
-			{
-				return;
-			}
-		}
-		if (name == "mat_smallbomb")
-		{
-			CBlob@ bitem = getBlobByNetworkID(item);
-			if (bitem !is null)
-			{
-				bitem.server_SetQuantity(4);
-				bitem.server_setTeamNum(this.getTeamNum());
-			}
-		}
-	}
 }
 
 

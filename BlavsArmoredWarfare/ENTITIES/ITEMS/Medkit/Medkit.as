@@ -13,16 +13,22 @@ void onInit(CSprite@ this)
 	this.ScaleBy(0.75f, 0.75f);
 }
 
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	return (!blob.hasTag("trap") && !blob.hasTag("flesh") && !blob.hasTag("dead") && !blob.hasTag("vehicle") && blob.isCollidable()) || (blob.hasTag("door") && blob.getShape().getConsts().collidable);
+}
+
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (caller is null) return;
 
-	if (caller.getHealth() < caller.getInitialHealth())
+	if (caller.getHealth() < caller.getInitialHealth()-0.1f)
 	{
 		CBitStream params;
 		params.write_u16(caller.getNetworkID());
 
-		CButton@ button = caller.CreateGenericButton(30, Vec2f(0, 0), this, this.getCommandID("usemed"), this.get_u8("medamount") + " uses      ", params);
+		u8 med_amount = this.get_u8("medamount");
+		CButton@ button = caller.CreateGenericButton(30, Vec2f(0, 0), this, this.getCommandID("usemed"), med_amount + " use" + (med_amount == 1 ? "" : "s") + "      ", params);
 		button.enableRadius = 28.0f;
 	}
 }

@@ -42,29 +42,34 @@ void onTick(CRules@ this)
 
 		bool is_siege = this.get_u8("siege") != 255;
 
-		if (is_siege)
-		{
-			teamWonNumber = (this.get_u8("siege") == 0 ? 1 : 0);
-			bool all_flags_capped = true;
-			CBlob@[] flags;
-        	getBlobsByName("pointflag", @flags);
-
-			for (u8 i = 0; i < flags.length; i++)
-			{
-				CBlob@ b = flags[i];
-				if (b is null) continue;
-				if (b.getTeamNum() != this.get_u8("siege")) all_flags_capped = false;
-			}
-
-			if (all_flags_capped) teamWonNumber = -1;
-		}
-		else
+		//if (is_siege)
+		//{
+		//	teamWonNumber = (this.get_u8("siege") == 0 ? 1 : 0);
+		//	bool all_flags_capped = true;
+		//	CBlob@[] flags;
+        //	getBlobsByName("pointflag", @flags);
+//
+		//	for (u8 i = 0; i < flags.length; i++)
+		//	{
+		//		CBlob@ b = flags[i];
+		//		if (b is null) continue;
+		//		if (b.getTeamNum() != this.get_u8("siege")) all_flags_capped = false;
+		//	}
+//
+		//	if (all_flags_capped) teamWonNumber = -1;
+		//}
+		//else
+		bool tie = false;
 		{
 			if(redTickets>blueTickets)
 				teamWonNumber = 1;
 			else if(blueTickets>redTickets)
 				teamWonNumber = 0;
-			else teamWonNumber = -1;
+			else
+			{
+				teamWonNumber = -1;
+				tie = true;
+			}
 		}
 
 		if (redTickets == 0 && blueTickets == 0)
@@ -75,8 +80,8 @@ void onTick(CRules@ this)
 			{
 				if (getPlayer(i) !is null && getPlayer(i).getBlob() !is null)
 				{
-					if (getPlayer(i).getTeamNum() == 0) players_blue++;
-					else if (getPlayer(i).getTeamNum() == 1) players_red++;
+					if (getPlayer(i).getBlob().getTeamNum() == 0) players_blue++;
+					else if (getPlayer(i).getBlob().getTeamNum() == 1) players_red++;
 				}
 			}
 
@@ -84,15 +89,11 @@ void onTick(CRules@ this)
 			else if (players_red > players_blue) teamWonNumber = 1;
 			else
 			{
-				u16 blue_kills = this.get_u16("blue_kills");
-				u16 red_kills = this.get_u16("red_kills");
-				if (blue_kills > red_kills) teamWonNumber = 0;
-				else if (red_kills > blue_kills) teamWonNumber = 1;
-				else teamWonNumber = -1;
+				teamWonNumber = -1;
 			}
 		}
 
-		if (teamWonNumber >= 0)
+		if (teamWonNumber >= 0 && !tie)
 		{
 			//ends the game and sets the winning team
 			this.SetTeamWon(teamWonNumber);
@@ -101,7 +102,7 @@ void onTick(CRules@ this)
 			if (teamWon !is null)
 			{
 				hasWinner = true;
-				this.SetGlobalMessage("Time is up!\n" + teamWon.getName() + " wins the game!");
+				this.SetGlobalMessage("Time is up!\n" + teamWon.getName() + " wins the game!\nWell done. Loading next map..." );
 			}
 		}
 
@@ -117,6 +118,8 @@ void onTick(CRules@ this)
 
 void onRender(CRules@ this)
 {
+	if (g_videorecording) return;
+	
 	if (!this.isMatchRunning() || this.get_bool("no timer") || !this.exists("end_in")) return;
 
 	s32 end_in = this.get_s32("end_in");
@@ -139,6 +142,6 @@ void onRender(CRules@ this)
 		              ((MinutesToEnd < 10) ? "0" + MinutesToEnd : "" + MinutesToEnd) +
 		              ":" +
 		              ((secondsToEnd < 10) ? "0" + secondsToEnd : "" + secondsToEnd),
-		              color, Vec2f(10, 140), Vec2f(getScreenWidth() - 20, 180), true, false);
+		              color, Vec2f(10, 120), Vec2f(getScreenWidth() - 20, 180), true, false);
 	}
 }

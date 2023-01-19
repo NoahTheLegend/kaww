@@ -288,7 +288,6 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 					if (local.isAttachedTo(this)) ShakeScreen(Vec2f( recoilx - XORRandom(recoilx*2) + 1, -recoily + XORRandom(recoily) + 1), recoillength, gunner.getInterpolatedPosition());
 					if (local.isAttachedTo(this)) ShakeScreen(28, 10, this.getPosition());
 
-					//this.set_u8("recoil_count", recoilcursor);
 					//this.set_u8("inaccuracy", this.get_u8("inaccuracy") + inaccuracypershot * (this.hasTag("sprinting")?2.0f:1.0f));
 
 					makeGibParticle(

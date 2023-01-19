@@ -16,14 +16,15 @@ const f32 damage_modifier = 1.125f;
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
-const f32 high_angle = 72.0f; // upper depression limit
-const f32 low_angle = 99.0f; // lower depression limit
+f32 high_angle = 75.0f; // upper depression limit
+f32 low_angle = 97.5f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
 	this.Tag("turret");
 	this.Tag("tank");
+	this.Tag("has machinegun");
 	this.Tag("blocks bullet");
 
 	this.set_f32("damage_modifier", damage_modifier);
@@ -62,6 +63,17 @@ void onInit(CBlob@ this)
 	// auto-load on creation
 	if (getNet().isServer())
 	{
+		CBlob@ bow = server_CreateBlob("heavygun");	
+
+		if (bow !is null)
+		{
+			bow.server_setTeamNum(this.getTeamNum());
+			this.server_AttachTo( bow, "BOW" );
+			this.set_u16("bowid", bow.getNetworkID());
+
+			bow.SetFacingLeft(this.isFacingLeft());
+		}
+
 		CBlob@ ammo = server_CreateBlob("mat_bolts");
 		if (ammo !is null)
 		{
@@ -156,19 +168,9 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
-	if (this.isFacingLeft() && !this.hasTag("facing left"))
-	{
-		this.getShape().SetOffset(Vec2f(-6.0f, -11.0f));
-		this.Tag("facing left");
-		this.Untag("facing right");
-	}
-	else if (!this.isFacingLeft() && !this.hasTag("facing right"))
-	{
-		this.getShape().SetOffset(Vec2f(6.0f, -11.0f));
-		this.Untag("facing left");
-		this.Tag("facing right");
-	}
-	if (getGameTime()%5==0)
+	s16 currentAngle = this.get_f32("gunelevation");
+
+	if (getGameTime() % 5 == 0)
 	{
 		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("BOW");
 		if (point !is null && point.getOccupied() !is null)
@@ -178,6 +180,7 @@ void onTick(CBlob@ this)
 			if (isServer()) tur.server_setTeamNum(this.getTeamNum());
 		}
 	}
+
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		VehicleInfo@ v;
@@ -196,11 +199,28 @@ void onTick(CBlob@ this)
 
 		f32 angle = getAngle(this, v.charge, v);
 		s16 targetAngle;
-
+		bool isOperator = false;
+		
 		AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
 		if (gunner !is null && gunner.getOccupied() !is null && !broken)
 		{
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+			
+			CPlayer@ p = gunner.getOccupied().getPlayer();
+			if (p !is null)
+			{
+				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+				{
+					isOperator = true;
+					high_angle = 72.5f;
+					low_angle = 100.0f;
+				}
+				else
+				{
+					f32 high_angle = 75.0f; // upper depression limit
+					f32 low_angle = 97.5f; // lower depression limit
+				}
+			}
 
 			bool facing_left = this.isFacingLeft();
 		}
@@ -214,20 +234,24 @@ void onTick(CBlob@ this)
 			targetAngle = angle;
 		}
 
-		s16 currentAngle = this.get_f32("gunelevation");
-
 		this.getSprite().SetEmitSoundPaused(true);
 
 		if (!this.hasTag("nogunner"))
 		{
-			if (Maths::Abs(currentAngle - targetAngle) <= 1) return;
+			int factor = 1;
+			if (isOperator) factor = 2;
 
-			if (Maths::Abs(currentAngle - targetAngle) < 180) {
-				if (currentAngle < targetAngle) currentAngle++;
-				else currentAngle--;
+			int difference = Maths::Abs(currentAngle - targetAngle);
+
+			if (difference <= 1) return;
+			else if (difference <= factor) factor = 1;
+
+			if (difference < 180) {
+				if (currentAngle < targetAngle) currentAngle += factor;
+				else currentAngle -= factor;
 			} else {
-				if (currentAngle < targetAngle) currentAngle--;
-				else currentAngle++;
+				if (currentAngle < targetAngle) currentAngle += factor;
+				else currentAngle += factor;
 			}
 			this.getSprite().SetEmitSoundPaused(false);
 			this.getSprite().SetEmitSoundVolume(1.25f);
@@ -236,41 +260,20 @@ void onTick(CBlob@ this)
 			Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 		}
 
-		if (this.isFacingLeft())
-		{
-			this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
-		}
-		else
-		{
-			this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
-		}
-		//this.set_f32("gunelevation", Maths::Min(360-high_angle , this.get_f32("gunelevation")));
+		if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+		else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
+	}
 
-		CSprite@ sprite = this.getSprite();
-		CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
-		if (arm !is null)
-		{
-			arm.ResetTransform();
-			arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-			arm.SetOffset(Vec2f(-20.0f, -27.0f));
-		}
+	if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+	else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 
-		if (getNet().isClient())
-		{
-			CPlayer@ p = getLocalPlayer();
-			if (p !is null)
-			{
-				CBlob@ local = p.getBlob();
-				if (local !is null)
-				{
-					CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
-					if (front !is null)
-					{
-						//front.setVisible(!local.isAttachedTo(this));
-					}
-				}
-			}
-		}
+	CSprite@ sprite = this.getSprite();
+	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+	if (arm !is null)
+	{
+		arm.ResetTransform();
+		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
+		arm.SetOffset(Vec2f(-20.0f, -27.0f));
 	}
 }
 
@@ -352,7 +355,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
 		Vec2f vel = Vec2f(0.0f, -27.5f).RotateBy(angle);
 		bullet.setVelocity(vel);
-		bullet.setPosition(bullet.getPosition() + vel + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f));
+		bullet.setPosition(bullet.getPosition() + vel + Vec2f((this.isFacingLeft() ? -1 : 1)*16.0f, 2.0f));
 
 		this.AddForce(Vec2f(this.isFacingLeft() ? (recoil*5.0f) : (-recoil*5.0f), 0.0f));
 

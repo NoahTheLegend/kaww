@@ -10,7 +10,7 @@ void onInit(CRules@ this)
 
 	sv_gravity = 9.81f;//9.81
 	particles_gravity.y = 1.25f;
-	sv_visiblity_scale = 1.5f; // experimental change 1.25 > 1.5
+	sv_visiblity_scale = 1.75f; // experimental change 1.25 > 1.5 // increased by .25 again
 	cc_halign = 2;
 	cc_valign = 2;
 

@@ -8,7 +8,6 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("tank");
 	this.Tag("deal_bunker_dmg");
-	this.Tag("has machinegun");
 	this.Tag("engine_can_get_stuck");
 
 	CShape@ shape = this.getShape();
@@ -16,7 +15,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    5000.0f, // move speed
+	    5150.0f, // move speed
 	    1.0f,  // turn speed
 	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    false);  // inventory access
@@ -88,17 +87,6 @@ void onInit(CBlob@ this)
 			turret.SetFacingLeft(facing_left);
 		}
 
-		CBlob@ bow = server_CreateBlob("heavygun");	
-
-		if (bow !is null)
-		{
-			bow.server_setTeamNum(this.getTeamNum());
-			turret.server_AttachTo( bow, "BOW" );
-			this.set_u16("bowid", bow.getNetworkID());
-
-			bow.SetFacingLeft(facing_left);
-		}
-
 		{
 			CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 1
 
@@ -149,23 +137,6 @@ void onTick(CBlob@ this)
 		}
 
 		Vehicle_StandardControls(this, v);
-
-		if (getNet().isClient())
-		{
-			CPlayer@ p = getLocalPlayer();
-			if (p !is null)
-			{
-				CBlob@ local = p.getBlob();
-				if (local !is null)
-				{
-					CSpriteLayer@ front = this.getSprite().getSpriteLayer("front layer");
-					if (front !is null)
-					{
-						//front.setVisible(!local.isAttachedTo(this));
-					}
-				}
-			}
-		}
 
 		CSpriteLayer@ tracks = this.getSprite().getSpriteLayer("tracks");
 		if (tracks !is null)
@@ -278,14 +249,6 @@ void onDie(CBlob@ this)
 
 	this.getSprite().PlaySound("/vehicle_die");
 
-	if (this.exists("bowid"))
-	{
-		CBlob@ bow = getBlobByNetworkID(this.get_u16("bowid"));
-		if (bow !is null)
-		{
-			bow.server_Die();
-		}
-	}
 	if (this.exists("followid"))
 	{
 		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));

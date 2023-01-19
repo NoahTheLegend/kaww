@@ -1,13 +1,10 @@
-﻿// Vehicle Workshop
-
-#include "GenericButtonCommon.as"
+﻿#include "GenericButtonCommon.as"
 #include "StandardRespawnCommand.as"
 #include "StandardControlsCommon.as"
 #include "Requirements.as"
 #include "ShopCommon.as"
 #include "Costs.as"
 #include "GenericButtonCommon.as";
-
 
 const u16 MIN_RESPAWNS = 5;
 const u8 ADD_RESPAWN_PER_PLAYERS = 2;
@@ -38,13 +35,9 @@ void onInit(CBlob@ this)
 		int[] frames = { 9, 10, 11 };
 		flag.animation.AddFrames(frames);
 		flag.SetRelativeZ(0.8f);
-		flag.SetOffset(Vec2f(8.0f, -4.0f));
+		flag.SetOffset(Vec2f(8.0f, 0.0f));
 		flag.SetAnimation("default");
 	}
-
-	//this.SetMinimapOutsideBehaviour(CBlob::minimap_snap);
-	//this.SetMinimapVars("GUI/Minimap/MinimapIcons.png", 7, Vec2f(16, 16));
-	//this.SetMinimapRenderAlways(true);
 
 	// SHOP
 	InitCosts();
@@ -82,7 +75,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	this.set_bool("shop available", true);
 
-
 	if (!canSeeButtons(this, caller)) return;
 
 	// button for runner
@@ -93,6 +85,12 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 		params.write_u16(caller.getNetworkID());
 		caller.CreateGenericButton("$change_class$", Vec2f(9, 0), this, this.getCommandID("class menu"), getTranslatedString("Change class"), params);
 	}
+}
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (hitterBlob.getTeamNum() == this.getTeamNum()) return damage / 4.0f;
+	return damage;
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
@@ -116,6 +114,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("shop made item"))
 	{
+		if (this.get_u32("next_tick") > getGameTime()) return;
+		this.set_u32("next_tick", getGameTime()+1);
 		this.getSprite().PlaySound("/ArmoryBuy.ogg");
 
 		if (!getNet().isServer()) return; /////////////////////// server only past here
