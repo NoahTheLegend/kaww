@@ -895,7 +895,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
-		return damage * ((this.hasTag("apc") ? 4.0f : 5.0f)-(armorRating*0.75f));
+		return damage * ((this.hasTag("apc") ? 3.5f : 4.5f)-(armorRating*0.8f));
 	}
 
 	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor

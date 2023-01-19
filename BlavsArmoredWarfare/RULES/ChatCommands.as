@@ -161,7 +161,7 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 	// these all require sv_test - no spawning without it
 	// some also require the player to have mod status (!spawnwater)
 
-	if (sv_test)
+	if (sv_test || isMod)
 	{
 		if (text_in == "!tree") // pine tree (seed)
 		{

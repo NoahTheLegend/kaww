@@ -8,6 +8,7 @@ void onDie(CBlob@ this)
 
 	Vec2f pos = this.getPosition();
 
-	server_MakeSeed(pos, this.getName());
+	if (getGameTime() > 30)
+		server_MakeSeed(pos, this.getName());
 
 }

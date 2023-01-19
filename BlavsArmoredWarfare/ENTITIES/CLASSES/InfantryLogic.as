@@ -175,7 +175,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
-			return damage*0.1f;
+			return damage*0.075f;
 		else if (customData == Hitters::arrow)
 			return damage*0.5f;
 		else return (customData == Hitters::sword ? this.hasTag("mgunner") ? damage : 0 : 0);
