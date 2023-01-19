@@ -67,12 +67,6 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "No Perk", "$0_class_icon$", "No Perk", "---- No Perk ----");
 
-	addPlayerPerk(this, "Death Incarnate", "$7_class_icon$", "Death Incarnate",
-						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
-						+"\n                   - Take twice as much damage     "
-						+"\n                   - Enemy kill XP gain: 300%  "
-						);
-
 	addPlayerPerk(this, "Camouflage", "$6_class_icon$", "Camouflage",
 						"Ghillie Suit:\n\n"+"$6_class_icon$"+"Ghillie suit"
 						+"\n                   - Turn into a mobile bush!     "
@@ -126,6 +120,12 @@ void InitClasses(CBlob@ this)
 						+"\n\n                  Health Insurance"
 						+"\n                   - Lose half of all money on death          "
 						);	
+
+	addPlayerPerk(this, "Death Incarnate", "$7_class_icon$", "Death Incarnate",
+						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
+						+"\n                   - Take twice as much damage     "
+						+"\n                   - Enemy kill XP gain: 300%  "
+						);
 }
 
 void BuildRespawnMenuFor(CBlob@ this, CBlob @caller)
