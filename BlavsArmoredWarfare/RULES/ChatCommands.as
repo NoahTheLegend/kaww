@@ -387,6 +387,10 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 						if (p !is null && p.isBot()) KickPlayer(p);
 					}
 				}
+				else if (text_in == "!godmode")
+				{
+					blob.hasTag("invincible") ? blob.Untag("invincible") : blob.Tag("invincible");
+				}
 				else if (text_in == "!togglebots")
 				{
 					getRules().hasTag("togglebots") ? getRules().Untag("togglebots") : getRules().Tag("togglebots");

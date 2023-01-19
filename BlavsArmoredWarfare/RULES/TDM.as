@@ -6,7 +6,7 @@
 #include "Hitters.as";
 #include "PlayerRankInfo.as";
 
-const u8 MAX_BOTS = 12; // fills while server's pop is lesser than value
+const u8 MAX_BOTS = 8; // fills while server's pop is lesser than value
 
 ConfigFile cfg_playerexp;
 
@@ -1395,17 +1395,20 @@ void onTick(CRules@ this)
 				}
 				else bots++;
 			}
-			
-			//printf("pl "+players);
-			//printf("bots "+bots);
-
-			// kick bots onRestart
-			if (players+bots <= MAX_BOTS)
+			if (players > 0)
 			{
-				s8 remaining_bots = MAX_BOTS-(players+bots);
-				for (u8 i = 0; i < remaining_bots; i++)
+				
+				//printf("pl "+players);
+				//printf("bots "+bots);
+
+				// kick bots onRestart
+				if (players+bots <= MAX_BOTS)
 				{
-					AddBot("Bot");
+					s8 remaining_bots = MAX_BOTS-(players+bots);
+					for (u8 i = 0; i < remaining_bots; i++)
+					{
+						AddBot("Bot");
+					}
 				}
 			}
 		}
