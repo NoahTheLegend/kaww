@@ -199,7 +199,6 @@ void onTick(CBlob@ this)
 
 			bool facing_left = this.isFacingLeft();
 		}
-
 		if (angle < 0)
 		{
 			targetAngle = 360 + angle; // facing left
