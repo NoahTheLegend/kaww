@@ -867,7 +867,7 @@ void onTick(CBlob@ this)
 {
 	if (isServer()&&getGameTime()%30==0)
 	{
-		if (this.isBot() && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
+		if (!(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
 	}
 	if ((this.getTeamNum() == 0 && getRules().get_s16("blueTickets") == 0)
 	|| (this.getTeamNum() == 1 && getRules().get_s16("redTickets") == 0))

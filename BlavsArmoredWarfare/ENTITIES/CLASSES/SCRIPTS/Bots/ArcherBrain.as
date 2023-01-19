@@ -609,7 +609,7 @@ void onTick(CBrain@ this)
 								GoToPos(blob, secondarytarget.getPosition());
 							}		
 						}		
-						else if (secondarytarget.getName() == "pointflag") // we are going for flag
+						else if (secondarytarget.getName() == "pointflag" && secondarytarget.getTeamNum() != blob.getTeamNum()) // we are going for flag
 						{	
 							if (emotes) set_emote(blob, Emotes::redflag, 10);
 
