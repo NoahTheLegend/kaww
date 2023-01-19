@@ -59,7 +59,8 @@ void onDie(CBlob@ this)
         "food",
         "mat_7mmround",
         "mat_14mmround",
-        "mat_bolts"
+        "mat_bolts",
+        "mat_heatwarhead"
     };
     array<float> _chances =
     {
@@ -74,6 +75,7 @@ void onDie(CBlob@ this)
         0.04,
         0.03,
         0.02,
+        0.01,
         0.01
     };
     array<u8> _amount =
@@ -89,7 +91,8 @@ void onDie(CBlob@ this)
         1,
         50+(XORRandom(2)==0?50:0),
         15,
-        4
+        4,
+        2
     };
 
     if (getNet().isServer())
