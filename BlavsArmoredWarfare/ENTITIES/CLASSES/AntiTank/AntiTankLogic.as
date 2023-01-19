@@ -136,7 +136,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 void ManageParachute( CBlob@ this )
 {
-	if (this.isOnGround() || this.isInWater() || this.isAttached())
+	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder())
 	{	
 		if (this.hasTag("parachute"))
 		{
