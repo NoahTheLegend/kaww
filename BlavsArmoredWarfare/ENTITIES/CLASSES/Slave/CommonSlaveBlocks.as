@@ -139,7 +139,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 	{
 		AddIconToken("$barbedwire_icon$", "BarbedWire.png", Vec2f(16, 16), 0);
 		BuildBlock b(0, "barbedwire", "$barbedwire_icon$", "Barbed Wire\nHard to pass through.");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 15);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
 		blocks[0].push_back(b);
 	}
 	{
