@@ -331,12 +331,16 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
-	if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("vehicle"))
+	if (blob.hasTag("vehicle"))
 	{
-		this.IgnoreCollisionWhileOverlapped(blob, 10);
-		if (blob.hasTag("apc") || blob.hasTag("turret") || blob.hasTag("gun")) return (XORRandom(100) > 70);
-		else if (blob.hasTag("tank")) return (XORRandom(100) > 50);
-		else return true;
+		if (blob.getTeamNum() == this.getTeamNum())
+		{
+			this.IgnoreCollisionWhileOverlapped(blob, 10);
+			if (blob.hasTag("apc") || blob.hasTag("turret") || blob.hasTag("gun")) return (XORRandom(100) > 70);
+			else if (blob.hasTag("tank")) return (XORRandom(100) > 50);
+			else return true;
+		}
+		else onHitBlob(this, this.getPosition()+this.getVelocity(), this.getVelocity(), blob, Hitters::arrow);
 	}
 
 	if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
@@ -357,8 +361,8 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	
 	if ((this.getTickSinceCreated() > 1 || (blob.getTeamNum() != this.getTeamNum() && this.getTeamNum() < 2)) && blob.isAttached())
 	{
-		if (blob.hasTag("collidewithbullets")) return true;
-		if (XORRandom(9) == 0)
+		if (blob.hasTag("collidewithbullets")) return XORRandom(2)==0;
+		if (XORRandom(6) == 0)
 		{
 			return true;
 		}

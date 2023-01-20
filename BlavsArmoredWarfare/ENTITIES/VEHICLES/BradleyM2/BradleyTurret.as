@@ -9,7 +9,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u8 cooldown_time = 150;//210;
+const u8 cooldown_time = 180;//210;
 const u8 recoil = 250;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
@@ -372,6 +372,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
+	if (attached.hasTag("player")) attached.Tag("covered");
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{
@@ -384,6 +385,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
+	if (detached.hasTag("player")) detached.Untag("covered");
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{
