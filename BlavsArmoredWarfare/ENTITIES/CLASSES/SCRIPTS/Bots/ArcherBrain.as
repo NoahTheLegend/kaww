@@ -767,82 +767,90 @@ void onTick(CBrain@ this)
 											if (XORRandom(3) == 0) // lets drive a vehicle
 											{
 												// let's check if the driver seat is occupied
-												AttachmentPoint@ point;
-												if (point !is null && vehicle !is null) @point = vehicle.getAttachments().getAttachmentPointByName("DRIVER");
-												if (point !is null)
+												CAttachment@ ats = vehicle.getAttachments();
+												if (ats !is null)
 												{
-													CBlob@ occupied = point.getOccupied();
-													if (occupied is null)
+													AttachmentPoint@ point;
+													if (point !is null && vehicle !is null) @point = ats.getAttachmentPointByName("DRIVER");
+													if (point !is null)
 													{
-														// drivers seat is empty
-														// add the vehicle to secondary target
-														if (vehicle.getNetworkID() != 0)
+														CBlob@ occupied = point.getOccupied();
+														if (occupied is null)
 														{
-															blob.set_u16("secondarytarget", vehicle.getNetworkID());
-															blob.set_string("behavior", "drive");
+															// drivers seat is empty
+															// add the vehicle to secondary target
+															if (vehicle.getNetworkID() != 0)
+															{
+																blob.set_u16("secondarytarget", vehicle.getNetworkID());
+																blob.set_string("behavior", "drive");
+															}
 														}
 													}
 												}
 											}
 											else { // lets get in an needed gunner seat
 												// is the driver seat is occupied?
-												AttachmentPoint@ point;
-												if (point !is null && vehicle !is null) @point = vehicle.getAttachments().getAttachmentPointByName("DRIVER");
-												if (point !is null)
+												CAttachment@ ats = vehicle.getAttachments();
+												if (ats !is null)
 												{
-													CBlob@ occupied = point.getOccupied();
-													if (occupied !is null)
+													AttachmentPoint@ point;
+													if (point !is null && vehicle !is null) @point = ats.getAttachmentPointByName("DRIVER");
+													if (point !is null)
 													{
-														// drivers seat is occupied
-														// check if this vehicle has a gunner seat
-
-														int typeofemptyseat = 0;
-
-														AttachmentPoint@ gunnerseat = vehicle.getAttachments().getAttachmentPointByName("GUNNER");
-														if (gunnerseat !is null)
+														CBlob@ occupied = point.getOccupied();
+														if (occupied !is null)
 														{
-															if (gunnerseat.getOccupied() is null) typeofemptyseat = 1;
-														}
-														else // either we have no gunner seat, or we have a turret, or an mg
-														{
-															// check for turret
-															AttachmentPoint@ turret = vehicle.getAttachments().getAttachmentPointByName("TURRET");
-															if (turret !is null)
+															// drivers seat is occupied
+															// check if this vehicle has a gunner seat
+
+															int typeofemptyseat = 0;
+
+															AttachmentPoint@ gunnerseat = vehicle.getAttachments().getAttachmentPointByName("GUNNER");
+															if (gunnerseat !is null)
 															{
-																CBlob@ turretblob = turret.getOccupied();
-																if (turretblob !is null)
+																if (gunnerseat.getOccupied() is null) typeofemptyseat = 1;
+															}
+															else // either we have no gunner seat, or we have a turret, or an mg
+															{
+																// check for turret
+																AttachmentPoint@ turret = vehicle.getAttachments().getAttachmentPointByName("TURRET");
+																if (turret !is null)
 																{
-																	AttachmentPoint@ turretgunnerseat = turretblob.getAttachments().getAttachmentPointByName("GUNNER");
-																	if (turretgunnerseat !is null)
+																	CBlob@ turretblob = turret.getOccupied();
+																	if (turretblob !is null)
 																	{
-																		if (turretgunnerseat.getOccupied() is null) typeofemptyseat = 2;
+																		AttachmentPoint@ turretgunnerseat = turretblob.getAttachments().getAttachmentPointByName("GUNNER");
+																		if (turretgunnerseat !is null)
+																		{
+																			if (turretgunnerseat.getOccupied() is null) typeofemptyseat = 2;
+																		}
 																	}
 																}
-															}
-															else
-															{
-																AttachmentPoint@ mg = vehicle.getAttachments().getAttachmentPointByName("BOW");
-																if (mg !is null)
+																else
 																{
-																	CBlob@ mgblob = mg.getOccupied();
-																	if (mgblob !is null)
+																	AttachmentPoint@ mg = vehicle.getAttachments().getAttachmentPointByName("BOW");
+																	if (mg !is null)
 																	{
-																		// check if mg has a gunner
-																		AttachmentPoint@ mgseat = mgblob.getAttachments().getAttachmentPointByName("GUNNER");
-																		if (mgseat !is null)
+																		CBlob@ mgblob = mg.getOccupied();
+																		if (mgblob !is null)
 																		{
-																			if (mgseat.getOccupied() is null) typeofemptyseat = 1;
+																			// check if mg has a gunner
+																			AttachmentPoint@ mgseat = mgblob.getAttachments().getAttachmentPointByName("GUNNER");
+																			if (mgseat !is null)
+																			{
+																				if (mgseat.getOccupied() is null) typeofemptyseat = 1;
+																			}
 																		}
 																	}
 																}
 															}
-														}
 
-														if (vehicle.getNetworkID() != 0)
-														{
-															blob.set_u16("secondarytarget", vehicle.getNetworkID());
-															blob.set_string("behavior", typeofemptyseat == 1 ? "gun_mg" : "gun_turret");
-															// time to get into this gun
+															if (vehicle.getNetworkID() != 0)
+															{
+																blob.set_u16("secondarytarget", vehicle.getNetworkID());
+																blob.set_string("behavior", typeofemptyseat == 1 ? "gun_mg" : "gun_turret");
+																// time to get into this gun
+															}
 														}
 													}
 												}
