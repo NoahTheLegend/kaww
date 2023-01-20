@@ -77,7 +77,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {
 	if (customData == Hitters::explosion || hitterBlob.getName() == "grenade")
 	{
-		return damage * Maths::Max(0.0f, 0.33f / (hitterBlob.getPosition() - this.getPosition()).Length());
+		return damage * Maths::Max(0.0f, damage / (hitterBlob.getPosition() - this.getPosition()).Length());
 	}
 	if (hitterBlob !is null && hitterBlob !is this && (customData == Hitters::builder || customData == Hitters::sword))
 	{

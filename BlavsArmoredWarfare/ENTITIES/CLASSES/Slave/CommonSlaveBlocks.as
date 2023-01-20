@@ -90,7 +90,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 	}
 	{
 		BuildBlock b(CMap::tile_scrap, "scrap_block", "$scrap_block$", "Scrap block\nReinforced block of stone, resistable to explosions and direct hits.");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
 		blocks[0].push_back(b);
 	}
