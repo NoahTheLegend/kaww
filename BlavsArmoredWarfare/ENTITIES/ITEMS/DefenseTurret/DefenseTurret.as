@@ -8,8 +8,6 @@ void onInit(CBlob@ this)
 	this.set_bool("spawned", false);
 	this.set_u16(target_player_id, 0);
 
-
-
 	this.set_u32("next repair", 0);
 
 	// init arm sprites
@@ -59,7 +57,7 @@ void onTick(CBlob@ this)
 	}
 	else // i got a target
 	{
-		if (targetblob !is null)
+		if (targetblob !is null && this.getDistanceTo(targetblob) < 735.0f)
 		{
 			this.getCurrentScript().tickFrequency = 1;
 
@@ -85,6 +83,7 @@ void onTick(CBlob@ this)
 				this.Sync(target_player_id, true);
 			}
 		}
+		else this.set_u16(target_player_id, 0);
 	}
 
 	//angle
