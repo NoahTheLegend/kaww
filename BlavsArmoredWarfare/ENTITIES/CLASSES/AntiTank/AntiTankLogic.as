@@ -678,6 +678,14 @@ void onTick(CBlob@ this)
 		return;
 	}
 
+	if ((this.getTeamNum() == 0 && getRules().get_s16("blueTickets") == 0)
+	|| (this.getTeamNum() == 1 && getRules().get_s16("redTickets") == 0))
+	{
+		this.SetLightRadius(8.0f);
+		this.SetLightColor(SColor(255, 255, 255, 255));
+		this.SetLight(true);
+	}
+
 	if (this.getTickSinceCreated() <= 1) this.set_u32("mag_bullets", 0);
 
 	ManageParachute(this);

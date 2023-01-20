@@ -256,7 +256,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 	this.Tag("dead");
 	this.server_Die();
-	this.getSprite().Gib();
+	if (!v_fastrender) this.getSprite().Gib();
 
 	return true;
 }
@@ -270,7 +270,7 @@ void BallistaHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, f32 damage
 			Vec2f velr = (velocity/6) + getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
 	velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 
-	ParticlePixel(this.getPosition(), velr, SColor(255, 255, 255, 0), true);
+	if (!v_fastrender) ParticlePixel(this.getPosition(), velr, SColor(255, 255, 255, 0), true);
 	}
 
 	if (DoExplosion(this, velocity)) return;

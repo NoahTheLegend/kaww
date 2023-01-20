@@ -350,6 +350,7 @@ void onRender(CSprite@ this)
 		}
 	}
 
+	if (v_fastrender) return;
 	// combining images would reduce lag
 	if (blob.getHealth() <= blob.getInitialHealth() / 1.5f)
 	{

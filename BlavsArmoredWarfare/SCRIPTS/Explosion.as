@@ -63,6 +63,8 @@ void Explode(CBlob@ this, f32 radius, f32 damage)
 		Sound::Play(this.get_string("custom_explosion_sound"), this.getPosition());
 	}
 
+	if (isClient() && v_fastrender) return;
+
 	if (this.isInInventory())
 	{
 		CBlob@ doomed = this.getInventoryBlob();
@@ -317,6 +319,8 @@ void WarfareExplode(CBlob@ this, f32 radius, f32 damage)
 		Sound::Play(this.get_string("custom_explosion_sound"), this.getPosition());
 	}
 
+	if (isClient() && v_fastrender) return;
+
 	//load custom properties
 	//map damage
 	f32 map_damage_radius = radius;
@@ -520,6 +524,7 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32 width,
                      const int max_depth, f32 damage, const u8 hitter, CBlob@[]@ blobs = null,
                      bool should_teamkill = false)
 {
+	if (isClient() && v_fastrender) return;
 	Vec2f pos = this.getPosition();
 	CMap@ map = this.getMap();
 

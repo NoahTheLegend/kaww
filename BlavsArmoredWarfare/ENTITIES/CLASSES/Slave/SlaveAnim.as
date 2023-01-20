@@ -347,7 +347,7 @@ void onRender(CSprite@ this)
 
 void onGib(CSprite@ this)
 {
-	if (g_kidssafe)
+	if (v_fastrender)
 	{
 		return;
 	}

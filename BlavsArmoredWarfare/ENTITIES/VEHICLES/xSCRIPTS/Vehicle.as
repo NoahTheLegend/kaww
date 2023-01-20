@@ -860,13 +860,13 @@ void DoExplosion(CBlob@ this, f32 damage, f32 map_damage, f32 radius)
 	Vec2f pos = this.getPosition();
 	CMap@ map = getMap();
 	
-	for (int i = 0; i < 35; i++)
+	for (int i = 0; i < (v_fastrender ? 8 : 35); i++)
 	{
 		MakeParticle(this, Vec2f( XORRandom(64) - 32, XORRandom(80) - 60), getRandomVelocity(-angle, XORRandom(220) * 0.01f, 90), particles[XORRandom(particles.length)]);
 	}
 	
 	this.Tag("exploded");
-	this.getSprite().Gib();
+	if (!v_fastrender) this.getSprite().Gib();
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
