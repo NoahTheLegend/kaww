@@ -199,7 +199,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 
 	// this gathers HitInfo objects which contain blob or tile hit information
 	HitInfo@[] hitInfos;
-	if (map.getHitInfosFromArc(pos, aimangle, arcdegrees, radius + attack_distance, this, @hitInfos))
+	if (map.getHitInfosFromArc(pos, aimangle, 45, radius + attack_distance, this, @hitInfos))
 	{
 		//HitInfo objects are sorted, first come closest hits
 		for (uint i = 0; i < hitInfos.length; i++)
