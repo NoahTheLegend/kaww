@@ -301,7 +301,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 
 	// this gathers HitInfo objects which contain blob or tile hit information
 	HitInfo@[] hitMapInfos;
-	if (map.getHitInfosFromRay(blobPos, -exact_aimangle, radius + attack_distance, this, @hitMapInfos))
+	if (map.getHitInfosFromArc(blobPos, -exact_aimangle, 45, radius + attack_distance, this, @hitMapInfos))
 	{
 		bool dontHitMore = false;
 		
