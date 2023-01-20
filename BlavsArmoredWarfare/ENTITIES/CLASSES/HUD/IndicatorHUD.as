@@ -45,8 +45,6 @@ void onRender( CRules@ this )
 		GUI::DrawText(""+blueTickets, timelineLPos+Vec2f(-48.0f, 0), getTeamColor(0));
 		GUI::DrawText(""+redTickets, timelineRPos+Vec2f(48.0f, 0), getTeamColor(1));
 	}
-	
-
 
 	//draw tents
 	//GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineLPos, 1.0f, 0);
@@ -162,29 +160,32 @@ void onRender( CRules@ this )
 		RenderBar(this, point, indicatorPos + Vec2f(-4, flag_height));
 	}
 
-	int playerCount = getPlayerCount();
-	for (uint i = 0; i < playerCount; i++) // walking blobs
+	if (!v_fastrender)
 	{
-		CPlayer@ curPlayer = getPlayer(i);
-		if (curPlayer == null) continue;
+		int playerCount = getPlayerCount();
+		for (uint i = 0; i < playerCount; i++) // walking blobs
+		{
+			CPlayer@ curPlayer = getPlayer(i);
+			if (curPlayer == null) continue;
 
-		CBlob@ curBlob = curPlayer.getBlob();
-		if (curBlob == null) continue;
+			CBlob@ curBlob = curPlayer.getBlob();
+			if (curBlob == null) continue;
 
-		s8 curTeamNum = curPlayer.getTeamNum();
-		if (!isSpectator && curTeamNum != teamNum) continue; // do not show enemy players unless spectator
+			s8 curTeamNum = curPlayer.getTeamNum();
+			if (!isSpectator && curTeamNum != teamNum) continue; // do not show enemy players unless spectator
 
-		u8 frame = 0;
-		if (curPlayer !is p) frame = getIndicatorFrame(curBlob.getName().getHash());
+			u8 frame = 0;
+			if (curPlayer !is p) frame = getIndicatorFrame(curBlob.getName().getHash());
 
-		float curBlobXPos = curBlob.getPosition().x - 28;
-		float curBlobYPos = curBlob.getPosition().y;
-		float indicatorProgress = curBlobXPos / mapWidth;
-		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
-		float verticalDeviation = curBlobYPos; // blav's soon(tm) heightmap <------
-		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
+			float curBlobXPos = curBlob.getPosition().x - 28;
+			float curBlobYPos = curBlob.getPosition().y;
+			float indicatorProgress = curBlobXPos / mapWidth;
+			float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+			float verticalDeviation = curBlobYPos; // blav's soon(tm) heightmap <------
+			Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
 
-		GUI::DrawIcon("indicator_sheet_small.png", frame, Vec2f(16, 25), indicatorPos, 1.0f, curTeamNum);
+			GUI::DrawIcon("indicator_sheet_small.png", frame, Vec2f(16, 25), indicatorPos, 1.0f, curTeamNum);
+		}
 	}
 
 	//indicate vehicles

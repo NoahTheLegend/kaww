@@ -70,13 +70,13 @@ void DoExplosion(CBlob@ this)
 	
 	if (isClient())
 	{
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < (v_fastrender ? 5 : 30); i++)
 		{
 			MakeParticle(this, Vec2f( XORRandom(60) - 30, XORRandom(60) - 30), getRandomVelocity(-angle, XORRandom(125) * 0.01f, 90));
 		}
 		
 		this.Tag("exploded");
-		this.getSprite().Gib();
+		if (!v_fastrender) this.getSprite().Gib();
 	}
 }
 
@@ -123,15 +123,18 @@ void onTick(CBlob@ this)
 		{
 			DoExplosion(this);
 
-			for (int i = 0; i < 15; i++)
+			if (!v_fastrender)
 			{
-				CParticle@ p = ParticleAnimated("BulletHitParticle1.png", pos + getRandomVelocity(-angle, XORRandom(30) * 1.0f, 360), Vec2f(0,0), XORRandom(360), 1.0f + XORRandom(50)*0.01f, 2+XORRandom(2), 0.0f, true);
-			}
+				for (int i = 0; i < 15; i++)
+				{
+					CParticle@ p = ParticleAnimated("BulletHitParticle1.png", pos + getRandomVelocity(-angle, XORRandom(30) * 1.0f, 360), Vec2f(0,0), XORRandom(360), 1.0f + XORRandom(50)*0.01f, 2+XORRandom(2), 0.0f, true);
+				}
 
-			// glow
-			this.SetLight(true);
-			this.SetLightRadius(300.0f);
-			this.SetLightColor(SColor(255, 255, 240, 210));
+				// glow
+				this.SetLight(true);
+				this.SetLightRadius(300.0f);
+				this.SetLightColor(SColor(255, 255, 240, 210));
+			}
 		}
 		else if (this.get_u8("exploding_2") < 3)
 		{
@@ -158,7 +161,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	if (this.hasTag("activated"))
+	if (this.hasTag("activated") && (!v_fastrender || XORRandom(3)==0))
 	{
 		sparks(this.getPosition(), this.getAngleDegrees(), 3.5f + (XORRandom(10) / 5.0f), SColor(255, 255, 230, 120));
 	}

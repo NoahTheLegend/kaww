@@ -551,6 +551,7 @@ bool IsFiring(CBlob@ blob)
 
 void onGib(CSprite@ this)
 {
+	if (v_fastrender) return;
 	CBlob@ blob = this.getBlob();
 	Vec2f pos = blob.getPosition();
 	Vec2f vel = blob.getVelocity();

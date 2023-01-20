@@ -40,13 +40,13 @@ void DoExplosion(CBlob@ this)
 		LinearExplosion(this, dir, 60.0f, 85, 2, 0.5f, Hitters::water);
 	}
 	
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < (v_fastrender ? 5 : 30); i++)
 	{
 		MakeParticle(this, Vec2f( XORRandom(100) - 50, XORRandom(100) - 50), getRandomVelocity(-angle, XORRandom(155) * 0.01f, 90));
 	}
 	
 	this.Tag("exploded");
-	this.getSprite().Gib();
+	if (!v_fastrender) this.getSprite().Gib();
 }
 
 void onDie(CBlob@ this)
