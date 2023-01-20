@@ -171,6 +171,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	if (canChangeClass(this, caller) && caller.getTeamNum() == this.getTeamNum())
 	{
 		caller.CreateGenericButton("$change_class$", Vec2f(10, 0), this, buildSpawnMenu, getTranslatedString("Swap Class"));
+		caller.CreateGenericButton("$change_perk$", Vec2f(0, -10), this, buildPerkMenu, getTranslatedString("Switch Perk"));
 	}
 }
 
