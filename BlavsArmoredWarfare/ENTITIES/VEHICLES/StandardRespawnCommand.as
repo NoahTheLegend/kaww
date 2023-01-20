@@ -109,8 +109,8 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
 						"Lucky:\n\n"+"$4_class_icon$"+"Fate's Friend"
 						+"\n                   - Always survive on last-hit          "
-						+"\n                   if damage is higher than 10.          "
-						+"\n                   applies to vehicles as well          "
+						+"\n                   if damage is higher than 10 or          "
+						+"\n                   your HP is 1 and you have no card.          "
 						+"\n\n                  Lucky Charm"
 						+"\n                   - Must carry an Ace of Spades           "
 						);

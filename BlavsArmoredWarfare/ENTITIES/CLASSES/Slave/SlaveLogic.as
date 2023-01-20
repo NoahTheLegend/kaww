@@ -58,6 +58,7 @@ void onSetPlayer(CBlob@ this, CPlayer@ player)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
 	if (isServer()) //update bots' logic
 	{
 		if (this.hasTag("disguised"))
@@ -85,6 +86,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (this.hasBlob("aceofspades", 1))
 		{
 			this.TakeBlob("aceofspades", 1);
+			this.set_u32("aceofspades_timer", getGameTime()+15);
 
 			this.server_SetHealth(0.01f);
 
@@ -180,30 +182,31 @@ void onTick(CBlob@ this)
 	}
 
 	CPlayer@ p = this.getPlayer();
-	if (isServer() && p !is null)
+	if (isServer())
 	{
-		if (getGameTime() % 60 == 0
-			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+		if (p !is null)
 		{
-			CInventory@ inv = this.getInventory();
-			if (inv !is null)
+			if (!this.hasBlob("aceofspades", 1)
+			&& this.get_u32("aceofspades_timer") < getGameTime()
+			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky")
 			{
-				int xslots = inv.getInventorySlots().x;
-				int yslots = inv.getInventorySlots().y;
-				CBlob@ item = inv.getItem(xslots * yslots - 1);
-				
-				if (item !is null) // theres an item in the last slot
+				CInventory@ inv = this.getInventory();
+				if (inv !is null)
 				{
-					if (!this.hasBlob("aceofspades", 1)) // but we have the ace already
+					int xslots = inv.getInventorySlots().x;
+					int yslots = inv.getInventorySlots().y;
+					CBlob@ item = inv.getItem(xslots * yslots - 1);
+					
+					if (item !is null) // theres an item in the last slot
 					{
 						item.server_RemoveFromInventories();
 					}
-				}
-				else if (!this.hasBlob("aceofspades", 1))  // theres no item in the last slot
-				{
-					// give ace
-					CBlob@ b = server_CreateBlob("aceofspades", -1, this.getPosition());
-					if (b !is null) this.server_PutInInventory(b);
+					else //if (!this.hasBlob("aceofspades", 1))  // theres no item in the last slot
+					{
+						// give ace
+						CBlob@ b = server_CreateBlob("aceofspades", -1, this.getPosition());
+						if (b !is null) this.server_PutInInventory(b);
+					}
 				}
 			}
 		}
