@@ -336,8 +336,9 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		if (blob.getTeamNum() == this.getTeamNum())
 		{
 			this.IgnoreCollisionWhileOverlapped(blob, 10);
-			if (blob.hasTag("apc") || blob.hasTag("turret") || blob.hasTag("gun")) return (XORRandom(100) > 70);
+			if (blob.hasTag("apc") || blob.hasTag("turret")) return (XORRandom(100) > 70);
 			else if (blob.hasTag("tank")) return (XORRandom(100) > 50);
+			else if (blob.hasTag("gun")) return false;
 			else return true;
 		}
 		else onHitBlob(this, this.getPosition()+this.getVelocity(), this.getVelocity(), blob, Hitters::arrow);
