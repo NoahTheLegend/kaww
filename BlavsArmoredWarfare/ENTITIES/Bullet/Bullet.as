@@ -198,7 +198,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 	s8 finalRating = getFinalRating(this, blob.get_s8(armorRatingString), this.get_s8(penRatingString), blob.get_bool(hardShelledString), blob, hit_position);
 	//print("rating: "+finalRating);
 
-	const bool can_pierce = finalRating < 1;
+	const bool can_pierce = finalRating < 2;
 
 	if (blob !is null)
 	{
@@ -284,10 +284,15 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 				sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
 				
-				this.server_Die();
+				if (isServer() && XORRandom(100)<50)
+				{
+					this.server_Die();
+				}
+				else
+				{
+					this.server_SetTimeToDie(0.5f);
+				}
 			}
-
-			this.server_SetTimeToDie(0.4);
 		}
 		
 		if (blob.hasTag("flesh") && hit_position.y < blob.getPosition().y - 3.2f)
@@ -390,7 +395,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 			else if (blob.hasTag("gun")) return false;
 			else return true;
 		}
-		else onHitBlob(this, this.getPosition()+this.getVelocity(), this.getVelocity(), blob, Hitters::arrow);
+		else
+		{
+			onHitBlob(this, this.getPosition()+this.getVelocity(), this.getVelocity(), blob, Hitters::arrow);
+			return false;
+		}
 	}
 	
 	if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
