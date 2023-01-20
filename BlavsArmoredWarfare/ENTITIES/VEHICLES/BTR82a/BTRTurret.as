@@ -356,6 +356,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
+	if (attached.hasTag("player")) attached.Tag("covered");
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{
@@ -368,6 +369,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
+	if (detached.hasTag("player")) detached.Untag("covered");
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{

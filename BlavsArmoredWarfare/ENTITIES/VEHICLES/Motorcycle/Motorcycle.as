@@ -267,6 +267,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
+	attached.Tag("collidewithbullets");
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{
@@ -278,6 +279,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
+	detached.Untag("collidewithbullets");
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{
