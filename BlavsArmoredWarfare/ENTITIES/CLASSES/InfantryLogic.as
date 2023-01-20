@@ -552,25 +552,20 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			this.get_u32("no_reload") < getGameTime() &&
 			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max") || this.hasTag("forcereload")))
 		{
+			bool forcereload = false;
 			if (this.hasTag("forcereload"))
 			{
 				this.set_u32("mag_bullets", this.get_u32("mag_bullets_max"));
 				this.Untag("forcereload");
-				return;
+				forcereload = true;
 			}
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
-			if (inv !is null && inv.getItem("mat_7mmround") !is null)
+			if ((inv !is null && inv.getItem("mat_7mmround") !is null) || forcereload)
 			{
 				// actually reloading
 				reloadistrue = true;
 				charge_time = reloadTime;
-
-				if (this.getName() == "mp5")
-				{
-					CBitStream params;
-					this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
-				}
 
 				isReloading = true;
 				this.set_bool("isReloading", true);
