@@ -84,7 +84,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		MakeDustParticle((hitterBlob.getPosition() + this.getPosition())/2, "/dust2.png");
 		
-		return damage / 2.5;
+		return damage / 5.0;
 	}
 	return damage;
 }
