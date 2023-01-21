@@ -20,7 +20,7 @@ void onInit(CBlob@ this)
 		int[] frames = { 0, 1, 2, 3};
 		front.animation.AddFrames(frames);
 		front.SetRelativeZ(65.8f);
-		front.SetOffset(Vec2f(0.0f, 0.0f));
+		front.SetOffset(Vec2f(0.0f, -4.0f));
 	}
 
 	this.SetFacingLeft(this.getTeamNum() == 1);

@@ -47,7 +47,7 @@ void onInit(CSprite@ this)
 			anim.AddFrames(frames);
 		}
 		//belt setup
-		belt.SetOffset(Vec2f(-5.0f, 0.0f));
+		belt.SetOffset(Vec2f(-5.0f, -4.0f));
 		belt.SetRelativeZ(1);
 		belt.SetVisible(true);
 	}
@@ -55,7 +55,7 @@ void onInit(CSprite@ this)
 	CSpriteLayer@ wood = this.addSpriteLayer("wood", "Quarry.png", 16, 16);
 	if (wood !is null)
 	{
-		wood.SetOffset(Vec2f(12.0f, 3.0f));
+		wood.SetOffset(Vec2f(12.0f, -1.0f));
 		wood.SetVisible(false);
 		wood.SetRelativeZ(1);
 	}

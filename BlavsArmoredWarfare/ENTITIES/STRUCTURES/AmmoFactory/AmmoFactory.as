@@ -47,7 +47,7 @@ void onInit(CBlob@ this)
 	if (icon !is null)
 	{
 		int[] frames = {0,1,2,3,4,5,6,7};
-		icon.SetOffset(Vec2f(0,-11));
+		icon.SetOffset(Vec2f(0,-15));
 		Animation@ anim = icon.addAnimation("default", 0, false);
 		if (anim !is null)
 		{

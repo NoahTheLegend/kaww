@@ -21,7 +21,7 @@ void onInit(CSprite@ this)
 			int[] frames = {14, 15};
 			bed.animation.AddFrames(frames);
 		}
-		bed.SetOffset(Vec2f(-2, 8));
+		bed.SetOffset(Vec2f(-2, 4));
 		bed.SetVisible(true);
 	}
 
@@ -33,7 +33,7 @@ void onInit(CSprite@ this)
 			int[] frames = {14, 15};
 			bed2.animation.AddFrames(frames);
 		}
-		bed2.SetOffset(Vec2f(-2, -3));
+		bed2.SetOffset(Vec2f(-2, -7));
 		bed2.SetVisible(true);
 	}
 
