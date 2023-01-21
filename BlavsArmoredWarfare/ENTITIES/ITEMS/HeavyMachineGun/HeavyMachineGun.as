@@ -156,6 +156,7 @@ void onTick(CBlob@ this)
 {
 	if (this.getTickSinceCreated() == 1 && !this.isAttached())
 	{
+		if (isServer() && this.getPosition().x <= 8.0f && this.getPosition().y <= 64.0f) this.server_Die();
 		CBlob@[] turrets;
     	getMap().getBlobsInRadius(this.getPosition(), 64.0f, @turrets);
     	for (u16 i = 0; i < turrets.length; i++)
