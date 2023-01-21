@@ -102,6 +102,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 
 void onTick(CBlob@ this)
 {
+	if (this.isInInventory()) return;
 	if (this.isAttached())
 	{
 		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
@@ -184,6 +185,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
     if (cmd == this.getCommandID("activate"))
     {
+		if (!this.isAttached()) return;
 		bool is_ensure = params.read_bool();
         if (isServer() && !is_ensure)
         {
