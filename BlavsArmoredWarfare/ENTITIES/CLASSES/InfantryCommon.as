@@ -352,8 +352,8 @@ namespace SniperParams
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 				= 58; // time to reload
-	const ::u8 NORELOADTIMER 			= 10; // time after each shot where you can't reload
+	const ::s16 RELOAD_TIME 			= 60; // time to reload
+	const ::u8 NORELOADTIMER 			= 15; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 5; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 38; // time between shots
 	const ::u8 RANDDELAY 				= 4; // + randomness
