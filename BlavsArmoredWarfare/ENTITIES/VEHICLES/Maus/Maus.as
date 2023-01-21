@@ -95,7 +95,7 @@ void onInit(CBlob@ this)
 
 	this.addCommandID("sync_color");
 
-	sync_Color(this);
+	//sync_Color(this);
 }
 
 void sync_Color(CBlob@ this)
@@ -104,7 +104,7 @@ void sync_Color(CBlob@ this)
 	bool pink;
 	if (isServer())
 	{
-		pink = (XORRandom(3) == 0 || this.hasTag("pink"));
+		pink = this.hasTag("pink");
 
 		CBitStream params;
 		params.write_bool(pink);

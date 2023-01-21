@@ -129,8 +129,20 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
+	bool isServer = getNet().isServer();
 	if (cmd == this.getCommandID("shop made item"))
 	{
-		this.getSprite().PlaySound("/BuildVehicle.ogg");
+		this.getSprite().PlaySound( "/UpgradeT2.ogg" );
+		CBlob@ caller = getBlobByNetworkID(params.read_netid());
+		CBlob@ item = getBlobByNetworkID(params.read_netid());
+		if (item !is null && caller !is null)
+		{
+			if (item.getName() == "maus" && caller.getPlayer() !is null && caller.getPlayer().getSex() == 1)
+			{
+				CBitStream params;
+				params.write_bool(true);
+				item.SendCommand(item.getCommandID("sync_color"), params);
+			}
+		}
 	}
 }
