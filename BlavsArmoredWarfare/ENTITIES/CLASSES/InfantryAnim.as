@@ -150,6 +150,10 @@ void onTick(CSprite@ this)
 				{
 					camo.SetAnimation("movement");
 				}
+				else if (blob.hasTag("dead"))
+				{
+					camo.SetAnimation("death");
+				}
 				else if (camo.isAnimationEnded())
 				{
 					camo.SetAnimation("default");
