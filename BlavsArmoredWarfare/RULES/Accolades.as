@@ -7,6 +7,14 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+shared string[] getPatreonMembers()
+{
+	string[] patreonMembers = {
+		""
+	};
+	return patreonMembers;
+}
+
 //a container and parser for the specific accolades awarded to a player
 shared class Accolades
 {
@@ -34,11 +42,18 @@ shared class Accolades
 	bool community_contributor = false;     //long time mods/admins/hosts, tourney organisers
 	bool map_contributor = false;           //official mapcycle (at any point)
 	bool moderation_contributor = false;    //official forum/discord/ingame admin, (at any point, not "dishonourably discharged")
+	bool patreonMember = false;
 
 	Accolades(ConfigFile@ cfg, string _username)
 	{
 		username = _username;
 		customHeadTexture = "../Mods/ArmoredWarfare/BlavsArmoredWarfare/SPRITES/CustomHeads/" + username + ".png";
+
+		string[] patreonMembers = getPatreonMembers();
+		for (u16 i = 0; i < patreonMembers.length; i++)
+		{
+			if (_username == patreonMembers[i]) patreonMember = true;
+		}
 
 		array<string> slices;
 		if(cfg.readIntoArray_string(slices, username))

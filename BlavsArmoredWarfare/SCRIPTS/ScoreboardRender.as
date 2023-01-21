@@ -8,6 +8,7 @@ Vec2f hoveredPos;
 
 int hovered_accolade = -1;
 int hovered_rank = -1;
+bool mouseWasPressed1 = false;
 
 float scoreboardMargin = 52.0f;
 float scrollOffset = 0.0f;
@@ -231,19 +232,55 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			}
 		}
 
-		float x = bottomright.x - accolades_start - 80;
-		float extra = 8;
-		GUI::DrawIcon("Ranks", level - 1, Vec2f(32, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
-
-		if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
 		{
-			hovered_rank = level - 1;
+			//draw rank level
+			int level = 1;
+			string rank = RANKS[0];
+
+			// Calculate the exp required to reach each level
+			for (int i = 1; i <= RANKS.length; i++)
+			{
+				int expToNextLevel = getExpToNextLevel(level);
+				if (exp >= expToNextLevel)
+				{
+					level = i + 1;
+					rank = RANKS[Maths::Min(i, RANKS.length-1)];
+				}
+				else
+				{
+					// The current level has been reached
+					break;
+				}
+			}
+
+			float x = bottomright.x - accolades_start - 80;
+			float extra = 8;
+			GUI::DrawIcon("Ranks", level - 1, Vec2f(32, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
+
+			if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
+			{
+				hovered_rank = level - 1;
+			}
 		}
 
 		//render player accolades
 		Accolades@ acc = getPlayerAccolades(username);
 		if (acc !is null)
 		{
+			if (acc.patreonMember)
+			{
+				//draw patreon accolades
+				float x = bottomright.x - accolades_start;
+				float extra = 32;
+				GUI::DrawIcon("BadgesPatreon", 0, Vec2f(16, 16), Vec2f(x, topleft.y), 0.5f, 0);
+				
+				if (playerHover && mousePos.x > x-8 && mousePos.x < x + 24)
+				{
+					GUI::DrawPane(mousePos+Vec2f(extra, extra-8), mousePos + Vec2f(192,55), SColor(0xffffffff));
+					GUI::DrawText("Patreon supporter", mousePos + Vec2f(44,32), SColor(0xffffffff));
+				}
+			}
+
 			//(remove crazy amount of duplicate code)
 			int[] badges_encode = {
 				//count,                icon,  show_text, group
@@ -503,6 +540,12 @@ void onRenderScoreboard(CRules@ this)
 	drawHoverExplanation(hovered_accolade, hovered_rank, Vec2f(getScreenWidth() * 0.5, topleft.y));
 
 	mouseWasPressed2 = controls.mousePressed2; 
+
+	makeWebsiteLink(Vec2f(getScreenWidth()/2+500, 100.0f-scrollOffset), "Discord ", "https://discord.gg/55yueJWy7g");
+	makeWebsiteLink(Vec2f(getScreenWidth()/2+420, 100.0f-scrollOffset), "Github ", "https://github.com/NoahTheLegend/kaww");
+	makeWebsiteLink(Vec2f(getScreenWidth()/2+330, 100.0f-scrollOffset), "Patreon ", "https://www.patreon.com/armoredwarfare");
+
+	mouseWasPressed1 = controls.mousePressed1;
 }
 
 void drawHoverExplanation(int hovered_accolade, int hovered_rank, Vec2f centre_top)
@@ -581,4 +624,36 @@ void DrawFancyCopiedText(string username, Vec2f mousePos, uint duration)
 	int col = (255 - duration * 3);
 
 	GUI::DrawTextCentered(text, pos, SColor((255 - duration * 4), col, col, col));
+}
+
+void makeWebsiteLink(Vec2f pos, const string&in text, const string&in website)
+{
+	Vec2f dim;
+	GUI::GetTextDimensions(text, dim);
+
+	const f32 width = dim.x + 20;
+	const f32 height = 40;
+	const Vec2f tl = Vec2f(getScreenWidth() - 10 - width - pos.x, pos.y);
+	const Vec2f br = Vec2f(getScreenWidth() - 10 - pos.x, tl.y + height);
+
+	CControls@ controls = getControls();
+	const Vec2f mousePos = controls.getMouseScreenPos();
+
+	const bool hover = (mousePos.x > tl.x && mousePos.x < br.x && mousePos.y > tl.y && mousePos.y < br.y);
+	if (hover)
+	{
+		GUI::DrawButton(tl, br);
+
+		if (controls.mousePressed1 && !mouseWasPressed1)
+		{
+			Sound::Play("option");
+			OpenWebsite(website);
+		}
+	}
+	else
+	{
+		GUI::DrawPane(tl, br, 0xffcfcfcf);
+	}
+
+	GUI::DrawTextCentered(text, Vec2f(tl.x + (width * 0.50f), tl.y + (height * 0.50f)), 0xffffffff);
 }
