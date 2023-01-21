@@ -274,6 +274,14 @@ void onTick(CBlob@ this)
 		return;
 	}
 
+	if (this.hasTag("aerial") && getGameTime()%10==0)
+	{
+		if (getMap() !is null)
+		{
+			if (this.getPosition().x <= 8.0f || this.getPosition().x >= (getMap().tilemapwidth*8)-8.0f) this.server_Hit(this, this.getPosition(), this.getVelocity(), 1.0f, Hitters::fall);
+		}
+	}
+
 	if (this.hasTag("turret") && this.getHealth() <= 0.01f)
 	{
 		if (this.hasTag("broken"))

@@ -123,6 +123,13 @@ void onTick(CBlob@ this)
 		this.Untag("no_more_shooting");
 		this.Untag("no_more_proj");
 	}
+	if (this.hasTag("aerial") && getGameTime()%10==0)
+	{
+		if (getMap() !is null)
+		{
+			if (this.getPosition().x <= 8.0f || this.getPosition().x >= (getMap().tilemapwidth*8)-8.0f) this.server_Hit(this, this.getPosition(), this.getVelocity(), 1.0f, Hitters::fall);
+		}
+	}
 	AttachmentPoint@ ap_pilot = this.getAttachments().getAttachmentPointByName("PILOT");
 	if (this.hasAttached() && ap_pilot !is null)
 	{
