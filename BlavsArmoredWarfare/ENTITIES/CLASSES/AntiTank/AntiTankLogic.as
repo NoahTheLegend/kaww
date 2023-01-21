@@ -52,6 +52,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
 		}
 	}
+	if (hitterBlob.getName() == "mat_smallbomb")
+	{
+		damage *= 5;
+	}
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
