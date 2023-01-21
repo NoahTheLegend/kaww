@@ -64,7 +64,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(8, 5));
+	this.set_Vec2f("shop menu size", Vec2f(10, 5));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
@@ -85,6 +85,14 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "coin", "", "Coins", 20);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
+		AddRequirement(s.requirements, "coin", "", "Coins", 40);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
+	}
+	{
 		u8 cost = 40;
 		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", cost);
@@ -98,8 +106,13 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "coin", "", "Coins", 60);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 40);
+		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
+
+		s.customButton = true;
+
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
@@ -126,6 +139,10 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Build Bomber Plane", "$bomberplane$", "bomberplane", "A bomber plane.\nUses bomber bombs.");
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
+	}
+	{
 		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy MachineGun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
@@ -138,10 +155,6 @@ void onInit(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 
 	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
