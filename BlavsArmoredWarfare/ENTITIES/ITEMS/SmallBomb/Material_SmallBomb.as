@@ -25,7 +25,7 @@ void onInit(CBlob@ this)
 	this.Tag("always bullet collide");
 	this.Tag("no_armory_pickup");
 
-	this.maxQuantity = 4;
+	this.maxQuantity = 1;
 	if (isServer()) this.server_SetQuantity(this.maxQuantity);
 }
 
@@ -103,7 +103,7 @@ void DoExplosion(CBlob@ this)
 
 	// print("Modifier: " + modifier + "; Quantity: " + this.getQuantity());
 
-	this.set_f32("map_damage_radius", (32.0f + random) * modifier);
+	this.set_f32("map_damage_radius", (16.0f + random) * modifier);
 	this.set_f32("map_damage_ratio", 0.5f);
 
 	WarfareExplode(this, 32.0f + random, (4.5f+(XORRandom(46)*0.1f)) * modifier);

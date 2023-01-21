@@ -173,6 +173,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			this.set_string("last_attacker", hitterBlob.getDamageOwnerPlayer().getUsername());
 		}
 	}
+	if (hitterBlob.getName() == "mat_smallbomb")
+	{
+		damage *= 5;
+	}
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
