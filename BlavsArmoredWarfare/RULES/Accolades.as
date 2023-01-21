@@ -10,7 +10,7 @@
 shared string[] getPatreonMembers()
 {
 	string[] patreonMembers = {
-		"nickkardash"
+		"nickkardash",
 	};
 	return patreonMembers;
 }

@@ -92,7 +92,7 @@ void onDie(CBlob@ this)
         50+(XORRandom(2)==0?50:0),
         15,
         4,
-        2
+        1
     };
 
     if (getNet().isServer())
