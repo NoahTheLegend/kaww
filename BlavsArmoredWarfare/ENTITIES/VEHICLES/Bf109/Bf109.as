@@ -102,7 +102,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				for (u8 i = 0; i < inv.getItemsCount(); i++)
 				{
 					if (inv.getItem(i) is null || inv.getItem(i).getName() != "mat_7mmround") continue;
-					if (XORRandom(5) != 0) continue;
+					if (XORRandom(6) != 0) continue;
 					inv.getItem(i).server_SetQuantity(inv.getItem(0).getQuantity()-1);
 					break;
 				}
@@ -187,7 +187,11 @@ void onTick(CBlob@ this)
 				{
 					for (u8 i = 0; i < inv.getItemsCount(); i++)
 					{
-						if (inv.getItem(i) is null || inv.getItem(i).getName() != "mat_7mmround") continue;
+						if (inv.getItem(i) is null || inv.getItem(i).getName() != "mat_7mmround")
+						{
+							this.server_PutOutInventory(inv.getItem(i));
+							continue;
+						}
 						can_attack = true;
 						break;
 					}
