@@ -164,7 +164,8 @@ void onInit(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
+	CPlayer@ p = this.getPlayer();
+	if (p !is null && getRules().get_string(p.getUsername() + "_perk") == "Lucky" && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
 	if (isServer()) //update bots' logic
 	{
 		if (this.hasTag("disguised"))
@@ -178,7 +179,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
-		damage *= 5;
+		damage *= 4;
 	}
 	if (this.isAttached())
 	{
