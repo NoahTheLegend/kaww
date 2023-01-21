@@ -11,7 +11,6 @@ void onInit(CBlob@ this)
 {
 	this.getShape().SetRotationsAllowed(true);
 
-
 	this.set_bool("map_damage_raycast", true);
 	this.set_Vec2f("explosion_offset", Vec2f(0, 16));
 
@@ -40,6 +39,11 @@ void onDie(CBlob@ this)
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	return false;
+}
+
+void onThisAddToInventory(CBlob@ this, CBlob@ inventoryBlob)
+{
+	this.SetInventoryIcon("Material_SmallBomb.png", 0, Vec2f(16,16));
 }
 
 void onTick(CBlob@ this)
