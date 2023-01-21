@@ -615,7 +615,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 		{
 			int frame = 0;
 
-			if (this.get_u8("inaccuracy") == 0)
+			if (this.get_u8("inaccuracy") == 0 && this.isOnGround())
 			{
 				if (this.isKeyPressed(key_action2))
 				{
@@ -752,7 +752,7 @@ void ClientFire(CBlob@ this, const s8 charge_time)
 		f32 targetFactor = targetDistance / 367.0f;
 		f32 mod = this.isKeyPressed(key_action2) ? 0.2f : 0.3f;
 
-		ShootBullet(this, this.getPosition() - Vec2f(-24,0).RotateBy(angle), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((180 + this.get_u8("inaccuracy")) - 110)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(180 + this.get_u8("inaccuracy")) - 110)*mod * targetFactor, 8.0f * bulletvelocity);
+		ShootBullet(this, this.getPosition() - Vec2f(-24,0).RotateBy(angle), this.getAimPos() + Vec2f(-(2 + this.get_u8("inaccuracy")) + XORRandom((180 + this.get_u8("inaccuracy")) - 85)*mod * targetFactor, -(2 + this.get_u8("inaccuracy")) + XORRandom(180 + this.get_u8("inaccuracy")) - 85)*mod * targetFactor, 8.0f * bulletvelocity);
 	
 		ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.75f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 

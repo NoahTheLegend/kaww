@@ -102,7 +102,7 @@ void onRender(CRules@ this)
 		GUI::DrawTextCentered(intro, Vec2f(sMid, tlBox.y + 15), tipsColor);
         GUI::SetFont("menu");
         GUI::DrawTextCentered("Mod is developed with big effort by Blav (Yeti5000707) and salty Snek (NoahTheLegend)", Vec2f(sMid, tlBox.y + 60), SColor(255, 255,255,0));
-        GUI::DrawTextCentered("You may thank us or donate if you wish. https://discord.gg/55yueJWy7g", Vec2f(sMid, tlBox.y + 75), SColor(255, 255,255,0));
+        GUI::DrawTextCentered("You may thank us or donate if you wish. Click the button in TAB menu.", Vec2f(sMid, tlBox.y + 75), SColor(255, 255,255,0));
         GUI::DrawTextCentered("Special thanks to contributors: Nevrotik, Skemonde, PURPLExeno, Goldy, GoldenGuy (hoster), petey5 and ThinkAbout!", Vec2f(sMid, tlBox.y + 92.5f), SColor(255, 255,255,0));
     }
 
