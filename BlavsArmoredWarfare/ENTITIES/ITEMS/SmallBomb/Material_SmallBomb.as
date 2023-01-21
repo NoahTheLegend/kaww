@@ -25,7 +25,7 @@ void onInit(CBlob@ this)
 	this.Tag("always bullet collide");
 	this.Tag("no_armory_pickup");
 
-	this.maxQuantity = 1;
+	this.maxQuantity = 4;
 	if (isServer()) this.server_SetQuantity(this.maxQuantity);
 }
 
