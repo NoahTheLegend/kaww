@@ -584,17 +584,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			//{
 			//	sprite.PlaySound("NoAmmo.ogg", 0.85);
 			//}
-
-			if (this.hasTag("simple reload") && reloadistrue) // simple reload is used when you have nothing else 
-			{ // besides reload sound, look for onBlobNameReload() in this file and InfantryCommon.as otherwise
-				charge_time = reloadTime;
-				//archer.isReloading = true;
-				this.set_bool("isReloading", true);
-
-				//printf(""+infantry.reload_sfx);
-
-				//sprite.PlaySound(infantry.reload_sfx, 55.0);
-			}
 		}
 		if (isServer() && this.hasTag("sync_reload"))
 		{
