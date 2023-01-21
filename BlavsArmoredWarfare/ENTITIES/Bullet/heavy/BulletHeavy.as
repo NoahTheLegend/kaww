@@ -328,7 +328,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (isServer())
+	//if (isServer())
 	{
 		if (blob.hasTag("always bullet collide"))
 		{
@@ -392,7 +392,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 			return true;
 	}
 
-	if (isServer())
+	//if (isServer())
 	{
 		if (blob.getName() == "trap_block")
 		{

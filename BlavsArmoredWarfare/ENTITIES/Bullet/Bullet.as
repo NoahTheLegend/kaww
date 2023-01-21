@@ -384,7 +384,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (isServer())
+	//if (isServer())
 	{
 		if (blob.hasTag("always bullet collide"))
 		{
@@ -420,7 +420,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		}
 	}
 	
-	if (isServer())
+	//if (isServer())
 	{
 		if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
 		{
