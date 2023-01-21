@@ -153,10 +153,13 @@ void onInit(CBlob@ this)
 	{
 		this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
 	}
-	else if (this.getName() == "sniper")
-	{
-		this.Tag("simple reload");
-	}
+	//else if (this.getName() == "sniper")
+	//{
+	//	this.Tag("simple reload");
+	//}
+
+	this.set_u8("noreload_custom", 15);
+	if (this.getName() == "sniper") this.set_u8("noreload_custom", 30);
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
@@ -863,6 +866,7 @@ void onTick(CBlob@ this)
 	if (isServer()&&getGameTime()%30==0)
 	{
 		if (!(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
+		if (this.hasTag("invincible") && !this.isAttached()) this.Untag("invincible");
 	}
 	if ((this.getTeamNum() == 0 && getRules().get_s16("blueTickets") == 0)
 	|| (this.getTeamNum() == 1 && getRules().get_s16("redTickets") == 0))
@@ -912,7 +916,6 @@ void onTick(CBlob@ this)
 	
 	this.set_bool("is_a1", false);
 	this.set_bool("just_a1", false);
-
 }
 
 bool canSend( CBlob@ this )
@@ -963,7 +966,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 
 	float bulletSpread = getBulletSpread(infantry.class_hash) + (float(this.get_u8("inaccuracy")))/perk_mod;
 	ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity, bulletSpread*targetFactor, infantry.burst_size );
-	this.set_u32("no_reload", getGameTime()+15);
+	this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
 
 	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -12.0f : 12.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 	
@@ -1026,7 +1029,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
-		this.set_u32("my_chargetime", infantry.delayafterfire);
+		this.set_s32("my_chargetime", infantry.delayafterfire);
 	}
 
 	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
