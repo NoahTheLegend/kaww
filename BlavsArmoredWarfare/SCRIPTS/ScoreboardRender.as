@@ -270,9 +270,9 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			if (acc.patreonMember)
 			{
 				//draw patreon accolades
-				float x = bottomright.x - accolades_start;
+				float x = bottomright.x - accolades_start-40;
 				float extra = 32;
-				GUI::DrawIcon("BadgesPatreon", 0, Vec2f(16, 16), Vec2f(x, topleft.y), 0.5f, 0);
+				GUI::DrawIcon("BadgesPatreon", 0, Vec2f(16, 16), Vec2f(x, topleft.y-2), 0.5f, 0);
 				
 				if (playerHover && mousePos.x > x-8 && mousePos.x < x + 24)
 				{
