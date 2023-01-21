@@ -167,7 +167,7 @@ void onTick(CBlob@ this)
 		if (!canUnpackHere(this))
 		{
 			this.set_u32("unpack time", 0);
-			this.getCurrentScript().tickFrequency = 15;
+			this.getCurrentScript().tickFrequency = 1;
 			this.getShape().setDrag(2.0);
 			return;
 		}
