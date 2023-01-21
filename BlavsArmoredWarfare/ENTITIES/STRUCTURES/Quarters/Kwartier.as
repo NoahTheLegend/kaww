@@ -359,9 +359,9 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 	bed_head.SetAnimation(bed_head_animation);
 	bed_head.RotateBy(80, Vec2f_zero);
 	if(attachedPoint.name == "BED")
-		bed_head.SetOffset(Vec2f(3, 7));
+		bed_head.SetOffset(Vec2f(3, 2));
 	else
-		bed_head.SetOffset(Vec2f(3, -3));
+		bed_head.SetOffset(Vec2f(3, -6));
 	bed_head.SetFacingLeft(true);
 	bed_head.SetVisible(true);
 	bed_head.SetRelativeZ(2);
