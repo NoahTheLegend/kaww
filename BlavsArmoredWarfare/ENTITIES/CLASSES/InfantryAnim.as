@@ -188,9 +188,12 @@ void onTick(CSprite@ this)
 			this.SetAnimation("dead");
 			this.RemoveSpriteLayer("frontarm");
 			this.RemoveSpriteLayer("backarm");
+		}
 
+		//if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
+		{
 			CSpriteLayer@ camo = this.getSpriteLayer("camo");
-			camo.SetAnimation("death");
+			if (camo !is null) camo.SetAnimation("death");
 		}
 
 		Vec2f vel = blob.getVelocity();

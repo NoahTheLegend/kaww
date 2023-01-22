@@ -152,6 +152,12 @@ void onTick(CSprite@ this)
 
 	if (blob.hasTag("dead"))
 	{
+		//if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
+		{
+			CSpriteLayer@ camo = this.getSpriteLayer("camo");
+			if (camo !is null) camo.SetAnimation("death");
+		}
+		
 		this.SetAnimation("dead");
 		Vec2f vel = blob.getVelocity();
 
