@@ -9,6 +9,7 @@ Vec2f hoveredPos;
 int hovered_accolade = -1;
 int hovered_rank = -1;
 bool mouseWasPressed1 = false;
+bool disable_line = false;
 
 float scoreboardMargin = 52.0f;
 float scrollOffset = 0.0f;
@@ -108,8 +109,11 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			hoveredPos.x = bottomright.x - 150;
 		}
 
-		GUI::DrawLine2D(Vec2f(topleft.x, bottomright.y + 1) + lineoffset, Vec2f(bottomright.x, bottomright.y + 1) + lineoffset, SColor(underlinecolor));
-		GUI::DrawLine2D(Vec2f(topleft.x, bottomright.y) + lineoffset, bottomright + lineoffset, SColor(playercolour));
+		if (!disable_line)
+		{
+			GUI::DrawLine2D(Vec2f(topleft.x, bottomright.y + 1) + lineoffset, Vec2f(bottomright.x, bottomright.y + 1) + lineoffset, SColor(underlinecolor));
+			GUI::DrawLine2D(Vec2f(topleft.x, bottomright.y) + lineoffset, bottomright + lineoffset, SColor(playercolour));
+		}
 
 		string tex = "";
 		u16 frame = 0;
@@ -276,9 +280,11 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 				
 				if (playerHover && mousePos.x > x-8 && mousePos.x < x + 24)
 				{
+					disable_line = true;
 					GUI::DrawPane(mousePos+Vec2f(extra, extra-8), mousePos + Vec2f(192,55), SColor(0xffffffff));
 					GUI::DrawText("Patreon supporter", mousePos + Vec2f(44,32), SColor(0xffffffff));
 				}
+				else disable_line = false;
 			}
 
 			//(remove crazy amount of duplicate code)
