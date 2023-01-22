@@ -447,7 +447,7 @@ void onRender(CSprite@ this)
 	//printf("perc "+percent);
 
 	Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 0);
-	const f32 y = blob.getHeight() * 3.7f;
+	const f32 y = blob.getHeight() * 4.15f;
 	Vec2f dim = Vec2f(24, 5); //95
 	Vec2f percdim = Vec2f(Maths::Min(24-24*percent, 24), 5); //95
 
