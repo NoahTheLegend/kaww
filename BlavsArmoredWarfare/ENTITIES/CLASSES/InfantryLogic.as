@@ -957,12 +957,12 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	f32 targetDistance = targetVector.Length();
 	f32 targetFactor = targetDistance / 367.0f;
 	
-	float perk_mod = 1;
+	float perk_mod = 1.0f;
 	if (this.getPlayer() !is null)
 	{
 		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
 		{
-			perk_mod = 1.5; // improved accuracy
+			perk_mod = 1.5f; // improved accuracy
 		}
 	}
 
@@ -1061,7 +1061,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
 			{
 				damageBody *= 1.0f; // 150%
-				damageHead *= 1.5f;
+				damageHead *= 1.33f;
 			}
 		}
 
