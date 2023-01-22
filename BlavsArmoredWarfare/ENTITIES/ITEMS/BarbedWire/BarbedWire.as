@@ -79,10 +79,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * Maths::Max(0.0f, damage / (hitterBlob.getPosition() - this.getPosition()).Length());
 	}
-	if (hitterBlob !is null && hitterBlob !is this && (customData == Hitters::builder || customData == Hitters::sword))
+	/*if (hitterBlob !is null && hitterBlob !is this && (customData == Hitters::builder || customData == Hitters::sword))
 	{
 		if (isServer() && XORRandom(2)==0) this.server_Hit(hitterBlob, this.getPosition(), Vec2f(0, 0), 0.15f, Hitters::spikes, false);
-	}
+	}*/
 	if (isClient())
 	{
 		this.getSprite().PlaySound("dig_stone.ogg", 1.0f, 0.975f);
