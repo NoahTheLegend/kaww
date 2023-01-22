@@ -384,6 +384,6 @@ void onRender(CSprite@ this)
 	if (blob.get_u8("numcapping") > 0)
 	{
 		//GUI::SetFont("menu");
-		GUI::DrawShadowedText("★ " + blob.get_u8("numcapping") + (blob.get_u8("numcapping") > 2 ? " (2)" : "") + " player" + (blob.get_u8("numcapping") > 1 ? "s are" : " is") + " capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 20), SColor(0xffffffff));
+		GUI::DrawShadowedText("★ " + blob.get_u8("numcapping") + " player" + (blob.get_u8("numcapping") > 1 ? "s are" : " is") + " capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 20), SColor(0xffffffff));
 	}
 }
