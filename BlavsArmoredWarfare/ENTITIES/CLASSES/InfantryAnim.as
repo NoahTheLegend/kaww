@@ -261,6 +261,7 @@ void onTick(CSprite@ this)
 	CSpriteLayer@ skull = this.getSpriteLayer("skull");
 	if (skull !is null)
 	{
+		skull.SetFacingLeft(false);
 		if ((showgun || isReloading)
 		&& blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Death Incarnate")
 		{
