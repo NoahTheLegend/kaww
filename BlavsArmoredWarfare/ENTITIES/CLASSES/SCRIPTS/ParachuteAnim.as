@@ -25,7 +25,7 @@ void onTick(CSprite@ this)
 
 	if (parachute !is null)
 	{
-		if (blob.hasTag("parachute") && !blob.isAttached())
+		if (blob.hasTag("parachute") && !blob.isAttached() && !blob.hasTag("dead"))
 		{
 			parachute.SetFacingLeft(false);
 
