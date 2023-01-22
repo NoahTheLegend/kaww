@@ -37,6 +37,7 @@ void onInit(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (blob.hasTag("trap")) return false;
 	if (blob.hasTag("destructable"))
 	{
 		return true;
