@@ -415,6 +415,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 			return true;
 		}
 
+		//if (blob.hasTag("structure"))
+		//{
+		//	return false;
+		//}
+
 		if (blob.hasTag("door") && blob.getShape().getConsts().collidable)
 		{
 			return true;

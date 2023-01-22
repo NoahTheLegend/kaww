@@ -182,6 +182,12 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 
 void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 {
+	if (this.hasTag("dead") || this.isAttached() || this.getPlayer() is null)
+	{
+		this.set_u32("end_stabbing", 0);
+		this.Untag("attacking");
+		return;
+	}
 	if (!getNet().isServer()) { return; }
 	if (aimangle < 0.0f) { aimangle += 360.0f; }
 

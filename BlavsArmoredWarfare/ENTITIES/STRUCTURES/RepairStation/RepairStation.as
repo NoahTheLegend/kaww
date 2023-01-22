@@ -55,7 +55,9 @@ void onTick(CBlob@ this)
 					repair_amount *= 0.5f;
 				}
 
-				AttachmentPoint@ drv = blob.getAttachments().getAttachmentPointByName("DRIVER");
+				CAttachment@ atc = blob.getAttachments();
+				if (atc is null) return;
+				AttachmentPoint@ drv = atc.getAttachmentPointByName("DRIVER");
 				
 				if (drv !is null)
 				{
