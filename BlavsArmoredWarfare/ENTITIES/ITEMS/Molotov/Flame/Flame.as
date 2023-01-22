@@ -23,6 +23,8 @@ void onInit(CBlob@ this)
 	{
 		this.getCurrentScript().runFlags |= Script::tick_onscreen;
 	}
+
+	this.Tag("trap");
 }
 
 void onTick(CBlob@ this)
