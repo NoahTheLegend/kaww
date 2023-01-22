@@ -5,7 +5,7 @@
 #include "RunnerHead.as"
 
 float mouse_mvspd = 0.5f;
-const bool emotes = true;
+const bool emotes = false;
 
 void onInit(CBrain@ this)
 {
