@@ -331,7 +331,7 @@ void SeekCover(CBlob@ blob, Vec2f pos)
 	Vec2f Vector = pos - myPos;
 	f32 vecDistance = Vector.Length();
 	
-	if (vecDistance > 30.0f)
+	if (vecDistance > 22.0f)
 	{
 		//set_emote( blob, Emotes::cry );
 
