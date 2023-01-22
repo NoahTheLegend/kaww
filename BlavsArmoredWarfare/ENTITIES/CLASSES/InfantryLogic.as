@@ -1032,6 +1032,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
 		this.set_s32("my_chargetime", infantry.delayafterfire);
+		this.Tag("no_more_shoot");
 	}
 
 	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
@@ -1041,7 +1042,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
-		//this.Untag("no_more_shoot");
+		this.Untag("no_more_shoot");
 		if (this.get_u32("next_shoot") > getGameTime()) return;
 		this.set_u32("next_shoot", getGameTime()+1);
 		if (this is null || this.hasTag("dead")) return;
