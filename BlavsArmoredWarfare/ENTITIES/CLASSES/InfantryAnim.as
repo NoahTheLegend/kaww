@@ -75,11 +75,11 @@ void LoadSprites(CSprite@ this)
 		camo.SetRelativeZ(0.26f);
 	}
 
-	CSpriteLayer@ skull = this.addSpriteLayer("skull", "KillfeedIcons.png", 32, 16, 0, 0);
+	CSpriteLayer@ skull = this.addSpriteLayer("skull", "DeathIncarnate.png", 16, 16, 0, 0);
 	if (skull !is null)
 	{
-		skull.SetFrameIndex(1);
-		skull.SetOffset(Vec2f(0.0f, -16.0f));
+		skull.SetFrameIndex(0);
+		skull.SetOffset(Vec2f(0.0f, -15.0f));
 		skull.ScaleBy(Vec2f(0.75f,0.75f));
 		skull.SetRelativeZ(-5.0f);
 		skull.SetVisible(false);
@@ -258,7 +258,7 @@ void onTick(CSprite@ this)
 	CSpriteLayer@ skull = this.getSpriteLayer("skull");
 	if (skull !is null)
 	{
-		if (showgun
+		if ((showgun || isReloading)
 		&& blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Death Incarnate")
 		{
 			skull.SetVisible(true);
