@@ -377,7 +377,7 @@ void onTick(CBrain@ this)
 				blob.SendCommand(blob.getCommandID("reload"), params);
 			}
 
-			if (target !is null && blob.get_u8("myKey") > 150)
+			if (target !is null && blob.get_u8("myKey") > 150 && (isVisible(blob, target) || blob.get_u8("myKey") > 210))
 			{
 				strategy = Strategy::retreating;
 			}

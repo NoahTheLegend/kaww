@@ -6,7 +6,7 @@
 #include "Hitters.as";
 #include "PlayerRankInfo.as";
 
-const u8 MAX_BOTS = 6; // fills while server's pop is lesser than value
+const u8 MAX_BOTS = 8; // fills while server's pop is lesser than value
 
 ConfigFile cfg_playerexp;
 
@@ -558,17 +558,9 @@ shared class TDMCore : RulesCore
 
 						if (blob_alive)
 						{
-							string player_char = "k"; //default to sword
-
-							if (player_blob.getName() == "archer")
-							{
-								player_char = "k";
-							}
-
-							temp += player_char;
+							temp += "k";
 						}
-						else
-						{
+						else {
 							temp += "s";
 						}
 					}
@@ -1031,39 +1023,6 @@ shared class TDMCore : RulesCore
 	}
 };
 
-void KickBots(CRules@ this)
-{
-	u8 players = 0;
-	u8 bots = 0;
-	for (u8 i = 0; i < getPlayersCount(); i++)
-	{
-		CPlayer@ p = getPlayer(i);
-		if (p is null) continue;
-		if (!p.isBot())
-		{
-			if (p.getTeamNum() != this.getSpectatorTeamNum())
-			{
-				players++;
-			}
-		}
-		else bots++;
-	}
-	if (bots == 0) return;
-
-	s8 remaining_bots = players+bots-MAX_BOTS;
-	u8 kicked = 0;
-	//printf("rem "+remaining_bots);
-	for (u8 i = 0; (kicked < remaining_bots || i >= getPlayersCount()); i++)
-	{
-		CPlayer@ p = getPlayer(i);
-		if (p !is null && p.isBot())
-		{
-			KickPlayer(p);
-			kicked++;
-		}
-	}
-}
-
 //pass stuff to the core from each of the hooks
 void Reset(CRules@ this)
 {
@@ -1077,17 +1036,6 @@ void Reset(CRules@ this)
 	this.set_u16("red_kills", 0);
 	this.Sync("blue_kills", true);
 	this.Sync("red_kills", true);
-
-	KickBots(this);
-
-	//if (this.get_s16("blueTickets") < 1)
-	//{
-	//	this.set_s16("blueTickets", 1);
-	//}
-	//if (this.get_s16("redTickets") < 1)
-	//{
-	//	this.set_s16("redTickets", 1);
-	//}
 
 	//string configstr = "Rules/CTF/ctf_vars.cfg";
 	//ConfigFile cfg = ConfigFile(configstr);
@@ -1141,6 +1089,31 @@ void Reset(CRules@ this)
 	if (brightmod == 0)
 	{
 		getMap().SetDayTime(0.03f);
+	}
+
+	u8 bots = 0; // count bots
+	for (u8 i = 0; i < getPlayersCount(); i++)
+	{
+		CPlayer@ p = getPlayer(i);
+		if (p !is null && p.isBot())
+		{
+			bots++;
+		}
+	}
+
+	if (bots > 0)// kickbots
+	{
+		s8 remaining_bots = Maths::Abs(MAX_BOTS - (getPlayersCount_NotSpectator() + bots));
+		u8 kicked = 0;
+		for (u8 i = 0; (kicked < remaining_bots || i >= getPlayersCount()); i++)
+		{
+			CPlayer@ p = getPlayer(i);
+			if (p !is null && p.isBot())
+			{
+				KickPlayer(p);
+				kicked++;
+			}
+		}
 	}
 }
 
@@ -1356,6 +1329,39 @@ void onTick(CRules@ this)
 			this.Sync("redTickets", true);
 		}
 	}
+	if (getGameTime() == 30)
+	{
+		if (!this.hasTag("togglebots"))
+		{	
+			// Bots are enabled
+
+			// Fill server with bots on lowpop
+
+			u8 bots = 0; // count bots
+			for (u8 i = 0; i < getPlayersCount(); i++)
+			{
+				CPlayer@ p = getPlayer(i);
+				if (p !is null && p.isBot())
+				{
+					bots++;
+				}
+			}
+
+			u8 playercount = getPlayersCount_NotSpectator();
+
+			if (playercount > 0)
+			{
+				if (playercount + bots <= MAX_BOTS) // add bots
+				{
+					s8 remaining_bots = MAX_BOTS - (playercount + bots);
+					for (u8 i = 0; i < remaining_bots; i++)
+					{
+						AddBot("Bot");
+					}
+				}
+			}
+		}
+	}
 	if (getGameTime() % 30 == 0)
 	{
 		CBlob@[] flags;
@@ -1375,42 +1381,6 @@ void onTick(CRules@ this)
 		{
 			//printf("b "+blue_flags+" r "+red_flags);
 			this.set_u32("game_end_time", this.get_u32("game_end_time") - 30);
-		}
-
-		if (!this.hasTag("togglebots"))
-		{
-			// Fill server with bots on lowpop
-			u8 players = 0;
-			u8 bots = 0;
-			for (u8 i = 0; i < getPlayersCount(); i++)
-			{
-				CPlayer@ p = getPlayer(i);
-				if (p is null) continue;
-				if (!p.isBot())
-				{
-					if (p.getTeamNum() != this.getSpectatorTeamNum())
-					{
-						players++;
-					}
-				}
-				else bots++;
-			}
-			if (players > 0)
-			{
-				
-				//printf("pl "+players);
-				//printf("bots "+bots);
-
-				// kick bots onRestart
-				if (players+bots <= MAX_BOTS)
-				{
-					s8 remaining_bots = MAX_BOTS-(players+bots);
-					for (u8 i = 0; i < remaining_bots; i++)
-					{
-						AddBot("Bot");
-					}
-				}
-			}
 		}
 	}
 	//if (!this.hasTag("synced_siege"))

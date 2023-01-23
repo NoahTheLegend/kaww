@@ -221,7 +221,7 @@ void GrowSprite(CSprite@ this, TreeVars@ vars)
 						newsegment1.ResetTransform();
 						newsegment1.SetRelativeZ(-550.0f - (vars.height * 10.0f));
 						newsegment1.SetFacingLeft(flipped);
-						newsegment1.SetOffset(segment.start_pos + Vec2f(((vars.max_height - i * 2) + segment.r.NextRanged(8)) * 0.5 + 8.0f , 4.0f));
+						newsegment1.SetOffset(segment.start_pos + Vec2f(((vars.max_height - i * 2) + segment.r.NextRanged(8)) * 0.8 + 3.0f , 4.0f));
 					}
 					
 					CSpriteLayer@ newsegment2 = this.addSpriteLayer("leaves doubleside " + i, spritefile, 32, 32, 0, 0);
@@ -234,7 +234,7 @@ void GrowSprite(CSprite@ this, TreeVars@ vars)
 						newsegment2.ResetTransform();
 						newsegment2.SetRelativeZ(-550.0f - (vars.height * 10.0f));
 						newsegment2.SetFacingLeft(!flipped);
-						newsegment2.SetOffset(segment.start_pos + Vec2f(((vars.max_height - i * 2) + segment.r.NextRanged(8)) * 0.5 + 8.0f , 4.0f));
+						newsegment2.SetOffset(segment.start_pos + Vec2f(((vars.max_height - i * 2) + segment.r.NextRanged(8)) * 0.8 + 3.0f , 4.0f));
 					}
 				}
 			}
