@@ -260,7 +260,7 @@ void onTick(CBrain@ this)
 				}
 
 				// im in the wrong seat
-				if (getGameTime() % 10 == 0 && XORRandom(30) == 0 && blob.get_string("behavior") == "gun_mg" || blob.get_string("behavior") == "gun_turret")
+				if (getGameTime() % 10 == 0 && XORRandom(3) == 0 && blob.get_string("behavior") == "gun_mg" || blob.get_string("behavior") == "gun_turret")
 				{
 					blob.server_DetachAll(); // hop out
 					if (XORRandom(2) == 0) blob.set_string("behavior", ""); // chance to lose interest in that seat
@@ -283,9 +283,14 @@ void onTick(CBrain@ this)
 		{
 			if (target !is null)
 			{
+				if (XORRandom(30) == 0)
+				{
+					this.SetTarget(null);
+				}
+
 				u8 strategy = blob.get_u8("strategy");
 
-				AttackBlob(blob, target);
+				AttackBlobGunner(blob, target, vehicle);
 				//blob.setKeyPressed(key_action1, true);
 
 				if (LoseTarget(this, target))
@@ -293,7 +298,7 @@ void onTick(CBrain@ this)
 					strategy = Strategy::idle;
 				}
 
-				if (getGameTime() % 10 == 0 && XORRandom(140) == 0)
+				if (getGameTime() % 10 == 0 && XORRandom(300) == 0)
 				{
 					blob.server_DetachAll(); // hop out
 				}
@@ -347,7 +352,7 @@ void onTick(CBrain@ this)
 			}
 
 
-			if (getGameTime() % 10 == 0 && XORRandom(getGameTime() > 9000 ? 200 : 150) == 0)
+			if (getGameTime() % 10 == 0 && XORRandom(getGameTime() > 9000 ? 200 : 100) == 0)
 			{
 				blob.server_DetachAll(); // hop out
 				blob.set_string("behavior", "");
@@ -637,6 +642,25 @@ void onTick(CBrain@ this)
 								blob.set_u16("secondarytarget", 0); // capture complete
 							}
 						}
+						else if (secondarytarget.getName() == "repairstation") // we are capping a repair station
+						{	
+							if (emotes) set_emote(blob, Emotes::redflag, 10);
+
+							if (secondarytarget.getTeamNum() != blob.getTeamNum()) // capturable for us
+							{
+								if ((secondarytarget.getPosition() - blob.getPosition()).getLength() < 10 + blob.get_u8("mykey")/2)
+								{
+									// capture it
+								}
+								else{
+									GoToPos(blob, secondarytarget.getPosition());
+								}
+							}
+							else
+							{
+								blob.set_u16("secondarytarget", 0); // capture complete
+							}
+						}
 					}
 				}
 				else
@@ -783,8 +807,27 @@ void onTick(CBrain@ this)
 		// decide to do something
 		if (blob.get_u16("secondarytarget") == 0) // we dont have a secondary target
 		{
+			// decide to capture a repairstation
+			if (getGameTime() % 50 + blob.get_u8("mykey") == 0 && XORRandom(4) == 0) // every once in a while
+			{
+				CBlob@[] stations;
+				getBlobsByName("repairstation", @stations);
+				SortBlobsByDistance(blob, @stations);
+
+				if (stations.length > 0) // if there are any neutral ones
+				{
+					if ((blob.get_Vec2f("generalfriendlocation") - stations[0].getPosition()).getLength() < 500) // is a friendly station
+					{
+						if ((blob.get_Vec2f("generalenemylocation") - stations[0].getPosition()).getLength() > 400 || XORRandom(50) == 0) // if threat is relatively low
+						{
+							blob.set_u16("secondarytarget", stations[0].getNetworkID());
+						}
+					}
+				}
+			}
+
 			// decide to capture a point
-			if (getGameTime() % 60 == 0) // every once in a while
+			if (getGameTime() % 100 + blob.get_u8("mykey") == 0 && XORRandom(4) == 0) // every once in a while
 			{
 				CBlob@[] points;
 				getBlobsByName("pointflag", @points);
@@ -792,7 +835,7 @@ void onTick(CBrain@ this)
 
 				if (points.length > 0) // if there are flags on this map
 				{
-					if ((blob.get_Vec2f("generalenemylocation") - blob.getPosition()).getLength() > 640 || XORRandom(50) == 0) // if threat is relatively low
+					if ((blob.get_Vec2f("generalenemylocation") - points[0].getPosition()).getLength() > 600 || XORRandom(50) == 0) // if threat is relatively low
 					{
 						//wip
 						blob.set_u16("secondarytarget", points[0].getNetworkID());
