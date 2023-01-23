@@ -898,6 +898,8 @@ void onTick(CBrain@ this)
 
 	FloatInWater(blob);
 
+	AvoidTheVoid(blob);
+
 	// Eat if lost hp
 	if (blob.getInitialHealth() - 0.5f > blob.getHealth())
 	{

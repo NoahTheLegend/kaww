@@ -130,6 +130,29 @@ void JumpOverObstacles(CBlob@ blob)
 		}
 }
 
+void AvoidTheVoid(CBlob@ blob)
+{
+	Vec2f pos = blob.getPosition();
+	Vec2f futurepos = pos + blob.getVelocity() * 4.0f;
+	const f32 radius = blob.getRadius();
+
+	if (!getMap().rayCastSolid(pos, futurepos + Vec2f(0, 200)))
+	{
+		blob.setKeyPressed(key_left, false);
+		blob.setKeyPressed(key_right, false);
+
+		if (blob.isFacingLeft())
+		{
+			blob.setKeyPressed(key_right, true);
+		}
+		else{
+			blob.setKeyPressed(key_left, true);
+		}
+
+		blob.setKeyPressed(key_up, true);
+	}
+}
+
 void DefaultChaseBlob(CBlob@ blob, CBlob @target)
 {
 	CBrain@ brain = blob.getBrain();
