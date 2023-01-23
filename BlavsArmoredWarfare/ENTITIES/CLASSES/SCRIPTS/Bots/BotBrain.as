@@ -228,9 +228,14 @@ void onTick(CBrain@ this)
 				{
 					if (tertiarytarget !is null && tertiarytarget.getName() == "repairstation")
 					{
-						if ((tertiarytarget.getPosition() - vehicle.getPosition()).getLength() > 10.0f && !((blob.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x < blob.getPosition().x) || (!blob.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x > blob.getPosition().x)))
+						if ((tertiarytarget.getPosition() - vehicle.getPosition()).getLength() > 10.0f)
 						{
-							DriveToPos(blob, vehicle, tertiarytarget.getPosition(), 4);
+							DriveToPos(blob, vehicle, tertiarytarget.getPosition(), 10);
+						}
+						else if (!(blob.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x < blob.getPosition().x)
+							  && !(!blob.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x > blob.getPosition().x))
+						{
+							DriveToPos(blob, vehicle, tertiarytarget.getPosition(), 10);
 						}
 						
 						if (vehicle.getHealth() == vehicle.getInitialHealth() || tertiarytarget is null)
