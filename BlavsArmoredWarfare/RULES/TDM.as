@@ -1304,7 +1304,7 @@ void onTick(CRules@ this)
 			this.Sync("redTickets", true);
 		}
 	}
-	if (getGameTime() == 30)
+	if (getGameTime() == 10)
 	{
 		u8 bots = 0; // count bots
 		for (u8 i = 0; i < getPlayersCount(); i++)
@@ -1362,7 +1362,7 @@ void onTick(CRules@ this)
 			}
 		}
 	}
-	if (getGameTime() == 60)
+	if (getGameTime() == 20)
 	{
 		if (!this.hasTag("togglebots"))
 		{	

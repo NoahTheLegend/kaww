@@ -433,6 +433,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 			return false;
 		}
 
+		if (blob.isAttached() && !blob.hasTag("player"))
+		{
+			return false;
+		}
+
 		if ((this.getTickSinceCreated() > 1 || blob.getTeamNum() != this.getTeamNum()) && blob.isAttached() && !blob.hasTag("covered"))
 		{
 			if (blob.hasTag("collidewithbullets")) return XORRandom(2)==0;

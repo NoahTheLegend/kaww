@@ -374,7 +374,12 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
 		return false;
 	}
-	
+
+	if (blob.isAttached() && !blob.hasTag("player"))
+	{
+		return false;
+	}
+
 	if ((this.getTickSinceCreated() > 1 || (blob.getTeamNum() != this.getTeamNum() && this.getTeamNum() < 2)) && blob.isAttached())
 	{
 		if (blob.hasTag("collidewithbullets")) return XORRandom(2)==0;

@@ -13,6 +13,8 @@ namespace Strategy
 		chasing,
 		attacking,
 		seekcover,
+		seekheal,
+		seekammo,
 		retreating
 	}
 }
@@ -310,6 +312,113 @@ void GoToPos(CBlob@ blob, Vec2f pos)
 	}
 }
 
+void GoToImportant(CBlob@ blob, CBlob@ importantblob, CBlob@ target)
+{
+	CBrain@ brain = blob.getBrain();
+	Vec2f myPos = blob.getPosition();
+	Vec2f itsPos = importantblob.getPosition();
+	Vec2f Vector = itsPos - myPos;
+	f32 vecDistance = Vector.Length();
+	// check if we have a clear area to the target
+	bool justmove = false;
+	bool justjump = false;
+
+	// repath if no clear path after going at it
+	if (XORRandom(20) == 0 && (blob.get_Vec2f("last pathing pos") - itsPos).getLength() > 40.0f)
+	{
+		RepathPos(brain, itsPos);
+		blob.set_Vec2f("last pathing pos", itsPos);
+	}
+
+	const bool stuck = brain.getState() == CBrain::stuck;
+
+	const CBrain::BrainState state = brain.getState();
+	{
+		if (state == CBrain::has_path)
+		{
+			Vec2f col;
+			bool visible = !getMap().rayCastSolid(blob.getPosition(), itsPos, col);
+			if (visible)
+			{
+				justmove = true;
+			}
+			else if (getGameTime() % 160 + blob.get_u8("mykey") < 120) {
+				//brain.SetSuggestedKeys();  // set walk keys here
+				
+			}
+			justmove = true; //temp
+			justjump = true;
+		}
+		else
+		{
+			justmove = true;
+			justjump = true;
+		}
+
+		if ((myPos - target.getPosition()).getLength() < 400.0f)
+		{
+			justmove = true; // im under pressure
+		}
+
+		//printInt("state", brain.getState() );
+		switch (state)
+		{
+			case CBrain::idle:
+				RepathPos(brain, itsPos);
+				break;
+
+			case CBrain::searching:
+				//if (sv_test)
+				//	set_emote( blob, Emotes::dots );
+				break;
+
+			case CBrain::stuck:
+				RepathPos(brain, itsPos);
+				break;
+
+			case CBrain::wrong_path:
+				RepathPos(brain, itsPos);
+				break;
+		}
+	}
+
+	if (justmove)
+	{
+		if (itsPos.x < myPos.x)
+		{
+			blob.setKeyPressed(key_left, true);
+		}
+		else
+		{
+			blob.setKeyPressed(key_right, true);
+		}
+
+		if (itsPos.y > myPos.y)
+		{
+			blob.setKeyPressed(key_down, true);
+		}
+	}
+
+	if (justjump)
+	{
+		if (itsPos.y + getMap().tilesize * 0.7f + 5 < myPos.y)
+		{
+			blob.setKeyPressed(key_up, true);
+		}
+	}
+
+	JumpOverObstacles(blob);
+
+	if (target !is null && isVisible(blob, target))
+	{
+		AttackBlob(blob, target);
+	}
+	else
+	{
+		blob.setAimPos(Vec2f_lerp(blob.getAimPos(), Vec2f(itsPos.x, itsPos.y), 0.09));
+	}
+}
+
 bool DefaultRetreatBlob(CBlob@ blob, CBlob@ target)
 {
 	//set_emote( blob, Emotes::attn );
@@ -338,7 +447,6 @@ bool DefaultRetreatBlob(CBlob@ blob, CBlob@ target)
 
 	if (target !is null && isVisible(blob, target))
 	{
-		
 		AttackBlob(blob, target);
 	}
 

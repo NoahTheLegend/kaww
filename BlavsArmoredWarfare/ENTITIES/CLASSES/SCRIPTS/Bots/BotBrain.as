@@ -82,12 +82,12 @@ void onTick(CBrain@ this)
 		}
 	}
 
-	if (blob.get_Vec2f("generalenemylocation") == Vec2f_zero || getGameTime() % 600 == 0) // update once in a while & when needed
+	if (blob.get_Vec2f("generalenemylocation") == Vec2f_zero || (getGameTime() + blob.getNetworkID()) % 600 == 0) // update once in a while & when needed
 	{
 		LocateGeneralEnemyDirection(blob); // lets figure out which direction we should attack
 	}
 
-	if (blob.get_Vec2f("generalfriendlocation") == Vec2f_zero || getGameTime() % 1800 == 0) // update once in a while & when needed
+	if (blob.get_Vec2f("generalfriendlocation") == Vec2f_zero || (getGameTime() + blob.getNetworkID()) % 1800 == 0) // update once in a while & when needed
 	{
 		LocateGeneralFriendDirection(blob); // gives the direction we can retreat to
 	}
@@ -235,8 +235,7 @@ void onTick(CBrain@ this)
 							blob.set_u16("tertiarytarget", 0); // stop repairing
 						}
 					}
-					else
-					{
+					else {
 						// choose a repair station
 						CBlob@[] repairstations;
 						getBlobsByName("repairstation", @repairstations);
@@ -357,7 +356,7 @@ void onTick(CBrain@ this)
 		
 	}
 	else{ // infantry logic
-
+		CBlob @check;
 		u8 strategy = blob.get_u8("strategy");
 
 		if (blob.getHealth() < blob.getInitialHealth() / 2.5) // low hp, seek cover
@@ -371,7 +370,7 @@ void onTick(CBrain@ this)
 
 		if (blob.get_u32("mag_bullets") == 0) // no ammo, retreat!
 		{
-			if (blob.getControls() !is null && !blob.hasTag("forcereload") && (getGameTime()+blob.getNetworkID())%(XORRandom(30)+1)==0)
+			if (blob.getControls() !is null && !blob.hasTag("forcereload") && (getGameTime() + blob.getNetworkID()) % (XORRandom(30) + 1) == 0)
 			{
 				CBitStream params;
 				blob.SendCommand(blob.getCommandID("reload"), params);
@@ -387,8 +386,44 @@ void onTick(CBrain@ this)
 		{
 			f32 distance;
 			const bool visibleTarget = isVisible(blob, target, distance);
-			
-			if (strategy != Strategy::seekcover && strategy != Strategy::retreating) // dont overwrite
+
+			// find heals
+			if (blob.getInitialHealth() / 2 > blob.getHealth() && distance > 24.0f)
+			{
+				if (!blob.hasBlob("food", 1) && !blob.hasBlob("heart", 1))
+				{
+					Vec2f mypos = blob.getPosition();
+					Vec2f targetpos = target.getPosition();
+
+					CBlob@[] healing;
+					getBlobsByName("food", @healing);
+					getBlobsByName("heart", @healing);
+					SortBlobsByDistance(blob, @healing);
+					for( int i = 0; i < healing.size(); i++ )
+					{
+						@check = healing[i];
+						Vec2f dist = check.getPosition() - mypos;
+						Vec2f disttoenemy = check.getPosition() - targetpos;
+						if (!check.isInInventory() && check.isAttached())
+						{
+							if (dist.getLength() < 456.0f && disttoenemy.getLength() > 32.0f)
+							{
+								strategy = Strategy::seekheal;
+								break;
+							}
+						}
+					}
+
+					healing.clear();
+				}
+			}
+
+			if (strategy == Strategy::seekheal && XORRandom(300) == 0)
+			{
+				strategy = Strategy::idle;
+			}
+
+			if (strategy != Strategy::seekcover && strategy != Strategy::retreating && strategy != Strategy::seekheal) // dont overwrite
 			{
 				if (visibleTarget)
 				{
@@ -409,7 +444,7 @@ void onTick(CBrain@ this)
 				}
 			}
 
-			UpdateBlob(blob, target, strategy);
+			UpdateBlob(blob, target, strategy, @check);
 
 			// lose target if its killed (with random cooldown)
 
@@ -438,7 +473,7 @@ void onTick(CBrain@ this)
 				{
 					Vec2f aimposvar = blob.get_Vec2f("generalfriendlocation");
 
-					blob.setAimPos(Vec2f_lerp(blob.getAimPos(), Vec2f(aimposvar.x, aimposvar.y), 0.03));
+					blob.setAimPos(Vec2f_lerp(blob.getAimPos(), Vec2f(aimposvar.x, aimposvar.y), 0.02));
 				}
 			}
 		}
@@ -775,7 +810,7 @@ void onTick(CBrain@ this)
 
 					if (vehicles.length > 0) // if there are vehicles
 					{
-						if (getGameTime() % 30 == 0) // every once in a while
+						if ((getGameTime() + blob.getNetworkID()) % 30 == 0) // every once in a while
 						{
 							// choose a random vehicle to get into
 							CBlob@ vehicle = vehicles[XORRandom(vehicles.length)];
@@ -800,6 +835,7 @@ void onTick(CBrain@ this)
 													if (point !is null && vehicle !is null) @point = ats.getAttachmentPointByName("DRIVER");
 													if (point !is null)
 													{
+														print("1");
 														CBlob@ occupied = point.getOccupied();
 														if (occupied is null)
 														{
@@ -809,7 +845,6 @@ void onTick(CBrain@ this)
 															{
 																blob.set_u16("secondarytarget", vehicle.getNetworkID());
 																blob.set_string("behavior", "drive");
-																print("GO");
 															}
 														}
 													}
@@ -824,6 +859,7 @@ void onTick(CBrain@ this)
 													if (point !is null && vehicle !is null) @point = ats.getAttachmentPointByName("DRIVER");
 													if (point !is null)
 													{
+														print("z");
 														CBlob@ occupied = point.getOccupied();
 														if (occupied !is null)
 														{
@@ -835,7 +871,7 @@ void onTick(CBrain@ this)
 															AttachmentPoint@ gunnerseat = vehicle.getAttachments().getAttachmentPointByName("GUNNER");
 															if (gunnerseat !is null)
 															{
-																if (gunnerseat.getOccupied() is null) typeofemptyseat = 1;
+																if (gunnerseat.getOccupied() is null) { typeofemptyseat = 1; }
 															}
 															else // either we have no gunner seat, or we have a turret, or an mg
 															{
@@ -849,7 +885,7 @@ void onTick(CBrain@ this)
 																		AttachmentPoint@ turretgunnerseat = turretblob.getAttachments().getAttachmentPointByName("GUNNER");
 																		if (turretgunnerseat !is null)
 																		{
-																			if (turretgunnerseat.getOccupied() is null) typeofemptyseat = 2;
+																			if (turretgunnerseat.getOccupied() is null) { typeofemptyseat = 2; }
 																		}
 																	}
 																}
@@ -865,7 +901,7 @@ void onTick(CBrain@ this)
 																			AttachmentPoint@ mgseat = mgblob.getAttachments().getAttachmentPointByName("GUNNER");
 																			if (mgseat !is null)
 																			{
-																				if (mgseat.getOccupied() is null) typeofemptyseat = 1;
+																				if (mgseat.getOccupied() is null) { typeofemptyseat = 1; }
 																			}
 																		}
 																	}
@@ -876,7 +912,6 @@ void onTick(CBrain@ this)
 															{
 																blob.set_u16("secondarytarget", vehicle.getNetworkID());
 																blob.set_string("behavior", typeofemptyseat == 1 ? "gun_mg" : "gun_turret");
-																print("GO");
 																// time to get into this gun
 															}
 														}
@@ -912,7 +947,7 @@ void onTick(CBrain@ this)
 	}
 }
 
-void UpdateBlob(CBlob@ blob, CBlob@ target, const u8 strategy)
+void UpdateBlob(CBlob@ blob, CBlob@ target, u8 strategy, CBlob@ check)
 {
 	Vec2f targetPos = target.getPosition();
 	Vec2f myPos = blob.getPosition();
@@ -934,37 +969,20 @@ void UpdateBlob(CBlob@ blob, CBlob@ target, const u8 strategy)
 			DefaultRetreatBlob(blob, target);
 		}
 	}
+	else if (strategy == Strategy::seekheal)
+	{
+		if (check !is null && (targetPos - myPos).getLength() > 32.0f)
+		{
+			GoToImportant(blob, @check, @target);
+		}
+		else
+		{
+			strategy = Strategy::idle;
+		}
+	}
 	else if (strategy == Strategy::attacking)
 	{
 		DefaultChaseBlob(blob, target);
 		AttackBlob(blob, target);
 	}
 }
-
-	/*
-			AttachmentPoint@ point = vehicle.getAttachments().getAttachmentPointByName("DRIVER");
-			if (point !is null)
-			{
-				CBlob@ occupied = point.getOccupied();
-				if (occupied !is null)
-				{
-					print("o " + occupied.getName());
-					print("b " + blob.getName());
-
-					if (occupied is blob)
-					{
-						print("sa");
-					}
-					//if (occupied.ge == blob)
-					{
-						//print("a " + occupied.getName());
-					}
-					//else
-					{
-						//print("b " + occupied.getName());
-					}
-					
-				}
-				
-			}*/
-
