@@ -492,7 +492,7 @@ void onTick(CBrain@ this)
 					CBlob@ secondarytarget = getBlobByNetworkID(blob.get_u16("secondarytarget"));
 					if (secondarytarget !is null)
 					{
-						if (secondarytarget.hasTag("vehicle") && (secondarytarget.hasTag("tank") || secondarytarget.hasTag("apc") || secondarytarget.getName() == "techtruck")) // we are going for a vehicle seat
+						if (secondarytarget.hasTag("vehicle")) // we are going for a vehicle seat
 						{
 							if (emotes) set_emote(blob, Emotes::cog, 2);
 
@@ -831,11 +831,9 @@ void onTick(CBrain@ this)
 												CAttachment@ ats = vehicle.getAttachments();
 												if (ats !is null)
 												{
-													AttachmentPoint@ point;
-													if (point !is null && vehicle !is null) @point = ats.getAttachmentPointByName("DRIVER");
-													if (point !is null)
+													AttachmentPoint@ point = ats.getAttachmentPointByName("DRIVER");
+													if (point !is null && vehicle !is null)
 													{
-														print("1");
 														CBlob@ occupied = point.getOccupied();
 														if (occupied is null)
 														{
@@ -855,11 +853,9 @@ void onTick(CBrain@ this)
 												CAttachment@ ats = vehicle.getAttachments();
 												if (ats !is null)
 												{
-													AttachmentPoint@ point;
-													if (point !is null && vehicle !is null) @point = ats.getAttachmentPointByName("DRIVER");
-													if (point !is null)
+													AttachmentPoint@ point = ats.getAttachmentPointByName("DRIVER");
+													if (point !is null && vehicle !is null)
 													{
-														print("z");
 														CBlob@ occupied = point.getOccupied();
 														if (occupied !is null)
 														{
