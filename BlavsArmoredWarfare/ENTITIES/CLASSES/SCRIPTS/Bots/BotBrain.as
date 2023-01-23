@@ -4,7 +4,9 @@
 #include "InfantryCommon.as"
 #include "RunnerHead.as"
 
-const bool emotes = false;
+const bool emotes = false; // debug emotes
+
+const bool realemotes = true; // player like emotes
 
 void onInit(CBrain@ this)
 {
@@ -87,7 +89,7 @@ void onTick(CBrain@ this)
 		LocateGeneralEnemyDirection(blob); // lets figure out which direction we should attack
 	}
 
-	if (blob.get_Vec2f("generalfriendlocation") == Vec2f_zero || (getGameTime()) % 1800 == 0) // update once in a while & when needed
+	if (blob.get_Vec2f("generalfriendlocation") == Vec2f_zero || (getGameTime()) % 1400 == 0) // update once in a while & when needed
 	{
 		LocateGeneralFriendDirection(blob); // gives the direction we can retreat to
 	}
@@ -128,6 +130,7 @@ void onTick(CBrain@ this)
 			{
 				bool shouldigo = false;
 				bool repairsneeded = false;
+				int vehicledangerlevel = 0;
 
 				// check if this vehicle has a gunner seat
 				AttachmentPoint@ gunnerseat = vehicle.getAttachments().getAttachmentPointByName("GUNNER");
@@ -192,9 +195,37 @@ void onTick(CBrain@ this)
 					}
 				}
 
+				// calculate the current danger level
+				
+				// vehicle health
+				vehicledangerlevel += Maths::Ceil(5*Maths::Abs(vehicle.getHealth() - vehicle.getInitialHealth()) / vehicle.getInitialHealth());
+
+				// player health
+				vehicledangerlevel += Maths::Ceil(2*Maths::Abs(blob.getHealth() - blob.getInitialHealth()) / blob.getInitialHealth());
+
+				// enemy presence
+				if (Maths::Abs(blob.get_Vec2f("generalenemylocation").x - vehicle.getPosition().x) < 200.0f) {
+					vehicledangerlevel += 1;
+				}
+				
+				// confidence with allies
+				if (Maths::Abs(blob.get_Vec2f("generalfriendlocation").x - vehicle.getPosition().x) < 300.0f) {
+					vehicledangerlevel -= 1;
+				}
+
+				// is on repair station
+				if (tertiarytarget !is null)
+				{
+					if (Maths::Abs(tertiarytarget.getPosition().x - vehicle.getPosition().x) < 20.0f) {
+						vehicledangerlevel -= 1;
+					}
+				}
+
+				//print("" + vehicle.getName() + ": " + vehicledangerlevel);
+
 				if (tertiarytarget is null)
 				{	
-					if (vehicle.getHealth() < vehicle.getInitialHealth() / 2)
+					if (vehicledangerlevel > 2)
 					{
 						repairsneeded = true;
 					}
@@ -202,12 +233,13 @@ void onTick(CBrain@ this)
 					{
 						if (shouldigo)
 						{
-							if (vehicle.getHealth() < vehicle.getInitialHealth() / 3)
+							if (vehicledangerlevel > 3)
 							{
 								repairsneeded = true;
 							}
 							else
 							{
+								// drive around to locations where there should be enemies
 								if (blob.get_Vec2f("generalenemylocation") != Vec2f_zero)
 								{
 									DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 200);
@@ -224,13 +256,90 @@ void onTick(CBrain@ this)
 					repairsneeded = true;
 				}
 
+				// do driver emotes
+				if (realemotes)
+				{
+					// we are chillin
+					if (vehicledangerlevel < 0)
+					{
+						if (shouldigo)
+						{
+							if (getGameTime() % 30 == 0 && XORRandom(30) == 0)
+							{
+								if (XORRandom(2) == 0)
+								{
+									set_emote(blob, Emotes::flex);
+								}
+								else{
+									if (blob.get_Vec2f("generalenemylocation").x > vehicle.getPosition().x)
+									{
+										set_emote(blob, Emotes::right);
+									}
+									else{
+										set_emote(blob, Emotes::left);
+									}
+									
+								}
+								
+							}
+						}
+						else{
+							// come gun please
+							if (Maths::Abs(blob.get_Vec2f("generalfriendlocation").x - vehicle.getPosition().x) < 400.0f)
+							{
+								if (getGameTime() % 30 == 0 && XORRandom(30) == 0)
+								{
+									set_emote(blob, Emotes::down);
+								}
+							}
+						}
+					}
+
+					// we are not chillin
+					if (vehicledangerlevel > 3)
+					{
+						if (getGameTime() % 30 == 0 && XORRandom(30) == 0)
+						{
+							set_emote(blob, Emotes::attn);
+						}
+					}
+				}
+
 				if (repairsneeded)
 				{
 					if (tertiarytarget !is null && tertiarytarget.getName() == "repairstation")
 					{
 						if ((tertiarytarget.getPosition() - vehicle.getPosition()).getLength() > 10.0f)
 						{
-							DriveToPos(blob, vehicle, tertiarytarget.getPosition(), 10);
+							if ((tertiarytarget.getPosition() - vehicle.getPosition()).getLength() < 80.0f)
+							{
+								if (getGameTime() % 5 != 0)
+								{
+									DriveToPos(blob, vehicle, tertiarytarget.getPosition(), 10); // slow down
+								}
+							}
+							else{
+								DriveToPos(blob, vehicle, tertiarytarget.getPosition(), 10);
+							}
+							
+
+							// do driver repair emotes
+							if (getGameTime() % 30 == 0 && XORRandom(60) == 0)
+							{
+								if (XORRandom(2) == 0)
+								{
+									set_emote(blob, XORRandom(2) == 0 ? Emotes::cry : Emotes::frown);
+								}
+								else{
+									if (tertiarytarget.getPosition().x > vehicle.getPosition().x)
+									{
+										set_emote(blob, Emotes::right);
+									}
+									else{
+										set_emote(blob, Emotes::left);
+									}
+								}
+							}
 						}
 						else if (!(blob.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x < blob.getPosition().x)
 							  && !(!blob.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x > blob.getPosition().x))
@@ -612,6 +721,7 @@ void onTick(CBrain@ this)
 								
 								if (choosen_seat !is null) // move to it / jump to it
 								{
+									
 									if (choosen_seat.getPosition().y + 50 > blob.getPosition().y)
 									{
 										blob.setKeyPressed(key_up, true);
@@ -629,6 +739,56 @@ void onTick(CBrain@ this)
 							}
 							else{
 								GoToPos(blob, secondarytarget.getPosition());
+
+								// unpredictable movement
+								if (getGameTime() % blob.get_u8("myKey") == 0 && XORRandom(3) == 0)
+								{
+									if (blob.get_u8("moveover") == 0)
+									{
+										blob.set_u8("moveover", XORRandom(2)+1); // rand dir
+									}
+									else
+									{
+										blob.set_u8("moveover", 0); // stop move dir
+									}
+								}
+
+								//secondary random
+								if (blob.get_u8("moveover") != 0)
+								{
+									if (XORRandom(70) == 0 || (blob.get_u16("secondarytarget") != 0 && XORRandom(20) == 0))
+									{
+										blob.set_u8("moveover", 0); //end
+									}
+
+									blob.setKeyPressed(key_left, false);
+									blob.setKeyPressed(key_right, false);
+
+									if (blob.get_u8("moveover") == 1) // 1 == right
+									{
+										//if (emotes) set_emote(blob, Emotes::right, 10);
+										blob.setKeyPressed(key_right, true);
+									}
+									else // 0 == left
+									{		
+										//if (emotes) set_emote(blob, Emotes::left, 10);
+										blob.setKeyPressed(key_left, true);
+									}
+
+									// hardcode rand
+									if (blob.get_u8("myKey") > 160)
+									{
+										blob.setKeyPressed(key_up, true);
+									}
+									if (blob.get_u8("myKey") < 120)
+									{
+										blob.setKeyPressed(key_up, false);
+									}
+									if (blob.get_u8("myKey") > 220)
+									{
+										blob.setKeyPressed(key_down, true);
+									}
+								}
 							}		
 						}		
 						else if (secondarytarget.getName() == "pointflag") // we are going for flag

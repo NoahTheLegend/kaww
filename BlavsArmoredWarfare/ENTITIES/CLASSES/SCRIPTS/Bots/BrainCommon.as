@@ -83,12 +83,12 @@ CBlob@ getNewTarget(CBrain@ this, CBlob @blob, const bool seeThroughWalls = fals
 
 void Repath(CBrain@ this)
 {
-	this.SetPathTo(this.getTarget().getPosition(), false);
+	this.SetPathTo(this.getTarget().getPosition(), 2);
 }
 
 void RepathPos(CBrain@ this, Vec2f pos)
 {
-	this.SetPathTo(pos, false);
+	this.SetPathTo(pos, 2);
 }
 
 bool isVisible(CBlob@blob, CBlob@ target)
@@ -207,8 +207,9 @@ void DefaultChaseBlob(CBlob@ blob, CBlob @target)
 	{
 		if (state == CBrain::has_path)
 		{
-			if (targetDistance < 300.0f)
+			if (targetDistance < 400.0f)
 			{
+				//set_emote( blob, Emotes::attn , 1);
 				//print("!@#");
 				brain.SetSuggestedKeys();  // set walk keys here
 			}
@@ -331,6 +332,19 @@ void GoToPos(CBlob@ blob, Vec2f pos)
 		if (pos.y + getMap().tilesize * 0.7f + 5 < myPos.y)
 		{
 			blob.setKeyPressed(key_up, true);
+		}
+	}
+
+	if (blob.isOnLadder())
+	{
+		if (getGameTime() % 350 < 150)
+		{
+			blob.setKeyPressed(key_up, true);
+			blob.setKeyPressed(key_down, false);
+		}
+		else{
+			blob.setKeyPressed(key_up, false);
+			blob.setKeyPressed(key_down, true);
 		}
 	}
 }
@@ -652,7 +666,7 @@ void DriveToPos(CBlob@ blob, CBlob@ vehicle, Vec2f position, float dist)
 
 		bool vehicleislow = (vehicle.getHealth() < vehicle.getInitialHealth() / 3);
 
-		if (vehicle.getShape().vellen < (vehicleislow ? 0.24f : 0.36f))
+		if (vehicle.getShape().vellen < (vehicleislow ? 0.24f : 0.38f))
 		{
 			// hmm we haven't moved, are we stuck?
 			blob.add_u16("behaviortimer", 2);
