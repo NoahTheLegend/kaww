@@ -201,7 +201,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (this.hasBlob("aceofspades", 1))
 		{
 			this.TakeBlob("aceofspades", 1);
-			this.set_u32("aceofspades_timer", getGameTime()+15);
+			this.set_u32("aceofspades_timer", getGameTime()+20);
 
 			this.server_SetHealth(0.01f);
 

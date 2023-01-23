@@ -1090,31 +1090,6 @@ void Reset(CRules@ this)
 	{
 		getMap().SetDayTime(0.03f);
 	}
-
-	u8 bots = 0; // count bots
-	for (u8 i = 0; i < getPlayersCount(); i++)
-	{
-		CPlayer@ p = getPlayer(i);
-		if (p !is null && p.isBot())
-		{
-			bots++;
-		}
-	}
-
-	if (bots > 0)// kickbots
-	{
-		s8 remaining_bots = Maths::Abs(MAX_BOTS - (getPlayersCount_NotSpectator() + bots));
-		u8 kicked = 0;
-		for (u8 i = 0; (kicked < remaining_bots || i >= getPlayersCount()); i++)
-		{
-			CPlayer@ p = getPlayer(i);
-			if (p !is null && p.isBot())
-			{
-				KickPlayer(p);
-				kicked++;
-			}
-		}
-	}
 }
 
 void onRestart(CRules@ this)
@@ -1331,12 +1306,68 @@ void onTick(CRules@ this)
 	}
 	if (getGameTime() == 30)
 	{
+		u8 bots = 0; // count bots
+		for (u8 i = 0; i < getPlayersCount(); i++)
+		{
+			CPlayer@ p = getPlayer(i);
+			if (p !is null && p.isBot())
+			{
+				bots++;
+			}
+		}
+
+		if (bots > 0) // kickbots
+		{
+			u8 shouldkick = Maths::Abs(MAX_BOTS - (getPlayersCount_NotSpectator() + bots));
+			
+			if (shouldkick > 0)
+			{
+				int blueteamcount = 0;
+				int redteamcount = 0;
+				for (u16 i = 0; i < getPlayerCount(); i++)
+				{
+					if (getPlayer(i).getTeamNum() == 0)
+					{
+						blueteamcount ++;
+					}
+					if (getPlayer(i).getTeamNum() == 1)
+					{
+						redteamcount ++;
+					}
+				}
+
+				u8 kickteamflip = 0;
+				if 		(blueteamcount > redteamcount) { kickteamflip = 0; } // blue has more
+				else if (blueteamcount < redteamcount) { kickteamflip = 1; } // red has more
+				else 	{ kickteamflip = XORRandom(1); } // pick randomly
+				
+				print("blueteamcount: " + blueteamcount);
+				print("redteamcount: " + redteamcount);
+
+				for (u8 i = 0; shouldkick > 0; i++)
+				{
+					// shave off of applicable team
+					CPlayer@ p = getPlayer(i);
+					if (p !is null && p.isBot())
+					{
+						if (p.getTeamNum() == kickteamflip)
+						{
+							KickPlayer(p);
+							shouldkick--;
+
+							kickteamflip = Maths::Abs(p.getTeamNum() - 1);
+						}
+					}
+				}
+			}
+		}
+	}
+	if (getGameTime() == 60)
+	{
 		if (!this.hasTag("togglebots"))
 		{	
 			// Bots are enabled
-
 			// Fill server with bots on lowpop
-
 			u8 bots = 0; // count bots
 			for (u8 i = 0; i < getPlayersCount(); i++)
 			{
