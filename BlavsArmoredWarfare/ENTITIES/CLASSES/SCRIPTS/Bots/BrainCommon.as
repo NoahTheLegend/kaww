@@ -811,7 +811,7 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 
 				float anglediff = Maths::Abs((blob.getAimPos() - mypos).getAngleDegrees()) - Maths::Abs(targetVector.getAngleDegrees());
 		
-				if (anglediff > 3.0f) { blob.setKeyPressed(key_action1, false); }
+				if (anglediff > 6.0f) { blob.setKeyPressed(key_action1, false); }
 			}
 
 			if (target !is null)
@@ -910,8 +910,12 @@ void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
 			}
 		}
 
-		float anglediff = Maths::Abs(Maths::Abs(gunangle + -1*(vehicle.getAngleDegrees()-360)) - Maths::Abs(targetVector.getAngleDegrees()));
-		
+		float anglediff = 0.0f;
+		if (vehicle.getName() != "techtruck") // temp
+		{
+			anglediff = Maths::Abs(Maths::Abs(gunangle + -1*(vehicle.getAngleDegrees()-360)) - Maths::Abs(targetVector.getAngleDegrees()));
+		}
+
 		if (anglediff > 3.0f)
 		{
 			blob.setKeyPressed(key_action1, false);
@@ -928,9 +932,17 @@ void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
 
 		if (target !is null)
 		{
-			blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
-							targetPos - Vec2f(0, targetDistance / (32.5f)) + target.getVelocity() * 4.0f,
-							0.5));
+			if (vehicle.getName() == "techtruck") // temp
+			{
+				blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
+								targetPos - Vec2f(0, targetDistance / (32.5f)) + target.getVelocity() * 4.0f,
+								0.5));
+			}
+			else{
+				blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
+								targetPos - Vec2f(0, targetDistance / (42.5f)) + target.getVelocity() * 4.0f,
+								0.5));
+			}
 		}
 	}
 	else {

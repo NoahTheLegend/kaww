@@ -82,12 +82,12 @@ void onTick(CBrain@ this)
 		}
 	}
 
-	if (blob.get_Vec2f("generalenemylocation") == Vec2f_zero || (getGameTime() + blob.getNetworkID()) % 600 == 0) // update once in a while & when needed
+	if (blob.get_Vec2f("generalenemylocation") == Vec2f_zero || (getGameTime()) % 600 == 0) // update once in a while & when needed
 	{
 		LocateGeneralEnemyDirection(blob); // lets figure out which direction we should attack
 	}
 
-	if (blob.get_Vec2f("generalfriendlocation") == Vec2f_zero || (getGameTime() + blob.getNetworkID()) % 1800 == 0) // update once in a while & when needed
+	if (blob.get_Vec2f("generalfriendlocation") == Vec2f_zero || (getGameTime()) % 1800 == 0) // update once in a while & when needed
 	{
 		LocateGeneralFriendDirection(blob); // gives the direction we can retreat to
 	}
