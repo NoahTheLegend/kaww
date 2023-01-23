@@ -1,6 +1,9 @@
 // brain
 
 #include "EmotesCommon.as"
+#include "InfantryCommon.as"
+
+float mouse_mvspd = 0.5f;
 
 namespace Strategy
 {
@@ -43,7 +46,7 @@ CBlob@ getNewTarget(CBrain@ this, CBlob @blob, const bool seeThroughWalls = fals
 		if (potential !is blob && blob.getTeamNum() != potential.getTeamNum())
 		{
 			if ((pos2 - pos).getLength() < 800.0f && !potential.hasTag("dead")
-				&& (XORRandom(6) == 0 || (isVisible(blob, potential) && !potential.isAttached())))
+				&& (XORRandom(10) == 0 || (isVisible(blob, potential) && (!potential.isAttached() || XORRandom(20) == 0))))
 			{
 				blob.set_Vec2f("last pathing pos", potential.getPosition());
 				return potential;
@@ -286,6 +289,9 @@ void GoToPos(CBlob@ blob, Vec2f pos)
 
 bool DefaultRetreatBlob(CBlob@ blob, CBlob@ target)
 {
+	//set_emote( blob, Emotes::attn );
+	//print("1331 " + blob.getName() + " " + target.getName());
+
 	Vec2f mypos = blob.getPosition();
 	Vec2f point = target.getPosition();
 	if (point.x > mypos.x)
@@ -299,7 +305,7 @@ bool DefaultRetreatBlob(CBlob@ blob, CBlob@ target)
 
 	if (mypos.y - blob.getRadius() > point.y || getGameTime() % (500 + blob.get_u8("myKey")) < 300)
 	{
-		blob.setKeyPressed(key_up, true);
+		//blob.setKeyPressed(key_up, true);
 	}
 
 	if (blob.isOnLadder() && point.y < mypos.y)
@@ -307,9 +313,51 @@ bool DefaultRetreatBlob(CBlob@ blob, CBlob@ target)
 		blob.setKeyPressed(key_down, true);
 	}
 
+	if (target !is null && isVisible(blob, target))
+	{
+		
+		AttackBlob(blob, target);
+	}
+
 	JumpOverObstacles(blob);
 
 	return true;
+}
+
+void SeekCover(CBlob@ blob, Vec2f pos)
+{
+	CBrain@ brain = blob.getBrain();
+	Vec2f myPos = blob.getPosition();
+	Vec2f Vector = pos - myPos;
+	f32 vecDistance = Vector.Length();
+	
+	if (vecDistance > 22.0f)
+	{
+		//set_emote( blob, Emotes::cry );
+
+		if (pos.x < myPos.x)
+		{
+			blob.setKeyPressed(key_left, true);
+		}
+		else
+		{
+			blob.setKeyPressed(key_right, true);
+		}
+
+		if (pos.y > myPos.y)
+		{
+			blob.setKeyPressed(key_down, true);
+		}
+	}
+
+	CBlob @target = brain.getTarget();
+	if (target !is null && isVisible(blob, target))
+	{
+		
+		AttackBlob(blob, target);
+	}
+
+	JumpOverObstacles(blob);
 }
 
 void SearchTarget(CBrain@ this, const bool seeThroughWalls = false, const bool seeBehindBack = true)
@@ -318,8 +366,9 @@ void SearchTarget(CBrain@ this, const bool seeThroughWalls = false, const bool s
 	CBlob @target = this.getTarget();
 
 	// search target if none
-	if (target is null)
+	if (target is null || XORRandom(20) == 0)
 	{
+		@target = null;
 		CBlob@ oldTarget = target;
 		@target = getNewTarget(this, blob, true, true);
 		this.SetTarget(target);
@@ -550,4 +599,102 @@ void LocateGeneralEnemyDirection(CBlob@ blob)
 	CBlob@ chosenthreat = enemythreats[XORRandom(enemythreats.length)];
 	blob.set_Vec2f("generalenemylocation", chosenthreat.getPosition());
 	//print("the enemy threat is " + chosenthreat.getName());
+}
+
+void LocateGeneralFriendDirection(CBlob@ blob)
+{
+	CBlob@[] threats;
+	CBlob@[] friendlies;
+	getBlobsByName("importantarmory", @threats);
+	getBlobsByName("tent", @threats);
+	getBlobsByTag("player", @threats);
+	getBlobsByTag("bunker", @threats);
+
+	for (uint i = 0; i < threats.length; ++i)
+	{
+		if (threats[i].getTeamNum() == blob.getTeamNum()) // is our team
+		{
+			if (!threats[i].hasTag("dead"))
+			{
+				friendlies.push_back(threats[i]);
+			}
+		}
+	}
+
+	CBlob@ chosen = friendlies[XORRandom(friendlies.length)];
+	blob.set_Vec2f("generalfriendlocation", chosen.getPosition());
+	//print("the friendly is " + chosen.getName());
+}
+
+void AttackBlob(CBlob@ blob, CBlob @target)
+{
+	Vec2f mypos = blob.getPosition();
+	Vec2f targetPos = target.getPosition();
+	Vec2f targetVector = targetPos - mypos;
+	f32 targetDistance = targetVector.Length();
+	const s32 difficulty = blob.get_s32("difficulty");
+	InfantryInfo infantry;
+
+	// shoot the target
+	f32 distance;
+	Vec2f col;
+	if (!getMap().rayCastSolid(blob.getPosition() + blob.getVelocity()*3.0f, targetPos + getRandomVelocity( 0, target.getRadius() , 360 ) + target.getVelocity()*5.0f, col))
+	{
+		if (targetDistance > 8.0f)
+		{
+			//if (targetDistance < infantry.bullet_velocity * (infantry.bullet_lifetime*250)) // is in bullet range why tf not work
+			{
+				if ((targetDistance < 560.0f && blob.getName() != "shotgun") || targetDistance < 178.0f)
+				{
+					blob.setKeyPressed(key_action1, true);
+
+					if (blob.get_u8("myKey") % 13 == 0)
+					{
+						blob.setKeyPressed(key_action2, true);
+					}
+				}
+				else if (blob.get_u8("myKey") > 120 && ((targetDistance < 500.0f && blob.getName() != "shotgun") || targetDistance < 178.0f))
+				{
+					blob.setKeyPressed(key_action1, true);
+
+					if (blob.get_u8("myKey") % 2 == 0)
+					{
+						blob.setKeyPressed(key_action2, true);
+					}
+				}
+			}
+			//else
+			{
+				//if (emotes) set_emote(blob, Emotes::cry, 10);
+			}
+
+			if (target !is null)
+			{
+				//compensation = RangerParams::BULLET_VELOCITY;
+				blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
+									targetPos - Vec2f(0, targetDistance / (40.0f)) + Vec2f(0.0f, 10 -XORRandom(17)) + target.getVelocity() * 5.5f,
+									mouse_mvspd));
+			}
+		}
+		else if (target !is null)
+		{
+			blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
+										targetPos - Vec2f(0, targetDistance / 8.0f),
+										mouse_mvspd));
+		}
+	}
+	else if (getGameTime() % (300 + blob.get_u8("myKey")) < 130 || blob.getShape().vellen < 1.6f)
+	{
+		// mouse movement type a     rng based
+		blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
+								mypos + Vec2f(Maths::Cos(getGameTime()/(blob.get_u8("myKey")*0.5)), Maths::Sin(getGameTime()/(blob.get_u8("myKey")*0.5))),
+								blob.get_u8("myKey")/845.0f));
+	}
+	else
+	{
+		// mouse movement type b     velocity based
+		blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
+								mypos + Vec2f(0.0f, 11.0f) + blob.getVelocity()*(blob.get_u8("myKey")/14),
+								blob.get_u8("myKey")/1245.0f));
+	}
 }
