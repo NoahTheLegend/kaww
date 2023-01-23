@@ -1341,8 +1341,10 @@ void onTick(CRules@ this)
 				else if (blueteamcount < redteamcount) { kickteamflip = 1; } // red has more
 				else 	{ kickteamflip = XORRandom(1); } // pick randomly
 				
-				print("blueteamcount: " + blueteamcount);
-				print("redteamcount: " + redteamcount);
+				//print("blueteamcount: " + blueteamcount);
+				//print("redteamcount: " + redteamcount);
+
+				// still a small issue with this in some cases
 
 				for (u8 i = 0; shouldkick > 0; i++)
 				{

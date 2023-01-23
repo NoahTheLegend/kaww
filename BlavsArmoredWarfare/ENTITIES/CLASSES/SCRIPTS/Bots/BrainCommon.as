@@ -2,6 +2,7 @@
 
 #include "EmotesCommon.as"
 #include "InfantryCommon.as"
+#include "VehicleCommon.as"
 
 float mouse_mvspd = 0.5f;
 
@@ -605,15 +606,6 @@ void FloatInWater(CBlob@ blob)
 	}
 }
 
-void RandomTurn(CBlob@ blob)
-{
-	if (XORRandom(4) == 0)
-	{
-		CMap@ map = getMap();
-		blob.setAimPos(Vec2f(XORRandom(int(map.tilemapwidth * map.tilesize)), XORRandom(int(map.tilemapheight * map.tilesize))));
-	}
-}
-
 void DriveToPos(CBlob@ blob, CBlob@ vehicle, Vec2f position, float dist)
 {
 	//print("a " + blob.get_string("behavior"));
@@ -774,6 +766,7 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 		if (targetDistance > 8.0f)
 		{
 			//if (targetDistance < infantry.bullet_velocity * (infantry.bullet_lifetime*250)) // is in bullet range why tf not work
+
 			{
 				if ((targetDistance < 560.0f && blob.getName() != "shotgun") || targetDistance < 178.0f)
 				{
@@ -793,10 +786,10 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 						blob.setKeyPressed(key_action2, true);
 					}
 				}
-			}
-			//else
-			{
-				//if (emotes) set_emote(blob, Emotes::cry, 10);
+
+				float anglediff = Maths::Abs((blob.getAimPos() - mypos).getAngleDegrees()) - Maths::Abs(targetVector.getAngleDegrees());
+		
+				if (anglediff > 3.0f) { blob.setKeyPressed(key_action1, false); }
 			}
 
 			if (target !is null)
@@ -821,11 +814,111 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 								mypos + Vec2f(Maths::Cos(getGameTime()/(blob.get_u8("myKey")*0.5)), Maths::Sin(getGameTime()/(blob.get_u8("myKey")*0.5))),
 								blob.get_u8("myKey")/845.0f));
 	}
-	else
-	{
+	else {
 		// mouse movement type b     velocity based
 		blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
 								mypos + Vec2f(0.0f, 11.0f) + blob.getVelocity()*(blob.get_u8("myKey")/14),
 								blob.get_u8("myKey")/1245.0f));
 	}
+}
+
+void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
+{
+	Vec2f mypos = blob.getPosition();
+	Vec2f targetPos = target.getPosition();
+	Vec2f targetVector = targetPos - mypos;
+	f32 targetDistance = targetVector.Length();
+	InfantryInfo infantry;
+
+	// shoot the target
+	f32 distance;
+	Vec2f col;
+	if (!getMap().rayCastSolid(blob.getPosition() + blob.getVelocity()*3.0f, targetPos + getRandomVelocity( 0, target.getRadius() , 360 ) + target.getVelocity()*5.0f, col))
+	{
+		f32 gunangle = (blob.getAimPos() - mypos).getAngleDegrees();
+		
+		AttachmentPoint@ turretpoint = vehicle.getAttachments().getAttachmentPointByName("TURRET");
+		if (turretpoint !is null) {
+			CBlob@ turret = turretpoint.getOccupied();
+
+			if (turret !is null)
+			{
+				VehicleInfo@ v;
+				if (!turret.get("VehicleInfo", @v))
+				{
+					return;
+				}
+
+				
+				gunangle = Vehicle_getWeaponAngle(turret, v);
+
+				if (vehicle.isFacingLeft())
+				{
+					gunangle -= 90;
+
+					gunangle *= -1;
+					gunangle += 360;
+				}
+				else
+				{
+					gunangle += 90;
+
+					if (gunangle <= 0)
+					{
+						gunangle += 180;
+					}
+					else{
+						gunangle -= 180;
+					}
+
+					gunangle *= -1;
+					gunangle += 360;
+				}
+
+
+				if (gunangle > 360)
+				{
+					gunangle -= 360;
+				}
+				else
+				{
+					gunangle = gunangle;
+				}
+			}
+		}
+
+		float anglediff = Maths::Abs(Maths::Abs(gunangle + -1*(vehicle.getAngleDegrees()-360)) - Maths::Abs(targetVector.getAngleDegrees()));
+		
+		if (anglediff > 3.0f)
+		{
+			blob.setKeyPressed(key_action1, false);
+		}
+		else{
+			if (targetDistance < 600.0f) // in range
+			{
+				blob.setKeyPressed(key_action1, true);
+			}
+		}
+
+		if (target !is null)
+		{
+			blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
+							targetPos - Vec2f(0, targetDistance / (34.0f)) + target.getVelocity() * 2.0f,
+							0.4));
+		}
+	}
+	else {
+		blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
+							mypos + Vec2f(Maths::Cos(getGameTime()/(blob.get_u8("myKey")*0.5)), Maths::Sin(getGameTime()/(blob.get_u8("myKey")*0.5))),
+							0.4));
+	}
+}
+void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused)
+{
+
+}
+
+bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
+{
+	return false;
 }
