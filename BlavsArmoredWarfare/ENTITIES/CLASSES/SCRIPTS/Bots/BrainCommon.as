@@ -929,7 +929,7 @@ void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
 		if (target !is null)
 		{
 			blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
-							targetPos - Vec2f(0, targetDistance / (34.0f)) + target.getVelocity() * 4.0f,
+							targetPos - Vec2f(0, targetDistance / (32.5f)) + target.getVelocity() * 4.0f,
 							0.5));
 		}
 	}
