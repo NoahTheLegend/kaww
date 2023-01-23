@@ -277,7 +277,8 @@ void onTick(CBlob@ this)
 						*/
 						const f32 mass = this.getMass();
 
-						if (hooman.getPlayer() !is null
+						if (!this.hasTag("falling")
+						&& hooman.getPlayer() !is null
 						&& getRules().get_string(hooman.getPlayer().getUsername()+"_perk") == "Operator")
 						{
 							if (pressed_a) newForce += Vec2f(leftVelo.x*0.25f, leftVelo.y*0.25f);
