@@ -41,21 +41,43 @@ CBlob@ getNewTarget(CBrain@ this, CBlob @blob, const bool seeThroughWalls = fals
 
 	SortBlobsByDistance(blob, players);
 
-	for (uint i = 0; i < players.length; i++)
+	if (blob.isAttachedToPoint("GUNNER")) // target attached players more, and more randomness than normal, side based
 	{
-		CBlob@ potential = players[i];
-		Vec2f pos2 = potential.getPosition();
-
-		if (potential !is blob && blob.getTeamNum() != potential.getTeamNum())
+		for (uint i = 0; i < players.length; i++)
 		{
-			if ((pos2 - pos).getLength() < 800.0f && !potential.hasTag("dead")
-				&& (XORRandom(10) == 0 || (isVisible(blob, potential) && (!potential.isAttached() || XORRandom(20) == 0))))
+			CBlob@ potential = players[i];
+			Vec2f pos2 = potential.getPosition();
+
+			if (potential !is blob && blob.getTeamNum() != potential.getTeamNum())
 			{
-				blob.set_Vec2f("last pathing pos", potential.getPosition());
-				return potential;
+				if ((pos2 - pos).getLength() < 900.0f && !potential.hasTag("dead")
+					&& (XORRandom(6) == 0 || (isVisible(blob, potential) && (potential.isAttached() || XORRandom(3) == 0))) && XORRandom(3) == 0
+					&& ((blob.isFacingLeft() && potential.getPosition().x < blob.getPosition().x) || (!blob.isFacingLeft() && potential.getPosition().x > blob.getPosition().x)))
+				{
+					blob.set_Vec2f("last pathing pos", potential.getPosition());
+					return potential;
+				}
 			}
 		}
 	}
+	else{ // normal targeting
+		for (uint i = 0; i < players.length; i++)
+		{
+			CBlob@ potential = players[i];
+			Vec2f pos2 = potential.getPosition();
+
+			if (potential !is blob && blob.getTeamNum() != potential.getTeamNum())
+			{
+				if ((pos2 - pos).getLength() < 800.0f && !potential.hasTag("dead")
+					&& (XORRandom(10) == 0 || (isVisible(blob, potential) && (!potential.isAttached() || XORRandom(20) == 0))))
+				{
+					blob.set_Vec2f("last pathing pos", potential.getPosition());
+					return potential;
+				}
+			}
+		}
+	}
+	
 	return null;
 }
 
@@ -824,6 +846,8 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 
 void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
 {
+	if (vehicle is null) return;
+
 	Vec2f mypos = blob.getPosition();
 	Vec2f targetPos = target.getPosition();
 	Vec2f targetVector = targetPos - mypos;
@@ -833,7 +857,7 @@ void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
 	// shoot the target
 	f32 distance;
 	Vec2f col;
-	if (!getMap().rayCastSolid(blob.getPosition() + blob.getVelocity()*3.0f, targetPos + getRandomVelocity( 0, target.getRadius() , 360 ) + target.getVelocity()*5.0f, col))
+	if (!getMap().rayCastSolid(blob.getPosition() + Vec2f(0, 16-XORRandom(32)) + blob.getVelocity()*3.0f, targetPos + getRandomVelocity( 0, target.getRadius() , 360 ) + target.getVelocity()*5.0f, col))
 	{
 		f32 gunangle = (blob.getAimPos() - mypos).getAngleDegrees();
 		
@@ -849,7 +873,6 @@ void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
 					return;
 				}
 
-				
 				gunangle = Vehicle_getWeaponAngle(turret, v);
 
 				if (vehicle.isFacingLeft())
@@ -896,29 +919,27 @@ void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
 		else{
 			if (targetDistance < 600.0f) // in range
 			{
-				blob.setKeyPressed(key_action1, true);
+				if ((vehicle.isFacingLeft() && targetPos.x < mypos.x) || (!vehicle.isFacingLeft() && targetPos.x > mypos.x))
+				{
+					blob.setKeyPressed(key_action1, true); // right facing
+				}
 			}
 		}
 
 		if (target !is null)
 		{
 			blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
-							targetPos - Vec2f(0, targetDistance / (34.0f)) + target.getVelocity() * 2.0f,
-							0.4));
+							targetPos - Vec2f(0, targetDistance / (34.0f)) + target.getVelocity() * 4.0f,
+							0.5));
 		}
 	}
 	else {
 		blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
 							mypos + Vec2f(Maths::Cos(getGameTime()/(blob.get_u8("myKey")*0.5)), Maths::Sin(getGameTime()/(blob.get_u8("myKey")*0.5))),
-							0.4));
+							0.5));
 	}
 }
-void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused)
-{
 
-}
+void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused) {}
 
-bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
-{
-	return false;
-}
+bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) { return false; }
