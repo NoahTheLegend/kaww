@@ -228,9 +228,12 @@ void onTick(CBrain@ this)
 				{
 					if (tertiarytarget !is null && tertiarytarget.getName() == "repairstation")
 					{
-						DriveToPos(blob, vehicle, tertiarytarget.getPosition(), 20);
+						if ((tertiarytarget.getPosition() - vehicle.getPosition()).getLength() > 10.0f && !((blob.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x < blob.getPosition().x) || (!blob.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x > blob.getPosition().x)))
+						{
+							DriveToPos(blob, vehicle, tertiarytarget.getPosition(), 4);
+						}
 						
-						if (vehicle.getHealth() == vehicle.getInitialHealth())
+						if (vehicle.getHealth() == vehicle.getInitialHealth() || tertiarytarget is null)
 						{
 							blob.set_u16("tertiarytarget", 0); // stop repairing
 						}
