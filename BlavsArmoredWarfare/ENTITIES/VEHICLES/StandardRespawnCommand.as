@@ -94,23 +94,18 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",
 						"Operator:\n\n"+"$5_class_icon$"+"Crewman"
 						+"\n                   - Improved vehicle handling"
-						+"\n                   - Improved vehicle repair speed     "
+						+"\n                   - Improved vehicle repair speed      "
 						+"\n\n                   Gunner"
-						+"\n                   - Less machine gun heat"
 						+"\n                   - Improved vehicle aiming speed "
-						+"\n                   - Better gun elevation angles "
+						+"\n                   - Improved gun elevation angles    "
+						+"\n                   - Less machine gun heat"
 						+"\n\n                   Sluggish"
 						+"\n                   - Can't sprint  "
-						+"\n\n                   Vulnerability    "
-						+"\n                   - Take 133% headshot damage"
-						+"\n                   - Take 175% explosion damage"
 						);
 
 	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
 						"Lucky:\n\n"+"$4_class_icon$"+"Fate's Friend"
-						+"\n                   - Always survive on last-hit          "
-						+"\n                   if damage is higher than 10 or          "
-						+"\n                   your HP is 1 and you have no card.          "
+						+"\n                   - Always survive on 1 health          "
 						+"\n\n                  Lucky Charm"
 						+"\n                   - Must carry an Ace of Spades           "
 						);
