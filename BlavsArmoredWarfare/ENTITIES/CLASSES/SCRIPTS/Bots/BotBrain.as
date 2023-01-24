@@ -1279,7 +1279,7 @@ void onTick(CBrain@ this)
 									if ((vehicle.getPosition() - blob.getPosition()).getLength() < 850.0f)
 									{
 										if (!vehicle.hasTag("turret") && !vehicle.hasTag("gun") && !vehicle.hasTag("aerial") // isnt a turret or machine gun or plane
-										&& vehicle.getName() != "importantarmory") // dont drive this for now
+										&& vehicle.getName() != "importantarmory"&& vehicle.getName() != "armory") // dont drive this for now
 										{
 											if (XORRandom(3) == 0) // lets drive a vehicle
 											{
