@@ -158,7 +158,6 @@ void onInit(CBlob@ this)
 	//	this.Tag("simple reload");
 	//}
 
-	this.set_u32("next_shoot", 0);
 	this.set_u8("noreload_custom", 15);
 	if (this.getName() == "sniper") this.set_u8("noreload_custom", 30);
 }
@@ -632,14 +631,13 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				}
 				else
 				{
-					if (charge_time == 0)
-					{
-						ClientFire(this, charge_time, infantry);
-						charge_time = infantry.delayafterfire + XORRandom(infantry.randdelay);
-						charge_state = ArcherParams::fired;
-						float recoilForce = infantry.recoil_force;
-						this.AddForce(Vec2f(this.getAimPos() - this.getPosition()) * (scoped ? -recoilForce/1.6 : -recoilForce));
-					}
+					ClientFire(this, charge_time, infantry);
+
+					charge_time = infantry.delayafterfire + XORRandom(infantry.randdelay);
+					charge_state = ArcherParams::fired;
+
+					float recoilForce = infantry.recoil_force;
+					this.AddForce(Vec2f(this.getAimPos() - this.getPosition()) * (scoped ? -recoilForce/1.6 : -recoilForce));
 				}
 			}
 			else
@@ -860,10 +858,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		//}
 	}
 
-	
 	this.set_s32("my_chargetime", charge_time);
 	this.Sync("my_chargetime", true);
-
 	archer.charge_state = charge_state;
 }
 
@@ -1017,9 +1013,6 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 {
 	if (canSend(this) || (isServer() && this.isBot()))
 	{
-		if (this.get_u32("next_shoot") > getGameTime()) return;
-		this.set_u32("next_shoot", getGameTime()+1);
-
 		CBitStream params;
 		params.write_Vec2f(arrowPos); // only once, only one place to fire from
 
@@ -1049,10 +1042,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
-		this.Untag("no_more_shoot");
-
 		if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
-		if (this is null || this.hasTag("deadfsh")) return;
+		this.Untag("no_more_shoot");
+		if (this.get_u32("next_shoot") > getGameTime()) return;
+		this.set_u32("next_shoot", getGameTime()+1);
+		if (this is null || this.hasTag("dead")) return;
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
 		ArcherInfo@ archer;
@@ -1078,7 +1072,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		bool shotOnce = false;
 		Vec2f arrowVel;
 		//if (!params.saferead_Vec2f(arrowVel)) return;
-		while (params.saferead_Vec2f(arrowVel))
+		if (params.saferead_Vec2f(arrowVel))
 		{
 			if (isServer())
 			{
