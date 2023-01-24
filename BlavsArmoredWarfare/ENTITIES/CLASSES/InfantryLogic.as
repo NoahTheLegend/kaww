@@ -858,8 +858,11 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		//}
 	}
 
-	this.set_s32("my_chargetime", charge_time);
-	this.Sync("my_chargetime", true);
+	if (charge_time == 0)
+	{
+		this.set_s32("my_chargetime", charge_time);
+		this.Sync("my_chargetime", true);
+	}
 	archer.charge_state = charge_state;
 }
 
