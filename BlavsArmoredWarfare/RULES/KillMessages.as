@@ -305,6 +305,12 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 					{
 						exp_reward *= 3; // 10 - 20
 					}
+
+					if (victim.isBot())
+					{
+						exp_reward = 1;
+					}
+					
 					rules.add_u32(killer.getUsername() + "_exp", exp_reward);
 					rules.Sync(killer.getUsername() + "_exp", true);
 					
