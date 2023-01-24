@@ -225,31 +225,175 @@ void onTick(CBrain@ this)
 
 				if (tertiarytarget is null)
 				{	
-					if (vehicledangerlevel > 2)
+					if (shouldigo)
 					{
-						repairsneeded = true;
-					}
-					else
-					{
-						if (shouldigo)
+						if (vehicledangerlevel > 3)
 						{
-							if (vehicledangerlevel > 3)
-							{
-								repairsneeded = true;
-							}
-							else
-							{
-								// drive around to locations where there should be enemies
-								if (blob.get_Vec2f("generalenemylocation") != Vec2f_zero)
-								{
-									DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 200);
-								}
-							}
+							repairsneeded = true;
 						}
 						else
 						{
-							if (emotes) set_emote(blob, Emotes::down, 10);
+							// basic vehicle behavior
+
+							if (target !is null)
+							{
+								// we've got a target
+								//print("target " + target.getName());
+
+								if (target.isAttached())
+								{
+									// target is in a vehicle
+
+									//if (isVisible(blob, target))
+									{
+										//set_emote(blob, Emotes::fire, 10);
+										// stay still so gunner can aim
+
+										// is gunner aiming at the target?
+										bool listentogunner = false;
+										if (vehicle.getName() == "techtruck")
+										{
+											listentogunner = true;
+										}
+										else {
+											AttachmentPoint@ turretpoint = vehicle.getAttachments().getAttachmentPointByName("TURRET");
+											if (turretpoint !is null)
+											{
+												CBlob@ turret = turretpoint.getOccupied();
+
+												if (turret !is null)
+												{
+													VehicleInfo@ v;
+													if (!turret.get("VehicleInfo", @v)) return;
+
+													AttachmentPoint@ point = turret.getAttachments().getAttachmentPointByName("GUNNER");
+													if (point !is null && point.getOccupied() !is null)
+													{
+
+														// take directions from gunner
+
+														// respond to gunner emotes
+														if (realemotes)
+														{
+															if (point.getOccupied().get_u8("emote") == 11) // go to left
+															{
+																blob.setKeyPressed(key_left, true);
+																blob.setKeyPressed(key_right, false);
+																if (getGameTime() % 30 == 0 && XORRandom(15) == 0)
+																{
+																	if (XORRandom(2) == 0)
+																	{
+																		set_emote(blob, Emotes::okhand);
+																	}
+																	else{
+																		set_emote(blob, Emotes::left);
+																	}
+																}
+															}
+
+															if (point.getOccupied().get_u8("emote") == 3) // go to right
+															{ 
+																blob.setKeyPressed(key_left, false);
+																blob.setKeyPressed(key_right, true);
+																if (getGameTime() % 30 == 0 && XORRandom(15) == 0)
+																{
+																	if (XORRandom(2) == 0)
+																	{
+																		set_emote(blob, Emotes::okhand);
+																	}
+																	else{
+																		set_emote(blob, Emotes::right);
+																	}
+																}
+															}
+														}
+
+														f32 gunangle = Vehicle_getWeaponAngle(turret, v);
+
+														if (vehicle.isFacingLeft())
+														{
+															gunangle -= 90;
+															gunangle *= -1;
+															gunangle += 360;
+														}
+														else {
+															gunangle += 90;
+
+															if (gunangle <= 0) gunangle += 180;
+															else gunangle -= 180;
+
+															gunangle *= -1;
+															gunangle += 360;
+														}
+
+														if (gunangle > 360) gunangle -= 360;
+														else gunangle = gunangle;
+
+														float anglediff = 0.0f;
+														if (vehicle.getName() != "techtruck") // temp
+														{
+															anglediff = Maths::Abs(Maths::Abs(gunangle + -1*(vehicle.getAngleDegrees()-360)) - Maths::Abs((target.getPosition() - point.getOccupied().getPosition()).getAngleDegrees()));
+														}
+
+														if (anglediff < 18.0f)
+														{
+															if (point.getOccupied().getPlayer() !is null && point.getOccupied().getPlayer().isBot())
+															{
+																// is bot
+																if (anglediff < 7.0f)
+																{
+																	listentogunner = true;
+																}
+															}
+															else{
+																listentogunner = true;
+															}
+															
+														}
+													}
+												}
+											}
+										}
+										
+										if (listentogunner)
+										{
+											if (emotes) set_emote(blob, Emotes::attn, 10);
+										}
+										else{
+											DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 300);
+										}
+
+								
+									}
+									//else{
+
+										//if (emotes) set_emote(blob, Emotes::cog, 10);
+										//DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 300);
+									//}
+								}
+								else{
+									//target is ground infantry
+
+									if (emotes) set_emote(blob, Emotes::check, 10);
+
+									DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 300);
+								}
+							}
+							else if (blob.get_Vec2f("generalenemylocation") != Vec2f_zero)
+							{
+								// no target, drive around to locations where there should be enemies
+								DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 300);
+							}
 						}
+					}
+					else
+					{
+						if (vehicledangerlevel > 2)
+						{
+							repairsneeded = true; // todo: based on distance to repair station
+						}
+
+						if (emotes) set_emote(blob, Emotes::down, 10);
 					}
 				}
 				else{
@@ -264,7 +408,7 @@ void onTick(CBrain@ this)
 					{
 						if (shouldigo)
 						{
-							if (getGameTime() % 30 == 0 && XORRandom(30) == 0)
+							if (getGameTime() % 30 == 0 && XORRandom(120) == 0)
 							{
 								if (XORRandom(2) == 0)
 								{
@@ -298,7 +442,7 @@ void onTick(CBrain@ this)
 					// we are not chillin
 					if (vehicledangerlevel > 3)
 					{
-						if (getGameTime() % 30 == 0 && XORRandom(30) == 0)
+						if (getGameTime() % 30 == 0 && XORRandom(90) == 0)
 						{
 							set_emote(blob, Emotes::attn);
 						}
@@ -322,21 +466,23 @@ void onTick(CBrain@ this)
 								DriveToPos(blob, vehicle, tertiarytarget.getPosition(), 10);
 							}
 							
-
-							// do driver repair emotes
-							if (getGameTime() % 30 == 0 && XORRandom(60) == 0)
+							if (realemotes)
 							{
-								if (XORRandom(2) == 0)
+								// do driver repair emotes
+								if (getGameTime() % 30 == 0 && XORRandom(120) == 0)
 								{
-									set_emote(blob, XORRandom(2) == 0 ? Emotes::cry : Emotes::frown);
-								}
-								else{
-									if (tertiarytarget.getPosition().x > vehicle.getPosition().x)
+									if (XORRandom(2) == 0)
 									{
-										set_emote(blob, Emotes::right);
+										set_emote(blob, XORRandom(2) == 0 ? Emotes::builder : Emotes::frown);
 									}
 									else{
-										set_emote(blob, Emotes::left);
+										if (tertiarytarget.getPosition().x > vehicle.getPosition().x)
+										{
+											set_emote(blob, Emotes::right);
+										}
+										else{
+											set_emote(blob, Emotes::left);
+										}
 									}
 								}
 							}
@@ -421,6 +567,31 @@ void onTick(CBrain@ this)
 				}
 			}
 
+			// do gunner emotes
+			if (realemotes)
+			{
+				// we are chillin
+				if (target is null)
+				{
+					if (XORRandom(200) == 0 && getGameTime() % 30 == 0)
+					{
+						set_emote(blob, Emotes::note);
+					}
+				}
+				else{
+					if (XORRandom(300) == 0 && getGameTime() % 30 == 0)
+					{
+						if (XORRandom(2) == 0)
+						{
+							set_emote(blob, Emotes::troll);
+						}
+						else{
+							set_emote(blob, Emotes::finger);
+						}
+					}
+				}
+			}
+
 			// im in the wrong seat
 			if (getGameTime() % 10 == 0 && XORRandom(30) == 0 && blob.get_string("behavior") == "drive")
 			{
@@ -450,7 +621,7 @@ void onTick(CBrain@ this)
 					strategy = Strategy::idle;
 				}
 
-				if (getGameTime() % 10 == 0 && XORRandom(60) == 0)
+				if (getGameTime() % 10 == 0 && (blob.getShape().vellen > 0.5 ? XORRandom(60) == 0 : XORRandom(30) == 0))
 				{
 					blob.server_DetachAll(); // hop out
 					blob.set_string("behavior", "");
@@ -469,7 +640,7 @@ void onTick(CBrain@ this)
 			}
 
 
-			if (getGameTime() % 10 == 0 && XORRandom(getGameTime() > 9000 ? 200 : 100) == 0)
+			if (getGameTime() % (blob.getShape().vellen > 0.5 ? 10 : 5) == 0 && XORRandom(getGameTime() > 9000 ? 200 : 100) == 0)
 			{
 				blob.server_DetachAll(); // hop out
 				blob.set_string("behavior", "");
@@ -540,9 +711,18 @@ void onTick(CBrain@ this)
 				}
 			}
 
-			if (strategy == Strategy::seekheal && XORRandom(300) == 0)
+			if (strategy == Strategy::seekheal)
 			{
-				strategy = Strategy::idle;
+				if (XORRandom(300) == 0) strategy = Strategy::idle;
+
+				if (realemotes)
+				{
+					// do driver repair emotes
+					if (getGameTime() % 30 == 0 && XORRandom(200) == 0)
+					{
+						set_emote(blob, XORRandom(2) == 0 ? Emotes::heal : Emotes::cry);
+					}
+				}
 			}
 
 			if (strategy != Strategy::seekcover && strategy != Strategy::retreating && strategy != Strategy::seekheal) // dont overwrite
@@ -708,10 +888,12 @@ void onTick(CBrain@ this)
 											{
 												secondarytarget.server_AttachTo(blob, @ap);
 
-												//blob.set_string("behavior", ""); // set it to empty, so that this bot will change its behavior based on the seat type
+												blob.set_string("behavior", ""); // set it to empty, so that this bot will change its behavior based on the seat type
 											}
 											else {
 												@choosen_seat = @ap;
+
+												blob.set_string("behavior", ""); // fuck
 
 												//blob.set_string("behavior", "movetorandom"); // move to it
 											}
