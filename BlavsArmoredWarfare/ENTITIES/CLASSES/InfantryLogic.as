@@ -1019,6 +1019,9 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 {
 	if (canSend(this) || (isServer() && this.isBot()))
 	{
+		if (this.get_u32("next_shoot") > getGameTime()) return;
+		this.set_u32("next_shoot", getGameTime()+1);
+		
 		CBitStream params;
 		params.write_Vec2f(arrowPos); // only once, only one place to fire from
 
@@ -1056,12 +1059,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!this.get( "infantryInfo", @infantry )) return;
 		ArcherInfo@ archer;
 		if (!this.get("archerInfo", @archer)) return;
-
-		if (isServer())
-		{
-			if (this.get_u32("next_shoot") > getGameTime()) return;
-			this.set_u32("next_shoot", getGameTime()+1);
-		}
 
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
