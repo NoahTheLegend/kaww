@@ -93,6 +93,10 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Sponge", "$sponge$", "sponge", "Commonly used for washing vehicles.", false);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
+	}
+	{
 		u8 cost = 40;
 		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", cost);
@@ -104,15 +108,6 @@ void onInit(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas an small explosion radius.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 60);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
-
-		s.customButton = true;
-
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
@@ -155,6 +150,15 @@ void onInit(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
+
+		s.customButton = true;
+
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
 	}
 
 	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);

@@ -58,7 +58,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(8, 2));
+	this.set_Vec2f("shop menu size", Vec2f(9, 2));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
@@ -97,7 +97,10 @@ void onInit(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Lantern", "$lantern$", "lantern", "A source of light.", false);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 20);
 	}
-	
+	{
+		ShopItem@ s = addShopItem(this, "Sponge", "$sponge$", "sponge", "Commonly used for washing vehicles.", false);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
+	}
 	{
 		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
@@ -138,7 +141,7 @@ void onInit(CBlob@ this)
 
 		s.customButton = true;
 
-		s.buttonwidth = 1;
+		s.buttonwidth = 2;
 		s.buttonheight = 1;
 	}
 	//{
