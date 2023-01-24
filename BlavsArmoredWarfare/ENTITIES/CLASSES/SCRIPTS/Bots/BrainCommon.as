@@ -923,7 +923,7 @@ void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
 			blob.setKeyPressed(key_action1, false);
 		}
 		else{
-			if (targetDistance < 600.0f) // in range
+			if (targetDistance < 700.0f) // in range
 			{
 				if ((vehicle.isFacingLeft() && targetPos.x < mypos.x) || (!vehicle.isFacingLeft() && targetPos.x > mypos.x))
 				{

@@ -520,7 +520,7 @@ void onTick(CBrain@ this)
 								// face the danger
 								if (vehicle.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x > blob.getPosition().x || !vehicle.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x < blob.getPosition().x )
 								{
-									DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 10);
+									DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 100);
 								}
 							}
 							else{
@@ -531,11 +531,11 @@ void onTick(CBrain@ this)
 									//blob.setKeyPressed(key_action2, true);
 								}
 
-								DriveToPos(blob, vehicle, blob.get_Vec2f("generalfriendlocation"), 10);
+								DriveToPos(blob, vehicle, blob.get_Vec2f("generalfriendlocation"), 100);
 							}
 
-							// need repairs emotes!
-							if (getGameTime() % 30 == 0 && XORRandom(60) == 0)
+							// need repairs emotes & hop out!
+							if (getGameTime() % 30 == 0 && XORRandom(40) == 0)
 							{
 								set_emote(blob, XORRandom(2) == 0 ? Emotes::builder : Emotes::heal);
 
