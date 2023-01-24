@@ -31,16 +31,16 @@ void onInit(CBlob@ this)
 	    0.2f,   // movement sound volume modifier   0.0f = no manipulation
 	    0.25f); // movement sound pitch modifier     0.0f = no manipulation
 
-	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(30.0f, 5.0f)); if (w !is null) w.SetRelativeZ(20.0f);   w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(26.0f, 5.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(20.0f, 5.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(14.0f, 5.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(8.0f, 5.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(2.0f, 5.0f)); if (w !is null) w.SetRelativeZ(10.0f);   w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-4.0f, 5.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-10.0f, 5.0f)); if (w !is null) w.SetRelativeZ(10.0f); w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-16.0f, 5.0f)); if (w !is null) w.SetRelativeZ(10.0f); w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-22.0f, 5.0f)); if (w !is null) w.SetRelativeZ(10.0f); w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(30.0f, 7.0f)); if (w !is null) w.SetRelativeZ(20.0f);   w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(26.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(20.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(14.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(8.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(2.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);   w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-4.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-10.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f); w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-16.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f); w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-22.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f); w.ScaleBy(Vec2f(0.75f, 0.75f));}
 
 	this.getShape().SetOffset(Vec2f(0, 2));
 
@@ -57,7 +57,7 @@ void onInit(CBlob@ this)
 		int[] frames = { 0, 1, 2 };
 		front.animation.AddFrames(frames);
 		front.SetRelativeZ(0.8f);
-		front.SetOffset(Vec2f(0.0f, 1.0f));
+		front.SetOffset(Vec2f(0.0f, 3.0f));
 	}
 
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "UHT_Launcher", 16, 16);
@@ -71,7 +71,7 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(5.5f);
-			arm.SetOffset(Vec2f(8.0f, -19.0f));
+			arm.SetOffset(Vec2f(8.0f, -17.0f));
 		}
 	}
 
@@ -92,7 +92,7 @@ void onInit(CBlob@ this)
 		animstopped.AddFrame(15);
 
 		tracks.SetRelativeZ(50.8f);
-		tracks.SetOffset(Vec2f(5.0f, -6.0f));
+		tracks.SetOffset(Vec2f(5.0f, -4.0f));
 	}
 
 	// attach turret & machine gun
