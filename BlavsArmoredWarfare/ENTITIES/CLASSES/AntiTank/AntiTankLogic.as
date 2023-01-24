@@ -433,13 +433,12 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 				}
 				else
 				{
-					if (charge_time == 0)
-					{
-						ClientFire(this, charge_time);
-						charge_time = delayafterfire + XORRandom(randdelay);
-						charge_state = ArcherParams::fired;
-						this.AddForce(Vec2f(this.getAimPos() - this.getPosition()) * (scoped ? -recoilforce/1.6 : -recoilforce));
-					}
+					ClientFire(this, charge_time);
+
+					charge_time = delayafterfire + XORRandom(randdelay);
+					charge_state = ArcherParams::fired;
+
+					this.AddForce(Vec2f(this.getAimPos() - this.getPosition()) * (scoped ? -recoilforce/1.6 : -recoilforce));
 				}
 			}
 			else
@@ -777,9 +776,6 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 {
 	if (canSend(this))
 	{
-		if (this.get_u32("next_shoot") > getGameTime()) return;
-		this.set_u32("next_shoot", getGameTime()+1);
-
 		Vec2f arrowVel = (aimpos - arrowPos);
 		arrowVel.Normalize();
 		arrowVel *= arrowspeed;
