@@ -632,16 +632,14 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				}
 				else
 				{
-					ClientFire(this, charge_time, infantry);
-
 					if (charge_time == 0)
 					{
+						ClientFire(this, charge_time, infantry);
 						charge_time = infantry.delayafterfire + XORRandom(infantry.randdelay);
 						charge_state = ArcherParams::fired;
+						float recoilForce = infantry.recoil_force;
+						this.AddForce(Vec2f(this.getAimPos() - this.getPosition()) * (scoped ? -recoilForce/1.6 : -recoilForce));
 					}
-
-					float recoilForce = infantry.recoil_force;
-					this.AddForce(Vec2f(this.getAimPos() - this.getPosition()) * (scoped ? -recoilForce/1.6 : -recoilForce));
 				}
 			}
 			else
@@ -1021,7 +1019,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 	{
 		if (this.get_u32("next_shoot") > getGameTime()) return;
 		this.set_u32("next_shoot", getGameTime()+1);
-		
+
 		CBitStream params;
 		params.write_Vec2f(arrowPos); // only once, only one place to fire from
 
