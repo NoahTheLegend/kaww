@@ -633,8 +633,11 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				{
 					ClientFire(this, charge_time, infantry);
 
-					charge_time = infantry.delayafterfire + XORRandom(infantry.randdelay);
-					charge_state = ArcherParams::fired;
+					if (charge_time == 0)
+					{
+						charge_time = infantry.delayafterfire + XORRandom(infantry.randdelay);
+						charge_state = ArcherParams::fired;
+					}
 
 					float recoilForce = infantry.recoil_force;
 					this.AddForce(Vec2f(this.getAimPos() - this.getPosition()) * (scoped ? -recoilForce/1.6 : -recoilForce));
@@ -858,11 +861,10 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		//}
 	}
 
-	if (charge_time == 0)
-	{
-		this.set_s32("my_chargetime", charge_time);
-		this.Sync("my_chargetime", true);
-	}
+	
+	this.set_s32("my_chargetime", charge_time);
+	this.Sync("my_chargetime", true);
+
 	archer.charge_state = charge_state;
 }
 
