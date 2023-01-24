@@ -1042,6 +1042,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
+		if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
 		this.Untag("no_more_shoot");
 		if (this.get_u32("next_shoot") > getGameTime()) return;
 		this.set_u32("next_shoot", getGameTime()+1);
@@ -1071,17 +1072,35 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		bool shotOnce = false;
 		Vec2f arrowVel;
 		//if (!params.saferead_Vec2f(arrowVel)) return;
-		while (params.saferead_Vec2f(arrowVel))
+		if (this.getName() == "shotgun")
 		{
-			if (isServer())
+			while (params.saferead_Vec2f(arrowVel))
 			{
-				if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
-				CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
-				if (this.getName() == "sniper") proj.Tag("strong");
-				else if (this.getName() == "shotgun") proj.Tag("shrapnel");
-				proj.server_SetTimeToDie(infantry.bullet_lifetime);
+				if (isServer())
+				{
+					if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
+					CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
+					if (this.getName() == "sniper") proj.Tag("strong");
+					else if (this.getName() == "shotgun") proj.Tag("shrapnel");
+					proj.server_SetTimeToDie(infantry.bullet_lifetime);
+				}
+				shotOnce = true;
 			}
-			shotOnce = true;
+		}
+		else
+		{
+			if (params.saferead_Vec2f(arrowVel))
+			{
+				if (isServer())
+				{
+					if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
+					CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
+					if (this.getName() == "sniper") proj.Tag("strong");
+					else if (this.getName() == "shotgun") proj.Tag("shrapnel");
+					proj.server_SetTimeToDie(infantry.bullet_lifetime);
+				}
+				shotOnce = true;
+			}
 		}
 
 		if (!shotOnce) return;
