@@ -89,7 +89,7 @@ void onTick(CBrain@ this)
 		LocateGeneralEnemyDirection(blob); // lets figure out which direction we should attack
 	}
 
-	if (blob.get_Vec2f("generalfriendlocation") == Vec2f_zero || (getGameTime()) % 1400 == 0) // update once in a while & when needed
+	if (blob.get_Vec2f("generalfriendlocation") == Vec2f_zero || (getGameTime()) % 1200 == 0) // update once in a while & when needed
 	{
 		LocateGeneralFriendDirection(blob); // gives the direction we can retreat to
 	}
@@ -244,13 +244,13 @@ void onTick(CBrain@ this)
 								{
 									// target is in a vehicle
 
-									//if (isVisible(blob, target))
-									{
-										//set_emote(blob, Emotes::fire, 10);
-										// stay still so gunner can aim
+									// stay still so gunner can aim
 
+									bool listentogunner = false;
+									if ((target.getPosition() - blob.getPosition()).getLength() < 560.0f)
+									{
 										// is gunner aiming at the target?
-										bool listentogunner = false;
+										
 										if (vehicle.getName() == "techtruck")
 										{
 											listentogunner = true;
@@ -354,22 +354,15 @@ void onTick(CBrain@ this)
 												}
 											}
 										}
-										
-										if (listentogunner)
-										{
-											if (emotes) set_emote(blob, Emotes::attn, 10);
-										}
-										else{
-											DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 300);
-										}
-
-								
 									}
-									//else{
-
-										//if (emotes) set_emote(blob, Emotes::cog, 10);
-										//DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 300);
-									//}
+									
+									if (listentogunner)
+									{
+										if (emotes) set_emote(blob, Emotes::attn, 10);
+									}
+									else{
+										DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 300);
+									}
 								}
 								else{
 									//target is ground infantry
@@ -517,6 +510,76 @@ void onTick(CBrain@ this)
 									blob.set_u16("tertiarytarget", curBlob.getNetworkID());
 									break;
 								}
+							}
+						}
+						else{
+							// theres no repair stations..
+
+							if (blob.getPosition().x < (250.0f + blob.get_u8("mykey")) or blob.getPosition().x > (getMap().tilemapwidth * getMap().tilesize) - (250.0f + blob.get_u8("mykey"))) // if on the edge of the map
+							{
+								// face the danger
+								if (vehicle.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x > blob.getPosition().x || !vehicle.isFacingLeft() && blob.get_Vec2f("generalenemylocation").x < blob.getPosition().x )
+								{
+									DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 10);
+								}
+							}
+							else{
+								// flee!
+								if (vehicledangerlevel < 5)
+								{
+									// reverse
+									//blob.setKeyPressed(key_action2, true);
+								}
+
+								DriveToPos(blob, vehicle, blob.get_Vec2f("generalfriendlocation"), 10);
+							}
+
+							// need repairs emotes!
+							if (getGameTime() % 30 == 0 && XORRandom(60) == 0)
+							{
+								set_emote(blob, XORRandom(2) == 0 ? Emotes::builder : Emotes::heal);
+
+								if (XORRandom(2) == 0)
+								{
+									blob.server_DetachAll(); // hop out
+									blob.set_string("behavior", "");
+									blob.set_u16("secondarytarget", 0);
+								}
+							}
+						}
+					}
+				}
+				// special unstuck logic
+				if (vehicle.getShape().vellen < 1.85)
+				{	
+					if (Maths::Abs(vehicle.getAngleDegrees()) > 60 && Maths::Abs(vehicle.getAngleDegrees()) < 300)
+					{
+						if (realemotes)
+						{
+							if (XORRandom(200) == 0 && getGameTime() % 30 == 0)
+							{
+								set_emote(blob, Emotes::mad);
+							}
+						}
+
+						// we're stuck
+
+						if (blob.get_u16("behaviortimer") < 100)
+						{
+							if (getGameTime() % 400 + blob.get_u8("mykey") < 250)
+							{
+								blob.setKeyPressed(key_left, false);
+								blob.setKeyPressed(key_right, true);
+							}
+							else
+							{
+								blob.setKeyPressed(key_left, true);
+								blob.setKeyPressed(key_right, false);
+							}
+
+							if (getGameTime() % 200 + blob.get_u8("mykey") < 100)
+							{
+								blob.setKeyPressed(key_down, true);
 							}
 						}
 					}
