@@ -50,7 +50,7 @@ void onInit(CBlob@ this)
 	Vehicle_SetWeaponAngle(this, low_angle, v);
 	this.set_string("autograb blob", "mat_bolts");
 
-	this.getShape().SetOffset(Vec2f(5, -13));
+	this.getShape().SetOffset(Vec2f(5, -12));
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
@@ -83,7 +83,7 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(-2.5f);
-			arm.SetOffset(Vec2f(-32.0f, 1.0f));
+			arm.SetOffset(Vec2f(-32.0f, 2.0f));
 		}
 	}
 
@@ -250,7 +250,7 @@ void onTick(CBlob@ this)
 	{
 		arm.ResetTransform();
 		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-		arm.SetOffset(Vec2f(-12.0f, -28.0f + (this.isFacingLeft() ? -1.0f : -0.0f)));
+		arm.SetOffset(Vec2f(-12.0f, -26.0f + (this.isFacingLeft() ? -1.0f : -0.0f)));
 	}
 }
 
