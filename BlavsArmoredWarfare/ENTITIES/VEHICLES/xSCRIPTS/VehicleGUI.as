@@ -48,13 +48,12 @@ void onRender(CSprite@ this)
 			drawCooldownBar(blob, v);
 		}
 
+		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 0);
 		if (blob.getName() == "heavygun")
 		{
 			f32 overheat = blob.get_f32("overheat");
 			f32 max_overheat = blob.get_f32("max_overheat");
 			f32 percent = overheat / max_overheat;
-
-			Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 0);
 			const f32 y = blob.getHeight() * 4.0f;
 			Vec2f dim = Vec2f(40, 10); //95
 			Vec2f heatdim = Vec2f(40*percent, 10); //95
@@ -67,6 +66,16 @@ void onRender(CSprite@ this)
 
 			GUI::DrawRectangle(Vec2f(pos2d.x - heatdim.x + 2,                    pos2d.y + y + 0),
 							   Vec2f(pos2d.x + heatdim.x - 1,                    pos2d.y + y + heatdim.y - 1), color);
+		}
+		else
+		{
+			f32 angle = blob.get_f32("gunelevation");
+			if (blob.isFacingLeft()) angle = Maths::Abs(angle-360.0f+blob.getAngleDegrees());
+			else angle += blob.getAngleDegrees();
+			if (angle > 360.0f) angle -= 360.0f;
+			else if (angle < -360.0f) angle += 360.0f;
+
+			GUI::DrawTextCentered(Maths::Round(angle)+"°", pos2d-Vec2f(32.0f * (blob.isFacingLeft()?-1.0f:1.0f),32), SColor(0xffffffff));
 		}
 
 		// no one feels the angle count is necessary, so im taking it out to reduce GUI clutter
