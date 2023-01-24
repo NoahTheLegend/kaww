@@ -779,6 +779,9 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 {
 	if (canSend(this))
 	{
+		if (this.get_u32("next_shoot") > getGameTime()) return;
+		this.set_u32("next_shoot", getGameTime()+1);
+		
 		Vec2f arrowVel = (aimpos - arrowPos);
 		arrowVel.Normalize();
 		arrowVel *= arrowspeed;
@@ -838,12 +841,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!params.saferead_Vec2f(arrowVel)) return;
 		ArcherInfo@ archer;
 		if (!this.get("archerInfo", @archer)) return;
-
-		if (isServer())
-		{
-			if (this.get_u32("next_shoot") > getGameTime()) return;
-			this.set_u32("next_shoot", getGameTime()+1);
-		}
 
 		if (getNet().isServer())
 		{
