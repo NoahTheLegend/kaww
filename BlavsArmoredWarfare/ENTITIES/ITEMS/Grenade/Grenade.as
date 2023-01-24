@@ -186,7 +186,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
     if (cmd == this.getCommandID("activate"))
     {
-		if (!this.isAttached()) return;
+		if (!this.isAttached() || this.isInInventory())
+		{
+			this.set_u8("exploding_2", 0);
+			return;
+		}
 		bool is_ensure = params.read_bool();
         if (isServer() && !is_ensure)
         {
