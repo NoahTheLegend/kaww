@@ -839,6 +839,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		ArcherInfo@ archer;
 		if (!this.get("archerInfo", @archer)) return;
 
+		if (isServer())
+		{
+			if (this.get_u32("next_shoot") > getGameTime()) return;
+			this.set_u32("next_shoot", getGameTime()+1);
+		}
+
 		if (getNet().isServer())
 		{
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);

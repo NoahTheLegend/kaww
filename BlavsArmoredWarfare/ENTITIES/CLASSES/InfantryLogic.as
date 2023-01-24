@@ -158,6 +158,7 @@ void onInit(CBlob@ this)
 	//	this.Tag("simple reload");
 	//}
 
+	this.set_u32("next_shoot", 0);
 	this.set_u8("noreload_custom", 15);
 	if (this.getName() == "sniper") this.set_u8("noreload_custom", 30);
 }
@@ -1048,13 +1049,19 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
 		this.Untag("no_more_shoot");
-		if (this.get_u32("next_shoot") > getGameTime()) return;
-		this.set_u32("next_shoot", getGameTime()+1);
-		if (this is null || this.hasTag("dead")) return;
+
+		if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
+		if (this is null || this.hasTag("deadfsh")) return;
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
 		ArcherInfo@ archer;
 		if (!this.get("archerInfo", @archer)) return;
+
+		if (isServer())
+		{
+			if (this.get_u32("next_shoot") > getGameTime()) return;
+			this.set_u32("next_shoot", getGameTime()+1);
+		}
 
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
