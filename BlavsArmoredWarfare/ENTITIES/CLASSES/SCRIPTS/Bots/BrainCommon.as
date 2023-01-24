@@ -207,7 +207,7 @@ void DefaultChaseBlob(CBlob@ blob, CBlob @target)
 	{
 		if (state == CBrain::has_path)
 		{
-			if (targetDistance < 400.0f)
+			if (targetDistance < 400.0f && blob.getName() != "shotgun") // temp
 			{
 				//set_emote( blob, Emotes::attn , 1);
 				//print("!@#");

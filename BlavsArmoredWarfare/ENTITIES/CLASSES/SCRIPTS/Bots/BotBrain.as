@@ -1052,6 +1052,19 @@ void onTick(CBrain@ this)
 							}
 							else
 							{
+								if (realemotes)
+								{
+									if (XORRandom(12) == 0)
+									{
+										if (XORRandom(2) == 0)
+										{
+											set_emote(blob, Emotes::smile);
+										}
+										else{
+											set_emote(blob, Emotes::thumbsup);
+										}
+									}
+								}
 								blob.set_u16("secondarytarget", 0); // capture complete
 							}
 						}
