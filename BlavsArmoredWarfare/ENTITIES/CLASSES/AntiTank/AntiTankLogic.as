@@ -435,8 +435,11 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars)
 				{
 					ClientFire(this, charge_time);
 
-					charge_time = delayafterfire + XORRandom(randdelay);
-					charge_state = ArcherParams::fired;
+					if (charge_time == 0)
+					{
+						charge_time = delayafterfire + XORRandom(randdelay);
+						charge_state = ArcherParams::fired;
+					}
 
 					this.AddForce(Vec2f(this.getAimPos() - this.getPosition()) * (scoped ? -recoilforce/1.6 : -recoilforce));
 				}
