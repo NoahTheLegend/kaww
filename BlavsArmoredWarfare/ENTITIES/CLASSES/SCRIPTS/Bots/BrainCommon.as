@@ -41,7 +41,7 @@ CBlob@ getNewTarget(CBrain@ this, CBlob @blob, const bool seeThroughWalls = fals
 
 	SortBlobsByDistance(blob, players);
 
-	if (blob.isAttachedToPoint("GUNNER")) // target attached players more, and more randomness than normal, side based
+	if (blob.isAttachedToPoint("GUNNER") || blob.isAttachedToPoint("DRIVER")) // target attached players more, and more randomness than normal, side based
 	{
 		for (uint i = 0; i < players.length; i++)
 		{
@@ -51,7 +51,7 @@ CBlob@ getNewTarget(CBrain@ this, CBlob @blob, const bool seeThroughWalls = fals
 			if (potential !is blob && blob.getTeamNum() != potential.getTeamNum())
 			{
 				if ((pos2 - pos).getLength() < 900.0f && !potential.hasTag("dead")
-					&& (XORRandom(6) == 0 || (isVisible(blob, potential) && (potential.isAttached() || XORRandom(3) == 0))) && XORRandom(3) == 0
+					&& (XORRandom(6) == 0 || (isVisible(blob, potential) && (potential.isAttached() || XORRandom(3) == 0))) && XORRandom(3) != 0
 					&& ((blob.isFacingLeft() && potential.getPosition().x < blob.getPosition().x) || (!blob.isFacingLeft() && potential.getPosition().x > blob.getPosition().x)))
 				{
 					blob.set_Vec2f("last pathing pos", potential.getPosition());
@@ -534,7 +534,7 @@ void SearchTarget(CBrain@ this, const bool seeThroughWalls = false, const bool s
 	CBlob @target = this.getTarget();
 
 	// search target if none
-	if (target is null || XORRandom(20) == 0)
+	if (target is null || (blob.isAttached() && (target !is null && target.isAttached()) ? XORRandom(70) == 0 : XORRandom(22) == 0))
 	{
 		@target = null;
 		CBlob@ oldTarget = target;
@@ -658,10 +658,13 @@ void DriveToPos(CBlob@ blob, CBlob@ vehicle, Vec2f position, float dist)
 			LocateGeneralEnemyDirection(blob); // new location
 		}
 
-		// lift front end to climb
-		if (vehicle.getShape().vellen < 0.5f)
+		if (blob.isKeyPressed(key_right) || blob.isKeyPressed(key_left))
 		{
-			blob.setKeyPressed(key_down, true);
+			// lift front end to climb
+			if (vehicle.getShape().vellen < 0.5f)
+			{
+				blob.setKeyPressed(key_down, true);
+			}
 		}
 
 		bool vehicleislow = (vehicle.getHealth() < vehicle.getInitialHealth() / 3);
@@ -674,7 +677,6 @@ void DriveToPos(CBlob@ blob, CBlob@ vehicle, Vec2f position, float dist)
 			{
 				// we are stuck, try to unstuck
 				blob.set_string("behavior", "unstuckvehicle");
-				
 			}	
 		}
 	}
@@ -892,35 +894,21 @@ void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
 				if (vehicle.isFacingLeft())
 				{
 					gunangle -= 90;
-
 					gunangle *= -1;
 					gunangle += 360;
 				}
-				else
-				{
+				else {
 					gunangle += 90;
 
-					if (gunangle <= 0)
-					{
-						gunangle += 180;
-					}
-					else{
-						gunangle -= 180;
-					}
+					if (gunangle <= 0) gunangle += 180;
+					else gunangle -= 180;
 
 					gunangle *= -1;
 					gunangle += 360;
 				}
 
-
-				if (gunangle > 360)
-				{
-					gunangle -= 360;
-				}
-				else
-				{
-					gunangle = gunangle;
-				}
+				if (gunangle > 360) gunangle -= 360;
+				else gunangle = gunangle;
 			}
 		}
 
@@ -949,12 +937,12 @@ void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
 			if (vehicle.getName() == "techtruck") // temp
 			{
 				blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
-								targetPos - Vec2f(0, targetDistance / (32.5f)) + target.getVelocity() * 4.0f,
+								targetPos - Vec2f(0, targetDistance / (31.5f)) + target.getVelocity() * 4.0f,
 								0.5));
 			}
 			else{
 				blob.setAimPos(Vec2f_lerp(blob.getAimPos(),
-								targetPos - Vec2f(0, targetDistance / (42.5f)) + target.getVelocity() * 4.0f,
+								targetPos - Vec2f(0, targetDistance / (40.5f)) + target.getVelocity() * 4.0f,
 								0.5));
 			}
 		}
