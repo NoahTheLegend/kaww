@@ -966,7 +966,6 @@ void onTick(CBrain@ this)
 								
 								if (choosen_seat !is null) // move to it / jump to it
 								{
-									
 									if (choosen_seat.getPosition().y + 50 > blob.getPosition().y)
 									{
 										blob.setKeyPressed(key_up, true);
