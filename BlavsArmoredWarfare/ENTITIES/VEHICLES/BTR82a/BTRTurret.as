@@ -187,13 +187,13 @@ void onTick(CBlob@ this)
 				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
 				{
 					isOperator = true;
-					f32 high_angle = 25.0f; // upper depression limit
-					f32 low_angle = 99.0f; // lower depression limit
+					high_angle = 25.0f; // upper depression limit
+					low_angle = 99.0f; // lower depression limit
 				}
 				else
 				{
-					f32 high_angle = 30.0f; // upper depression limit
-					f32 low_angle = 98.0f; // lower depression limit
+					high_angle = 30.0f; // upper depression limit
+					low_angle = 98.0f; // lower depression limit
 				}
 			}
 

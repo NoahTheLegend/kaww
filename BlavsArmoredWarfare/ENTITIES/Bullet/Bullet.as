@@ -93,7 +93,7 @@ void onTick(CBlob@ this)
 	}
 	else
 	{
-		if (map.rayCastSolidNoBlobs(this.getPosition()-this.getVelocity(), this.getPosition() + velocity, end))
+		if (map.rayCastSolidNoBlobs(this.getPosition()-(this.getVelocity()-4), this.getPosition() + velocity, end))
 		{
 			onHitWorld(this, end);
 		}
