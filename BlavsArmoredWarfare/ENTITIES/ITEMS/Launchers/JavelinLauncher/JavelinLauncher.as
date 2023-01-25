@@ -163,9 +163,9 @@ void onTick(CBlob@ this)
 			
 			f32 squareAngle = 45.0f * (1.0f - targetingProgress) * 3;
 			if (heli_launcher) squareAngle = 90.0f;
-			Vec2f squareScale = Vec2f(36.0f, 36.0f) * (2.0f - targetingProgress*1.5);
+			Vec2f squareScale = Vec2f(12.0f, 12.0f) * (2.0f - targetingProgress*1.5);
 			f32 squareCornerSeparation = 4.0f;
-			makeTargetSquare(targetPos, squareAngle, squareScale, squareCornerSeparation, 1.0f, targetingProgress == 1.0f ? redConsoleColor : yellowConsoleColor); //target detected rhombus
+			makeTargetSquare(targetPos, squareAngle, squareScale, squareCornerSeparation, 1.0f, targetingProgress == 1.0f ? redConsoleColor : yellowConsoleColor, false); //target detected rhombus
 			this.set_f32(targetingProgressString, Maths::Min(targetingProgress+(bestBlob.hasTag("plane") ? 0.02f : 0.01f), 1.0f));
 
 			launcherFrame = 1; // green ping
@@ -215,7 +215,7 @@ void onTick(CBlob@ this)
 	CBlob@ targetBlob = getBlobByNetworkID(curTargetNetID);
 	if ((curTargetNetID == 0 || targetBlob == null) && ownerBlob.isMyPlayer())
 	{
-		makeTargetSquare(ownerAimpos, 0, Vec2f(28.0f, 20.0f), 2.0f, 1.0f, greenConsoleColor);
+		makeTargetSquare(ownerAimpos, 0, Vec2f(28.0f, 20.0f), 2.0f, 1.0f, greenConsoleColor, false);
 	}
 	else if (draw_robotech)
 	{

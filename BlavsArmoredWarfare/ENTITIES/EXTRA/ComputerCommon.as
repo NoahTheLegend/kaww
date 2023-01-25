@@ -16,7 +16,7 @@ const SColor greenConsoleColor = SColor(200, 0, 255, 0);
 const SColor redConsoleColor = SColor(200, 255, 20, 20);
 const SColor yellowConsoleColor = SColor(200, 255, 255, 0);
 
-void makeTargetSquare( Vec2f centerPos = Vec2f_zero, f32 drawAngle = 0.0f, Vec2f scale = Vec2f(1.0f, 1.0f), f32 cornerSeparation = 1.0f, f32 particleStepDistance = 2.0f, SColor color = greenConsoleColor)
+void makeTargetSquare( Vec2f centerPos = Vec2f_zero, f32 drawAngle = 0.0f, Vec2f scale = Vec2f(1.0f, 1.0f), f32 cornerSeparation = 1.0f, f32 particleStepDistance = 2.0f, SColor color = greenConsoleColor, bool solid = true)
 {
 	if (centerPos == Vec2f_zero)
 	{ return; }
@@ -70,12 +70,12 @@ void makeTargetSquare( Vec2f centerPos = Vec2f_zero, f32 drawAngle = 0.0f, Vec2f
 			//pos1.RotateByDegrees((90*corner) + drawAngle);
 			//pos2.RotateByDegrees((90*corner) + drawAngle);
 
-			drawParticleLine( pos1 + centerPos, pos2 + centerPos, Vec2f_zero, color, 0, particleStepDistance);
+			drawParticleLine( pos1 + centerPos, pos2 + centerPos, Vec2f_zero, color, 0, particleStepDistance, solid);
 		}
 	}
 }
 
-void drawParticleLine( Vec2f pos1 = Vec2f_zero, Vec2f pos2 = Vec2f_zero, Vec2f pVel = Vec2f_zero, SColor color = SColor(255, 255, 255, 255), u8 timeout = 0, f32 pixelStagger = 1.0f)
+void drawParticleLine( Vec2f pos1 = Vec2f_zero, Vec2f pos2 = Vec2f_zero, Vec2f pVel = Vec2f_zero, SColor color = SColor(255, 255, 255, 255), u8 timeout = 0, f32 pixelStagger = 1.0f, bool solid = true)
 {
 	Vec2f lineVec = pos2 - pos1;
 	Vec2f lineNorm = lineVec;
@@ -85,6 +85,7 @@ void drawParticleLine( Vec2f pos1 = Vec2f_zero, Vec2f pos2 = Vec2f_zero, Vec2f p
 
 	for(f32 i = 0; i < lineLength; i += pixelStagger) 
 	{
+		if (!solid && i%2!=0) continue;
 		Vec2f pPos = (lineNorm * i) + pos1;
 
 		CParticle@ p = ParticlePixelUnlimited(pPos, pVel, color, true);
