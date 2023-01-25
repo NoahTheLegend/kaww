@@ -8,5 +8,4 @@ void onTick(CBlob@ this)
             this.setAngleDegrees(-vel.Angle()-270);
         if (this.isOnGround()) this.Untag("change rotation");
     }
-    if (isServer() && this.isOnGround()) this.server_Die();
 }
