@@ -70,6 +70,7 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Camouflage", "$6_class_icon$", "Camouflage",
 						"Ghillie Suit:\n\n"+"$6_class_icon$"+"Ghillie suit"
 						+"\n                   - Turn into a mobile bush!     "
+						+"\n                   - Hold DOWN while standing     "
 						+"\n\n                   Flammable"
 						+"\n                   - Fire is more deadly   "
 						);	
