@@ -309,8 +309,15 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 	f32 exact_aimangle = (this.getAimPos() - blobPos).Angle();
 
 	// this gathers HitInfo objects which contain blob or tile hit information
+	f32 angle = 45;
+	bool is_shotgun = false;
+	if (this.getName() == "shotgun")
+	{
+		is_shotgun = true;
+		angle = 30;
+	}
 	HitInfo@[] hitMapInfos;
-	if (map.getHitInfosFromArc(blobPos, -exact_aimangle, 45, radius + attack_distance, this, @hitMapInfos))
+	if (map.getHitInfosFromArc(blobPos, -exact_aimangle, angle, radius + attack_distance, this, @hitMapInfos))
 	{
 		bool dontHitMore = false;
 		
@@ -334,7 +341,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 				}
 			}
 
-			if (!dontHitMore && this.getName() == "shotgun")
+			if (!dontHitMore && is_shotgun)
 			{
 				Vec2f tpos = map.getTileWorldPosition(hi.tileOffset) + Vec2f(4, 4);
 				//bool canhit = canhit && map.getSectorAtPosition(tpos, "no build") is null;
