@@ -159,6 +159,7 @@ void onTick(CBlob@ this)
 
 		if (this.get_u8("exploding_2") == 1)
 		{
+			this.Untag("activated");
 			this.server_Die();
 		}
 	}
