@@ -182,6 +182,10 @@ bool canBePutInInventory( CBlob@ this, CBlob@ inventoryBlob )
 void onDie(CBlob@ this)
 {
 	if (this.getPlayer() !is null) this.getPlayer().set_string("last_class", this.getName());
+	if (isServer() && XORRandom(5)==0 && this.get_string("equipment_head") != "")
+	{
+		CBlob@ helmet = server_CreateBlob(this.get_string("equipment_head"), 2, this.getPosition());	
+	}
 }
 
 void onTick(CBlob@ this)
