@@ -97,6 +97,20 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 	return false;			//team not red or blue (probably spectator so dont want to check game over)
 }
 
+int blobcount = 0;
+
+void onBlobCreated( CRules@ this, CBlob@ blob )
+{
+	if (isServer())
+	{
+		if (getGameTime()%90==0 && blob !is null && blob.getNetworkID() > 50000)
+		{
+			warn("BLOB: "+blob.getName()+" NETID: "+blob.getNetworkID());
+			blobcount = blob.getNetworkID();
+		}
+	}
+}
+
 string cost_config_file = "tdm_vars.cfg";
 
 void Config(TDMCore@ this)
@@ -1094,6 +1108,7 @@ void Reset(CRules@ this)
 
 void onRestart(CRules@ this)
 {
+	if (isServer() && blobcount >= 60000) QuitGame();
 	Reset(this);
 }
 

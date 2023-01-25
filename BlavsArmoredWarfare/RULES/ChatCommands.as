@@ -112,6 +112,14 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 						b.server_SetQuantity(parseInt(sub[1]));
 					}
 				}
+				if (sub.length > 2)
+				{
+					if (sub[0] == "!spawn")
+					{
+						CBlob@ b = server_CreateBlob(sub[1], blob.getTeamNum(), blob.getPosition());
+						b.server_SetQuantity(parseInt(sub[2]));
+					}
+				}
 			}
 		}
 		if (text_in == "!xp")
