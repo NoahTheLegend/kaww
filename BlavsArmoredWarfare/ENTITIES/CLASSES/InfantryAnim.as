@@ -230,7 +230,7 @@ void onTick(CSprite@ this)
 				{
 					blob.set_u32("become_a_bush", 0);
 					this.SetVisible(true);
-					camo.SetVisible(true);
+					camo.SetVisible(!blob.isAttached());
 					frontarm.SetVisible(true);
 					this.RemoveSpriteLayer("bush");
 				}

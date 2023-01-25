@@ -217,8 +217,8 @@ void onTick(CBlob@ this)
 				}
 				else
 				{
-					f32 high_angle = 75.0f; // upper depression limit
-					f32 low_angle = 97.5f; // lower depression limit
+					high_angle = 75.0f; // upper depression limit
+					low_angle = 97.5f; // lower depression limit
 				}
 			}
 
