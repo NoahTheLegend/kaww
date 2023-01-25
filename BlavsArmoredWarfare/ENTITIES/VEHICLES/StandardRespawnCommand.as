@@ -223,7 +223,7 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 						{
 							if (this.hasTag("change class drop inventory"))
 							{
-								while (inv.getItemsCount() > 0)
+								for (u8 i = 0; i < inv.getInventorySlots().x * inv.getInventorySlots().y; i++)
 								{
 									CBlob @item = inv.getItem(0);
 									caller.server_PutOutInventory(item);
