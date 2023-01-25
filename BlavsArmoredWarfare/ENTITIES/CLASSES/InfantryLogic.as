@@ -1074,9 +1074,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		//if (!params.saferead_Vec2f(arrowVel)) return;
 		if (this.getName() == "shotgun")
 		{
-			while (params.saferead_Vec2f(arrowVel))
+			for (u8 i = 0; i < 16; i++)
 			{
-				if (isServer())
+				shotOnce = true;
+				if (isServer() && params.saferead_Vec2f(arrowVel))
 				{
 					if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
 					CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
@@ -1084,7 +1085,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					else if (this.getName() == "shotgun") proj.Tag("shrapnel");
 					proj.server_SetTimeToDie(infantry.bullet_lifetime);
 				}
-				shotOnce = true;
+				else break;
 			}
 		}
 		else
