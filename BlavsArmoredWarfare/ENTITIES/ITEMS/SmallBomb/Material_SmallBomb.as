@@ -71,6 +71,8 @@ void onTick(CBlob@ this)
 			break;
 		}
 	}
+	if (this.isOnGround())
+		this.Untag("no pickup");
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
@@ -90,9 +92,10 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal)
 	if (!solid) return;
 
 	f32 vellen = this.getOldVelocity().Length();
-	if (vellen >= 8.0f) 
+	if (vellen >= 8.0f || this.hasTag("dropped")) 
 	{	
 		this.Tag("DoExplode");
+		DoExplosion(this);
 		this.server_Die();
 	}
 }
