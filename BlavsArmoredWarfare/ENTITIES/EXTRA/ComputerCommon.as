@@ -88,7 +88,7 @@ void drawParticleLine( Vec2f pos1 = Vec2f_zero, Vec2f pos2 = Vec2f_zero, Vec2f p
 		if (!solid && i%2!=0) continue;
 		Vec2f pPos = (lineNorm * i) + pos1;
 
-		CParticle@ p = ParticlePixelUnlimited(pPos, pVel, color, true);
+		CParticle@ p = ParticlePixelUnlimited(pPos+(Vec2f(XORRandom(5)*0.1f-0.25f, XORRandom(5)*0.1f-0.25f).RotateBy(0)), pVel, color, true);
 		if(p !is null)
 		{
 			p.collides = false;
