@@ -113,7 +113,7 @@ void DoExplosion(CBlob@ this)
 	this.set_f32("map_damage_radius", (16.0f + random) * modifier);
 	this.set_f32("map_damage_ratio", 0.5f);
 
-	WarfareExplode(this, 32.0f + random, (3.25f+(XORRandom(35)*0.1f)) * modifier);
+	WarfareExplode(this, 24.0f + random, (3.25f+(XORRandom(35)*0.1f)) * modifier);
 
 	if(isClient())
 	{
