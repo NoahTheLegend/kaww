@@ -107,6 +107,7 @@ void onTick(CSprite@ this)
 	// store some vars for ease and speed
 	CBlob@ blob = this.getBlob();
 	bool isCamo = false;
+	bool hide_frontarm = false;
 
 	if (blob !is null && blob.hasTag("reload_sprite"))
 	{
@@ -177,6 +178,67 @@ void onTick(CSprite@ this)
 			{
 				camo.SetVisible(false);
 				frontarm.SetAnimation("fired");
+			}
+
+			if (blob.isKeyJustPressed(key_down))
+			{
+				blob.set_u32("become_a_bush", getGameTime()+45);
+			}
+
+			if (blob.get_u32("become_a_bush") > 0 && blob.isKeyPressed(key_down)
+			&& !blob.isKeyPressed(key_action1)
+			&& blob.isOnGround() && blob.getVelocity().Length() <= 2.0f)
+			{
+				if (getGameTime()>=blob.get_u32("become_a_bush"))
+				{
+					if (getGameTime() == blob.get_u32("become_a_bush"))
+					{
+						this.PlaySound("LeafRustle"+(XORRandom(3)+1)+".ogg", 0.33f, 1.0f);
+					}
+					CSpriteLayer@ bush = this.getSpriteLayer("bush");
+					if (bush is null)
+						@bush = this.addSpriteLayer("bush", "Bushes.png", 24, 24);
+					
+					if (bush !is null)
+					{
+						Animation@ rand = bush.getAnimation("rand");
+						if (rand is null)
+						{
+							@rand = bush.addAnimation("rand", 0, false);
+							if (rand !is null)
+							{
+								bush.SetVisible(false);
+								bush.SetOffset(Vec2f(0,4));
+								bush.SetRelativeZ(10.0f);
+								int[] frames = {0,1,2,3,5,6,7};
+								rand.AddFrames(frames);
+								bush.SetAnimation(rand);
+								blob.set_u8("bush_icon", XORRandom(frames.length));
+								blob.set_bool("bush_faceleft", XORRandom(2)==0);
+								bush.SetFrameIndex(blob.get_u8("bush_icon"));
+							}
+						}
+						else
+						{
+							bush.SetVisible(true);
+							bush.SetFrameIndex(blob.get_u8("bush_icon"));
+							bush.SetFacingLeft(blob.get_bool("bush_faceleft"));
+
+							this.SetVisible(false);
+							camo.SetVisible(false);
+							frontarm.SetVisible(false);
+							hide_frontarm = true;
+						}
+					}
+				}
+			}
+			else
+			{
+				blob.set_u32("become_a_bush", 0);
+				this.SetVisible(true);
+				camo.SetVisible(true);
+				frontarm.SetVisible(true);
+				this.RemoveSpriteLayer("bush");
 			}
 		}
 	}
@@ -511,7 +573,7 @@ void onTick(CSprite@ this)
 			armOffset -= Vec2f(2.5f, 1.0f);
 		}
 		
-		DrawGun(this, blob, archer, armangle, armOffset);
+		if (!hide_frontarm) DrawGun(this, blob, archer, armangle, armOffset);
 	}
 	else
 	{
