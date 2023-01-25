@@ -85,9 +85,19 @@ void onTick(CBlob@ this)
 
 	// collison with map
 	Vec2f end;
-	if (map.rayCastSolidNoBlobs(this.getPosition(), this.getPosition() + velocity, end))
+	if (this.getTickSinceCreated() > 0)
 	{
-		onHitWorld(this, end);
+		if (map.rayCastSolidNoBlobs(this.getPosition(), this.getPosition() + velocity, end))
+		{
+			onHitWorld(this, end);
+		}
+	}
+	else
+	{
+		if (map.rayCastSolidNoBlobs(this.getPosition()-this.getVelocity(), this.getPosition() + velocity, end))
+		{
+			onHitWorld(this, end);
+		}
 	}
 }
 
