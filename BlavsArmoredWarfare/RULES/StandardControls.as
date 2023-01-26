@@ -305,21 +305,21 @@ void onTick(CBlob@ this)
 
 	// keybinds
 
-	if (controls.ActionKeyPressed(AK_BUILD_MODIFIER))
-	{
-		EKEY_CODE[] keybinds = { KEY_KEY_1, KEY_KEY_2, KEY_KEY_3, KEY_KEY_4, KEY_KEY_5, KEY_KEY_6, KEY_KEY_7, KEY_KEY_8, KEY_KEY_9, KEY_KEY_0 };
-
-		// loop backwards so leftmost keybinds have priority
-		for (int i = keybinds.size() - 1; i >= 0; i--)
-		{
-			if (controls.isKeyJustPressed(keybinds[i]))
-			{
-				CBitStream params;
-				params.write_u8(i);
-				this.SendCommand(this.getCommandID("switch"), params);
-			}
-		}
-	}
+	//if (controls.ActionKeyPressed(AK_BUILD_MODIFIER))
+	//{
+	//	EKEY_CODE[] keybinds = { KEY_KEY_1, KEY_KEY_2, KEY_KEY_3, KEY_KEY_4, KEY_KEY_5, KEY_KEY_6, KEY_KEY_7, KEY_KEY_8, KEY_KEY_9, KEY_KEY_0 };
+//
+	//	// loop backwards so leftmost keybinds have priority
+	//	for (int i = keybinds.size() - 1; i >= 0; i--)
+	//	{
+	//		if (controls.isKeyJustPressed(keybinds[i]))
+	//		{
+	//			CBitStream params;
+	//			params.write_u8(i);
+	//			this.SendCommand(this.getCommandID("switch"), params);
+	//		}
+	//	}
+	//}
 }
 
 // show dots on chat
