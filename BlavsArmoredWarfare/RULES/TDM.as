@@ -1108,7 +1108,7 @@ void Reset(CRules@ this)
 
 void onRestart(CRules@ this)
 {
-	if (isServer() && blobcount >= 60000) QuitGame();
+	//if (isServer() && blobcount >= 60000) QuitGame();
 	Reset(this);
 }
 
