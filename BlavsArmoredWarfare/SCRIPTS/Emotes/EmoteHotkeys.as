@@ -111,12 +111,6 @@ void onTick(CBlob@ this)
 		set_emote(this, emote_18);
 	}
 
-	if (controls.ActionKeyPressed(AK_BUILD_MODIFIER))
-	{
-		return;
-	}
-
-
 	if (controls.isKeyJustPressed(KEY_KEY_1))
 	{
 		set_emote(this, emote_1);

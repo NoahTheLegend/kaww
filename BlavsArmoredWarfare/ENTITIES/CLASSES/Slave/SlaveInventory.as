@@ -380,18 +380,18 @@ void onTick(CBlob@ this)
 		onInit(this);
 	}
 
-	CControls@ controls = this.getControls();
-	if (controls.ActionKeyPressed(AK_BUILD_MODIFIER))
-	{
-		for (uint i = 0; i < 9; i++)
-		{
-			if (controls.isKeyJustPressed(KEY_KEY_1 + i))
-			{
-				this.SendCommand(Builder::make_block + blockBinds[i]);
-			}
-		}
-
-	}
+//	CControls@ controls = this.getControls();
+//	if (controls.ActionKeyPressed(AK_BUILD_MODIFIER))
+//	{
+//		for (uint i = 0; i < 9; i++)
+//		{
+//			if (controls.isKeyJustPressed(KEY_KEY_1 + i))
+//			{
+//				this.SendCommand(Builder::make_block + blockBinds[i]);
+//			}
+//		}
+//
+//	}
 }
 
 void onRender(CSprite@ this)
