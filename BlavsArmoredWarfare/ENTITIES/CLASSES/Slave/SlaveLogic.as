@@ -175,15 +175,6 @@ void onTick(CBlob@ this)
 	if (ismyplayer)
 	{
 		Pickaxe(this);
-
-		if (this.isKeyJustPressed(key_action3))
-		{
-			CBlob@ carried = this.getCarriedBlob();
-			if (carried is null || !carried.hasTag("temp blob"))
-			{
-				client_SendThrowOrActivateCommand(this);
-			}
-		}
 	}
 
 	CPlayer@ p = this.getPlayer();
