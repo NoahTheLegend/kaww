@@ -145,7 +145,7 @@ void onTick(CSprite@ this)
 
 				if (blob.isKeyJustPressed(key_down))
 				{
-					blob.set_u32("become_a_bush", getGameTime()+45);
+					blob.set_u32("become_a_bush", getGameTime()+20);
 				}
 
 				if (blob.get_u32("become_a_bush") > 0 && blob.isKeyPressed(key_down)
