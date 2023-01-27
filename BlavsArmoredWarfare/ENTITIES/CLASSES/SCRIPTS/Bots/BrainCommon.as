@@ -83,6 +83,7 @@ CBlob@ getNewTarget(CBrain@ this, CBlob @blob, const bool seeThroughWalls = fals
 
 void Repath(CBrain@ this)
 {
+	if (this is null || this.getTarget() is null) return;
 	this.SetPathTo(this.getTarget().getPosition(), 2);
 }
 
