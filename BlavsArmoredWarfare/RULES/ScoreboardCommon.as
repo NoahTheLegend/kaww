@@ -28,7 +28,7 @@ SColor getNameColour(CPlayer@ p)
 		"NoahTheLegend",
 		"Nevrotik",
 		"Yeti5000707",
-		"MasterOfCockfights" // patreon donated
+		"MasterOfCockFights" // patreon donated
 	};
 	for (u16 i = 0; i < rainbow.length; i++)
 	{

@@ -77,7 +77,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (this.hasBlob("aceofspades", 1))
 		{
 			this.TakeBlob("aceofspades", 1);
-			this.set_u32("aceofspades_timer", getGameTime()+20);
+			this.set_u32("aceofspades_timer", getGameTime()+30);
 
 			this.server_SetHealth(0.01f);
 
@@ -95,10 +95,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Death Incarnate")
 		{
 			damage *= 2.0f; // take double damage
-		}
-		else if ((hitterBlob.getName() == "grenade" || customData == Hitters::explosion) && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
-		{
-			damage *= 1.75f; // take double damage
 		}
 	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") && hitterBlob.getName() != "grenade")

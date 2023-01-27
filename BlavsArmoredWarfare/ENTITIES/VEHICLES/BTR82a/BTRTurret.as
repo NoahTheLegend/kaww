@@ -188,7 +188,7 @@ void onTick(CBlob@ this)
 				{
 					isOperator = true;
 					high_angle = 25.0f; // upper depression limit
-					low_angle = 99.0f; // lower depression limit
+					low_angle = 101.5f; // lower depression limit
 				}
 				else
 				{

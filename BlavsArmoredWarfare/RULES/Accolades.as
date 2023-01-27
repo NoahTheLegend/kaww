@@ -11,7 +11,7 @@ shared string[] getPatreonMembers()
 {
 	string[] patreonMembers = {
 		"nickkardash",
-		"MasterOfCockfights"
+		"MasterOfCockFights"
 	};
 	return patreonMembers;
 }
