@@ -1024,21 +1024,21 @@ shared class TDMCore : RulesCore
 		}
 	}
 
-	//void SetCorrectMapTypeShared() // LOADING MAPCYCLE MAKES THE CLOSER MAPS TO BEGINNING MORE FREQUENT THAN OTHER!     but its random?
-	//{
-	//	if (getPlayersCount() <= 5)
-	//	{
-	//		LoadMapCycle("MAPS/mapcyclesmaller.cfg");
-	//	}
-	//	else if (getPlayersCount() < 11)
-	//	{
-	//		LoadMapCycle("MAPS/mapcycle.cfg");
-	//	}
-	//	else
-	//	{
-	//		LoadMapCycle("MAPS/mapcyclelarger.cfg");
-	//	}
-	//}
+	void SetCorrectMapTypeShared()
+	{
+		if (getPlayersCount() <= 5)
+		{
+			LoadMapCycle("MAPS/mapcyclesmaller.cfg");
+		}
+		else if (getPlayersCount() < 11)
+		{
+			LoadMapCycle("MAPS/mapcycle.cfg");
+		}
+		else
+		{
+			LoadMapCycle("MAPS/mapcyclelarger.cfg");
+		}
+	}
 };
 
 //pass stuff to the core from each of the hooks
@@ -1086,6 +1086,7 @@ void Reset(CRules@ this)
 	// 50 normal
 	// 100 dark
 
+	if (getMap() is null) return;
 	u8 randtime = XORRandom(100) + 1; // 1 to 100
 	if (randtime < 11) // bad conditions / night
 	{
@@ -1232,14 +1233,14 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 		getRules().set_u32(player.getUsername() + "_exp", 2500+XORRandom(1250));
 	}
 
-	//if (getPlayersCount() == 5 || getPlayersCount() == 4)
-	//{
-	//	LoadMapCycle("MAPS/mapcycle.cfg");
-	//}
-	//else if (getPlayersCount() == 8 || getPlayersCount() == 9)
-	//{
-	//	LoadMapCycle("MAPS/mapcyclelarger.cfg");
-	//}
+	if (getPlayersCount() == 5 || getPlayersCount() == 4)
+	{
+		LoadMapCycle("MAPS/mapcycle.cfg");
+	}
+	else if (getPlayersCount() == 8 || getPlayersCount() == 9)
+	{
+		LoadMapCycle("MAPS/mapcyclelarger.cfg");
+	}
 
 	this.SyncToPlayer("siege", player);
 	CBlob@ blob = player.getBlob();
