@@ -33,6 +33,11 @@ void onInit(CBlob@ this)
 	}
 	this.set_u8("death_timer", 120);
 	this.Tag("change team on pickup");
+
+	if (this.getName() == "agrenade")
+	{
+		this.set_u8("exploding_2", 110);
+	}
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -103,17 +108,20 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 
 void onTick(CBlob@ this)
 {
-	if (this.isInInventory()) return;
-	if (this.isAttached())
+	if (this.isAttached() && this.getName() == "grenade")
 	{
-		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
-		if (ap !is null && ap.isKeyJustPressed(key_action3))
+		if (this.isAttached() && !this.hasTag("activated"))
 		{
-			CBitStream params;
-			this.SendCommand(this.getCommandID("activate"), params);
+			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
+			if (ap !is null && ap.isKeyJustPressed(key_action3) && ap.getOccupied() !is null && ap.getOccupied().isMyPlayer())
+			{
+				//if (!this.hasTag("no_pin")) Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
+				CBitStream params;
+				this.SendCommand(this.getCommandID("activate"), params);
+			}
 		}
 	}
-	if (this.get_u8("exploding_2") > 0)
+	else if (this.get_u8("exploding_2") > 0)
 	{
 		this.set_u8("exploding_2", this.get_u8("exploding_2") - 1);
 		f32 angle = -this.get_f32("bomb angle");
@@ -163,7 +171,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	if (this.hasTag("activated") && (!v_fastrender || XORRandom(3)==0))
+	if (this.getName() == "agrenade" && (!v_fastrender || XORRandom(3)==0))
 	{
 		sparks(this.getPosition(), this.getAngleDegrees(), 3.5f + (XORRandom(10) / 5.0f), SColor(255, 255, 230, 120));
 	}
@@ -184,46 +192,39 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-    if (cmd == this.getCommandID("activate"))
-    {
-		if (!this.isAttached() || this.isInInventory())
+   	if (cmd == this.getCommandID("activate"))
+	{
+		if (isClient() && !this.hasTag("activated"))
 		{
-			this.set_u8("exploding_2", 0);
-			return;
-		}
-		//bool is_ensure = params.read_bool();
-        if (isServer())
-        {
-    		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
-            if (point is null){return;}
-    		CBlob@ holder = point.getOccupied();
-
-            if (holder !is null && this !is null && !this.hasTag("activated"))
-            {
-				this.Tag("activated");
-                this.set_u8("exploding_2", 110);
-                this.Sync("exploding_2", true);
-            }
-        }
-		//if (is_ensure) this.Tag("activated");
-		//else
-		//{
-		//	for (u8 i = 0; i < getPlayersCount(); i++) // make sure clients receive the command after receiving by server
-		//	{
-		//		CPlayer@ p = getPlayer(i);
-		//		if (p is null) continue;
-//
-		//		CBitStream params;
-		//		params.write_bool(true);
-		//		this.server_SendCommandToPlayer(this.getCommandID("activate"), params, p);
-		//	}
-		//}
-		if (!this.hasTag("no_pin")) 
-		{
-			this.Tag("no_pin");
 			Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
 		}
-    }
+
+    	if(isServer())
+    	{
+			AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
+    	    if (point !is null)
+			{
+				CBlob@ holder = point.getOccupied();
+				if (holder !is null && this !is null && !this.hasTag("activated"))
+				{
+					CBlob@ blob = server_CreateBlob("agrenade", this.getTeamNum(), this.getPosition());
+					holder.server_Pickup(blob);
+					this.server_Die();
+
+					CPlayer@ activator = holder.getPlayer();
+					string activatorName = activator !is null ? (activator.getUsername() + " (team " + activator.getTeamNum() + ")") : "<unknown>";
+					//printf(activatorName + " has activated " + this.getName());
+				}
+				else 
+				{
+					CBlob@ blob = server_CreateBlob("agrenade", this.getTeamNum(), this.getPosition());
+					this.server_Die();
+				}
+			}
+    	}
+		this.Tag("activated");
+		this.set_bool("active", true);
+	}
 }
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
