@@ -897,7 +897,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
 
-	if (hitterBlob.getName() == "grenade") return (this.getName() == "maus" || armorRating > 4 ? damage*0.5f : damage * (1.25+XORRandom(10)*0.01f));
+	if (hitterBlob.getName() == "agrenade") return (this.getName() == "maus" || armorRating > 4 ? damage*0.5f : damage * (1.25+XORRandom(10)*0.01f));
 
 	if (armorRating >= 3 && customData == Hitters::sword) return 0;
 

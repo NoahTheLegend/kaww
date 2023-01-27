@@ -330,7 +330,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 1.25f;
 	}
-	if (hitterBlob.getName() == "grenade")
+	if (hitterBlob.getName() == "agrenade")
 	{
 		return damage * 0.5f;
 	}
