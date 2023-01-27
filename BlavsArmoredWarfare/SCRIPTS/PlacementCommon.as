@@ -87,7 +87,11 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 	{
 		//repair like tiles
 	}
-	else if (buildTile == CMap::tile_castle && backtile.type >= CMap::tile_wood && backtile.type <= CMap::tile_wood_d0 && !map.isInFire(p))
+	else if ( buildTile == CMap::tile_scrap && backtile.type >= CMap::tile_castle && backtile.type <= CMap::tile_castle_d0)
+	{
+		// can build scrap on stone
+	}
+	else if ((buildTile == CMap::tile_castle || buildTile == CMap::tile_scrap) && backtile.type >= CMap::tile_wood && backtile.type <= CMap::tile_wood_d0 && !map.isInFire(p))
 	{
 		// can build stone on wood when not on fire, do nothing
 	}
