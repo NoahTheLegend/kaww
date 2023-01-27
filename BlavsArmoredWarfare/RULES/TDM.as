@@ -1168,7 +1168,7 @@ string uppercaseFirstLetter(string &in str)
 string getRandomCharName()
 {
 	bool hasNumbersAtEnd = XORRandom(2)==0; // botname982
-	bool upperCase = XORRandom(2)==0; // BotName
+	bool upperCase = XORRandom(100)>33; // BotName
 	bool underline = XORRandom(2)==0; // bot name // actually just space between
 	bool viceVersa = XORRandom(3)==0; // more variance
 	bool shuffle = XORRandom(2)==0; // get lastname from another pair
