@@ -807,8 +807,8 @@ shared class TDMCore : RulesCore
 			if (!getMap().getMarkers("blue main spawn", respawnPositions))
 			{
 				warn("TDM: Blue spawn marker not found on map");
-				respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 16.0f);
-				respawnPos.y -= 16.0f;
+				respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
+				//respawnPos.y -= 16.0f;
 				SetupBase(server_CreateBlob(base_name, 0, respawnPos));
 			}
 			else
@@ -816,7 +816,7 @@ shared class TDMCore : RulesCore
 				for (uint i = 0; i < respawnPositions.length; i++)
 				{
 					respawnPos = respawnPositions[i];
-					respawnPos.y -= 16.0f;
+					//respawnPos.y -= 16.0f;
 					SetupBase(server_CreateBlob(base_name, 0, respawnPos));
 				}
 			}
@@ -829,7 +829,7 @@ shared class TDMCore : RulesCore
 			{
 				warn("TDM: Red spawn marker not found on map");
 				respawnPos = Vec2f(map.tilemapwidth * map.tilesize - 150.0f, map.getLandYAtX(map.tilemapwidth - (150.0f / map.tilesize)) * map.tilesize - 32.0f);
-				respawnPos.y -= 16.0f;
+				//respawnPos.y -= 16.0f;
 				SetupBase(server_CreateBlob(base_name, 1, respawnPos));
 			}
 			else
@@ -837,7 +837,7 @@ shared class TDMCore : RulesCore
 				for (uint i = 0; i < respawnPositions.length; i++)
 				{
 					respawnPos = respawnPositions[i];
-					respawnPos.y -= 16.0f;
+					//respawnPos.y -= 16.0f;
 					SetupBase(server_CreateBlob(base_name, 1, respawnPos));
 				}
 			}
