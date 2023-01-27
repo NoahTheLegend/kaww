@@ -20,8 +20,6 @@ void onInit(CBlob@ this)
 
 	this.set_bool("map_damage_raycast", true);
 	this.set_bool("explosive_teamkill", true);
-	
-	this.Tag("projectile");
 	this.Tag("collideswithglass");
 
 	this.set_u8("exploding_2", 0);
@@ -47,7 +45,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	{
 		return true;
 	}
-	if (blob.hasTag("structure") && (!blob.hasTag("bunker") || blob.getTeamNum() == this.getTeamNum()))
+	if (blob.hasTag("structure") && (!blob.hasTag("bunker") || blob.getName() == "sandbags" || blob.getTeamNum() == this.getTeamNum()))
 	{
 		return false;
 	}

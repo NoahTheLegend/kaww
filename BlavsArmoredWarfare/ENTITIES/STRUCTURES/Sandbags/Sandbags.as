@@ -80,11 +80,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 		return damage / 6;
 	}
-	if (hitterBlob.getName() == "grenade")
+	if (hitterBlob.getName() == "agrenade")
 	{
 		MakeDustParticle((hitterBlob.getPosition() + this.getPosition())/2, "/dust2.png");
-		
-		return damage / 7.5;
+		return damage / 7.5f;
 	}
 	return damage;
 }

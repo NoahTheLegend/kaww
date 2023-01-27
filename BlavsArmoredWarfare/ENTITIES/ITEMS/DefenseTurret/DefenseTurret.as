@@ -269,7 +269,7 @@ f32 getAimAngle(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (hitterBlob.getName() == "grenade")
+	if (hitterBlob.getName() == "agrenade")
 	{
 		return damage * 10;
 	}
