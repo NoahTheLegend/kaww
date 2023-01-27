@@ -964,7 +964,7 @@ shared class TDMCore : RulesCore
 				rules.SetCurrentState(GAME_OVER);
 				rules.SetGlobalMessage("{WINNING_TEAM} wins the game!\n\nWell done. Loading next map..." );
 				rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.name);
-				SetCorrectMapTypeShared();
+				//SetCorrectMapTypeShared();
 			}
 		}
 	}
