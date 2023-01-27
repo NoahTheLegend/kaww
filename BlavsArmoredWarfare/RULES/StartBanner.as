@@ -43,7 +43,10 @@ void onTick(CRules@ this)
             CBlob@[] tents;
             getBlobsByName("tent", @tents);
 
-            if (tents.length == 0)
+            CBlob@[] iarmorys;
+            getBlobsByName("importantarmory", @iarmorys);
+
+            if (tents.length == 0 && iarmorys.length > 0)
             {
                 // break the truck
                 this.set_string("bannertext", "Destroy the enemy truck!");
