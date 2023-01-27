@@ -31,7 +31,7 @@ void onRestart(CRules@ this)
 
 void onTick(CRules@ this)
 {
-    if (getGameTime() < 370)
+    if (getGameTime() < 370 && getGameTime() > 0)
     {
         if (this.get_s8("flagcount") == -1)
         {
