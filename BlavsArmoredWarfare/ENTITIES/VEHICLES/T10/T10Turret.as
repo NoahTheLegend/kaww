@@ -212,8 +212,8 @@ void onTick(CBlob@ this)
 				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
 				{
 					isOperator = true;
-					high_angle = 72.5f;
-					low_angle = 100.0f;
+					high_angle = 72.0f;
+					low_angle = 100.5f;
 				}
 				else
 				{

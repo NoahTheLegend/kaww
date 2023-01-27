@@ -107,7 +107,7 @@ void onTick(CBlob@ this)
 									{
 										if (getRules().get_string(holder.getPlayer().getUsername() + "_perk") == "Operator")
 										{
-											repair_cd = 20;
+											repair_cd = 18;
 										}
 									}
 									if (blob.hasTag("bunker"))
