@@ -203,7 +203,7 @@ class MapVotesMenu
 		{
 			string mode_name = sv_gamemode;
 			if (mode_name == "Team Deathmatch") mode_name = "TDM";
-			mapcycle =  "Rules/"+mode_name+"/mapcycle.cfg";
+			mapcycle =  "Rules/"+mode_name+"/mapcyclelarger.cfg";
 		}
 
 		ConfigFile cfg;

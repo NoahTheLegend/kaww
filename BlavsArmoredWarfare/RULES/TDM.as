@@ -691,6 +691,10 @@ shared class TDMCore : RulesCore
 
 	void onSetPlayer(CBlob@ blob, CPlayer@ player)
 	{
+		if (!blob.isBot() && getPlayersCount() == 1)
+		{
+			getRules().Tag("firstjoin");
+		}
 		if (blob !is null && player !is null)
 		{
 			GiveSpawnResources(blob, player);
@@ -1020,21 +1024,21 @@ shared class TDMCore : RulesCore
 		}
 	}
 
-	void SetCorrectMapTypeShared() // LOADING MAPCYCLE MAKES THE CLOSER MAPS TO BEGINNING MORE FREQUENT THAN OTHER!     but its random?
-	{
-		if (getPlayersCount() <= 5)
-		{
-			LoadMapCycle("MAPS/mapcyclesmaller.cfg");
-		}
-		else if (getPlayersCount() < 11)
-		{
-			LoadMapCycle("MAPS/mapcycle.cfg");
-		}
-		else
-		{
-			LoadMapCycle("MAPS/mapcyclelarger.cfg");
-		}
-	}
+	//void SetCorrectMapTypeShared() // LOADING MAPCYCLE MAKES THE CLOSER MAPS TO BEGINNING MORE FREQUENT THAN OTHER!     but its random?
+	//{
+	//	if (getPlayersCount() <= 5)
+	//	{
+	//		LoadMapCycle("MAPS/mapcyclesmaller.cfg");
+	//	}
+	//	else if (getPlayersCount() < 11)
+	//	{
+	//		LoadMapCycle("MAPS/mapcycle.cfg");
+	//	}
+	//	else
+	//	{
+	//		LoadMapCycle("MAPS/mapcyclelarger.cfg");
+	//	}
+	//}
 };
 
 //pass stuff to the core from each of the hooks
@@ -1228,14 +1232,14 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 		getRules().set_u32(player.getUsername() + "_exp", 2500+XORRandom(1250));
 	}
 
-	if (getPlayersCount() == 5 || getPlayersCount() == 4)
-	{
-		LoadMapCycle("MAPS/mapcycle.cfg");
-	}
-	else if (getPlayersCount() == 8 || getPlayersCount() == 9)
-	{
-		LoadMapCycle("MAPS/mapcyclelarger.cfg");
-	}
+	//if (getPlayersCount() == 5 || getPlayersCount() == 4)
+	//{
+	//	LoadMapCycle("MAPS/mapcycle.cfg");
+	//}
+	//else if (getPlayersCount() == 8 || getPlayersCount() == 9)
+	//{
+	//	LoadMapCycle("MAPS/mapcyclelarger.cfg");
+	//}
 
 	this.SyncToPlayer("siege", player);
 	CBlob@ blob = player.getBlob();
@@ -1379,10 +1383,11 @@ void onTick(CRules@ this)
 			}
 		}
 	}
-	if (getGameTime() == 20)
+	if (getGameTime() == 20 || this.hasTag("firstjoin"))
 	{
+		this.Untag("firstjoin");
 		if (!this.hasTag("togglebots"))
-		{	
+		{
 			// Bots are enabled
 			// Fill server with bots on lowpop
 			u8 bots = 0; // count bots
