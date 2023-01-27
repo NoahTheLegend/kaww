@@ -24,10 +24,19 @@ SColor getNameColour(CPlayer@ p)
 	}
 
 	// turtlecake == jenny
-	if (p.getUsername() == "Nevrotik" || p.getUsername() == "NoahTheLegend" || p.getUsername() == "Yeti5000707"){
-		c = rgb();
+	string[] rainbow = {
+		"NoahTheLegend",
+		"Nevrotik",
+		"Yeti5000707",
+		"MasterOfCockfights" // patreon donated
+	};
+	for (u16 i = 0; i < rainbow.length; i++)
+	{
+		if (p.getUsername() == rainbow[i])
+		{
+			c = rgb();
+		}
 	}
-
 	if(p.getBlob() is null && p.getTeamNum() != getRules().getSpectatorTeamNum())
 	{
 		uint b = c.getBlue();
