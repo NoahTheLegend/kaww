@@ -1378,6 +1378,11 @@ void onTick(CRules@ this)
 							shouldkick--;
 
 							kickteamflip = Maths::Abs(p.getTeamNum() - 1);
+
+							if (shouldkick < 1)
+                            {
+                                break;
+                            }
 						}
 					}
 				}
