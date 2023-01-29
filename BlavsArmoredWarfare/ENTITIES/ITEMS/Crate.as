@@ -645,55 +645,7 @@ void onDie(CBlob@ this)
 
 bool canUnpackHere(CBlob@ this)
 {
-	CMap@ map = getMap();
-	Vec2f pos = this.getPosition();
-
-	Vec2f space = this.get_Vec2f(required_space);
-	Vec2f t_off = Vec2f(map.tilesize * 0.5f, map.tilesize * 0.5f);
-	Vec2f offsetPos = crate_getOffsetPos(this, map);
-	for (f32 step_x = 0.0f; step_x < space.x ; ++step_x)
-	{
-		for (f32 step_y = 0.0f; step_y < space.y ; ++step_y)
-		{
-			Vec2f temp = (Vec2f(step_x + 0.5, step_y + 0.5) * map.tilesize);
-			Vec2f v = offsetPos + temp;
-
-			if (this.hasTag("unpack_check_nobuild"))
-			{
-				if (map.getSectorAtPosition(v, "no build") !is null || hasNoBuildBlobs(v))
-				{
-					return false;
-				}
-			}
-			if (v.y < map.tilesize || map.isTileSolid(v))
-			{
-				return false;
-			}
-		}
-	}
-
-	string packed = this.get_string("packed");
-	//required vertical buffer for siege engines and boats
-	if (packed == "ballista" || packed == "catapult" || packed == "longboat" || packed == "warboat")
-	{
-		if (pos.y < 40)
-		{
-			return false;
-		}
-	}
-
-	bool water = packed == "longboat" || packed == "warboat";
-	if (this.isAttached())
-	{
-		CBlob@ parent = this.getAttachments().getAttachmentPointByName("PICKUP").getOccupied();
-		if (parent !is null)
-		{
-			return ((!water && parent.isOnGround()) || (water && map.isInWater(parent.getPosition() + Vec2f(0.0f, 8.0f))));
-		}
-	}
-	bool inwater = map.isInWater(this.getPosition() + Vec2f(0.0f, 8.0f));
-	bool supported = ((!water && (this.isOnGround() || inwater)) || (water && inwater));
-	return (supported);
+	return true;
 }
 
 Vec2f crate_getOffsetPos(CBlob@ blob, CMap@ map)
@@ -815,7 +767,6 @@ void onRender(CSprite@ this)
 			const f32 zoom = getCamera().targetDistance * scalex;
 			Vec2f aligned = getDriver().getScreenPosFromWorldPos(offsetPos);
 			//GUI::DrawIcon("CrateSlots.png", 0, Vec2f(40, 32), aligned, zoom);
-			DrawSlots(space, aligned, zoom); //if (getGameTime() % 30 == 0)
 
 			for (f32 step_x = 0.0f; step_x < space.x ; ++step_x)
 			{
@@ -833,19 +784,6 @@ void onRender(CSprite@ this)
 		}
 	}
 
-}
-
-void DrawSlots(Vec2f size, Vec2f pos, f32 zoom)
-{
-	int x = Maths::Floor(size.x);
-	int y = Maths::Floor(size.y);
-	CMap@ map = getMap();
-
-	GUI::DrawRectangle(pos, pos + Vec2f(x, y) * map.tilesize * zoom * 2, SColor(125, 255, 255, 255));
-	GUI::DrawLine2D(pos + Vec2f(0, 0) * map.tilesize * zoom * 2, pos + Vec2f(x, 0) * map.tilesize * zoom * 2, SColor(255, 255, 255, 255));
-	GUI::DrawLine2D(pos + Vec2f(x, 0) * map.tilesize * zoom * 2, pos + Vec2f(x, y) * map.tilesize * zoom * 2, SColor(255, 255, 255, 255));
-	GUI::DrawLine2D(pos + Vec2f(x, y) * map.tilesize * zoom * 2, pos + Vec2f(0, y) * map.tilesize * zoom * 2, SColor(255, 255, 255, 255));
-	GUI::DrawLine2D(pos + Vec2f(0, y) * map.tilesize * zoom * 2, pos + Vec2f(0, 0) * map.tilesize * zoom * 2, SColor(255, 255, 255, 255));
 }
 
 const string[] noBuildBlobs = {"wooden_door", "stone_door", "wooden_platform", "bridge"};
