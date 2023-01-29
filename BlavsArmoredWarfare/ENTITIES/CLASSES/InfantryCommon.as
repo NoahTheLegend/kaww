@@ -107,7 +107,7 @@ class InfantryInfo
 		class_hash 				= 234279893; // hash of the name
 		// DAMAGE
 		damage_body 			= 0.35f; // damage dealt to body
-		damage_head 			= 0.5f; // damage dealt on headshot
+		damage_head 			= 0.45f; // damage dealt on headshot
 		// SHAKE
 		recoil_x 				= 20.0f; // x shake (20)
 		recoil_y 				= 80.0f; // y shake (45)
@@ -121,17 +121,17 @@ class InfantryInfo
 		// spray pattern in logic
 		length_of_recoil_arc 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 		// ACCURACY
-		inaccuracy_cap 			= 80; // max amount of inaccuracy
+		inaccuracy_cap 			= 85; // max amount of inaccuracy
 		inaccuracy_pershot 		= 50; // aim inaccuracy  (+3 per shot)
 		// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 		// GUN
 		semiauto 				= false;
-		burst_size 				= 5; // bullets fired per click
+		burst_size 				= 6; // bullets fired per click
 		burst_rate 				= 0; // ticks per bullet fired in a burst
-		reload_time 			= 80; // time to reload
+		reload_time 			= 60; // time to reload
 		noreloadtimer           = 0; // time after each shot where you can't reload
 		mag_size 				= 4; // max bullets in mag
-		delayafterfire 			= 20; // time between shots 4
+		delayafterfire 			= 15; // time between shots 4
 		randdelay 				= 0; // + randomness
 		bullet_velocity 		= 1.42f; // speed that bullets fly 1.6
 		bullet_lifetime 		= 0.5f; // in seconds, time for bullet to die
@@ -169,15 +169,15 @@ namespace ShotgunParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 80; // max amount of inaccuracy
+	const ::u8 INACCURACY_CAP 			= 85; // max amount of inaccuracy
 	const ::u8 INACCURACY_PER_SHOT 		= 50; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
-	const ::u8 BURST_SIZE 				= 5; // bullets fired per click
+	const ::u8 BURST_SIZE 				= 6; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 				= 80; // time to reload
-	const ::u8 NORELOADTIMER 			= 10; // time after each shot where you can't reload
+	const ::s16 RELOAD_TIME 			= 60; // time to reload
+	const ::u8 NORELOADTIMER 			= 15; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 4; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 15; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
