@@ -68,6 +68,9 @@ void onInit(CBlob@ this)
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
+	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
+
 	{
 		ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 5);
@@ -138,14 +141,14 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy MachineGun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$crate$", "launcher_javelin", "Homing Missile launcher.", false, true);
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;

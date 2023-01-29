@@ -28,6 +28,9 @@ void onInit(CBlob@ this)
 	this.set_string("shop description", "Buy");
 	this.set_u8("shop icon", 25);
 
+	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
+
 	{
 		ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 5);
