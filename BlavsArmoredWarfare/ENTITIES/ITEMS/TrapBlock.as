@@ -176,3 +176,13 @@ void SetBlockAbove(CBlob@ this, const bool open)
 
 	setOpen(blobAbove, open);
 }
+
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (customData == Hitters::explosion || hitterBlob.getName() == "agrenade")
+	{
+		return damage * Maths::Max(0.0f, damage*0.5f / (hitterBlob.getPosition() - this.getPosition()).Length());
+	}
+	return damage;
+}
