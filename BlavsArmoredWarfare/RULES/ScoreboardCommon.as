@@ -23,19 +23,18 @@ SColor getNameColour(CPlayer@ p)
 		c = SColor(0xffffffff); //normal
 	}
 
-	// turtlecake == jenny
 	string[] rainbow = {
-		"NoahTheLegend",
-		"Nevrotik",
-		"Yeti5000707",
-		"MasterOfCockFights", // patreon donated
+		"NoahTheLegend", // dev
+		"Nevrotik", // helper
+		"Yeti5000707", // creator
+		"MasterOfCockFights", // patreon
 		"Froghead48" // patreon
 	};
 	for (u16 i = 0; i < rainbow.length; i++)
 	{
 		if (p.getUsername() == rainbow[i])
 		{
-			c = rgb();
+			c = rgb(p.getNetworkID());
 		}
 	}
 	if(p.getBlob() is null && p.getTeamNum() != getRules().getSpectatorTeamNum())
@@ -185,9 +184,9 @@ void drawPlayerCard(CPlayer@ player, Vec2f pos)
 
 }
 
-SColor rgb()
+SColor rgb(u16 id)
 {
-	f32 hue = getGameTime() % 360;
+	f32 hue = (getGameTime()+id) % 360;
 	f32 saturation = 1.0f;
 	f32 value = 1.0f;
 			
