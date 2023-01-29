@@ -11,7 +11,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 			if (killer !is victim && killer.getTeamNum() != victim.getTeamNum())
 			{
 				int coins = 2;
-				if (getRules().get_string(killer.getUsername() + "_perk") == "Supply Chain")
+				if (getRules().get_string(killer.getUsername() + "_perk") == "Wealthy")
 				{
 					coins *= 2;
 				}
@@ -29,7 +29,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 			}
 		}
 
-		if (getRules().get_string(victim.getUsername() + "_perk") == "Supply Chain")
+		if (getRules().get_string(victim.getUsername() + "_perk") == "Wealthy")
 		{
 			victim.server_setCoins(Maths::Ceil(victim.getCoins() / 2)); // lose half of balance
 		}

@@ -1480,7 +1480,7 @@ void onTick(CRules@ this)
 			if (player is null || player.getBlob() is null) continue;
             if (isServer())
             {
-				if (this.get_string(player.getUsername() + "_perk") == "Supply Chain")
+				if (this.get_string(player.getUsername() + "_perk") == "Wealthy")
 				{
 					player.server_setCoins(player.getCoins()+2); // double
 				}

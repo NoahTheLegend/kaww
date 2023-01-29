@@ -214,7 +214,7 @@ void onRender(CSprite@ this)
 			{
 				icon_num = 1;
 			}
-			else if (getRules().get_string(player.getUsername() + "_perk") == "Supply Chain")
+			else if (getRules().get_string(player.getUsername() + "_perk") == "Wealthy")
 			{
 				icon_num = 2;
 			}
