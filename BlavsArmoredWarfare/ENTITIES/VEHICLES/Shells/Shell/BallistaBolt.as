@@ -106,11 +106,16 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
-	if ((blob.hasTag("bunker") || blob.hasTag("door")) && this.getTeamNum() == blob.getTeamNum())
+	if (blob.hasTag("bunker") && this.getTeamNum() == blob.getTeamNum())
 	{
 		return false;
 	}
 	
+	if (blob.hasTag("door") && blob.getShape().getConsts().collidable)
+	{
+		return true;
+	}
+
 	if (blob.hasTag("vehicle") && this.getTeamNum() == blob.getTeamNum())
 	{
 		return false;
