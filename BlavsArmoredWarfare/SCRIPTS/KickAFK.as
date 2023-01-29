@@ -18,7 +18,6 @@ void onTick(CRules@ this)
 {
     if (isClient() && isServer())
     {
-        this.getCurrentScript().runFlags |= Script::remove_after_this;
         return;
     }
 	if (getGameTime() % checkInterval != 0)

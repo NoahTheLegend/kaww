@@ -111,7 +111,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Must carry an Ace of Spades           "
 						);
 
-	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Supply Chain",
+	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Wealthy",
 						"Wealthy:\n\n"+"$2_class_icon$"+"Highroller"
 						+"\n                   - Twice as much money earned"
 						+"\n\n                  Health Insurance"
