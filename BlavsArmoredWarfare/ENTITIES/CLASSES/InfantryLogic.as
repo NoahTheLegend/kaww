@@ -142,6 +142,7 @@ void onInit(CBlob@ this)
 		this.set_u8("stab time", 16);
 		this.set_u8("stab timing", 13);
 		this.Tag("no bulletgib on shot");
+		this.set_f32("stab damage", 1.33f);
 	}
 	else if (this.getName() == "ranger")
 	{
