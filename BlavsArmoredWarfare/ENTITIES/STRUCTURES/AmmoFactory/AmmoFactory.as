@@ -466,3 +466,8 @@ void onDie(CBlob@ this)
 		return;
 	server_CreateBlob("constructionyard",this.getTeamNum(),this.getPosition());
 }
+
+bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
+{
+	return this.getTeamNum() == forBlob.getTeamNum() || forBlob.isOverlapping(this);
+}
