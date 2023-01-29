@@ -148,7 +148,7 @@ void onTick(CBlob@ this)
 
 		Vec2f tpos = this.getPosition() + Vec2f(0, tilesize);
 		TileType tile = map.getTile(tpos).type;
-		if (!map.isTileGround(tile) && !map.isTileCompactedDirt(tile))
+		if (!map.isTileGround(tile) && !isTileCompactedDirt(tile))
 		{
 			// drop down when not supported
 			CShape@ shape = this.getShape();
