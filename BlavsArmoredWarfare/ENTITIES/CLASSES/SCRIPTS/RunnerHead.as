@@ -257,7 +257,7 @@ void onTick(CSprite@ this)
 		else if (!blob.hasTag("dead"))
 		{
 			head.SetVisible(this.isVisible());
-			head.SetRelativeZ(layer * 0.25f);
+			head.SetRelativeZ(layer * 0.26f);
 		}
 
 		offset = head_offset;
