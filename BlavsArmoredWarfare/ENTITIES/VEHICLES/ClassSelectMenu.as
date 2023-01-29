@@ -164,7 +164,7 @@ void addPerksToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 			}
 
 			//draw rank level
-			int level = 0;
+			int level = 1;
 			string rank = RANKS[0];
 
 			// Calculate the exp required to reach each level
