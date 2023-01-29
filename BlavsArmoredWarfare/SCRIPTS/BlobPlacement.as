@@ -396,7 +396,8 @@ void onTick(CBlob@ this)
 					params.write_u16(carryBlob.getNetworkID());
 					params.write_Vec2f(getBottomOfCursor(bc.tileAimPos, carryBlob));
 
-					if (currentBlobAtPos !is null && carryBlob.getName() == currentBlobAtPos.getName() && currentBlobAtPos.getHealth() < currentBlobAtPos.getInitialHealth() && currentBlobAtPos.getName() != "ladder")
+					if (currentBlobAtPos !is null && carryBlob.getName() == currentBlobAtPos.getName()
+					&& currentBlobAtPos.getHealth() < currentBlobAtPos.getInitialHealth() && currentBlobAtPos.getName() != "ladder")
 					{
 						params.write_u16(currentBlobAtPos.getNetworkID());
 						this.SendCommand(this.getCommandID("repairBlob"), params);

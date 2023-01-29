@@ -11,6 +11,7 @@ void onInit(CBlob@ this)
 
 	this.set_bool("open", false);
 	this.Tag("place norotate");
+	this.Tag("door");
 
 	//block knight sword
 	this.Tag("blocks sword");
