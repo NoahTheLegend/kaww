@@ -928,7 +928,7 @@ void onTick(CBlob@ this)
 
 bool canSend( CBlob@ this )
 {
-	return (this.isMyPlayer() || this.getPlayer() is null);
+	return (this.isMyPlayer() || this.getPlayer() is null) && !this.hasTag("no_more_shoot");
 }
 
 void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
@@ -1033,7 +1033,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 		}
 		
 		this.SendCommand(this.getCommandID("shoot bullet"), params);
-		//this.Tag("no_more_shoot");
+		this.Tag("no_more_shoot");
 
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
