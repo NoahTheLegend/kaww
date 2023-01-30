@@ -42,8 +42,10 @@ void onRender( CRules@ this )
 		redTickets=this.get_s16("redTickets");
 
     	GUI::SetFont("big score font");
-		GUI::DrawText(""+blueTickets, timelineLPos+Vec2f(-48.0f, 0), getTeamColor(0));
-		GUI::DrawText(""+redTickets, timelineRPos+Vec2f(48.0f, 0), getTeamColor(1));
+		if (blueTickets > 0) GUI::DrawText(""+blueTickets, timelineLPos+Vec2f(-48.0f, 0), getTeamColor(0));
+		else GUI::DrawText("--", timelineLPos+Vec2f(-48.0f, 0), getTeamColor(0));
+		if (redTickets > 0) GUI::DrawText(""+redTickets, timelineRPos+Vec2f(48.0f, 0), getTeamColor(1));
+		else GUI::DrawText("--", timelineRPos+Vec2f(48.0f, 0), getTeamColor(1));
 	}
 
 	//draw tents
