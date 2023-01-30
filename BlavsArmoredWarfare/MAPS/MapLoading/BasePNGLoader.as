@@ -490,6 +490,16 @@ class PNGLoader
 			case map_colors::red_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, 1); break;
 			case map_colors::stairs:        autotile(offset); spawnBlob(map, "stairs", offset); break;
 
+			case map_colors::tickets10:        autotile(offset); spawnBlob(map, "ticket_10", offset); break;
+			case map_colors::tickets25:        autotile(offset); spawnBlob(map, "ticket_25", offset); break;
+			case map_colors::tickets35:        autotile(offset); spawnBlob(map, "ticket_35", offset); break;
+			case map_colors::tickets50:        autotile(offset); spawnBlob(map, "ticket_50", offset); break;
+			case map_colors::tickets75:        autotile(offset); spawnBlob(map, "ticket_75", offset); break;
+			case map_colors::tickets90:        autotile(offset); spawnBlob(map, "ticket_90", offset); break;
+			case map_colors::tickets115:       autotile(offset); spawnBlob(map, "ticket_115", offset); break;
+			case map_colors::tickets130:       autotile(offset); spawnBlob(map, "ticket_130", offset); break;
+			case map_colors::tickets150:       autotile(offset); spawnBlob(map, "ticket_150", offset); break;
+			
 			case map_colors::barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, -1); break;
 			case map_colors::blue_barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, 0); break;
 			case map_colors::red_barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, 1); break;
