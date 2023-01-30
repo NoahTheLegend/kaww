@@ -557,13 +557,15 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		
 		const u32 magSize = infantry.mag_size;
 	
+		bool done_shooting = this.get_s8("charge_time") <= 0 && this.get_s32("my_chargetime") <= 0;
+
 		// reload
 		if (controls !is null &&
 			!isReloading && this.get_u32("end_stabbing") < getGameTime()
-			&& this.get_u32("no_reload") < getGameTime()
-			&& ((controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient())) &&
-			this.get_u32("no_reload") < getGameTime() &&
-			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max") || this.hasTag("forcereload")))
+			&& this.get_u32("no_reload") < getGameTime() && done_shooting
+			&& (((controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient()))
+			&& this.get_u32("no_reload") < getGameTime() && done_shooting
+			&& this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max")) || (this.hasTag("forcereload") && done_shooting)))
 		{
 			bool forcereload = false;
 			if (this.hasTag("forcereload"))
