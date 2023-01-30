@@ -136,6 +136,7 @@ void onInit(CBlob@ this)
 	this.set_f32("stab damage", 1.0f);
 	
 	this.set_u32("can_spot", 0);
+	this.set_u8("noreload_custom", 15);
 
 	if (this.getName() == "revolver")
 	{
@@ -153,13 +154,12 @@ void onInit(CBlob@ this)
 	else if (this.getName() == "shotgun")
 	{
 		this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
+		this.set_u8("noreload_custom", 30);
 	}
 	//else if (this.getName() == "sniper")
 	//{
 	//	this.Tag("simple reload");
 	//}
-
-	this.set_u8("noreload_custom", 15);
 	if (this.getName() == "sniper") this.set_u8("noreload_custom", 30);
 }
 
