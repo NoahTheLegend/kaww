@@ -64,6 +64,8 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$5_class_icon$", "PerkIcon.png", Vec2f(36, 36), 5);
 	AddIconToken("$6_class_icon$", "PerkIcon.png", Vec2f(36, 36), 6);
 	AddIconToken("$7_class_icon$", "PerkIcon.png", Vec2f(36, 36), 7);
+	AddIconToken("$9_class_icon$", "PerkIcon.png", Vec2f(36, 36), 9);
+	AddIconToken("$10_class_icon$","PerkIcon.png", Vec2f(36, 36), 10);
 
 	addPlayerPerk(this, "No Perk", "$0_class_icon$", "No Perk", "---- No Perk ----");
 
@@ -122,6 +124,24 @@ void InitClasses(CBlob@ this)
 						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
 						+"\n                   - Take twice as much damage     "
 						+"\n                   - Enemy kill XP gain: 300%  "
+						);
+	
+	addPlayerPerk(this, "Paratrooper", "$9_class_icon$", "Paratrooper",
+						"Paratrooper:\n\n"+"$9_class_icon$"+"Parachute"
+						+"\n                   - Hold W while falling"
+						+"\n\n                  Heavy Load"
+						+"\n                   - Take 200% fall damage     "
+						);
+
+	addPlayerPerk(this, "Bull", "$10_class_icon$", "Bull",
+						"Bull:\n\n"+"$10_class_icon$"+"Physical Strength"
+						+"\n                   - Better walk, swim, jump and sprint     "
+						+"\n                   - Deal 150% melee damage to\n                    infantry"
+						+"\n                   - Deal 250% melee damage to\n                    vehicles"
+						+"\n\n                  Thick Skin"
+						+"\n                   - Take 80% of damage     "
+						+"\n\n                  Restlessness"
+						+"\n                   - Can't use vehicles and MGs     "
 						);
 }
 

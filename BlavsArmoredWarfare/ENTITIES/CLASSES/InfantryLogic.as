@@ -365,6 +365,21 @@ void ManageParachute( CBlob@ this )
 		}
 		this.Untag("parachute");
 	}
+	else if (!this.hasTag("parachute"))
+	{
+		if (this.getPlayer() !is null && this.get_u32("last_parachute") < getGameTime())
+		{
+			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+			{
+				if (this.isKeyPressed(key_up) && this.getVelocity().y > 8.0f)
+				{
+					Sound::Play("/ParachuteOpen", this.getPosition());
+					this.set_u32("last_parachute", getGameTime()+45);
+					this.Tag("parachute");
+				}
+			}
+		}
+	}
 	
 	if (this.hasTag("parachute"))
 	{
