@@ -22,6 +22,14 @@ void onTick(CBlob@ this)
 	        !this.isKeyPressed(key_left) &&
 	        !this.isKeyPressed(key_right))
 	{
+		if (this.getPlayer() !is null )
+		{
+			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+			{
+    	        return;
+    	    }
+    	}
+
 		CBlob@[] blobsInRadius;
 		this.getMap().getBlobsInRadius(this.getPosition(), this.getRadius() * 1.5f + 25.0f, @blobsInRadius);
 		AttachmentPoint@[] points;
