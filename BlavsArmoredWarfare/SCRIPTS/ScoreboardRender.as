@@ -194,6 +194,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 
 		//render the player + stats
 		SColor namecolour = getNameColour(p);
+		SColor usernamecolour = p.isMod() ? SColor(255, 255, 65, 65) : SColor(255, 215, 225, 35);
 
 		//right align clantag
 		if (clantag != "")
@@ -373,7 +374,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		}
 
 
-		GUI::DrawText("" + username, Vec2f(bottomright.x - 470, topleft.y), namecolour);
+		GUI::DrawText("" + username, Vec2f(bottomright.x - 470, topleft.y), usernamecolour);
 		GUI::DrawText("" + ping_in_ms, Vec2f(bottomright.x - 330, topleft.y), SColor(0xffffffff));
 		GUI::DrawText("" + p.getKills(), Vec2f(bottomright.x - 260, topleft.y), SColor(0xffffffff));
 		GUI::DrawText("" + p.getDeaths(), Vec2f(bottomright.x - 190, topleft.y), SColor(0xffffffff));
