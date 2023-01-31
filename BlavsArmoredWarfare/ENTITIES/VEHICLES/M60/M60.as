@@ -118,9 +118,9 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
 	if (this.getTickSinceCreated() > 30)
 	{
-		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
 		if (point !is null)
 		{
 			CBlob@ tur = point.getOccupied();
