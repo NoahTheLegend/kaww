@@ -105,6 +105,10 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press LMB while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
+		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
+	}
+	{
 		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
 	}
@@ -144,7 +148,7 @@ void onInit(CBlob@ this)
 
 		s.customButton = true;
 
-		s.buttonwidth = 2;
+		s.buttonwidth = 1;
 		s.buttonheight = 1;
 	}
 	//{
@@ -333,7 +337,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 1.25f;
 	}
-	if (hitterBlob.getName() == "agrenade")
+	if (hitterBlob.hasTag("grenade"))
 	{
 		return damage * 0.5f;
 	}
