@@ -155,13 +155,16 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
-	if (point !is null)
+	if (this.getTickSinceCreated() > 30)
 	{
-		CBlob@ tur = point.getOccupied();
-		if (isServer())
+		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
+		if (point !is null)
 		{
-			if (tur is null) this.server_Die();
+			CBlob@ tur = point.getOccupied();
+			if (isServer())
+			{
+				if (tur is null) this.server_Die();
+			}
 		}
 	}
 	
