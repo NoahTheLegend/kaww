@@ -112,6 +112,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
         }
     }
 
+	this.getShape().SetStatic(false);
 	this.set_Vec2f("follow_offset", Vec2f(0,0));
 	this.set_u16("follow_id", 0);
 	this.server_setTeamNum(attached.getTeamNum());
