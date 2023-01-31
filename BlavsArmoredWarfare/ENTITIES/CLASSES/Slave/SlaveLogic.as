@@ -224,7 +224,7 @@ void onTick(CBlob@ this)
 		RunnerMoveVars@ moveVars;
 		if (this.get("moveVars", @moveVars))
 		{
-			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+			if (this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
 			{
 				bool sprint = this.getHealth() >= this.getInitialHealth()/2 && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
 				
