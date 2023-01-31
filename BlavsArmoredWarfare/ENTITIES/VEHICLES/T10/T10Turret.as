@@ -277,9 +277,49 @@ void onTick(CBlob@ this)
 	}
 }
 
+
+void DoExplosion(CBlob@ this)
+{
+	if (this.hasTag("exploded")) return;
+
+	f32 angle = -this.get_f32("bomb angle");
+
+	this.set_f32("map_damage_radius", 35.0f);
+	this.set_f32("map_damage_ratio", 0.41f);
+	
+	Explode(this, 128.0f, 2.0f);
+	if (isClient())
+	{
+		Vec2f pos = this.getPosition();
+		CMap@ map = getMap();
+		
+		for (int i = 0; i < (v_fastrender ? 12 : 32); i++)
+		{
+			ParticleAnimated(smoke[XORRandom(smoke.length)], (this.getPosition() + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f)) + Vec2f(XORRandom(36) - 18, XORRandom(36) - 18), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.16f), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 9 + XORRandom(5), XORRandom(70) * -0.00005f, true);
+			
+			if (i%3!=0 || this.hasTag("apc")) continue;
+			makeGibParticle(
+			"EmptyShell",               		// file name
+			this.getPosition(),                 // position
+			(Vec2f(0.0f,-0.5f) + getRandomVelocity(180, 5, 360)), // velocity
+			0,                                  // column
+			0,                                  // row
+			Vec2f(16, 16),                      // frame size
+			0.5f,                               // scale?
+			0,                                  // ?
+			"ShellCasing",                      // sound
+			this.get_u8("team_color"));         // team number
+		}
+	}
+
+	this.Tag("exploded");
+	if (!v_fastrender) this.getSprite().Gib();
+}
+
 // Blow up
 void onDie(CBlob@ this)
 {
+	DoExplosion(this);
 	Explode(this, 64.0f, 1.0f);
 
 	this.getSprite().PlaySound("/turret_die");

@@ -133,6 +133,16 @@ void sync_Color(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
+	if (point !is null)
+	{
+		CBlob@ tur = point.getOccupied();
+		if (isServer())
+		{
+			if (tur is null) this.server_Die();
+		}
+	}
+	
 	if (this.getTickSinceCreated() == 5)
 	{
 		// turret
