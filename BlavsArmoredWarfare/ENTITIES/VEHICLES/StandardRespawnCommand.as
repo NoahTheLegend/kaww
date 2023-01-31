@@ -135,7 +135,7 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Bull", "$10_class_icon$", "Bull",
 						"Bull:\n\n"+"$10_class_icon$"+"Physical Strength"
-						+"\n                   - Better walk, swim, jump and sprint     "
+						+"\n                   - Better walking, jumping, sprinting     "
 						+"\n                   - Deal 150% melee damage to\n                    infantry"
 						+"\n                   - Deal 250% melee damage to\n                    vehicles"
 						+"\n\n                  Thick Skin"

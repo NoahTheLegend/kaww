@@ -59,7 +59,11 @@ void onSetPlayer(CBlob@ this, CPlayer@ player)
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	CPlayer@ p = this.getPlayer();
-	if (p !is null && getRules().get_string(p.getUsername() + "_perk") == "Lucky" && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
+	if (p !is null)
+	{
+		if (getRules().get_string(p.getUsername() + "_perk") == "Lucky" && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
+		else if (getRules().get_string(p.getUsername() + "_perk") == "Bull") damage *= 0.8f;
+	}
 	if (isServer()) //update bots' logic
 	{
 		if (this.hasTag("disguised"))
