@@ -120,8 +120,10 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 
 void onTick(CBlob@ this)
 {
+	if (this.getShape() is null) return;
 	if (this.isAttached() && (this.getName() == "grenade" || this.getName() == "sgrenade"))
 	{
+		this.getShape().SetStatic(false);
 		if (this.isAttached() && !this.hasTag("activated"))
 		{
 			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
@@ -142,6 +144,7 @@ void onTick(CBlob@ this)
 	}
 	else if (this.get_u8("exploding_2") > 0)
 	{
+		this.getShape().SetStatic(false);
 		if (this.getName() == "sagrenade")
 		{
 			if (getBlobByNetworkID(this.get_u16("follow_id")) !is null && this.get_u16("follow_id") != 0)
