@@ -66,7 +66,7 @@ void onInit(CBlob@ this)
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
 
 	{
-		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press LMB while holding to arm, ~4 seconds until boom.", false);
+		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press SPACE while holding to arm, ~4 seconds until boom.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 	}
 	{
@@ -105,8 +105,9 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press LMB while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
+		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
 		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 2);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
