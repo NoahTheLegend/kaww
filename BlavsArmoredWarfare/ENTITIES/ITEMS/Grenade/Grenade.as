@@ -22,6 +22,8 @@ void onInit(CBlob@ this)
 	this.set_bool("explosive_teamkill", true);
 	this.Tag("collideswithglass");
 
+	this.set_u16("follow_id", 0);
+
 	this.set_u8("exploding_2", 0);
 	this.Tag("grenade");
 
@@ -103,10 +105,24 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
             this.SetDamageOwnerPlayer(player);
         }
     }
+
+	this.set_Vec2f("follow_offset", Vec2f(0,0));
+	this.set_u16("follow_id", 0);
+	this.server_setTeamNum(attached.getTeamNum());
 }
 
 void onTick(CBlob@ this)
 {
+	if (this.getName() == "sagrenade" || this.getName() == "sgrenade")
+		{
+			if (getBlobByNetworkID(this.get_u16("follow_id")) !is null && this.get_u16("follow_id") != 0)
+			{
+				CBlob@ follow = getBlobByNetworkID(this.get_u16("follow_id"));
+				bool fl = (this.get_bool("follow_fl") && follow.isFacingLeft()) || (!this.get_bool("follow_fl") && !follow.isFacingLeft());
+				this.setPosition(follow.getPosition()+(fl ? -this.get_Vec2f("follow_offset").RotateBy(follow.getAngleDegrees()) : this.get_Vec2f("follow_offset").RotateBy(follow.getAngleDegrees())));
+			}
+		}
+
 	if (this.isAttached() && (this.getName() == "grenade" || this.getName() == "sgrenade"))
 	{
 		if (this.isAttached() && !this.hasTag("activated"))
@@ -133,6 +149,7 @@ void onTick(CBlob@ this)
 		//{
 		//	thisSetStatic(this);
 		//}
+
 		this.set_u8("exploding_2", this.get_u8("exploding_2") - 1);
 		f32 angle = -this.get_f32("bomb angle");
 
@@ -242,6 +259,17 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (!solid)
 	{
+		if (!this.getShape().isStatic() && this.get_u16("follow_id") == 0 && (this.getName() == "sagrenade" || this.getName() == "sgrenade") && !this.isAttached())
+		{
+			if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("vehicle") || blob.hasTag("player")))
+			{
+				this.getShape().setFriction(100.0f);
+				this.set_Vec2f("follow_offset", blob.getPosition() - this.getPosition());
+				this.set_u16("follow_id", blob.getNetworkID());
+				this.set_bool("follow_fl", blob.isFacingLeft());
+				this.setVelocity(Vec2f(0,0));
+			}
+		}
 		return;
 	}
 
