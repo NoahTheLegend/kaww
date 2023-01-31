@@ -39,6 +39,12 @@ void onInit(CBlob@ this)
 	{
 		this.set_u8("exploding_2", 110);
 	}
+
+	// let it be not heavy, we'll see how OP it is
+	//if (this.getName() == "sgrenade" || this.getName() == "sagrenade")
+	//{
+	//	this.Tag("medium weight");
+	//}
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -113,16 +119,6 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 
 void onTick(CBlob@ this)
 {
-	if (this.getName() == "sagrenade" || this.getName() == "sgrenade")
-		{
-			if (getBlobByNetworkID(this.get_u16("follow_id")) !is null && this.get_u16("follow_id") != 0)
-			{
-				CBlob@ follow = getBlobByNetworkID(this.get_u16("follow_id"));
-				bool fl = (this.get_bool("follow_fl") && follow.isFacingLeft()) || (!this.get_bool("follow_fl") && !follow.isFacingLeft());
-				this.setPosition(follow.getPosition()+(fl ? -this.get_Vec2f("follow_offset").RotateBy(follow.getAngleDegrees()) : this.get_Vec2f("follow_offset").RotateBy(follow.getAngleDegrees())));
-			}
-		}
-
 	if (this.isAttached() && (this.getName() == "grenade" || this.getName() == "sgrenade"))
 	{
 		if (this.isAttached() && !this.hasTag("activated"))
@@ -145,10 +141,15 @@ void onTick(CBlob@ this)
 	}
 	else if (this.get_u8("exploding_2") > 0)
 	{
-		//if (this.getName() == "sagrenade" && getMap() !is null && !this.isStatic())
-		//{
-		//	thisSetStatic(this);
-		//}
+		if (this.getName() == "sagrenade")
+		{
+			if (getBlobByNetworkID(this.get_u16("follow_id")) !is null && this.get_u16("follow_id") != 0)
+			{
+				CBlob@ follow = getBlobByNetworkID(this.get_u16("follow_id"));
+				bool fl = (this.get_bool("follow_fl") && follow.isFacingLeft()) || (!this.get_bool("follow_fl") && !follow.isFacingLeft());
+				this.setPosition(follow.getPosition()+(fl ? -this.get_Vec2f("follow_offset").RotateBy(follow.getAngleDegrees()) : this.get_Vec2f("follow_offset").RotateBy(follow.getAngleDegrees())));
+			}
+		}
 
 		this.set_u8("exploding_2", this.get_u8("exploding_2") - 1);
 		f32 angle = -this.get_f32("bomb angle");
@@ -259,7 +260,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (!solid)
 	{
-		if (!this.getShape().isStatic() && this.get_u16("follow_id") == 0 && (this.getName() == "sagrenade" || this.getName() == "sgrenade") && !this.isAttached())
+		if (!this.getShape().isStatic() && this.get_u16("follow_id") == 0 && this.getName() == "sagrenade" && !this.isAttached())
 		{
 			if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("vehicle") || blob.hasTag("player")))
 			{
