@@ -40,13 +40,13 @@ void onInit(CBlob@ this)
 	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
 	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(31.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(23.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(15.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(7.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-1.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-9.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-17.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-0.89f); }
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(31.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(23.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(15.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(7.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-1.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-9.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-17.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
 
 	this.getShape().SetOffset(Vec2f(0, 1));
 
@@ -61,6 +61,25 @@ void onInit(CBlob@ this)
 		front.SetRelativeZ(-0.88f);
 		front.SetOffset(Vec2f(6.0f, 5.0f));
 		front.ScaleBy(Vec2f(1.0f, 1.05f));
+	}
+	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", "MausHull.png", 96, 16);
+	if (tracks !is null)
+	{
+		int[] frames = { 6, 7, 8 };
+
+		int[] frames2 = { 8, 7, 6 };
+
+		Animation@ animdefault = tracks.addAnimation("default", 1, true);
+		animdefault.AddFrames(frames);
+		Animation@ animslow = tracks.addAnimation("slow", 3, true);
+		animslow.AddFrames(frames);
+		Animation@ animrev = tracks.addAnimation("reverse", 2, true);
+		animrev.AddFrames(frames2);
+		Animation@ animstopped = tracks.addAnimation("stopped", 1, true);
+		animstopped.AddFrame(15);
+
+		tracks.SetRelativeZ(-111.0f);
+		tracks.SetOffset(Vec2f(9.0f, 4.0f));
 	}
 
 	if (getNet().isServer())
@@ -200,6 +219,79 @@ void onTick(CBlob@ this)
 			soundmanager.setVelocity(this.getVelocity());
 			soundmanager.set_f32("engine_RPM_M", this.get_f32("engine_RPM"));
 			soundmanager.set_bool("engine_stuck", this.get_bool("engine_stuck"));
+		}
+	}
+
+	CSpriteLayer@ tracks = this.getSprite().getSpriteLayer("tracks");
+	if (tracks !is null)
+	{
+		if (Maths::Abs(this.getVelocity().x) > 0.3f)
+		{
+			if ((this.getVelocity().x) > 0)
+			{
+				if (!this.isFacingLeft())
+				{
+					if ((this.getVelocity().x) > 1.5f)
+					{
+						if (!tracks.isAnimation("default"))
+						{
+							tracks.SetAnimation("default");
+							tracks.animation.timer = 1;
+							tracks.SetFrameIndex(0);
+						}
+					}
+					else
+					{
+						if (!tracks.isAnimation("slow"))
+						{
+							tracks.SetAnimation("slow");
+							tracks.animation.timer = 1;
+							tracks.SetFrameIndex(0);
+						}
+					}
+				}
+				else if (!tracks.isAnimation("reverse"))
+				{
+					tracks.SetAnimation("reverse");
+					tracks.animation.timer = 1;
+					tracks.SetFrameIndex(0);
+				}
+				
+			}
+			else{
+				if (this.isFacingLeft())
+				{
+					if ((this.getVelocity().x) > -1.5f)
+					{
+						if (!tracks.isAnimation("slow"))
+						{
+							tracks.SetAnimation("slow");
+							tracks.animation.timer = 1;
+							tracks.SetFrameIndex(0);
+						}
+					}
+					else
+					{
+						if (!tracks.isAnimation("default"))
+						{
+							tracks.SetAnimation("default");
+							tracks.animation.timer = 1;
+							tracks.SetFrameIndex(0);
+						}
+					}
+				}
+				else if (!tracks.isAnimation("reverse"))
+				{
+					tracks.SetAnimation("reverse");
+					tracks.animation.timer = 1;
+					tracks.SetFrameIndex(0);
+				}
+			}
+		}
+		else
+		{
+			tracks.SetAnimation("slow");
+			tracks.animation.timer = 0;
 		}
 	}
 }
