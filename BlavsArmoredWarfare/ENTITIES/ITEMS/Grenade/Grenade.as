@@ -122,17 +122,6 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 void onTick(CBlob@ this)
 {
 	if (this.getShape() is null) return;
-
-	if (this.getName() == "sgrenade")
-		{
-			if (getBlobByNetworkID(this.get_u16("follow_id")) !is null && this.get_u16("follow_id") != 0)
-			{
-				CBlob@ follow = getBlobByNetworkID(this.get_u16("follow_id"));
-				bool fl = (this.get_bool("follow_fl") && follow.isFacingLeft()) || (!this.get_bool("follow_fl") && !follow.isFacingLeft());
-				this.setPosition(follow.getPosition()+(fl ? -this.get_Vec2f("follow_offset").RotateBy(follow.getAngleDegrees()) : Vec2f(this.get_Vec2f("follow_offset").x, -this.get_Vec2f("follow_offset").y).RotateBy(follow.getAngleDegrees())));
-			}
-		}
-
 	if (this.isAttached() && (this.getName() == "grenade" || this.getName() == "sgrenade"))
 	{
 		this.getShape().SetStatic(false);
@@ -168,7 +157,7 @@ void onTick(CBlob@ this)
 			{
 				CBlob@ follow = getBlobByNetworkID(this.get_u16("follow_id"));
 				bool fl = (this.get_bool("follow_fl") && follow.isFacingLeft()) || (!this.get_bool("follow_fl") && !follow.isFacingLeft());
-				this.setPosition(follow.getPosition()+(fl ? -this.get_Vec2f("follow_offset").RotateBy(follow.getAngleDegrees()) : this.get_Vec2f("follow_offset").RotateBy(follow.getAngleDegrees())));
+				this.setPosition(follow.getPosition()+(fl ? -this.get_Vec2f("follow_offset").RotateBy(follow.getAngleDegrees()) : Vec2f(this.get_Vec2f("follow_offset").x, -this.get_Vec2f("follow_offset").y).RotateBy(follow.getAngleDegrees())));
 			}
 		}
 
@@ -281,7 +270,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (!solid)
 	{
-		if (!this.getShape().isStatic() && this.get_u16("follow_id") == 0 && this.getName() == "sgrenade" && !this.isAttached())
+		if (!this.getShape().isStatic() && this.get_u16("follow_id") == 0 && this.getName() == "sagrenade" && !this.isAttached())
 		{
 			if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("vehicle") || blob.hasTag("player")))
 			{
