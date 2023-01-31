@@ -884,6 +884,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage*2;
 	}
+
+	if (customData == Hitters::mine)
+	{
+		return damage*0.25f;
+	}
  	
 	if (isClient() && customData == Hitters::builder && hitterBlob.getName() == "slave")
 	{
