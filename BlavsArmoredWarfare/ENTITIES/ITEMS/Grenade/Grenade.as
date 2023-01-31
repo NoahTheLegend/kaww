@@ -113,6 +113,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
     }
 
 	this.getShape().SetStatic(false);
+	this.getShape().getConsts().mapCollisions = true;
 	this.set_Vec2f("follow_offset", Vec2f(0,0));
 	this.set_u16("follow_id", 0);
 	this.server_setTeamNum(attached.getTeamNum());
@@ -124,6 +125,7 @@ void onTick(CBlob@ this)
 	if (this.isAttached() && (this.getName() == "grenade" || this.getName() == "sgrenade"))
 	{
 		this.getShape().SetStatic(false);
+		this.getShape().getConsts().mapCollisions = true;
 		if (this.isAttached() && !this.hasTag("activated"))
 		{
 			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
@@ -144,7 +146,11 @@ void onTick(CBlob@ this)
 	}
 	else if (this.get_u8("exploding_2") > 0)
 	{
-		this.getShape().SetStatic(false);
+		if (this.isAttached())
+		{
+			this.getShape().SetStatic(false);
+			this.getShape().getConsts().mapCollisions = true;
+		}
 		if (this.getName() == "sagrenade")
 		{
 			if (getBlobByNetworkID(this.get_u16("follow_id")) !is null && this.get_u16("follow_id") != 0)
@@ -304,6 +310,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 					{
 						this.setPosition(this.getPosition()+offset-(offset*0.25f));
 						this.getShape().SetStatic(true);
+						this.getShape().getConsts().mapCollisions = false;
 						stop = true;
 						break;
 					}
