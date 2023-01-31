@@ -96,13 +96,14 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Sponge", "$sponge$", "sponge", "Commonly used for washing vehicles.", false);
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
-	}
-	{
 		u8 cost = 40;
 		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", cost);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
+		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 2);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
@@ -162,6 +163,10 @@ void onInit(CBlob@ this)
 
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Sponge", "$sponge$", "sponge", "Commonly used for washing vehicles.", false);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
 	}
 
 	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
