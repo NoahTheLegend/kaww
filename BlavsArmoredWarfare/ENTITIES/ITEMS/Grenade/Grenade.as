@@ -272,7 +272,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	{
 		if (!this.getShape().isStatic() && this.get_u16("follow_id") == 0 && this.getName() == "sagrenade" && !this.isAttached())
 		{
-			if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("vehicle") || blob.hasTag("player")))
+			if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("vehicle") || blob.hasTag("player") || blob.hasTag("bunker")))
 			{
 				this.getShape().setFriction(100.0f);
 				this.set_Vec2f("follow_offset", blob.getPosition() - this.getPosition());
