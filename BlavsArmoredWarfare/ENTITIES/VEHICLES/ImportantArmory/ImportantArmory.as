@@ -103,7 +103,7 @@ void onInit(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
 		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 2);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
