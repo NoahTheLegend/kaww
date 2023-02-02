@@ -1147,7 +1147,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
 			{
-				damageBody *= 1.0f; // 150%
+				damageBody *= 1.33f; // 150%
 				damageHead *= 1.33f;
 			}
 		}

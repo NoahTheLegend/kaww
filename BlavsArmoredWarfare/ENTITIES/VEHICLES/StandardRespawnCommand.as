@@ -79,7 +79,7 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Sharp Shooter", "$1_class_icon$", "Sharp Shooter",
 						"Sharp Shooter:\n\n"+"$1_class_icon$"+"Marksman"
-						+"\n                   - Headshot damage: 133%       "
+						+"\n                   - Bullet damage: 133%       "
 						+"\n                   - Increased accuracy"
 						+"\n\n                  Long reload"
 						+"\n                   - Reload time: 150%     "
