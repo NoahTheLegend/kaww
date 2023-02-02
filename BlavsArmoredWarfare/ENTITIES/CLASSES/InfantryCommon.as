@@ -326,7 +326,7 @@ namespace SniperParams
 	const ::f32 DAMAGE_BODY 			= 1.5f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 2.45f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.85f; // walk
+	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 1.0f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 1.0f; // walk (sprint)
@@ -345,17 +345,17 @@ namespace SniperParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 20; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 20; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_CAP 			= 15; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 15; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 			= 60; // time to reload
-	const ::u8 NORELOADTIMER 			= 30; // time after each shot where you can't reload
+	const ::s16 RELOAD_TIME 			= 50; // time to reload
+	const ::u8 NORELOADTIMER 			= 15; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 5; // max bullets in mag
-	const ::u8 DELAYAFTERFIRE 			= 45; // time between shots
+	const ::u8 DELAYAFTERFIRE 			= 30; // time between shots
 	const ::u8 RANDDELAY 				= 4; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 37.0f; // speed that bullets fly
 	const ::f32 BULLET_LIFETIME 		= 3.0f; // in seconds, time for bullet to die
