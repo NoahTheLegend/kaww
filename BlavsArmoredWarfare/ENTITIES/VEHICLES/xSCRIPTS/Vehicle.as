@@ -1071,6 +1071,8 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 		return;
 	}
 
+	f32 vellen = this.getShape().vellen;
+
 	// damage
 	if (!this.hasTag("ignore fall"))
 	{
