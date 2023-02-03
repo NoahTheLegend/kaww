@@ -107,7 +107,7 @@ class InfantryInfo
 		class_hash 				= 234279893; // hash of the name
 		// DAMAGE
 		damage_body 			= 0.35f; // damage dealt to body
-		damage_head 			= 0.5f; // damage dealt on headshot
+		damage_head 			= 0.45f; // damage dealt on headshot
 		// SHAKE
 		recoil_x 				= 20.0f; // x shake (20)
 		recoil_y 				= 80.0f; // y shake (45)
@@ -121,17 +121,17 @@ class InfantryInfo
 		// spray pattern in logic
 		length_of_recoil_arc 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 		// ACCURACY
-		inaccuracy_cap 			= 80; // max amount of inaccuracy
+		inaccuracy_cap 			= 85; // max amount of inaccuracy
 		inaccuracy_pershot 		= 50; // aim inaccuracy  (+3 per shot)
 		// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 		// GUN
 		semiauto 				= false;
-		burst_size 				= 5; // bullets fired per click
+		burst_size 				= 6; // bullets fired per click
 		burst_rate 				= 0; // ticks per bullet fired in a burst
-		reload_time 			= 80; // time to reload
+		reload_time 			= 60; // time to reload
 		noreloadtimer           = 0; // time after each shot where you can't reload
 		mag_size 				= 4; // max bullets in mag
-		delayafterfire 			= 20; // time between shots 4
+		delayafterfire 			= 15; // time between shots 4
 		randdelay 				= 0; // + randomness
 		bullet_velocity 		= 1.42f; // speed that bullets fly 1.6
 		bullet_lifetime 		= 0.5f; // in seconds, time for bullet to die
@@ -169,15 +169,15 @@ namespace ShotgunParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 80; // max amount of inaccuracy
+	const ::u8 INACCURACY_CAP 			= 85; // max amount of inaccuracy
 	const ::u8 INACCURACY_PER_SHOT 		= 50; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
-	const ::u8 BURST_SIZE 				= 5; // bullets fired per click
+	const ::u8 BURST_SIZE 				= 6; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 				= 80; // time to reload
-	const ::u8 NORELOADTIMER 			= 10; // time after each shot where you can't reload
+	const ::s16 RELOAD_TIME 			= 60; // time to reload
+	const ::u8 NORELOADTIMER 			= 15; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 4; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 15; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
@@ -326,7 +326,7 @@ namespace SniperParams
 	const ::f32 DAMAGE_BODY 			= 1.5f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 2.45f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.85f; // walk
+	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 1.0f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 1.0f; // walk (sprint)
@@ -345,22 +345,66 @@ namespace SniperParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 20; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 20; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_CAP 			= 15; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 15; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 			= 60; // time to reload
-	const ::u8 NORELOADTIMER 			= 30; // time after each shot where you can't reload
+	const ::s16 RELOAD_TIME 			= 50; // time to reload
+	const ::u8 NORELOADTIMER 			= 15; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 5; // max bullets in mag
-	const ::u8 DELAYAFTERFIRE 			= 45; // time between shots
-	const ::u8 RANDDELAY 				= 4; // + randomness
+	const ::u8 DELAYAFTERFIRE 			= 40; // time between shots
+	const ::u8 RANDDELAY 				= 0; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 37.0f; // speed that bullets fly
 	const ::f32 BULLET_LIFETIME 		= 3.0f; // in seconds, time for bullet to die
 	const ::s8 BULLET_PEN 				= 2; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
+}
+
+namespace AntitankParams
+{
+	const ::string CLASSNAME 			= "Antitank"; // case sensitive
+	// DAMAGE
+	const ::f32 DAMAGE_BODY 			= 1.5f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 2.5f; // damage dealt on headshot
+	// MOVEMENT
+	const ::f32 WALK_STAT 				= 0.8f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.55f; // airwalk
+	const ::f32 JUMP_STAT 				= 1.05f; // jump
+	const ::f32 WALK_STAT_SPRINT 		= 1.05f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 3.15f; // airwalk (sprint)
+	const ::f32 JUMP_STAT_SPRINT 		= 1.05f; // jump (sprint)
+	// SHAKE
+	const ::f32 RECOIL_X 				= 350.0f; // x shake (20)
+	const ::f32 RECOIL_Y 				= 200.0f; // y shake (45)
+	const ::f32 RECOIL_LENGTH 			= 100.0f; // how long to recoil (?)
+	// RECOIL
+	const ::f32 RECOIL_FORCE 			= 1.1f; // amount to push player
+	const ::u8 RECOIL_CURSOR 			= 13; // amount to raise mouse pos
+	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
+	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
+	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// spray pattern in logic
+	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
+	// ACCURACY
+	const ::u8 INACCURACY_CAP 			= 150; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 150; // aim inaccuracy  (+3 per shot)
+	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
+	// GUN
+	const ::bool SEMIAUTO 				= true;
+	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
+	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
+	const ::s16 RELOAD_TIME 			= 75; // time to reload
+	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
+	const ::u32 MAG_SIZE 				= 1; // max bullets in mag
+	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
+	const ::u8 RANDDELAY 				= 0; // + randomness
+	const ::f32 BULLET_VELOCITY 		= 3.35f; // speed that bullets fly
+	const ::f32 BULLET_LIFETIME 		= 10.0f; // in seconds, time for bullet to die
+	const ::s8 BULLET_PEN 				= 5; // penRating for bullet
+	const ::bool EMPTYSHELLONFIRE 		= false; // should an empty shell be released when shooting
 }
 
 void getBasicStats( int blobNameHash, string &out classname, string &out reload_sfx, string &out shoot_sfx, float &out damage_body, float &out damage_head )
@@ -396,6 +440,14 @@ void getBasicStats( int blobNameHash, string &out classname, string &out reload_
 			classname = SniperParams::CLASSNAME;
 			damage_body = SniperParams::DAMAGE_BODY;
 			damage_head = SniperParams::DAMAGE_HEAD;
+		}
+		break;
+
+		case _antitank:
+		{
+			classname = AntitankParams::CLASSNAME;
+			damage_body = AntitankParams::DAMAGE_BODY;
+			damage_head = AntitankParams::DAMAGE_HEAD;
 		}
 		break;
 
@@ -471,6 +523,21 @@ void getRecoilStats( int blobNameHash, float &out recoil_x, float &out recoil_y,
 			length_of_recoil_arc = SniperParams::LENGTH_OF_RECOIL_ARC;
 		}
 		break;
+
+		case _antitank:
+		{
+			recoil_x = AntitankParams::RECOIL_X;
+			recoil_y = AntitankParams::RECOIL_Y;
+			recoil_length = AntitankParams::RECOIL_LENGTH;
+			recoil_force = AntitankParams::RECOIL_FORCE;
+			recoil_cursor = AntitankParams::RECOIL_CURSOR;
+			sideways_recoil = AntitankParams::SIDEWAYS_RECOIL;
+			sideways_recoil_damp = AntitankParams::SIDEWAYS_RECOIL_DAMP;
+			ads_cushion_amount = AntitankParams::RECOIL_CURSOR;
+			length_of_recoil_arc = AntitankParams::LENGTH_OF_RECOIL_ARC;
+		}
+		break;
+
 
 		default: // _shotgun, but it'll be default stats
 		{
@@ -576,6 +643,26 @@ void getWeaponStats( int blobNameHash,
 		}
 		break;
 
+		case _antitank:
+		{
+			inaccuracy_cap = AntitankParams::INACCURACY_CAP;
+			inaccuracy_pershot = AntitankParams::INACCURACY_PER_SHOT;
+
+			semiauto = AntitankParams::SEMIAUTO;
+			burst_size = AntitankParams::BURST_SIZE;
+			burst_rate = AntitankParams::BURST_RATE;
+
+			reload_time = AntitankParams::RELOAD_TIME;
+			mag_size = AntitankParams::MAG_SIZE;
+			delayafterfire = AntitankParams::DELAYAFTERFIRE;
+			randdelay = AntitankParams::RANDDELAY;
+
+			bullet_velocity = AntitankParams::BULLET_VELOCITY;
+			bullet_lifetime = AntitankParams::BULLET_LIFETIME;
+			bullet_pen = AntitankParams::BULLET_PEN;
+		}
+		break;
+
 		default: // _shotgun, but it'll be default stats
 		{
 			inaccuracy_cap = ShotgunParams::INACCURACY_CAP;
@@ -671,6 +758,23 @@ void getMovementStats( int blobNameHash, bool isSprinting,
 		}
 		break;
 
+		case _antitank:
+		{
+			if (isSprinting)
+			{
+				walkStat 		= AntitankParams::WALK_STAT_SPRINT;
+				airwalkStat 	= AntitankParams::AIRWALK_STAT_SPRINT;
+				jumpStat 		= AntitankParams::JUMP_STAT_SPRINT;
+			}
+			else
+			{
+				walkStat 		= AntitankParams::WALK_STAT;
+				airwalkStat 	= AntitankParams::AIRWALK_STAT;
+				jumpStat 		= AntitankParams::JUMP_STAT;
+			}
+		}
+		break;
+
 		default: // _shotgun, but it'll be default stats
 		{
 			if (isSprinting)
@@ -720,7 +824,6 @@ CBlob@ CreateBulletProj( CBlob@ this, Vec2f arrowPos, Vec2f arrowVel,
 	return proj;
 }
 
-/*
 CBlob@ CreateRPGProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 {
 	CBlob@ proj = server_CreateBlobNoInit("ballista_bolt");
@@ -729,21 +832,23 @@ CBlob@ CreateRPGProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 		proj.SetDamageOwnerPlayer(this.getPlayer());
 		proj.Init();
 
-		proj.set_f32(projDamageString, damage_body);
+		proj.set_f32(projDamageString, 1.5f);
 		proj.set_f32(projExplosionRadiusString, 32.0f);
 		proj.set_f32(projExplosionDamageString, 15.0f);
-		proj.set_f32("linear_length", 12.0f);
+		proj.set_f32("linear_length", 6.0f);
 
-		proj.set_f32("bullet_damage_body", damage_body);
-		proj.set_f32("bullet_damage_head", damage_head);
+		proj.set_f32("bullet_damage_body", 1.5f);
+		proj.set_f32("bullet_damage_head", 2.5f);
 		proj.IgnoreCollisionWhileOverlapped(this);
 		proj.server_setTeamNum(this.getTeamNum());
 		proj.setPosition(arrowPos);
 		proj.setVelocity(arrowVel);
-		proj.set_s8(penRatingString, 2);
+		proj.set_s8(penRatingString, 3);
+
+		proj.Tag("rpg");
 	}
 	return proj;
-}*/
+}
 
 float getBulletSpread( int blobNameHash )
 {
@@ -858,4 +963,9 @@ void onShotgunReload(CBlob@ this)
 		"ShellCasingBuckshot",                      // sound
 		0);         // team number
 	}
+}
+
+void onAntitankReload(CBlob@ this)
+{
+	this.getSprite().PlaySound("Antitank_reload.ogg", 0.8f);
 }

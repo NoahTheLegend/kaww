@@ -144,7 +144,8 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 			const string bname = blob.getName();
 			isLadder = bname == "ladder";
 			isSpikes = bname == "spikes";
-			isDoor = bname == "wooden_door" || bname == "stone_door" || bname == "bridge";
+			isDoor = bname == "wooden_door" || bname == "stone_door"
+				|| bname == "bridge" || bname == "trap_block";
 			isPlatform = bname == "wooden_platform";
 			isSeed = bname == "seed";
 		}
@@ -167,7 +168,7 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 				if (blobAtPos.getName() == blob.getName() && 
 					blobAtPos.getTeamNum() == blob.getTeamNum() && 
 					blobAtPos.getHealth() != blobAtPos.getInitialHealth()) 
-				{	
+				{
 					return true;
 				}
 			}

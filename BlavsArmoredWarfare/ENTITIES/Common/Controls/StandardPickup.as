@@ -377,14 +377,14 @@ f32 getPriorityPickupScale(CBlob@ this, CBlob@ b)
 		return factor_super_important;
 	}
 
-	if((name == "molotov" || name == "agrenade" || name == "grenade") && (b.hasTag("activated") || b.get_u8("exploding_2") > 0)){
+	if((name == "molotov" || name == "agrenade" || name == "sgrenade" || name == "grenade") && (b.hasTag("activated") || b.get_u8("exploding_2") > 0)){
 		return factor_super_important; //pick up activated stuff before deactivated stuff
 	}
 
 	if(name == "mat_gold" || name == "mat_stone" || name == "mat_wood" || name == "mat_scrap"){
 		return factor_very_important;
 	}
-	if(name == "mat_molotov" || name == "agrenade" || name == "grenade" || name == "medkit"){
+	if(name == "mat_molotov" || name == "agrenade" || name == "sgrenade" || name == "grenade" || name == "medkit"){
 		return factor_very_important;
 	}
 	if(name == "mat_7mmround" || name == "mat_14mmround" || name == "mat_bolts"){

@@ -75,7 +75,7 @@ void onTick(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (customData == Hitters::explosion || hitterBlob.getName() == "agrenade")
+	if (customData == Hitters::explosion || hitterBlob.hasTag("grenade"))
 	{
 		return damage * Maths::Max(0.0f, damage / (hitterBlob.getPosition() - this.getPosition()).Length());
 	}

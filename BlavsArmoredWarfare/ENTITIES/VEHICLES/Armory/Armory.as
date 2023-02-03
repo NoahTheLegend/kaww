@@ -62,8 +62,11 @@ void onInit(CBlob@ this)
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
+	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
+
 	{
-		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press LMB while holding to arm, ~4 seconds until boom.", false);
+		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press SPACE while holding to arm, ~4 seconds until boom.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 	}
 	{
@@ -102,6 +105,11 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
+		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
+	}
+	{
 		ShopItem@ s = addShopItem(this, "7mm Rounds", "$mat_7mmround$", "mat_7mmround", "Used by all small arms guns, and vehicle machineguns.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
 	}
@@ -122,14 +130,14 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$crate$", "launcher_javelin", "Homing Missile launcher.", false, true);
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -141,7 +149,7 @@ void onInit(CBlob@ this)
 
 		s.customButton = true;
 
-		s.buttonwidth = 2;
+		s.buttonwidth = 1;
 		s.buttonheight = 1;
 	}
 	//{
@@ -330,7 +338,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 1.25f;
 	}
-	if (hitterBlob.getName() == "agrenade")
+	if (hitterBlob.hasTag("grenade"))
 	{
 		return damage * 0.5f;
 	}

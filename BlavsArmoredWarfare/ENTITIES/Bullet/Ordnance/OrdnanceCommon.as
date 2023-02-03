@@ -11,8 +11,8 @@ namespace JavelinParams
 	const ::f32 main_engine_force = 0.5f;
 	const ::f32 secondary_engine_force = 0.1f;
 	const ::f32 rcs_force = 0.1f;
-	const ::f32 turn_speed = 10.0f; // degrees per tick, 0 = instant (30 ticks a second)
-	const ::f32 max_speed = 10.0f; // 0 = infinite speed
+	const ::f32 turn_speed = 15.0f; // degrees per tick, 0 = instant (30 ticks a second)
+	const ::f32 max_speed = 15.0f; // 0 = infinite speed
 
 	// factors
 	const ::f32 gravity_scale = 0.6f;

@@ -11,6 +11,7 @@ void onInit(CBlob@ this)
 
 	this.set_bool("open", false);
 	this.Tag("place norotate");
+	this.Tag("door");
 
 	//block knight sword
 	this.Tag("blocks sword");
@@ -120,9 +121,12 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 bool opensThis(CBlob@ this, CBlob@ blob)
 {
+	bool still = (blob.getOldPosition() - blob.getPosition()).Length() > -0.25f 
+		&& (blob.getOldPosition() - blob.getPosition()).Length() < 0.25f;
+
 	return ((blob.getTeamNum() != this.getTeamNum()
-        || (!blob.isKeyPressed(key_left) && !blob.isKeyPressed(key_right)
-        && (blob.isKeyPressed(key_down) || (blob.isKeyPressed(key_up) && blob.getVelocity().y < -1.00f)))) &&
+        || (!still && (blob.isKeyPressed(key_down)
+		|| (blob.isKeyPressed(key_up) && blob.getVelocity().y < -1.00f)))) &&
         !isOpen(this) && blob.isCollidable() &&
 	    (blob.hasTag("player") || blob.hasTag("vehicle")));
 }
@@ -171,4 +175,14 @@ void SetBlockAbove(CBlob@ this, const bool open)
 	if (blobAbove is null || blobAbove.getName() != "trap_block") return;
 
 	setOpen(blobAbove, open);
+}
+
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (customData == Hitters::explosion || hitterBlob.hasTag("grenade"))
+	{
+		return damage * Maths::Max(0.0f, damage*0.5f / (hitterBlob.getPosition() - this.getPosition()).Length());
+	}
+	return damage;
 }

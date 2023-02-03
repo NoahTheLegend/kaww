@@ -37,7 +37,7 @@ void InitClasses(CBlob@ this)
 						"---- Mechanic ----\n\nBuild and break.\nCan't capture flags.\n\nHP: 225\nLMB: Build\nRMB: Mine");
 
 	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver",
-						"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 350\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
+						"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 300\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
 
 	addPlayerClass(this, "---- AK-47 ----", "$ranger_class_icon$", "ranger",
 						"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 225\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Buttstock");
@@ -64,6 +64,8 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$5_class_icon$", "PerkIcon.png", Vec2f(36, 36), 5);
 	AddIconToken("$6_class_icon$", "PerkIcon.png", Vec2f(36, 36), 6);
 	AddIconToken("$7_class_icon$", "PerkIcon.png", Vec2f(36, 36), 7);
+	AddIconToken("$9_class_icon$", "PerkIcon.png", Vec2f(36, 36), 9);
+	AddIconToken("$10_class_icon$","PerkIcon.png", Vec2f(36, 36), 10);
 
 	addPlayerPerk(this, "No Perk", "$0_class_icon$", "No Perk", "---- No Perk ----");
 
@@ -77,7 +79,7 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Sharp Shooter", "$1_class_icon$", "Sharp Shooter",
 						"Sharp Shooter:\n\n"+"$1_class_icon$"+"Marksman"
-						+"\n                   - Headshot damage: 133%       "
+						+"\n                   - Bullet damage: 133%       "
 						+"\n                   - Increased accuracy"
 						+"\n\n                  Long reload"
 						+"\n                   - Reload time: 150%     "
@@ -111,7 +113,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Must carry an Ace of Spades           "
 						);
 
-	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Supply Chain",
+	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Wealthy",
 						"Wealthy:\n\n"+"$2_class_icon$"+"Highroller"
 						+"\n                   - Twice as much money earned"
 						+"\n\n                  Health Insurance"
@@ -122,6 +124,25 @@ void InitClasses(CBlob@ this)
 						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
 						+"\n                   - Take twice as much damage     "
 						+"\n                   - Enemy kill XP gain: 300%  "
+						);
+	
+	addPlayerPerk(this, "Paratrooper", "$9_class_icon$", "Paratrooper",
+						"Paratrooper:\n\n"+"$9_class_icon$"+"Parachute"
+						+"\n                   - Hold W while falling"
+						+"\n\n                  Heavy Load"
+						+"\n                   - Take 200% fall damage     "
+						);
+
+	addPlayerPerk(this, "Bull", "$10_class_icon$", "Bull",
+						"Bull:\n\n"+"$10_class_icon$"+"Physical Strength"
+						+"\n                   - Better walking, jumping, sprinting     "
+						+"\n                   - Deal 150% melee damage"
+						+"\n\n                  Thick Skin"
+						+"\n                   - Take 75% of damage     "
+						+"\n\n                  Restlessness"
+						+"\n                   - Can't use vehicles and MGs     "
+						+"\n\n                  Rush"
+						+"\n                   - Can't use throwables     "
 						);
 }
 

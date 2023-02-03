@@ -90,6 +90,19 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 void onTick(CBlob@ this)
 {
+	if (this.getTickSinceCreated() > 30)
+	{
+		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
+		if (point !is null)
+		{
+			CBlob@ tur = point.getOccupied();
+			if (isServer())
+			{
+				if (tur is null) this.server_Die();
+			}
+		}
+	}
+	
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");

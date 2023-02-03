@@ -964,7 +964,7 @@ shared class TDMCore : RulesCore
 				rules.SetCurrentState(GAME_OVER);
 				rules.SetGlobalMessage("{WINNING_TEAM} wins the game!\n\nWell done. Loading next map..." );
 				rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.name);
-				//SetCorrectMapTypeShared();
+				SetCorrectMapTypeShared();
 			}
 		}
 	}
@@ -1024,21 +1024,21 @@ shared class TDMCore : RulesCore
 		}
 	}
 
-	//void SetCorrectMapTypeShared() // LOADING MAPCYCLE MAKES THE CLOSER MAPS TO BEGINNING MORE FREQUENT THAN OTHER!     but its random?
-	//{
-	//	if (getPlayersCount() <= 5)
-	//	{
-	//		LoadMapCycle("MAPS/mapcyclesmaller.cfg");
-	//	}
-	//	else if (getPlayersCount() < 11)
-	//	{
-	//		LoadMapCycle("MAPS/mapcycle.cfg");
-	//	}
-	//	else
-	//	{
-	//		LoadMapCycle("MAPS/mapcyclelarger.cfg");
-	//	}
-	//}
+	void SetCorrectMapTypeShared()
+	{
+		if (getPlayersCount() <= 5)
+		{
+			LoadMapCycle("MAPS/mapcyclesmaller.cfg");
+		}
+		else if (getPlayersCount() < 11)
+		{
+			LoadMapCycle("MAPS/mapcycle.cfg");
+		}
+		else
+		{
+			LoadMapCycle("MAPS/mapcyclelarger.cfg");
+		}
+	}
 };
 
 //pass stuff to the core from each of the hooks
@@ -1086,6 +1086,7 @@ void Reset(CRules@ this)
 	// 50 normal
 	// 100 dark
 
+	if (getMap() is null) return;
 	u8 randtime = XORRandom(100) + 1; // 1 to 100
 	if (randtime < 11) // bad conditions / night
 	{
@@ -1112,7 +1113,7 @@ void Reset(CRules@ this)
 
 void onRestart(CRules@ this)
 {
-	//if (isServer() && blobcount >= 60000) QuitGame();
+	if (isServer() && blobcount >= 55000) QuitGame();
 	Reset(this);
 }
 
@@ -1232,14 +1233,14 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 		getRules().set_u32(player.getUsername() + "_exp", 2500+XORRandom(1250));
 	}
 
-	//if (getPlayersCount() == 5 || getPlayersCount() == 4)
-	//{
-	//	LoadMapCycle("MAPS/mapcycle.cfg");
-	//}
-	//else if (getPlayersCount() == 8 || getPlayersCount() == 9)
-	//{
-	//	LoadMapCycle("MAPS/mapcyclelarger.cfg");
-	//}
+	if (getPlayersCount() == 5 || getPlayersCount() == 4)
+	{
+		LoadMapCycle("MAPS/mapcycle.cfg");
+	}
+	else if (getPlayersCount() == 8 || getPlayersCount() == 9)
+	{
+		LoadMapCycle("MAPS/mapcyclelarger.cfg");
+	}
 
 	this.SyncToPlayer("siege", player);
 	CBlob@ blob = player.getBlob();
@@ -1365,7 +1366,7 @@ void onTick(CRules@ this)
 
 				// still a small issue with this in some cases
 
-				for (u8 i = 0; shouldkick > 0; i++)
+				for (u16 i = 0; i < getPlayerCount(); i++)
 				{
 					// shave off of applicable team
 					CPlayer@ p = getPlayer(i);
@@ -1377,6 +1378,11 @@ void onTick(CRules@ this)
 							shouldkick--;
 
 							kickteamflip = Maths::Abs(p.getTeamNum() - 1);
+
+							if (shouldkick < 1)
+                            {
+                                break;
+                            }
 						}
 					}
 				}
@@ -1474,7 +1480,7 @@ void onTick(CRules@ this)
 			if (player is null || player.getBlob() is null) continue;
             if (isServer())
             {
-				if (this.get_string(player.getUsername() + "_perk") == "Supply Chain")
+				if (this.get_string(player.getUsername() + "_perk") == "Wealthy")
 				{
 					player.server_setCoins(player.getCoins()+2); // double
 				}

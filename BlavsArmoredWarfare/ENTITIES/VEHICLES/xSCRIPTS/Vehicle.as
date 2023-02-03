@@ -884,6 +884,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage*2;
 	}
+
+	if (customData == Hitters::mine)
+	{
+		return damage*0.25f;
+	}
  	
 	if (isClient() && customData == Hitters::builder && hitterBlob.getName() == "slave")
 	{
@@ -897,13 +902,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
 
-	if (hitterBlob.getName() == "agrenade") return (this.getName() == "maus" || armorRating > 4 ? damage*0.5f : damage * (1.25+XORRandom(10)*0.01f));
+	if (hitterBlob.hasTag("grenade")) return (this.getName() == "maus" || armorRating > 4 ? damage*0.5f : damage * (1.25+XORRandom(10)*0.01f));
 
 	if (armorRating >= 3 && customData == Hitters::sword) return 0;
 
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
-		return damage * ((this.hasTag("apc") ? 3.0f : 3.5f)-(armorRating*0.8f));
+		return damage * ((this.hasTag("apc") ? 3.0f : 3.75f)-(armorRating*0.75f));
 	}
 
 	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor

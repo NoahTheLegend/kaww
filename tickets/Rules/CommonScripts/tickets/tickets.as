@@ -1,8 +1,6 @@
 #include "RulesCore.as";
 #include "TDM_Structs";
 
-
-
 shared int ticketsRemaining(CRules@ this, int team){
 	if(team==0){
 		return this.get_s16("blueTickets");

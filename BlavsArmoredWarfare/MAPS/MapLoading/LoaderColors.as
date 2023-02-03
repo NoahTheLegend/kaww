@@ -384,6 +384,17 @@ namespace map_colors
 
 		stairs                 = 0xff221e42,
 
+		//ticket setters, set only one per map and only if there are no flags or imporant armories!
+		tickets10              = 0xffddff4e,
+		tickets25              = 0xffddff4d,
+		tickets35              = 0xffedff4d,
+		tickets50              = 0xffcdff4e,
+		tickets75              = 0xffcdff4c,
+		tickets90              = 0xffedff4c,
+		tickets115             = 0xffadff4e,
+		tickets130             = 0xffadff4a,
+		tickets150             = 0xffedff4a,
+
 		///////
 
 

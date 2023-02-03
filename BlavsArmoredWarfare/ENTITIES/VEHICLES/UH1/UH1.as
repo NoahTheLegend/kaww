@@ -284,7 +284,7 @@ void onTick(CBlob@ this)
 							if (pressed_a) newForce += Vec2f(leftVelo.x*0.25f, leftVelo.y*0.25f);
 							if (pressed_d) newForce += Vec2f(rightVelo.x*0.25f, rightVelo.y*0.25f);
 
-							if (pressed_w) newForce += Vec2f(upVelo.x*0.5f, upVelo.y*0.5f);
+							if (pressed_w) newForce += Vec2f(upVelo.x*0.75f, upVelo.y*0.75f);
 							if (pressed_s) newForce += Vec2f(downVelo.x*0.5f, downVelo.y*0.5f);
 						}
 						if (!this.hasTag("falling"))

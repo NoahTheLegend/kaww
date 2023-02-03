@@ -40,7 +40,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			break;
 
 	}
-	if (hitterBlob.getName() == "agrenade")
+	if (hitterBlob.hasTag("grenade"))
 	{
 		return damage * 3;
 	}
@@ -92,7 +92,7 @@ void spawnMetal(CBlob@ this)
 	//setup res
 	_metal.Tag("custom quantity");
 	_metal.Init();
-	_metal.setPosition(this.getPosition());
+	_metal.setPosition(this.getPosition()-Vec2f(4.0f,0));
 	_metal.server_SetQuantity(output);
 
 	this.set_s16(stone_prop, blobCount - actual_input); //burn wood
