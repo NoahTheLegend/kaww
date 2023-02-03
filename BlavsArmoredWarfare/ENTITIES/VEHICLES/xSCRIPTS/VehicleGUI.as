@@ -48,6 +48,9 @@ void onRender(CSprite@ this)
 			drawCooldownBar(blob, v);
 		}
 
+		//drawShellTrajectory(blob, v, gunner.getOccupied());
+	
+
 		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 0);
 		if (blob.getName() == "heavygun")
 		{
@@ -77,10 +80,6 @@ void onRender(CSprite@ this)
 
 			GUI::DrawTextCentered(Maths::Round(angle)+"°", pos2d-Vec2f(32.0f * (blob.isFacingLeft()?-1.0f:1.0f),32), SColor(0xffffffff));
 		}
-
-		// no one feels the angle count is necessary, so im taking it out to reduce GUI clutter
-		//if (blob.getName() == "ballista")
-		//drawAngleCount(blob, v);
 	}
 }
 
@@ -120,7 +119,7 @@ void drawAmmoCount(CBlob@ blob, VehicleInfo@ v)
 	upperleft -= Vec2f((float(numDigits) * 2.5f), 0);
 	lowerright += Vec2f((float(numDigits) * 2.5f), 0);
 
-	GUI::DrawRectangle(upperleft, lowerright + Vec2f(39,0));
+	GUI::DrawSunkenPane(upperleft, lowerright + Vec2f(39,0));
 	GUI::SetFont("menu");
 	GUI::DrawText(reqsText, upperleft + Vec2f(2, 1), color_white);
 
@@ -151,6 +150,21 @@ void drawCooldownBar(CBlob@ blob, VehicleInfo@ v)
 	GUI::DrawRectangle(ul + Vec2f(4, 4), lr + Vec2f(4, 4), SColor(0xff3B1406));
 	GUI::DrawRectangle(ul + Vec2f(6, 6), lr + Vec2f(2, 4), SColor(0xff941B1B));
 	GUI::DrawRectangle(ul + Vec2f(6, 6), lr + Vec2f(2, 2), SColor(0xffB73333));
+}
+
+void drawShellTrajectory(CBlob@ blob, VehicleInfo@ v, CBlob@ gunner)
+{
+	Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 26);
+
+	//GUI::DrawSpline(pos2d, blob.getAimPos(), pos2d+blob.getAimPos()/2, pos2d+blob.getAimPos()/3, 7, SColor(0xffB73333));
+
+	//Vec2f offset(0.5f, 0.5f);
+	//GUI::DrawSplineArrow(pos2d + offset, gunner.getAimPos() + offset, color_black);
+	//GUI::DrawSplineArrow(pos2d, gunner.getAimPos(), color_white);
+
+	//print("123");
+	//GUI::DrawText("hi", pos2d, pos2d + Vec2f(5,5), color_white, true, true, false);
+	//GUI::DrawText("hi2", (gunner.getAimPos() - gunner.getScreenPos()), (gunner.getAimPos() - gunner.getScreenPos()) + Vec2f(5,5), color_white, true, true, false);
 }
 
 void drawAngleCount(CBlob@ blob, VehicleInfo@ v)
