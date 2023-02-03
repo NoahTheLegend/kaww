@@ -310,11 +310,11 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 					{
 						exp_reward = 1;
 					}
-					
+
 					rules.add_u32(killer.getUsername() + "_exp", exp_reward);
 					rules.Sync(killer.getUsername() + "_exp", true);
 					
-					if(getLocalPlayer() !is null
+					if (getLocalPlayer() !is null
 					&& killer is getLocalPlayer())
 					{
 						add_message(ExpMessage(exp_reward));
@@ -322,7 +322,6 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 
 					CBlob@ killerblob = null;
 					@killerblob = killer.getBlob();
-
 
 					CheckRankUps(rules, // do reward coins and sfx
 								rules.get_u32(killer.getUsername() + "_exp"), // player new exp

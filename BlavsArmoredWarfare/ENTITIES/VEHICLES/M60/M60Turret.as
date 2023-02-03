@@ -1,22 +1,17 @@
 #include "VehicleCommon.as"
 #include "GenericButtonCommon.as";
-#include "Explosion.as";
+#include "Explosion.as"
 #include "Hitters.as"
 
-string[] smoke = 
-{
-	"Explosion.png",
-	"LargeSmoke"
-};
-
 const u8 cooldown_time = 210;//210;
-const u8 recoil = 250;
+const u8 barrel_compression = 6; // max barrel movement
+const u16 recoil = 270;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
-f32 high_angle = 70.0f; // upper depression limit
-f32 low_angle = 105.0f; // lower depression limit
+f32 high_angle = 70.0f; // upper depression limit 70
+f32 low_angle = 105.0f; // lower depression limit 105
 
 void onInit(CBlob@ this)
 {
@@ -29,7 +24,7 @@ void onInit(CBlob@ this)
 	Vehicle_Setup(this,
 	    0.0f, // move speed
 	    0.3f,  // turn speed
-	    Vec2f(0.0f, -1.56f), // jump out velocity
+	    Vec2f(0.0f, -2.5f), // jump out velocity
 	    true);  // inventory access
 
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
@@ -165,6 +160,12 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
+	VehicleInfo@ v;
+	if (!this.get("VehicleInfo", @v))
+	{
+		return;
+	}
+	
 	s16 currentAngle = this.get_f32("gunelevation");
 
 	if (getGameTime() % 5 == 0)
@@ -180,12 +181,6 @@ void onTick(CBlob@ this)
 
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
-		VehicleInfo@ v;
-		if (!this.get("VehicleInfo", @v))
-		{
-			return;
-		}
-
 		bool broken = this.hasTag("broken");
 		if (!broken) Vehicle_StandardControls(this, v);
 
@@ -240,21 +235,27 @@ void onTick(CBlob@ this)
 
 			int difference = Maths::Abs(currentAngle - targetAngle);
 
-			if (difference <= 1) return;
-			else if (difference <= factor) factor = 1;
+			if (difference > 1)
+			{	
+				if (difference < 180) {
+					if (currentAngle < targetAngle) currentAngle += factor;
+					else currentAngle -= factor;
+				} else {
+					if (currentAngle < targetAngle) currentAngle += factor;
+					else currentAngle += factor;
+				}
+				this.getSprite().SetEmitSoundPaused(false);
+				this.getSprite().SetEmitSoundVolume(1.25f);
 
-			if (difference < 180) {
-				if (currentAngle < targetAngle) currentAngle += factor;
-				else currentAngle -= factor;
-			} else {
-				if (currentAngle < targetAngle) currentAngle += factor;
-				else currentAngle += factor;
+				this.set_f32("gunelevation", ((currentAngle % 360) + 360) % 360);
+				Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 			}
-			this.getSprite().SetEmitSoundPaused(false);
-			this.getSprite().SetEmitSoundVolume(1.25f);
+			else if (difference <= factor)
+			{
+				factor = 1;
+			}
 
-			this.set_f32("gunelevation", ((currentAngle % 360) + 360) % 360);
-			Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
+			
 		}
 
 		if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
@@ -271,9 +272,13 @@ void onTick(CBlob@ this)
 		arm.ResetTransform();
 		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
 		arm.SetOffset(Vec2f(this.isFacingLeft() ? -19.0f : -18.0f, this.isFacingLeft() ? -28.0f : -27.0f));
+		arm.SetOffset(arm.getOffset() - Vec2f(-barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, barrel_compression), 0));
+		
 		arm.SetRelativeZ(-50.0f);
 	}
 }
+
+
 
 // Blow up
 void onDie(CBlob@ this)
@@ -340,25 +345,43 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
 		Vec2f vel = Vec2f(0.0f, -27.5f).RotateBy(angle);
 		bullet.setVelocity(vel);
-		bullet.setPosition(bullet.getPosition() + vel + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f));
+		Vec2f pos = bullet.getPosition() + vel * 1.55 + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f);
+		bullet.setPosition(pos);
 
-		this.AddForce(Vec2f(this.isFacingLeft() ? (recoil*5.0f) : (-recoil*5.0f), 0.0f));
+		CBlob@ hull = getBlobByNetworkID(this.get_u16("tankid"));
+
+		bool not_found = true;
+
+		if (hull !is null)
+		{
+			hull.AddForce(Vec2f(hull.isFacingLeft() ? (recoil*5.0f) : (-recoil*5.0f), 0.0f));
+		}	
 
 		if (isClient())
 		{
-			Vec2f pos = this.getPosition();
-			CMap@ map = getMap();
-			
-			for (int i = 0; i < 12; i++)
+			bool facing = this.isFacingLeft();
+			for (int i = 0; i < 8; i++)
 			{
-				ParticleAnimated(smoke[XORRandom(smoke.length)], (bullet.getPosition() + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f)) + Vec2f(XORRandom(36) - 18, XORRandom(36) - 18), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.16f), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 9 + XORRandom(5), XORRandom(70) * -0.00005f, true);
+				ParticleAnimated("LargeSmokeGray", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(10+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2 + XORRandom(2), -0.0031f, true);
+				ParticleAnimated("LargeSmokeGray", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 6 + XORRandom(3), -0.0031f, true);
+			}
+
+			for (int i = 0; i < 4; i++)
+			{
+				float angle = Maths::ATan2(vel.y, vel.x) + 20;
+				ParticleAnimated("LargeSmokeGray", pos, this.getShape().getVelocity() + Vec2f(Maths::Cos(angle), Maths::Sin(angle))/2, float(XORRandom(360)), 0.4f + XORRandom(40) * 0.01f, 4 + XORRandom(3), -0.0031f, true);
+				float angle2 = Maths::ATan2(vel.y, vel.x) - 20;
+				ParticleAnimated("LargeSmokeGray", pos, this.getShape().getVelocity() + Vec2f(Maths::Cos(angle2), Maths::Sin(angle2))/2, float(XORRandom(360)), 0.4f + XORRandom(40) * 0.01f, 4 + XORRandom(3), -0.0031f, true);
+
+				ParticleAnimated("LargeSmokeGray", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 6 + XORRandom(3), -0.0031f, true);
+				ParticleAnimated("Explosion", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2, -0.0031f, true);
 			}
 		}
 
 		makeGibParticle(
 		"EmptyShell",               		// file name
 		this.getPosition(),                 // position
-		(Vec2f(0.0f,-0.5f) + getRandomVelocity(90, 5, 360)), // velocity
+		(Vec2f(0.0f,-0.5f) + getRandomVelocity(90, 2, 360)), // velocity
 		0,                                  // column
 		0,                                  // row
 		Vec2f(16, 16),                      // frame size

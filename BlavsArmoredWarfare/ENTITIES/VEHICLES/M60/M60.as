@@ -17,7 +17,7 @@ void onInit(CBlob@ this)
 	Vehicle_Setup(this,
 	    5150.0f, // move speed
 	    1.0f,  // turn speed
-	    Vec2f(0.0f, -1.56f), // jump out velocity
+	    Vec2f(0.0f, -2.5f), // jump out velocity
 	    false);  // inventory access
 
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
@@ -83,6 +83,7 @@ void onInit(CBlob@ this)
 			turret.server_setTeamNum(this.getTeamNum());
 			this.server_AttachTo( turret, "TURRET" );
 			this.set_u16("turretid", turret.getNetworkID());
+			turret.set_u16("tankid", this.getNetworkID());
 
 			turret.SetFacingLeft(facing_left);
 		}
