@@ -28,12 +28,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			{ 
 				if (hitterBlob.getPosition().y < this.getPosition().y - 3.2f && !hitterBlob.hasTag("flesh"))
 				{
-					Sound::Play("HitmarkerHeadshot.ogg", damageowner.getPosition(), 0.85f, 0.75f + (20 - (this.getHealth()/this.getInitialHealth())*20) * 0.01f);
+					Sound::Play("HitmarkerHeadshot.ogg", damageowner.getPosition(), 0.8f, 0.75f + (20 - (this.getHealth()/this.getInitialHealth())*20) * 0.01f);
 					//damageowner.set_u8("hitmarker", 30); // is actually 10
 				}
 				else
 				{
-					Sound::Play("Hitmarker.ogg", damageowner.getPosition(), 1.0f, 0.75f + ((60 - (this.getHealth()/this.getInitialHealth())*60) * 0.01f) + XORRandom(5)*0.01f);
+					Sound::Play("Hitmarker.ogg", damageowner.getPosition(), 0.8f, 0.75f + ((60 - (this.getHealth()/this.getInitialHealth())*60) * 0.01f) + XORRandom(5)*0.01f);
 					//damageowner.set_u8("hitmarker", 7); // is actually 7
 				}
 			}
