@@ -1071,24 +1071,6 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 		return;
 	}
 
-	f32 vellen = this.getShape().vellen;
-	// sound
-	const f32 soundbase = 1.0;
-
-	if (vellen > soundbase)
-	{
-		f32 volume = Maths::Min(1.0f, Maths::Max(0.2f, (vellen - soundbase) / soundbase));
-
-		if (vellen > 3.2f)
-		{
-			this.getSprite().PlayRandomSound("/WoodHeavyBump", volume-0.5, 0.9);
-		}
-		else
-		{
-			this.getSprite().PlayRandomSound("/WoodHeavyHit", volume-0.5, 0.9);
-		}
-	}
-
 	// damage
 	if (!this.hasTag("ignore fall"))
 	{
@@ -1121,7 +1103,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 				}
 				else //very dead
 				{
-					damage = 10.0f;
+					damage = 8.0f;
 				}
 
 				this.server_Hit(this, point1, normal, damage, Hitters::fall);
