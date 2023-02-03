@@ -1,4 +1,5 @@
 #include "Hitters.as"
+#include "HoverMessage.as";
 
 void onInit(CBlob@ this)
 {
@@ -35,6 +36,28 @@ f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hit
 			dmg = Maths::Max(dmg, this.getInitialHealth() * 2); // Keg always kills crate
 		}
 	}
+
+    if (isServer() && dmg/2 >= this.getHealth())
+    {
+        CRules@ rules = getRules();
+        if (rules !is null && hitterBlob.hasTag("player"))
+        {
+            u8 exp_reward = XORRandom(3);
+            CPlayer@ killer = hitterBlob.getPlayer();
+            if (killer !is null)
+            {
+                rules.add_u32(killer.getUsername() + "_exp", exp_reward);
+		        rules.Sync(killer.getUsername() + "_exp", true);
+
+                if(getLocalPlayer() !is null
+				&& killer is getLocalPlayer())
+				{
+					add_message(ExpMessage(exp_reward));
+				}
+            }
+        }
+    }
+
 	return dmg;
 }
 

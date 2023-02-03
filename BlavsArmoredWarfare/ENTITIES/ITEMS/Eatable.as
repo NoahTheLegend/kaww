@@ -57,7 +57,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 						if (!healerHealed && sameTeam)
 						{
 							int coins = 2;
-							if (getRules().get_string(healer.getUsername() + "_perk") == "Supply Chain")
+							if (getRules().get_string(healer.getUsername() + "_perk") == "Wealthy")
 							{
 								coins *= 2;
 							}

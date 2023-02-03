@@ -210,11 +210,11 @@ void onRender(CSprite@ this)
 
 			// draw perk icon
 			int icon_num = 0;
-			if (getRules().get_string(player.getUsername() + "_perk") == "Sharp Shooter")
+			if (getRules().get_string(player.getUsername() + "_perk") == "Sharp Shooter") // TODO: simplify this with another var
 			{
 				icon_num = 1;
 			}
-			else if (getRules().get_string(player.getUsername() + "_perk") == "Supply Chain")
+			else if (getRules().get_string(player.getUsername() + "_perk") == "Wealthy")
 			{
 				icon_num = 2;
 			}
@@ -238,6 +238,16 @@ void onRender(CSprite@ this)
 			{
 				icon_num = 7;
 			}
+			else if (getRules().get_string(player.getUsername() + "_perk") == "Paratrooper")
+			{
+				icon_num = 9;
+			}
+			else if (getRules().get_string(player.getUsername() + "_perk") == "Bull")
+			{
+				icon_num = 10;
+			}
+
+
 
 			if (icon_num > 0)
 			{

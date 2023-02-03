@@ -49,7 +49,6 @@ namespace Hitters
 
 		// explosion
 		explosion,
-		explosionx,
 		keg,
 		mine,
 		mine_special,
@@ -72,7 +71,7 @@ namespace Hitters
 // not keg - not blockable :)
 bool isExplosionHitter(u8 type)
 {
-	return type == Hitters::bomb || type == Hitters::explosion || type == Hitters::explosionx || type == Hitters::mine || type == Hitters::bomb_arrow;
+	return type == Hitters::bomb || type == Hitters::explosion || type == Hitters::mine || type == Hitters::bomb_arrow;
 }
 
 bool isWaterHitter(u8 type)

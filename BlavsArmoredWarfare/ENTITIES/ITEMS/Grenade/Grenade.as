@@ -22,7 +22,10 @@ void onInit(CBlob@ this)
 	this.set_bool("explosive_teamkill", true);
 	this.Tag("collideswithglass");
 
+	this.set_u16("follow_id", 0);
+
 	this.set_u8("exploding_2", 0);
+	this.Tag("grenade");
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)
@@ -32,10 +35,16 @@ void onInit(CBlob@ this)
 	this.set_u8("death_timer", 120);
 	this.Tag("change team on pickup");
 
-	if (this.getName() == "agrenade")
+	if (this.getName() == "agrenade" || this.getName() == "sagrenade")
 	{
 		this.set_u8("exploding_2", 110);
 	}
+
+	// let it be not heavy, we'll see how OP it is
+	//if (this.getName() == "sgrenade" || this.getName() == "sagrenade")
+	//{
+	//	this.Tag("medium weight");
+	//}
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -102,17 +111,33 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
             this.SetDamageOwnerPlayer(player);
         }
     }
+
+	this.getShape().SetStatic(false);
+	this.getShape().getConsts().mapCollisions = true;
+	this.set_Vec2f("follow_offset", Vec2f(0,0));
+	this.set_u16("follow_id", 0);
+	this.server_setTeamNum(attached.getTeamNum());
 }
 
 void onTick(CBlob@ this)
 {
-	if (this.isAttached() && this.getName() == "grenade")
+	if (this.getShape() is null) return;
+	if (this.isAttached() && (this.getName() == "grenade" || this.getName() == "sgrenade"))
 	{
+		this.getShape().SetStatic(false);
+		this.getShape().getConsts().mapCollisions = true;
 		if (this.isAttached() && !this.hasTag("activated"))
 		{
 			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 			if (ap !is null && ap.isKeyJustPressed(key_action3) && ap.getOccupied() !is null && ap.getOccupied().isMyPlayer())
 			{
+				if (ap.getOccupied().getPlayer() !is null)
+				{
+					if (getRules().get_string(ap.getOccupied().getPlayer().getUsername() + "_perk") == "Bull")
+					{
+						return;
+					}
+				}
 				//if (!this.hasTag("no_pin")) Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
 				CBitStream params;
 				this.SendCommand(this.getCommandID("activate"), params);
@@ -121,6 +146,21 @@ void onTick(CBlob@ this)
 	}
 	else if (this.get_u8("exploding_2") > 0)
 	{
+		if (this.isAttached())
+		{
+			this.getShape().SetStatic(false);
+			this.getShape().getConsts().mapCollisions = true;
+		}
+		if (this.getName() == "sagrenade")
+		{
+			if (getBlobByNetworkID(this.get_u16("follow_id")) !is null && this.get_u16("follow_id") != 0)
+			{
+				CBlob@ follow = getBlobByNetworkID(this.get_u16("follow_id"));
+				bool fl = (this.get_bool("follow_fl") && follow.isFacingLeft()) || (!this.get_bool("follow_fl") && !follow.isFacingLeft());
+				this.setPosition(follow.getPosition()+(fl ? -this.get_Vec2f("follow_offset").RotateBy(follow.getAngleDegrees()) : Vec2f(this.get_Vec2f("follow_offset").x, -this.get_Vec2f("follow_offset").y).RotateBy(follow.getAngleDegrees())));
+			}
+		}
+
 		this.set_u8("exploding_2", this.get_u8("exploding_2") - 1);
 		f32 angle = -this.get_f32("bomb angle");
 
@@ -169,7 +209,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	if (this.getName() == "agrenade" && (!v_fastrender || XORRandom(3)==0))
+	if ((this.getName() == "agrenade" || this.getName() == "sagrenade" ) && (!v_fastrender || XORRandom(3)==0))
 	{
 		sparks(this.getPosition(), this.getAngleDegrees(), 3.5f + (XORRandom(10) / 5.0f), SColor(255, 255, 230, 120));
 	}
@@ -197,15 +237,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
 		}
 
-    	if(isServer())
+    	if (isServer())
     	{
 			AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
     	    if (point !is null)
 			{
+				string prop = (this.getName() == "grenade" ? "agrenade" : "sagrenade");
 				CBlob@ holder = point.getOccupied();
 				if (holder !is null && this !is null && !this.hasTag("activated"))
 				{
-					CBlob@ blob = server_CreateBlob("agrenade", this.getTeamNum(), this.getPosition());
+					CBlob@ blob = server_CreateBlob(prop, this.getTeamNum(), this.getPosition());
 					holder.server_Pickup(blob);
 					this.server_Die();
 
@@ -215,7 +256,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				}
 				else 
 				{
-					CBlob@ blob = server_CreateBlob("agrenade", this.getTeamNum(), this.getPosition());
+					CBlob@ blob = server_CreateBlob(prop, this.getTeamNum(), this.getPosition());
 					this.server_Die();
 				}
 			}
@@ -229,6 +270,17 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (!solid)
 	{
+		if (!this.getShape().isStatic() && this.get_u16("follow_id") == 0 && this.getName() == "sagrenade" && !this.isAttached())
+		{
+			if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("vehicle") || blob.hasTag("player") || blob.hasTag("bunker")))
+			{
+				this.getShape().setFriction(100.0f);
+				this.set_Vec2f("follow_offset", blob.getPosition() - this.getPosition());
+				this.set_u16("follow_id", blob.getNetworkID());
+				this.set_bool("follow_fl", blob.isFacingLeft());
+				this.setVelocity(Vec2f(0,0));
+			}
+		}
 		return;
 	}
 
@@ -237,6 +289,36 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (vellen > 1.7f)
 	{
 		Sound::Play("/BombBounce.ogg", this.getPosition(), Maths::Min(vellen / 9.0f, 1.0f), 1.2f);
+	}
+
+	if ((this.getName() == "sgrenade" || this.getName() == "sagrenade") && !this.isAttached()) // sticky grenade sticks to blocks
+	{
+		CMap@ map = getMap();
+		if (map !is null)
+		{
+			Vec2f v = this.getOldVelocity();
+			//f32 rot = (v.y < 0.0f && Maths::Abs(v.y) > Maths::Abs(v.x) ? 90.0f : v.x > 0.1f ? 0.0f : v.x < -0.1f ? 180.0f : 0);
+			bool stop = false;
+			for (u8 i = 0; i < 12; i++)
+			{
+				if (stop) break;
+				for (u8 j = 0; j < 4; j++)
+				{
+					Vec2f offset = Vec2f(i, 0).RotateBy(-(this.getPosition()-this.getOldPosition()).Angle()).RotateBy(Maths::Min(0.0f, j*90.0f)); // j*90.0f - rot
+					
+					if (map.isTileSolid(map.getTile(this.getPosition()+offset)))
+					{
+						this.setPosition(this.getPosition()+offset-(offset*0.25f));
+						this.getShape().SetStatic(true);
+						this.getShape().getConsts().mapCollisions = false;
+						stop = true;
+						break;
+					}
+				}
+			}
+		}
+
+		this.setVelocity(Vec2f(0,0));
 	}
 }
 

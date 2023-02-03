@@ -68,6 +68,9 @@ void onInit(CBlob@ this)
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
+	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
+
 	{
 		ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 5);
@@ -93,13 +96,14 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Sponge", "$sponge$", "sponge", "Commonly used for washing vehicles.", false);
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
-	}
-	{
 		u8 cost = 40;
 		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", cost);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
+		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
@@ -138,14 +142,14 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$crate$", "heavygun", "Heavy MachineGun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$crate$", "launcher_javelin", "Homing Missile launcher.", false, true);
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -159,6 +163,10 @@ void onInit(CBlob@ this)
 
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Sponge", "$sponge$", "sponge", "Commonly used for washing vehicles.", false);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
 	}
 
 	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
@@ -389,7 +397,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 1.25f;
 	}
-	if (hitterBlob.getName() == "agrenade")
+	if (hitterBlob.hasTag("grenade"))
 	{
 		return damage * 0.5f;
 	}

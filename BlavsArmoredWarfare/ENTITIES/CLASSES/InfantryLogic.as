@@ -88,7 +88,7 @@ void onInit(CBlob@ this)
 	infantry.burst_rate 			= burst_rate;
 	infantry.reload_time 			= reload_time;
 	infantry.noreloadtimer          = noreloadtimer;
-	infantry.mag_size 				= mag_size;
+	infantry.mag_size = mag_size;
 	infantry.delayafterfire 		= delayafterfire;
 	infantry.randdelay 				= randdelay;
 	infantry.bullet_velocity 		= bullet_velocity;
@@ -130,6 +130,7 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("inventory offset", Vec2f(0.0f, -80.0f));
 
 	this.getShape().SetRotationsAllowed(false);
+	this.addCommandID("shoot rpg");
 	this.addCommandID("shoot bullet");
 	this.getShape().getConsts().net_threshold_multiplier = 0.5f;
 
@@ -137,11 +138,14 @@ void onInit(CBlob@ this)
 	
 	this.set_u32("can_spot", 0);
 
+	this.set_string("ammo_prop", "mat_7mmround");
+
 	if (this.getName() == "revolver")
 	{
-		this.set_u8("stab time", 16);
+		this.set_u8("stab time", 19);
 		this.set_u8("stab timing", 13);
 		this.Tag("no bulletgib on shot");
+		this.set_f32("stab damage", 1.25f);
 	}
 	else if (this.getName() == "ranger")
 	{
@@ -157,6 +161,12 @@ void onInit(CBlob@ this)
 	//{
 	//	this.Tag("simple reload");
 	//}
+	else if (this.getName() == "antitank")
+	{
+		this.set_bool("is_rpg", true);
+		this.set_u32("mag_bullets", 0);
+		this.set_string("ammo_prop", "mat_heatwarhead");
+	}
 
 	this.set_u8("noreload_custom", 15);
 	if (this.getName() == "sniper") this.set_u8("noreload_custom", 30);
@@ -165,7 +175,11 @@ void onInit(CBlob@ this)
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	CPlayer@ p = this.getPlayer();
-	if (p !is null && getRules().get_string(p.getUsername() + "_perk") == "Lucky" && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
+	if (p !is null)
+	{
+		if (getRules().get_string(p.getUsername() + "_perk") == "Lucky" && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
+		else if (getRules().get_string(p.getUsername() + "_perk") == "Bull") damage *= 0.75f;
+	}
 	if (isServer()) //update bots' logic
 	{
 		if (this.hasTag("disguised"))
@@ -222,7 +236,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 	}
 	if (customData != Hitters::explosion && hitterBlob.getName() == "ballista_bolt") return damage * 2;
-	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.getName() == "agrenade")
+	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.hasTag("grenade"))
 	{
 		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
 		if (hitterBlob.exists("explosion_damage_scale")) damage *= hitterBlob.get_f32("explosion_damage_scale");
@@ -287,6 +301,14 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 	if (!getNet().isServer()) { return; }
 	if (aimangle < 0.0f) { aimangle += 360.0f; }
 
+	if (this.getPlayer() !is null)
+	{
+		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+		{
+			damage *= 1.5f;
+		}
+	}
+
 	Vec2f blobPos = this.getPosition();
 	Vec2f vel = this.getVelocity();
 	Vec2f thinghy(1, 0);
@@ -342,7 +364,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 				Vec2f tpos = map.getTileWorldPosition(hi.tileOffset) + Vec2f(4, 4);
 				//bool canhit = canhit && map.getSectorAtPosition(tpos, "no build") is null;
 				TileType type = map.getTile(tpos).type;
-				if (!(map.isTileCastle(type) || isTileScrap(type))
+				if (!(map.isTileCastle(type) || isTileScrap(type) || map.isTileBackground(map.getTile(tpos)))
 				&& !isTileScrap(type) && (!isTileCompactedDirt(type) || XORRandom(2) == 0))
 					map.server_DestroyTile(hi.hitpos, 0.1f, this);
 			}
@@ -363,6 +385,21 @@ void ManageParachute( CBlob@ this )
 			}
 		}
 		this.Untag("parachute");
+	}
+	else if (!this.hasTag("parachute"))
+	{
+		if (this.getPlayer() !is null && this.get_u32("last_parachute") < getGameTime())
+		{
+			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+			{
+				if (this.isKeyPressed(key_up) && this.getVelocity().y > 8.0f)
+				{
+					Sound::Play("/ParachuteOpen", this.getPosition());
+					this.set_u32("last_parachute", getGameTime()+45);
+					this.Tag("parachute");
+				}
+			}
+		}
 	}
 	
 	if (this.hasTag("parachute"))
@@ -556,13 +593,15 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		
 		const u32 magSize = infantry.mag_size;
 	
+		bool done_shooting = this.get_s8("charge_time") <= 0 && this.get_s32("my_chargetime") <= 0;
+
 		// reload
 		if (controls !is null &&
 			!isReloading && this.get_u32("end_stabbing") < getGameTime()
-			&& this.get_u32("no_reload") < getGameTime()
-			&& ((controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient())) &&
-			this.get_u32("no_reload") < getGameTime() &&
-			this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max") || this.hasTag("forcereload")))
+			&& this.get_u32("no_reload") < getGameTime() && done_shooting
+			&& (((controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient()))
+			&& this.get_u32("no_reload") < getGameTime() && done_shooting
+			&& this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max")) || (this.hasTag("forcereload") && done_shooting)))
 		{
 			bool forcereload = false;
 			if (this.hasTag("forcereload"))
@@ -573,7 +612,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			}
 			bool reloadistrue = false;
 			CInventory@ inv = this.getInventory();
-			if ((inv !is null && inv.getItem("mat_7mmround") !is null) || forcereload)
+			if ((inv !is null && inv.getItem(this.get_string("ammo_prop")) !is null) || forcereload)
 			{
 				// actually reloading
 				reloadistrue = true;
@@ -667,7 +706,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 								for (u8 i = 0; i < inv.getItemsCount(); i++)
 								{
 									CBlob@ b = inv.getItem(i);
-									if (b is null || b.getName() != "mat_7mmround" || b.hasTag("dead")) continue;
+									if (b is null || b.getName() != this.get_string("ammo_prop") || b.hasTag("dead")) continue;
 									@mag = @b;
 									break;
 								}
@@ -726,7 +765,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 							for (u8 i = 0; i < inv.getItemsCount(); i++)
 							{
 								CBlob@ b = inv.getItem(i);
-								if (b is null || b.getName() != "mat_7mmround" || b.hasTag("dead")) continue;
+								if (b is null || b.getName() != this.get_string("ammo_prop") || b.hasTag("dead")) continue;
 								@mag = @b;
 								break;
 							}
@@ -769,12 +808,20 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				float jumpStat = 1.0f;
 
 				bool sprint = this.getHealth() == this.getInitialHealth() && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+				getMovementStats(this.getName().getHash(), sprint, walkStat, airwalkStat, jumpStat);
 
 				// operators move slower than normal
 				if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
-				{
+				{	
 					sprint = false;
 					walkStat *= 0.95f;
+				}
+				else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+				{
+					sprint = this.getHealth() >= this.getInitialHealth()/2 && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+					walkStat = 1.2f;
+					airwalkStat = 2.0f;
+					jumpStat = 1.2f;
 				}
 
 				if (sprint)
@@ -793,7 +840,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					this.Untag("sprinting");
 				}
 
-				getMovementStats(this.getName().getHash(), sprint, walkStat, airwalkStat, jumpStat);
 				moveVars.walkFactor *= walkStat;
 				moveVars.walkSpeedInAir = airwalkStat;
 				moveVars.jumpFactor *= jumpStat;
@@ -971,7 +1017,25 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	}
 
 	float bulletSpread = getBulletSpread(infantry.class_hash) + (float(this.get_u8("inaccuracy")))/perk_mod;
-	ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity, bulletSpread*targetFactor, infantry.burst_size );
+	if (this.get_bool("is_rpg"))
+	{
+		targetVector = this.getAimPos() - this.getPosition();
+		targetDistance = targetVector.Length();
+		targetFactor = targetDistance / 367.0f;
+		f32 mod = this.isKeyPressed(key_action2) ? 0.1f : 0.3f;
+
+		ShootRPG(this, this.getPosition() - Vec2f(-24,0).RotateBy(angle), this.getAimPos() + Vec2f(-(1 + this.get_u8("inaccuracy")) + XORRandom((180 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, -(3 + this.get_u8("inaccuracy")) + XORRandom(180 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, 8.0f * infantry.bullet_velocity);
+	
+		ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.75f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+
+		if (this.isMyPlayer()) ShakeScreen((Vec2f(infantry.recoil_x - XORRandom(infantry.recoil_x*4) + 1, -infantry.recoil_y + XORRandom(infantry.recoil_y) + 6)), infantry.recoil_length*2, this.getInterpolatedPosition());
+		if (this.isMyPlayer()) ShakeScreen(48, 28, this.getPosition());
+	}
+	else
+	{
+		ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity, bulletSpread*targetFactor, infantry.burst_size );
+	}
+
 	this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
 
 	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -12.0f : 12.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
@@ -1011,6 +1075,23 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 			}
 		}
 	}
+}
+
+void ShootRPG(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
+{
+	if (canSend(this))
+	{
+		Vec2f arrowVel = (aimpos - arrowPos);
+		arrowVel.Normalize();
+		arrowVel *= arrowspeed;
+		CBitStream params;
+		params.write_Vec2f(arrowPos);
+		params.write_Vec2f(arrowVel);
+
+		this.SendCommand(this.getCommandID("shoot rpg"), params);
+	}
+
+	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
 }
 
 void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, float bulletSpread, u8 burstSize )
@@ -1066,7 +1147,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
 			{
-				damageBody *= 1.0f; // 150%
+				damageBody *= 1.33f; // 150%
 				damageHead *= 1.33f;
 			}
 		}
@@ -1117,6 +1198,27 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (this.get_u32("mag_bullets") > magSize) this.set_u32("mag_bullets", magSize);
 		if (isClient()) this.getSprite().PlaySound(infantry.shoot_sfx, 0.9f, 0.90f + XORRandom(40) * 0.01f);
 	}
+	else if (cmd == this.getCommandID("shoot rpg"))
+	{
+		if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
+		Vec2f arrowPos;
+		if (!params.saferead_Vec2f(arrowPos)) return;
+		Vec2f arrowVel;
+		if (!params.saferead_Vec2f(arrowVel)) return;
+		ArcherInfo@ archer;
+		if (!this.get("archerInfo", @archer)) return;
+
+		if (getNet().isServer())
+		{
+			CBlob@ proj = CreateRPGProj(this, arrowPos, arrowVel);
+			proj.server_SetTimeToDie(3);
+		}
+
+		if (this.get_u32("mag_bullets") > 0) this.set_u32("mag_bullets", this.get_u32("mag_bullets") - 1);
+		if (this.get_u32("mag_bullets") > this.get_u32("mag_bullets_max")) this.set_u32("mag_bullets", this.get_u32("mag_bullets_max"));
+		
+		this.getSprite().PlaySound("AntiTank_shoot.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
+	}
 	else if (cmd == this.getCommandID("reload"))
 	{
 		this.Tag("forcereload");
@@ -1130,6 +1232,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			else if (this.getName() == "sniper") onSniperReload(this);
 			else if (this.getName() == "mp5") onMp5Reload(this);
 			else if (this.getName() == "shotgun") onShotgunReload(this);
+			else if (this.getName() == "antitank") onAntitankReload(this);
 		}
 		if (isServer())
 		{

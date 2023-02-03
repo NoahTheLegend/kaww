@@ -31,7 +31,7 @@ void onRestart(CRules@ this)
 
 void onTick(CRules@ this)
 {
-    if (getGameTime() < 370)
+    if (getGameTime() < 370 && getGameTime() > 0)
     {
         if (this.get_s8("flagcount") == -1)
         {
@@ -43,7 +43,10 @@ void onTick(CRules@ this)
             CBlob@[] tents;
             getBlobsByName("tent", @tents);
 
-            if (tents.length == 0)
+            CBlob@[] iarmorys;
+            getBlobsByName("importantarmory", @iarmorys);
+
+            if (tents.length == 0 && iarmorys.length > 0)
             {
                 // break the truck
                 this.set_string("bannertext", "Destroy the enemy truck!");

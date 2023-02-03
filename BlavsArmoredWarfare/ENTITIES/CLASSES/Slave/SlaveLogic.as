@@ -59,7 +59,11 @@ void onSetPlayer(CBlob@ this, CPlayer@ player)
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	CPlayer@ p = this.getPlayer();
-	if (p !is null && getRules().get_string(p.getUsername() + "_perk") == "Lucky" && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
+	if (p !is null)
+	{
+		if (getRules().get_string(p.getUsername() + "_perk") == "Lucky" && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
+		else if (getRules().get_string(p.getUsername() + "_perk") == "Bull") damage *= 0.75f;
+	}
 	if (isServer()) //update bots' logic
 	{
 		if (this.hasTag("disguised"))
@@ -220,7 +224,16 @@ void onTick(CBlob@ this)
 		RunnerMoveVars@ moveVars;
 		if (this.get("moveVars", @moveVars))
 		{
-			if (this.getPlayer() !is null)
+			if (this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+			{
+				bool sprint = this.getHealth() >= this.getInitialHealth()/2 && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+				
+				if (sprint) moveVars.walkFactor *= 1.1f;
+				moveVars.walkFactor *= 1.125f;
+				moveVars.walkSpeedInAir = 2.0f;
+				moveVars.jumpFactor *= 1.2f;
+			}
+			else  if (this.getPlayer() !is null)
 			{
 				moveVars.walkFactor *= this.getPlayer().hasTag("Conditioning") ? 1.1f : 1.0f;
 				moveVars.jumpFactor *= this.getPlayer().hasTag("Conditioning") ? 1.1f : 1.0f;
@@ -348,6 +361,13 @@ bool RecdHitCommand(CBlob@ this, CBitStream@ params)
 
 			if (getNet().isServer())
 			{
+				if (this.getPlayer() !is null)
+				{
+					if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+					{
+						attack_power *= 1.5f;
+					}
+				}
 				this.server_Hit(blob, tilepos, attackVel, attack_power, Hitters::builder, teamHurt);
 
 				Material::fromBlob(this, blob, attack_power);
@@ -814,6 +834,21 @@ void ManageParachute( CBlob@ this )
 			}
 		}
 		this.Untag("parachute");
+	}
+	else if (!this.hasTag("parachute"))
+	{
+		if (this.getPlayer() !is null && this.get_u32("last_parachute") < getGameTime())
+		{
+			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+			{
+				if (this.isKeyPressed(key_up) && this.getVelocity().y > 8.0f)
+				{
+					Sound::Play("/ParachuteOpen", this.getPosition());
+					this.set_u32("last_parachute", getGameTime()+45);
+					this.Tag("parachute");
+				}
+			}
+		}
 	}
 	
 	if (this.hasTag("parachute"))

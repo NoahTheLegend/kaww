@@ -359,7 +359,7 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 				{
 					button4.SetEnabled(false);
 				}
-				else if (this.get_string("prod_blob") == "agrenade")
+				else if (this.get_string("prod_blob") == "grenade")
 				{
 					button5.SetEnabled(false);
 				}
@@ -387,7 +387,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			break;
 
 	}
-	if (hitterBlob.getName() == "balista_bolt" || hitterBlob.getName() == "agrenade")
+	if (hitterBlob.getName() == "balista_bolt" || hitterBlob.hasTag("grenade"))
 	{
 		damage *= 5.0f;
 	} 
@@ -465,4 +465,9 @@ void onDie(CBlob@ this)
 	if (!isServer())
 		return;
 	server_CreateBlob("constructionyard",this.getTeamNum(),this.getPosition());
+}
+
+bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
+{
+	return this.getTeamNum() == forBlob.getTeamNum() || forBlob.isOverlapping(this);
 }

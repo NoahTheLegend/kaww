@@ -74,7 +74,7 @@ void LoadSprites(CSprite@ this)
 		camo.SetOffset(Vec2f(0.0f, 0.0f));
 		camo.SetAnimation("default");
 		camo.SetVisible(false);
-		camo.SetRelativeZ(0.26f);
+		camo.SetRelativeZ(0.31f);
 	}
 
 	CSpriteLayer@ skull = this.addSpriteLayer("skull", "DeathIncarnate.png", 16, 16, 0, 0);
@@ -103,7 +103,7 @@ void onTick(CSprite@ this)
 			camo.SetFrameIndex(0);
 			camo.SetAnimation("movement");
 			camo.SetVisible(true);
-			camo.SetRelativeZ(0.26f);
+			camo.SetRelativeZ(0.31f);
 		}
 
 		if (blob.getPlayer() !is null) getRules().set_string(blob.getPlayer().getUsername() + "_perk", "Camouflage");
