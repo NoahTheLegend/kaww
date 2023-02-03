@@ -1159,7 +1159,7 @@ void Vehicle_LevelOutInAir(CBlob@ this)
 			diff = (diff + 180) % 360 - 180;
 
 			if (Maths::Abs(diff) > 1)
-				rotvel += (diff > 0 ? 1 : -1) * 0.75; // * 0.75 is rate
+				rotvel += (diff > 0 ? 1 : -1) * 1.5; // * 0.75 is rate
 
 			this.AddTorque(this.isFacingLeft() ? -360.0f : 360.0f);
 
@@ -1173,7 +1173,7 @@ void Vehicle_LevelOutInAir(CBlob@ this)
 		diff = (diff + 180) % 360 - 180;
 
 		if (Maths::Abs(diff) > 1)
-			rotvel += (diff > 0 ? 1 : -1) * 0.5;
+			rotvel += (diff > 0 ? 1 : -1) * 1.0;
 
 
 		this.setAngleDegrees(this.getAngleDegrees() + rotvel);
