@@ -1,11 +1,8 @@
 const string engineRPMString_Manager = "engine_RPM_M";
 const float baseVolume = 1.0f; // 1.0 is smooth, 1.1 adds grime
 
-
-const float idleRestingPitch = 250.0f;
+const float idleRestingPitch = 300.0f;
 const string isThisOnGroundString = "isThisOnGround";
-
-
 
 void onInit(CBlob@ this)
 {
@@ -29,8 +26,6 @@ void onTick(CBlob@ this)
     const bool type = this.get_bool("manager_Type");
     const float rpm = this.get_f32(engineRPMString_Manager);
 
-    
-
     if (rpm == 0)
     {
         sprite.SetEmitSoundPaused(true);
@@ -50,8 +45,7 @@ void onTick(CBlob@ this)
 
             f32 pitchMod = this.get_f32("custom_pitch");
             if (this.get_bool("engine_stuck")) pitchMod = 0.65f;
-            if (!this.get_bool("isThisOnGround")) pitchMod *= 0.85f;
-            if (pitchMod < 0.01f) pitchMod = 1.0f;
+            if (pitchMod < 0.01f) pitchMod = 0.01f;
 
             sprite.SetEmitSoundSpeed(
                 Maths::Min(0.01f + Maths::Abs((idleRestingPitch - rpm) / 2000), 1.00f) * 1.0 * pitchMod);
@@ -62,30 +56,25 @@ void onTick(CBlob@ this)
 
             f32 pitchMod = this.get_f32("custom_pitch");
             if (!this.get_bool("isThisOnGround")) pitchMod *= 0.85f;
-            if (pitchMod < 0.01f) pitchMod = 1.0f;
+            if (pitchMod < 0.01f) pitchMod = 0.01f;
 
             sprite.SetEmitSoundSpeed(
                 Maths::Min(0.01f + Maths::Abs((5500 - rpm) / 3000), 1.15f) * 1.0 * pitchMod);
 
             if(!this.get_bool(isThisOnGroundString))
             {
-                sprite.SetEmitSoundSpeed( sprite.getEmitSoundSpeed() * 1.15f * pitchMod);
+                sprite.SetEmitSoundSpeed( sprite.getEmitSoundSpeed() * 1.25f * pitchMod);
             }
-            
-           
-
-            //print("--------- " + sprite.getEmitSoundSpeed());
         }        
     }
     else{ 
         // middle ground
         f32 pitchMod = this.get_f32("custom_pitch");
         if (!this.get_bool("isThisOnGround")) pitchMod *= 0.85f;
-        if (pitchMod < 0.01f) pitchMod = 1.0f;
+        if (pitchMod < 0.01f) pitchMod = 0.01f;
 
         sprite.SetEmitSoundSpeed(
-            Maths::Min(0.01f + Maths::Abs((3000 - rpm) / 3000), 1.2f) * 1.0 * pitchMod);
-        //print("--------- " + sprite.getEmitSoundSpeed());
+            Maths::Min(0.01f + Maths::Abs((2000 - rpm) / 2000), 1.2f) * 1.0 * pitchMod);
 
         if(!this.get_bool(isThisOnGroundString))
         {
@@ -107,11 +96,13 @@ void onTick(CBlob@ this)
                 {
                     sprite.SetEmitSoundPaused(false);
                     sprite.SetEmitSoundVolume(Maths::Clamp(1 - Maths::Abs((6000 - rpm) / 2000), 0, baseVolume));
+                    //print("med " + Maths::Clamp(1 - Maths::Abs((6000 - rpm) / 2000), 0, baseVolume));
                 }
             }
             else
             {
                 sprite.SetEmitSoundVolume(Maths::Clamp(Maths::Abs((2000 - rpm) / 1000), 0, baseVolume));
+                //print("med " + Maths::Clamp(Maths::Abs((2000 - rpm) / 1000), 0, baseVolume));
             }
             
         }
@@ -141,4 +132,6 @@ void onTick(CBlob@ this)
             sprite.SetEmitSoundVolume(type ? 0 : baseVolume);
         }
     }
+
+   // print("rpm " + rpm);
 }

@@ -552,7 +552,7 @@ void server_FireBlob(CBlob@ this, CBlob@ blob, const u8 charge)
 
 void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 {
-	this.set_f32("engine_RPMtarget", 0); // shut off the engine by default (longer idle time?)
+	bool hascrew = false;
 
 	v.move_direction = 0;
 	AttachmentPoint@[] aps;
@@ -577,7 +577,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 				// DRIVER
 				if (ap.name == "DRIVER" && !this.hasTag("immobile"))
 				{
-					//print(blob.getPlayer().getUsername() + " driver on " + this.getName());
+					hascrew = true;
 					bool moveUp = false;
 					const f32 angle = this.getAngleDegrees();
 					// set facing
@@ -630,7 +630,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								}
 							}
 						}
-					
 
 						const f32 engine_topspeed = v.move_speed;
 						const f32 engine_topspeed_reverse = v.turn_speed;
@@ -639,7 +638,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						if (this.isOnGround() || this.wasOnGround())
 						{
-							this.AddForce(Vec2f(0.0f, this.getMass()*-0.24f)); // this is nice
+							this.AddForce(Vec2f(0.0f, this.getMass()*-0.25f)); // this is nice
 						}
 
 						if (space)
@@ -734,7 +733,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								if (this.get_u32("next_engine_turnon") <= getGameTime())
 								{
-									this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
+									//this.getSprite().PlayRandomSound("/EngineThrottle", 1.2f, 0.90f + XORRandom(11)*0.01f);
 									this.set_u32("next_engine_turnon", getGameTime() + 40);
 								}
 
@@ -751,7 +750,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
-							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.5f));
+							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.9f));
 
 							if (onground && groundNormal.y < -0.4f && groundNormal.x > 0.05f && vel.x < 1.0f && slopeangle)   // put more force when going up
 							{
@@ -805,7 +804,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								if (this.get_u32("next_engine_turnon") <= getGameTime())
 								{
-									this.getSprite().PlayRandomSound("/EngineThrottle", 1.7f, 0.90f + XORRandom(11)*0.01f);
+									//this.getSprite().PlayRandomSound("/EngineThrottle", 1.2f, 0.90f + XORRandom(11)*0.01f);
 									this.set_u32("next_engine_turnon", getGameTime() + 40);
 								}
 
@@ -822,7 +821,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
-							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.5f));
+							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.9f));
 
 							
 							
@@ -871,6 +870,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					if (down)
 					{
 						this.Tag("holding_down");
+						
 						f32 angle = this.getAngleDegrees();
 						if (this.isOnGround())
 						{
@@ -908,10 +908,10 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						{
 							f32 angle = this.getAngleDegrees();
 							if (!left && !right)
-								this.AddTorque(angle < 180 ? -1250 : 1250);
+								this.AddTorque(angle < 180 ? -1450 : 1450);
 							else
 								this.AddTorque(((faceleft && left) || (!faceleft && right)) ? 1500 : -1500);
-							this.AddForce(Vec2f(0, -1800));
+							this.AddForce(Vec2f(0, this.getMass()*-0.6f));
 						}
 					}
 
@@ -928,7 +928,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 				if (ap.name == "GUNNER" && !isKnocked(blob))
 				{
-					//print(blob.getPlayer().getUsername() + " gunner on " + this.getName());
+					hascrew = true;
 					// set facing
 					blob.SetFacingLeft(this.isFacingLeft());
 
@@ -991,6 +991,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 				// ROWER
 				if ((ap.name == "ROWER" && this.isInWater()) || (ap.name == "SAIL" && !this.hasTag("no sail")))
 				{
+					hascrew = true;
 					const f32 moveForce = v.move_speed;
 					const f32 turnSpeed = v.turn_speed;
 					Vec2f force;
@@ -1040,8 +1041,8 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						this.AddForce(force);
 					}
 				}
-			}  // ap.occupied
-		}   // for
+			}
+		}
 	}
 
 	if (this.hasTag("airship"))
@@ -1051,6 +1052,10 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 		this.AddForce(Vec2f(0, flyForce * flyAmount));
 	}
 
+	if (!hascrew)
+	{
+		this.set_f32("engine_RPMtarget", 0); // shut off the engine (longer idle time?)
+	}
 }
 
 CSpriteLayer@ Vehicle_addWheel(CBlob@ this, VehicleInfo@ v, const string& in textureName, int frameWidth, int frameHeight, int frame, Vec2f offset)

@@ -23,6 +23,19 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	Vec2f v = (this.getVelocity() + this.getOldVelocity())/2;
+	if (v.getLength() > 27.0)
+	{
+		this.getSprite().SetFrameIndex(2);
+	}
+	else if (v.getLength() > 19.0)
+	{
+		this.getSprite().SetFrameIndex(1);
+	}
+	else{
+		this.getSprite().SetFrameIndex(0);
+	}
+	
 	Vec2f pos = this.getPosition();
 	CShape@ shape = this.getShape();
 	Vec2f velocity = this.getVelocity();
