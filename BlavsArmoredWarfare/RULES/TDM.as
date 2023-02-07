@@ -96,7 +96,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 	
 	return false;			//team not red or blue (probably spectator so dont want to check game over)
 }
-/*
+
 int blobcount = 0;
 
 void onBlobCreated( CRules@ this, CBlob@ blob )
@@ -110,7 +110,7 @@ void onBlobCreated( CRules@ this, CBlob@ blob )
 		}
 	}
 }
-*/
+
 string cost_config_file = "tdm_vars.cfg";
 
 void Config(TDMCore@ this)
@@ -1113,7 +1113,7 @@ void Reset(CRules@ this)
 
 void onRestart(CRules@ this)
 {
-	//if (isServer() && blobcount >= 55000) QuitGame();
+	if (isServer() && blobcount >= 55000) QuitGame();
 	Reset(this);
 }
 
