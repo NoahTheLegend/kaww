@@ -109,11 +109,8 @@ void onRender(CRules@ this)
 	{
 		const string shiprektVersion = "Armored Warfare 2.0\n";
 		const string lastChangesInfo = "\nChanges:\n\n"
-		+ "  * Ranks & Progression: Win, kill enemies or mine ore to unlock classes and perks!\n    Ranks and experience are bound to player and saved permanently\n"
-		+ "  * New perks: A set of perks with game-changing features - 'pay' something to get stronger abilities\n"
-		+ "  * Bots: Greatly written AI to fill server with small players count\n"
-        + "  * New blocks: Effective against explosions and shells - a good and fair option for defensive gameplay\n"
-        + "  * Most of bugs fixed: Common, rare and single-happening bugs are gone\n"
+		+ "  * 2 New perks: Paratrooper & Bull\n"
+        + "  * New Sticky grenade\n"
         + "  * New maps: enjoy a few new unique maps for TDM and default modes\n"
         + "  * Other: Small and different improvements, including QOL and balance\n";
 		
