@@ -178,7 +178,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (p !is null)
 	{
 		if (getRules().get_string(p.getUsername() + "_perk") == "Lucky" && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
-		else if (getRules().get_string(p.getUsername() + "_perk") == "Bull") damage *= 0.75f;
 	}
 	if (isServer()) //update bots' logic
 	{
@@ -300,14 +299,6 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 	}
 	if (!getNet().isServer()) { return; }
 	if (aimangle < 0.0f) { aimangle += 360.0f; }
-
-	if (this.getPlayer() !is null)
-	{
-		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
-		{
-			damage *= 1.5f;
-		}
-	}
 
 	Vec2f blobPos = this.getPosition();
 	Vec2f vel = this.getVelocity();
@@ -581,6 +572,11 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				reloadTime = infantry.reload_time * 1.5;
 				time = 4;
 			}
+			else if (getRules().get_string(p.getUsername() + "_perk") == "Bull")
+			{
+				reloadTime = infantry.reload_time * 0.75f;
+				time = 2;
+			}
 			if (p.getBlob() !is null && p.getBlob().getSprite() !is null)
 			{
 				Animation@ anim = p.getBlob().getSprite().getAnimation("reload");
@@ -819,7 +815,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
 				{
 					sprint = this.getHealth() >= this.getInitialHealth()/2 && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
-					walkStat = 1.2f;
+					walkStat = 1.1f;
 					airwalkStat = 2.0f;
 					jumpStat = 1.2f;
 				}

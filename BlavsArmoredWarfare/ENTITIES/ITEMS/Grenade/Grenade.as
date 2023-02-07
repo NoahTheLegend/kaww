@@ -67,7 +67,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)
 {
-	return !this.hasTag("activated");
+	return this.getName() == "grenade" || this.getName() == "sgrenade";
 }
 
 void DoExplosion(CBlob@ this)
@@ -131,13 +131,6 @@ void onTick(CBlob@ this)
 			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 			if (ap !is null && ap.isKeyJustPressed(key_action3) && ap.getOccupied() !is null && ap.getOccupied().isMyPlayer())
 			{
-				if (ap.getOccupied().getPlayer() !is null)
-				{
-					if (getRules().get_string(ap.getOccupied().getPlayer().getUsername() + "_perk") == "Bull")
-					{
-						return;
-					}
-				}
 				//if (!this.hasTag("no_pin")) Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
 				CBitStream params;
 				this.SendCommand(this.getCommandID("activate"), params);
