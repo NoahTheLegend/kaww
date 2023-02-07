@@ -122,7 +122,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.hasTag("grenade"))
 	{
-		return damage * 0.65f;
+		return damage * 0.3f;
 	}
 	if (customData == Hitters::flying || customData == Hitters::flying)
 	{
