@@ -975,6 +975,12 @@ void onTick(CBlob@ this)
 	if (!this.get("moveVars", @moveVars)) return;	
 
 	ManageGun(this, archer, moveVars, infantry);
+	if (getHUD() !is null && getHUD().hasMenus())
+	{
+		this.set_u32("set_nomenus", getGameTime()+1);
+	}
+	if (this.get_u32("set_nomenus") > getGameTime()) this.Tag("had_menus");
+	else this.Untag("had_menus");
 	
 	if (this.get_u8("reloadqueue") > 0) this.sub_u8("reloadqueue", 1);
 	CControls@ controls = this.getControls();
@@ -994,11 +1000,13 @@ void onTick(CBlob@ this)
 
 bool canSend( CBlob@ this )
 {
+	if (this.hasTag("had_menus") || this.getTickSinceCreated() <= 5) return false;
 	return (this.isMyPlayer() || this.getPlayer() is null);
 }
 
 void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 {
+	if (this.hasTag("had_menus") || this.getTickSinceCreated() <= 5) return;
 	Vec2f thisAimPos = this.getAimPos();
 
 	float angle = Maths::ATan2(thisAimPos.y - this.getPosition().y, thisAimPos.x - this.getPosition().x) * 180 / 3.14159;
