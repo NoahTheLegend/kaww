@@ -73,7 +73,7 @@ void onRender(CSprite@ this)
 		else
 		{
 			f32 angle = blob.get_f32("gunelevation");
-			if (blob.isFacingLeft()) angle = Maths::Abs(angle-360.0f+blob.getAngleDegrees());
+			if (blob.isFacingLeft()) angle = Maths::Abs(angle-360.0f+blob.getAngleDegrees()-(blob.getAngleDegrees()>180?180:0));
 			else angle += blob.getAngleDegrees();
 			if (angle > 360.0f) angle -= 360.0f;
 			else if (angle < -360.0f) angle += 360.0f;
