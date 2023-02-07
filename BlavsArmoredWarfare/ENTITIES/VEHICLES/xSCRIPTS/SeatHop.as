@@ -22,14 +22,6 @@ void onTick(CBlob@ this)
 	        !this.isKeyPressed(key_left) &&
 	        !this.isKeyPressed(key_right))
 	{
-		if (this.getPlayer() !is null )
-		{
-			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
-			{
-    	        return;
-    	    }
-    	}
-
 		CBlob@[] blobsInRadius;
 		this.getMap().getBlobsInRadius(this.getPosition(), this.getRadius() * 1.5f + 25.0f, @blobsInRadius);
 		AttachmentPoint@[] points;
@@ -44,6 +36,13 @@ void onTick(CBlob@ this)
 			        (blob.getTeamNum() > 8 || blob.getTeamNum() == this.getTeamNum()) &&
 					!this.getMap().rayCastSolid(this.getPosition(), blob.getPosition()))
 			{
+				if (this.getPlayer() !is null)
+				{
+					if (!blob.hasTag("gun") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+					{
+    			        continue;
+    			    }
+    			}
 				//can't get into carried blob - can pick it up after they get in though
 				//(prevents dinghy rockets)
 				if (blob.isAttachedToPoint("PICKUP"))
