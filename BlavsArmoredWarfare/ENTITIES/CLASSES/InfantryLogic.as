@@ -111,6 +111,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("bootout");
 	this.addCommandID("reload");
 	this.Tag("3x2");
+	this.set_u32("set_nomenus", 0);
 
 	if (thisBlobHash == _mp5) this.Tag(medicTagString);
 
