@@ -250,7 +250,11 @@ void onTick(CSprite@ this)
 		Vec2f head_offset = getHeadOffset(blob, -1, layer);
 
 		// behind, in front or not drawn
-		if (layer == 0 || ((!blob.isAttached() || blob.hasTag("dead")) && blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage"))
+		if (blob.hasTag("hide_head"))
+		{
+			head.SetVisible(false);
+		}
+		else if (layer == 0 || ((!blob.isAttached() || blob.hasTag("dead")) && blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage"))
 		{
 			head.SetVisible(false);
 		}

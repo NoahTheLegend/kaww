@@ -52,6 +52,12 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 	{
 		SetOccupied(attachedPoint, 1);
 		attached.Tag("seatez");
+		string name = attachedPoint.name;
+		name = name.substr(0, name.size()-1);
+		if (name == "PASSENGER" && this.hasTag("armory"))
+		{
+			attached.Tag("hide_head");
+		}
 		Sound::Play("GetInVehicle.ogg", attached.getPosition());
 
 		if (this.getDamageOwnerPlayer() is null) {
@@ -66,6 +72,12 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	{
 		SetOccupied(attachedPoint, 0);
 		detached.Untag("seatez");
+		string name = attachedPoint.name;
+		name = name.substr(0, name.size()-1);
+		if (name == "PASSENGER" && this.hasTag("armory"))
+		{
+			detached.Untag("hide_head");
+		}
 
 		detached.getSprite().SetRelativeZ(0);
 
