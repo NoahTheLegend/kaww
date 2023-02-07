@@ -552,6 +552,10 @@ void server_FireBlob(CBlob@ this, CBlob@ blob, const u8 charge)
 
 void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 {
+	if (!this.hasTag("aerial") && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
+	{
+		return; // turn engines off!
+	}
 	bool hascrew = false;
 
 	v.move_direction = 0;
