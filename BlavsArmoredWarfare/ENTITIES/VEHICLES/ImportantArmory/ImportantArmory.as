@@ -270,6 +270,20 @@ void onDie(CBlob@ this)
 {
     Explode(this, 64.0f, 1.0f);
 
+	bool dont_end = false;
+
+	CBlob@[] iarmories;
+	getBlobsByName("importantarmory", @iarmories);
+
+	for (u8 i = 0; i < iarmories.length; i++)
+	{
+		CBlob@ iarmory = iarmories[i];
+		if (iarmory.getTeamNum() != this.getTeamNum()) continue;
+		if (iarmory is this) continue;
+		dont_end = true;
+	}
+	
+	if (dont_end) return;
 	CBlob@[] tents;
 	getBlobsByName("tent", @tents);
 
