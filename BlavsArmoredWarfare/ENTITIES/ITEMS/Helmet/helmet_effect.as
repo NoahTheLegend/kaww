@@ -26,7 +26,6 @@ void UpdateScript(CBlob@ this)
             for (u8 i = 0; i < getPatreonMembers().length; i++)
             {
                 string name = getPatreonMembers()[i];
-                printf(""+getPatreonMembers()[i]);
                 if (name == this.getPlayer().getUsername())
                 {
                     helmet.SetFrameIndex(1);
