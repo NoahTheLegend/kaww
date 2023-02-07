@@ -127,18 +127,21 @@ void InitClasses(CBlob@ this)
 						);
 	
 	addPlayerPerk(this, "Paratrooper", "$9_class_icon$", "Paratrooper",
-						"Paratrooper:\n\n"+"$9_class_icon$"+"Parachute"
-						+"\n                   - Hold W while falling"
+						"Paratrooper:\n\n"+"$9_class_icon$"+"Modernized Parachute"
+						+"\n                   - Use parachute any time"
+						+"\n                     (Hold W while falling)"
+						+"\n                   - Better parachute fly"
 						+"\n\n                  Heavy Load"
+						+"\n                   - Take 50% damage while\n                    using parachute."
 						+"\n                   - Take 200% fall damage     "
 						);
 
 	addPlayerPerk(this, "Bull", "$10_class_icon$", "Bull",
 						"Bull:\n\n"+"$10_class_icon$"+"Physical Strength"
 						+"\n                   - Better walking, jumping, sprinting     "
-						+"\n                   - 25% Faster reload"
+						+"\n                   - 33% Faster reload" //25% actually
 						+"\n\n                  Restlessness"
-						+"\n                   - Can't use vehicles and MGs     "
+						+"\n                   - Can't use vehicles"
 						);
 }
 

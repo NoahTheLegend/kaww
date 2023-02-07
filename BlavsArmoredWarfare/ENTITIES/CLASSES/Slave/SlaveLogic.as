@@ -82,11 +82,18 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return damage*0.5f;
 		else return 0;
 	}
-	if (this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage")
+	if (this.getPlayer() !is null)
 	{
-		if (customData == Hitters::fire)
+		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage")
 		{
-			return damage * 2;
+			if (customData == Hitters::fire)
+			{
+				return damage * 2;
+			}
+		}
+		else if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+		{
+			return damage * 0.5f;
 		}
 	}
 	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
@@ -845,9 +852,28 @@ void ManageParachute( CBlob@ this )
 	
 	if (this.hasTag("parachute"))
 	{
+		f32 mod = 1.0f;
+		bool aughhh = false;
+		if (this.getPlayer() !is null)
+		{
+			if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+			{
+				mod = 1.33f;
+				aughhh = true;
+			}
+		}
+
 		this.set_u32("no_climb", getGameTime()+2);
 		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
-		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.55f : 0.73)));
+		Vec2f vel = this.getVelocity();
+		if (aughhh)
+		{
+			if (this.isKeyPressed(key_left))
+				this.AddForce(Vec2f(-20.0f, 0));
+			else if (this.isKeyPressed(key_right))
+				this.AddForce(Vec2f(20.0f, 0));
+		}
+		this.setVelocity(Vec2f(vel.x, vel.y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.55f / mod : 0.73/*default fall speed*/)));
 	}
 }
 
