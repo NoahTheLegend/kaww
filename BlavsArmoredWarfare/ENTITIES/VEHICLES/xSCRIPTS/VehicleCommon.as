@@ -603,12 +603,12 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						Vec2f vel = this.getVelocity();
 						Vec2f force;
 
-						// more force when starting
 						if (getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
 						{
 							moveForce = 0;
 						}
-
+						
+						// more force when starting
 						if (this.getShape().vellen < 1.75f)
 						{
 							moveForce *= 1.6f; // gear 1
