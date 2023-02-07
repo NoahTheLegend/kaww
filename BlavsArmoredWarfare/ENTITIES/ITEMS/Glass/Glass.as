@@ -9,6 +9,7 @@ void onInit(CBlob@ this)
 	this.Tag("destructable");
 	this.Tag("weakprop");
 	this.Tag("builder always hit");
+	this.Tag("glass");
 }
 
 f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData )
