@@ -96,7 +96,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 	
 	return false;			//team not red or blue (probably spectator so dont want to check game over)
 }
-
+/*
 int blobcount = 0;
 
 void onBlobCreated( CRules@ this, CBlob@ blob )
@@ -110,7 +110,7 @@ void onBlobCreated( CRules@ this, CBlob@ blob )
 		}
 	}
 }
-
+*/
 string cost_config_file = "tdm_vars.cfg";
 
 void Config(TDMCore@ this)
@@ -1113,7 +1113,7 @@ void Reset(CRules@ this)
 
 void onRestart(CRules@ this)
 {
-	if (isServer() && blobcount >= 55000) QuitGame();
+	//if (isServer() && blobcount >= 55000) QuitGame();
 	Reset(this);
 }
 
@@ -1296,6 +1296,11 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
         cfg_playerexp.remove(player.getUsername()); // could be destructive
     }
 
+	if (getPlayersCount() == 1 || getPlayersCount() == 0)
+	{
+		warn("Last player left, quitting the game");
+		if (isServer()) QuitGame();
+	}
 
 	if (isServer())
 	{
@@ -1324,6 +1329,7 @@ void onTick(CRules@ this)
 			this.Sync("redTickets", true);
 		}
 	}
+	/*
 	if (getGameTime() == 10)
 	{
 		u8 bots = 0; // count bots
@@ -1389,6 +1395,7 @@ void onTick(CRules@ this)
 			}
 		}
 	}
+
 	if (getGameTime() == 20 || this.hasTag("firstjoin"))
 	{
 		this.Untag("firstjoin");
@@ -1421,6 +1428,7 @@ void onTick(CRules@ this)
 			}
 		}
 	}
+	*/
 	if (getGameTime() % 30 == 0)
 	{
 		CBlob@[] flags;
