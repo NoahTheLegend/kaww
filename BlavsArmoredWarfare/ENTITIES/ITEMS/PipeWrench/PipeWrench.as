@@ -95,7 +95,7 @@ void onTick(CBlob@ this)
 							if (blob.hasTag("vehicle") || blob.hasTag("bunker") || blob.hasTag("structure"))
 							{
 								if (blob.hasTag("respawn")) continue; // dont repair outposts
-								if (team == blob.getTeamNum())
+								if (team == blob.getTeamNum() || blob.getTeamNum() >= 2)
 								{
 									if (isServer())
 									{
