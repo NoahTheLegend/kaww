@@ -139,7 +139,7 @@ CSpriteLayer@ LoadHead(CSprite@ this, int headIndex)
 		if (player !is null && !player.isBot())
 		{
 			Accolades@ acc = getPlayerAccolades(player.getUsername());
-			if (acc.hasCustomHead())
+			if (acc.hasCustomHead() || acc.patreonMember)
 			{
 				texture_file = acc.customHeadTexture;
 				headIndex = acc.customHeadIndex;

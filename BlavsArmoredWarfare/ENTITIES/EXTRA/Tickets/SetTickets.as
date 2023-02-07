@@ -2,6 +2,8 @@
 void onInit(CBlob@ this)
 {
     this.set_u16("set_tickets", 0);
+    string[] tickets = this.getName().split("_");
+    this.getShape().SetGravityScale(0.0f);
 }
 
 void onTick(CBlob@ this)
