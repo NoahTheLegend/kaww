@@ -14,6 +14,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
+	this.Tag("armory");
 
 	Vehicle_Setup(this,
 	              4500.0f, // move speed  //103

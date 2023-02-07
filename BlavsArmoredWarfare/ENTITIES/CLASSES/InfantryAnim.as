@@ -135,7 +135,6 @@ void onTick(CSprite@ this)
 		return;
 	}
 
-	// camo netting
 	if (blob.getPlayer() !is null)
 	{
 		CSpriteLayer@ camo = this.getSpriteLayer("camo");
@@ -251,7 +250,7 @@ void onTick(CSprite@ this)
 					this.SetVisible(true);
 					frontarm.SetVisible(true);
 					this.RemoveSpriteLayer("bush");
-					if (helmet !is null) helmet.SetVisible(true);
+					if (helmet !is null && !blob.isAttached()) helmet.SetVisible(true);
 				}
 			}
 		}

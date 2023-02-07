@@ -281,9 +281,9 @@ void onTick(CSprite@ this)
 			this.SetAnimation("test");
 		}
 		else if (blob.hasTag("seatez"))
-	{
-		this.SetAnimation("heavy");
-	}
+		{
+			this.SetAnimation("heavy");
+		}
 		else if (action2 || (this.isAnimation("strike") && !this.isAnimationEnded()))
 		{
 			this.SetAnimation("strike");

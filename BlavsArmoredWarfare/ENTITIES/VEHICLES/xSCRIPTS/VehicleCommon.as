@@ -1274,7 +1274,6 @@ void Vehicle_onAttach(CBlob@ this, VehicleInfo@ v, CBlob@ attached, AttachmentPo
 			server_LoadAmmo(this, attached, v.getCurrentAmmo().fire_amount, v);
 		}
 	}
-
 	// move mag offset
 	if (attachedPoint.name == "MAG")
 	{

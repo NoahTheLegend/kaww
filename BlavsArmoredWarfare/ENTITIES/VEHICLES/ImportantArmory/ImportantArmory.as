@@ -15,6 +15,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
+	this.Tag("armory");
 	this.set_u16("extra_no_heal", 15);
 	if (isServer())
 	{
