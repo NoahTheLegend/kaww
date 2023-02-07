@@ -22,8 +22,39 @@ void onInit(CBlob@ this)
 		front.SetRelativeZ(65.8f);
 		front.SetOffset(Vec2f(0.0f, -4.0f));
 	}
+}
 
-	this.SetFacingLeft(this.getTeamNum() == 1);
+void onTick(CBlob@ this)
+{
+	if (this.getTickSinceCreated() == 1)
+	{
+		CMap@ map = getMap();
+		if (map is null) return;
+
+		CBlob@[] enemyspawns;
+		getBlobsByName("tent", @enemyspawns);
+		getBlobsByName("importantarmory", @enemyspawns);
+
+		f32 dist = 99999.0f;
+		u16 id = 0;
+		for (u8 i = 0; i < enemyspawns.length; i++)
+		{
+			CBlob@ enemyspawn = enemyspawns[i];
+			if (enemyspawn is null || enemyspawn.getTeamNum() == this.getTeamNum()) continue;
+			if (enemyspawn.getDistanceTo(this) < dist)
+			{
+				dist = enemyspawn.getDistanceTo(this);
+				id = enemyspawn.getNetworkID();
+			}
+		}
+
+		CBlob@ target = getBlobByNetworkID(id);
+		if (target !is null)
+		{
+			this.SetFacingLeft(target.getPosition().x <= this.getPosition().x);
+		}
+		else this.SetFacingLeft(this.getTeamNum() == 1);
+	}
 }
 
 void onHealthChange(CBlob@ this, f32 health_old)
