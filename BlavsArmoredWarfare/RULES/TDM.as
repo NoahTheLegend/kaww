@@ -1296,11 +1296,11 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
         cfg_playerexp.remove(player.getUsername()); // could be destructive
     }
 
-	if (getPlayersCount() == 1 || getPlayersCount() == 0)
-	{
-		warn("Last player left, quitting the game");
-		if (isServer()) QuitGame();
-	}
+	//if (getPlayersCount() == 1 || getPlayersCount() == 0)
+	//{
+	//	warn("Last player left, quitting the game");
+	//	if (isServer()) QuitGame();
+	//}
 
 	if (isServer())
 	{
@@ -1329,7 +1329,7 @@ void onTick(CRules@ this)
 			this.Sync("redTickets", true);
 		}
 	}
-	/*
+	
 	if (getGameTime() == 10)
 	{
 		u8 bots = 0; // count bots
@@ -1428,7 +1428,7 @@ void onTick(CRules@ this)
 			}
 		}
 	}
-	*/
+	
 	if (getGameTime() % 30 == 0)
 	{
 		CBlob@[] flags;
