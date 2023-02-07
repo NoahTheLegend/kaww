@@ -1,5 +1,6 @@
 #include "PixelOffsets.as"
 #include "RunnerTextures.as"
+#include "Accolades.as"
 
 void onInit(CBlob@ this)
 {
@@ -14,11 +15,24 @@ void UpdateScript(CBlob@ this)
     if (helmet !is null)
     {
         helmet.addAnimation("default", 0, true);
-		int[] frames = {0};
+		int[] frames = {0, 1};
 		helmet.animation.AddFrames(frames);
 		
 		helmet.SetVisible(true);
         helmet.SetRelativeZ(0.28f);
+        helmet.SetFrameIndex(0);
+        if (this.getPlayer() !is null)
+        {
+            for (u8 i = 0; i < getPatreonMembers().length; i++)
+            {
+                string name = getPatreonMembers()[i];
+                printf(""+getPatreonMembers()[i]);
+                if (name == this.getPlayer().getUsername())
+                {
+                    helmet.SetFrameIndex(1);
+                }
+            }
+        }
         if(this.getSprite().isFacingLeft())
             helmet.SetFacingLeft(true);
     }
