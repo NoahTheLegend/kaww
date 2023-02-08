@@ -391,7 +391,7 @@ void ManageParachute( CBlob@ this )
 		{
 			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 			{
-				if (this.isKeyPressed(key_up) && this.getVelocity().y > 5.5f)
+				if (this.isKeyPressed(key_up) && this.getVelocity().y > 4.75f)
 				{
 					Sound::Play("/ParachuteOpen", this.getPosition());
 					this.set_u32("last_parachute", getGameTime()+45);
