@@ -501,7 +501,27 @@ void WarfareExplode(CBlob@ this, f32 radius, f32 damage)
 			CBlob@ hit_blob = blobs[i];
 			if (hit_blob is this) continue;
 
-			WarfareHitBlob(this, hit_blob, radius, damage, hitter, should_teamkill);
+			bool dont_hit = false;
+			
+			if (hit_blob.hasTag("player"))
+			{
+				Vec2f v = hit_blob.getPosition() - this.getPosition();
+				HitInfo@[] doorInfos;
+				if (map.getHitInfosFromRay(m_pos, v.Angle(), v.Length(), this, doorInfos))
+				{
+					for (uint j = 0; j < doorInfos.length; j++)
+					{
+						HitInfo@ hi = doorInfos[j];
+                    	CBlob@ b = hi.blob;
+						if (b !is null && b.hasTag("door") && b.isCollidable())
+						{
+							dont_hit = true;
+						}
+					}
+				}
+			}
+
+			if (!dont_hit) WarfareHitBlob(this, hit_blob, radius, damage, hitter, should_teamkill);
 		}
 	}
 }
