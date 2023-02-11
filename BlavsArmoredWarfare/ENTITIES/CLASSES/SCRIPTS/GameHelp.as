@@ -112,6 +112,7 @@ void onRender(CRules@ this)
 		+ "  * Doors now block grenade explosions\n"
         + "  * New effects for shooting with vehicles\n"
         + "  * Nerfed/buffed some perks\n"
+        + "  * Javelin has also manual control now\n"
         + "  * Binoculars and javelins should work with fixed camera now\n"
         + "  * Barbed wire will break on impact with vehicle\n";
 		
