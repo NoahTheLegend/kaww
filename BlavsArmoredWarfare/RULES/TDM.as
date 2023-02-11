@@ -103,10 +103,11 @@ void onBlobCreated( CRules@ this, CBlob@ blob )
 {
 	if (isServer())
 	{
-		if (getGameTime()%90==0 && blob !is null && blob.getNetworkID() > 50000)
+		if (getGameTime()%90==0 && blob !is null && blob.getNetworkID() > 45000)
 		{
-			warn("BLOB: "+blob.getName()+" NETID: "+blob.getNetworkID());
+			//warn("BLOB: "+blob.getName()+" NETID: "+blob.getNetworkID());
 			blobcount = blob.getNetworkID();
+			if (!this.hasTag("message_sent")) this.Tag("send_message");
 		}
 	}
 }
@@ -1152,7 +1153,7 @@ void Reset(CRules@ this)
 
 void onRestart(CRules@ this)
 {
-	if (isServer() && blobcount >= 55000) QuitGame();
+	if (isServer() && blobcount >= 45000) QuitGame();
 	Reset(this);
 }
 
@@ -1349,6 +1350,12 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 
 void onTick(CRules@ this)
 {
+	if (this.hasTag("send_message"))
+	{
+		this.Untag("send_message");
+		this.Tag("message_sent");
+		client_AddToChat("Server will prophylactically restart after match ends.", SColor(255, 255, 35, 35));
+	}
 	if (getGameTime() == 1)
 	{
 		u16 count = 10 + getPlayersCount();
