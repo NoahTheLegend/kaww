@@ -107,7 +107,11 @@ void onBlobCreated( CRules@ this, CBlob@ blob )
 		{
 			//warn("BLOB: "+blob.getName()+" NETID: "+blob.getNetworkID());
 			blobcount = blob.getNetworkID();
-			if (!this.hasTag("message_sent")) this.Tag("send_message");
+			if (!this.hasTag("message_sent"))
+			{
+				this.set_bool("send_message", true);
+				this.Sync("send_message", true);
+			};
 		}
 	}
 }
@@ -1350,9 +1354,9 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 
 void onTick(CRules@ this)
 {
-	if (this.hasTag("send_message"))
+	if (this.get_bool("send_message"))
 	{
-		this.Untag("send_message");
+		this.set_bool("send_message", false);
 		this.Tag("message_sent");
 		client_AddToChat("Server will prophylactically restart after match ends.", SColor(255, 255, 35, 35));
 	}
