@@ -10,6 +10,7 @@ void onInit(CBlob@ this)
 	this.Tag("weak vehicle");
 	this.Tag("has machinegun");
 	this.Tag("friendly_bullet_pass");
+	this.Tag("truck");
 
 	this.set_f32("max_angle_diff", 0.5f);
 
