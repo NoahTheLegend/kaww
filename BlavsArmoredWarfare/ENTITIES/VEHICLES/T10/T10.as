@@ -84,6 +84,7 @@ void onInit(CBlob@ this)
 			turret.server_setTeamNum(this.getTeamNum());
 			this.server_AttachTo( turret, "TURRET" );
 			this.set_u16("turretid", turret.getNetworkID());
+			turret.set_u16("tankid", this.getNetworkID());
 
 			turret.SetFacingLeft(facing_left);
 		}

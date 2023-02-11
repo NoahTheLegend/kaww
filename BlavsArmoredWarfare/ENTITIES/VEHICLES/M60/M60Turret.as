@@ -5,7 +5,7 @@
 
 const u8 cooldown_time = 210;//210;
 const u8 barrel_compression = 6; // max barrel movement
-const u16 recoil = 270;
+const u16 recoil = 210;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
@@ -254,8 +254,6 @@ void onTick(CBlob@ this)
 			{
 				factor = 1;
 			}
-
-			
 		}
 
 		if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
@@ -273,7 +271,6 @@ void onTick(CBlob@ this)
 		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
 		arm.SetOffset(Vec2f(this.isFacingLeft() ? -19.0f : -18.0f, this.isFacingLeft() ? -28.0f : -27.0f));
 		arm.SetOffset(arm.getOffset() - Vec2f(-barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
-
 		arm.SetRelativeZ(-50.0f);
 	}
 }
@@ -354,8 +351,8 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 		if (hull !is null)
 		{
-			hull.AddForce(Vec2f(hull.isFacingLeft() ? (recoil*5.0f) : (-recoil*5.0f), 0.0f));
-		}	
+			hull.AddForce(Vec2f(hull.isFacingLeft() ? (recoil*5.0f) : (recoil*-5.0f), 0.0f));
+		}
 
 		if (isClient())
 		{
