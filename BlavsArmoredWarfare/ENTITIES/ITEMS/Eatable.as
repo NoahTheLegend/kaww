@@ -26,6 +26,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			CBlob@ theBlob = getBlobByNetworkID(blob_id);
 			if (theBlob !is null)
 			{
+				//if (theBlob.getHealth() > oldHealth)
+				{
+					if (theBlob.hasBlob("aceofspades", 1))
+					{
+						theBlob.TakeBlob("aceofspades", 1);
+						theBlob.set_u32("aceofspades_timer", getGameTime()+30);
+					}
+				}
+
 				f32 res = 1.5f;
 				u8 heal_amount;
 				if (!params.saferead_u8(heal_amount)) return;

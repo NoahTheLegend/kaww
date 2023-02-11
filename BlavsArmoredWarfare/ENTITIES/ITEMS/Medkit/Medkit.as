@@ -48,6 +48,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			
 			if (blob !is null)
 			{
+				//if (blob.getHealth() > oldHealth)
+				{
+					if (blob.hasBlob("aceofspades", 1))
+					{
+						blob.TakeBlob("aceofspades", 1);
+						blob.set_u32("aceofspades_timer", getGameTime()+30);
+					}
+				}
+
 				f32 heal_amount = 1.5f;
 				if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
 				{
