@@ -735,12 +735,47 @@ shared class TDMCore : RulesCore
 			}
 		}
 		
+		const string maps = {
+			"Desert.png",
+		   	"WinterFactory.png",
+		   	"Touge.png",
+		   	"Mortar.png",
+		   	"Syria.png",
+		   	"Cavern.png",
+		   	"Selfish_goldy.png",
+		   	"Goldy_KAWW_Megalith.png",
+		   	"Valley.png",
+		   	"Foothills.png",
+		   	"PlainHills.png",
+		   	"Worldwar.png",
+		   	"Classic.png",
+		   	"SmallClassic.png",
+		   	"Moats.png",
+		   	"Canyon.png",
+		   	"OldTouge.png",
+		   	"Fugue.png",
+		   	"Vietnam.png",
+		   	"FragFest.png",
+		   	"Florida.png",
+		   	"SiegeBeach.png",
+		   	"SoldiercombatTDM.png",
+		   	"Flattening.png",
+		   	"RooftopTanks.png",
+		   	"HamburgetHill.png"
+		}
+
 		//spawn the spawns :D
 		CMap@ map = getMap();
 
 		if (map !is null)
 		{
 			Vec2f respawnPos;
+			if (map.tilemapwidth == 0 || map.tilemapheight == 0)
+			{
+				warn("tilemapwidth|height is 0!!!");
+				LoadMap(maps[XORRandom(maps.length)]);
+				return;
+			}
 
 			//BLUE
 			if (!getMap().getMarkers("blue main spawn", respawnPositions))
