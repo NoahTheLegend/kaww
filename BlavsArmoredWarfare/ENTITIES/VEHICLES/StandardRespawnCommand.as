@@ -88,6 +88,7 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Bloodthirst", "$3_class_icon$", "Bloodthirsty",
 						"Bloodthirst:\n\n"+"$3_class_icon$"+"Vampirism"
 						+"\n                   - Regenerate health when killing     "
+						+"\n                   - Take only 33% other heal     "
 						+"\n\n                  Healing"
 						+"\n                   - Faster rate of regeneration   "
 						+"\n\n                  Silver bullets"
