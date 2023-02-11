@@ -110,6 +110,7 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
 						"Lucky:\n\n"+"$4_class_icon$"+"Fate's Friend"
 						+"\n                   - Always survive on 1 health          "
+						+"\n                   - Food and medkits delay the ability          "
 						+"\n\n                  Lucky Charm"
 						+"\n                   - Must carry an Ace of Spades           "
 						);
