@@ -428,6 +428,21 @@ void ManageParachute( CBlob@ this )
 	}
 }
 
+void onDie(CBlob@ this)
+{
+	if (isServer() && this.getName() == "antitank")
+	{
+		if (this.get_u32("mag_bullets") > 0)
+		{
+			CBlob@ b = server_CreateBlob("mat_heatwarhead", this.getTeamNum(), this.getPosition());
+			if (b !is null)
+			{
+				b.server_SetQuantity(1);
+			}
+		}
+	}
+}
+
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
 	// Deploy parachute!
