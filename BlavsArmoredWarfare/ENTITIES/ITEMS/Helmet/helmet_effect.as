@@ -20,6 +20,11 @@ void UpdateScript(CBlob@ this)
 		
 		helmet.SetVisible(true);
         helmet.SetRelativeZ(0.28f);
+        CSpriteLayer@ head = this.getSprite().getSpriteLayer("head");
+        if (head !is null)
+        {
+            helmet.SetRelativeZ(head.getRelativeZ()+1.0f);
+        }
         helmet.SetFrameIndex(0);
         if (this.getPlayer() !is null)
         {

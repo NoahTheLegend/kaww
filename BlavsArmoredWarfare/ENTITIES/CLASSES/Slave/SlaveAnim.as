@@ -115,12 +115,15 @@ void onTick(CSprite@ this)
 	if (blob.getPlayer() !is null)
 	{
 		CSpriteLayer@ camo = this.getSpriteLayer("camo");
+		CSpriteLayer@ helmet = this.getSpriteLayer("helmet");
 
 		if (camo !is null)
 		{
 			if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
 			{
 				isCamo = true;
+
+				if (helmet !is null) helmet.SetVisible(false);
 
 				if (blob.getShape().vellen > 0.1f)
 				{
@@ -205,7 +208,13 @@ void onTick(CSprite@ this)
 			{
 				camo.SetVisible(false);
 			}
+
+			if (blob.isAttachedToPoint("BED") || blob.isAttachedToPoint("BED2"))
+			{
+				this.SetVisible(false);
+			}
 		}
+		else if (helmet !is null) helmet.SetVisible(true);
 	}
 
 	CSpriteLayer@ skull = this.getSpriteLayer("skull");
