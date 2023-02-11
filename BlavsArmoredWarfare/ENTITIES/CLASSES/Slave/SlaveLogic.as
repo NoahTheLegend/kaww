@@ -891,6 +891,14 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 			}
 		}
 	}
+	if (detached !is null && (detached.getName() == "binoculars" || detached.getName() == "launcher_javelin"))
+	{
+		if (!g_fixedcamera && this.get_bool("disable_fixedcamera"))
+		{
+			this.set_bool("disable_fixedcamera", false);
+			g_fixedcamera = true;
+		}
+	}
 	// ignore collision for built blob
 	BuildBlock[][]@ blocks;
 	if (!this.get("blocks", @blocks))
@@ -960,5 +968,24 @@ void onAddToInventory(CBlob@ this, CBlob@ blob)
 	{
 		blob.server_Die();
 		blob.Untag("temp blob");
+	}
+}
+
+void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
+{
+	if (isServer())
+	{
+		if (attached !is null && attached.hasTag("change team on pickup"))
+		{
+			attached.server_setTeamNum(this.getTeamNum());
+		}
+	}
+	if (attached !is null && (attached.getName() == "binoculars" || attached.getName() == "launcher_javelin"))
+	{
+		if (g_fixedcamera)
+		{
+			this.set_bool("disable_fixedcamera", true);
+			g_fixedcamera = false;
+		}
 	}
 }
