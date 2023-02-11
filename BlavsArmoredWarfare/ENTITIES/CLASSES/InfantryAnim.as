@@ -496,6 +496,11 @@ void onTick(CSprite@ this)
 		}
 	}
 
+	if (blob.isAttachedToPoint("BED") || blob.isAttachedToPoint("BED2"))
+	{
+		this.SetVisible(false);
+	}
+
 	//arm anims
 	Vec2f armOffset = Vec2f(-1.0f, 4.0f + config_offset);
 	f32 armangle = -angle;
