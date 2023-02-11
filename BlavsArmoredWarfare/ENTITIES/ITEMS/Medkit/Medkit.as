@@ -48,7 +48,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			
 			if (blob !is null)
 			{
-				blob.server_Heal(1.5f);
+				f32 heal_amount = 1.5f;
+				if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+				{
+					heal_amount /= 3;
+				}
+				blob.server_Heal(heal_amount);
 				
 				if (this.get_u8("medamount") <= 1) 
 				{

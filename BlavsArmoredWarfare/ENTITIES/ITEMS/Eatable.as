@@ -26,15 +26,26 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			CBlob@ theBlob = getBlobByNetworkID(blob_id);
 			if (theBlob !is null)
 			{
+				f32 res = 1.5f;
 				u8 heal_amount;
 				if (!params.saferead_u8(heal_amount)) return;
-                if (theBlob.getName() == "mp5") heal_amount /= 2;
+                if (theBlob.getName() == "mp5")
+				{
+					if (heal_amount != 255) heal_amount /= 2;
+					res /= 2;
+				}
+
+				if (theBlob.getPlayer() !is null && getRules().get_string(theBlob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+				{
+					if (heal_amount != 255) heal_amount /= 3;
+					res /= 3;
+				}
 
 				if (heal_amount == 255)
 				{
-					f32 res = (theBlob.getInitialHealth()-theBlob.getHealth())*1.5f;
+					res = (theBlob.getInitialHealth()-theBlob.getHealth())*res;
 					theBlob.add_f32("heal amount", theBlob.getInitialHealth() - theBlob.getHealth());
-					res <= 0.5f ? theBlob.server_SetHealth(theBlob.getInitialHealth()) :  theBlob.server_Heal(res);
+					res <= 0.5f*(res/1.5f) ? theBlob.server_SetHealth(theBlob.getInitialHealth()) :  theBlob.server_Heal(res);
 					if (theBlob.getHealth() > theBlob.getInitialHealth()) theBlob.server_SetHealth(theBlob.getInitialHealth());
 				}
 				else
