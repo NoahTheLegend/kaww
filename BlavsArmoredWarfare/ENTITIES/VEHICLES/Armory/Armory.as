@@ -69,7 +69,7 @@ void onInit(CBlob@ this)
 
 	{
 		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press SPACE while holding to arm, ~4 seconds until boom.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
