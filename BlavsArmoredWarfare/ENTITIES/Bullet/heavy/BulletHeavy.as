@@ -432,7 +432,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 		if (blob.hasTag("door") && blob.getShape().getConsts().collidable)
 		{
-			return true;
+			return this.getTickSinceCreated() != 0;
 		}
 
 		if (blob.getName() == "wooden_platform" && blob.isCollidable())
