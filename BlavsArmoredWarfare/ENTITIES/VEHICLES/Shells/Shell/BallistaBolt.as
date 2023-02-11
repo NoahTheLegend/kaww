@@ -86,9 +86,9 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return true;
 	}
 
-	if (blob.hasTag("glass"))
+	if (blob.hasTag("passable"))
 	{
-		if (isServer()) this.server_Hit(blob, blob.getPosition(), Vec2f(0,0), 5.0f, Hitters::ballista, true); 
+		if (isServer()) this.server_Hit(blob, blob.getPosition(), Vec2f(0,0), 2.5f, Hitters::ballista, true); 
 		return false;
 	}
 
