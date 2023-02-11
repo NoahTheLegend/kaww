@@ -88,7 +88,7 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Bloodthirst", "$3_class_icon$", "Bloodthirsty",
 						"Bloodthirst:\n\n"+"$3_class_icon$"+"Vampirism"
 						+"\n                   - Regenerate health when killing     "
-						+"\n                   - Take only 33% other heal     "
+						+"\n                   - Take only 33% of other heal     "
 						+"\n\n                  Healing"
 						+"\n                   - Faster rate of regeneration   "
 						+"\n\n                  Silver bullets"
@@ -117,6 +117,7 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Wealthy",
 						"Wealthy:\n\n"+"$2_class_icon$"+"Highroller"
 						+"\n                   - Twice as much money earned"
+						+"\n                   - Kills give you 8 coins"
 						+"\n\n                  Health Insurance"
 						+"\n                   - Lose half of all money on death          "
 						);	
