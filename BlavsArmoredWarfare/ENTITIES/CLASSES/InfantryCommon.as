@@ -310,7 +310,7 @@ namespace RevolverParams
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 64; // time to reload
 	const ::u8 NORELOADTIMER 			= 3; // time after each shot where you can't reload
-	const ::u32 MAG_SIZE 				= 6; // max bullets in mag
+	const ::u32 MAG_SIZE 				= 7; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 28.0f; // speed that bullets fly
@@ -877,7 +877,7 @@ float getBulletSpread( int blobNameHash )
 void onRevolverReload(CBlob@ this)
 {
 	this.getSprite().PlaySound("Revolver_reload.ogg", 0.8);
-	for (uint i = 0; i < 6; i++)
+	for (uint i = 0; i < 7; i++)
 	{
 		makeGibParticle(
 		"EmptyShellSmall",      		            // file name
