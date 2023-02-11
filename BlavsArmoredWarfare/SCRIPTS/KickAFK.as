@@ -49,7 +49,7 @@ void onTick(CRules@ this)
 
 	int time = Time_Local();
 	int diff = time - lastMoveTime - idleToWarnSeconds;
-	if (!warned)
+	if (!warned && p.getTeamNum() != getRules().getSpectatorTeamNum())
 	{
 		if (diff > 0)
 		{
