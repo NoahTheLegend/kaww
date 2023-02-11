@@ -215,7 +215,7 @@ void spawnOre(CBlob@ this)
 	//setup res
 	_ore.Tag("custom quantity");
 	_ore.Init();
-	_ore.setPosition(this.getPosition() + Vec2f(-8.0f, 0.0f));
+	_ore.setPosition(this.getPosition() + Vec2f(-4.0f, 0.0f));
 	_ore.server_SetQuantity(!rare ? stone_amount : rare_output);
 
 	this.set_s16(fuel_prop, blobCount - actual_input); //burn wood
