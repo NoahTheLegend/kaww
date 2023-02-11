@@ -109,10 +109,11 @@ void onRender(CRules@ this)
 	{
 		const string shiprektVersion = "Armored Warfare 2.0\n";
 		const string lastChangesInfo = "\nChanges:\n\n"
-		+ "  * 2 New perks: Paratrooper & Bull\n"
-        + "  * New Sticky grenade\n"
-        + "  * New maps: enjoy a few new unique maps for TDM and default modes\n"
-        + "  * Other: Small and different improvements, including QOL and balance\n";
+		+ "  * Doors now block grenade explosions\n"
+        + "  * New effects for shooting with vehicles\n"
+        + "  * Nerfed/buffed some perks\n"
+        + "  * Binoculars and javelins should work with fixed camera now\n"
+        + "  * Barbed wire will break on impact with vehicle\n";
 		
 		GUI::SetFont("menu");
 		Vec2f lastChangesSize;
@@ -159,7 +160,7 @@ void onRender(CRules@ this)
         GUI::DrawTextCentered("Short-range\nfighter, has\na shovel", tlBox+shotgunInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Long-range\nfighter, very\naccurate", tlBox+sniperInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Medic\nHas a small\namount of HP", tlBox+medicInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("A tank cannon\nwith legs, requires\nrockets as ammo", tlBox+rpgInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("A tank cannon\non legs, requires\nrockets as ammo", tlBox+rpgInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Craft vehicles with scrap", tlBox+craftInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Passenger seat", tlBox+passengerInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Tank cannoneer\nShells are affected by gravity", tlBox+gunnerInfo, SColor(255, 240,240,240));
