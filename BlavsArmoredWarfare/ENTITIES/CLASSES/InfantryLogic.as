@@ -352,7 +352,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 
 				//big things block attacks
 				{
-					this.server_Hit(b, hi.hitpos, Vec2f(0,0), damage, type, true); 
+					this.server_Hit(b, hi.hitpos, Vec2f(0,0), damage, type, false); 
 					if (b.hasTag("door") && b.getShape().getConsts().collidable) break;
 					// end hitting if we hit something solid, don't if its flesh
 				}
@@ -363,7 +363,8 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 				Vec2f tpos = map.getTileWorldPosition(hi.tileOffset) + Vec2f(4, 4);
 				//bool canhit = canhit && map.getSectorAtPosition(tpos, "no build") is null;
 				TileType type = map.getTile(tpos).type;
-				if (!(map.isTileCastle(type) || isTileScrap(type) || map.isTileBackground(map.getTile(tpos)))
+				if (map.isTileBackground(map.getTile(tpos)) || !map.isTileSolid(map.getTile(tpos))) continue;
+				if (!(map.isTileCastle(type) || isTileScrap(type))
 				&& !isTileScrap(type) && (!isTileCompactedDirt(type) || XORRandom(2) == 0))
 					map.server_DestroyTile(hi.hitpos, 0.1f, this);
 			}
