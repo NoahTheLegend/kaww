@@ -164,7 +164,7 @@ void onRender(CRules@ this)
         GUI::DrawTextCentered("Craft vehicles with scrap", tlBox+craftInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Passenger seat", tlBox+passengerInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Tank cannoneer\nShells are affected by gravity", tlBox+gunnerInfo, SColor(255, 240,240,240));
-        GUI::DrawTextCentered("Tank driver\nIs responsible for it\nDon't lose this!", tlBox+mechanicInfo, SColor(255, 240,240,240));
+        GUI::DrawTextCentered("Tank driver\nIs responsible for it\nDon't lose the tank!", tlBox+mechanicInfo, SColor(255, 240,240,240));
         GUI::DrawTextCentered("Some gamemodes require\nteams to capture flags\nfor winning. In case of a tie\nthe team with bigger amount of\nflags wins the game!", tlBox+flagInfo, SColor(255, 240,240,240));
     }
 	
