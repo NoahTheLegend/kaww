@@ -13,7 +13,7 @@ f32 onPlayerTakeDamage(CRules@ this, CPlayer@ victim, CPlayer@ attacker, f32 Dam
 	CBlob@ victimblob = victim.getBlob();
 	if (victimblob !is null && victimblob.getTickSinceCreated() < getTicksASecond() * IMMUNITY_SECS && victim !is attacker)
 	{
-		if (victimblob.hasTag("invincible"))
+		//if (victimblob.hasTag("invincible"))
 		{
 			DamageScale = 0.0f;
 		}
