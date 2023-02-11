@@ -321,3 +321,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		launcherSetDeath( this, true); // set dead
 	}
 }
+
+void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
+{
+	if (!isServer()) return;
+	this.server_setTeamNum(attached.getTeamNum());
+}
