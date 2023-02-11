@@ -295,7 +295,40 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 			attached.server_setTeamNum(this.getTeamNum());
 		}
 	}
+	if (attached !is null && (attached.getName() == "binoculars" || attached.getName() == "launcher_javelin"))
+	{
+		if (g_fixedcamera)
+		{
+			this.set_bool("disable_fixedcamera", true);
+			g_fixedcamera = false;
+		}
+	}
 }
+
+void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
+{
+	// Deploy parachute!
+	if (detached.hasTag("aerial"))
+	{
+		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 120.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
+		{
+			if (!this.hasTag("parachute"))
+			{
+				Sound::Play("/ParachuteOpen", detached.getPosition());
+				this.Tag("parachute");
+			}
+		}
+	}
+	if (detached !is null && (detached.getName() == "binoculars" || detached.getName() == "launcher_javelin"))
+	{
+		if (!g_fixedcamera && this.get_bool("disable_fixedcamera"))
+		{
+			this.set_bool("disable_fixedcamera", false);
+			g_fixedcamera = true;
+		}
+	}
+}
+
 
 void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 {
@@ -439,22 +472,6 @@ void onDie(CBlob@ this)
 			if (b !is null)
 			{
 				b.server_SetQuantity(1);
-			}
-		}
-	}
-}
-
-void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
-{
-	// Deploy parachute!
-	if (detached.hasTag("aerial"))
-	{
-		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 120.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
-		{
-			if (!this.hasTag("parachute"))
-			{
-				Sound::Play("/ParachuteOpen", detached.getPosition());
-				this.Tag("parachute");
 			}
 		}
 	}
