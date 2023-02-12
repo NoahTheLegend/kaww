@@ -1157,7 +1157,15 @@ void Reset(CRules@ this)
 
 void onRestart(CRules@ this)
 {
-	if (isServer() && blobcount >= 45000) QuitGame();
+	if (isServer() && blobcount >= 45000)
+	{
+		for (u8 i = 0; i < getPlayersCount(); i++)
+		{
+			CPlayer@ p = getPlayer(i);
+			if (p !is null) DisconnectPlayer(p);
+		}
+		QuitGame();
+	}
 	Reset(this);
 }
 
@@ -1343,7 +1351,15 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 	if (getPlayersCount() == 1 || getPlayersCount() == 0)
 	{
 		warn("Last player left, quitting the game");
-		if (isServer()) QuitGame();
+		if (isServer())
+		{
+			for (u8 i = 0; i < getPlayersCount(); i++)
+			{
+				CPlayer@ p = getPlayer(i);
+				if (p !is null) DisconnectPlayer(p);
+			}
+			QuitGame();
+		}
 	}
 
 	if (isServer())
