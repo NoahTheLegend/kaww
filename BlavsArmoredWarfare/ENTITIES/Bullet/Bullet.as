@@ -19,7 +19,7 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	if (sprite !is null)
 	{
-		sprite.ScaleBy(Vec2f(0.5f + Maths::Sqrt(this.get_f32("bullet_damage_body")), 1.0f));
+		sprite.ScaleBy(Vec2f(0.25f + Maths::Sqrt(this.get_f32("bullet_damage_body")), 1.0f)); // multiplied by 2 on sv
 	}
 
 	this.SetMapEdgeFlags(u8(CBlob::map_collide_none | CBlob::map_collide_left | CBlob::map_collide_right | CBlob::map_collide_nodeath));
