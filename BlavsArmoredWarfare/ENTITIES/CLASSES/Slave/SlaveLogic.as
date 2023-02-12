@@ -891,7 +891,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 			}
 		}
 	}
-	if (detached !is null && (detached.getName() == "binoculars" || detached.getName() == "launcher_javelin"))
+	if (detached !is null && getLocalPlayer() !is null && getLocalPlayer().getBlob() is this && (detached.getName() == "binoculars" || detached.getName() == "launcher_javelin"))
 	{
 		if (!g_fixedcamera && this.get_bool("disable_fixedcamera"))
 		{
@@ -980,7 +980,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 			attached.server_setTeamNum(this.getTeamNum());
 		}
 	}
-	if (attached !is null && (attached.getName() == "binoculars" || attached.getName() == "launcher_javelin"))
+	if (attached !is null && getLocalPlayer() !is null && getLocalPlayer().getBlob() is this && (attached.getName() == "binoculars" || attached.getName() == "launcher_javelin"))
 	{
 		if (g_fixedcamera)
 		{
