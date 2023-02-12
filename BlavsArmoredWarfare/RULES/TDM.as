@@ -1162,7 +1162,7 @@ void onRestart(CRules@ this)
 		for (u8 i = 0; i < getPlayersCount(); i++)
 		{
 			CPlayer@ p = getPlayer(i);
-			if (p !is null) DisconnectPlayer(p);
+			if (p !is null) getNet().DisconnectPlayer(p);
 		}
 		QuitGame();
 	}
@@ -1356,7 +1356,7 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 			for (u8 i = 0; i < getPlayersCount(); i++)
 			{
 				CPlayer@ p = getPlayer(i);
-				if (p !is null) DisconnectPlayer(p);
+				if (p !is null) getNet().DisconnectPlayer(p);
 			}
 			QuitGame();
 		}
