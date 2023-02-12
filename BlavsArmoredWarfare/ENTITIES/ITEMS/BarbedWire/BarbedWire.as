@@ -15,11 +15,12 @@ void onInit(CBlob@ this)
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (isServer() && blob !is null && blob.hasTag("flesh") && blob.getTeamNum() != this.getTeamNum() && !blob.isAttached())
+	if (blob is null) return;
+	if (isServer() && blob.hasTag("flesh") && blob.getTeamNum() != this.getTeamNum() && !blob.isAttached())
 	{
 		this.server_Hit(blob, this.getPosition(), Vec2f(0, 0), 0.15f, Hitters::spikes, true);
 	}
-	if (blob.getTeamNum() != this.getTeamNum()
+	if (isServer() && blob.getTeamNum() != this.getTeamNum()
 	&& (blob.hasTag("aerial") || blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck")))
 	{
 		if (blob.hasTag("apc") || blob.hasTag("truck"))
