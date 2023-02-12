@@ -342,7 +342,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
 		Vec2f vel = Vec2f(0.0f, -27.5f).RotateBy(angle);
 		bullet.setVelocity(vel);
-		Vec2f pos = bullet.getPosition() + Vec2f((this.isFacingLeft() ? -1 : 1)*56.0f, 0.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
+		Vec2f pos = this.getPosition() + Vec2f((this.isFacingLeft() ? -1 : 1)*56.0f, -11.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
 		bullet.setPosition(pos);
 
 		CBlob@ hull = getBlobByNetworkID(this.get_u16("tankid"));
