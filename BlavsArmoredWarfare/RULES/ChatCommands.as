@@ -495,6 +495,11 @@ void onCommand(CRules@ this, u8 cmd, CBitStream @para)
 		SColor col = SColor(para.read_u8(), para.read_u8(), para.read_u8(), para.read_u8());
 		client_AddToChat(errorMessage, col);
 	}
+	else if (isClient() && cmd == 222)
+	{
+		client_AddToChat("Server will prophylactically restart when match ends.", SColor(255, 255, 35, 35));
+		this.Tag("restart_after_match");
+	}
 }
 
 bool isBlacklisted(string name)

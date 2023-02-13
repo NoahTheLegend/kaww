@@ -1,11 +1,16 @@
 #include "TDM_Structs.as";
 
-/*
 void onTick( CRules@ this )
 {
-    //see the logic script for this
+    if (this.hasTag("restart_after_match"))
+	{
+		if (getGameTime() % 30 == 0 && getGameTime() <= 300)
+		{
+			u32 time = 300 - getGameTime();
+			client_AddToChat("Server restarts in "+Maths::Ceil(time/30)+" second"+(time<2?"s":""), SColor(255, 255, 35, 35));
+		}
+	}
 }
-*/
 
 void onInit(CRules@ this)
 {

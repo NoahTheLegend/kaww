@@ -19,10 +19,9 @@ void onInit(CBlob@ this)
 	this.Tag("truck");
 	
 	this.set_u16("extra_no_heal", 15);
-	if (isServer())
-	{
-		if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), 0);
-	}
+	
+	if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), 0);
+	
 
 	Vehicle_Setup(this,
 	              5000.0f, // move speed  //103
@@ -405,10 +404,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {
 	if (hitterBlob.getTeamNum() != this.getTeamNum())
 	{
-		if (isServer())
-		{
-			if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), getGameTime()+150);
-		}
+		if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), getGameTime()+150);
 	}
 	if (hitterBlob.getName() == "missile_javelin" || hitterBlob.getName() == "ballista_bolt")
 	{
