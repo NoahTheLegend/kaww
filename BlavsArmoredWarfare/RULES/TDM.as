@@ -107,11 +107,8 @@ void onBlobCreated( CRules@ this, CBlob@ blob )
 		{
 			//warn("BLOB: "+blob.getName()+" NETID: "+blob.getNetworkID());
 			blobcount = blob.getNetworkID();
-			if (!this.hasTag("message_sent"))
-			{
-				this.set_bool("send_message", true);
-				this.Sync("send_message", true);
-			};
+			CBitStream params;
+			this.SendCommand(222, params);
 		}
 	}
 }
@@ -1157,15 +1154,6 @@ void Reset(CRules@ this)
 
 void onRestart(CRules@ this)
 {
-	if (isServer() && blobcount >= 45000)
-	{
-		for (u8 i = 0; i < getPlayersCount(); i++)
-		{
-			CPlayer@ p = getPlayer(i);
-			if (p !is null) getNet().DisconnectPlayer(p);
-		}
-		QuitGame();
-	}
 	Reset(this);
 }
 
@@ -1353,11 +1341,6 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 		warn("Last player left, quitting the game");
 		if (isServer())
 		{
-			for (u8 i = 0; i < getPlayersCount(); i++)
-			{
-				CPlayer@ p = getPlayer(i);
-				if (p !is null) getNet().DisconnectPlayer(p);
-			}
 			QuitGame();
 		}
 	}
@@ -1370,12 +1353,6 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 
 void onTick(CRules@ this)
 {
-	if (this.get_bool("send_message"))
-	{
-		this.set_bool("send_message", false);
-		this.Tag("message_sent");
-		client_AddToChat("Server will prophylactically restart after match ends.", SColor(255, 255, 35, 35));
-	}
 	if (getGameTime() == 1)
 	{
 		u16 count = 10 + getPlayersCount();
@@ -1393,6 +1370,22 @@ void onTick(CRules@ this)
 			this.set_s16("redTickets", count);
 			this.Sync("blueTickets", true);
 			this.Sync("redTickets", true);
+		}
+	}
+
+	if (getGameTime() == 300)
+	{
+		if (isServer() && blobcount >= 45000)
+		{
+			//for (u8 i = 0; i < getPlayersCount(); i++)
+			//{
+			//	CPlayer@ p = getPlayer(i);
+			//	if (p !is null) getNet().DisconnectPlayer(p);
+			//}
+    	
+			SaveEXP(this);
+
+			QuitGame();
 		}
 	}
 	/*
@@ -1568,22 +1561,26 @@ void onTick(CRules@ this)
 
 	if (getGameTime() % 9000 == 0) // auto save exp every 5 minutes
     {
-    	uint16 i;
-    	
-        for (i = 0; i < getPlayerCount(); i++)
-        {
-            CPlayer@ player = getPlayer(i);
-			if (player !is null)
-			{
-				if (this.get_u32(player.getUsername() + "_exp") != 0)
-				{
-					cfg_playerexp.add_u32(player.getUsername(), this.get_u32(player.getUsername() + "_exp"));
-				}
-			}
-        }
-
-		cfg_playerexp.saveFile("awexp.cfg");
+    	SaveEXP(this);
     }
+}
+
+void SaveEXP(CRules@ this)
+{
+	uint16 i;
+    	
+    for (i = 0; i < getPlayerCount(); i++)
+    {
+        CPlayer@ player = getPlayer(i);
+		if (player !is null)
+		{
+			if (this.get_u32(player.getUsername() + "_exp") != 0)
+			{
+				cfg_playerexp.add_u32(player.getUsername(), this.get_u32(player.getUsername() + "_exp"));
+			}
+		}
+    }
+	cfg_playerexp.saveFile("awexp.cfg");
 }
 
 void onInit(CRules@ this)
