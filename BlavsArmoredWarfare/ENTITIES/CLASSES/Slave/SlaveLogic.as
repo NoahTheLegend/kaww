@@ -470,7 +470,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
             if (this !is null)
             {
                 // create floating rank
-                CParticle@ p = ParticleAnimated("Ranks", this.getPosition() + Vec2f(8.5f,-14), Vec2f(0,-0.9), 0.0f, 1.0f, 0, level - 1, Vec2f(32, 32), 0, 0, true);
+                				// don't ask why, i just don't know. You can test on ur own.
+				//printf(""+level);
+				if (level <= 21) @p = ParticleAnimated("Ranks.png", this.getPosition() + Vec2f(8.5f,-14), Vec2f(0,-0.9), 0.0f, 1.0f, 0, level - 1, Vec2f(32, 32), 0, 0, true);
+                else @p = ParticleAnimated("Ranks1.png", this.getPosition() + Vec2f(8.5f,-14), Vec2f(0,-0.9), 0.0f, 1.0f, 0, 3 - (getLevels().length - level), Vec2f(32, 32), 0, 0, true);
                 if(p !is null)
                 {
                     p.collides = false;
