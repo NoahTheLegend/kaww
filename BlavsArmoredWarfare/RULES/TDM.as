@@ -103,7 +103,7 @@ void onBlobCreated( CRules@ this, CBlob@ blob )
 {
 	if (isServer())
 	{
-		if (getGameTime()%90==0 && blob !is null && blob.getNetworkID() > 45000)
+		if (getGameTime()%90==0 && blob !is null && blob.getNetworkID() > 55000)
 		{
 			//warn("BLOB: "+blob.getName()+" NETID: "+blob.getNetworkID());
 			blobcount = blob.getNetworkID();
@@ -1375,7 +1375,7 @@ void onTick(CRules@ this)
 
 	if (getGameTime() == 300)
 	{
-		if (isServer() && blobcount >= 45000)
+		if (isServer() && blobcount >= 55000)
 		{
 			//for (u8 i = 0; i < getPlayersCount(); i++)
 			//{
