@@ -31,12 +31,19 @@ const string[] RANKS = {"Recruit",              // new player
                         "Second Lieutenant",
                         "First Lieutenant",
                         "Captain",
-                        "Major"
+                        "Major",
+                        "Lieutenant Colonel",
+                        "Colonel",
+                        "General-Brigadier",
+                        "General-Major",
+                        "General-Lieutenant",
+                        "Army Chief"
                         };
 
 shared int[] getLevels() // +- LINEAR PROGRESSION
 {
-    int[] list = {25, // +25 Ranger     | Private
+    int[] list = {
+        25, // +25 Ranger               | Private
         100, // +75 Shotgun             | Refreiter
         250, // +150 Sniper             | Corporal
         450, // +200 RPG                | Master Corporal
@@ -53,7 +60,14 @@ shared int[] getLevels() // +- LINEAR PROGRESSION
         30000, // +7000                 | Second Lieutenant
         38000, // +8000                 | First Lieutenant
         47000, // +9000                 | Captain
-        57500 // +10500                 | Major
+        57500, // +10500                | Major
+        68500, // +11000                | Lieutenant Colonel
+        80000, // +11500                | Colonel
+        92500, // +12500                | General-Brigadier
+        106000, // +13500               | General-Major
+        121000, // +15000               | General-Lieutenant
+        150000, // +29000               | Army Chief
+        999999 // +NaN                  | Filler
     };
     return list;
 }
