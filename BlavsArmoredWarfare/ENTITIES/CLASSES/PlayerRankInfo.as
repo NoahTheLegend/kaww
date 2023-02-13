@@ -36,24 +36,24 @@ const string[] RANKS = {"Recruit",              // new player
 
 shared int[] getLevels() // +- LINEAR PROGRESSION
 {
-    int[] list = {25, // +25 Ranger | Private
-        100, // +75 Shotgun | Refreiter
-        250, // +150 Sniper +  Death Incarnate | Corporal
-        450, // +200 RPG + Ghillie | Master Corporal
-        800, // +350 MP5 + Sharp Shooter | Sergeant
-        1250, // +450 + Bloodthirst | Staff Sergeant
-        1800, // +550 + Operator | Master Sergeant
-        2500, // +700 + Lucky | First Sergeant
-        3350, // +850 + Wealthy | Sergeant-Major
-        5000, // +1650 Only badges from here | W. Officer 1
-        7500, // +2500 | W. Officer 2
-        11000, // +3500 | W. Officer 3
-        16500, // +5500 | W. Officer 4
-        24000, // +7500 | Third Leiutenant
-        31000, // +9000 | Second Lieutenant
-        42500, // +11500 | First Lieutenant
-        56000, // +13000 | Captain
-        72500 // +16500 | Major
+    int[] list = {25, // +25 Ranger     | Private
+        100, // +75 Shotgun             | Refreiter
+        250, // +150 Sniper             | Corporal
+        450, // +200 RPG                | Master Corporal
+        800, // +350 MP5                | Sergeant
+        1250, // +450                   | Staff Sergeant
+        1800, // +550                   | Master Sergeant
+        2500, // +700                   | First Sergeant
+        3350, // +850                   | Sergeant-Major
+        5000, // +1650                  | W. Officer 1
+        7500, // +2500                  | W. Officer 2
+        11000, // +3500                 | W. Officer 3
+        16500, // +5500                 | W. Officer 4
+        23000, // +6500                 | Third Leiutenant
+        30000, // +7000                 | Second Lieutenant
+        38000, // +8000                 | First Lieutenant
+        47000, // +9000                 | Captain
+        57500 // +10500                 | Major
     };
     return list;
 }
