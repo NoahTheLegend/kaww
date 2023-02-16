@@ -96,7 +96,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 	
 	return false;			//team not red or blue (probably spectator so dont want to check game over)
 }
-
+/*
 int blobcount = 0;
 
 void onBlobCreated( CRules@ this, CBlob@ blob )
@@ -112,7 +112,7 @@ void onBlobCreated( CRules@ this, CBlob@ blob )
 		}
 	}
 }
-
+*/
 string cost_config_file = "tdm_vars.cfg";
 
 void Config(TDMCore@ this)
@@ -1372,23 +1372,23 @@ void onTick(CRules@ this)
 			this.Sync("redTickets", true);
 		}
 	}
-
-	if (getGameTime() == 300)
-	{
-		if (isServer() && blobcount >= 55000)
-		{
-			//for (u8 i = 0; i < getPlayersCount(); i++)
-			//{
-			//	CPlayer@ p = getPlayer(i);
-			//	if (p !is null) getNet().DisconnectPlayer(p);
-			//}
-    	
-			SaveEXP(this);
-
-			QuitGame();
-		}
-	}
-	/*
+//
+	//if (getGameTime() == 300)
+	//{
+	//	if (isServer() && blobcount >= 55000)
+	//	{
+	//		//for (u8 i = 0; i < getPlayersCount(); i++)
+	//		//{
+	//		//	CPlayer@ p = getPlayer(i);
+	//		//	if (p !is null) getNet().DisconnectPlayer(p);
+	//		//}
+    //	
+	//		SaveEXP(this);
+//
+	//		QuitGame();
+	//	}
+	//}
+	///*
 	if (getGameTime() == 10)
 	{
 		u8 bots = 0; // count bots
@@ -1487,7 +1487,7 @@ void onTick(CRules@ this)
 			}
 		}
 	}
-	*/
+	//*/
 	if (getGameTime() % 30 == 0)
 	{
 		CBlob@[] flags;
