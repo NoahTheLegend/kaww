@@ -13,6 +13,7 @@ void onInit(CSprite@ this)
 {
 	this.SetEmitSound("/Refinery_fire.ogg");
 	this.SetEmitSoundPaused(true);
+	this.SetZ(-150.0f); //background
 }
 
 void onTick(CSprite@ this)

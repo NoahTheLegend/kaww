@@ -254,7 +254,7 @@ void onTick(CBlob@ this)
 		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
 		arm.SetOffset(Vec2f(-9.0f, -24.0f + (this.isFacingLeft() ? -1.0f : 0.0f)));
 		arm.SetOffset(arm.getOffset() - Vec2f(-barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
-		arm.SetRelativeZ(-101.0f);
+		arm.SetRelativeZ(-95.0f);
 	}
 }
 

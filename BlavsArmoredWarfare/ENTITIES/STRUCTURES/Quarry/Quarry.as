@@ -68,7 +68,7 @@ void onInit(CBlob@ this)
 {
 	//building properties
 	this.set_TileType("background tile", CMap::tile_castle_back);
-	this.getSprite().SetZ(-50);
+	this.getSprite().SetZ(-150.0f);
 	this.getShape().getConsts().mapCollisions = false;
 
 	//gold building properties
