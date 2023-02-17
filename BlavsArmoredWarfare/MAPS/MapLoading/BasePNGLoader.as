@@ -489,6 +489,7 @@ class PNGLoader
 			case map_colors::blue_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, 0); break;
 			case map_colors::red_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, 1); break;
 			case map_colors::stairs:        autotile(offset); spawnBlob(map, "stairs", offset); break;
+			case map_colors::minesign:        autotile(offset); spawnBlob(map, "minesign", offset); break;
 
 			case map_colors::tickets10:        autotile(offset); spawnBlob(map, "ticket_10", offset); break;
 			case map_colors::tickets25:        autotile(offset); spawnBlob(map, "ticket_25", offset); break;
