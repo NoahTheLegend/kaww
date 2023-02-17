@@ -73,8 +73,11 @@ void InitClasses(CBlob@ this)
 						"Ghillie Suit:\n\n"+"$6_class_icon$"+"Ghillie suit"
 						+"\n                   - Turn into a mobile bush!     "
 						+"\n                   - Hold DOWN while standing     "
+						+"\n\n                   Climbing Gear"
+						+"\n                   - Allows you to climb trees     "
 						+"\n\n                   Flammable"
 						+"\n                   - Fire is more deadly   "
+						+"\n                   - Using a molotov may light you   "
 						);	
 
 	addPlayerPerk(this, "Sharp Shooter", "$1_class_icon$", "Sharp Shooter",
