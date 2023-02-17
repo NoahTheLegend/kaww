@@ -57,6 +57,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				CBlob@ holder = point.getOccupied();
 				if (holder !is null && this !is null && !this.hasTag("activated"))
 				{
+					if (holder.getPlayer() !is null)
+					{
+						if (getRules().get_string(holder.getPlayer().getUsername() + "_perk") == "Camouflage")
+						{
+							if (getMap() !is null && XORRandom(100) < 33)
+							{
+								getMap().server_setFireWorldspace(holder.getPosition(), true);
+							}
+						}
+					}
 					CBlob@ blob = server_CreateBlob("molotov", this.getTeamNum(), this.getPosition());
 					holder.server_Pickup(blob);
 					this.server_Die();
