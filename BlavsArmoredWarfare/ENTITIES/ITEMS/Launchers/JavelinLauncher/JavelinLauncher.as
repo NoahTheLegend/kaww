@@ -12,8 +12,6 @@ void onInit(CBlob@ this)
 	this.set_f32(robotechHeightString, 168.0f); //pixels
 
 	this.getSprite().SetFrame(2); // no hand
-	this.addCommandID("mode");
-	this.set_bool("manual", false);
 }
 
 void onTick(CBlob@ this)
@@ -327,21 +325,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		launcherSetDeath( this, true); // set dead
 	}
-	else if (cmd == this.getCommandID("mode"))
-	{
-		this.set_bool("manual", !this.get_bool("manual"));
-	}
 }
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
 	if (!isServer()) return;
 	this.server_setTeamNum(attached.getTeamNum());
-}
-
-void GetButtonsFor(CBlob@ this, CBlob@ caller)
-{
-	if (!this.isAttachedTo(caller)) return;
-	CBitStream params;
-	CButton@ button = caller.CreateGenericButton( 6, Vec2f(0,-8), this, this.getCommandID("mode"), "Switch to "+(this.get_bool("manual")?"automatic control":"manual control"), params);
 }

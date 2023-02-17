@@ -37,10 +37,6 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (this.getTickSinceCreated() == 0)
-	{
-		this.server_SetTimeToDie(this.get_bool("manual") ? 7.5f : 10);
-	}
 	CMap@ map = getMap(); //standard map check
 	if (map is null)
 	{ return; }
@@ -128,20 +124,6 @@ void onTick(CBlob@ this)
 	Vec2f targetVec = targetPos - thisPos;
 	f32 targetDist = targetVec.getLength(); // distance to target
 	this.set_Vec2f("target_vec", targetVec); // for shaped charge direction
-
-	if (this.get_bool("manual"))
-	{
-		CBlob@ owner = getBlobByNetworkID(this.get_u16("ownerid"));
-		if (owner !is null)
-		{
-			if (owner.getCarriedBlob() !is null && owner.getCarriedBlob().getName() == "launcher_javelin")
-			{
-				targetVec = owner.getAimPos() - thisPos;
-				targetDist = targetVec.Length();
-				this.set_Vec2f("target_vec", targetVec);
-			}
-		}
-	}
 
 	float gravityScale = missile.gravity_scale;
 	Vec2f gravity = Vec2f(0, (sv_gravity*gravityScale) / getTicksASecond()); 
