@@ -8,6 +8,8 @@ void onInit(CBlob@ this)
 	LauncherInfo launcher;
 	launcher.progress_speed = 0.04f;
 	this.set("launcherInfo", @launcher);
+
+	this.Tag("special");
 	
 	this.set_f32(robotechHeightString, 168.0f); //pixels
 
