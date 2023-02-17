@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 	this.getSprite().getConsts().accurateLighting = true;
 	this.getShape().getConsts().mapCollisions = false;
 
-	this.getSprite().SetZ(-50); //background
+	this.getSprite().SetZ(-150.0f); //background
 
 	//commands
 	this.addCommandID("add metal");
