@@ -24,6 +24,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("stop unpack");
 	this.addCommandID("boobytrap");
 	this.Tag("trap");
+	this.Tag("special");
 
 	string packed = this.get_string("packed");
 

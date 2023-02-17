@@ -386,13 +386,13 @@ f32 getPriorityPickupScale(CBlob@ this, CBlob@ b)
 		return factor_super_important; //pick up activated stuff before deactivated stuff
 	}
 
-	if(name == "mat_gold" || name == "mat_stone" || name == "mat_wood" || name == "mat_scrap"){
+	if(name == "mat_gold" || name == "mat_stone" || name == "mat_wood" || name == "mat_scrap" || name == "medkit"){
 		return factor_very_important;
 	}
 	if(name == "mat_molotov" || name == "agrenade" || name == "sgrenade" || name == "grenade" || name == "medkit"){
 		return factor_very_important;
 	}
-	if(name == "mat_7mmround" || name == "mat_14mmround" || name == "mat_bolts"){
+	if(name == "mat_7mmround" || name == "mat_14mmround" || name == "mat_bolts" || name == "tanktrap" || name == "mine"){
 		return factor_boring;
 	}
 
