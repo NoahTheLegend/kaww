@@ -13,7 +13,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 				int coins = 2;
 				if (getRules().get_string(killer.getUsername() + "_perk") == "Wealthy")
 				{
-					coins *= 2;
+					coins = 6;
 				}
 				killer.server_setCoins(killer.getCoins() + coins);
 
@@ -31,11 +31,16 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 
 		if (getRules().get_string(victim.getUsername() + "_perk") == "Wealthy")
 		{
-			victim.server_setCoins(Maths::Ceil(victim.getCoins() / 2)); // lose half of balance
+			victim.server_setCoins(Maths::Ceil(victim.getCoins() * 0.75f)); 
 		}
 		else
 		{
 			victim.server_setCoins(victim.getCoins() - 2);
+		}
+
+		if (killer !is null && killer.getBlob() !is null && getRules().get_string(killer.getUsername() + "_perk") == "Bull")
+		{
+			killer.getBlob().set_u32("bull_boost", getGameTime()+150);
 		}
 	}
 }

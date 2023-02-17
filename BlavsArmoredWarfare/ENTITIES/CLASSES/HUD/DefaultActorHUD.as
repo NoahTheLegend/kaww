@@ -210,44 +210,25 @@ void onRender(CSprite@ this)
 
 			// draw perk icon
 			int icon_num = 0;
-			if (getRules().get_string(player.getUsername() + "_perk") == "Sharp Shooter") // TODO: simplify this with another var
-			{
-				icon_num = 1;
-			}
-			else if (getRules().get_string(player.getUsername() + "_perk") == "Wealthy")
-			{
-				icon_num = 2;
-			}
-			else if (getRules().get_string(player.getUsername() + "_perk") == "Bloodthirsty")
-			{
-				icon_num = 3;
-			}
-			else if (getRules().get_string(player.getUsername() + "_perk") == "Lucky")
-			{
-				icon_num = 4;
-			}
-			else if (getRules().get_string(player.getUsername() + "_perk") == "Operator")
-			{
-				icon_num = 5;
-			}
-			else if (getRules().get_string(player.getUsername() + "_perk") == "Camouflage")
-			{
-				icon_num = 6;
-			}
-			else if (getRules().get_string(player.getUsername() + "_perk") == "Death Incarnate")
-			{
-				icon_num = 7;
-			}
-			else if (getRules().get_string(player.getUsername() + "_perk") == "Paratrooper")
-			{
-				icon_num = 9;
-			}
-			else if (getRules().get_string(player.getUsername() + "_perk") == "Bull")
-			{
-				icon_num = 10;
-			}
+			
+			string[] perks = {
+				"Sharp Shooter",
+				"Wealthy",
+				"Bloodthirsty",
+				"Lucky",
+				"Operator",
+				"Camouflage",
+				"Death Incarnate",
+				"Paratrooper",
+				"Bull",
+				"Field Engineer"
+			};
 
-
+			for (u8 i = 0; i < perks.length; i++)
+			{
+				if (getRules().get_string(player.getUsername() + "_perk") == perks[i])
+					icon_num = i < 7 ? i+1 : i+2;
+			}
 
 			if (icon_num > 0)
 			{

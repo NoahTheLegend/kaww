@@ -14,15 +14,22 @@ bool canBePickedUp(CBlob@ this, CBlob@ blob)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum() && hitterBlob.hasTag("player"))
+	{
+		if (hitterBlob.getPlayer() !is null && getRules().get_string(hitterBlob.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		{
+			damage *= 2.0f;
+		}
+	}
 	if (customData == Hitters::fall)
 	{
-		return 0;
+		return damage * 0.25f;
 	}
 	if (customData == Hitters::explosion)
 	{
-		return damage * 0.25;
+		return damage * 0.25f;
 	}
-	return customData == Hitters::builder ? this.getInitialHealth() / 4 : damage;
+	return customData == Hitters::builder ? damage*4 : damage;
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
