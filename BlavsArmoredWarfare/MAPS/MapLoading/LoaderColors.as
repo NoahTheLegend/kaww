@@ -383,6 +383,7 @@ namespace map_colors
 		gate4         		   = 0xffaf8928,
 
 		stairs                 = 0xff221e42,
+		minesign               = 0xffeeaa75,
 
 		//ticket setters, set only one per map and only if there are no flags or imporant armories!
 		tickets10              = 0xffddff4e,
