@@ -357,7 +357,7 @@ bool doesCollideWithBlob( CBlob@ this, CBlob@ blob )
 	if (!blob.isCollidable() || blob.isAttached()){
 		return false;
 	} // no colliding against people inside vehicles
-	if (blob.getRadius() > this.getRadius() ||
+	if (blob.getRadius() > this.getRadius() || (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck")) ||
 	        (blob.getTeamNum() != this.getTeamNum() && blob.hasTag("player") && this.getShape().vellen > 1.0f) ||
 	        (blob.getShape().isStatic()) || blob.hasTag("projectile"))
 	{
@@ -370,6 +370,14 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (isServer() && solid && this.hasTag("falling"))
 		this.server_Die();
+	
+	if (isServer() && blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck")))
+	{
+		f32 mod_self = 0.5f;
+		f32 mod_target = 1.5f;
+		blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
+		this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
+	}
 }
 
 void DoExplosion(CBlob@ this)
