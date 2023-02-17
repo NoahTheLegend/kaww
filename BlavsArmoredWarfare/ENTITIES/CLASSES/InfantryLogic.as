@@ -124,6 +124,7 @@ void onInit(CBlob@ this)
 
 	this.set_s8("recoil_direction", 0);
 	this.set_u8("inaccuracy", 0);
+	this.set_u32("bull_boost", 0);
 
 	this.set_bool("has_arrow", false);
 	this.set_f32("gib health", -1.5f);
@@ -214,7 +215,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		else if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 		{
-			return damage * 0.33f;
+			damage * 0.4f;
+		}
+		else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+		{
+			damage *= 0.85f;
 		}
 	}
 	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
@@ -876,8 +881,14 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				{
 					sprint = this.getHealth() >= this.getInitialHealth()/2 && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
 					walkStat = 1.1f;
-					airwalkStat = 2.0f;
+					airwalkStat = 2.15f;
 					jumpStat = 1.2f;
+					if (this.get_u32("bull_boost") != 0 && this.get_u32("bull_boost") > getGameTime())
+					{
+						walkStat = 1.3f;
+						airwalkStat = 2.6f;
+						jumpStat = 1.75f;
+					}
 				}
 
 				if (sprint)

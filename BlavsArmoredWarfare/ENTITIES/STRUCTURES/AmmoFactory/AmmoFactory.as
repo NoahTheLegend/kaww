@@ -115,9 +115,24 @@ void onTick(CBlob@ this)
 		if(blobCount >= this.get_u8("cost"))
 		{
 			this.set_bool(working_prop, true);
-
+			f32 mod = 1.0f;
+			CBlob@[] bs;
+			this.getOverlapping(@bs);
+			for (u16 i = 0; i < bs.length; i++)
+			{
+				CBlob@ b = bs[i];
+				if (b !is null && b.getPlayer() !is null)
+				{
+					if (getRules().get_string(b.getPlayer().getUsername() + "_perk") == "Field Engineer")
+					{
+						mod = 0.5f;
+						break;
+					}
+				}
+			}
+			this.set_f32("mod", mod);
 			//only convert every conversion_frequency seconds
-			if (getGameTime() % ((10 + (this.get_u8("prod_time"))) * getTicksASecond()) == this.get_u8(unique_prop))
+			if (getGameTime() % ((((10 + this.get_u8("prod_time"))*mod)) * getTicksASecond()) == this.get_u8(unique_prop))
 			{
 				if(blobCount >= this.get_u8("cost")) this.sub_s16(metal_prop, this.get_u8("cost"));
 				else this.TakeBlob(metal_prop, this.get_u8("cost"));
@@ -435,8 +450,9 @@ void onRender(CSprite@ this)
 		}
 	}
 
+	f32 mod = blob.get_f32("mod");
 	u32 time = blob.get_u32("last_prod");
-	f32 req_time = (blob.get_u8("prod_time")+10) * 30;
+	f32 req_time = (blob.get_u8("prod_time")+10)*mod * 30;
 	f32 time_left = time + req_time;
 	f32 percent = (time_left - getGameTime()) / req_time;
 

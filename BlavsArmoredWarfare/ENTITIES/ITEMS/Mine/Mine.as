@@ -249,5 +249,12 @@ bool canBePickedUp(CBlob@ this, CBlob@ blob)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	return customData == Hitters::builder ? this.getInitialHealth() / 2 : damage * 0.5;
+	if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum() && hitterBlob.hasTag("player"))
+	{
+		if (hitterBlob.getPlayer() !is null && getRules().get_string(hitterBlob.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		{
+			damage *= 2.5f;
+		}
+	}
+	return customData == Hitters::builder ? damage : damage * 0.5;
 }

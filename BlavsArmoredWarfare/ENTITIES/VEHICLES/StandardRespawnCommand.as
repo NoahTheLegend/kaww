@@ -66,6 +66,8 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$7_class_icon$", "PerkIcon.png", Vec2f(36, 36), 7);
 	AddIconToken("$9_class_icon$", "PerkIcon.png", Vec2f(36, 36), 9);
 	AddIconToken("$10_class_icon$","PerkIcon.png", Vec2f(36, 36), 10);
+	AddIconToken("$11_class_icon$","PerkIcon.png", Vec2f(36, 36), 11);
+
 
 	addPlayerPerk(this, "No Perk", "$0_class_icon$", "No Perk", "---- No Perk ----");
 
@@ -85,7 +87,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Bullet damage: 133%       "
 						+"\n                   - Increased accuracy"
 						+"\n\n                  Long reload"
-						+"\n                   - Reload time: 150%     "
+						+"\n                   - 50% Slower reload     "
 						);
 
 	addPlayerPerk(this, "Bloodthirst", "$3_class_icon$", "Bloodthirsty",
@@ -121,15 +123,16 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Wealthy",
 						"Wealthy:\n\n"+"$2_class_icon$"+"Highroller"
 						+"\n                   - Twice as much money earned"
-						+"\n                   - Kills give you 8 coins"
+						+"\n                   - Kills give you 6 coins"
 						+"\n\n                  Health Insurance"
-						+"\n                   - Lose half of all money on death          "
+						+"\n                   - Lose 25% of all money on death          "
 						);	
 
 	addPlayerPerk(this, "Death Incarnate", "$7_class_icon$", "Death Incarnate",
 						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
-						+"\n                   - Take twice as much damage     "
 						+"\n                   - Enemy kill XP gain: 300%  "
+						+"\n\n                 Hardcore Soldier     "
+						+"\n                   - Take twice as much damage     "
 						);
 	
 	addPlayerPerk(this, "Paratrooper", "$9_class_icon$", "Paratrooper",
@@ -138,7 +141,7 @@ void InitClasses(CBlob@ this)
 						+"\n                     (Hold W while falling)"
 						+"\n                   - Better parachute fly"
 						+"\n\n                  Heavy Load"
-						+"\n                   - Take 33% damage while\n                    using parachute."
+						+"\n                   - Take 40% of damage \n                     while using parachute."
 						+"\n                   - Take 200% fall damage     "
 						);
 
@@ -146,9 +149,31 @@ void InitClasses(CBlob@ this)
 						"Bull:\n\n"+"$10_class_icon$"+"Physical Strength"
 						+"\n                   - Better walking, jumping, sprinting     "
 						+"\n                   - 33% Faster reload" //25% actually
+						+"\n                   - Take 85% of damage"
 						+"\n\n                  Restlessness"
+						+"\n                   - Killing an enemy speeds you up"
 						+"\n                   - Can't use vehicles"
 						);
+	/*
+	addPlayerPerk(this, "Field Engineer", "$11_class_icon$", "Field Engineer",
+						"Field Engineer:\n\n"+"$11_class_icon$"+"Improvised Screwdriver"
+						+"\n                   - Break traps faster"
+						+"\n                   - Standing at a fabric"
+						+"\n                     boosts manufacturing"
+						+"\n\n                  Modernized Handles"
+						+"\n                   - Items slow you lesser"
+						+"\n\n                  Turret Package"
+						+"\n                   - Deploy an auto-turret,"
+						+"\n                      hold SPACEBAR while"
+						+"\n                      standing on the ground"
+						+"\n                      (requires 5 scrap)"
+						+"\n\n                  Overstaffed"
+						+"\n                   - Jump height and walking"
+						+"\n                      speed reduce by amount"
+						+"\n                   	  of items in your inventory"
+
+						);
+						*/
 }
 
 void BuildRespawnMenuFor(CBlob@ this, CBlob @caller)

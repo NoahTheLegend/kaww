@@ -677,10 +677,6 @@ shared class TDMCore : RulesCore
 					rules.add_u16("red_kills", 1);
 					rules.Sync("red_kills", true);
 				}
-				if (getRules().get_string(killer.getUsername() + "_perk") == "Wealthy")
-				{
-					killer.server_setCoins(killer.getCoins()+4);
-				}
 			}
             else if (all_death_counts_as_kill)
             {

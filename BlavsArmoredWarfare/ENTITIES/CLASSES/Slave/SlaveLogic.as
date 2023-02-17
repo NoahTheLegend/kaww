@@ -28,6 +28,7 @@ void onInit(CBlob@ this)
 	this.Tag("flesh");
 	this.Tag("3x2");
 	this.set_u32("can_spot", 0);
+	this.set_u32("bull_boost", 0);
 
 	HitData hitdata;
 	this.set("hitdata", hitdata);
@@ -93,7 +94,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		else if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 		{
-			return damage * 0.33f;
+			damage * 0.4f;
+		}
+		else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+		{
+			damage *= 0.85f;
 		}
 	}
 	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
@@ -238,6 +243,13 @@ void onTick(CBlob@ this)
 				moveVars.walkFactor *= 1.1f;
 				moveVars.walkSpeedInAir = 2.0f;
 				moveVars.jumpFactor *= 1.2f;
+
+				if (this.get_u32("bull_boost") != 0 && this.get_u32("bull_boost") > getGameTime())
+				{
+					moveVars.walkFactor *= 1.1f;
+					moveVars.walkSpeedInAir = 2.5f;
+					moveVars.jumpFactor *= 1.35f;
+				}
 			}
 			else  if (this.getPlayer() !is null)
 			{
