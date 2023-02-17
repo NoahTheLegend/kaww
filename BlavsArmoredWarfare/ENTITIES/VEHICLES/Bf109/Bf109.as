@@ -6,7 +6,7 @@ const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
 const u32 shootDelay = 1; // Ticks
-const f32 projDamage = 0.75f;
+const f32 projDamage = 0.7f;
 
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);
@@ -313,7 +313,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 			proj.set_s8(penRatingString, 2);
 
 			proj.set_f32("bullet_damage_body", projDamage);
-			proj.set_f32("bullet_damage_head", projDamage*1.5f);
+			proj.set_f32("bullet_damage_head", projDamage*1.25f);
 			proj.IgnoreCollisionWhileOverlapped(this);
 			proj.server_setTeamNum(this.getTeamNum());
 			arrowVel.RotateBy(this.isFacingLeft() ? -2.5 : 2.5);
