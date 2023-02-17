@@ -215,6 +215,11 @@ void onTick(CBlob@ this)
 				this.set_f32("velocity", Maths::Min(SPEED_MAX, this.get_f32("velocity") - 0.50f));
 			}
 			else this.set_f32("velocity", 0);
+
+			if (this.getVelocity().Length() <= 1.0f)
+			{
+				this.set_f32("velocity", Maths::Min(SPEED_MAX, this.get_f32("velocity") - 1.5f));
+			}
 			
 			this.set_Vec2f("direction", dir);
 		}		

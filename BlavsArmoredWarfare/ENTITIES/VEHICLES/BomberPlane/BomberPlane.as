@@ -150,13 +150,18 @@ void onTick(CBlob@ this)
 		
 			if (pressed_w) 
 			{
-				this.set_f32("velocity", Maths::Min(SPEED_MAX, this.get_f32("velocity") + 2.5f));
+				this.set_f32("velocity", Maths::Min(SPEED_MAX, this.get_f32("velocity") + 2.25f));
 			}
 			else if (this.get_f32("velocity") > 0.0f)
 			{
 				this.set_f32("velocity", Maths::Min(SPEED_MAX, this.get_f32("velocity") - 0.50f));
 			}
 			else this.set_f32("velocity", 0);
+
+			if (this.getVelocity().Length() <= 1.0f)
+			{
+				this.set_f32("velocity", Maths::Min(SPEED_MAX, this.get_f32("velocity") - 1.25f));
+			}
 
 			if (ap_pilot.isKeyPressed(key_action3) && this.get_u32("lastDropTime") < getGameTime()) 
 			{
