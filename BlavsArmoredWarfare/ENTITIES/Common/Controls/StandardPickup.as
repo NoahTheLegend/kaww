@@ -31,7 +31,13 @@ void onInit(CBlob@ this)
 		menu.option_notice = "Pickup";
 
 		//military stuff
-		menu.add_entry(PickupWheelMenuEntry("Grenade", "$grenade$", "grenade"));
+		const PickupWheelOption[] grenade_options = {
+			PickupWheelOption("grenade"),
+			PickupWheelOption("agrenade"),
+			PickupWheelOption("sgrenade"),
+			PickupWheelOption("sagrenade")
+		};
+		menu.add_entry(PickupWheelMenuEntry("Grenade", "$grenade$", grenade_options, Vec2f(0, 0)));
 		const PickupWheelOption[] molotovs = {PickupWheelOption("molotov", 1), PickupWheelOption("mat_molotov", 0)};
 		menu.add_entry(PickupWheelMenuEntry("Molotov", "$mat_molotov$", molotovs, Vec2f(0, -8.0f)));
 		menu.add_entry(PickupWheelMenuEntry("Medkit", "$medkit$", "medkit"));
@@ -40,14 +46,13 @@ void onInit(CBlob@ this)
 		menu.add_entry(PickupWheelMenuEntry("14.5mm", "$mat_14mmround$", "mat_14mmround", Vec2f(0, -6.0f)));
 		menu.add_entry(PickupWheelMenuEntry("105mm Ammo", "$mat_105mmround$", "mat_bolts"));
 		menu.add_entry(PickupWheelMenuEntry("HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", Vec2f(8.0f, 8.0f)));
+		menu.add_entry(PickupWheelMenuEntry("Javelin", "$launcher_javelin$", "launcher_javelin", Vec2f(0.0f, 0.0f)));
 		//resources
 		menu.add_entry(PickupWheelMenuEntry("Scrap", "$scrap$", "mat_scrap"));
 		menu.add_entry(PickupWheelMenuEntry("Gold", "$mat_gold$", "mat_gold", Vec2f(0, -6.0f)));
 		menu.add_entry(PickupWheelMenuEntry("Stone", "$mat_stone$", "mat_stone", Vec2f(0, -6.0f)));
 		menu.add_entry(PickupWheelMenuEntry("Wood", "$mat_wood$", "mat_wood", Vec2f(0, -6.0f)));
 
-		menu.add_entry(PickupWheelMenuEntry("Saw", "$saw$", "saw", Vec2f(-16.0f, -16.0f)));
-		menu.add_entry(PickupWheelMenuEntry("Seed", "$seed$", "seed", Vec2f(8.0f, 8.0f)));
 
 		menu.add_entry(PickupWheelMenuEntry("Log", "$log$", "log"));
 		const PickupWheelOption[] food_options = {
