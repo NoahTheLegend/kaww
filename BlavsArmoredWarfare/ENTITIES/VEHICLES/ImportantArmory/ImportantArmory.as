@@ -402,6 +402,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (hitterBlob.hasTag("plane")) return damage*0.075f;
 	if (hitterBlob.getTeamNum() != this.getTeamNum())
 	{
 		if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), getGameTime()+150);
