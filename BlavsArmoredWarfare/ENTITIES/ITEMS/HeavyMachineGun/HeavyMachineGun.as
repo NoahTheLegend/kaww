@@ -171,25 +171,28 @@ void onTick(CBlob@ this)
     	}
 	}
 
-	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
-	if (ap !is null && ap.getOccupied() !is null)
+	if (this.isAttached())
 	{
-		CBlob@ gunner = ap.getOccupied();
-		CSprite@ gsprite = gunner.getSprite();
-		f32 perc = (gunner.get_u8("mg_offset")*0.8f) / 4.0f;
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+		if (ap !is null && ap.getOccupied() !is null)
+		{
+			CBlob@ gunner = ap.getOccupied();
+			CSprite@ gsprite = gunner.getSprite();
+			f32 perc = (gunner.get_u8("mg_offset")*0.8f) / 4.0f;
 
-		if (gsprite !is null)
-		{
-			gsprite.ResetTransform();
-			gsprite.SetOffset(Vec2f(0, -4.0f*perc));
+			if (gsprite !is null)
+			{
+				gsprite.ResetTransform();
+				gsprite.SetOffset(Vec2f(0, -4.0f*perc));
+			}
+			if (ap.isKeyPressed(key_action2))
+			{
+				gunner.set_u32("mg_invincible", getGameTime()+1);
+				if (gunner.get_u8("mg_offset") > 0) gunner.set_u8("mg_offset", gunner.get_u8("mg_offset") - 1);
+			}
+			else if (gunner.get_u8("mg_offset") < 5) gunner.set_u8("mg_offset", gunner.get_u8("mg_offset") + 1);
+			if (gunner.get_u8("mg_offset") < 5) return;
 		}
-		if (ap.isKeyPressed(key_action2))
-		{
-			gunner.set_u32("mg_invincible", getGameTime()+1);
-			if (gunner.get_u8("mg_offset") > 0) gunner.set_u8("mg_offset", gunner.get_u8("mg_offset") - 1);
-		}
-		else if (gunner.get_u8("mg_offset") < 5) gunner.set_u8("mg_offset", gunner.get_u8("mg_offset") + 1);
-		if (gunner.get_u8("mg_offset") < 5) return;
 	}
 
 	if (isClient() && this.isAttached())
