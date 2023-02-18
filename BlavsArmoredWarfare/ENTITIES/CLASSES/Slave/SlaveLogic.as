@@ -173,6 +173,16 @@ void onTick(CBlob@ this)
 	{
 		return;
 	}
+
+	//if (this.getName() != "sniper")
+	{
+		bool has_camo = this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage";
+		if (!has_camo)
+		{
+			if (this.hasScript("ClimbTree.as")) this.RemoveScript("ClimbTree.as");
+		}
+		else if (!this.hasScript("ClimbTree.as")) this.AddScript("ClimbTree.as");
+	}
 	
 	if ((this.getTeamNum() == 0 && getRules().get_s16("blueTickets") == 0)
 	|| (this.getTeamNum() == 1 && getRules().get_s16("redTickets") == 0))
