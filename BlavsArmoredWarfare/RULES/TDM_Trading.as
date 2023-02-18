@@ -41,6 +41,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 		if (killer !is null && killer.getBlob() !is null && getRules().get_string(killer.getUsername() + "_perk") == "Bull")
 		{
 			killer.getBlob().set_u32("bull_boost", getGameTime()+150);
+			killer.getBlob().Sync("bull_boost", true);
 		}
 	}
 }
