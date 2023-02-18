@@ -125,6 +125,7 @@ void onInit(CBlob@ this)
 	this.set_s8("recoil_direction", 0);
 	this.set_u8("inaccuracy", 0);
 	this.set_u32("bull_boost", 0);
+	this.set_u32("turret_delay", 0);
 
 	this.set_bool("has_arrow", false);
 	this.set_f32("gib health", -1.5f);
@@ -561,6 +562,65 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		}
 	}
 
+	bool lock_stab = false;
+	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
+	{
+		if (this.hasBlob("mat_scrap", 4) && this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		{
+			if (getGameTime()%12 == 0 && this.getSprite() !is null)
+			{
+				this.getSprite().PlaySound("SentryBuild.ogg", 0.33f, 1.05f+0.001f*XORRandom(115));
+			}
+			lock_stab = true;
+			if (this.get_f32("turret_load") < 120)
+			{
+				this.add_f32("turret_load", 1);
+			}
+			else
+			{
+				this.set_f32("turret_load", 0);
+				this.set_u32("turret_delay", getGameTime()+150);
+				if (isServer())
+				{
+					this.TakeBlob("mat_scrap", 4);
+					CBlob@ turret_exists = getBlobByNetworkID(this.getPlayer().get_u16("turret_netid"));
+					if (turret_exists !is null && turret_exists.getName() == "sentrygun")
+					{
+						this.server_Hit(turret_exists, turret_exists.getPosition(), Vec2f(0,0), 150.0f, Hitters::arrow, true); 
+						//turret_exists.server_Die();
+					}
+					CBlob@ turret = server_CreateBlob("sentrygun", this.getTeamNum(), this.getPosition());
+					if (turret !is null)
+					{
+						this.getPlayer().set_u16("turret_netid", turret.getNetworkID());
+					}
+				}
+			}
+		}
+	}
+	else if (this.get_f32("turret_load") > 0) this.set_f32("turret_load", 0);
+
+	if (this.get_f32("turret_load") > 0)
+	{
+		for (int i = 0; i < this.get_f32("turret_load"); i++)
+		{
+			SColor color = this.getTeamNum() == 0 ? 0xff2cafde : 0xffd5543f;
+			Vec2f pbPos = this.getOldPosition() + Vec2f(0,-16.0f) + Vec2f_lengthdir(i < 30 ? 2.75f : i < 60 ? 2.0f : i < 90 ? 1.25f : 0.5f, i*12).RotateBy(90, Vec2f(0,0));
+			CParticle@ pb = ParticlePixelUnlimited( pbPos, this.getVelocity(), color , true );
+			if(pb !is null)
+			{
+				pb.timeout = 0.01f;
+				pb.gravity = Vec2f_zero;
+				pb.damping = 0.9;
+				pb.collides = false;
+				pb.fastcollision = true;
+				pb.bounce = 0;
+				pb.lighting = false;
+				pb.Z = 500;
+			}
+		}
+	}
+
 	if (!this.hasTag(medicTagString))
 	{
 		u8 time = 21;
@@ -572,10 +632,13 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		if (this.exists("stab time")) time = this.get_u8("stab time");
 		if (this.exists("stab timing")) timing = this.get_u8("stab timing");
 		if (this.exists("stab damage")) damage = this.get_f32("stab damage");
-		if (this.getName() != "mp5" && this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime() && no_medkit)
+		if (this.isKeyPressed(key_action3) && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime() && no_medkit)
 		{
-			this.set_u32("end_stabbing", getGameTime()+time);
-			this.Tag("attacking");
+			if (this.getName() != "mp5" && !lock_stab)
+			{
+				this.set_u32("end_stabbing", getGameTime()+time);
+				this.Tag("attacking");
+			}
 		}
 		if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-timing)
 		{
