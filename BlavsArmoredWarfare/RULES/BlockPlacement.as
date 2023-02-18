@@ -184,7 +184,7 @@ void onTick(CBlob@ this)
 				params.write_Vec2f(bc.tileAimPos);
 				this.SendCommand(this.getCommandID("placeBlock"), params);
 				u32 delay = this.get_u32("build delay");
-				SetBuildDelay(this, block.tile < 255 ? delay : delay * 2);
+				SetBuildDelay(this, block.tile < 255 ? (getMap().isTileSolid(block.tile) ? delay*1.25f : delay/2) : delay * 2);
 				bc.blockActive = false;
 			}
 			else if (this.isKeyJustPressed(key_action1) && !bc.sameTileOnBack)
