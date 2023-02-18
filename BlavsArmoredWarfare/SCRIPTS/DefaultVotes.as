@@ -204,42 +204,75 @@ VoteObject@ Create_Votekick(CPlayer@ player, CPlayer@ byplayer, string reason)
 
 class VoteNextmapFunctor : VoteFunctor
 {
+	string playername;
+	u8 MapType = 0;
+
 	VoteNextmapFunctor() {} //dont use this
-	VoteNextmapFunctor(CPlayer@ player)
+	VoteNextmapFunctor(CPlayer@ player, u8 type)
 	{
 		string charname = player.getCharacterName();
 		string username = player.getUsername();
 		//name differs?
-		if (
-			charname != username &&
-			charname != player.getClantag() + username &&
-			charname != player.getClantag() + " " + username
-		) {
+		if (charname != username &&
+		        charname != player.getClantag() + username &&
+		        charname != player.getClantag() + " " + username)
+		{
 			playername = charname + " (" + player.getUsername() + ")";
 		}
 		else
 		{
 			playername = charname;
 		}
+
+		MapType = type;
 	}
 
-	string playername;
 	void Pass(bool outcome)
 	{
 		if (outcome)
 		{
-			if (getNet().isServer())
+			if (isServer())
 			{
-				getRules().SetCurrentState(GAME_OVER);
+				switch (MapType)
+				{
+					case 1:
+					{
+						string[]@ LargeMaps;
+						getRules().get("maptypes-large", @LargeMaps);
+
+						LoadMap(LargeMaps[XORRandom(LargeMaps.length)]);
+					}
+					break;
+
+					case 2:
+					{
+						string[]@ AverageMaps;
+						getRules().get("maptypes-average", @AverageMaps);
+
+						LoadMap(AverageMaps[XORRandom(AverageMaps.length)]);
+					}
+					break;
+
+					case 3:
+					{
+						string[]@ TdmMaps;
+						getRules().get("maptypes-tdm", @TdmMaps);
+
+						LoadMap(TdmMaps[XORRandom(TdmMaps.length)]);
+					}
+					break;
+
+					// If the maptype is invalid or set to default, 
+					// load next map like before
+					default:
+						LoadNextMap();
+					break;
+				}
 			}
 		}
 		else
 		{
-			client_AddToChat(
-				getTranslatedString("{USER} needs to take a spoonful of cement! Play on!")
-					.replace("{USER}", playername),
-				vote_message_colour()
-			);
+			client_AddToChat(playername + " needs to take a spoonful of cement! Play on!", vote_message_colour());
 		}
 	}
 };
@@ -257,18 +290,19 @@ class VoteNextmapCheckFunctor : VoteCheckFunctor
 };
 
 //setting up a vote next map object
-VoteObject@ Create_VoteNextmap(CPlayer@ byplayer, string reason)
+VoteObject@ Create_VoteNextmap(CPlayer@ byplayer, string reason, u8 maptype)
 {
 	VoteObject vote;
 
-	@vote.onvotepassed = VoteNextmapFunctor(byplayer);
+	@vote.onvotepassed = VoteNextmapFunctor(byplayer, maptype);
 	@vote.canvote = VoteNextmapCheckFunctor();
 
-	vote.title = "Skip to next map?";
+	vote.title = "Load new map";
+	vote.maptype = TypeToString[maptype % 4];
 	vote.reason = reason;
 	vote.byuser = byplayer.getUsername();
 	vote.forcePassFeature = "nextmap";
-	vote.cancel_on_restart = true;
+	vote.required_percent = 0.7f;
 
 	CalculateVoteThresholds(vote);
 
@@ -723,22 +757,32 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 		}
 		else
 		{
-			string nextmap_info = getTranslatedString(
-				"Vote to change the map\nto the next in cycle.\n\n" +
-				"- report any abuse of this feature.\n" +
-				"\nTo Use:\n\n" +
-				"- select a reason from the list.\n" +
-				"- everyone votes.\n"
-			);
-			Menu::addInfoBox(mapmenu, getTranslatedString("Vote Next Map"), nextmap_info);
+			CContextMenu@ large_map_menu = Menu::addContextMenu(mapmenu, "Large Map");
+			CContextMenu@ average_map_menu = Menu::addContextMenu(mapmenu, "Small Map");
+			CContextMenu@ tdm_map_menu = Menu::addContextMenu(mapmenu,  "TDM Map");
 
-			Menu::addSeparator(mapmenu);
-			//reasons
 			for (uint i = 0 ; i < nextmap_reason_count; ++i)
 			{
 				CBitStream params;
 				params.write_u8(i);
-				Menu::addContextItemWithParams(mapmenu, getTranslatedString(nextmap_reason_string[i]), "DefaultVotes.as", "Callback_NextMap", params);
+				params.write_u8(1);
+				Menu::addContextItemWithParams(large_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
+			}
+
+			for (uint i = 0 ; i < nextmap_reason_count; ++i)
+			{
+				CBitStream params;
+				params.write_u8(i);
+				params.write_u8(2);
+				Menu::addContextItemWithParams(average_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
+			}
+
+			for (uint i = 0 ; i < nextmap_reason_count; ++i)
+			{
+				CBitStream params;
+				params.write_u8(i);
+				params.write_u8(3);
+				Menu::addContextItemWithParams(tdm_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
 			}
 		}
 	}
@@ -988,6 +1032,9 @@ void Callback_NextMap(CBitStream@ params)
 	u8 id;
 	if (!params.saferead_u8(id)) return;
 
+	u8 type;
+	if (!params.saferead_u8(type)) return;
+
 	string reason = "";
 	if (id < nextmap_reason_count)
 	{
@@ -998,6 +1045,7 @@ void Callback_NextMap(CBitStream@ params)
 
 	params2.write_u16(me.getNetworkID());
 	params2.write_string(reason);
+	params2.write_u8(type);
 
 	getRules().SendCommand(getRules().getCommandID(votenextmap_id), params2);
 	onPlayerStartedVote();
@@ -1073,14 +1121,16 @@ void onCommand(CRules@ this, u8 cmd, CBitStream @params)
 	{
 		u16 byplayerid;
 		string reason;
+		u8 maptype;
 
 		if (!params.saferead_u16(byplayerid)) return;
 		if (!params.saferead_string(reason)) return;
+		if (!params.saferead_u8(maptype)) return;
 
 		CPlayer@ byplayer = getPlayerByNetworkId(byplayerid);
 
 		if (byplayer !is null)
-			Rules_SetVote(this, Create_VoteNextmap(byplayer, reason));
+			Rules_SetVote(this, Create_VoteNextmap(byplayer, reason, maptype));
 
 		g_lastNextmapCounter = 0;
 	}
@@ -1122,3 +1172,10 @@ void onCommand(CRules@ this, u8 cmd, CBitStream @params)
 			Rules_SetVote(this, Create_VoteExtendTime(byplayer));
 	}
 }
+
+const string[] TypeToString = {
+	"Random",
+	"Large",
+	"Average",
+	"TDM"
+};

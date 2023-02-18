@@ -52,6 +52,7 @@ class VoteObject
 	VotePlayerLeaveFunctor@ playerleave;
 
 	string title;
+	string maptype;
 	string reason;
 	string byuser;
 	string user_to_kick = "";

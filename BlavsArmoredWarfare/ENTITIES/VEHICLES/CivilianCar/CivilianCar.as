@@ -9,6 +9,8 @@ void onInit(CBlob@ this)
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
 	this.Tag("weak vehicle");
+	this.Tag("pass_60sec");
+	this.Tag("truck");
 
 	Vehicle_Setup(this,
 	              6000.0f, // move speed
@@ -35,17 +37,6 @@ void onInit(CBlob@ this)
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-25.0f);
-	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
-	if (front !is null)
-	{
-		front.addAnimation("default", 0, false);
-		int[] frames = { 0, 1, 2 };
-		front.animation.AddFrames(frames);
-		front.SetRelativeZ(0.8f);
-		front.SetOffset(Vec2f(0.0f, 0.0f));
-	}
-
-	this.server_SetHealth(this.getInitialHealth() / (1 + XORRandom(3)));//Set health to be low
 }
 
 void onTick(CBlob@ this)
@@ -60,22 +51,6 @@ void onTick(CBlob@ this)
 		Vehicle_StandardControls(this, v);
 
 		CSprite@ sprite = this.getSprite();
-		if (getNet().isClient())
-		{
-			CPlayer@ p = getLocalPlayer();
-			if (p !is null)
-			{
-				CBlob@ local = p.getBlob();
-				if (local !is null)
-				{
-					CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
-					if (front !is null)
-					{
-						//front.setVisible(!local.isAttachedTo(this));
-					}
-				}
-			}
-		}
 
 		Vec2f vel = this.getVelocity();
 		if (!this.isOnMap())
@@ -113,6 +88,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (this.getVelocity().Length() < 1.0f || blob.hasTag("structure") || blob.hasTag("bunker")) return false;
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))
 	{

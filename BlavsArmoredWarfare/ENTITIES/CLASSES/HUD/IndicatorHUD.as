@@ -162,7 +162,7 @@ void onRender( CRules@ this )
 		RenderBar(this, point, indicatorPos + Vec2f(-4, flag_height));
 	}
 
-	if (!v_fastrender)
+	//if (!v_fastrender)
 	{
 		int playerCount = getPlayerCount();
 		for (uint i = 0; i < playerCount; i++) // walking blobs
