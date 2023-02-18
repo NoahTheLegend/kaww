@@ -161,7 +161,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Standing at a fabric"
 						+"\n                     boosts manufacturing"
 						+"\n\n                  Modernized Handles"
-						+"\n                   - Items slow you lesser"
+						+"\n                   - Items slow you lesser" ////
 						+"\n\n                  Turret Package"
 						+"\n                   - Deploy an auto-turret,"
 						+"\n                      hold SPACEBAR while"
