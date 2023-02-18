@@ -141,16 +141,10 @@ void onTick(CSprite@ this)
 		CSpriteLayer@ frontarm = this.getSpriteLayer("frontarm");
 		CSpriteLayer@ helmet = this.getSpriteLayer("helmet");
 
-		if (camo is null && blob.getName() != "sniper")
-		{
-			if (blob.hasScript("ClimbTree.as")) blob.RemoveScript("ClimbTree.as");
-		}
-		else if (camo !is null && frontarm !is null)
+		if (camo !is null && frontarm !is null)
 		{
 			if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
 			{
-				if (!blob.hasScript("ClimbTree.as")) blob.AddScript("ClimbTree.as");
-
 				isCamo = true;
 
 				if (helmet !is null) helmet.SetVisible(false);

@@ -190,6 +190,17 @@ void onDie(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	if (this.getSprite() is null) return;
+	if (this.getName() != "sniper")
+	{
+		CSpriteLayer@ camo = this.getSprite().getSpriteLayer("camo");
+		if (camo is null)
+		{
+			if (this.hasScript("ClimbTree.as")) this.RemoveScript("ClimbTree.as");
+		}
+		else if (!this.hasScript("ClimbTree.as")) this.AddScript("ClimbTree.as");
+	}
+
 	// (drop anything attached)
 	CBlob @carried = this.getCarriedBlob();
 	if (carried !is null)
