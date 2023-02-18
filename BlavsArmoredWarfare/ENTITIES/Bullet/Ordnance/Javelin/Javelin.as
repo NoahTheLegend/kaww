@@ -8,8 +8,8 @@
 
 Random _missile_r(12231);
 
-const f32 radius = 32.0f;
-const f32 damage = 17.5f;
+const f32 radius = 48.0f;
+const f32 damage = 22.5f;
 
 void onInit(CBlob@ this)
 {
