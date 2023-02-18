@@ -14,7 +14,6 @@ const f32 thrust = 1000.00f;
 void onInit(CBlob@ this)
 {
 	this.set_bool("map_damage_raycast", true);
-	this.set_bool("UPF_Skin", false);
 	this.set_u32("duration", 0);
 	//this.getSprite().SetRelativeZ(-60.0f);
 	

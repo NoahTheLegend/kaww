@@ -139,7 +139,7 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher. ", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;

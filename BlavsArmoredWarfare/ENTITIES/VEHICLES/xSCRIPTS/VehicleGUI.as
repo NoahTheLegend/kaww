@@ -24,7 +24,7 @@ void onRender(CSprite@ this)
 		return;
 	}
 
-	if (blob.getName() != "motorcycle")
+	if (!blob.hasTag("pass_60sec"))
 	{
 		AttachmentPoint@ driver = blob.getAttachments().getAttachmentPointByName("DRIVER");
 		if (getGameTime() <= 60*30 && driver !is null && driver.getOccupied() !is null)

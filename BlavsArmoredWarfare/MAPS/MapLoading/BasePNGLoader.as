@@ -446,7 +446,7 @@ class PNGLoader
 			case map_colors::sign3:    autotile(offset); spawnBlob(map, "sign3",   offset, 1);	break;
 			case map_colors::sign4:    autotile(offset); spawnBlob(map, "sign4",   offset, 1);	break;
 
-			case map_colors::civcar:           autotile(offset); spawnVehicle(map, "civcar", offset, 1); break;
+			case map_colors::civcar:           autotile(offset); spawnVehicle(map, "civcar", offset, 100); break;
 			case map_colors::lada:           autotile(offset); spawnVehicle(map, "lada", offset, 5); break;
 			case map_colors::arabicspeaker:    autotile(offset); spawnVehicle(map, "arabicspeaker", offset); break;
 			case map_colors::russianspeaker:    autotile(offset); spawnVehicle(map, "russianspeaker", offset); break;
@@ -474,6 +474,8 @@ class PNGLoader
 
 			case map_colors::blue_munitionsshop:        autotile(offset); spawnBlob(map, "munitionsshop", offset, 0); break;
 			case map_colors::red_munitionsshop:         autotile(offset); spawnBlob(map, "munitionsshop", offset, 1); break;
+			case map_colors::blue_munitionsyard:        autotile(offset); spawnBlob(map, "munitionsyard", offset, 0); break;
+			case map_colors::red_munitionsyard:         autotile(offset); spawnBlob(map, "munitionsyard", offset, 1); break;
 
 			case map_colors::blue_russianshop:        autotile(offset); spawnBlob(map, "russianshop", offset, 0); break;
 			case map_colors::red_russianshop:         autotile(offset); spawnBlob(map, "russianshop", offset, 1); break;

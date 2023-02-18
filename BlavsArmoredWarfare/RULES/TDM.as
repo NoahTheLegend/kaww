@@ -1588,4 +1588,83 @@ void onInit(CRules@ this)
 
 	if (isClient() && isServer()) this.Tag("togglebots"); // disable them on local automatically
 	Reset(this);
+
+	this.set("maptypes-large", LargeMaps);
+	this.set("maptypes-average", AverageMaps);
+	this.set("maptypes-tdm", TdmMaps);
 }
+
+const string[] LargeMaps = {
+	"Desert.png",
+	"WinterFactory.png",
+	"Touge.png",
+	"Mortar.png",
+	"Syria.png",
+	"Cavern.png",
+	"Selfish_goldy.png",
+	"Goldy_KAWW_Megalith.png",
+	"Valley.png",
+	"Foothills.png",
+	"PlainHills.png",
+	"Worldwar.png",
+	"Classic.png",
+	"SmallClassic.png",
+	"Moats.png",
+	"Canyon.png",
+	"OldTouge.png",
+	"Fugue.png",
+	"Vietnam.png",
+	"FragFest.png",
+	"Florida.png",
+	"SiegeBeach.png",
+	"SoldiercombatTDM.png",
+	"Flattening.png",
+	"RooftopTanks.png",
+	"HamburgetHill.png",
+	"Goldy_KAWW_Sewage.png",
+	"BloodGulch.png",
+	"WorldwarFlagless.png",
+	"ClassicFlagless.png"
+};
+
+const string[] AverageMaps = {
+	"SmallCity.png",
+	"SmallClassic.png",
+	"SmallDesert.png",
+	"SmallFactory.png",
+	"SmallMoats.png",
+	"SmallMortar.png",
+	"SmallTouge.png",
+	"PlainHills.png",
+	"BloodGulch.png",
+	"SoldiercombatTDM.png",
+	"TheSmallCityTDM.png",
+	"BridgeTDM.png",
+	"TesfoMineTDM.png",
+	"Airplane.png",
+	"Battleship.png",
+	"KnollTDM.png",
+	"LandscapingTDM.png",
+	"SoldiercombatTDM.png",
+	"Stratego.png",
+	"TheCityTDM.png",
+	"TriPointTDM.png"
+};
+
+const string[] TdmMaps = {
+	"DesertedTDM.png",
+	"AztecTDM.png",
+	"LandscapingTDM.png",
+	"SmallSoldiercombatTDM.png",
+	"TheSmallCityTDM.png",
+	"BridgeTDM.png",
+	"TrainTDM.png",
+	"Airplane.png",
+	"FarmTDM.png",
+	"FarmOldTDM.png",
+	"DesertedTDM.png",
+	"DesertedFlagTDM.png",
+	"TesfoMineTDM.png",
+	"TomeTDM.png",
+	"Battleship.png"
+};

@@ -1,6 +1,6 @@
 ﻿void onInit(CBlob@ this)
 {
-	this.getSprite().SetZ(-150); //background
+	this.getSprite().SetZ(-151); //background
 	this.getShape().getConsts().mapCollisions = false;
 	this.getCurrentScript().tickFrequency = 30;
 

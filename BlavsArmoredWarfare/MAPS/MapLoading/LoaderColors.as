@@ -329,6 +329,9 @@ namespace map_colors
 		blue_munitionsshop     = 0xffa4a2f6,
 		red_munitionsshop      = 0xfff6c2a2,
 
+		blue_munitionsyard     = 0xff0402f6, // invicible structure with armory shop
+		red_munitionsyard      = 0xfff202a2,
+
 		blue_russianshop       = 0xff62d0ed,
 		red_russianshop        = 0xfff6d2a2,
 
