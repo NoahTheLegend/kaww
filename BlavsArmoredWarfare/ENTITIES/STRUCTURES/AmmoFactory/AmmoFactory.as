@@ -397,11 +397,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {  
 	switch (customData)
 	{
-	
      	case Hitters::builder:
 			damage *= 2.00f;
 			break;
-
 	}
 	if (hitterBlob.getName() == "balista_bolt" || hitterBlob.hasTag("grenade"))
 	{
