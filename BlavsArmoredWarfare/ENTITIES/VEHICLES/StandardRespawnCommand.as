@@ -162,18 +162,17 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Standing at a fabric"
 						+"\n                     boosts manufacturing"
 						+"\n\n                  Modernized Handles"
-						+"\n                   - Items slow you lesser"
-						+"\n\n                  Turret Package"
-						+"\n                   - Deploy an auto-turret,"
+						+"\n                   - Carried items slow"
+						+"\n                      you down lesser"
+						+"\n\n                  Sentry Package"
+						+"\n                   - Deploy a sentry gun,"
 						+"\n                      hold SPACEBAR while"
 						+"\n                      standing on the ground"
-						+"\n                      (requires 5 scrap)"
+						+"\n                      (requires 4 scrap)"
 						+"\n\n                  Overstaffed"
 						+"\n                   - Jump height and walking"
 						+"\n                     speed reduce by amount"
 						+"\n                   	  of items in your inventory"
-						+"\n                   	  However stomp damage"
-						+"\n                   	  is increased too."
 						);
 						
 }

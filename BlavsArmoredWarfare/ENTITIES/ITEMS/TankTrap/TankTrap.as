@@ -48,14 +48,11 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 	if (point !is null)
 	{
 		CBlob@ blob = point.getOccupied();
-		if (blob !is null && blob.getName() == "slave")
-			this.Untag("heavy weight");
 	}
 }
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (!this.isAttached()) this.Tag("heavy weight");
 	if (getNet().isServer() && blob !is null && this.getVelocity().x >= -1.0f && this.getVelocity().x <= 1.0f)
 	{
 		if (blob.hasTag("vehicle") && this.getTeamNum() != blob.getTeamNum())

@@ -46,6 +46,7 @@ void onTick(CBlob@ this)
 
         if (blob.hasTag("vehicle") && (blob.getTeamNum() == this.getTeamNum() || blob.getTeamNum() >= 2)) //If they have the repair tag
         {
+			if (blob.hasTag("never_repair")) continue;
 			if (blob.getHealth() == blob.getInitialHealth()) continue;
 			if (blob.get_u32("no_heal") > getGameTime()) continue; 
             if (blob.getHealth() + repair_amount <= blob.getInitialHealth())//This will only happen if the health does not go above the inital (max health) when repair_amount is added. 
