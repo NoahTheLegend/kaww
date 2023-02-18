@@ -1007,6 +1007,16 @@ void onTick(CBlob@ this)
 	{
 		LoadHead(this.getSprite(), XORRandom(99)); // TODO: make a way to sync between players and save when blob dies!
 	}
+
+	if (this.getName() != "sniper")
+	{
+		bool has_camo = this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage";
+		if (!has_camo)
+		{
+			if (this.hasScript("ClimbTree.as")) this.RemoveScript("ClimbTree.as");
+		}
+		else if (!this.hasScript("ClimbTree.as")) this.AddScript("ClimbTree.as");
+	}
 	
 	if (isKnocked(this) || this.isInInventory())
 	{
