@@ -17,8 +17,8 @@ void onInit(CBlob@ this)
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
 	this.set_Vec2f("shop menu size", Vec2f(9, 2));
-	this.set_string("shop description", "Buy Equipment");
-	this.set_u8("shop icon", 12);
+	this.set_string("shop description", "Craft Equipment");
+	this.set_u8("shop icon", 21);
 
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
