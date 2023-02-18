@@ -1323,14 +1323,14 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
     if (player == null)
     	{ return; }
 
-    if (this.get_u32(player.getUsername() + "_exp") != 0) // has more than 0 exp
+    if (this.get_u32(player.getUsername() + "_exp") > 0) // has more than 0 exp
     {
         cfg_playerexp.add_u32(player.getUsername(), this.get_u32(player.getUsername() + "_exp"));
     }
-    else if (cfg_playerexp.exists(player.getUsername())) // 0 exp for some reason, remove from cfg
-    {
-        cfg_playerexp.remove(player.getUsername()); // could be destructive
-    }
+    //else if (cfg_playerexp.exists(player.getUsername())) // 0 exp for some reason, remove from cfg
+    //{
+    //    cfg_playerexp.remove(player.getUsername()); // could be destructive
+    //} // passes randomly for some people sometimes
 
 	if (getPlayersCount() == 1 || getPlayersCount() == 0)
 	{
