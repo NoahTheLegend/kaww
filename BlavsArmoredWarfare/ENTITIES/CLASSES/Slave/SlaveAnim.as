@@ -117,14 +117,8 @@ void onTick(CSprite@ this)
 		CSpriteLayer@ camo = this.getSpriteLayer("camo");
 		CSpriteLayer@ helmet = this.getSpriteLayer("helmet");
 
-		if (camo is null)
+		if (camo !is null)
 		{
-			if (blob.hasScript("ClimbTree.as")) blob.RemoveScript("ClimbTree.as");
-		}
-		else if (camo !is null)
-		{
-			if (!blob.hasScript("ClimbTree.as")) blob.AddScript("ClimbTree.as");
-
 			if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
 			{
 				isCamo = true;
