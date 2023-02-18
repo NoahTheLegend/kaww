@@ -26,7 +26,7 @@ void onInit(CBlob@ this)
 		}
 	}
 	this.set_string("shop description", "Buy");
-	this.set_u8("shop icon", 12);
+	this.set_u8("shop icon", 25);
 
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
