@@ -23,7 +23,7 @@ void onInit(CBlob@ this)
 	this.Tag("ignore_arrow");
 	this.Tag("builder always hit");
 
-		AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
 
 	{
@@ -142,6 +142,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			if (item.getName() == "maus" && caller.getPlayer() !is null && caller.getPlayer().getSex() == 1)
 			{
+				item.Tag("pink");
 				CBitStream params;
 				params.write_bool(true);
 				item.SendCommand(item.getCommandID("sync_color"), params);
