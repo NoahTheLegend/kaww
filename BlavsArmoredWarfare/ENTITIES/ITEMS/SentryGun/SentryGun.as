@@ -37,7 +37,7 @@ void onInit(CBlob@ this)
 	this.getShape().SetRotationsAllowed(false);
 
 	sprite.SetZ(20.0f);
-	if (isServer()) this.server_SetTimeToDie(60.0f);
+	if (isServer()) this.server_SetTimeToDie(45.0f);
 }
 
 
@@ -128,7 +128,7 @@ void ClientFire(CBlob@ this)
 
 	if (isClient())
 	{
-		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.1f, 1.25f + XORRandom(25) * 0.01f);
+		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.1f, 1.35f + XORRandom(20) * 0.1f);
 
 		ParticleAnimated("SmallExplosion3", (pos_2)+Vec2f(0, 2.0f) + vel*0.8, getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 	}

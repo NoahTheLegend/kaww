@@ -172,7 +172,7 @@ void onTick(CBlob@ this)
 	ManageParachute(this);
 
 	bool lock_stab = false;
-	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
+	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && this.isKeyPressed(key_down) && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
 	{
 		if (this.hasBlob("mat_scrap", 4) && this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Field Engineer")
 		{
