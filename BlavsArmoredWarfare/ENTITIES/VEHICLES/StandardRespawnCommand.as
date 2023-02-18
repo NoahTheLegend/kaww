@@ -154,14 +154,15 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Killing an enemy speeds you up"
 						+"\n                   - Can't use vehicles"
 						);
-	/*
+	
 	addPlayerPerk(this, "Field Engineer", "$11_class_icon$", "Field Engineer",
 						"Field Engineer:\n\n"+"$11_class_icon$"+"Improvised Screwdriver"
 						+"\n                   - Break traps faster"
+						+"\n                   - Open loot crates faster"
 						+"\n                   - Standing at a fabric"
 						+"\n                     boosts manufacturing"
 						+"\n\n                  Modernized Handles"
-						+"\n                   - Items slow you lesser" ////
+						+"\n                   - Items slow you lesser"
 						+"\n\n                  Turret Package"
 						+"\n                   - Deploy an auto-turret,"
 						+"\n                      hold SPACEBAR while"
@@ -169,11 +170,12 @@ void InitClasses(CBlob@ this)
 						+"\n                      (requires 5 scrap)"
 						+"\n\n                  Overstaffed"
 						+"\n                   - Jump height and walking"
-						+"\n                      speed reduce by amount"
+						+"\n                     speed reduce by amount"
 						+"\n                   	  of items in your inventory"
-
+						+"\n                   	  However stomp damage"
+						+"\n                   	  is increased too."
 						);
-						*/
+						
 }
 
 void BuildRespawnMenuFor(CBlob@ this, CBlob @caller)
