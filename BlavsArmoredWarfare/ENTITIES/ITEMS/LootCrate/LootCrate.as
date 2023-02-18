@@ -29,6 +29,14 @@ f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hit
 {
 	f32 dmg = damage/2;
 
+    if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum() && hitterBlob.hasTag("player"))
+	{
+		if (hitterBlob.getPlayer() !is null && getRules().get_string(hitterBlob.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		{
+			return damage;
+		}
+	}
+
 	if (isExplosionHitter(customData) || customData == Hitters::keg)
 	{
 		if (customData == Hitters::keg)

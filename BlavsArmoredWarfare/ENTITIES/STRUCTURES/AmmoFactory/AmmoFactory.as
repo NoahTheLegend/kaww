@@ -126,7 +126,7 @@ void onTick(CBlob@ this)
 				{
 					if (getRules().get_string(b.getPlayer().getUsername() + "_perk") == "Field Engineer")
 					{
-						mod = 0.5f;
+						mod = 0.75f;
 						break;
 					}
 				}
