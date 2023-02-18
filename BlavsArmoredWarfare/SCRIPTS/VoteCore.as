@@ -61,7 +61,7 @@ void onRender(CRules@ this)
 	GUI::SetFont("menu");
 	GUI::DrawText(vote_title, tl + Vec2f(Maths::Max(dim.x / 2 - text_dim.x / 2, 3.0), 3), color_white);
 
-	GUI::DrawText("Map type: " + vote.maptype, tl + Vec2f(3, 3 + text_dim.y * 2), color_white);
+	GUI::DrawText("Map type: " + vote.maptype, tl + Vec2f(3, 3 + text_dim.y * 2 - 15), color_white);
 	GUI::DrawText(getTranslatedString("Reason: {REASON}").replace("{REASON}", getTranslatedString(vote.reason)), tl + Vec2f(3, 3 + text_dim.y * 2), color_white);
 	GUI::DrawText(getTranslatedString("Cast by: {USER}").replace("{USER}", vote.byuser), tl + Vec2f(3, 3 + text_dim.y * 3), color_white);
 	GUI::DrawText(getTranslatedString("For: ") + vote.current_yes, tl + Vec2f(20, 3 + text_dim.y * 4), color_white);
