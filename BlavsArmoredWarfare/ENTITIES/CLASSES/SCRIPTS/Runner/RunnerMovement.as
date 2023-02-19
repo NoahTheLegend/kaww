@@ -540,9 +540,9 @@ void onTick(CMovement@ this)
 			if (items > 0)
 			{
 
-				moveVars.walkFactor *= 1.00f - (0.033f * items);
-				moveVars.jumpStart = 0.6 - (0.1f * items);
-				moveVars.jumpMid = 0.15f;
+				moveVars.walkFactor *= 1.00f - (0.0225f * items);
+				moveVars.jumpStart = 0.7 - (0.1f * items);
+				moveVars.jumpMid = 0.2f;
 				moveVars.jumpEnd = 0.1f;
 				set_jump_height = true;
 			}
