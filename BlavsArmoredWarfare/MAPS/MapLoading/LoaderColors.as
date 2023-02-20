@@ -257,6 +257,12 @@ namespace map_colors
 
 		b_vehiclebuilder       = 0xff3e3c47,
 		r_vehiclebuilder       = 0xff473339,
+		b_vehiclebuildert2     = 0xff3e3c48,
+		r_vehiclebuildert2     = 0xff47333a,
+		b_vehiclebuildert3     = 0xff3e3e47,
+		r_vehiclebuildert3     = 0xff473439,
+
+
 
 		heavygun               = 0xff1f11f4,
 		crateheavygun          = 0xff0f00f4,
