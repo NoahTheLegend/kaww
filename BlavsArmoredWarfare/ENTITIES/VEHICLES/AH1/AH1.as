@@ -19,7 +19,7 @@ const u8 recoil = 0;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
-const Vec2f gun_clampAngle = Vec2f(-0, 360);
+const Vec2f gun_clampAngle = Vec2f(-180, 180);
 const Vec2f miniGun_offset = Vec2f(-43,7);
 const u8 shootDelay = 2;
 
@@ -542,7 +542,7 @@ CBlob@ CreateBullet(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 			proj.set_f32("bullet_damage_head", 0.375f);
 			proj.IgnoreCollisionWhileOverlapped(this);
 			proj.server_setTeamNum(this.getTeamNum());
-			proj.setVelocity(arrowVel.RotateBy(0.075f*(XORRandom(18)-8.75f)));
+			proj.setVelocity(arrowVel.RotateBy(0.025f*(XORRandom(5)-2.0f)));
 
 			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PILOT");
 			if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null) //getting player is necessary in case when player leaves
