@@ -19,7 +19,7 @@ const u8 recoil = 0;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
-const Vec2f gun_clampAngle = Vec2f(-10, 135);
+const Vec2f gun_clampAngle = Vec2f(-0, 360);
 const Vec2f miniGun_offset = Vec2f(-43,7);
 const u8 shootDelay = 2;
 
@@ -460,6 +460,12 @@ void ShootGun(CBlob@ this, f32 angle, Vec2f gunPos)
 		{
 			proj.server_SetTimeToDie(5.0);
 			proj.Tag("aircraft_bullet");
+
+			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+			if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
+			{
+				proj.SetDamageOwnerPlayer(ap.getOccupied().getPlayer());
+			}
 		}
 	}
 }
@@ -499,6 +505,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			proj.server_SetTimeToDie(8);
 			proj.Tag("rpg");
 			proj.Tag("no_hitmap");
+
+			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");
+			if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
+			{
+				proj.SetDamageOwnerPlayer(ap.getOccupied().getPlayer());
+			}
 
 			CInventory@ inv = this.getInventory();
 			if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_bolts")
