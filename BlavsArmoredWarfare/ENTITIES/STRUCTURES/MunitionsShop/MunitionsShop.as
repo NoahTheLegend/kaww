@@ -70,12 +70,12 @@ void onInit(CBlob@ this)
 			AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Buy wood (100)", "$mat_wood$", "mat_wood-100", "Purchase 100 wood.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 10);
+			ShopItem@ s = addShopItem(this, "Buy wood (250)", "$mat_wood$", "mat_wood", "Purchase 250 wood.", false);
+			AddRequirement(s.requirements, "coin", "", "Coins", 20);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Buy stone (100)", "$mat_stone$", "mat_stone-100", "Purchase 100 stone.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 25);
+			ShopItem@ s = addShopItem(this, "Buy stone (250)", "$mat_stone$", "mat_stone", "Purchase 250 stone.", false);
+			AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		}
 	}
 	else // tdm maps
@@ -113,8 +113,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shop made item"))
 	{
-		if (this.get_u32("next_tick") > getGameTime()) return;
-		this.set_u32("next_tick", getGameTime()+1);
+		//if (this.get_u32("next_tick") > getGameTime()) return;
+		//this.set_u32("next_tick", getGameTime()+1);
 		this.getSprite().PlaySound("/ChaChing.ogg");
 
 		u16 caller, item;
@@ -138,7 +138,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 				callerPlayer.server_setCoins(callerPlayer.getCoins() +  parseInt(spl[1]));
 			}
-			else if (name.findFirst("mat_") != -1)
+			if (name.findFirst("mat_") != -1 && spl.length > 1)
 			{
 				CPlayer@ callerPlayer = callerBlob.getPlayer();
 				if (callerPlayer is null) return;
@@ -148,7 +148,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 				if (mat !is null)
 				{
-					mat.Tag("do not set materials");
 					mat.server_SetQuantity(parseInt(spl[1]));
 					if (!callerBlob.server_PutInInventory(mat))
 					{
