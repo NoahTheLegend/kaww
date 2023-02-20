@@ -489,7 +489,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
 			
 			proj.set_f32(projExplosionRadiusString, 24.0f);
-			proj.set_f32(projExplosionDamageString, 8.0f);
+			proj.set_f32(projExplosionDamageString, 10.0f);
 
 			proj.set_f32("map_damage_radius", 16.0f);
 			proj.set_f32("map_damage_ratio", 0.01f);
