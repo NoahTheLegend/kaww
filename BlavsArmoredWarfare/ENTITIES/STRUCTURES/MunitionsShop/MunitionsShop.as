@@ -138,23 +138,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 				callerPlayer.server_setCoins(callerPlayer.getCoins() +  parseInt(spl[1]));
 			}
-			if (name.findFirst("mat_") != -1 && spl.length > 1)
-			{
-				CPlayer@ callerPlayer = callerBlob.getPlayer();
-				if (callerPlayer is null) return;
-
-
-				CBlob@ mat = server_CreateBlob(spl[0]);
-
-				if (mat !is null)
-				{
-					mat.server_SetQuantity(parseInt(spl[1]));
-					if (!callerBlob.server_PutInInventory(mat))
-					{
-						mat.setPosition(callerBlob.getPosition());
-					}
-				}
-			}
 			else
 			{
 				CBlob@ blob = server_CreateBlob(spl[0], callerBlob.getTeamNum(), this.getPosition());
