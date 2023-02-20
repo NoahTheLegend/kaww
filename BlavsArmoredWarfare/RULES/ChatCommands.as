@@ -417,6 +417,16 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 				{
 					getRules().hasTag("togglebots") ? getRules().Untag("togglebots") : getRules().Tag("togglebots");
 				}
+				else if (text_in == "!kb")
+				{
+					getRules().Tag("togglebots");
+					for (u8 i = 0; i < getPlayersCount(); i++)
+					{
+						CPlayer@ p = getPlayer(i);
+						if (p !is null && p.isBot()) KickPlayer(p);
+					}
+					LoadMap("test.png");
+				}
 				else
 				{
 					CBlob@ newBlob = server_CreateBlob(name, team, Vec2f(0, -5) + pos); // currently any blob made will come back with a valid pointer

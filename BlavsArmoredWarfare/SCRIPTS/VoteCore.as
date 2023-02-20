@@ -56,12 +56,34 @@ void onRender(CRules@ this)
 		br += Vec2f(0, text_dim.y);
 	}
 
-	GUI::DrawPane(tl, br, SColor(0x80ffffff));
+	SColor color_pane = 0x80ffffff;
+	if (vote.title.substr(0, 2) == "Ex") // extend time
+	{
+		color_pane = SColor(135, 255, 255, 55);
+	}
+	else if (vote.title.substr(0, 2) == "Su") // surrender
+	{
+		color_pane = SColor(105, 125, 255, 55);
+	}
+	else if (vote.title.substr(0, 2) == "Sc") // scramble
+	{
+		color_pane = SColor(105, 55, 55, 55);
+	}
+	else if (vote.title.substr(0, 2) == "Ki") // kick
+	{
+		color_pane = SColor(105, 255, 55, 55);
+	}
+	else if (vote.title.substr(0, 2) == "Lo") // nextmap
+	{
+		color_pane = SColor(105, 65, 95, 255);
+	}
+
+	GUI::DrawPane(tl, br, SColor(color_pane));
 
 	GUI::SetFont("menu");
-	GUI::DrawText(vote_title, tl + Vec2f(Maths::Max(dim.x / 2 - text_dim.x / 2, 3.0), 3), color_white);
+	GUI::DrawText(vote_title, tl + Vec2f(Maths::Max(dim.x / 2 - text_dim.x / 2, 3.0), 3), (getGameTime()/15)%2==0?color_white:SColor(255, 255, 255, 55));
 
-	GUI::DrawText("Map type: " + vote.maptype, tl + Vec2f(3, 3 + text_dim.y * 2 - 15), color_white);
+	if (vote.maptype != "") GUI::DrawText("Map type: " + vote.maptype, tl + Vec2f(3, 3 + text_dim.y * 2 - 15), color_white);
 	GUI::DrawText(getTranslatedString("Reason: {REASON}").replace("{REASON}", getTranslatedString(vote.reason)), tl + Vec2f(3, 3 + text_dim.y * 2), color_white);
 	GUI::DrawText(getTranslatedString("Cast by: {USER}").replace("{USER}", vote.byuser), tl + Vec2f(3, 3 + text_dim.y * 3), color_white);
 	GUI::DrawText(getTranslatedString("For: ") + vote.current_yes, tl + Vec2f(20, 3 + text_dim.y * 4), color_white);

@@ -41,8 +41,9 @@ void onInit(CBlob@ this)
 	                        );
 
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(17.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(15.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-26.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-27.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 
 	this.getShape().SetOffset(Vec2f(-4, 0)); //0,8
 
@@ -417,7 +418,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (hitterBlob.hasTag("bullet"))
 	{
-		if (hitterBlob.hasTag("plane_bullet")) return damage * 0.25f;
+		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.25f;
 		else if (hitterBlob.hasTag("strong")) return damage *= 1.5f;
 		return damage;
 	}

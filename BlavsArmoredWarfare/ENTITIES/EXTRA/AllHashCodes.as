@@ -12,7 +12,11 @@ enum EntityHash
 	//vehicles
 	_m60 = 505863822, // normal tank
 	_t10 = -360649198, // T10
-	_maus = -544849061, // mouse
+	_maus = -544849061, // maus
+	_artillery = 1028704049,
+	_artilleryturret = 1853414531,
+	_techbigtruck = 351403048,
+	_barge = -2029400058,
 
 	_pszh4 = 1117406230, // smol APC
 	_btr82a = 1873450872, // big APC

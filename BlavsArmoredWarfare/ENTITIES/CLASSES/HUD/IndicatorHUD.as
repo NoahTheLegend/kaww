@@ -217,6 +217,7 @@ void onRender( CRules@ this )
 		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
 		Vec2f custom_offset = Vec2f(0,8);
 		if (frame == 10 || frame == 11) custom_offset = Vec2f(0, -48);
+		else if (frame == 12) custom_offset = Vec2f(0, 24);
 
 		GUI::DrawIcon("indicator_sheet.png", frame, Vec2f(16, 25), indicatorPos + custom_offset, 1.0f, vehicleTeamnum);
 	}
@@ -265,6 +266,15 @@ u8 getIndicatorFrame( int hash )
 		case _bf109:
 		case _bomberplane:
 		frame = 11; break;
+
+		case _barge:
+		frame = 12; break;
+
+		case _techbigtruck:
+		frame = 13; break;
+
+		case _artillery:
+		frame = 14; break; 
 
 		case _uh1:
 		frame = 10; break;

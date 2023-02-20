@@ -14,6 +14,7 @@ void onTick( CRules@ this )
 
 void onInit(CRules@ this)
 {
+	this.set_bool("show_warn_extended_time", false);
 	CBitStream stream;
 	stream.write_u16(0xDEAD);
 	this.set_CBitStream("tdm_serialised_team_hud", stream);
@@ -99,7 +100,7 @@ void onRender(CRules@ this)
 	if (p is null || !p.isMyPlayer()) { return; }
 	GUI::SetFont("menu");
 
-	if (this.get_u32("warn_extended_time") != 0 && this.get_u32("warn_extended_time") > getGameTime() && getGameTime() > 600)
+	if (this.get_bool("show_warn_extended_time") && this.get_u32("warn_extended_time") != 0 && this.get_u32("warn_extended_time") > getGameTime() && getGameTime() > 300)
 	{
 		f32 wave = Maths::Sin(getGameTime() / 2.5f) * 2.5f - 12.5f;
 		GUI::DrawTextCentered("Match time was extended by 10 minutes!", Vec2f(getDriver().getScreenWidth()/2, 220+wave), (getGameTime()/30)%2 == 0 ? SColor(255,255,255,55) : SColor(255,255,75,75));

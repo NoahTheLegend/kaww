@@ -878,7 +878,9 @@ void AttackBlobGunner(CBlob@ blob, CBlob @target, CBlob@ vehicle)
 	{
 		f32 gunangle = (blob.getAimPos() - mypos).getAngleDegrees();
 		
-		AttachmentPoint@ turretpoint = vehicle.getAttachments().getAttachmentPointByName("TURRET");
+		CAttachment@ ats = vehicle.getAttachments();
+		if (ats is null) return;
+		AttachmentPoint@ turretpoint = ats.getAttachmentPointByName("TURRET");
 		if (turretpoint !is null) {
 			CBlob@ turret = turretpoint.getOccupied();
 

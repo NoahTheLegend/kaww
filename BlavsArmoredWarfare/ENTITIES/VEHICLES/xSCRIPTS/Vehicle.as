@@ -55,6 +55,8 @@ void onInit(CBlob@ this)
 			
 		case _m60: // normal tank
 		case _m60turret: // M60 Shell cannon
+		case _artillery:
+		case _artilleryturret:
 		armorRating = 3; break;
 
 		case _transporttruck: // vanilla truck?
@@ -67,6 +69,8 @@ void onInit(CBlob@ this)
 		case _pszh4: // smol APC
 		case _pszh4turret: // smol APC cannon
 		case _heavygun: // MG
+		case _barge:
+		case _techbigtruck:
 		armorRating = 2; break;
 
 		case _uh1: // heli
@@ -94,6 +98,13 @@ void onInit(CBlob@ this)
 	f32 scale_damage = 1.0f;
 	switch(blobHash) // weapon rating and length of linear (map) and circled explosion damage
 	{
+		case _artilleryturret:
+		{
+			weaponRating = 3;
+			linear_length = 8.0f;
+			scale_damage = 1.0f;
+			break;
+		}
 		case _mausturret: // MAUS Shell cannon
 		{
 			weaponRating = 3;
@@ -164,6 +175,8 @@ void onInit(CBlob@ this)
 
 		case _btr82a: // big APC
 		case _bradley:
+		case _artillery:
+		case _barge:
 		backsideOffset = 16.0f; break;
 
 		case _pszh4: // smol APC
@@ -173,15 +186,15 @@ void onInit(CBlob@ this)
 		backsideOffset = 48.0f; break;
 
 		case _bf109: // plane
-		backsideOffset = 8.0f; break;
+		backsideOffset = 16.0f; break;
 
 		case _bomberplane: // plane
-		backsideOffset = 8.0f; break;
+		backsideOffset = 16.0f; break;
 	}
 
 	// speedy stuff
 	f32 intake = 0.0f;
-	switch(blobHash) // backside vulnerability point
+	switch(blobHash)
 	{
 		case _maus: // maus
 		intake = -50.0f; break;
@@ -201,13 +214,15 @@ void onInit(CBlob@ this)
 		intake = 100.0f; break;
 
 		case _techtruck: // truck
+		case _techbigtruck:
 		intake = 150.0f; break;
 
 		case _armory: // armory
 		case _importantarmory:
+		case _civcar:
 		intake = 100.0f; break;
 
-		case _motorcycle: // bike!
+		case _motorcycle: // bike
 		intake = 200.0f; break;
 	}
 	this.set_f32("add_gas_intake", intake);
@@ -791,12 +806,14 @@ void onDie(CBlob@ this)
 				break;
 			} // journalist
 			case _uh1:
+			case _artillery:
 			{
 				scrap_amount = 10+XORRandom(9);
 				// same as bf109
 				break;
 			} // heli
 			case _techtruck:
+			case _techbigtruck:
 			{
 				scrap_amount = 4+XORRandom(4);
 				explosion_radius = 32.0f;
@@ -805,6 +822,7 @@ void onDie(CBlob@ this)
 				break;
 			} // MG truck
 			case _motorcycle:
+			case _barge:
 			{
 				scrap_amount = 1+XORRandom(2);
 				// no explosion, too small
@@ -812,7 +830,7 @@ void onDie(CBlob@ this)
 			} // bike
 			case _civcar:
 			{
-				scrap_amount = 2+XORRandom(3);
+				scrap_amount = 2+XORRandom(2);
 				explosion_radius = 24.0f;
 				explosion_map_damage = 0.1f;
 				explosion_damage = 0.5f;
@@ -913,7 +931,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
-		return damage * ((this.hasTag("apc") ? 3.5f : 4.5f)-(armorRating*0.75f));
+		return damage * ((this.hasTag("apc") ? 3.75f : 4.75f)-(armorRating*0.75f));
 	}
 
 	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor

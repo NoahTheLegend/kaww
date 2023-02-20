@@ -58,7 +58,7 @@ void onInit(CBlob@ this)
 	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", "MausFrontLayer.png", 64, 8);
 	if (front !is null)
 	{
-		front.SetRelativeZ(-0.88f);
+		front.SetRelativeZ(-20.8f);
 		front.SetOffset(Vec2f(6.0f, 5.0f));
 		front.ScaleBy(Vec2f(1.0f, 1.05f));
 	}
@@ -385,6 +385,10 @@ void onDie(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (blob.hasTag("boat"))
+	{
+		return true;
+	}
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))
 	{

@@ -60,7 +60,7 @@ void onTick(CBlob@ this)
 		}
 
 		// pick closest seat
-		f32 closestDist = 99999.9f;
+		f32 closestDist = 9999.9f;
 		AttachmentPoint@ closestAP;
 		Vec2f pos = this.getPosition();
 

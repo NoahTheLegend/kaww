@@ -1,5 +1,6 @@
 #include "Hitters.as"
 #include "GenericButtonCommon.as"
+#include "Knocked.as"
 
 const u32 VANISH_BODY_SECS = 45;
 const f32 CARRIED_BLOB_VEL_SCALE = 1.0;
@@ -197,10 +198,26 @@ void onTick(CBlob@ this)
 		carried.server_DetachFromAll();
 	}
 
+	if (getGameTime() % 30 == 0)
+	{
+		if (this.isAttached() && isKnocked(this))
+		{
+			SetKnocked(this, 0);
+		}
+	}
+
 	//die if we've "expired"
 	if (this.get_u32("death time") + VANISH_BODY_SECS * getTicksASecond() < getGameTime())
 	{
 		this.server_Die();
+	}
+}
+
+void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
+{
+	if (detached !is null && detached.hasTag("boat"))
+	{
+		this.IgnoreCollisionWhileOverlapped(null);
 	}
 }
 

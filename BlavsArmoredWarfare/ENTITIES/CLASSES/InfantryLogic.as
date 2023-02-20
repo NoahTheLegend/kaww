@@ -137,7 +137,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("shoot bullet");
 	this.getShape().getConsts().net_threshold_multiplier = 0.5f;
 
-	this.set_f32("stab damage", 1.0f);
+	this.set_f32("stab damage", 1.25f);
 	
 	this.set_u32("can_spot", 0);
 
@@ -148,17 +148,18 @@ void onInit(CBlob@ this)
 		this.set_u8("stab time", 19);
 		this.set_u8("stab timing", 13);
 		this.Tag("no bulletgib on shot");
-		this.set_f32("stab damage", 1.25f);
+		this.set_f32("stab damage", 1.5f);
 	}
 	else if (this.getName() == "ranger")
 	{
 		this.set_u8("stab time", 33);
 		this.set_u8("stab timing", 14);
-		this.set_f32("stab damage", 1.5f);
+		this.set_f32("stab damage", 1.75f);
 	}
 	else if (this.getName() == "shotgun")
 	{
 		this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
+		this.set_f32("stab damage", 1.75f);
 	}
 	//else if (this.getName() == "sniper")
 	//{
@@ -565,7 +566,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	bool lock_stab = false;
 	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && this.isKeyPressed(key_down) && !hidegun && !isReloading && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
 	{
-		if (this.hasBlob("mat_scrap", 4) && this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		if (this.hasBlob("mat_scrap", 3) && this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Field Engineer")
 		{
 			if (getGameTime()%12 == 0 && this.getSprite() !is null)
 			{
@@ -582,7 +583,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				this.set_u32("turret_delay", getGameTime()+150);
 				if (isServer())
 				{
-					this.TakeBlob("mat_scrap", 4);
+					this.TakeBlob("mat_scrap", 3);
 					CBlob@ turret_exists = getBlobByNetworkID(this.getPlayer().get_u16("turret_netid"));
 					if (turret_exists !is null && turret_exists.getName() == "sentrygun")
 					{
@@ -593,6 +594,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					if (turret !is null)
 					{
 						this.getPlayer().set_u16("turret_netid", turret.getNetworkID());
+						turret.SetDamageOwnerPlayer(this.getPlayer());
 					}
 				}
 			}

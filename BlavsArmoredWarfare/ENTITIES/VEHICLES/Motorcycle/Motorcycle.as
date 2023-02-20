@@ -241,6 +241,10 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (blob.hasTag("boat"))
+	{
+		return true;
+	}
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle") || blob.hasTag("bunker") || blob.hasTag("flesh"))
 	{
@@ -252,16 +256,8 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return true;
 	}
 	else
-	{
+	{;
 		return Vehicle_doesCollideWithBlob_ground(this, blob);
-	}
-}
-
-void onCollision(CBlob@ this, CBlob@ blob, bool solid)
-{
-	if (blob !is null)
-	{
-		TryToAttachVehicle(this, blob);
 	}
 }
 

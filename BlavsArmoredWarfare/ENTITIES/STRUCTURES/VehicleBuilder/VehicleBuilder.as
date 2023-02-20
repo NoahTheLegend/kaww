@@ -23,7 +23,7 @@ void onInit(CBlob@ this)
 	this.Tag("ignore_arrow");
 	this.Tag("builder always hit");
 
-		AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
 
 	{
@@ -58,10 +58,6 @@ void onInit(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
-	//{
-	//	ShopItem@ s = addShopItem(this, "Build BF109", "$bf109$", "bf109", "A plane.\n\nUses 7.62mm.");
-	//	AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
-	//}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
 		s.customButton = true;
@@ -76,21 +72,12 @@ void onInit(CBlob@ this)
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
-	/*
-	{
-		ShopItem@ s = addShopItem(this, "Gutseeker Launcher", "$crate$", "launcher_gutseeker", "Cluster Missile launcher.\n\nSingle use.", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
-	}
-	*/
 	{
 		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 - Vehicle builder.\n\nUnlocks stronger vehicles and aircraft.", false, false);
 		s.customButton = true;
 		s.buttonwidth = 2;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 100);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
 	}
 }
 
