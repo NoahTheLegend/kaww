@@ -126,33 +126,5 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		CBlob@ callerBlob = getBlobByNetworkID(caller);
 
 		if (callerBlob is null) return;
-
-		if (isServer())
-		{
-			string[] spl = name.split("-");
-
-			if (spl[0] == "coin")
-			{
-				CPlayer@ callerPlayer = callerBlob.getPlayer();
-				if (callerPlayer is null) return;
-
-				callerPlayer.server_setCoins(callerPlayer.getCoins() +  parseInt(spl[1]));
-			}
-			else
-			{
-				CBlob@ blob = server_CreateBlob(spl[0], callerBlob.getTeamNum(), this.getPosition());
-
-				if (blob is null) return;
-
-				if (!blob.canBePutInInventory(callerBlob))
-				{
-					callerBlob.server_Pickup(blob);
-				}
-				else if (callerBlob.getInventory() !is null && !callerBlob.getInventory().isFull())
-				{
-					callerBlob.server_PutInInventory(blob);
-				}
-			}
-		}
 	}
 }
