@@ -34,7 +34,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (blob.hasTag("vehicle") && this.getTeamNum() != blob.getTeamNum())
+	if (blob.hasTag("vehicle") && blob.getTeamNum() < 7 && this.getTeamNum() != blob.getTeamNum())
 	{
 		return true;
 	}
@@ -55,7 +55,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (getNet().isServer() && blob !is null && this.getVelocity().x >= -1.0f && this.getVelocity().x <= 1.0f)
 	{
-		if (blob.hasTag("vehicle") && this.getTeamNum() != blob.getTeamNum())
+		if (blob.hasTag("vehicle") && blob.getTeamNum() < 7 && this.getTeamNum() != blob.getTeamNum())
 		{
 			this.server_Hit(blob, blob.getPosition(), Vec2f_zero, 22.0f, Hitters::explosion);
 

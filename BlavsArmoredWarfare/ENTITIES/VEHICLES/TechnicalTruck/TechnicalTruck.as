@@ -36,10 +36,10 @@ void onInit(CBlob@ this)
 	                        );
 
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(18.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(16.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-24.5f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	
-
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-26.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 
 	this.getShape().SetOffset(Vec2f(0, 2));
 	
@@ -177,6 +177,10 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (blob.hasTag("boat"))
+	{
+		return true;
+	}
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))
 	{

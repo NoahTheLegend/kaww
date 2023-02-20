@@ -29,8 +29,8 @@ void onInit(CBlob@ this)
 	                         0.3f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(20.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-19.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(20.0f, 3.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-19.0f, 3.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 
 
 	this.getShape().SetOffset(Vec2f(0, 0)); //0,8
@@ -89,10 +89,19 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (this.getVelocity().Length() < 1.0f || blob.hasTag("structure") || blob.hasTag("bunker")) return false;
+	if (blob.hasTag("boat"))
+	{
+		return true;
+	}
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))
 	{
 		return true;
+	}
+
+	if (blob.hasTag("trap"))
+	{
+		return false;
 	}
 
 	if (blob.hasTag("flesh") && !blob.isAttached())

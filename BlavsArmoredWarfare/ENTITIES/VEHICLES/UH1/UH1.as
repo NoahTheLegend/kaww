@@ -84,7 +84,7 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(0.5f);
-			arm.SetOffset(Vec2f(-32.0f, 10.0f));
+			arm.SetOffset(Vec2f(-32.0f, 8.0f));
 		}
 	}
 
@@ -117,7 +117,7 @@ void onInit(CSprite@ this)
 		int[] frames = {1, 2, 3, 2};
 		anim.AddFrames(frames);
 		
-		blade.SetOffset(Vec2f(-5, -26));
+		blade.SetOffset(Vec2f(-5, -28));
 		blade.SetRelativeZ(20.0f);
 		blade.SetVisible(true);
 	}
@@ -130,7 +130,7 @@ void onInit(CSprite@ this)
 		int[] frames = {0, 1, 2, 3};
 		anim.AddFrames(frames);
 		
-		tailrotor.SetOffset(Vec2f(58.0, -9));
+		tailrotor.SetOffset(Vec2f(58.0, -11));
 		tailrotor.SetRelativeZ(20.0f);
 		tailrotor.SetVisible(true);
 	}
@@ -357,11 +357,11 @@ void onTick(CBlob@ this)
 		int anim_time_formula = Maths::Floor(1.00f + (1.00f - Maths::Abs(resultForce.getLength())) * 3) % 4;
 		if (this.hasTag("falling")) anim_time_formula = Maths::Floor(1.00f + (1.00f - Maths::Abs(this.get_Vec2f("result_force").getLength())) * 3) % 4;
 		blade.ResetTransform();
-		blade.SetOffset(Vec2f(-4, -26));
+		blade.SetOffset(Vec2f(-4, -28));
 		blade.animation.time = anim_time_formula;
 		if (blade.animation.time == 0)
 		{
-			blade.SetOffset(Vec2f(-5, -26));
+			blade.SetOffset(Vec2f(-5, -28));
 			blade.SetFrameIndex(0);
 			blade.RotateBy(180, Vec2f(0.0f,2.0f));
 		}
@@ -489,17 +489,8 @@ f32 constrainAngle(f32 x)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
-	if (attachedPoint.socket)
-	{
-		this.Tag("no barrier pass");
-	}
 	if (attached !is null)
 	{
-		if (attached.hasTag("player") && attached.getTeamNum() != this.getTeamNum())
-		{
-			this.server_setTeamNum(attached.getTeamNum());
-		}
-		
 		if (attached.getName() != "donotspawnthiswithacommand")
 		{
 			attached.Tag("invincible");
@@ -510,16 +501,8 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint @attachedPoint)
 {
-	if (attachedPoint.socket)
-	{
-		detached.setVelocity(this.getVelocity());
-		detached.AddForce(Vec2f(0.0f, -300.0f));
-		this.Untag("no barrier pass");
-	}
 	if (detached !is null)
 	{
-		detached.Untag("show_gun");
-	detached.Untag("can_shoot_if_attached");
 		detached.Untag("invincible");
 		detached.Untag("invincibilityByVehicle");
 	}
@@ -563,15 +546,6 @@ void onDie(CBlob@ this)
 		CBlob@ launcher = ap.getOccupied();
 		if (launcher !is null) launcher.server_Die();
 	}
-	
-	if (this.exists("bladeid"))
-	{
-		CBlob@ blade = getBlobByNetworkID(this.get_u16("bladeid"));
-		if (blade !is null)
-		{
-			blade.server_Die();
-		}
-	}
 	if (this.exists("bowid"))
 	{
 		CBlob@ bow = getBlobByNetworkID(this.get_u16("bowid"));
@@ -600,16 +574,16 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.getName() == "missile_javelin")
 	{
-		return damage * 1.5f;
+		return damage * 0.75f;
 	}
 	else if (hitterBlob.getName() == "ballista_bolt")
 	{
-		return damage * 1.75f;
+		return damage * 1.0f;
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
-		if (hitterBlob.hasTag("plane_bullet")) return damage * 0.25f;
-		else if (hitterBlob.getName() == "bulletheavy") return damage * 0.75f;
+		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.3f;
+		else if (hitterBlob.getName() == "bulletheavy") return damage * 0.8f;
 		return damage * (hitterBlob.hasTag("strong") ? 1.0f : 0.65f);
 	}
 	return damage;

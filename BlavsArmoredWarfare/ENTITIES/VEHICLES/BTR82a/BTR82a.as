@@ -43,6 +43,11 @@ void onInit(CBlob@ this)
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-7.5f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-20.5f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(20.5f, 6.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(7.0f, 6.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-9.0f, 6.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-22.0f, 6.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+
 	this.getShape().SetOffset(Vec2f(0, 2));
 
 	bool facing_left = this.getTeamNum() == 1 ? true : false;
@@ -163,6 +168,10 @@ void onDie(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (blob.hasTag("boat"))
+	{
+		return true;
+	}
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))
 	{

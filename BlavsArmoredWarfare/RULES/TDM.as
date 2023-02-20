@@ -1151,6 +1151,8 @@ void Reset(CRules@ this)
 void onRestart(CRules@ this)
 {
 	Reset(this);
+	this.set_u32("warn_extended_time", 0);
+	this.set_bool("show_warn_extended_time", false);
 }
 
 const string[] names = {

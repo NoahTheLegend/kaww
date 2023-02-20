@@ -1,4 +1,5 @@
 #include "WarfareGlobal.as"
+#include "Explosion.as"
 const string target_player_id = "target_player_id";
 
 void onInit(CBlob@ this)
@@ -10,6 +11,7 @@ void onInit(CBlob@ this)
 	this.set_u16(target_player_id, 0);
 
 	this.set_u32("next repair", 0);
+	this.getSprite().PlaySound( "/UpgradeT2.ogg", 0.75f, 1.25f );
 
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
@@ -37,7 +39,7 @@ void onInit(CBlob@ this)
 	this.getShape().SetRotationsAllowed(false);
 
 	sprite.SetZ(20.0f);
-	if (isServer()) this.server_SetTimeToDie(45.0f);
+	if (isServer()) this.server_SetTimeToDie(90.0f);
 }
 
 
@@ -151,6 +153,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					bullet.Init();
 
 					bullet.set_s8(penRatingString, 1);
+					bullet.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
 
 					bullet.set_f32("bullet_damage_body", 0.2f);
 					bullet.set_f32("bullet_damage_head", 0.25f);
@@ -266,6 +269,10 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (blob.hasTag("projectile") && blob.getTeamNum() == this.getTeamNum()) return false;
 
+	if (blob.hasTag("boat"))
+	{
+		return true;
+	}
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))
 	{
@@ -273,4 +280,49 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	}
 
 	return false;
+}
+
+void onDie(CBlob@ this)
+{
+	DoExplosion(this);
+}
+
+void DoExplosion(CBlob@ this)
+{
+	if (this.hasTag("exploded")) return;
+
+	f32 random = XORRandom(5);
+	f32 modifier = 1 + Maths::Log(this.getQuantity());
+	f32 angle = -this.get_f32("bomb angle");
+	
+	Vec2f pos = this.getPosition();
+	CMap@ map = getMap();
+
+	for (int i = 0; i < (v_fastrender ? 5: 15); i++)
+	{
+		MakeParticle(this, Vec2f( XORRandom(32) - 16, XORRandom(32) - 16), getRandomVelocity(-angle, XORRandom(220) * 0.01f, 90), particles[XORRandom(particles.length)]);
+	}
+	
+	this.Tag("exploded");
+	if (!v_fastrender) this.getSprite().Gib();
+}
+
+string[] particles = 
+{
+	"LargeSmoke",
+	"Explosion.png"
+};
+
+string[] smokes = 
+{
+	"LargeSmoke.png",
+	"SmallSmoke1.png",
+	"SmallSmoke2.png"
+};
+
+void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string filename = "SmallSteam")
+{
+	if (!getNet().isClient()) return;
+
+	ParticleAnimated(CFileMatcher(filename).getFirst(), this.getPosition() + pos, vel, float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 1 + XORRandom(4), XORRandom(100) * -0.00005f, true);
 }

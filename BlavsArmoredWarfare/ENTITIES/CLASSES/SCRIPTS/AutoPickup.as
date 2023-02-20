@@ -16,11 +16,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 	string blobName = blob.getName();
 
-	if (this.getName() != "antitank" && blobName == "mat_7mmround")
-	{
-		this.server_PutInInventory(blob);
-	}
-	else if (this.getName() == "antitank" && blobName == "mat_heatwarhead")
+	if (this.getName() == "antitank" && blobName == "mat_heatwarhead")
 	{
 		this.server_PutInInventory(blob);
 	}

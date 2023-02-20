@@ -122,7 +122,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return true;
 	}
 
-	if (blob.hasTag("vehicle") && this.getTeamNum() == blob.getTeamNum())
+	if ((blob.hasTag("vehicle") && this.getTeamNum() == blob.getTeamNum()) || (blob.hasTag("aerial") && this.hasTag("artillery_shell")))
 	{
 		return false;
 	}

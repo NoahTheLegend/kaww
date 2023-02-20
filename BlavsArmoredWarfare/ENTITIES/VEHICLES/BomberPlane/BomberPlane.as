@@ -379,7 +379,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (isServer() && blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck")))
 	{
 		f32 mod_self = 0.5f;
-		f32 mod_target = 1.5f;
+		f32 mod_target = 2.0f;
 		blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
 		this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
 	}
@@ -476,7 +476,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
-		if (hitterBlob.hasTag("plane_bullet")) return damage * 0.25f;
+		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.25f;
 		return damage * (hitterBlob.hasTag("strong") ? 0.75f : 0.6f);
 	}
 	return damage;

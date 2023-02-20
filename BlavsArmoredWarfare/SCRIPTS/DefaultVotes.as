@@ -5,9 +5,9 @@
 bool g_haveStartedVote = false;
 s32 g_lastVoteCounter = 0;
 string g_lastUsernameVoted = "";
-const float required_minutes = 10; //time you have to wait after joining w/o skip_votewait.
+const float required_minutes = 0; //time you have to wait after joining w/o skip_votewait.
 
-s32 g_lastNextmapCounter = 0;
+s32 g_lastNextmapCounter = 10;
 const float required_minutes_nextmap = 10; //global nextmap vote cooldown
 
 const s32 VoteKickTime = 30; //minutes (30min default)
@@ -416,6 +416,7 @@ class VoteExtendTimeFunctor : VoteFunctor
 			
 			rules.set_u32("game_end_time", rules.get_u32("game_end_time")+(10*30*60));
 			rules.set_u32("warn_extended_time", getGameTime()+300);
+			rules.set_bool("show_warn_extended_time", true);
 		}
 		else
 		{

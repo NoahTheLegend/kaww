@@ -96,7 +96,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	if (blob.getRadius() > this.getRadius() ||
 	        (blob.getTeamNum() != this.getTeamNum() && blob.hasTag("player") && this.getShape().vellen > 1.0f) ||
-	        (blob.getShape().isStatic()) || blob.hasTag("projectile") || blob.hasTag("grenade"))
+	        (blob.getShape().isStatic()) || blob.hasTag("projectile") || blob.hasTag("grenade") || blob.getName() == "c4")
 	{
 		return true;
 	}
@@ -151,7 +151,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		break;
 	}
 
-	if (hitterBlob.hasTag("grenade"))
+	if (hitterBlob.hasTag("grenade") || hitterBlob.getName() == "c4")
 	{
 		return damage * 0.3f;
 	}

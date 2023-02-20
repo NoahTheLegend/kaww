@@ -558,6 +558,11 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 	}
 	bool hascrew = false;
 
+	if (this.isOnGround() || this.wasOnGround())
+	{
+		this.AddForce(Vec2f(0.0f, this.getMass()*-0.25f)); // this is nice
+	}
+
 	v.move_direction = 0;
 	AttachmentPoint@[] aps;
 	if (this.getAttachmentPoints(@aps))
@@ -639,11 +644,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						const f32 engine_topspeed_reverse = v.turn_speed;
 
 						moveForce *= Maths::Clamp(this.get_f32("engine_RPM"), 0, engine_topspeed) / 4500;
-
-						if (this.isOnGround() || this.wasOnGround())
-						{
-							this.AddForce(Vec2f(0.0f, this.getMass()*-0.25f)); // this is nice
-						}
 
 						if (space)
 						{

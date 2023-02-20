@@ -184,7 +184,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (this.getName() == "stone_door")
 	{
-		if (customData == Hitters::explosion || hitterBlob.hasTag("grenade"))
+		if ((customData == Hitters::explosion && hitterBlob.getName() != "c4") || hitterBlob.hasTag("grenade"))
 		{
 			return damage * Maths::Max(0.0f, damage*0.33f / (hitterBlob.getPosition() - this.getPosition()).Length());
 		}

@@ -9,7 +9,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u8 cooldown_time = 180;//210;
+const u8 cooldown_time = 150;//210;
 const u8 barrel_compression = 6; // max barrel movement
 const u16 recoil = 180;
 
@@ -420,7 +420,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (blob.getTeamNum() == this.getTeamNum()) return false;
-	if (blob.hasTag("vehicle"))
+	if (blob.hasTag("vehicle") || blob.hasTag("boat"))
 	{
 		return true;
 	}

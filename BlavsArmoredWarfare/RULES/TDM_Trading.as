@@ -31,7 +31,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 
 		if (getRules().get_string(victim.getUsername() + "_perk") == "Wealthy")
 		{
-			victim.server_setCoins(Maths::Ceil(victim.getCoins() * 0.75f)); 
+			victim.server_setCoins(Maths::Ceil(victim.getCoins() * 0.66f)); 
 		}
 		else
 		{

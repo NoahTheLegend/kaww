@@ -60,6 +60,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 50, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Accolades"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 92, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(getTranslatedString("Perk"), Vec2f(bottomright.x - accolades_start - 140, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 0.5f;
 
@@ -266,6 +267,27 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			{
 				hovered_rank = level - 1;
 			}
+		}
+
+		{
+			//draw perk
+			u8 icon = 0;
+			string perk = (getRules().get_string(username + "_perk")).substr(0,2);
+			
+			if (perk == "Ca") icon = 6;
+			else if (perk == "Sh") icon = 1;
+			else if (perk == "Bl") icon = 3;
+			else if (perk == "Op") icon = 5;
+			else if (perk == "Lu") icon = 4;
+			else if (perk == "We") icon = 2;
+			else if (perk == "De") icon = 7;
+			else if (perk == "Pa") icon = 9;
+			else if (perk == "Bu") icon = 10;
+			else if (perk == "Fi") icon = 11;
+
+			float x = bottomright.x - accolades_start - 140;
+			float extra = 8;
+			GUI::DrawIcon("PerkIcon", icon, Vec2f(36, 36), Vec2f(x, topleft.y-12), 0.5f, 0);
 		}
 
 		//render player accolades

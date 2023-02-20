@@ -34,7 +34,7 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$change_perk$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 11);
 	
 	addPlayerClass(this, "---- Mechanic ----", "$slave_class_icon$", "slave",
-						"---- Mechanic ----\n\nBuild and break.\nCan't capture flags.\n\nHP: 225\nLMB: Build\nRMB: Mine");
+						"---- Mechanic ----\n\nBuild and break.\n\nHP: 200\nLMB: Build\nRMB: Mine");
 
 	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver",
 						"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 325\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
@@ -43,7 +43,7 @@ void InitClasses(CBlob@ this)
 						"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 225\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Buttstock");
 
 	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun",
-						"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Dig");
+						"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 275\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Dig");
 
 	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper",
 						"---- Sniper ----\n\nLong range sniper.\n\nHP: 175\nLMB: Shoot\nRMB: Scope in\nSPACEBAR: Knife");
@@ -52,7 +52,7 @@ void InitClasses(CBlob@ this)
 						"---- Anti-Tank ----\n\nArmed with a powerful RPG launcher.\n\nHP: 225.\nLMB: RPG\nRMB: Aim\nSPACEBAR: Knife");
 
 	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5",
-						"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half healing value.\n\nHP: 175\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Heal pack");
+						"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half of food healing\n\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Heal pack");
 
 	//addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg", "---- LMG ----\n\nExtreme firepower.\nLMB: LMG\nRMB: ADS");
 	
@@ -125,7 +125,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Twice as much money earned"
 						+"\n                   - Kills give you 6 coins"
 						+"\n\n                  Health Insurance"
-						+"\n                   - Lose 25% of all money on death          "
+						+"\n                   - Lose 33% of all money on death          "
 						);	
 
 	addPlayerPerk(this, "Death Incarnate", "$7_class_icon$", "Death Incarnate",
@@ -166,7 +166,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Deploy a sentry gun,"
 						+"\n                      hold DOWN+SPACEBAR"
 						+"\n                      on the ground"
-						+"\n                      (requires 4 scrap)"
+						+"\n                      (requires 3 scrap)"
 						+"\n\n                  Overstaffed"
 						+"\n                   - Jump height and walking"
 						+"\n                     speed reduce by amount"

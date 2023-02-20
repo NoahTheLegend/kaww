@@ -281,6 +281,10 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (blob.hasTag("projectile") && blob.getTeamNum() == this.getTeamNum()) return true;
 
+	if (blob.hasTag("boat"))
+	{
+		return true;
+	}
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))
 	{
