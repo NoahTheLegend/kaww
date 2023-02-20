@@ -763,7 +763,7 @@ shared class TDMCore : RulesCore
 		   	"SoldiercombatTDM.png",
 		   	"Flattening.png",
 		   	"RooftopTanks.png",
-		   	"HamburgetHill.png"
+		   	"HamburgerHill.png"
 		};
 
 		//spawn the spawns :D
@@ -1622,11 +1622,14 @@ const string[] LargeMaps = {
 	"SoldiercombatTDM.png",
 	"Flattening.png",
 	"RooftopTanks.png",
-	"HamburgetHill.png",
+	"HamburgerHill.png",
 	"Goldy_KAWW_Sewage.png",
 	"BloodGulch.png",
 	"WorldwarFlagless.png",
-	"ClassicFlagless.png"
+	"ClassicFlagless.png",
+	"BridgeWater.png",
+	"HamburgerHillWater.png",
+	"SiegeBeachWater.png"
 };
 
 const string[] AverageMaps = {
