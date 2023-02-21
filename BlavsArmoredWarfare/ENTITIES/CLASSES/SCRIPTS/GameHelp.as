@@ -111,6 +111,7 @@ void onRender(CRules@ this)
 		const string lastChangesInfo = "\nChanges:\n\n"
 		+ "  * Added C-4 explosive bomb\n"
         + "  * New vehicles and tier-3 vehicle builder\n"
+         + " * Breaking logs & loot crates give exp now\n"
         + "  * New perk\n";
 		
 		GUI::SetFont("menu");
