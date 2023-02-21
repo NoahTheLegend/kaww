@@ -72,13 +72,17 @@ void onRender(CSprite@ this)
 		}
 		else
 		{
-			f32 angle = blob.get_f32("gunelevation");
-			if (blob.isFacingLeft()) angle = Maths::Abs(angle-360.0f+blob.getAngleDegrees()-(blob.getAngleDegrees()>180?180:0));
-			else angle += blob.getAngleDegrees();
-			if (angle > 360.0f) angle -= 360.0f;
-			else if (angle < -360.0f) angle += 360.0f;
+			f32 angleWithNormal = blob.get_f32("gunelevation");
+			
+			f32 offset = 90.0f;
+			if (blob.isFacingLeft()) offset = 270.0f;
 
-			GUI::DrawTextCentered(Maths::Round(angle)+"°", pos2d-Vec2f(32.0f * (blob.isFacingLeft()?-1.0f:1.0f),32), SColor(0xffffffff));
+			f32 sign = -1.0f;
+			if (blob.isFacingLeft()) sign = 1.0f;
+			
+			f32 angleWithHorizon = (angleWithNormal - offset) * sign;
+
+			GUI::DrawTextCentered(Maths::Round(angleWithHorizon)+"°", pos2d-Vec2f(32.0f * (blob.isFacingLeft()?-1.0f:1.0f),32), SColor(0xffffffff));
 		}
 	}
 }
