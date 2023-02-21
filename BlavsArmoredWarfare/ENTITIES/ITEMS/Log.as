@@ -62,7 +62,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 		getRules().add_u32(this.getPlayer().getUsername() + "_exp", exp_reward);
 		getRules().Sync(this.getPlayer().getUsername() + "_exp", true);
-		hitterBlob.server_SendCommandToPlayer(hitterBlob.getCommandID("addxp_universal"), params);
+		hitterBlob.server_SendCommandToPlayer(hitterBlob.getCommandID("addxp_universal"), params, hitterBlob.getPlayer());
 	}
 	return damage;
 }
