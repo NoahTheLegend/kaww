@@ -1401,8 +1401,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!params.saferead_u8(exp_reward)) return;
 		if (this.getPlayer() !is null)
 		{
-			getRules().add_u32(this.getPlayer().getUsername() + "_exp", exp_reward);
-			getRules().Sync(this.getPlayer().getUsername() + "_exp", true);
 			add_message(ExpMessage(exp_reward));
 			CheckRankUps(getRules(), // do reward coins and sfx
 				getRules().get_u32(this.getPlayer().getUsername() + "_exp"), // player new exp
