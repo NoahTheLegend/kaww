@@ -42,7 +42,7 @@ void onInit(CBlob@ this)
 	sprite.getConsts().accurateLighting = true;
 	sprite.SetFacingLeft(!sprite.isFacingLeft());
 
-	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_right | CBlob::map_collide_nodeath);
+	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_left | CBlob::map_collide_right);
 }
 
 void onTick(CBlob@ this)
@@ -53,7 +53,6 @@ void onTick(CBlob@ this)
 	if (this.getTickSinceCreated() <= 6) // make it fly straight some time before falling
 	{
 		this.setVelocity(this.getOldVelocity());
-		this.server_SetTimeToDie(30);
 	}
 
 	if (isClient())
