@@ -29,6 +29,15 @@ f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hit
 {
 	f32 dmg = damage/2;
 
+    if (isServer() && XORRandom(10) == 0 && hitterBlob !is null
+	&& hitterBlob.getPlayer() !is null)
+	{
+		u8 exp_reward = XORRandom(2)+1;
+		CBitStream params;
+		params.write_u8(exp_reward);
+		hitterBlob.SendCommand(hitterBlob.getCommandID("addxp_universal"), params);
+	}
+
     if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum() && hitterBlob.hasTag("player"))
 	{
 		if (hitterBlob.getPlayer() !is null && getRules().get_string(hitterBlob.getPlayer().getUsername() + "_perk") == "Field Engineer")
@@ -100,7 +109,7 @@ void onDie(CBlob@ this)
         0.5,
         0.025,
 
-        0.05,
+        0.03,
         0.05,
         0.03,
         0.04,

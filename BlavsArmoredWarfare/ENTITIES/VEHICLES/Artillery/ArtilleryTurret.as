@@ -9,7 +9,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u16 cooldown_time = 900; // 30 sec cd
+const u16 cooldown_time = 750; // 25 sec cd
 const f32 damage_modifier = 1.33f;
 
 const s16 init_gunoffset_angle = -2; // up by so many degrees
@@ -384,7 +384,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		Vec2f pos = this.getPosition()+Vec2f(this.isFacingLeft()?-8.0f:8.0f, -4) + Vec2f((this.isFacingLeft() ? -1 : 1)*60.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
 		bullet.setPosition(pos);
 		bullet.Tag("rpg");
-		bullet.Tag("artillery_shell");
+		//bullet.Tag("artillery_shell"); // this tag disables aircraft collision
 
 		CBlob@ hull = getBlobByNetworkID(this.get_u16("tankid"));
 

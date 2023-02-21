@@ -645,7 +645,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						moveForce *= Maths::Clamp(this.get_f32("engine_RPM"), 0, engine_topspeed) / 4500;
 
-						if (space)
+						if (space && this.getName() != "bradley")
 						{
 							AttachmentPoint@[] aps;
 							this.getAttachmentPoints(@aps);
@@ -1235,6 +1235,14 @@ void Vehicle_DontRotateInWater(CBlob@ this)
 	}
 
 	this.getShape().SetRotationsAllowed(true);
+}
+
+void Vehicle_ensureFallingCollision(CBlob@ this)
+{
+	if (isServer() && this.hasTag("falling") && (this.isInWater() || this.isOnGround()))
+	{
+		this.server_Die();
+	}
 }
 
 bool Vehicle_doesCollideWithBlob_ground(CBlob@ this, CBlob@ blob)

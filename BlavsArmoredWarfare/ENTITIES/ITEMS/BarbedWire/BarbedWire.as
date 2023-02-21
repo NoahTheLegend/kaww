@@ -18,7 +18,8 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (blob is null) return;
 	if (isServer() && blob.hasTag("flesh") && blob.getTeamNum() != this.getTeamNum() && !blob.isAttached())
 	{
-		this.server_Hit(blob, this.getPosition(), Vec2f(0, 0), 0.15f, Hitters::spikes, true);
+		bool is_engi = blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Field Engineer";
+		this.server_Hit(blob, this.getPosition(), Vec2f(0, 0), 0.15f, is_engi ? Hitters::fall : Hitters::spikes, true);
 	}
 	if (isServer() && blob.getTeamNum() != this.getTeamNum()
 	&& (blob.hasTag("aerial") || blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck")))

@@ -18,7 +18,7 @@ void onInit(CBlob@ this)
 		this.server_setTeamNum(-1);
 
 		dictionary harvest;
-		harvest.set('mat_wood', 20);
+		harvest.set('mat_wood', 40);
 		this.set('harvest', harvest);
 	}
 
@@ -41,8 +41,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	        (dangerous_logs && this.hasTag("thrown") && blob.hasTag("flesh") && thrown)); // boat
 }
 
-
-
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
 	if (dangerous_logs)
@@ -51,6 +49,19 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 		this.SetDamageOwnerPlayer(detached.getPlayer());
 		//	printf("thrown");
 	}
+}
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (isServer() && XORRandom(10) == 0 && hitterBlob !is null
+	&& hitterBlob.getName() == "slave" && hitterBlob.getPlayer() !is null)
+	{
+		u8 exp_reward = XORRandom(2)+1;
+		CBitStream params;
+		params.write_u8(exp_reward);
+		hitterBlob.SendCommand(hitterBlob.getCommandID("addxp_universal"), params);
+	}
+	return damage;
 }
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)

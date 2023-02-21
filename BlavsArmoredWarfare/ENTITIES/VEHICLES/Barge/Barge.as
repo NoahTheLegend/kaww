@@ -9,11 +9,14 @@ void onInit(CBlob@ this)
 	this.Tag("engine_can_get_stuck");
 	this.Tag("boat");
 	this.Tag("vehicle");
+	this.Tag("no_upper_collision");
+
+	this.SetFacingLeft(this.getTeamNum()==1);
 
 	AddIconToken("$store_inventory$", "InteractionIcons.png", Vec2f(32, 32), 28);
 
 	Vehicle_Setup(this,
-	              250.0f, // move speed
+	              5000.0f, // move speed
 	              0.31f,  // turn speed
 	              Vec2f(0.0f, -2.5f), // jump out velocity
 	              true  // inventory access
@@ -28,7 +31,7 @@ void onInit(CBlob@ this)
 	                        1.33f // movement sound pitch modifier     0.0f = no manipulation
 	                       );
 
-	this.getShape().SetOffset(Vec2f(0, 9));
+	this.getShape().SetOffset(Vec2f(-6, 9));
 	this.getShape().getConsts().transports = true;
 	this.getSprite().SetZ(50);
 
@@ -39,7 +42,14 @@ void onInit(CBlob@ this)
 	backShape.push_back(Vec2f(4.0f, 4.0f));
 	this.getShape().AddShape(backShape);
 
-	getMap().server_AddMovingSector(Vec2f(-52.0f, 0.0f), Vec2f(-44.0f, 16.0f), "ladder", this.getNetworkID());
+	Vec2f[] frontShape;
+	frontShape.push_back(Vec2f(86.0f, 6.0f));
+	frontShape.push_back(Vec2f(96.0f, 16.0f));
+	frontShape.push_back(Vec2f(80.0f, 16.0f));
+	frontShape.push_back(Vec2f(78.0f, 16.0f));
+	this.getShape().AddShape(frontShape);
+
+	getMap().server_AddMovingSector(Vec2f(-56.0f, 0.0f), Vec2f(-44.0f, 16.0f), "ladder", this.getNetworkID());
 }
 
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
@@ -222,7 +232,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	{
 		if (blob.hasTag("vehicle") && doesCollideWithBlob(this, blob))
 		{
-			blob.setVelocity(Vec2f(blob.getVelocity().x+this.getVelocity().x, blob.getVelocity().y));
+			blob.setVelocity(Vec2f(this.getVelocity().x, blob.getVelocity().y));
 		}
 	}
 }

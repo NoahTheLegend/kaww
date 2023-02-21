@@ -1,3 +1,4 @@
+#include "VehicleCommon.as"
 #include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "Explosion.as";
@@ -8,9 +9,9 @@ const Vec2f leftVelo = Vec2f(-0.03f, 0.00f);
 const Vec2f rightVelo = Vec2f(0.03f, 0.00f);
 
 const Vec2f minClampVelocity = Vec2f(-0.50f, -0.80f);
-const Vec2f maxClampVelocity = Vec2f( 0.50f, 0.00f);
+const Vec2f maxClampVelocity = Vec2f( 0.475f, 0.00f);
 
-const f32 projDamage = 0.1f;
+const f32 projDamage = 0.275f;
 
 const f32 thrust = 1020.00f;
 
@@ -68,7 +69,7 @@ void onInit(CBlob@ this)
 		}
 	}
 
-	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_right);
+	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_up | CBlob::map_collide_right);
 	this.inventoryButtonPos = Vec2f(-8.0f, -4);
 
 	this.addCommandID("shoot");
@@ -159,6 +160,8 @@ void onTick(CBlob@ this)
 {
 	if (this !is null)
 	{
+		Vehicle_ensureFallingCollision(this);
+		
 		if (getGameTime() >= this.get_u32("next_shoot"))
 		{
 			this.Untag("no_more_shooting");
@@ -230,15 +233,18 @@ void onTick(CBlob@ this)
 
 						// shoot
 						
-						if (!this.hasTag("no_more_shooting") && hooman.isMyPlayer() && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
+						if (!this.hasTag("no_more_shooting") && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
 						{
 							CInventory@ inv = this.getInventory();
 							if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_bolts")
 							{
+								if (hooman.isMyPlayer())
+								{
+									f32 rot = 1.0f;
+									if (this.isFacingLeft()) rot = -1.0f;
+									ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
+								}
 								if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
-								f32 rot = 1.0f;
-								if (this.isFacingLeft()) rot = -1.0f;
-								ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
 								this.Tag("no_more_shooting");
 							}
 						}
@@ -412,7 +418,7 @@ void onTick(CBlob@ this)
 			tailrotor.SetFrameIndex(1);
 		}
 		
-		sprite.SetEmitSoundSpeed(Maths::Min(0.000075f + Maths::Abs(resultForce.getLength() * 1.00f), 0.85f) * 1.55);
+		sprite.SetEmitSoundSpeed((Maths::Abs(resultForce.getLength()) > 0.1f ? 0.1f : 0)+Maths::Min(0.000075f + Maths::Abs(resultForce.getLength() * 1.00f), 0.85f) * 1.55);
 		if (this.hasTag("falling")) sprite.SetEmitSoundSpeed(Maths::Min(0.000075f + Maths::Abs(this.get_Vec2f("result_force").getLength() * 1.00f), 0.85f) * 1.55);
 
 		this.set_Vec2f("target_force", clampedTargetForce);
@@ -474,12 +480,31 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot"))
 	{
+		this.set_u32("next_shoot", getGameTime()+shootDelay);
+		s32 arrowAngle;
+		if (!params.saferead_s32(arrowAngle)) return;
+		Vec2f arrowPos;
+		if (!params.saferead_Vec2f(arrowPos)) return;
+
+		Vec2f vel = Vec2f(500.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(arrowAngle);
+		ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+
+		arrowPos = arrowPos+(Vec2f(24 * (this.isFacingLeft()?1:-1), -8));
+		Vec2f arrowVel = Vec2f(27.5f, 0).RotateBy((this.isFacingLeft()?180:0)+arrowAngle);
+
 		CBlob@ ammocarry = getBlobByNetworkID(this.get_u16("ammocarryid"));
 		if (ammocarry !is null && ammocarry.hasBlob("mat_7mmround", 1))
 		{
 			ammocarry.TakeBlob("mat_7mmround", 1);
-			f32 angle = params.read_s32();
-			ShootGun(this, angle, params.read_Vec2f());
+			if (getNet().isServer())
+			{
+				CBlob@ proj = CreateBullet(this, arrowPos, arrowVel);
+				if (proj !is null)
+				{
+					proj.server_SetTimeToDie(5.0);
+					proj.Tag("aircraft_bullet");
+				}
+			}
 		}
 	}
 	else if (cmd == this.getCommandID("shoot bullet"))
@@ -538,8 +563,8 @@ CBlob@ CreateBullet(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 
 			proj.set_s8(penRatingString, 2);
 
-			proj.set_f32("bullet_damage_body", 0.275f);
-			proj.set_f32("bullet_damage_head", 0.375f);
+			proj.set_f32("bullet_damage_body", projDamage);
+			proj.set_f32("bullet_damage_head", projDamage+0.125f);
 			proj.IgnoreCollisionWhileOverlapped(this);
 			proj.server_setTeamNum(this.getTeamNum());
 			proj.setVelocity(arrowVel.RotateBy(0.025f*(XORRandom(5)-2.0f)));
@@ -733,3 +758,7 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 
 	ParticleAnimated(filename, this.getPosition() + pos, vel, float(XORRandom(360)), 1 + XORRandom(200) * 0.01f, 2 + XORRandom(5), XORRandom(100) * -0.00005f, true);
 }
+
+bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
+
+void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}

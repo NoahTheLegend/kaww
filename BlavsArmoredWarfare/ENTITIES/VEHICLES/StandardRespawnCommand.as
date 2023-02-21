@@ -162,6 +162,8 @@ void InitClasses(CBlob@ this)
 						+"\n\n                  Modernized Handles"
 						+"\n                   - Carried items slow"
 						+"\n                      you down lesser"
+						+"\n                   - Barbed wire doesn't"
+						+"\n                      stun you"
 						+"\n\n                  Sentry Package"
 						+"\n                   - Deploy a sentry gun,"
 						+"\n                      hold DOWN+SPACEBAR"

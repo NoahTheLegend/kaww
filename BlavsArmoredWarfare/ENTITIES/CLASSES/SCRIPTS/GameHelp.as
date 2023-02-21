@@ -109,12 +109,9 @@ void onRender(CRules@ this)
 	{
 		const string shiprektVersion = "Armored Warfare 2.0\n";
 		const string lastChangesInfo = "\nChanges:\n\n"
-		+ "  * Doors now block grenade explosions\n"
-        + "  * New effects for shooting with vehicles\n"
-        + "  * Nerfed/buffed some perks\n"
-        + "  * Javelin has also manual control now\n"
-        + "  * Binoculars and javelins should work with fixed camera now\n"
-        + "  * Barbed wire will break on impact with vehicle\n";
+		+ "  * Added C-4 explosive bomb\n"
+        + "  * New vehicles and tier-3 vehicle builder\n"
+        + "  * New perk\n";
 		
 		GUI::SetFont("menu");
 		Vec2f lastChangesSize;

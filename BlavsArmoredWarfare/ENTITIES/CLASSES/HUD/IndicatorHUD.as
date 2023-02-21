@@ -277,6 +277,7 @@ u8 getIndicatorFrame( int hash )
 		frame = 14; break; 
 
 		case _uh1:
+		case _ah1:
 		frame = 10; break;
 
 		case _outpost:

@@ -141,6 +141,7 @@ void onTick(CBlob@ this)
 	}
 
 	Vehicle_LevelOutInAir(this);
+	Vehicle_DontRotateInWater(this);
 }
 
 // Blow up
@@ -214,3 +215,17 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
 
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (hitterBlob.getName() == "missile_javelin")
+	{
+		return damage * 0.75f;
+	}
+	else if (hitterBlob.hasTag("bullet"))
+	{
+		if (hitterBlob.getName() == "bulletheavy") return damage * 0.85f;
+		return damage * (hitterBlob.hasTag("strong") ? 0.2f : 0.1f);
+	}
+	return damage;
+}

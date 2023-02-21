@@ -237,6 +237,15 @@ class VoteNextmapFunctor : VoteFunctor
 				{
 					case 1:
 					{
+						string[]@ ClassicMaps;
+						getRules().get("maptypes-classic", @ClassicMaps);
+
+						LoadMap(ClassicMaps[XORRandom(ClassicMaps.length)]);
+					}
+					break;
+
+					case 2:
+					{
 						string[]@ LargeMaps;
 						getRules().get("maptypes-large", @LargeMaps);
 
@@ -244,7 +253,7 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
-					case 2:
+					case 3:
 					{
 						string[]@ AverageMaps;
 						getRules().get("maptypes-average", @AverageMaps);
@@ -253,7 +262,7 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
-					case 3:
+					case 4:
 					{
 						string[]@ TdmMaps;
 						getRules().get("maptypes-tdm", @TdmMaps);
@@ -758,9 +767,18 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 		}
 		else
 		{
+			CContextMenu@ classic_map_menu = Menu::addContextMenu(mapmenu, "Classic Map");
 			CContextMenu@ large_map_menu = Menu::addContextMenu(mapmenu, "Large Map");
 			CContextMenu@ average_map_menu = Menu::addContextMenu(mapmenu, "Small Map");
 			CContextMenu@ tdm_map_menu = Menu::addContextMenu(mapmenu,  "TDM Map");
+
+			for (uint i = 0 ; i < nextmap_reason_count; ++i)
+			{
+				CBitStream params;
+				params.write_u8(i);
+				params.write_u8(1);
+				Menu::addContextItemWithParams(classic_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
+			}
 
 			for (uint i = 0 ; i < nextmap_reason_count; ++i)
 			{
