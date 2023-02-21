@@ -94,7 +94,7 @@ void onInit(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 3;
 		s.buttonheight = 2;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 55);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Barge", "$barge$", "barge", "An armored boat for transporting vehicles across the water.", false, true);
