@@ -25,7 +25,7 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 	return false;
 }
 
-f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData )
+f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	f32 dmg = damage/2;
 
@@ -35,10 +35,10 @@ f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hit
 		u8 exp_reward = XORRandom(2)+1;
 		CBitStream params;
 		params.write_u8(exp_reward);
-        
+
 		getRules().add_u32(this.getPlayer().getUsername() + "_exp", exp_reward);
 		getRules().Sync(this.getPlayer().getUsername() + "_exp", true);
-		hitterBlob.server_SendCommandToPlayer(hitterBlob.getCommandID("addxp_universal"), params);
+		hitterBlob.server_SendCommandToPlayer(hitterBlob.getCommandID("addxp_universal"), params, hitterBlob.getPlayer());
 	}
 
     if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum() && hitterBlob.hasTag("player"))
