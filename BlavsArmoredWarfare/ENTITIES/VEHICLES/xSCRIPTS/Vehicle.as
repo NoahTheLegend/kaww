@@ -57,6 +57,7 @@ void onInit(CBlob@ this)
 		case _m60turret: // M60 Shell cannon
 		case _artillery:
 		case _artilleryturret:
+		case _ah1:
 		armorRating = 3; break;
 
 		case _transporttruck: // vanilla truck?
@@ -127,6 +128,7 @@ void onInit(CBlob@ this)
 			break;
 		}
 		case _uh1: // heli
+		case _ah1:
 		{
 			weaponRating = 1;
 			break;
@@ -183,6 +185,7 @@ void onInit(CBlob@ this)
 		backsideOffset = 16.0f; break;
 
 		case _uh1: // heli
+		case _ah1:
 		backsideOffset = 48.0f; break;
 
 		case _bf109: // plane
@@ -730,6 +733,7 @@ void onDie(CBlob@ this)
 				break;
 			} // T10
 			case _maus:
+			case _ah1:
 			{
 				scrap_amount = 17+XORRandom(9);
 				explosion_radius = 92.0f;
@@ -925,6 +929,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/8.0f);
 		if (blocks_between > 5) damage /= 1.0f-(5.0f-blocks_between);
 		return (this.getName() == "maus" || armorRating > 4 ? damage*0.5f : damage * (1.25+XORRandom(10)*0.01f));
+	}
+
+	if (hitterBlob.getName() == "c4")
+	{
+		damage *= 1.5f;
 	}
 
 	if (armorRating >= 3 && customData == Hitters::sword) return 0;

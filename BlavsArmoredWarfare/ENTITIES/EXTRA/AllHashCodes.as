@@ -29,7 +29,8 @@ enum EntityHash
 	_bf109 = 948257107, // plane
 	_bomberplane = 1220259964, // bomberplane
 	_jourcop = 1406825361, // journalist
-	_uh1 = -2084182629, // heli
+	_uh1 = -2084182629, // huey
+	_ah1 = -265313785, // cobra
 	
 	_techtruck = -4555140, // MG truck
 	_motorcycle = -1537538612, // bike

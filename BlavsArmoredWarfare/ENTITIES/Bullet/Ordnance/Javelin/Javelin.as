@@ -9,7 +9,7 @@
 Random _missile_r(12231);
 
 const f32 radius = 48.0f;
-const f32 damage = 25.0f;
+const f32 damage = 22.5f;
 
 void onInit(CBlob@ this)
 {
@@ -25,7 +25,7 @@ void onInit(CBlob@ this)
 	this.set("missileInfo", @missile);
 
 	this.set_f32(projExplosionRadiusString, 30.0f);
-	this.set_f32(projExplosionDamageString, 15.0f);
+	this.set_f32(projExplosionDamageString, damage);
 
 	this.set_s8(penRatingString, 3);
 

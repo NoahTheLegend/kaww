@@ -47,7 +47,7 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 30);
+			AddRequirement(s.requirements, "coin", "", "Coins", 35);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Sticky Grenade", "$sgrenade$", "sgrenade", "An analogue for default grenades, but also\nsticks to flesh, bunkers and any type of vehicles.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);

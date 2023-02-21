@@ -11,6 +11,7 @@
 #include "CustomBlocks.as";
 #include "RunnerHead.as";
 #include "PlayerRankInfo.as";
+#include "HoverMessage.as";
 
 void onInit(CBlob@ this)
 {
@@ -110,6 +111,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("levelup_effects");
 	this.addCommandID("bootout");
 	this.addCommandID("reload");
+	this.addCommandID("addxp_universal");
 	this.Tag("3x2");
 	this.set_u32("set_nomenus", 0);
 
@@ -217,7 +219,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		else if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 		{
-			damage * 0.4f;
+			return damage * 0.4f;
 		}
 		else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
 		{
@@ -435,7 +437,7 @@ void ManageParachute( CBlob@ this )
 				if (this.isKeyPressed(key_up) && this.getVelocity().y > 4.75f)
 				{
 					Sound::Play("/ParachuteOpen", this.getPosition());
-					this.set_u32("last_parachute", getGameTime()+45);
+					this.set_u32("last_parachute", getGameTime()+60);
 					this.Tag("parachute");
 				}
 			}
@@ -450,7 +452,7 @@ void ManageParachute( CBlob@ this )
 		{
 			if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 			{
-				mod = 1.33f;
+				mod = 3.0f;
 				aughhh = true;
 			}
 		}
@@ -1391,6 +1393,20 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			//printf("Synced to server: "+this.get_s8("reloadtime"));
 			this.Tag("sync_reload");
 			this.Sync("isReloading", true);
+		}
+	}
+	else if (cmd == this.getCommandID("addxp_universal"))
+	{
+		u8 exp_reward;
+		if (!params.saferead_u8(exp_reward)) return;
+		if (this.getPlayer() !is null)
+		{
+			getRules().add_u32(this.getPlayer().getUsername() + "_exp", exp_reward);
+			getRules().Sync(this.getPlayer().getUsername() + "_exp", true);
+			add_message(ExpMessage(exp_reward));
+			CheckRankUps(getRules(), // do reward coins and sfx
+				getRules().get_u32(this.getPlayer().getUsername() + "_exp"), // player new exp
+				this);	
 		}
 	}
 	else if (cmd == this.getCommandID("aos_effects"))

@@ -96,7 +96,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 	}
 	{
 		BuildBlock b(CMap::tile_cdirt, "cdirt_block", "$cdirt_block$", "Compacted dirt\nReinforced block of dirt, almost immune to explosions\nand bullets, can be built only on dirt walls.");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 30);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 5);
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 1);
 		blocks[0].push_back(b);
 	}
@@ -138,7 +138,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 	}
 	{
 		AddIconToken("$barbedwire_icon$", "BarbedWire.png", Vec2f(16, 16), 0);
-		BuildBlock b(0, "barbedwire", "$barbedwire_icon$", "Barbed Wire\nHard to pass through.");
+		BuildBlock b(0, "barbedwire", "$barbedwire_icon$", "Barbed Wire\nHard to pass through. Breaks on impact with vehicles.");
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 1);
 		blocks[0].push_back(b);
 	}

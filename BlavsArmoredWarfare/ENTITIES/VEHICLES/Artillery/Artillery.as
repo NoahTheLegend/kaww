@@ -5,7 +5,6 @@
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
-	this.Tag("apc");
 	this.Tag("deal_bunker_dmg");
 	this.Tag("ignore fall");
 
@@ -117,14 +116,6 @@ void onTick(CBlob@ this)
 						//front.setVisible(!local.isAttachedTo(this));
 					}
 				}
-			}
-		}
-		if (isServer() && this.isInWater())
-		{
-			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");
-			if (ap !is null && ap.getOccupied() is null && (getGameTime() + this.getNetworkID())%120 == 0)
-			{
-				if (isServer()) this.server_Hit(this, this.getPosition(), Vec2f(0,0), this.getInitialHealth()/(20+XORRandom(11)), Hitters::builder);
 			}
 		}
 	}

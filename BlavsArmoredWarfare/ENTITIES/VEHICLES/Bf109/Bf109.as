@@ -1,3 +1,4 @@
+#include "VehicleCommon.as"
 #include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "Explosion.as";
@@ -115,7 +116,7 @@ void onTick(CBlob@ this)
 {
 	if (this.hasTag("falling"))
 	{
-		if (isServer() && this.isOnGround()) this.server_Die();
+		Vehicle_ensureFallingCollision(this);
 		this.setAngleDegrees(this.getAngleDegrees() + (Maths::Sin(getGameTime() / 5.0f) * 8.5f));
 	}
 	if (getGameTime() >= this.get_u32("next_shoot"))
@@ -164,7 +165,7 @@ void onTick(CBlob@ this)
 		
 			bool pressed_w = ap_pilot.isKeyPressed(key_up);
 			bool pressed_s = ap_pilot.isKeyPressed(key_down);
-			bool pressed_lm = ap_pilot.isKeyPressed(key_action1) && !this.isOnGround();
+			bool pressed_lm = ap_pilot.isKeyPressed(key_action1) && !this.isOnGround() && this.getVelocity().Length() > 5.0f;
 
 			//if (this.getTickSinceCreated() == 5*30)
 			//{
@@ -272,7 +273,7 @@ void onTick(CBlob@ this)
 	
 	this.AddForce(-d * v * hmod);
 
-	if (this.getVelocity().Length() > 0.5f && v > 0.25f) this.setAngleDegrees((this.isFacingLeft() ? 180 : 0) - this.getVelocity().Angle());
+	if ((this.getVelocity().Length() > (this.isOnGround()?2.5f:0.25f)) && v > 0.25f) this.setAngleDegrees((this.isFacingLeft() ? 180 : 0) - this.getVelocity().Angle());
 	else if (this.getAngleDegrees() > 25 && this.getAngleDegrees() < 335 && this.get_f32("velocity") < 1.0f)
 	{
 		this.setVelocity(Vec2f(0,0));
@@ -530,7 +531,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (isServer() && blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck")))
 	{
 		f32 mod_self = 0.5f;
-		f32 mod_target = 5.0f;
+		f32 mod_target = 4.0f;
 		blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
 		this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
 	}
@@ -548,7 +549,7 @@ void DoExplosion(CBlob@ this)
 	this.set_f32("map_damage_radius", (30.0f + random) * modifier);
 	this.set_f32("map_damage_ratio", 0.50f);
 	
-	Explode(this, 30.0f + random, 64.0f);
+	Explode(this, 30.0f + random, 32.0f);
 	
 	for (int i = 0; i < 10 * modifier; i++) 
 	{
@@ -632,3 +633,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	return damage;
 }
+
+bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
+
+void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}

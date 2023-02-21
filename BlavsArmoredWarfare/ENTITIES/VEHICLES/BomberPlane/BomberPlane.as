@@ -1,3 +1,4 @@
+#include "VehicleCommon.as"
 #include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "Explosion.as";
@@ -82,9 +83,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onTick(CBlob@ this)
 {
+
 	if (this.hasTag("falling"))
 	{
-		if (isServer() && this.isOnGround()) this.server_Die();
+		Vehicle_ensureFallingCollision(this);
 		this.setAngleDegrees(this.getAngleDegrees() + (Maths::Sin(getGameTime() / 5.0f) * 8.5f));
 	}
 	if (getGameTime() >= this.get_u32("next_shoot"))
@@ -288,7 +290,7 @@ void onTick(CBlob@ this)
 	
 	this.AddForce(-d * v * hmod);
 
-	if (this.getVelocity().Length() > 0.5f && v > 0.25f) this.setAngleDegrees((this.isFacingLeft() ? 180 : 0) - this.getVelocity().Angle());
+	if ((this.getVelocity().Length() > (this.isOnGround()?2.5f:0.25f)) && v > 0.25f) this.setAngleDegrees((this.isFacingLeft() ? 180 : 0) - this.getVelocity().Angle());
 	else if (this.getAngleDegrees() > 25 && this.getAngleDegrees() < 335 && this.get_f32("velocity") < 1.0f)
 	{
 		this.setVelocity(Vec2f(0,0));
@@ -481,3 +483,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	return damage;
 }
+
+bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
+
+void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}

@@ -1591,10 +1591,22 @@ void onInit(CRules@ this)
 	if (isClient() && isServer()) this.Tag("togglebots"); // disable them on local automatically
 	Reset(this);
 
+	this.set("maptypes-classic", ClassicMaps);
 	this.set("maptypes-large", LargeMaps);
 	this.set("maptypes-average", AverageMaps);
 	this.set("maptypes-tdm", TdmMaps);
 }
+
+const string[] ClassicMaps = {
+	"Desert.png",
+	"WinterFactory.png",
+	"Touge.png",
+	"Mortar.png",
+	"Syria.png",
+	"Selfish_goldy.png",
+	"ClassicFlagless.png",
+	"Moats.png"
+};
 
 const string[] LargeMaps = {
 	"Desert.png",
@@ -1628,7 +1640,6 @@ const string[] LargeMaps = {
 	"WorldwarFlagless.png",
 	"ClassicFlagless.png",
 	"BridgeWater.png",
-	"HamburgerHillWater.png",
 	"SiegeBeachWater.png"
 };
 

@@ -151,16 +151,12 @@ void onDie(CBlob@ this)
 {
 	Explode(this, 64.0f, 1.0f);
 
+	if (!isServer()) return;
 	for (u8 i = 0; i < 3; i++)
 	{
-		if (this.exists("bowid"+i))
-		{
-			CBlob@ bow = getBlobByNetworkID(this.get_u16("bowid"));
-			if (bow !is null)
-			{
-				bow.server_Die();
-			}
-		}
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("BOW"+i);
+		if (ap !is null && ap.getOccupied() !is null)
+			ap.getOccupied().server_Die();
 	}
 }
 

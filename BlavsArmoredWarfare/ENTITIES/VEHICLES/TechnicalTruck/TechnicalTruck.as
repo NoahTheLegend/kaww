@@ -155,14 +155,10 @@ void onDie(CBlob@ this)
 {
 	Explode(this, 64.0f, 1.0f);
 
-	if (this.exists("bowid"))
-	{
-		CBlob@ bow = getBlobByNetworkID(this.get_u16("bowid"));
-		if (bow !is null)
-		{
-			bow.server_Die();
-		}
-	}
+	if (!isServer()) return;
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("BOW");
+	if (ap !is null && ap.getOccupied() !is null)
+		ap.getOccupied().server_Die();
 }
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)

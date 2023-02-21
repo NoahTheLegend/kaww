@@ -38,6 +38,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("aos_effects");
 	this.addCommandID("levelup_effects");
 	this.addCommandID("bootout");
+	this.addCommandID("addxp_universal");
 
 	this.set_u32("turret_delay", 0);
 
@@ -96,7 +97,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		else if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 		{
-			damage * 0.4f;
+			return damage * 0.4f;
 		}
 		else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
 		{
@@ -502,6 +503,20 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			rules.add_u32(this.getPlayer().getUsername() + "_exp", exp_reward);
 			CheckRankUps(rules, // do reward coins and sfx
 				rules.get_u32(this.getPlayer().getUsername() + "_exp"), // player new exp
+				this);	
+		}
+	}
+	else if (cmd == this.getCommandID("addxp_universal"))
+	{
+		u8 exp_reward;
+		if (!params.saferead_u8(exp_reward)) return;
+		if (this.getPlayer() !is null)
+		{
+			getRules().add_u32(this.getPlayer().getUsername() + "_exp", exp_reward);
+			getRules().Sync(this.getPlayer().getUsername() + "_exp", true);
+			add_message(ExpMessage(exp_reward));
+			CheckRankUps(getRules(), // do reward coins and sfx
+				getRules().get_u32(this.getPlayer().getUsername() + "_exp"), // player new exp
 				this);	
 		}
 	}
@@ -931,7 +946,7 @@ void ManageParachute( CBlob@ this )
 				if (this.isKeyPressed(key_up) && this.getVelocity().y > 4.75f)
 				{
 					Sound::Play("/ParachuteOpen", this.getPosition());
-					this.set_u32("last_parachute", getGameTime()+45);
+					this.set_u32("last_parachute", getGameTime()+60);
 					this.Tag("parachute");
 				}
 			}
@@ -946,7 +961,7 @@ void ManageParachute( CBlob@ this )
 		{
 			if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 			{
-				mod = 1.33f;
+				mod = 3.0f;
 				aughhh = true;
 			}
 		}

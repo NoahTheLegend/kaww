@@ -1,16 +1,17 @@
+#include "VehicleCommon.as"
 #include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "Explosion.as";
 
-const Vec2f upVelo = Vec2f(0.00f, -0.015f);
-const Vec2f downVelo = Vec2f(0.00f, 0.0050f);
-const Vec2f leftVelo = Vec2f(-0.0225f, 0.00f);
-const Vec2f rightVelo = Vec2f(0.0225f, 0.00f);
+const Vec2f upVelo = Vec2f(0.00f, -0.0175f);
+const Vec2f downVelo = Vec2f(0.00f, 0.0085f);
+const Vec2f leftVelo = Vec2f(-0.0233f, 0.00f);
+const Vec2f rightVelo = Vec2f(0.0233f, 0.00f);
 
 const Vec2f minClampVelocity = Vec2f(-0.40f, -0.70f);
 const Vec2f maxClampVelocity = Vec2f( 0.40f, 0.00f);
 
-const f32 thrust = 1020.00f;
+const f32 thrust = 1050.00f;
 
 const u8 cooldown_time = 15;//210;
 const u8 recoil = 0;
@@ -170,6 +171,8 @@ void onTick(CBlob@ this)
 {
 	if (this !is null)
 	{
+		Vehicle_ensureFallingCollision(this);
+		
 		if (getGameTime() >= this.get_u32("next_shoot"))
 		{
 			this.Untag("no_more_shooting");
@@ -631,3 +634,7 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 
 	ParticleAnimated(filename, this.getPosition() + pos, vel, float(XORRandom(360)), 1 + XORRandom(200) * 0.01f, 2 + XORRandom(5), XORRandom(100) * -0.00005f, true);
 }
+
+bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
+
+void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}

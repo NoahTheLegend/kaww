@@ -18,6 +18,16 @@ void onRender(CSprite@ this)
 		return;
 	}
 
+	if (blob.getName() == "ah1")
+	{
+		AttachmentPoint@ gunner = blob.getAttachments().getAttachmentPointByName("GUNNER");
+		if (gunner !is null	&& gunner.getOccupied() is localBlob)
+		{
+			
+		}
+		return;
+	}
+
 	VehicleInfo@ v;
 	if (!blob.get("VehicleInfo", @v))
 	{

@@ -54,7 +54,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				{
 					res = (theBlob.getInitialHealth()-theBlob.getHealth())*res;
 					theBlob.add_f32("heal amount", theBlob.getInitialHealth() - theBlob.getHealth());
-					res <= 0.5f*(res/1.5f) ? theBlob.server_SetHealth(theBlob.getInitialHealth()) :  theBlob.server_Heal(res);
+					res <= 0.5f*(res/1.5f) ? theBlob.server_SetHealth(theBlob.getInitialHealth()) :  theBlob.server_Heal(Maths::Max(res, 0.25f));
 					if (theBlob.getHealth() > theBlob.getInitialHealth()) theBlob.server_SetHealth(theBlob.getInitialHealth());
 				}
 				else

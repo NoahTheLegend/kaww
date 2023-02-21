@@ -10,7 +10,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 	f32 dir_thresh =  hasAttachments ? -0.7f : 0.25f;
 
 	const f32 vellen = this.getShape().vellen;
-	if (blob !is null && vellen > vel_thresh && blob.isCollidable())
+	if (blob !is null && vellen > vel_thresh && blob.isCollidable() && !blob.hasTag("no_upper_collision"))
 	{
 		Vec2f pos = this.getPosition();
 		Vec2f vel = this.getVelocity();
