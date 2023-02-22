@@ -389,7 +389,7 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 	if (this.hasTag("scopedin") || javelin)
 	{
 		zoom_target = 1.0f; //1.25f
-		zoomSpeed *= 0.55f; //0.4f
+		zoomSpeed *= 0.75f; //0.4f
 	}
 
 	zoom_target = (zoomLevel == 0 && this.hasTag("increase_max_zoom") ? 0.5f : zoom_target);
@@ -465,27 +465,35 @@ void ManageCamera(CBlob@ this)
 
 	if (getLocalPlayer().getBlob() !is null)
 	{
-		if (getLocalPlayer().getBlob().hasTag("binoculars"))
+		bool lock_zoom = false;
+		CBlob@ localblob = getLocalPlayer().getBlob();
+		if (localblob.hasTag("binoculars"))
 		{
+			lock_zoom = true;
 			camera.mouseFactor = 0.65f;
 		}
-		else if (getLocalPlayer().getBlob().hasTag("driver_vision"))
+		else if (localblob.hasTag("artillery"))
+		{
+			lock_zoom = true;
+			camera.mouseFactor = 0.75f;
+		}
+		else if (localblob.hasTag("driver_vision"))
 		{
 			camera.mouseFactor = 0.55f;
 		}
 
 		// camera
-		if (getLocalPlayer().getBlob().get_u32("dont_change_zoom") < getGameTime())
+		if (localblob.get_u32("dont_change_zoom") < getGameTime() && !lock_zoom)
 		{
-			getLocalPlayer().getBlob().Untag("binoculars");
+			localblob.Untag("binoculars");
 			if (getLocalPlayer() !is null)
 			{
-				if (getLocalPlayer().getBlob().getName() == "sniper")
+				if (localblob.getName() == "sniper")
 				{
 					camera.mouseFactor = 0.5f;
 					return;
 				}
-				if (getLocalPlayer().getBlob().isAttachedToPoint("GUNNER"))// && getLocalPlayer().getBlob().isKeyPressed(key_action2))
+				if (localblob.isAttachedToPoint("GUNNER"))// && getLocalPlayer().getBlob().isKeyPressed(key_action2))
 				{
 					camera.mouseFactor = 0.5f;
 					return;
