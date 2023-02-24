@@ -446,11 +446,11 @@ class VoteExtendTimeCheckFunctor : VoteCheckFunctor
 
 	bool PlayerCanVote(CPlayer@ player)
 	{
-		if (!VoteCheckFunctor::PlayerCanVote(player)) return false;
+		//if (!VoteCheckFunctor::PlayerCanVote(player)) return false;
 
 		//todo: seclevs? how would they look?
 
-		return player.getTeamNum() == team;
+		return true;
 	}
 };
 
@@ -459,7 +459,6 @@ VoteObject@ Create_VoteExtendTime(CPlayer@ byplayer)
 	VoteObject vote;
 
 	@vote.onvotepassed = VoteExtendTimeFunctor(byplayer);
-	@vote.canvote = VoteExtendTimeCheckFunctor(byplayer.getTeamNum());
 
 	vote.title = "Extend remaining match time for 10 minutes?";
 	vote.reason = "";
@@ -1189,6 +1188,7 @@ void onCommand(CRules@ this, u8 cmd, CBitStream @params)
 
 		if (byplayer !is null)
 			Rules_SetVote(this, Create_VoteExtendTime(byplayer));
+		g_lastNextmapCounter = 0;
 	}
 }
 

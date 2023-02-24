@@ -28,11 +28,13 @@ void onInit(CBlob@ this)
 {
 	this.set_bool("map_damage_raycast", true);
 	this.set_u32("duration", 0);
+	this.set_u8("mode", 1);
 
 	this.getShape().SetOffset(Vec2f(0,0));
 
 	this.Tag("vehicle");
 	this.Tag("aerial");
+	this.Tag("helicopter");
 	
 	this.set_bool("lastTurn", false);
 	this.addCommandID("shoot bullet");
@@ -161,7 +163,7 @@ void onTick(CBlob@ this)
 	if (this !is null)
 	{
 		Vehicle_ensureFallingCollision(this);
-		
+
 		if (getGameTime() >= this.get_u32("next_shoot"))
 		{
 			this.Untag("no_more_shooting");
@@ -230,6 +232,15 @@ void onTick(CBlob@ this)
 						const bool pressed_c  = ap.isKeyPressed(key_pickup);
 						const bool pressed_m1 = ap.isKeyPressed(key_action1);
 						const bool pressed_m2 = ap.isKeyPressed(key_action2);
+
+						if (hooman.getControls() !is null)
+						{
+							if (hooman.getControls().isKeyJustPressed(KEY_LCONTROL))
+							{
+								this.add_u8("mode", 1);
+								if (this.get_u8("mode") > 2) this.set_u8("mode", 0);
+							}
+						}
 
 						// shoot
 						
@@ -701,7 +712,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.getName() == "missile_javelin")
 	{
-		return damage * 0.75f;
+		return damage * 1.15f;
 	}
 	else if (hitterBlob.getName() == "ballista_bolt")
 	{
@@ -762,3 +773,52 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
 
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}
+
+void onRender(CSprite@ this)
+{
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+
+	AttachmentPoint@ pilot = blob.getAttachments().getAttachmentPointByName("DRIVER");
+	if (pilot !is null && pilot.getOccupied() !is null)
+	{
+		CBlob@ driver_blob = pilot.getOccupied();
+		if (driver_blob.isMyPlayer())
+		{
+			u8 mode = blob.get_u8("mode");
+			if (mode == 0) return; // disabled
+
+			f32 screenWidth = getScreenWidth();
+			f32 screenHeight = getScreenHeight();
+
+			Vec2f oldpos2d = getDriver().getScreenPosFromWorldPos(driver_blob.getOldPosition());
+			Vec2f pos2d = oldpos2d;
+
+			Vec2f force = blob.get_Vec2f("target_force")*64+Vec2f(0, 38);	
+			Vec2f offset = pos2d;
+
+			if (mode == 1) // leftside square
+			{
+				offset = Vec2f(50, screenHeight*0.5f); // fixed pos
+				Vec2f pane_size = Vec2f(40.0f, 40.0f);
+				GUI::DrawPane(offset-pane_size, offset+pane_size, SColor(100, 0, 0, 0));
+				GUI::DrawTextCentered("CTRL", offset+Vec2f(-28, screenHeight*0.05f), SColor(100, 0, 0, 0));
+			}
+
+			SColor color;
+			if (force.y < 0) color = SColor(255, 55, 255, 55); // up
+			else color = color = SColor(255, 215, 155, 15);
+
+			if (mode == 2) // outlines
+			{
+				GUI::DrawLine2D(offset+Vec2f(2,1), offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f)+Vec2f(2,-1), SColor(255, 255, 255, 255));
+				GUI::DrawLine2D(offset+Vec2f(-2,1), offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f)+Vec2f(-2,-1), SColor(255, 255, 255, 255));
+			}
+
+			GUI::DrawLine2D(offset, offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f), color);
+			GUI::DrawLine2D(offset+Vec2f(1,0), offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f)+Vec2f(1,0), color);
+			GUI::DrawLine2D(offset+Vec2f(-1,0), offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f)+Vec2f(-1,0), color);
+			
+		}
+	}
+}

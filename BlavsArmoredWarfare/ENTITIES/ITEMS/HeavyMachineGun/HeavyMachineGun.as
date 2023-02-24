@@ -269,7 +269,7 @@ void onTick(CBlob@ this)
 			arm.SetOffset(arm_offset);
 			arm.RotateBy(rotation + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -4.0f : 4.0f, 0.0f));
 			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
-			arm.RotateBy(this.getAngleDegrees(), Vec2f(0,0));
+			if (this.hasAttached()) arm.RotateBy(-this.getAngleDegrees(), Vec2f(0,0));
 		}
 	}
 

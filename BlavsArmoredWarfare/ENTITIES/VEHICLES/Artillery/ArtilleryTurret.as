@@ -232,7 +232,7 @@ void onTick(CBlob@ this)
 
 		if (!this.hasTag("nogunner"))
 		{
-			if (getGameTime()%2==0)
+			if (getGameTime()%3==0)
 			{
 				int factor = 1;
 				if (isOperator) factor = 2;
@@ -294,7 +294,7 @@ void DoExplosion(CBlob@ this)
 		
 		for (int i = 0; i < (v_fastrender ? 12 : 32); i++)
 		{
-			ParticleAnimated(smoke[XORRandom(smoke.length)], (this.getPosition() + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f)) + Vec2f(XORRandom(36) - 18, XORRandom(36) - 18), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.16f), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 9 + XORRandom(5), XORRandom(70) * -0.00005f, true);
+			ParticleAnimated(smoke[XORRandom(smoke.length)], (this.getPosition() + Vec2f((this.isFacingLeft() ? -1 : 1)*60.0f, 0.0f)) + Vec2f(XORRandom(36) - 18, XORRandom(36) - 18), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.16f), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 9 + XORRandom(5), XORRandom(70) * -0.00005f, true);
 			
 			if (i%3!=0 || this.hasTag("apc")) continue;
 			makeGibParticle(
@@ -381,8 +381,9 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
 		Vec2f vel = Vec2f(0.0f, -37.5f+XORRandom(51)*0.1f).RotateBy(angle);
 		bullet.setVelocity(vel);
-		Vec2f pos = this.getPosition()+Vec2f(this.isFacingLeft()?-8.0f:8.0f, -4) + Vec2f((this.isFacingLeft() ? -1 : 1)*60.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
-		bullet.setPosition(pos);
+		Vec2f bullet_pos = this.getPosition()+Vec2f(this.isFacingLeft()?-8.0f:8.0f, -4) + Vec2f((this.isFacingLeft() ? -1 : 1)*16.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
+		Vec2f pos = this.getPosition()+Vec2f(this.isFacingLeft()?-8.0f:8.0f, -4) + Vec2f((this.isFacingLeft() ? -1 : 1)*50.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
+		bullet.setPosition(bullet_pos);
 		bullet.Tag("rpg");
 		//bullet.Tag("artillery_shell"); // this tag disables aircraft collision
 

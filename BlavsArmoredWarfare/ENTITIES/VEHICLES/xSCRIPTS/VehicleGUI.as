@@ -92,7 +92,15 @@ void onRender(CSprite@ this)
 			
 			f32 angleWithHorizon = (angleWithNormal - offset) * sign;
 
-			GUI::DrawTextCentered(Maths::Round(angleWithHorizon)+"°", pos2d-Vec2f(32.0f * (blob.isFacingLeft()?-1.0f:1.0f),32), SColor(0xffffffff));
+
+			Vec2f cursor_pos;
+			AttachmentPoint@ gunner = blob.getAttachments().getAttachmentPointByName("GUNNER");
+			if (gunner !is null && gunner.getOccupied() !is null && gunner.getOccupied().getControls() !is null)
+			{
+				cursor_pos = gunner.getOccupied().getControls().getMouseScreenPos();
+			}
+
+			GUI::DrawTextCentered(Maths::Round(angleWithHorizon)+"°", cursor_pos+Vec2f(24, 24), SColor(0xffffffff));
 		}
 	}
 }

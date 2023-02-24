@@ -114,7 +114,7 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 	bool not_found = true;
 
-	if (gunner !is null && gunner.getOccupied() !is null && !this.hasTag("broken"))
+	if (gunner !is null && gunner.getOccupied() !is null && !gunner.isKeyPressed(key_action2) && !this.hasTag("broken"))
 	{
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 

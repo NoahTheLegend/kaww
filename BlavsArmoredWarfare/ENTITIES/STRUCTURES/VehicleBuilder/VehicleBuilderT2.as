@@ -98,7 +98,7 @@ void onInit(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 2;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 225);
 	}
 }
 
@@ -152,7 +152,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			}
 			if (isServer && item.getName() == "vehiclebuildert3")
 			{
-				this.server_Die();		
+				this.server_Die();
+				if (caller.isMyPlayer()) caller.ClearMenus();
 			}
 		}
 	}

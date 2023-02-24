@@ -784,7 +784,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			moveVars.jumpFactor *= 0.7f;
 			moveVars.canVault = false;
 
-			if (isStabbing == false)
+			if (!isStabbing)
 			{
 				if (menuopen) return;
 				if (isReloading) return;
@@ -794,14 +794,17 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				if (this.get_u32("mag_bullets") <= 0)
 				{
 					charge_state = ArcherParams::no_ammo;
-
-					if (ismyplayer && !was_action1)
+					
+					if (ismyplayer && (!was_action1 || charge_time == 0))
 					{
+						this.Tag("armangle_lock");
+						charge_time += infantry.delayafterfire;
 						sprite.PlaySound("EmptyGun.ogg", 0.4);
 					}
 				}
 				else
 				{
+					this.Untag("armangle_lock");
 					ClientFire(this, charge_time, infantry);
 
 					charge_time = infantry.delayafterfire + XORRandom(infantry.randdelay);
@@ -1178,7 +1181,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 
 		ShootRPG(this, this.getPosition() - Vec2f(-24,0).RotateBy(angle), this.getAimPos() + Vec2f(-(1 + this.get_u8("inaccuracy")) + XORRandom((180 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, -(3 + this.get_u8("inaccuracy")) + XORRandom(180 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, 8.0f * infantry.bullet_velocity);
 	
-		ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.75f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+		ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -0.0f).RotateBy(angle), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.75f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 
 		if (this.isMyPlayer()) ShakeScreen((Vec2f(infantry.recoil_x - XORRandom(infantry.recoil_x*4) + 1, -infantry.recoil_y + XORRandom(infantry.recoil_y) + 6)), infantry.recoil_length*2, this.getInterpolatedPosition());
 		if (this.isMyPlayer()) ShakeScreen(48, 28, this.getPosition());
@@ -1190,7 +1193,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 
 	this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
 
-	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -12.0f : 12.0f, -0.0f), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -12.0f : 12.0f, -0.0f).RotateBy(angle), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 	
 	CPlayer@ p = getLocalPlayer();
 	if (p !is null)
