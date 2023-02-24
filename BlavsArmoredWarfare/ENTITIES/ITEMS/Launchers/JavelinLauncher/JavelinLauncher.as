@@ -168,7 +168,7 @@ void onTick(CBlob@ this)
 			Vec2f squareScale = Vec2f(12.0f, 12.0f) * (2.0f - targetingProgress*1.5);
 			f32 squareCornerSeparation = 4.0f;
 			makeTargetSquare(targetPos, squareAngle, squareScale, squareCornerSeparation, 1.0f, targetingProgress == 1.0f ? redConsoleColor : yellowConsoleColor, false); //target detected rhombus
-			this.set_f32(targetingProgressString, Maths::Min(targetingProgress+(bestBlob.hasTag("plane") ? 0.015f : 0.01f), 1.0f));
+			this.set_f32(targetingProgressString, Maths::Min(targetingProgress+(bestBlob.hasTag("aerial") ? 0.015f : 0.01f), 1.0f));
 
 			launcherFrame = 1; // green ping
 			launcherAngle *= 1.55f;
