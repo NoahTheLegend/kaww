@@ -145,6 +145,10 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 			AddBot("Bot");
 			return true;
 		}
+		else if (text_in == "!restartrules")
+		{
+			this.RestartRules();
+		}
 		else if (text_in == "!teamwon blue")
 		{
 			this.SetTeamWon(0);

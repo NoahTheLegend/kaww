@@ -162,6 +162,7 @@ void onTick(CBlob@ this)
 {
 	if (this !is null)
 	{
+		if (isServer() && !this.hasTag("falling")) this.Sync("result_force", true);
 		Vehicle_ensureFallingCollision(this);
 
 		if (getGameTime() >= this.get_u32("next_shoot"))
@@ -818,7 +819,13 @@ void onRender(CSprite@ this)
 			GUI::DrawLine2D(offset, offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f), color);
 			GUI::DrawLine2D(offset+Vec2f(1,0), offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f)+Vec2f(1,0), color);
 			GUI::DrawLine2D(offset+Vec2f(-1,0), offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f)+Vec2f(-1,0), color);
-			
+		
+			// draw ammo count
+			GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
+			GUI::DrawIcon("Materials.png", 30, Vec2f(16,16), pos2d+Vec2f(-40, 42.0f), 0.75f, 1.0f);
+			GUI::SetFont("menu");
+			if (blob.getInventory() !is null)
+				GUI::DrawTextCentered(""+blob.getInventory().getCount("mat_bolts"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
 		}
 	}
 }

@@ -83,6 +83,13 @@ void onInit(CRules@ this) {
                       true);
 					  reset(this);
     }
+	if (!GUI::isFontLoaded("small score font")) {
+        GUI::LoadFont("small score font",
+                      "GUI/Fonts/AveriaSerif-Bold.ttf", 
+                      11,
+                      true);
+					  reset(this);
+    }
 }
 
 void onRestart(CRules@ this){
