@@ -232,7 +232,7 @@ void onTick(CBlob@ this)
 
 		if (!this.hasTag("nogunner"))
 		{
-			if (getGameTime()%3==0)
+			if (getGameTime()%2==0)
 			{
 				int factor = 1;
 				if (isOperator) factor = 2;
