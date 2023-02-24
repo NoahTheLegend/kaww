@@ -117,7 +117,8 @@ void onCommand( CBlob@ this, u8 cmd, CBitStream @params )
 		
 		if (name == "vehiclebuildert2")
 		{
-			this.server_Die();		
+			this.server_Die();
+			if (blob.isMyPlayer()) blob.ClearMenus();
 		}
 	}
 }

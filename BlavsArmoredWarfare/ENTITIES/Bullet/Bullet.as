@@ -431,6 +431,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		{
 			return false;
 		}
+
+		if (blob.hasTag("trap") || blob.hasTag("material"))
+		{
+			return false;
+		}
 	}
 
 	if (blob.hasTag("vehicle"))
@@ -488,11 +493,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		if (blob.getName() == "trap_block")
 		{
 			return blob.getShape().getConsts().collidable;
-		}
-
-		if (blob.hasTag("trap"))
-		{
-			return false;
 		}
 
 		if (blob.isAttached())

@@ -121,7 +121,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 
 void onTick(CBlob@ this)
 {
-	if ((this.getName() == "agrenade" || this.getName() == "sagrenade" ) && (!v_fastrender || XORRandom(3)==0))
+	if (this.getName() == "agrenade" || this.getName() == "sagrenade")
 	{
 		sparks(this.getPosition(), this.getAngleDegrees(), 3.5f + (XORRandom(10) / 5.0f), SColor(255, 255, 230, 120));
 	}

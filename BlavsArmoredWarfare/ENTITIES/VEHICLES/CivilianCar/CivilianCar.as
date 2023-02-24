@@ -88,7 +88,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (this.getVelocity().Length() < 1.0f || blob.hasTag("structure") || blob.hasTag("bunker")) return false;
+	if (this.getVelocity().Length() < 1.0f || blob.hasTag("structure") || blob.hasTag("bunker") || blob.hasTag("player")) return false;
 	if (blob.hasTag("boat"))
 	{
 		return true;

@@ -109,10 +109,8 @@ void onRender(CRules@ this)
 	{
 		const string shiprektVersion = "Armored Warfare 2.0\n";
 		const string lastChangesInfo = "\nChanges:\n\n"
-		+ "  * Added C-4 explosive bomb\n"
-        + "  * New vehicles and tier-3 vehicle builder\n"
-         + " * Breaking logs & loot crates give exp now\n"
-        + "  * New perk\n";
+		+ "  * Lock aim direction for turrets via RMB\n"
+        + "  * Balance changes & bug fixes & QOL\n";
 		
 		GUI::SetFont("menu");
 		Vec2f lastChangesSize;
