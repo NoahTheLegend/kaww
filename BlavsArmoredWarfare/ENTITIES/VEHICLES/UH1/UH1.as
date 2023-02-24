@@ -173,6 +173,7 @@ void onTick(CBlob@ this)
 {
 	if (this !is null)
 	{
+		if (isServer() && !this.hasTag("falling")) this.Sync("result_force", true);
 		Vehicle_ensureFallingCollision(this);
 		
 		if (getGameTime() >= this.get_u32("next_shoot"))
