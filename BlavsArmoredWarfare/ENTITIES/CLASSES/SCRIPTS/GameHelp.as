@@ -10,6 +10,7 @@ bool enable_help = true;
 
 const f32 boxMargin = 100.0f;
 const SColor tipsColor = SColor(255, 255, 255, 255);
+const SColor RedColor = SColor(255, 255, 64, 64);
 //key names
 const string party_key = getControls().getActionKeyKeyName(AK_PARTY);
 const string inv_key = getControls().getActionKeyKeyName(AK_INVENTORY);
@@ -72,6 +73,7 @@ void onRender(CRules@ this)
         return;
     } 
 
+    const string ToggleInfo = "F1 to Toggle help menu";
 	const string infoTitle = "Tutorial";
 	const string textInfo = "---Test---";
 	
@@ -99,6 +101,7 @@ void onRender(CRules@ this)
 		Vec2f introSize;
 		GUI::GetTextDimensions(intro, introSize);
 		GUI::SetFont("AveriaSerif-Bold_32");
+        GUI::DrawTextCentered(ToggleInfo, Vec2f(sMid, tlBox.y - 20), RedColor);
 		GUI::DrawTextCentered(intro, Vec2f(sMid, tlBox.y + 15), tipsColor);
         GUI::SetFont("menu");
         GUI::DrawTextCentered("Mod is developed with big effort by Blav (Yeti5000707) and salty Snek (NoahTheLegend)", Vec2f(sMid, tlBox.y + 60), SColor(255, 255,255,0));
