@@ -19,6 +19,9 @@ void onPlayerInfoChanged(CSprite@ this)
 
 void LoadSprites(CSprite@ this)
 {
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+
 	ensureCorrectRunnerTexture(this, this.getBlob().getName(), this.getBlob().getName().toUpper());
 	string texname = getRunnerTextureName(this);
 
@@ -27,16 +30,40 @@ void LoadSprites(CSprite@ this)
 
 	if (frontarm !is null)
 	{
+		bool desert = getBlobByName("info_desert") !is null;
+
+		u8 defaultFrame = 40;
+		u8 firedFrame = 32;
+		u8 camogunFrame = 56;
+		u8 noArrowFrame = 33;
+		u8 camogunNoArrowFrame = 57;
+
+		if (desert)
+		{
+			camogunFrame = 57;
+		}
+
+		if (blob.getName() == "antitank")
+		{
+			camogunFrame = 48;
+			camogunNoArrowFrame = 49;
+			if (desert)
+			{
+				camogunFrame = 56;
+				camogunNoArrowFrame = 57;
+			}
+		}
+
 		Animation@ animcharge = frontarm.addAnimation("default", 0, false);
-		animcharge.AddFrame(40);
+		animcharge.AddFrame(defaultFrame);
 		Animation@ animshoot = frontarm.addAnimation("fired", 0, false);
-		animshoot.AddFrame(32);
+		animshoot.AddFrame(firedFrame);
 		Animation@ camogun = frontarm.addAnimation("camogun", 0, false);
-		camogun.AddFrame(56);
+		camogun.AddFrame(camogunFrame);
 		Animation@ animnoarrow = frontarm.addAnimation("no_arrow", 0, false);
-		animnoarrow.AddFrame(33);
+		animnoarrow.AddFrame(noArrowFrame);
 		Animation@ camogunnoarrow = frontarm.addAnimation("camogunno_arrow", 0, false);
-		camogunnoarrow.AddFrame(57);
+		camogunnoarrow.AddFrame(camogunNoArrowFrame);
 		frontarm.SetOffset(Vec2f(-1.0f, 5.0f + config_offset));
 		frontarm.SetAnimation("fired");
 		frontarm.SetVisible(false);
@@ -55,7 +82,7 @@ void LoadSprites(CSprite@ this)
 	}
 
 	this.RemoveSpriteLayer("camo");
-	CSpriteLayer@ camo = this.addSpriteLayer("camo", "Camo.png" , 32, 32, 0, 0);
+	CSpriteLayer@ camo = this.addSpriteLayer("camo", getBlobByName("info_desert") !is null ? "CamoDesert.png" : "Camo.png" , 32, 32, 0, 0);
 
 	if (camo !is null)
 	{
@@ -193,7 +220,7 @@ void onTick(CSprite@ this)
 						}
 						CSpriteLayer@ bush = this.getSpriteLayer("bush");
 						if (bush is null)
-							@bush = this.addSpriteLayer("bush", "Bushes.png", 24, 24);
+							@bush = this.addSpriteLayer("bush", getBlobByName("info_desert") !is null ? "Desert_Bushes.png" : "Bushes.png", 24, 24);
 
 						if (bush !is null)
 						{

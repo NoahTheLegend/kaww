@@ -3,6 +3,7 @@
 #include "Descriptions.as"
 #include "Costs.as"
 #include "GenericButtonCommon.as"
+#include "VehicleBuilderCommon.as"
 
 void onInit(CBlob@ this)
 {
@@ -16,7 +17,6 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(10, 4));
 	this.set_string("shop description", "Construct a Vehicle");
 	this.set_u8("shop icon", 15);
 
@@ -26,59 +26,25 @@ void onInit(CBlob@ this)
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
 
-	{
-		ShopItem@ s = addShopItem(this, "Build a Motorcycle", "$motorcycle$", "motorcycle", "Speedy transport.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nVery fast, medium firerate\nVery fragile armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nFast, good firerate\nWeak armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nGood engine power, fast, good elevation angles\nMedium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 45);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nThick armor, big cannon damage.\nSlow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses 105mm & 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build Armory", "$armory$", "armory", "A truck with supplies.\nAllows to switch class.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 - Vehicle builder.\n\nUnlocks stronger vehicles and aircraft.", false, false);
-		s.customButton = true;
-		s.buttonwidth = 2;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
-	}
+	//Combined
+	if (this.getName() == "vehiclebuilder" || this.getName() == "vehiclebuilderconst")
+		buildT1ShopCombined(this);
+	else if (this.getName() == "vehiclebuildert2" || this.getName() == "vehiclebuildert2const")
+		buildT2ShopCombined(this);
+	else if (this.getName() == "vehiclebuildert3" || this.getName() == "vehiclebuildert3const")
+		buildT3ShopCombined(this);
+	//Ground only
+	if (this.getName() == "vehiclebuilderground" || this.getName() == "vehiclebuildergroundconst")
+		buildT1ShopGround(this);
+	else if (this.getName() == "vehiclebuildert2ground" || this.getName() == "vehiclebuildert2groundconst")
+		buildT2ShopGround(this);
+	else if (this.getName() == "vehiclebuildert3ground" || this.getName() == "vehiclebuildert3groundconst")
+		buildT3ShopGround(this);
+	//Air only
+	if (this.getName() == "vehiclebuilderair" || this.getName() == "vehiclebuilderairconst")
+		buildT1ShopAir(this);
+	else if (this.getName() == "vehiclebuildert2air" || this.getName() == "vehiclebuildert2airconst")
+		buildT2ShopAir(this);
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -115,7 +81,9 @@ void onCommand( CBlob@ this, u8 cmd, CBitStream @params )
 		
 		string name = params.read_string();
 		
-		if (name == "vehiclebuildert2")
+		if (name == "vehiclebuildert2" || name == "vehiclebuildert3"
+		|| name == "vehiclebuildert2ground" || name == "vehiclebuildert3ground"
+		|| name == "vehiclebuildert2air")
 		{
 			this.server_Die();
 			if (blob.isMyPlayer()) blob.ClearMenus();

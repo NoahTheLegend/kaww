@@ -57,7 +57,7 @@ void LoadSprites(CSprite@ this)
 	}
 
 	this.RemoveSpriteLayer("camo");
-	CSpriteLayer@ camo = this.addSpriteLayer("camo", "Camo.png" , 32, 32, 0, 0);
+	CSpriteLayer@ camo = this.addSpriteLayer("camo", getBlobByName("info_desert") !is null ? "CamoDesert.png" : "Camo.png" , 32, 32, 0, 0);
 
 	if (camo !is null)
 	{

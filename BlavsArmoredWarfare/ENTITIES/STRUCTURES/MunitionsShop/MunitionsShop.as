@@ -71,11 +71,11 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Buy wood (250)", "$mat_wood$", "mat_wood", "Purchase 250 wood.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 20);
+			AddRequirement(s.requirements, "coin", "", "Coins", 15);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Buy stone (250)", "$mat_stone$", "mat_stone", "Purchase 250 stone.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 40);
+			AddRequirement(s.requirements, "coin", "", "Coins", 35);
 		}
 	}
 	else // tdm maps

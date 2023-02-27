@@ -530,8 +530,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
 			
-			proj.set_f32(projExplosionRadiusString, 24.0f);
-			proj.set_f32(projExplosionDamageString, 10.0f);
+			proj.set_f32(projExplosionRadiusString, 16.0f);
+			proj.set_f32(projExplosionDamageString, 16.0f);
 
 			proj.set_f32("map_damage_radius", 16.0f);
 			proj.set_f32("map_damage_ratio", 0.01f);
@@ -720,9 +720,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
+		damage += 0.1f;
 		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.3f;
 		else if (hitterBlob.getName() == "bulletheavy") return damage * 0.8f;
-		return damage * (hitterBlob.hasTag("strong") ? 1.0f : 0.65f);
+		return damage * (hitterBlob.hasTag("strong") ? 0.85f : 0.65f);
 	}
 	return damage;
 }
@@ -811,6 +812,7 @@ void onRender(CSprite@ this)
 
 			if (mode == 2) // outlines
 			{
+				force = force*1.75f;
 				GUI::DrawLine2D(offset+Vec2f(2,1), offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f)+Vec2f(2,-1), SColor(255, 255, 255, 255));
 				GUI::DrawLine2D(offset+Vec2f(-2,1), offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f)+Vec2f(-2,-1), SColor(255, 255, 255, 255));
 			}

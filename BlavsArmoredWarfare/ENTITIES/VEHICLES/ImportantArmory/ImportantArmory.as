@@ -535,6 +535,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 0.5f;
 	}
+	if (hitterBlob.getName() == "c4")
+	{
+		return damage * 0.25f;
+	}
 	if (hitterBlob.hasTag("bullet"))
 	{
 		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.25f;

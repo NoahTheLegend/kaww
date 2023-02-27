@@ -16,12 +16,13 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(9, 2));
+	this.set_Vec2f("shop menu size", Vec2f(10, 2));
 	this.set_string("shop description", "Craft Equipment");
 	this.set_u8("shop icon", 21);
 
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_barge$","IconBarge.png", Vec2f(32, 32), 0, 2);
 
 	{
 		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press SPACE while holding to arm, ~4 seconds until boom.", false);
@@ -63,6 +64,15 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+
+		s.customButton = true;
+
+		s.buttonwidth = 1;
+		s.buttonheight = 2;
+	}
+	{
 		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
 		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
@@ -102,13 +112,11 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
-
+		ShopItem@ s = addShopItem(this, "Barge", "$icon_barge$", "barge", "An armored boat for transporting vehicles across the water.", false, true);
 		s.customButton = true;
-
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 }
 

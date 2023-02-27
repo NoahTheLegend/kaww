@@ -155,8 +155,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					bullet.set_s8(penRatingString, 1);
 					bullet.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
 
-					bullet.set_f32("bullet_damage_body", 0.2f);
-					bullet.set_f32("bullet_damage_head", 0.25f);
+					bullet.set_f32("bullet_damage_body", 0.25f);
+					bullet.set_f32("bullet_damage_head", 0.325f);
 					bullet.IgnoreCollisionWhileOverlapped(this);
 					bullet.server_setTeamNum(this.getTeamNum());
 					Vec2f pos_ = this.getPosition()-Vec2f(0.0f, 2.0f);

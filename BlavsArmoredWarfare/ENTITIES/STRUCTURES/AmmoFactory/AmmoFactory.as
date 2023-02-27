@@ -42,6 +42,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("mine");
 	this.addCommandID("helmet");
 	this.addCommandID("playsound");
+	this.addCommandID("direct_pick");
 
 	if (sprite is null) return;
 	CSpriteLayer@ icon = sprite.addSpriteLayer("icon", "AmmoFactoryIcons.png", 8, 8);
@@ -57,6 +58,8 @@ void onInit(CBlob@ this)
 			icon.SetFrameIndex(0);
 		}
 	}
+
+	this.inventoryButtonPos = Vec2f(-8.0f, 0);
 }
 
 void onTick(CBlob@ this)
@@ -170,7 +173,7 @@ void PickupOverlap(CBlob@ this)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	if (!canSeeButtons(this, caller)) return;
+	if (!canSeeButtons(this, caller) || !this.isOverlapping(caller)) return;
 
 	CBitStream params;
 	params.write_u16(caller.getNetworkID());
@@ -182,7 +185,8 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 		button.SetEnabled(caller.hasBlob(metal, 1));
 	}
 
-	caller.CreateGenericButton(16, Vec2f(0.0f, -9.0f), this, this.getCommandID("select"), "Select product", params);
+	caller.CreateGenericButton(16, Vec2f(0.0f, -10.0f), this, this.getCommandID("select"), "Select product", params);
+	caller.CreateGenericButton(24, Vec2f(4.0f, 0.0f), this, this.getCommandID("direct_pick"), "Pick product", params);
 }
 
 void spawnMetal(CBlob@ this)
@@ -231,6 +235,30 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.add_s16(metal_prop, ammountToStore);
 
 			this.getSprite().PlaySound("FireFwoosh.ogg");
+		}
+	}
+	else if (cmd == this.getCommandID("direct_pick"))
+	{
+		if (isServer())
+		{
+			u16 callerid;
+			if (!params.saferead_u16(callerid)) return;
+
+			CBlob@ caller = getBlobByNetworkID(callerid);
+			if (caller is null) return;
+
+			if (this.getInventory() !is null)
+			{
+				CBlob@ item = this.getInventory().getItem(this.get_string("prod_blob"));
+				if (item !is null)
+				{
+					this.server_PutOutInventory(item);
+					if (!caller.server_PutInInventory(item))
+					{
+						caller.server_AttachTo(item, "PICKUP");
+					}
+				}
+			}
 		}
 	}
 	else if (cmd == this.getCommandID("select"))

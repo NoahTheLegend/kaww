@@ -17,7 +17,7 @@ void onInit(CSprite@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return false;
+	return (!blob.hasTag("flesh") && !blob.hasTag("dead") && !blob.hasTag("vehicle") && blob.isCollidable()) || (blob.hasTag("door") && blob.getShape().getConsts().collidable);
 }
 
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)

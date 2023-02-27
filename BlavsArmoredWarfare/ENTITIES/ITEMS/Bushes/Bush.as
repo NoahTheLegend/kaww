@@ -15,6 +15,21 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 	return false;
 }
 
+void onTick(CBlob@ this)
+{
+	if (getGameTime()==3)
+	{
+		if (getBlobByName("info_desert") !is null)
+		{
+			CSprite@ sprite = this.getSprite();
+			if (sprite !is null)
+			{
+				sprite.ReloadSprite("Desert_Bushes.png", sprite.getFrameWidth(), sprite.getFrameHeight());
+			}
+		}
+	}
+}
+
 void onInit(CSprite@ this)
 {
 	CBlob@ blob = this.getBlob();

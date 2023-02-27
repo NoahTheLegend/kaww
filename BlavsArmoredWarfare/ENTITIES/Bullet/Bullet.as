@@ -405,9 +405,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 	if (blob.hasTag("always bullet collide"))
 	{
-		if (blob.getTeamNum() != this.getTeamNum()) return false;
+		if (!same_team) return false;
 		return true;
 	}
+
+	if (blob.hasTag("missile") && !same_team) return true;
 
 	if (same_team && blob.hasTag("friendly_bullet_pass")) return false;
 
@@ -418,7 +420,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		
 	if (blob.hasTag("vehicle"))
 	{
-		if (blob.getTeamNum() == this.getTeamNum())
+		if (same_team)
 		{
 			this.IgnoreCollisionWhileOverlapped(blob, 10);
 			if (blob.hasTag("apc") || blob.hasTag("turret")) return (XORRandom(100) > 70);
@@ -445,7 +447,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if (blob.isAttached() && !blob.hasTag("player"))
 		return false;
 
-	if ((!is_young || blob.getTeamNum() != this.getTeamNum()) && blob.isAttached() && !blob.hasTag("covered"))
+	if ((!is_young || !same_team) && blob.isAttached() && !blob.hasTag("covered"))
 	{
 		if (blob.hasTag("collidewithbullets")) return XORRandom(2)==0;
 		if (XORRandom(8) == 0)
