@@ -5,98 +5,76 @@
 
 void onInit(CBlob@ this)
 {
+	CShape@ shape = this.getShape();
+	shape.SetGravityScale(0.1f);
+	
 	if (!this.exists("bullet_damage_body")) { this.set_f32("bullet_damage_body", 0.15f); }
 	if (!this.exists("bullet_damage_head")) { this.set_f32("bullet_damage_head", 0.4f); }
+
+	CSprite@ sprite = this.getSprite();
+	if (sprite !is null) {
+		sprite.ResetTransform();
+		sprite.ScaleBy(Vec2f(0.25f + Maths::Sqrt(this.get_f32("bullet_damage_body")), 1.0f)); // multiplied by 2 on sv
+	}
 
 	this.Tag("projectile");
 	this.Tag("bullet");
 
-	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.mapCollisions = false;
 	consts.bullet = false;
-
-	CSprite@ sprite = this.getSprite();
-	if (sprite !is null)
-	{
-		sprite.ResetTransform();
-		sprite.ScaleBy(Vec2f(0.25f + Maths::Sqrt(this.get_f32("bullet_damage_body")), 1.0f)); // multiplied by 2 on sv
-	}
 
 	this.SetMapEdgeFlags(u8(CBlob::map_collide_none | CBlob::map_collide_left | CBlob::map_collide_right | CBlob::map_collide_nodeath));
 
 	consts.net_threshold_multiplier = 10.0f;
 }
+	
 
 void onTick(CBlob@ this)
 {
-	Vec2f v = (this.getVelocity() + this.getOldVelocity())/2;
-	if (v.getLength() > 27.0)
-	{
-		this.getSprite().SetFrameIndex(2);
-	}
-	else if (v.getLength() > 19.0)
-	{
-		this.getSprite().SetFrameIndex(1);
-	}
-	else{
-		this.getSprite().SetFrameIndex(0);
-	}
-	
+	CMap@ map = getMap();
 	Vec2f pos = this.getPosition();
-	CShape@ shape = this.getShape();
-	Vec2f velocity = this.getVelocity();
+	Vec2f vel = this.getVelocity();
 
-	this.getSprite().SetVisible(this.getTickSinceCreated() >= XORRandom(2)+1);
-	
-	if (pos.x < 0.1f or pos.x > (getMap().tilemapwidth * getMap().tilesize) - 0.1f)
-	{
-		this.server_Die();
-		return;
-	}
+	int creationTicks = this.getTickSinceCreated();
+
+	CSprite@ sprite = this.getSprite();
+	sprite.SetVisible(creationTicks >= XORRandom(2)+1);
+
+	Vec2f v = (vel + this.getOldVelocity())/2;
+	if (v.getLength() > 27.0) 		sprite.SetFrameIndex(2);
+	else if (v.getLength() > 19.0) 	sprite.SetFrameIndex(1);
+	else 							sprite.SetFrameIndex(0);
+
+	CShape@ shape = this.getShape();
+	// remove slow moving bullets
+	if (shape.vellen > 0.0001f && shape.vellen < 13.5f) 					{ this.server_Die(); return; }
+	// remove bullets on the edge of the map
+	if (pos.x < 0.1f or pos.x > (map.tilemapwidth * map.tilesize) - 0.1f) 	{ this.server_Die(); return; }
 
 	f32 angle;
-	angle = velocity.Angle();
+	angle = vel.Angle();
 	this.setAngleDegrees(-angle);
 
-	if (shape.vellen > 0.0001f)
-	{
-		if (shape.vellen > 13.5f)
-			shape.SetGravityScale(0.1f);
-		else
-			shape.SetGravityScale(Maths::Min(1.0f, 1.0f / (shape.vellen * 0.1f)));
-	}
-
-	if (this.isInWater())
-	{
-		this.setVelocity(velocity*0.94f);
-	}
-	else if (this.hasTag("rico"))
-	{
-		this.AddForce(Vec2f(0.0f, 0.5f));
-	}
-	else
-	{
-		this.AddForce(Vec2f(0.0f, 0.11f));
-	}
+	if (this.isInWater()) 			this.setVelocity(vel * 0.95f);
+	else if (this.hasTag("rico")) 	this.AddForce(Vec2f(0.0f, 0.5f));
+	else 							this.AddForce(Vec2f(0.0f, 0.11f));
 
 	// collison with blobs
 	HitInfo@[] infos;
-	CMap@ map = this.getMap();
-	if (isServer() && map.isTileSolid(map.getTile(this.getPosition()).type)) this.server_Die();
-	if (map.getHitInfosFromArc(this.getPosition(), -angle, (this.getTickSinceCreated() > 4 ? 13 : (this.getTickSinceCreated() < 1 ? 70 : 35)), 27.0f, this, true, @infos))
+	if (isServer() && map.isTileSolid(map.getTile(pos).type)) this.server_Die();
+	if (map.getHitInfosFromArc(pos, -angle, (creationTicks > 4 ? 13 : (creationTicks < 1 ? 70 : 35)), 27.0f, this, true, @infos))
 	{
-		for (uint i = 0; i < infos.length; i ++)
-		{
-			CBlob@ blob = infos[i].blob;
-			Vec2f hit_position = infos[i].hitpos;
+		for (uint i = 0; i < infos.length; i++) {
+			CBlob@ b = infos[i].blob;
+			Vec2f hit_pos = infos[i].hitpos;
 
-			if (blob !is null)
+			if (b !is null)
 			{
-				if (!doesCollideWithBlob(this, blob))
+				if (!doesCollideWithBlob(this, b))
 					continue;
 
-				onHitBlob(this, hit_position, velocity, blob, Hitters::arrow);
+				onHitBlob(this, hit_pos, vel, b, Hitters::arrow);
 				return;
 			}
 		}
@@ -104,26 +82,16 @@ void onTick(CBlob@ this)
 
 	// collison with map
 	Vec2f end;
-	if (this.getTickSinceCreated() > 0)
-	{
-		if (map.rayCastSolidNoBlobs(this.getPosition(), this.getPosition() + velocity, end))
-		{
-			onHitWorld(this, end);
-		}
-	}
-	else
-	{
-		if (map.rayCastSolidNoBlobs(this.getPosition(), this.getPosition() + velocity, end))
-		{
-			onHitWorld(this, end);
-		}
-	}
+	if (map.rayCastSolidNoBlobs(pos, pos + vel, end)) onHitWorld(this, end);
 }
 
 void onHitWorld(CBlob@ this, Vec2f end)
 {
 	CMap@ map = getMap();
-	this.setVelocity(this.getVelocity() * 0.8f);
+	Vec2f pos = this.getPosition();
+	Vec2f vel = this.getVelocity();
+
+	this.setVelocity(vel*0.8f);
 
 	// chance to break a block. Will not touch "strong" tag for now.
 	TileType tile = map.getTile(end).type;
@@ -157,9 +125,8 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 			if (!v_fastrender)
 			{
-				for (uint i = 0; i < 3+XORRandom(6); i ++)
-				{
-					Vec2f velr = this.getVelocity()/(XORRandom(5)+3.0f);
+				for (uint i = 0; i < 3+XORRandom(6); i++) {
+					Vec2f velr = vel/(XORRandom(5)+3.0f);
 					velr += Vec2f(0.0f, -6.5f);
 					velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 
@@ -167,7 +134,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 				}
 			}
 
-			Sound::Play("/BulletMetal" + XORRandom(4), this.getPosition(), 1.2f, 0.8f + XORRandom(40) * 0.01f);
+			Sound::Play("/BulletMetal" + XORRandom(4), pos, 1.2f, 0.8f + XORRandom(40) * 0.01f);
 
 			{ TileType tile = map.getTile(end + Vec2f(0, -1)).type;
 			if (map.isTileSolid(tile)) this.AddForce(Vec2f(0.0f, 30.0f)); }
@@ -192,11 +159,11 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 		ParticleAnimated("Smoke", end, Vec2f(0.0f, -0.1f), 0.0f, 1.0f, 5, XORRandom(70) * -0.00005f, true);
 
-		Sound::Play("/BulletDirt" + XORRandom(3), this.getPosition(), 1.7f, 0.85f + XORRandom(25) * 0.01f);
+		Sound::Play("/BulletDirt" + XORRandom(3), pos, 1.7f, 0.85f + XORRandom(25) * 0.01f);
 
 		if (!v_fastrender)
 		{
-			CParticle@ p = ParticleAnimated("SparkParticle.png", this.getPosition(), Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(2), 0.0f, false);
+			CParticle@ p = ParticleAnimated("SparkParticle.png", pos, Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(2), 0.0f, false);
 			if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
 
 			{ CParticle@ p = ParticleAnimated("BulletChunkParticle.png", end, Vec2f(0.5f - XORRandom(100)*0.01f,-0.5), XORRandom(360), 0.55f + XORRandom(50)*0.01f, 22+XORRandom(3), 0.2f, true);
@@ -221,8 +188,8 @@ void onHitWorld(CBlob@ this, Vec2f end)
 
 		if (XORRandom(2) == 0 && !v_fastrender)
 		{
-			{ CParticle@ p = ParticleAnimated("BulletHitParticle1.png", end + Vec2f(0.0f, 1.0f), Vec2f(0,0), impact_angle, 0.55f + XORRandom(50)*0.01f, 2+XORRandom(2), 0.0f, true);
-			if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }}
+			CParticle@ p = ParticleAnimated("BulletHitParticle1.png", end + Vec2f(0.0f, 1.0f), Vec2f(0,0), impact_angle, 0.55f + XORRandom(50)*0.01f, 2+XORRandom(2), 0.0f, true);
+			if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
 		}
 
 		this.server_Die();
@@ -235,7 +202,6 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 	f32 dmg = this.get_f32("bullet_damage_body");
 
 	s8 finalRating = getFinalRating(this, blob.get_s8(armorRatingString), this.get_s8(penRatingString), blob.get_bool(hardShelledString), blob, hit_position);
-	//print("rating: "+finalRating);
 
 	const bool can_pierce = finalRating < 2;
 
@@ -245,7 +211,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		{
 			if (isServer()) this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 0.75f : 0.25f, Hitters::builder);
 		}
-		else{
+		else {
 			// play sound
 			if (blob.hasTag("flesh"))
 			{
@@ -257,8 +223,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 			else if (v_fastrender)
 			{
 				CParticle@ p = ParticleAnimated("SparkParticle.png", hit_position, Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(5), 0.0f, false);
-				if (p !is null)
-				{
+				if (p !is null) {
 					p.diesoncollide = true;
 					p.fastcollision = true;
 					p.lighting = false;
@@ -266,7 +231,6 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 				}
 			}
 		}
-
 
 		if (isServer() && this.getTeamNum() != blob.getTeamNum() && (blob.getName() == "wooden_platform" || blob.hasTag("door")))
 		{
@@ -301,8 +265,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 				if (!v_fastrender)
 				{
 					CParticle@ p = ParticleAnimated("PingParticle.png", hit_position, Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(5), 0.0f, false);
-					if (p !is null)
-					{
+					if (p !is null) {
 						p.diesoncollide = true;
 						p.fastcollision = true;
 						p.lighting = false;
@@ -318,8 +281,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 				if (!v_fastrender)
 				{
 					CParticle@ p = ParticleAnimated("PingParticle.png", pos, Vec2f(0,0), XORRandom(360), 0.75f + XORRandom(4) * 0.10f, 3, 0.0f, false);
-					if (p !is null)
-					{
+					if (p !is null) {
 						p.diesoncollide = true;
 						p.fastcollision = true;
 						p.lighting = false;
@@ -342,12 +304,12 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		
 		if (blob.hasTag("flesh") && hit_position.y < blob.getPosition().y - 3.2f)
 		{
-			dmg = this.get_f32("bullet_damage_head");
+			if (!blob.hasTag("nohead")) dmg = this.get_f32("bullet_damage_head");
 
 			// hit helmet
 			if (blob.get_string("equipment_head") == "helmet")
 			{
-				dmg *= 0.45;
+				dmg *= 0.5;
 
 				if (XORRandom(100) < 25)
 				{
@@ -366,27 +328,17 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 			}
 		}
 
-		if (!this.hasTag("strong"))
-		{
+		if (blob.hasTag("nolegs")) dmg = this.get_f32("bullet_damage_head");
+
+		if (!this.hasTag("strong")) {
+			// do less dmg offscreen
 			int creationTicks = this.getTickSinceCreated();
-			if (creationTicks > 20) // less dmg offscreen
-			{
-				dmg *= 0.75f;
-			}
-			else if  (creationTicks > 14)
-			{
-				dmg *= 0.5f;
-			}
+			if (creationTicks > 20) 		dmg *= 0.75f;
+			else if  (creationTicks > 14) 	dmg *= 0.5f;
 		}
 
-		if (!blob.hasTag("weakprop"))
-		{
-			this.server_Die();
-		}
-		else
-		{
-			this.setVelocity(velocity * 0.96f);
-		}
+		if (!blob.hasTag("weakprop")) this.server_Die();
+		else this.setVelocity(velocity * 0.96f);
 
 		if (blob.hasTag("flesh"))
 		{
@@ -409,34 +361,20 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	//if (isServer())
+	if (blob.hasTag("always bullet collide"))
 	{
-		if (blob.hasTag("always bullet collide"))
-		{
-			if (blob.getTeamNum() != this.getTeamNum()) return false;
-			return true;
-		}
-
-		if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("friendly_bullet_pass"))
-		{
-			return false;
-		}
-
-		if (this.getTickSinceCreated() < 2 && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
-		{
-			return false;
-		}
-
-		if (blob.hasTag("player") && blob.exists("mg_invincible") && blob.get_u32("mg_invincible") > getGameTime())
-		{
-			return false;
-		}
-
-		if (blob.hasTag("trap") || blob.hasTag("material"))
-		{
-			return false;
-		}
+		if (blob.getTeamNum() != this.getTeamNum()) return false;
+		return true;
 	}
+
+	if (blob.hasTag("friendly_bullet_pass") && blob.getTeamNum() == this.getTeamNum())
+		return false;
+
+	if (this.getTickSinceCreated() < 2 && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
+		return false;
+
+	if (blob.hasTag("player") && blob.exists("mg_invincible") && blob.get_u32("mg_invincible") > getGameTime())
+		return false;
 
 	if (blob.hasTag("vehicle"))
 	{
@@ -455,136 +393,96 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		}
 	}
 	
-	//if (isServer())
+	if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
+		return false;
+
+	if (blob.hasTag("turret") && blob.getTeamNum() != this.getTeamNum())
+		return true;
+
+	if (blob.hasTag("destructable_nosoak"))
 	{
-		if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
-		{
-			return false;
-		}
-
-		if (blob.hasTag("turret") && blob.getTeamNum() != this.getTeamNum())
-		{
-			return true;
-		}
-
-		if (blob.hasTag("destructable_nosoak"))
-		{
-			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
-			return false;
-		}
-
-		if (blob.isAttached() && !blob.hasTag("player"))
-		{
-			return false;
-		}
-
-		if ((this.getTickSinceCreated() > 1 || blob.getTeamNum() != this.getTeamNum()) && blob.isAttached() && !blob.hasTag("covered"))
-		{
-			if (blob.hasTag("collidewithbullets")) return XORRandom(2)==0;
-			if (XORRandom(8) == 0)
-			{
-				return true;
-			}
-			AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
-			if (point !is null && point.getOccupied() !is null && (point.getOccupied().getName() == "heavygun" || point.getOccupied().getName() == "gun") && blob.getTeamNum() != this.getTeamNum())
-				return true;
-		}
-
-		if (blob.getName() == "trap_block")
-		{
-			return blob.getShape().getConsts().collidable;
-		}
-
-		if (blob.isAttached())
-		{
-			if (blob.hasTag("collidewithbullets")) return true;
-			return false;
-		}
-
-		if (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())
-		{
-			return true;
-		}
-
-		if (blob.hasTag("door") && blob.getShape().getConsts().collidable)
-		{
-			return this.getTickSinceCreated() != 0;
-		}
-
-		if (blob.getName() == "wooden_platform" && blob.isCollidable())
-		{
-			f32 velx = this.getOldVelocity().x;
-			f32 vely = this.getOldVelocity().y;
-			f32 deg = blob.getAngleDegrees();
-
-			if ((deg < 45.0f || deg > 315.0f) && vely > 0.0f) //up		
-			{
-				return true;
-			}
-			if ((deg > 45.0f && deg < 135.0f) && velx < 0.0f) //right
-			{
-				return true;
-			}
-			if ((deg > 135.0f && deg < 225.0f) && vely < 0.0f) //down
-			{
-				return true;
-			}
-			if ((deg > 225.0f && deg < 315.0f) && velx > 0.0f) //left
-			{
-				return true;
-			}
-
-			//printf("deg "+deg);
-			//printf("velx "+velx);
-			//printf("vely "+vely);
-
-			return false;
-		}
-
-		if (blob.hasTag("destructable"))
-		{
-			return true;
-		}
-
-		if (blob.getShape().isStatic()) // this is annoying
-		{
-			return false;
-		}
-
-		if (this.getTeamNum() == blob.getTeamNum() && blob.hasTag("flesh"))
-		{
-			return false;
-		}
-
-		if (blob.hasTag("projectile") || this.hasTag("rico"))
-		{
-			return false;
-		}
-
-		if (blob.hasTag("blocks bullet"))
-		{
-			return true;
-		}
-
-		bool check = this.getTeamNum() != blob.getTeamNum();
-		if (!check)
-		{
-			CShape@ shape = blob.getShape();
-			check = (shape.isStatic() && !shape.getConsts().platform);
-		}
-
-		if (check)
-		{
-			if (blob.hasTag("dead"))
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-		}
+		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
+		return false;
 	}
+
+	if (blob.isAttached() && !blob.hasTag("player"))
+		return false;
+
+	if ((this.getTickSinceCreated() > 1 || blob.getTeamNum() != this.getTeamNum()) && blob.isAttached() && !blob.hasTag("covered"))
+	{
+		if (blob.hasTag("collidewithbullets")) return XORRandom(2)==0;
+		if (XORRandom(8) == 0)
+			return true;
+
+		AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
+		if (point !is null && point.getOccupied() !is null && (point.getOccupied().getName() == "heavygun" || point.getOccupied().getName() == "gun") && blob.getTeamNum() != this.getTeamNum())
+			return true;
+	}
+
+	if (blob.getName() == "trap_block")
+		return blob.getShape().getConsts().collidable;
+
+	if (blob.hasTag("trap") || blob.hasTag("material"))
+		return false;
+
+	if (blob.isAttached())
+		return blob.hasTag("collidewithbullets");
+
+	if (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())
+	{
+		return true;
+	}
+
+	if (blob.hasTag("door") && blob.getShape().getConsts().collidable)
+	{
+		return this.getTickSinceCreated() != 0;
+	}
+
+	if (blob.getName() == "wooden_platform" && blob.isCollidable())
+	{
+		f32 velx = this.getOldVelocity().x;
+		f32 vely = this.getOldVelocity().y;
+		f32 deg = blob.getAngleDegrees();
+
+		if ((deg < 45.0f || deg > 315.0f) && vely > 0.0f) //up		
+			return true;
+		if ((deg > 45.0f && deg < 135.0f) && velx < 0.0f) //right
+			return true;
+		if ((deg > 135.0f && deg < 225.0f) && vely < 0.0f) //down
+			return true;
+		if ((deg > 225.0f && deg < 315.0f) && velx > 0.0f) //left
+			return true;
+
+		//printf("deg "+deg);
+		//printf("velx "+velx);
+		//printf("vely "+vely);
+
+		return false;
+	}
+
+	if (blob.hasTag("destructable"))
+		return true;
+
+	if (blob.getShape().isStatic()) // this is annoying
+		return false;
+	
+	if (this.getTeamNum() == blob.getTeamNum() && blob.hasTag("flesh"))
+		return false;
+
+	if (blob.hasTag("projectile") || this.hasTag("rico"))
+		return false;
+
+	if (blob.hasTag("blocks bullet"))
+		return true;
+
+	bool check = this.getTeamNum() != blob.getTeamNum();
+	if (!check) {
+		CShape@ shape = blob.getShape();
+		check = (shape.isStatic() && !shape.getConsts().platform);
+	}
+
+	if (check)
+		return !blob.hasTag("dead");
 
 	return true;
 }
@@ -598,20 +496,5 @@ void BulletHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, u8 cus
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	return 0.0f; //no cut arrows
-}
-/*
-void onHitBlob(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitBlob, u8 customData)
-{
-	if (this !is hitBlob)
-	{
-		const f32 scale = 0.5f;
-
-		Vec2f vel = velocity;
-		const f32 speed = vel.Normalize();
-		if (speed > 6.5f)
-		{
-			f32 force = 0.07f * Maths::Sqrt(hitBlob.getMass() + 1) * scale;
-		}
-	}
+	return 0.0f;
 }
