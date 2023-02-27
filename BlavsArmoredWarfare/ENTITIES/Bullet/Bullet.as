@@ -391,15 +391,15 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (blob.hasTag("respawn") || blob.hasTag("invincible")) return false; // stop checks if enemy is unhittable
+	if (blob.hasTag("respawn") || blob.hasTag("invincible") || blob.hasTag("dead") || blob.hasTag("projectile") || blob.hasTag("trap") || blob.hasTag("material") || this.hasTag("rico")) {
+        return false;
+    }
 
 	const bool is_young = this.getTickSinceCreated() <= 1;
 	const bool same_team = blob.getTeamNum() == this.getTeamNum();
 
 	CShape@ shape = blob.getShape();
 	if (shape is null) return false;
-
-	if (blob.hasTag("dead")) return false; // cuts off any deaders
 
 	if (blob.hasTag("door") && shape.getConsts().collidable) return true; // blocked by closed doors
 
@@ -432,20 +432,16 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 			return false;
 		}
 	}
-	
-	if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
-		return false;
 
-	if (blob.hasTag("turret") && blob.getTeamNum() != this.getTeamNum())
+	if (blob.hasTag("turret") && !same_team)
 		return true;
-	/*
+	
 	if (blob.hasTag("destructable_nosoak"))
 	{
 		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
 		return false;
-	}*/
+	}
 	
-
 	if (blob.isAttached() && !blob.hasTag("player"))
 		return false;
 
@@ -462,9 +458,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 	if (blob.getName() == "trap_block")
 		return shape.getConsts().collidable;
-
-	if (blob.hasTag("trap") || blob.hasTag("material"))
-		return false;
 
 	if (blob.isAttached()) return blob.hasTag("collidewithbullets");
 
@@ -495,9 +488,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	
 	if (!same_team && blob.hasTag("flesh")) // hit an enemy
 		return true;
-
-	if (blob.hasTag("projectile") || this.hasTag("rico"))
-		return false;
 
 	if (blob.hasTag("blocks bullet"))
 		return true;
