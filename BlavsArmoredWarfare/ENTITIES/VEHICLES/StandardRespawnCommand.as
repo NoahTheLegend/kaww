@@ -348,31 +348,34 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			if (caller !is null)
 			{
 				CPlayer@ callerPlayer = caller.getPlayer();
-				getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
-				if (getNet().isServer())
+				if (callerPlayer !is null)
 				{
-					bool single_switch = this.getName() == "outpost";
-					if (single_switch)
+					getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
+					if (getNet().isServer())
 					{
-						CBitStream stream;
-						stream.write_u16(caller.getNetworkID());
-						this.SendCommand(this.getCommandID("lock_perkchange"), stream);
+						bool single_switch = this.getName() == "outpost";
+						if (single_switch)
+						{
+							CBitStream stream;
+							stream.write_u16(caller.getNetworkID());
+							this.SendCommand(this.getCommandID("lock_perkchange"), stream);
+						}
+						// prevents doubling up on perks, although.. lucky + bloodthirsty is very fun
+						if (caller.hasBlob("aceofspades", 1))
+						{
+							caller.TakeBlob("aceofspades", 1);
+						}
 					}
-					// prevents doubling up on perks, although.. lucky + bloodthirsty is very fun
-					if (caller.hasBlob("aceofspades", 1))
+					//caller.Tag("reload_sprite");
+
+					if (caller.isMyPlayer())
 					{
-						caller.TakeBlob("aceofspades", 1);
+						// sound
+						this.getSprite().PlaySound("/SwitchPerk", 1.0, perkconfig == "No Ammo" ? 0.8 : 1.1);
+
+						// chat message
+						client_AddToChat("Perk switched to " + perkconfig, SColor(255, 42, 42, 42));
 					}
-				}
-				//caller.Tag("reload_sprite");
-
-				if (caller.isMyPlayer())
-				{
-					// sound
-					this.getSprite().PlaySound("/SwitchPerk", 1.0, perkconfig == "No Ammo" ? 0.8 : 1.1);
-
-					// chat message
-					client_AddToChat("Perk switched to " + perkconfig, SColor(255, 42, 42, 42));
 				}
 			}
 		}
