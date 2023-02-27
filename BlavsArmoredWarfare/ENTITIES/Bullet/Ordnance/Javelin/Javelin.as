@@ -43,7 +43,7 @@ void onTick(CBlob@ this)
 	if (map is null)
 	{ return; }
 
-	this.setPosition(Vec2f(this.getPosition().x, this.getOldPosition().y)); // useful for debugging
+	//this.setPosition(Vec2f(this.getPosition().x, this.getOldPosition().y)); // useful for debugging
 
 	const u32 gameTime = getGameTime();
 
