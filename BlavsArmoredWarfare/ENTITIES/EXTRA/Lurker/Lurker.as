@@ -3,14 +3,18 @@
 
 const float target_radius = 2000;
 const float maxDistance = target_radius;
-const float walkSpeed = 0.80f;
+const float walkSpeed = 1.00f;
 
-const u8 LOOT_CASH = 1;
+const u8 LOOT_CASH = 10;
 
 void onTick(CBlob@ this)
 {
 	f32 x = this.getVelocity().x;
-
+	/*
+	if (this.hasTag("possessed")) {
+		this.server_SetHealth(Maths::Clamp(this.getHealth(), -1, this.getInitialHealth()/1.5));
+	}
+	*/
 	bool up = false;
 	bool left = false;
 	bool right = false;
@@ -25,7 +29,6 @@ void onTick(CBlob@ this)
 	const f32 vellen = shape.vellen;
 	const bool onground = this.isOnGround() || this.isOnLadder();
 
-	// AI
 	if (isServer())
 	{
 		CBlob@ target;
@@ -35,14 +38,14 @@ void onTick(CBlob@ this)
 		if (target !is null)
 		{
 			found = true;
-			if (getGameTime() % 150 == 2) // check if there are no target in range
+			if ((getGameTime()+this.getNetworkID()) % 150 == 2) // check if there are no target in range
 			{
 				@target = getClosestTarget(this.getPosition(), target_radius);
 				this.set("target", @target);
 				found = (target !is null);
 			}
 		}
-		else if (getGameTime() % 50 == 2)
+		else if ((getGameTime()+this.getNetworkID()) % 50 == 2)
 		{
 			@target = getClosestTarget(this.getPosition(), target_radius);
 			this.set("target", @target);
@@ -55,7 +58,7 @@ void onTick(CBlob@ this)
 			Vec2f path = target.getPosition();
 			Vec2f pos = this.getPosition();
 
-			if ((path - pos).Length() > 13.0f)
+			if ((path - pos).Length() > 15.0f)
 			{
 				// Move towards
 				if (pos.x > path.x)
@@ -82,36 +85,51 @@ void onTick(CBlob@ this)
 				|| (map.isTileSolid(Vec2f(pos.x + radius, pos.y + 0.45f * radius))) && !facingleft
 				|| (this.isOnWall() && XORRandom(2) == 0))
 			{
-				up = true;
+				if (this.isOnGround()) up = true;
+			}
+
+			if (this.isOnWall() && !this.isOnGround())
+			{
+				ShapeVars@ vars = this.getShape().getVars();
+				vars.onladder = true;
 			}
 
 			//jumping
-			if (onground)
-			{
+			if (onground) {
 				this.set_u16("jumpCount", 0);
-
-				if (XORRandom(200) == 0)
-				{
-					this.getSprite().PlayRandomSound("/Lurker_moan", 1.0f, 0.8f + XORRandom(35) * 0.01f);
-				}
-			}
-			else
-			{
+			} else {
 				this.set_u16("jumpCount", this.get_u16("jumpCount") + 1);
 			}
 
-			if (up && vel.y > -2.9f)
-			{
-				DoJump(this, 0.7f, 0.2f, 0.1f, left, right, 0.0f);
+			if (XORRandom(200) == 0) {
+				if (this.hasTag("nohead")) this.getSprite().PlayRandomSound("/Lurker_headless", 1.1f, 0.7f + XORRandom(35) * 0.01f);
+				else this.getSprite().PlayRandomSound("/Lurker_moan", 1.1f, 0.7f + XORRandom(35) * 0.01f);
 			}
 
-			DoWalk(this, vel, left, right, walkSpeedModded);
+			if (this.get_u32("playanim") > getGameTime()) walkSpeedModded *= 0.5f;
 
-			if ((path - pos).Length() < 30.0f && (this.get_u16("atkCount") == 0))
+			if (this.hasTag("possessed"))
 			{
-				this.set_u16("atkCount", 18);
+				walkSpeedModded *= 2.3f;
+			}
 
-				this.getSprite().PlayRandomSound("/Lurker_bite", 1.0f, 0.8f + XORRandom(55) * 0.01f);
+			if (this.hasTag("nolegs"))
+			{
+				walkSpeedModded *= 0.6f;
+				
+				if (up && vel.y > -2.9f) DoJump(this, 0.3f, 0.0f, 0.0f, left, right, 0.0f);
+			}
+			else {
+				if (up && vel.y > -2.9f) DoJump(this, 0.7f, 0.2f, 0.1f, left, right, 0.0f);
+			}
+
+			DoWalk(this, vel, left, right, walkSpeedModded + (this.get_u8("myKey") / 600.0f));
+
+			if ((path - pos).Length() < 30.0f && (this.get_u32("nextatk") <= getGameTime()))
+			{
+				this.set_u32("nextatk", getGameTime()+18);
+
+				this.getSprite().PlayRandomSound("/Lurker_bite", 1.0f, 0.8f + XORRandom(45) * 0.01f);
 			}
 		}
 		else // NO ENEMY FOUND
@@ -124,49 +142,58 @@ void onTick(CBlob@ this)
 			}
 		}
 
-		if (this.get_u16("atkCount") > 0)
+		if (this.get_u32("nextatk") > getGameTime())
 		{
 			left = false;
 			right = false;
-			this.set_u16("atkCount", this.get_u16("atkCount") - 1);
 		}
-		if (this.get_u16("atkCount") == 6)
+		if (this.get_u32("nextatk") - 5 == getGameTime())
 		{
-			DoAttack(this, 0.5f, (this.isFacingLeft() ? 180.0f : 0.0f), 80.0f, Hitters::bite);
+			DoAttack(this, 0.65f, (this.isFacingLeft() ? 180.0f : 0.0f), 80.0f, Hitters::bite);
 
-			if (XORRandom(3) == 0) this.set("target", null);
+			if (XORRandom(4) == 0) this.set("target", null);
 		}
 	}
 }
 
 void onTick(CSprite@ this)
 {
-	CBlob@ blob = this.getBlob();
-	f32 x = blob.getVelocity().x;
+	CBlob@ b = this.getBlob();
+	f32 x = b.getVelocity().x;
+	f32 y = b.getVelocity().y;
+	const bool onground = b.isOnGround() || b.isOnLadder();
 
-	if (blob.get_u16("atkCount") > 0)
-	{
-		this.SetAnimation("bite");
-	}
-	else
-	{
-		if (Maths::Abs(x) > 0.08f)
-		{
-			this.SetAnimation("run");
+	string lurkerstatestring = "";
+	if 		(b.hasTag("nohead")) 		{ lurkerstatestring = "nohead"; }
+	else if (b.hasTag("nolegs")) 		{ lurkerstatestring = "nolegs"; }
+	else if (b.hasTag("possessed")) 	{ lurkerstatestring = "possessed"; }
+	
+
+	if (b.get_u32("playanim") > getGameTime() + 1) {
+		this.SetAnimation("loselegs");
+	} else if (b.get_u32("nextatk") > getGameTime() + 1) {
+		this.SetAnimation("bite"+lurkerstatestring);
+	} else if (!onground) {
+		this.SetAnimation("jump"+lurkerstatestring);
+		if (y > 0) {
+			this.SetFrameIndex(2);
+		} else {
+			this.SetFrameIndex(1);
 		}
-		else
-		{
-			this.SetAnimation("default");
-		}
+	} else {
+		if (Maths::Abs(x) > 0.08f) this.SetAnimation("run"+lurkerstatestring);
+		else this.SetAnimation("default"+lurkerstatestring);
 	}
 }
 
-bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+bool doesCollideWithBlob(CBlob@ this, CBlob@ b)
 {
 	// Don't collide with corpses or familiar beings
-	if (blob.hasTag("dead"))
+	if (b.hasTag("dead"))
 		return false;
-	if (blob.hasTag("player"))
+	if (b.hasTag("player"))
+		return true;
+	if (b.hasTag("zombie") && getGameTime()%4==0)
 		return true;
 	return false;
 }
@@ -177,21 +204,19 @@ void onDie(CBlob@ this)
 	{
 		if (XORRandom(100) > 92)
 		{
-			// Drop heart
-			CBlob @blob = server_CreateBlob("heal", this.getTeamNum(), this.getPosition());
-			if (blob !is null)
+			CBlob @b = server_CreateBlob("heal", this.getTeamNum(), this.getPosition());
+			if (b !is null)
 			{
-				blob.setVelocity(Vec2f(0.0f, -2.5f));
+				b.setVelocity(Vec2f(0.0f, -1.5f));
 			}
 		}
 		else
 		{
-			// Drop cash
-			CBlob @blob = server_CreateBlob("cash", this.getTeamNum(), this.getPosition());
-			if (blob !is null)
+			CBlob @b = server_CreateBlob("cash", this.getTeamNum(), this.getPosition());
+			if (b !is null)
 			{
-				blob.setVelocity(Vec2f(0.0f, -2.5f));
-				blob.set_u8("cash_amount", LOOT_CASH);
+				b.setVelocity(Vec2f(0.0f, -1.5f));
+				b.set_u8("cash_amount", LOOT_CASH);
 			}
 		}
 	}

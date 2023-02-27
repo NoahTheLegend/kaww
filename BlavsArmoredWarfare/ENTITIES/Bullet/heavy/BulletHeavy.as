@@ -280,7 +280,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 	
 	if (blob.hasTag("flesh") && hit_position.y < blob.getPosition().y - 3.2f)
 	{
-		dmg = this.get_f32("bullet_damage_head");
+		if (!blob.hasTag("nohead")) dmg = this.get_f32("bullet_damage_head");
 
 		// hit helmet
 		if (blob.get_string("equipment_head") == "helmet")
@@ -304,7 +304,9 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 		}
 	}
 
-	if (!blob.hasTag("weakprop"))
+	if (blob.hasTag("nolegs")) dmg = this.get_f32("bullet_damage_head");
+
+	if (!blob.hasTag("weakprop") && !blob.hasTag("zombie"))
 	{
 		this.server_Die();
 	}

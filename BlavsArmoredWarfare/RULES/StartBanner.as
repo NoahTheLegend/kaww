@@ -46,32 +46,38 @@ void onTick(CRules@ this)
             CBlob@[] iarmorys;
             getBlobsByName("importantarmory", @iarmorys);
 
-            if (tents.length == 0 && iarmorys.length > 0)
+            if (this.get_string("map_name") == "Abacus")
             {
-                // break the truck
-                this.set_string("bannertext", "Destroy the enemy truck!");
+                this.set_string("bannertext", "Zombie Mode");
             }
-            else if (this.get_s8("flagcount") > 1)
-            {
-                // siege
-                CBlob@[] vehbuilders;
-                getBlobsByName("vehiclebuilder", @vehbuilders);
-                if (vehbuilders.length == 1) 
+            else {
+                if (tents.length == 0 && iarmorys.length > 0)
                 {
-                    this.set_string("bannertext", "Siege enemy team or defend flags until time passes!");
+                    // break the truck
+                    this.set_string("bannertext", "Destroy the enemy truck!");
                 }
-                else // capture the flags
-                    this.set_string("bannertext", "Control all flags to win!");
-            }
-            else if (this.get_s8("flagcount") == 1)
-            {
-                // capture the flag
-                this.set_string("bannertext", "Capture the flag to win!");
-            }
-            else
-            {
-                // showdown
-                this.set_string("bannertext", "Kill the enemy team until they run out of respawns!");
+                else if (this.get_s8("flagcount") > 1)
+                {
+                    // siege
+                    CBlob@[] vehbuilders;
+                    getBlobsByName("vehiclebuilder", @vehbuilders);
+                    if (vehbuilders.length == 1) 
+                    {
+                        this.set_string("bannertext", "Siege enemy team or defend flags until time passes!");
+                    }
+                    else // capture the flags
+                        this.set_string("bannertext", "Control all flags to win!");
+                }
+                else if (this.get_s8("flagcount") == 1)
+                {
+                    // capture the flag
+                    this.set_string("bannertext", "Capture the flag to win!");
+                }
+                else
+                {
+                    // showdown
+                    this.set_string("bannertext", "Kill the enemy team until they run out of respawns!");
+                }
             }
         }
 

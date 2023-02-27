@@ -380,7 +380,8 @@ namespace map_colors
 		deadbush               = 0xFF8D4A16,
 		cacti                  = 0xff74dd0c,
 		hanginglantern         = 0xffadbd51,
-		//bonepine               = 0xffeaeadc,
+		bonepile               = 0xffeaeadc,
+		crashedheli			   = 0xff847a7a,
 
 		// OBJECTIVE
 		pointflag              = 0xfffdf8e8,
