@@ -473,7 +473,8 @@ class PNGLoader
 			case map_colors::cacti:    autotile(offset); spawnBlob(map, "cacti", offset); break;
 
 			case map_colors::hanginglantern:    autotile(offset); spawnBlob(map, "hanginglantern", offset); break;
-			//case map_colors::bonepine:    autotile(offset); spawnBlob(map, "bonepine", offset); break;
+			case map_colors::bonepile:    autotile(offset); spawnBlob(map, "bonepile", offset); break;
+			case map_colors::crashedheli:    autotile(offset); spawnBlob(map, "crashedheli", offset); break;
 
 			case map_colors::blue_munitionsshop:        autotile(offset); spawnBlob(map, "munitionsshop", offset, 0); break;
 			case map_colors::red_munitionsshop:         autotile(offset); spawnBlob(map, "munitionsshop", offset, 1); break;
@@ -665,13 +666,13 @@ class PNGLoader
 				map.CreateSky(color_black, Vec2f(1.0f, 1.0f), 200, "Sprites/Back/cloud", 0); // sky
 				map.CreateSkyGradient("Sprites/skygradient.png"); // override sky color with gradient
 				thisrules.set_bool("allowclouds", true);
-				thisrules.set_u8("brightmod", 0);
+				thisrules.set_u8("brightmod", 0); //100
 				
 				map.AddBackground("Backgrounds/BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
 				map.AddBackground("Backgrounds/City.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
 				map.AddBackground("Backgrounds/Forest.png", Vec2f(0.0f, -120.0f), Vec2f(0.35f, 0.35f), color_white);
 
-				SetScreenFlash(255,   0,   0,   0,   3.5);
+				SetScreenFlash(255,   0,   0,   0,   6.5);
 				break;
 			}
 			case 3: //snow

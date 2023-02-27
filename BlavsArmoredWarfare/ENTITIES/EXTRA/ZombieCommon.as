@@ -1,8 +1,6 @@
 #include "Hitters.as";
 #include "Explosion.as";
 
-const u32 maxSnakes = 6;
-
 void onInit(CSprite@ this)
 {
 	this.SetAnimation("default");
@@ -21,11 +19,14 @@ void onInit(CBlob@ this)
 	{
 		this.Tag("headshotable");
 	}	
+	if (XORRandom(3) == 0) this.Tag("possessed");
 
 	this.set_u16("jumpCount", 0);
-	this.set_u16("atkCount", 0);
+	this.set_u32("nextatk", getGameTime());
+	this.set_u32("playanim", 0);
+	this.set_u8("myKey", XORRandom(255)+1); // controls all behaviors
 
-	this.server_setTeamNum(-1);
+	this.server_setTeamNum(2);
 
 	this.getShape().SetOffset(Vec2f(0, 2));
 }
@@ -184,32 +185,45 @@ bool canHit(CBlob@ this, CBlob@ b)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	CPlayer@ damageowner = hitterBlob.getDamageOwnerPlayer();
 	// hitmarker sfx
-	if (hitterBlob.getDamageOwnerPlayer() !is null)
+	if (damageowner !is null)
 	{
-		if (hitterBlob.getDamageOwnerPlayer().getBlob() !is null)
+		CBlob@ damageownerblob = damageowner.getBlob();
+		if (damageownerblob !is null)
 		{
-			if (hitterBlob.getDamageOwnerPlayer().getBlob().getSprite() !is null && !this.hasTag("dead") && this !is hitterBlob)
+			if (damageownerblob.getSprite() !is null && !this.hasTag("dead") && this !is hitterBlob)
 			{
-				if (this.hasTag("headshotable") && hitterBlob.getPosition().y < this.getPosition().y - 3.25f && !hitterBlob.hasTag("flesh"))
+				if (customData == Hitters::arrow)
 				{
-					hitterBlob.getDamageOwnerPlayer().getBlob().getSprite().PlaySound("HitmarkerHeadshot.ogg", 0.7f, 1.0f); //
+					if (this.hasTag("headshotable")) {
+						if (this.hasTag("nolegs") || (!this.hasTag("nohead") && hitterBlob.getPosition().y < this.getPosition().y - 3.2f && !hitterBlob.hasTag("flesh")))
+						{
+							if (!this.hasTag("nolegs") && this.getInitialHealth()/2 < this.getHealth()) {
+								if (XORRandom(2) == 0) {
+									this.Tag("nohead");
 
-					if (isClient())
-					{
-						//CParticle@ p = ParticleAnimated("MonsterDie.png", this.getPosition() - Vec2f(0.0f, 6.0f), Vec2f(0,0), 0.0f, 1.0f, 3, 0.0f, false);
-						//if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
-					}
-				}
-				else
-				{
-					if (this.hasTag("headshotable"))
-					{
-						hitterBlob.getDamageOwnerPlayer().getBlob().getSprite().PlaySound("Hitmarker.ogg", 1.5f, 0.9f + XORRandom(20) * 0.01f);
-					}
-					else
-					{
-						hitterBlob.getDamageOwnerPlayer().getBlob().getSprite().PlaySound("Hitmarker.ogg", 1.5f, 0.9f + XORRandom(20) * 0.01f);  //heavy
+									CParticle@ p = ParticleAnimated(this.hasTag("possessed") ? "Lurker_head_possessed.png" : "Lurker_head.png", this.getPosition() - Vec2f(0.0f, 6.0f), Vec2f(velocity.x/30,-3), XORRandom(50)-25, 1.0f, 4, 0.4f, false);
+									if (p !is null) { p.diesoncollide = false; p.fastcollision = true; p.lighting = false; }
+								}
+							}
+						}
+
+						if (!this.hasTag("nohead") && !this.hasTag("nolegs") && !this.hasTag("possessed") && hitterBlob.getPosition().y > this.getPosition().y + 2.0f) {
+							if (XORRandom(2) == 0) {
+								this.set_u32("playanim", getGameTime() + 12);
+								this.Tag("nolegs");
+								CParticle@ p = ParticleAnimated("Lurker_leg.png", this.getPosition() + Vec2f(2.0f, 4.0f), Vec2f(velocity.x/30,-2), XORRandom(50)-25, 1.0f, 5, 0.4f, false);
+								if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
+								CParticle@ p2 = ParticleAnimated("Lurker_leg.png", this.getPosition() + Vec2f(2.0f, 4.0f), Vec2f(velocity.x/30,-2), XORRandom(50)-25, 1.0f, 5, 0.4f, false);
+								if (p2 !is null) { p2.diesoncollide = false; p2.fastcollision = false; p2.lighting = false; }
+							}
+						}
+
+						if (this.getHealth() == this.getInitialHealth()) {
+							if (XORRandom(6) == 0) this.getSprite().PlayRandomSound("/Lurker_moan", 1.2f, 0.8f + XORRandom(35) * 0.01f);
+							this.server_SetHealth(this.getHealth()/2);
+						}
 					}
 				}
 			}
@@ -225,6 +239,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (customData == Hitters::spikes)
 	{
 		damage *= 0.1f;
+	}
+
+	if (customData == Hitters::arrow)
+	{
+		this.AddForce(velocity*2.5);
 	}
 
 	return damage;
@@ -271,19 +290,17 @@ void Boom(CBlob@ this)
 
 	server_CreateBlob("riddenzone", this.getTeamNum(), this.getPosition());
 
-	f32 angle = 0;
-
-	this.set_f32("map_damage_radius", 32.0f);
+	this.set_f32("map_damage_radius", 42.0f);
 	this.set_f32("map_damage_ratio", 0.10f);
 	
-	Explode(this, 84.0f, 2.0f);
+	WarfareExplode(this, 84.0f, 3.0f);
 	
 	for (int i = 0; i < 8; i++) 
 	{
-		Vec2f dir = getRandomVelocity(angle, 1, 120);
+		Vec2f dir = getRandomVelocity(0, 1, 120);
 		dir.x *= 2;
 		dir.Normalize();
-		LinearExplosion(this, dir, 9.0f, 28, 2, 0.10f, Hitters::explosion);
+		LinearExplosion(this, dir, 29.0f, 38, 2, 0.50f, Hitters::explosion);
 	}
 	
 	if (isClient())
@@ -297,10 +314,10 @@ void Boom(CBlob@ this)
 
 	for (u16 i = 0; i < 15; i++)
     {
-    	ParticleAnimated("BloodSplatBigger.png", this.getPosition(), getRandomVelocity(angle, (XORRandom(8)+4), 360), float(XORRandom(360)), 1.5f + XORRandom(200) * 0.01f, 4, XORRandom(100) * -0.00005f, true);
+    	ParticleAnimated("BloodSplatBigger.png", this.getPosition(), getRandomVelocity(0, (XORRandom(8)+4), 360), float(XORRandom(360)), 1.5f + XORRandom(200) * 0.01f, 4, 0.25f + XORRandom(100) * 0.00005f, true);
 	}
 
-	this.getSprite().PlaySound("/FleshExplosion", 0.5f, 1.0f);
+	this.getSprite().PlaySound("/FleshExplosion", 0.7f, 1.0f);
 
 	this.server_Die();
 }

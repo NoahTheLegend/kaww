@@ -4,9 +4,9 @@
 const float target_radius = 2000;
 const float maxDistance = target_radius;
 const float distToFuse = 125.0f;
-const float walkSpeed = 0.80f;
+const float walkSpeed = 0.90f;
 
-const u8 LOOT_CASH = 5;
+const u8 LOOT_CASH = 50;
 
 void onTick(CBlob@ this)
 {
@@ -110,12 +110,9 @@ void onTick(CBlob@ this)
 
 
 			// particles
-			if (isClient())
+			if (XORRandom(100) < 40)
 			{
-				if (XORRandom(100) < 40)
-				{
-					ParticleAnimated("BloodSplatBigger.png", this.getPosition() + Vec2f(XORRandom(20)-10, XORRandom(20)-10), Vec2f(0, 0), float(XORRandom(360)), 0.25f + XORRandom(100)*0.01f, 3 + XORRandom(4), XORRandom(100) * -0.00005f, true);
-				}
+				ParticleAnimated("BloodSplatBigger.png", this.getPosition() + Vec2f(XORRandom(20)-10, XORRandom(20)-10), Vec2f(0, 0), float(XORRandom(360)), 0.25f + XORRandom(100)*0.01f, 3 + XORRandom(4), XORRandom(100) * -0.00005f, true);
 			}
 		}
 		else // NO ENEMY FOUND
@@ -136,6 +133,11 @@ void onTick(CBlob@ this)
 		if (this.get_u16("fuseCount") > 0)
 		{
 			this.set_u16("fuseCount", this.get_u16("fuseCount") - 1);
+
+			if (XORRandom(100) < 60)
+			{
+				ParticleAnimated("BloodSplatBigger.png", this.getPosition() + Vec2f(XORRandom(20)-10, XORRandom(20)-10), Vec2f(0, 0), float(XORRandom(360)), 0.25f + XORRandom(100)*0.01f, 3 + XORRandom(4), XORRandom(100) * -0.00005f, true);
+			}
 		}
 	}
 }
@@ -186,11 +188,11 @@ void onDie(CBlob@ this)
 				CBlob @blob = server_CreateBlob("heal", this.getTeamNum(), this.getPosition());
 				if (blob !is null)
 				{
-					blob.setVelocity(Vec2f(0.0f, -2.5f));
+					blob.setVelocity(Vec2f(-1.0f, -3.5f));
 				}
 			}
 		}
-		else
+
 		{
 			CBlob @blob = server_CreateBlob("cash", this.getTeamNum(), this.getPosition());
 			if (blob !is null)

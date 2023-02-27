@@ -23,7 +23,6 @@ void onInit(CBlob@ this)
 	}
 
 	this.Tag("pushedByDoor");
-	this.Tag("trap");
 }
 
 //collide with vehicles and structures	- hit stuff if thrown

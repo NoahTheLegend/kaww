@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 	// 0 = 25
 	// 1 = 50
 
-	this.set_u16("openCost", (this.getTeamNum()+1)*75);
+	this.set_u16("openCost", (this.getTeamNum()+1)*100);
 }
 
 bool isOpen(CBlob@ this)
@@ -58,12 +58,12 @@ void onRender(CSprite@ this)
 	if (mouseOnBlob && !isOpen(blob))
 	{
 		Vec2f dimensions;
-		GUI::SetFont("menu");
+		GUI::SetFont("AveriaSerif-Bold_32");
 
-		string mytext = "Open for $" + blob.get_u16("openCost");
+		string mytext = "Unlock for $" + blob.get_u16("openCost");
 
 		GUI::GetTextDimensions(mytext, dimensions);
-		GUI::DrawText(getTranslatedString(mytext), getDriver().getScreenPosFromWorldPos(blob.getPosition() - Vec2f(0, -blob.getHeight() / 2)) - Vec2f(dimensions.x / 2, -8.0f), SColor(200, 255, 255, 255));
+		GUI::DrawText(getTranslatedString(mytext), getDriver().getScreenPosFromWorldPos(blob.getPosition() - Vec2f(0, -blob.getHeight())) - Vec2f(dimensions.x / 2, -8.0f), SColor(200, 255, 255, 255));
 	}
 }
 
