@@ -15,6 +15,7 @@ void onInit(CBlob@ this)
 	if (sprite !is null) {
 		sprite.ResetTransform();
 		sprite.ScaleBy(Vec2f(0.25f + Maths::Sqrt(this.get_f32("bullet_damage_body")), 1.0f)); // multiplied by 2 on sv
+		sprite.SetZ(550.0f);
 	}
 
 	this.Tag("projectile");
@@ -33,8 +34,22 @@ void onInit(CBlob@ this)
 void onTick(CBlob@ this)
 {
 	CMap@ map = getMap();
+	if (map is null) return;
+
+	CShape@ shape = this.getShape();
+	if (shape is null) return;
+
 	Vec2f pos = this.getPosition();
 	Vec2f vel = this.getVelocity();
+	float velDist = vel.getLength();
+	Vec2f nextPos = pos + vel;
+
+	// remove slow moving bullets
+	if (shape.vellen > 0.0001f && shape.vellen < 13.5f) 					{ this.server_Die(); return; }
+	// remove bullets on the edge of the map
+	if (pos.x < 0.1f or pos.x > (map.tilemapwidth * map.tilesize) - 0.1f) 	{ this.server_Die(); return; }
+	// 
+	if (this.hasTag("dead"))												{ this.server_Die(); return; }
 
 	int creationTicks = this.getTickSinceCreated();
 
@@ -46,38 +61,53 @@ void onTick(CBlob@ this)
 	else if (v.getLength() > 19.0) 	sprite.SetFrameIndex(1);
 	else 							sprite.SetFrameIndex(0);
 
-	CShape@ shape = this.getShape();
-	// remove slow moving bullets
-	if (shape.vellen > 0.0001f && shape.vellen < 13.5f) 					{ this.server_Die(); return; }
-	// remove bullets on the edge of the map
-	if (pos.x < 0.1f or pos.x > (map.tilemapwidth * map.tilesize) - 0.1f) 	{ this.server_Die(); return; }
-
-	f32 angle;
-	angle = vel.Angle();
-	this.setAngleDegrees(-angle);
+	this.setAngleDegrees(-vel.Angle());
 
 	if (this.isInWater()) 			this.setVelocity(vel * 0.95f);
 	else if (this.hasTag("rico")) 	this.AddForce(Vec2f(0.0f, 0.5f));
 	else 							this.AddForce(Vec2f(0.0f, 0.11f));
 
-	// collison with blobs
-	HitInfo@[] infos;
-	if (isServer() && map.isTileSolid(map.getTile(pos).type)) this.server_Die();
-	if (map.getHitInfosFromArc(pos, -angle, (creationTicks > 4 ? 13 : (creationTicks < 1 ? 70 : 35)), 27.0f, this, true, @infos))
+	Vec2f wallPos = Vec2f_zero;
+	bool hitWall = map.rayCastSolidNoBlobs(pos, nextPos, wallPos); //if there's a wall, end the travel early
+	if (hitWall)
 	{
-		for (uint i = 0; i < infos.length; i++) {
-			CBlob@ b = infos[i].blob;
-			Vec2f hit_pos = infos[i].hitpos;
+		nextPos = wallPos;
+		Vec2f fixedTravel = nextPos - pos;
+		velDist = fixedTravel.getLength();
+	}
 
-			if (b !is null)
+	HitInfo@[] hitInfos;
+	bool hasHit = map.getHitInfosFromRay(pos, -vel.getAngleDegrees(), velDist, this, @hitInfos);
+
+	if (hasHit)
+	{
+		HitInfo@[] filteredHitInfos;
+
+		for (uint i = 0; i < hitInfos.length; i++)
+		{
+			HitInfo@ hi = hitInfos[i];
+			CBlob@ b = hi.blob;
+
+			if (b !is null && doesCollideWithBlob(this, b))
 			{
-				if (!doesCollideWithBlob(this, b))
-					continue;
-
-				onHitBlob(this, hit_pos, vel, b, Hitters::arrow);
-				return;
+				filteredHitInfos.push_back(hi);
 			}
 		}
+
+		for (uint i = 0; i < filteredHitInfos.length; i++)
+		{
+			HitInfo@ hi = filteredHitInfos[i];
+			pos = hi.hitpos;
+			this.setPosition(pos);
+			onHitBlob(this, pos, vel, hi.blob, Hitters::arrow);
+			return;
+		}
+	}
+
+	if (hitWall) // if there was no hit, but there is a wall, move bullet there and die
+	{
+		this.setPosition(nextPos);
+		onHitWorld(this, nextPos);
 	}
 
 	// collison with map
@@ -361,21 +391,31 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (blob.hasTag("respawn") || blob.hasTag("invincible")) return false; // stop checks if enemy is unhittable
+
+	const bool is_young = this.getTickSinceCreated() <= 1;
+	const bool same_team = blob.getTeamNum() == this.getTeamNum();
+
+	CShape@ shape = blob.getShape();
+	if (shape is null) return false;
+
+	if (blob.hasTag("dead")) return false; // cuts off any deaders
+
+	if (blob.hasTag("door") && shape.getConsts().collidable) return true; // blocked by closed doors
+
 	if (blob.hasTag("always bullet collide"))
 	{
 		if (blob.getTeamNum() != this.getTeamNum()) return false;
 		return true;
 	}
 
-	if (blob.hasTag("friendly_bullet_pass") && blob.getTeamNum() == this.getTeamNum())
-		return false;
+	if (same_team && blob.hasTag("friendly_bullet_pass")) return false;
 
-	if (this.getTickSinceCreated() < 2 && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
-		return false;
+	if (is_young && (blob.hasTag("vehicle") || blob.getName() == "sandbags")) return false;
 
 	if (blob.hasTag("player") && blob.exists("mg_invincible") && blob.get_u32("mg_invincible") > getGameTime())
 		return false;
-
+		
 	if (blob.hasTag("vehicle"))
 	{
 		if (blob.getTeamNum() == this.getTeamNum())
@@ -398,17 +438,18 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 	if (blob.hasTag("turret") && blob.getTeamNum() != this.getTeamNum())
 		return true;
-
+	/*
 	if (blob.hasTag("destructable_nosoak"))
 	{
 		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.5f, Hitters::builder);
 		return false;
-	}
+	}*/
+	
 
 	if (blob.isAttached() && !blob.hasTag("player"))
 		return false;
 
-	if ((this.getTickSinceCreated() > 1 || blob.getTeamNum() != this.getTeamNum()) && blob.isAttached() && !blob.hasTag("covered"))
+	if ((!is_young || blob.getTeamNum() != this.getTeamNum()) && blob.isAttached() && !blob.hasTag("covered"))
 	{
 		if (blob.hasTag("collidewithbullets")) return XORRandom(2)==0;
 		if (XORRandom(8) == 0)
@@ -420,54 +461,40 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	}
 
 	if (blob.getName() == "trap_block")
-		return blob.getShape().getConsts().collidable;
+		return shape.getConsts().collidable;
 
 	if (blob.hasTag("trap") || blob.hasTag("material"))
 		return false;
 
-	if (blob.isAttached())
-		return blob.hasTag("collidewithbullets");
+	if (blob.isAttached()) return blob.hasTag("collidewithbullets");
 
-	if (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())
+	if (blob.hasTag("bunker") && !same_team) return true;
+
+	if (blob.getName() == "wooden_platform") // get blocked by directional platforms
 	{
-		return true;
+		Vec2f thisVel = this.getVelocity();
+		float thisVelAngle = thisVel.getAngleDegrees();
+		float blobAngle = blob.getAngleDegrees()-90.0f;
+
+		float angleDiff = (-thisVelAngle+360.0f) - blobAngle;
+		angleDiff += angleDiff > 180 ? -360 : angleDiff < -180 ? 360 : 0;
+		
+		return Maths::Abs(angleDiff) > 100.0f;
 	}
 
-	if (blob.hasTag("door") && blob.getShape().getConsts().collidable)
-	{
-		return this.getTickSinceCreated() != 0;
-	}
+	// old bullet is stopped by sandbags
+	if (!is_young && blob.getName() == "sandbags") return true;
 
-	if (blob.getName() == "wooden_platform" && blob.isCollidable())
-	{
-		f32 velx = this.getOldVelocity().x;
-		f32 vely = this.getOldVelocity().y;
-		f32 deg = blob.getAngleDegrees();
-
-		if ((deg < 45.0f || deg > 315.0f) && vely > 0.0f) //up		
-			return true;
-		if ((deg > 45.0f && deg < 135.0f) && velx < 0.0f) //right
-			return true;
-		if ((deg > 135.0f && deg < 225.0f) && vely < 0.0f) //down
-			return true;
-		if ((deg > 225.0f && deg < 315.0f) && velx > 0.0f) //left
-			return true;
-
-		//printf("deg "+deg);
-		//printf("velx "+velx);
-		//printf("vely "+vely);
-
-		return false;
-	}
+	if (this.hasTag("rico")) return false; // do not hit vital targets if already bounced once
 
 	if (blob.hasTag("destructable"))
 		return true;
 
-	if (blob.getShape().isStatic()) // this is annoying
+	if (shape.isStatic()) // trees, ladders, etc
 		return false;
 	
-	if (this.getTeamNum() == blob.getTeamNum() && blob.hasTag("flesh"))
-		return false;
+	if (!same_team && blob.hasTag("flesh")) // hit an enemy
+		return true;
 
 	if (blob.hasTag("projectile") || this.hasTag("rico"))
 		return false;
@@ -475,23 +502,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if (blob.hasTag("blocks bullet"))
 		return true;
 
-	bool check = this.getTeamNum() != blob.getTeamNum();
-	if (!check) {
-		CShape@ shape = blob.getShape();
-		check = (shape.isStatic() && !shape.getConsts().platform);
-	}
-
-	if (check)
-		return !blob.hasTag("dead");
-
-	return true;
-}
-
-void BulletHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, u8 customData)
-{
-	Sound::Play("/BulletDirt" + XORRandom(3), this.getPosition(), 1.4f, 0.85f + XORRandom(25) * 0.01f);
-
-	this.server_Die();
+	return false; // if all else fails, do not collide
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
