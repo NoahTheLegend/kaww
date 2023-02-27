@@ -9,8 +9,14 @@ bool mouseWasPressed1 = false;
 bool enable_help = true;
 
 const f32 boxMargin = 100.0f;
+
+///// COLORS ///////////////////////////////////////////
+// ARGB (Alpha, Red, Green, Blue)
 const SColor tipsColor = SColor(255, 255, 255, 255);
 const SColor RedColor = SColor(255, 255, 64, 64);
+
+////////////////////////////////////////////////////////
+
 //key names
 const string party_key = getControls().getActionKeyKeyName(AK_PARTY);
 const string inv_key = getControls().getActionKeyKeyName(AK_INVENTORY);
