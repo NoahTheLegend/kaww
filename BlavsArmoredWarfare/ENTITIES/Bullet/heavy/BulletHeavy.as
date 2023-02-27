@@ -335,20 +335,28 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	const bool is_young = this.getTickSinceCreated() <= 1;
+	const bool same_team = blob.getTeamNum() == this.getTeamNum();
+
 	//if (isServer())
 	{
 		if (blob.hasTag("always bullet collide"))
 		{
-			if (blob.getTeamNum() != this.getTeamNum()) return false;
+			if (!same_team) return false;
 			return true;
 		}
 
-		if (blob.getTeamNum() == this.getTeamNum() && blob.hasTag("friendly_bullet_pass"))
+		if (blob.hasTag("missile") && !same_team)
+		{
+			return true;
+		}
+
+		if (same_team && blob.hasTag("friendly_bullet_pass"))
 		{
 			return false;
 		}
 
-		if (this.getTickSinceCreated() < 2 && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
+		if (is_young && (blob.hasTag("vehicle") || blob.getName() == "sandbags"))
 		{
 			return false;
 		}
@@ -366,7 +374,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 	if (blob.hasTag("vehicle"))
 	{
-		if (blob.getTeamNum() == this.getTeamNum())
+		if (same_team)
 		{
 			this.IgnoreCollisionWhileOverlapped(blob, 10);
 			if (blob.hasTag("apc") || blob.hasTag("turret")) return (XORRandom(100) > 70);
@@ -386,7 +394,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
-	if (blob.hasTag("turret") && blob.getTeamNum() != this.getTeamNum())
+	if (blob.hasTag("turret") && !same_team)
 	{
 		return true;
 	}
@@ -402,7 +410,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
-	if ((this.getTickSinceCreated() > 1 || (blob.getTeamNum() != this.getTeamNum() && this.getTeamNum() < 2)) && blob.isAttached())
+	if ((!is_young || (!same_team && this.getTeamNum() < 2)) && blob.isAttached())
 	{
 		if (blob.hasTag("collidewithbullets")) return XORRandom(2)==0;
 		if (XORRandom(6) == 0)
@@ -427,7 +435,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 			return false;
 		}
 
-		if (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())
+		if (blob.hasTag("bunker") && !same_team)
 		{
 			return true;
 		}
@@ -482,7 +490,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 			return false;
 		}
 
-		if (this.getTeamNum() == blob.getTeamNum() && blob.hasTag("flesh"))
+		if (same_team && blob.hasTag("flesh"))
 		{
 			return false;
 		}

@@ -554,8 +554,8 @@ void onTick(CMovement@ this)
             if (blob.getPlayer() !is null && is_engi
             && (carryBlob.hasTag("medium weight") || carryBlob.hasTag("heavy weight")))
             {
-                moveVars.walkFactor *= 0.85f;
-				moveVars.jumpFactor *= 0.85f;
+                moveVars.walkFactor *= 0.95f;
+				moveVars.jumpFactor *= 0.95f;
             }
             else
             {

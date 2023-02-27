@@ -8,12 +8,12 @@ const string ore = "mat_stone";
 const string rare_ore = "mat_gold";
 
 //balance
-const int input = 50;					// input cost in fuel
-const int stone_amount = 50;
+const int input = 75;					// input cost in fuel
+const int stone_amount = 30;
 const int initial_output = 100;			// output amount in ore
 const int min_output = 50;				// minimal possible output in ore
 const int output_decrease = 0;			// by how much output decreases every time ore is dropped
-const bool enable_rare = false;			// enable/disable
+const bool enable_rare = true;			// enable/disable
 const int rare_chance = 10;				// one-in
 const int rare_output = 40;				// output for rare ore
 const int conversion_frequency = 8;	// how often to convert, in seconds

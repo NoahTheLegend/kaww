@@ -118,6 +118,8 @@ void onRender(CRules@ this)
 			f32 wave = Maths::Sin(getGameTime() / 3.0f) * 5.0f - 25.0f;
 			GUI::DrawTextCentered("Your truck is under attack!", Vec2f(getDriver().getScreenWidth()/2, 220+wave), SColor(255,255,255,0));
 		}
+
+		
 	}
 
 	CBitStream serialised_team_hud;

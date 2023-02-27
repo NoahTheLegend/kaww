@@ -54,7 +54,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 		attached.Tag("seatez");
 		string name = attachedPoint.name;
 		name = name.substr(0, name.size()-1);
-		if (name == "PASSENGER" && this.hasTag("armory"))
+		if ((name == "PASSENGER" || name == "PASSENGER2" || name == "PASSENGER3" || name == "PASSENGER4") && this.hasTag("armory"))
 		{
 			attached.Tag("hide_head");
 		}
@@ -74,7 +74,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 		detached.Untag("seatez");
 		string name = attachedPoint.name;
 		name = name.substr(0, name.size()-1);
-		if (name == "PASSENGER" && this.hasTag("armory"))
+		if ((name == "PASSENGER" || name == "PASSENGER2" || name == "PASSENGER3" || name == "PASSENGER4") && this.hasTag("armory"))
 		{
 			detached.Untag("hide_head");
 		}

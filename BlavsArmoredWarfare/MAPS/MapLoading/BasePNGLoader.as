@@ -513,12 +513,45 @@ class PNGLoader
 
 			case map_colors::constructionyard:     autotile(offset); spawnBlob(map, "constructionyard", offset); break;
 			case map_colors::baseconstructionyard:     autotile(offset); spawnBlob(map, "baseconstructionyard", offset); break;
+
 			case map_colors::b_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, 0); break;
 			case map_colors::r_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, 1); break;
 			case map_colors::b_vehiclebuildert2:    autotile(offset); spawnBlob(map, "vehiclebuildert2", offset, 0); break;
 			case map_colors::r_vehiclebuildert2:    autotile(offset); spawnBlob(map, "vehiclebuildert2", offset, 1); break;
 			case map_colors::b_vehiclebuildert3:    autotile(offset); spawnBlob(map, "vehiclebuildert3", offset, 0); break;
 			case map_colors::r_vehiclebuildert3:    autotile(offset); spawnBlob(map, "vehiclebuildert3", offset, 1); break;
+
+			case map_colors::b_vehiclebuilderconst:     autotile(offset); spawnBlob(map, "vehiclebuilderconst", offset, 0); break;
+			case map_colors::r_vehiclebuilderconst:     autotile(offset); spawnBlob(map, "vehiclebuilderconst", offset, 1); break;
+			case map_colors::b_vehiclebuildert2const:    autotile(offset); spawnBlob(map, "vehiclebuildert2const", offset, 0); break;
+			case map_colors::r_vehiclebuildert2const:    autotile(offset); spawnBlob(map, "vehiclebuildert2const", offset, 1); break;
+			case map_colors::b_vehiclebuildert3const:    autotile(offset); spawnBlob(map, "vehiclebuildert3const", offset, 0); break;
+			case map_colors::r_vehiclebuildert3const:    autotile(offset); spawnBlob(map, "vehiclebuildert3const", offset, 1); break;
+
+			case map_colors::b_vehiclebuilderground:     autotile(offset); spawnBlob(map, "vehiclebuilderground", offset, 0); break;
+			case map_colors::r_vehiclebuilderground:     autotile(offset); spawnBlob(map, "vehiclebuilderground", offset, 1); break;
+			case map_colors::b_vehiclebuildert2ground:    autotile(offset); spawnBlob(map, "vehiclebuildert2ground", offset, 0); break;
+			case map_colors::r_vehiclebuildert2ground:    autotile(offset); spawnBlob(map, "vehiclebuildert2ground", offset, 1); break;
+			case map_colors::b_vehiclebuildert3ground:    autotile(offset); spawnBlob(map, "vehiclebuildert3ground", offset, 0); break;
+			case map_colors::r_vehiclebuildert3ground:    autotile(offset); spawnBlob(map, "vehiclebuildert3ground", offset, 1); break;
+
+			case map_colors::b_vehiclebuildergroundconst:     autotile(offset); spawnBlob(map, "vehiclebuildergroundconst", offset, 0); break;
+			case map_colors::r_vehiclebuildergroundconst:     autotile(offset); spawnBlob(map, "vehiclebuildergroundconst", offset, 1); break;
+			case map_colors::b_vehiclebuildert2groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2groundconst", offset, 0); break;
+			case map_colors::r_vehiclebuildert2groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2groundconst", offset, 1); break;
+			case map_colors::b_vehiclebuildert3groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert3groundconst", offset, 0); break;
+			case map_colors::r_vehiclebuildert3groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert3groundconst", offset, 1); break;
+
+			case map_colors::b_vehiclebuilderair:     autotile(offset); spawnBlob(map, "vehiclebuilderair", offset, 0); break;
+			case map_colors::r_vehiclebuilderair:     autotile(offset); spawnBlob(map, "vehiclebuilderair", offset, 1); break;
+			case map_colors::b_vehiclebuildert2air:    autotile(offset); spawnBlob(map, "vehiclebuildert2air", offset, 0); break;
+			case map_colors::r_vehiclebuildert2air:    autotile(offset); spawnBlob(map, "vehiclebuildert2air", offset, 1); break;
+
+			case map_colors::b_vehiclebuilderairconst:     autotile(offset); spawnBlob(map, "vehiclebuilderairconst", offset, 0); break;
+			case map_colors::r_vehiclebuilderairconst:     autotile(offset); spawnBlob(map, "vehiclebuilderairconst", offset, 1); break;
+			case map_colors::b_vehiclebuildert2airconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2airconst", offset, 0); break;
+			case map_colors::r_vehiclebuildert2airconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2airconst", offset, 1); break;
+
 			case map_colors::jourcop: 			   autotile(offset); spawnBlob(map, "jourcop", offset, 100); break;
 
 			// Ammo

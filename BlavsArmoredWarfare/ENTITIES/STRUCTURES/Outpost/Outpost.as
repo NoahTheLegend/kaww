@@ -17,6 +17,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle"); // required for minimap
 	this.addCommandID("class menu");
 	this.addCommandID("lock_classchange");
+	this.addCommandID("lock_perkchange");
 
 	this.SetLight(true);
 	this.SetLightRadius(86.0f);
@@ -79,11 +80,15 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	// button for runner
 	// create menu for class change
-	if (!caller.hasTag("lock_classchange") && canChangeClass(this, caller) && caller.getTeamNum() == this.getTeamNum())
+	if (canChangeClass(this, caller) && caller.getTeamNum() == this.getTeamNum())
 	{
 		CBitStream params;
 		params.write_u16(caller.getNetworkID());
-		caller.CreateGenericButton("$change_class$", Vec2f(9, 0), this, this.getCommandID("class menu"), getTranslatedString("Change class"), params);
+
+		if (!caller.hasTag("lock_perkchange"))
+			caller.CreateGenericButton("$change_perk$", Vec2f(0, -10), this, buildPerkMenu, getTranslatedString("Switch Perk"));
+		if (!caller.hasTag("lock_classchange"))
+			caller.CreateGenericButton("$change_class$", Vec2f(9, 0), this, this.getCommandID("class menu"), getTranslatedString("Change class"), params);
 	}
 }
 
@@ -111,6 +116,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		u16 id = params.read_u16();
 		CBlob@ caller = getBlobByNetworkID(id);
 		if (caller !is null) caller.Tag("lock_classchange");
+	}
+	else if (cmd == this.getCommandID("lock_perkchange"))
+	{
+		u16 id = params.read_u16();
+		CBlob@ caller = getBlobByNetworkID(id);
+		if (caller !is null) caller.Tag("lock_perkchange");
 	}
 	else if (cmd == this.getCommandID("shop made item"))
 	{

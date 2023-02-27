@@ -333,6 +333,16 @@ void LeafProximityCheck(CBlob@ this)
 								@p = makeGibParticle("GenericGibs", layerPos, getRandomVelocity(100, 1 , 270), 
 								7, 3 + XORRandom(4), Vec2f(8, 8), 1.0f, 0, "", 0);
 							}
+							else if (this.get_u8("particle type") == 1)
+							{
+								@p = makeGibParticle("grasspartssnow", layerPos, getRandomVelocity(100, 1 , 270), 
+								0, XORRandom(5), Vec2f(4, 4), 1.0f, 0, "", 0);
+							}
+							else if (this.get_u8("particle type") == 2)
+							{
+								@p = makeGibParticle("grasspartsdesert", layerPos, getRandomVelocity(100, 1 , 270), 
+								0, XORRandom(5), Vec2f(4, 4), 1.0f, 0, "", 0);
+							}
 							else
 							{
 								@p = makeGibParticle("grassparts", layerPos, getRandomVelocity(100, 1 , 270), 

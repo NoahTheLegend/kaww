@@ -2,8 +2,8 @@ const string stone = "mat_gold";
 const string stone_prop = "stone_level";
 const string working_prop = "working";
 
-const int input = 15;					//input cost in fuel
-const int output = 3;					//output amount in metal
+const int input = 20;					//input cost in fuel
+const int output = 4;					//output amount in metal
 const int min_input = Maths::Ceil(input/output);
 
 #include "GenericButtonCommon.as";

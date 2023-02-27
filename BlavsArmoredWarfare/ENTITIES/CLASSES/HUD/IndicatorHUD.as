@@ -8,6 +8,9 @@ const float timelineRightEnd = 0.66f;
 const float timelineLeftEnd_large = 0.24f;
 const float timelineRightEnd_large = 0.76f;
 
+int timeout = 900; // 15 seconds timeout for spectator indicator (render is called 60 times a second + staging may have more)
+// dont remove timeout stuff, otherwise game will crash after map compiles
+
 void onRender( CRules@ this )
 {
 	if (g_videorecording) return;
@@ -170,11 +173,24 @@ void onRender( CRules@ this )
 			CPlayer@ curPlayer = getPlayer(i);
 			if (curPlayer == null) continue;
 
-			CBlob@ curBlob = curPlayer.getBlob();
-			if (curBlob == null) continue;
-
 			s8 curTeamNum = curPlayer.getTeamNum();
 			if (!isSpectator && curTeamNum != teamNum) continue; // do not show enemy players unless spectator
+
+			CBlob@ curBlob = curPlayer.getBlob();
+			if (curBlob == null)
+			{
+				if (timeout > 0) timeout--; // otherwise crashes on map compiling
+				if (curPlayer is p && getCamera() !is null && timeout <= 0)
+				{
+					float curBlobXPos = getCamera().getPosition().x;
+					float indicatorProgress = curBlobXPos / mapWidth;
+					float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+					Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
+
+					GUI::DrawIcon("indicator_sheet_small.png", 0, Vec2f(16, 25), indicatorPos, 1.0f, curTeamNum);
+				}
+				continue;
+			}
 
 			u8 frame = 0;
 			if (curPlayer !is p) frame = getIndicatorFrame(curBlob.getName().getHash());
@@ -218,6 +234,11 @@ void onRender( CRules@ this )
 		Vec2f custom_offset = Vec2f(0,8);
 		if (frame == 10 || frame == 11) custom_offset = Vec2f(0, -48);
 		else if (frame == 12) custom_offset = Vec2f(0, 24);
+
+		if (curVehicle.getName() == "importantarmory") // importantarmory HP
+		{
+			RenderHPBar(this, curVehicle, indicatorPos + custom_offset);
+		}
 
 		GUI::DrawIcon("indicator_sheet.png", frame, Vec2f(16, 25), indicatorPos + custom_offset, 1.0f, vehicleTeamnum);
 	}
@@ -300,6 +321,86 @@ void onStateChange(CRules@ this, const u8 oldState)
         this.minimap = false;
     }
 }
+
+void RenderHPBar(CRules@ this, CBlob@ vehicle, Vec2f position)
+{
+	if (vehicle is null) return;
+
+	f32 returncount = vehicle.getInitialHealth();
+
+	GUI::SetFont("menu");
+
+	// adjust vertical offset depending on zoom
+	Vec2f pos2d = position;
+
+	Vec2f pos = pos2d + Vec2f(15.0f, 58.0f);
+	Vec2f dimension = Vec2f(28.0, 12.0f);
+	const f32 y = 0.0f;
+	
+	f32 percentage = 1.0f - returncount / vehicle.getHealth();
+	Vec2f bar = Vec2f(pos.x + (dimension.x * percentage), pos.y + dimension.y);
+
+	const f32 perc  = vehicle.getHealth()/returncount;
+
+	SColor color_light;
+	SColor color_mid;
+	SColor color_dark;
+
+	SColor color_team;
+
+	if (vehicle.getTeamNum() == 0 && returncount > 0 || vehicle.getTeamNum() == 0 && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == 0)
+	{
+		color_light = 0xff2cafde;
+		color_mid	= 0xff1d85ab; //  0xff1d85ab
+		color_dark	= 0xff1a4e83;
+	}
+	
+	if (vehicle.getTeamNum() == 1 && returncount > 0 || vehicle.getTeamNum() == 1 && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == 1)
+	{
+		color_light = 0xffd5543f;
+		color_mid	= 0xffb73333; // 0xffb73333
+		color_dark	= 0xff941b1b;
+	}
+
+	if (vehicle.getTeamNum() == 0)
+	{
+		color_team = 0xff505050;
+	}
+	if (vehicle.getTeamNum() == 1)
+	{
+		color_team = 0xff505050;
+	}
+	if (vehicle.getTeamNum() == 255)
+	{
+		color_team = 0xff1c2525;//ff36373f;
+	}
+
+	// Border
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 1,                        pos.y + y - 1),
+					   Vec2f(pos.x + dimension.x + 0,                        pos.y + y + dimension.y - 1), SColor(0xb0313131));
+
+	
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
+					   Vec2f(pos.x + dimension.x - 1,                        pos.y + y + dimension.y - 2), color_team);
+
+
+	// whiteness
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 1,                        pos.y + y + 0),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x + 0, pos.y + y + dimension.y - 2), SColor(0xffffffff));
+	// growing outline
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 1,                        pos.y + y - 1),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x + 0, pos.y + y + dimension.y - 1), SColor(perc*255, 255, 255, 255));
+
+	// Health meter trim
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 1, pos.y + y + dimension.y - 2), color_mid);
+
+	// Health meter inside
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
+
+}
+
 
 void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 {

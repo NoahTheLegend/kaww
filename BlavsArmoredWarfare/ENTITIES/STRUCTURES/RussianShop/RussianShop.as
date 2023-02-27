@@ -42,7 +42,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Tank Trap", "$tanktrap$", "tanktrap", "Czech hedgehog, will harm any enemy vehicle that collides with it.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 80);
+		AddRequirement(s.requirements, "coin", "", "Coins", 75);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;

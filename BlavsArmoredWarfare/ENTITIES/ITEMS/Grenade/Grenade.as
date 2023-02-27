@@ -260,7 +260,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (!solid)
+	if (!solid || (blob !is null && blob.hasTag("bunker")))
 	{
 		if (!this.getShape().isStatic() && this.get_u16("follow_id") == 0 && this.getName() == "sagrenade" && !this.isAttached())
 		{

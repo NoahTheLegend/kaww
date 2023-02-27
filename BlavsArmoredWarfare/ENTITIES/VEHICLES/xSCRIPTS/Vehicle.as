@@ -926,6 +926,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.hasTag("grenade"))
 	{
+		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*0.75f;
+
 		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/8.0f);
 		if (blocks_between > 5) damage /= 1.0f-(5.0f-blocks_between);
 		return (this.getName() == "maus" || armorRating > 4 ? damage*0.5f : damage * (1.25+XORRandom(10)*0.01f));
@@ -933,7 +935,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.getName() == "c4")
 	{
-		damage *= 1.5f;
+		damage *= 1.25f;
 	}
 
 	if (armorRating >= 3 && customData == Hitters::sword) return 0;

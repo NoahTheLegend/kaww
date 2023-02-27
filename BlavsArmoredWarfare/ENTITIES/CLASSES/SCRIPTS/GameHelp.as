@@ -107,9 +107,12 @@ void onRender(CRules@ this)
     }
 
 	{
-		const string shiprektVersion = "Armored Warfare 2.0\n";
+		const string shiprektVersion = "Armored Warfare\n";
 		const string lastChangesInfo = "\nChanges:\n\n"
-		+ "  * Lock aim direction for turrets via RMB\n"
+		+ "  * New water map\n"
+        + "  * Updated desert textures\n"
+        + "  * Added barge to armories\n"
+        + "  * Position marker will appear if you're spectator now\n"
         + "  * Balance changes & bug fixes & QOL\n";
 		
 		GUI::SetFont("menu");
