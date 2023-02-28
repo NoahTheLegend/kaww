@@ -37,7 +37,7 @@ void onInit(CBlob@ this)
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Outpost", "$outpost$", "outpost", "An outpost. Allows your team to respawn here, but with shorter immunity time.\nHas limited uses (5+1 per 2 players).");
+		ShopItem@ s = addShopItem(this, "Outpost", "$outpost$", "outpost", "An outpost. Allows your team to respawn here, but with shorter immunity time.\nHas limited uses..");
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 200);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 250);
 	}

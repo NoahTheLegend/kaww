@@ -11,21 +11,58 @@ const int min_input = Maths::Ceil(input/output);
 
 void onInit(CSprite@ this)
 {
-	this.SetEmitSound("/Refinery_fire.ogg");
+	this.SetEmitSound("/Refinery_fire.ogg"); //Refinery_fire
+	this.SetEmitSoundVolume(0.8f);
 	this.SetEmitSoundPaused(true);
 	this.SetZ(-150.0f); //background
+
+	this.SetFacingLeft(XORRandom(2) == 0);
+
+	CBlob@ b = this.getBlob();
+	b.SetLight(false);
+	b.SetLightRadius(50.0f);
+	b.SetLightColor(SColor(255, 255, 200, 170));
 }
 
 void onTick(CSprite@ this)
 {
-	CBlob@ blob = this.getBlob();
-	if (blob.get_bool(working_prop))
-	{
-		this.SetAnimation("use");
+	CBlob@ b = this.getBlob();
+	if (b.get_bool(working_prop)) {
+
+		if (this.isAnimation("use"))
+		{
+			b.SetLight(true);
+			if ((getGameTime() + b.getNetworkID()) % 30 == 0) {
+				ParticleAnimated("LargeSmoke", b.getPosition() + Vec2f(b.isFacingLeft() ? -1 : 1 * (XORRandom(8) - 10), XORRandom(8) - 20), getRandomVelocity(0.0f, XORRandom(25) * 0.005f, 360) + Vec2f(0.15,-0.05), float(XORRandom(360)), 0.9f + XORRandom(20) * 0.01f, 16 + XORRandom(6), -0.005 + XORRandom(10) * -0.0001f, true);
+
+				Vec2f velr = getRandomVelocity(90, 1.3f, 40.0f);
+				velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+			}
+		}
+		else {
+			
+			this.SetAnimation("start");
+
+			if (getGameTime() % 4 == 0) this.PlaySound("lightup.ogg");
+
+			if (this.isAnimationEnded())
+			{
+				this.SetAnimation("use");
+			}
+		}
 	}
-	else
-	{
-		this.SetAnimation("default");
+	else {
+		if (this.isAnimation("use"))
+		{
+			this.SetAnimation("end");
+
+			if (this.getFrameIndex() == 0) this.PlaySound("ExtinguishFire.ogg");
+		}
+		else if (this.isAnimation("end") && this.isAnimationEnded()) {
+			b.SetLight(false);
+			this.SetAnimation("default");
+		}
+		
 	}
 }
 
@@ -70,7 +107,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	CBitStream params;
 	params.write_u16(caller.getNetworkID());
 
-	CButton@ button = caller.CreateGenericButton("$mat_gold$", Vec2f(1.0f, 3.0f), this, this.getCommandID("add stone"), getTranslatedString("Add gold"), params);
+	CButton@ button = caller.CreateGenericButton("$mat_gold$", Vec2f(1.0f, 3.0f), this, this.getCommandID("add stone"), getTranslatedString("Smelt gold"), params);
 	if (button !is null)
 	{
 		button.deleteAfterClick = false;
@@ -92,7 +129,7 @@ void spawnMetal(CBlob@ this)
 	//setup res
 	_metal.Tag("custom quantity");
 	_metal.Init();
-	_metal.setPosition(this.getPosition()-Vec2f(4.0f,0));
+	_metal.setPosition(this.getPosition()-Vec2f(0,0));
 	_metal.server_SetQuantity(output);
 
 	this.set_s16(stone_prop, blobCount - actual_input); //burn wood
