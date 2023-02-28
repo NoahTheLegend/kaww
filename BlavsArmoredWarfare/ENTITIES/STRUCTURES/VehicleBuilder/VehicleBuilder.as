@@ -17,7 +17,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_string("shop description", "Construct a Vehicle");
+	this.set_string("shop description", "Construct Ground Vehicle");
 	this.set_u8("shop icon", 15);
 
 	this.Tag("ignore_arrow");

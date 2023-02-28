@@ -110,7 +110,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 		BuildBlock b(0, "constructionyard", "$construction_yard_icon$", "Construction Yard\nStand in an open space\nand tap this button.");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		b.buildOnGround = true;
-		b.size.Set(32, 24);
+		b.size.Set(24, 24);
 		blocks[0].insertAt(9, b);
 	}
 	{
