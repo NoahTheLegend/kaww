@@ -177,30 +177,6 @@ void onTick(CBlob@ this)
 			this.AddForce(Vec2f(0, 220.0f));
 		}
 
-		for (u8 i = 0; i < 2; i++)
-		{
-			{
-				AttachmentPoint@ pass = this.getAttachments().getAttachmentPointByName("PASSENGER");
-				if (i == 0) @pass = this.getAttachments().getAttachmentPointByName("PASSENGER1");
-				if (pass !is null && pass.getOccupied() !is null)
-				{
-					CBlob@ b = pass.getOccupied();
-					if (b !is null)
-					{
-						if (pass.isKeyPressed(key_action1)) b.set_bool("is_a1", true);
-						if (pass.isKeyJustPressed(key_action1)) b.set_bool("just_a1", true);
-						b.Tag("show_gun");
-						b.Tag("can_shoot_if_attached");
-
-						//if (b.isKeyPressed(key_action1)) printf("e");
-
-						if (b.getAimPos().x < b.getPosition().x) b.SetFacingLeft(true);
-						else b.SetFacingLeft(false);
-					}
-				}
-			}
-		}
-
 		CSprite@ sprite = this.getSprite();
 		CShape@ shape = this.getShape();
 		Vec2f currentVel = this.getVelocity();
@@ -498,7 +474,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!params.saferead_Vec2f(arrowPos)) return;
 
 		Vec2f vel = Vec2f(500.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(arrowAngle);
-		ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 
 		arrowPos = arrowPos+(Vec2f(24 * (this.isFacingLeft()?1:-1), -8));
 		Vec2f arrowVel = Vec2f(27.5f, 0).RotateBy((this.isFacingLeft()?180:0)+arrowAngle);
@@ -516,6 +491,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					proj.Tag("aircraft_bullet");
 				}
 			}
+			ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 		}
 	}
 	else if (cmd == this.getCommandID("shoot bullet"))

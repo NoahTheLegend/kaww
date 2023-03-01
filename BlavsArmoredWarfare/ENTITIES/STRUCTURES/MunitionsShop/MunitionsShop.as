@@ -31,15 +31,15 @@ void onInit(CBlob@ this)
 		this.set_Vec2f("shop menu size", Vec2f(4, 3));
 		{
 			ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 5);
+			AddRequirement(s.requirements, "coin", "", "Coins", 3);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 20);
+			AddRequirement(s.requirements, "coin", "", "Coins", 15);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "105mm Shells", "$mat_bolts$", "mat_bolts", "Ammo for a tank's main gun.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 40);
+			AddRequirement(s.requirements, "coin", "", "Coins", 35);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas an small explosion radius.", false);
@@ -47,11 +47,11 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 35);
+			AddRequirement(s.requirements, "coin", "", "Coins", 30);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Sticky Grenade", "$sgrenade$", "sgrenade", "An analogue for default grenades, but also\nsticks to flesh, bunkers and any type of vehicles.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 40);
+			AddRequirement(s.requirements, "coin", "", "Coins", 35);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
