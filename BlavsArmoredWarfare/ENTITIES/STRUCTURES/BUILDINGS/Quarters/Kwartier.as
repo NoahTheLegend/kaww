@@ -70,7 +70,7 @@ void onInit(CSprite@ this)
 		{
 			int[] frames = {32,33,34};
 			anim.AddFrames(frames);
-			lantern.SetOffset(Vec2f(-12, -2));
+			lantern.SetOffset(Vec2f(-12, -1));
 			lantern.SetVisible(true);
 			lantern.SetFrameIndex(0);
 			lantern.SetAnimation(anim);

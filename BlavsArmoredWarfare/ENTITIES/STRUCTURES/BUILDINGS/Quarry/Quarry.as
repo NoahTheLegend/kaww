@@ -14,8 +14,8 @@ const int initial_output = 100;			// output amount in ore
 const int min_output = 50;				// minimal possible output in ore
 const int output_decrease = 0;			// by how much output decreases every time ore is dropped
 const bool enable_rare = true;			// enable/disable
-const int rare_chance = 10;				// one-in
-const int rare_output = 40;				// output for rare ore
+const int rare_chance = 15;				// one-in
+const int rare_output = 25;				// output for rare ore
 const int conversion_frequency = 8;	// how often to convert, in seconds
 
 const int min_input = Maths::Ceil(input/initial_output);

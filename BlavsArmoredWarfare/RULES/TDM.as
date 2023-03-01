@@ -766,7 +766,6 @@ shared class TDMCore : RulesCore
 		   	"SoldiercombatTDM.png",
 		   	"Flattening.png",
 		   	"RooftopTanks.png",
-		   	"HamburgerHill.png"
 		};
 
 		//spawn the spawns :D
@@ -1646,7 +1645,6 @@ const string[] LargeMaps = {
 	"SoldiercombatTDM.png",
 	"Flattening.png",
 	"RooftopTanks.png",
-	"HamburgerHill.png",
 	"Goldy_KAWW_Sewage.png",
 	"BloodGulch.png",
 	"WorldwarFlagless.png",

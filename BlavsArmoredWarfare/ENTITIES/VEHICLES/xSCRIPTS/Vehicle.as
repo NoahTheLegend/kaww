@@ -71,12 +71,12 @@ void onInit(CBlob@ this)
 		case _pszh4turret: // smol APC cannon
 		case _heavygun: // MG
 		case _barge:
-		case _techbigtruck:
 		armorRating = 2; break;
 
 		case _uh1: // heli
 		case _techtruck: // MG truck
 		case _gun: // light MG
+		case _techbigtruck:
 		armorRating = 1; break;
 
 		case _bf109: // plane
@@ -173,8 +173,6 @@ void onInit(CBlob@ this)
 		backsideOffset = 20.0f; break;
 		
 		case _m60: // normal tank
-		backsideOffset = 16.0f; break;
-
 		case _btr82a: // big APC
 		case _bradley:
 		case _artillery:
@@ -193,6 +191,9 @@ void onInit(CBlob@ this)
 
 		case _bomberplane: // plane
 		backsideOffset = 16.0f; break;
+
+		case _techbigtruck:
+		backsideOffset = -32.0f; break;
 	}
 
 	// speedy stuff
