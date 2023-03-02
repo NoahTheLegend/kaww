@@ -1191,7 +1191,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 		ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity, bulletSpread*targetFactor, infantry.burst_size );
 	}
 
-	this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
+	if (this.get_u32("mag_size") > 0) this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
 	// this causes backwards shit
 	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -12.0f : 12.0f, -0.0f).RotateBy(this.isFacingLeft()?angle+180:angle), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 	
@@ -1253,6 +1253,11 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 {
 	if (canSend(this) || (isServer() && this.isBot()))
 	{
+		// passes between shots sometimes
+		//if (this.get_s8("charge_time") == 0 && this.hasTag("no_more_shoot") && this.getSprite() !is null)
+		//{
+		//	this.getSprite().PlaySound("EmptyGun.ogg", 0.33f); // gun jam sound if server cancels command
+		//}
 		CBitStream params;
 		params.write_Vec2f(arrowPos); // only once, only one place to fire from
 
@@ -1267,7 +1272,6 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 		}
 		
 		this.SendCommand(this.getCommandID("shoot bullet"), params);
-		//this.Tag("no_more_shoot");
 
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;

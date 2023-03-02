@@ -39,7 +39,7 @@ const string[] PAGE_NAME =
 const u8 GRID_SIZE = 48;
 const u8 GRID_PADDING = 12;
 
-const Vec2f MENU_SIZE(3, 5);
+const Vec2f MENU_SIZE(4, 4);
 const u32 SHOW_NO_BUILD_TIME = 90;
 
 const bool QUICK_SWAP_ENABLED = false;
@@ -52,7 +52,7 @@ void onInit(CInventory@ this)
 	if (!blob.exists(blocks_property))
 	{
 		BuildBlock[][] blocks;
-		addCommonBuilderBlocks(blocks);
+		addCommonBuilderBlocks(blob, blocks);
 		blob.set(blocks_property, blocks);
 	}
 

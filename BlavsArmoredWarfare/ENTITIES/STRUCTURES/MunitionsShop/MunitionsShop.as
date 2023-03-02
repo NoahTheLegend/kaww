@@ -43,7 +43,7 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas an small explosion radius.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 50);
+			AddRequirement(s.requirements, "coin", "", "Coins", 45);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
@@ -59,7 +59,7 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Mine", "$mine$", "mine", "A dangerous trap for infantry.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 60);
+			AddRequirement(s.requirements, "coin", "", "Coins", 55);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total. Bonus: allows medics to perform healing faster.", false);

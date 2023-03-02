@@ -93,11 +93,11 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Bloodthirst", "$3_class_icon$", "Bloodthirsty",
 						"Bloodthirst:\n\n"+"$3_class_icon$"+"Vampirism"
 						+"\n                   - Regenerate health when killing     "
-						+"\n                   - Take only 33% of other heal     "
+						+"\n                   - Take only 50% of other heal     "
 						+"\n\n                  Healing"
 						+"\n                   - Faster rate of regeneration   "
 						+"\n\n                  Silver bullets"
-						+"\n                   - Take 120% damage from bullets       "
+						+"\n                   - Take 110% damage from bullets       "
 						);
 
 	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",
@@ -115,7 +115,7 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
 						"Lucky:\n\n"+"$4_class_icon$"+"Fate's Friend"
 						+"\n                   - Always survive on 1 health          "
-						+"\n                   - Food and medkits delay the ability          "
+						+"\n                   - Food and medkits delay the ability         "
 						+"\n\n                  Lucky Charm"
 						+"\n                   - Must carry an Ace of Spades           "
 						);

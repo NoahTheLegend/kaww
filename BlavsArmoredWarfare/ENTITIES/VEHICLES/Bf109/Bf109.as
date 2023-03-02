@@ -93,7 +93,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
 			if (proj !is null)
 			{
-				proj.server_SetTimeToDie(4.0);
+				proj.server_SetTimeToDie(5.5);
 				proj.Tag("aircraft_bullet");
 			}
 

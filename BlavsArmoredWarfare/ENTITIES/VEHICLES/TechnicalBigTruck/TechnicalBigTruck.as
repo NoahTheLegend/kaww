@@ -46,7 +46,7 @@ void onInit(CBlob@ this)
 	
 
 
-	this.getShape().SetOffset(Vec2f(-4, 2));
+	this.getShape().SetOffset(Vec2f(4, 2.5f));
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);

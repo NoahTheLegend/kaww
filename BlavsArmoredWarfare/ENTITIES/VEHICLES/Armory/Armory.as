@@ -50,7 +50,7 @@ void onInit(CBlob@ this)
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-26.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-27.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 
-	this.getShape().SetOffset(Vec2f(-4, 0)); //0,8
+	this.getShape().SetOffset(Vec2f(-4, 2)); //0,8
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
@@ -147,7 +147,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "HEAT War Heads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammunition for anti-tank guns, helis, javelins, etc..", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 7);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "M22 Binoculars", "$binoculars$", "binoculars", "A pair of glasses with optical zooming.", false);

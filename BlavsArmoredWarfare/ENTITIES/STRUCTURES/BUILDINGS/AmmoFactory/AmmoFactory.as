@@ -49,7 +49,7 @@ void onInit(CBlob@ this)
 	if (icon !is null)
 	{
 		int[] frames = {0,1,2,3,4,5,6,7};
-		icon.SetOffset(Vec2f(0,-15));
+		icon.SetOffset(Vec2f(-0.5f,-8));
 		Animation@ anim = icon.addAnimation("default", 0, false);
 		if (anim !is null)
 		{
@@ -186,7 +186,15 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	}
 
 	caller.CreateGenericButton(16, Vec2f(0.0f, -10.0f), this, this.getCommandID("select"), "Select product", params);
-	caller.CreateGenericButton(24, Vec2f(4.0f, 0.0f), this, this.getCommandID("direct_pick"), "Pick product", params);
+
+	if (this.getInventory() !is null)
+	{
+		CBlob@ item = this.getInventory().getItem(this.get_string("prod_blob"));
+		if (item !is null)
+		{
+			caller.CreateGenericButton(24, Vec2f(4.0f, 0.0f), this, this.getCommandID("direct_pick"), "Pick product", params);
+		}
+	}
 }
 
 void spawnMetal(CBlob@ this)
@@ -298,8 +306,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "mat_heatwarhead");
 		this.set_u8("prod_amount", 3);
-		this.set_u8("prod_time", 30);
-		this.set_u8("cost", 7);
+		this.set_u8("prod_time", 25);
+		this.set_u8("cost", 6);
 
 		ResetTimer(this);
 	}

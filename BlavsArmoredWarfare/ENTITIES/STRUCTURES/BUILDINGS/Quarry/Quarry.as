@@ -55,7 +55,7 @@ void onInit(CSprite@ this)
 	CSpriteLayer@ wood = this.addSpriteLayer("wood", "Quarry.png", 16, 16);
 	if (wood !is null)
 	{
-		wood.SetOffset(Vec2f(12.0f, -1.0f));
+		wood.SetOffset(Vec2f(11.0f, -1.0f));
 		wood.SetVisible(false);
 		wood.SetRelativeZ(1);
 	}
@@ -68,7 +68,7 @@ void onInit(CBlob@ this)
 {
 	//building properties
 	this.set_TileType("background tile", CMap::tile_castle_back);
-	this.getSprite().SetZ(-150.0f);
+	this.getSprite().SetZ(-155.0f);
 	this.getShape().getConsts().mapCollisions = false;
 
 	//gold building properties
