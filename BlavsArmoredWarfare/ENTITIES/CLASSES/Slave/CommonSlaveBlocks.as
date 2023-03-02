@@ -104,7 +104,7 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
 		blocks[0].push_back(b);
 	}
-	{
+	{ // TILEINDEX IN BLOCKPLACEMENT.AS IS SET MANUALLY TO THE INDEX OF THIS BLOCK!
 		BuildBlock b(CMap::tile_cdirt, "cdirt_block", "$cdirt_block$", "Compacted dirt\nReinforced block of dirt, almost immune to explosions\nand bullets, can be built only on dirt walls.\n");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 5);
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 1);
