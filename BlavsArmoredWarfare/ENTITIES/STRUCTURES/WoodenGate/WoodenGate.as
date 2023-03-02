@@ -285,7 +285,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f collisionPos )
 {
-	if (blob !is null && blob.hasTag("vehicle"))
+	if (blob !is null && blob.hasTag("vehicle") && !this.get_bool("state") && blob.getTeamNum() != this.getTeamNum())
 	{
 		f32 damage = 0.0f;
 		damage = (blob.getOldPosition()-blob.getPosition()).Length();

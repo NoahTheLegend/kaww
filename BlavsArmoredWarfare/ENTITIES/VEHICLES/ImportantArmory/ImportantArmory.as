@@ -86,15 +86,15 @@ void onInit(CBlob@ this)
 
 	{
 		ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 5);
+		AddRequirement(s.requirements, "coin", "", "Coins", 3);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 25);
+		AddRequirement(s.requirements, "coin", "", "Coins", 20);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "105mm Shells", "$mat_bolts$", "mat_bolts", "Ammo for a tank's main gun.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 50);
+		AddRequirement(s.requirements, "coin", "", "Coins", 40);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total. Bonus: allows medics to perform healing faster.", false);
@@ -102,7 +102,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 40);
+		AddRequirement(s.requirements, "coin", "", "Coins", 45);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
