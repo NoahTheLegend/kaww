@@ -46,7 +46,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		this.getSprite().PlaySound("Heart.ogg");
 		if (blob !is null)
 		{
-			if (blob.exists("next_med") && blob.get_u32("next_med") >= getGameTime()) return;
+			if (blob.get_u32("next_med") >= getGameTime()) return;
 			blob.set_u32("next_med", getGameTime()+15);
 		}
 
