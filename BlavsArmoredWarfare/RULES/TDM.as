@@ -1605,6 +1605,8 @@ void onInit(CRules@ this)
 	this.set("maptypes-classic", ClassicMaps);
 	this.set("maptypes-large", LargeMaps);
 	this.set("maptypes-average", AverageMaps);
+	this.set("maptypes-flag", FlagMaps);
+	this.set("maptypes-truck", TruckMaps);
 	this.set("maptypes-tdm", TdmMaps);
 }
 
@@ -1650,7 +1652,7 @@ const string[] LargeMaps = {
 	"WorldwarFlagless.png",
 	"ClassicFlagless.png",
 	"BridgeWater.png",
-	"SiegeBeachWater.png",
+	"SiegeBeachWater_v2.png",
 	"FrogsLudendorff.png"
 };
 
@@ -1676,6 +1678,26 @@ const string[] AverageMaps = {
 	"Stratego.png",
 	"TheCityTDM.png",
 	"TriPointTDM.png"
+};
+
+const string[] FlagMaps = {
+	"WinterFactory.png",
+	"Bridge.png",
+	"Classic.png",
+	"Goldy_KAWW_Megalith.png",
+	"Mortar.png",
+	"PlainHills.png",
+	"Valley.png",
+	"Worldwar.png",
+	"TriPointTDM.png"
+};
+
+const string[] TruckMaps = {
+	"OldTouge.png",
+	"Fugue.png",
+	"Cavern.png",
+	"Florida.png",
+	"BloodGulch.png"
 };
 
 const string[] TdmMaps = {

@@ -14,6 +14,13 @@ void onInit(CBlob@ this)
 
 	//INIT COSTS
 	InitCosts();
+	
+	if (this.getName().findFirst("t3", 0) != -1)
+	{
+		this.SetLightRadius(128.0f);
+		this.SetLightColor(SColor(255, 255, 155, 0));
+		this.SetLight(true);
+	}
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);

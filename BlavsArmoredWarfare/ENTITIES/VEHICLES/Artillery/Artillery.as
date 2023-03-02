@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 	shape.SetRotationsAllowed(false);
 
 	Vehicle_Setup(this,
-	    2000.0f, // move speed 125
+	    2500.0f, // move speed 125
 	    1.1f,  // turn speed
 	    Vec2f(0.0f, 0.56f), // jump out velocity
 	    false);  // inventory access

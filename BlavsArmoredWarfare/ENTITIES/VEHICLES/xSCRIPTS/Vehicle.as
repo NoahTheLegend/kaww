@@ -227,6 +227,7 @@ void onInit(CBlob@ this)
 		intake = 100.0f; break;
 
 		case _motorcycle: // bike
+		case _artillery:
 		intake = 200.0f; break;
 	}
 	this.set_f32("add_gas_intake", intake);
@@ -927,6 +928,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.hasTag("grenade"))
 	{
+		if (this.hasTag("aerial")) return damage*4.5f;
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*0.75f;
 
 		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/8.0f);

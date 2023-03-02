@@ -23,6 +23,7 @@ void onInit(CSprite@ this)
 		}
 		bed.SetOffset(Vec2f(-2, 4));
 		bed.SetVisible(true);
+		bed.ScaleBy(Vec2f(0.85f, 0.85f));
 	}
 
 	CSpriteLayer@ bed2 = this.addSpriteLayer("bed", "Kwartier.png", 32, 16);
@@ -33,8 +34,9 @@ void onInit(CSprite@ this)
 			int[] frames = {14, 15};
 			bed2.animation.AddFrames(frames);
 		}
-		bed2.SetOffset(Vec2f(-2, -7));
+		bed2.SetOffset(Vec2f(-2, -6));
 		bed2.SetVisible(true);
+		bed2.ScaleBy(Vec2f(0.85f, 0.85f));
 	}
 
 	CSpriteLayer@ zzz = this.addSpriteLayer("zzz", "Kwartier.png", 8, 8);
@@ -48,6 +50,7 @@ void onInit(CSprite@ this)
 		zzz.SetOffset(Vec2f(-6, -6));
 		zzz.SetLighting(false);
 		zzz.SetVisible(false);
+		zzz.SetRelativeZ(5.0f);
 	}
 
 	CSpriteLayer@ backpack = this.addSpriteLayer("backpack", "Kwartier.png", 9, 16);
@@ -60,6 +63,7 @@ void onInit(CSprite@ this)
 		}
 		backpack.SetOffset(Vec2f(-2, 7));
 		backpack.SetVisible(false);
+		backpack.ScaleBy(Vec2f(0.85f, 0.85f));
 	}
 
 	CSpriteLayer@ lantern = this.addSpriteLayer("lantern", "Kwartier.png", 8, 16);
@@ -70,7 +74,8 @@ void onInit(CSprite@ this)
 		{
 			int[] frames = {32,33,34};
 			anim.AddFrames(frames);
-			lantern.SetOffset(Vec2f(-12, -1));
+			lantern.SetOffset(Vec2f(-10, -3));
+			lantern.ScaleBy(Vec2f(0.75f, 0.75f));
 			lantern.SetVisible(true);
 			lantern.SetFrameIndex(0);
 			lantern.SetAnimation(anim);
@@ -361,10 +366,11 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 	if(attachedPoint.name == "BED")
 		bed_head.SetOffset(Vec2f(3, 2));
 	else
-		bed_head.SetOffset(Vec2f(3, -6));
+		bed_head.SetOffset(Vec2f(4, -7));
 	bed_head.SetFacingLeft(true);
 	bed_head.SetVisible(true);
 	bed_head.SetRelativeZ(2);
+	bed_head.ScaleBy(Vec2f(0.85f, 0.85f));
 }
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)

@@ -13,7 +13,7 @@ const Vec2f maxClampVelocity = Vec2f( 0.475f, 0.00f);
 
 const f32 projDamage = 0.275f;
 
-const f32 thrust = 1020.00f;
+const f32 thrust = 1120.00f;
 
 const u8 cooldown_time = 15;//210;
 const u8 recoil = 0;
