@@ -17,7 +17,7 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 
 void onTick(CBlob@ this)
 {
-	if (getGameTime()==3)
+	if (this.getTickSinceCreated() == 3)
 	{
 		if (getBlobByName("info_desert") !is null)
 		{

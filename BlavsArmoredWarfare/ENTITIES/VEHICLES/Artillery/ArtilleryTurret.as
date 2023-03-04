@@ -10,7 +10,7 @@ string[] smoke =
 };
 
 const u16 cooldown_time = 600; // 20 sec cd
-const f32 damage_modifier = 1.33f;
+const f32 damage_modifier = 1.75f;
 
 const s16 init_gunoffset_angle = -2; // up by so many degrees
 const u8 barrel_compression = 6; // max barrel movement

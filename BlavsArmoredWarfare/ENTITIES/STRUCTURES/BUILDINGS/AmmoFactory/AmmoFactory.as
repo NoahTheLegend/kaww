@@ -422,7 +422,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage *= 2.00f;
 			break;
 	}
-	if (hitterBlob.getName() == "balista_bolt" || hitterBlob.hasTag("grenade"))
+	if (hitterBlob.getName() == "balista_bolt" || hitterBlob.hasTag("grenade") || hitterBlob.getName() == "c4")
 	{
 		damage *= 5.0f;
 	} 

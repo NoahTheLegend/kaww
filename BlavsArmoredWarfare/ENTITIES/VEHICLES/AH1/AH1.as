@@ -13,7 +13,7 @@ const Vec2f maxClampVelocity = Vec2f( 0.475f, 0.00f);
 
 const f32 projDamage = 0.275f;
 
-const f32 thrust = 1120.00f;
+const f32 thrust = 1020.00f;
 
 const u8 cooldown_time = 15;//210;
 const u8 recoil = 0;
@@ -220,7 +220,7 @@ void onTick(CBlob@ this)
 
 						// shoot
 						
-						if (!this.hasTag("no_more_shooting") && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
+						if (!this.isOnGround() && !this.hasTag("no_more_shooting") && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
 						{
 							CInventory@ inv = this.getInventory();
 							if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_bolts")

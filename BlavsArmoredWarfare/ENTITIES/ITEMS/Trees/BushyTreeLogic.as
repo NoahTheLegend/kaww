@@ -3,7 +3,7 @@
 #include "TreeSync.as"
 #include "TreeCommon.as";
 
-const string spritefile = "BushyTree.png";
+string spritefile = "BushyTree.png";
 
 void onInit(CBlob@ this)
 {
@@ -48,6 +48,7 @@ void reloadSprite(CBlob@ this)
 {
 	if (getBlobByName("info_desert") !is null)
 	{
+		spritefile = "BushyTreeDesert.png";
 		CSprite@ sprite = this.getSprite();
 		if (sprite !is null)
 		{
@@ -70,7 +71,7 @@ void onTick(CBlob@ this)
 	{
 		reloadSprite(this);
 	}
-	if (isServer() && this.getTickSinceCreated() == 1)
+	if (isServer() && this.getTickSinceCreated() == 3)
 	{
 		if (isServer())
 		{

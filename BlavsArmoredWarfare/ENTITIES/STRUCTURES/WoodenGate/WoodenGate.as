@@ -25,6 +25,7 @@ void onInit(CBlob@ this)
 	CSpriteLayer@ lever = sprite.addSpriteLayer("lever", "WoodenGate.png", 16, 16);
 	if (lever !is null)
 	{
+		sprite.SetRelativeZ(-100.0f);
 		lever.SetRelativeZ(-99.0f);
 		lever.SetOffset(this.isFacingLeft() ? Vec2f(-12.0f, 12.0f) : Vec2f(12.0f, 12.0f));
 		//lever.SetVisible(false);
@@ -156,7 +157,7 @@ void setOpen(CBlob@ this, bool open)
 		}
 	}
 }
-
+/*
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	CBitStream params;
@@ -172,7 +173,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 		button.SetEnabled(this.getDistanceTo(caller) < 48.0f);
 	}
 }
-
+*/
 bool canClose(CBlob@ this)
 {
 	const uint count = this.getTouchingCount();
@@ -191,6 +192,46 @@ bool canClose(CBlob@ this)
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 {
 	return false;
+}
+
+void onTick(CBlob@ this)
+{
+	CBlob@[] overlapping;
+	this.getOverlapping(@overlapping);
+
+	bool has_overlapping = false;
+	for (u16 i = 0; i < overlapping.length; i++)
+	{
+		CBlob@ b = overlapping[i];
+		if (b is null) continue;
+		if (b.getTeamNum() != this.getTeamNum()) continue;
+		if (b.hasTag("player") || b.hasTag("vehicle"))
+		{
+			has_overlapping = true;
+		}
+	}
+	if (this.get_bool("state") != has_overlapping)
+	{
+		if (isClient())
+		{
+			CSprite@ sprite = this.getSprite();
+			if (sprite !is null)
+			{
+				sprite.PlaySound(has_overlapping ? "DoorOpen.ogg" : "DoorClose.ogg", 1.5f, 0.85f);
+				sprite.SetFrameIndex(0);
+				sprite.SetAnimation(has_overlapping ? "open" : "close");
+				
+				CSpriteLayer@ lever = sprite.getSpriteLayer("lever");
+				if (lever !is null)
+				{
+					lever.SetFrameIndex(0); // activates the animation i guess
+					lever.SetAnimation("active");
+				}
+			}
+		}
+	}
+	this.set_bool("state", has_overlapping);
+	this.getShape().getConsts().collidable = !has_overlapping;
 }
 
 void onTick(CSprite@ this)
@@ -215,10 +256,6 @@ void onTick(CSprite@ this)
 						this.SetFrameIndex(1);
 					}
 					else this.SetFrameIndex(0);
-				}
-				else
-				{
-					this.SetAnimation("default");
 				}
 			}
 		}
@@ -280,7 +317,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return !isOpen(this);
+	if (blob.getTeamNum() == this.getTeamNum())
+	{
+		if (blob.hasTag("vehicle") || blob.hasTag("player"))
+		{
+			return false;
+		}
+	}
+	return !this.get_bool("state");
 }
 
 void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f collisionPos )

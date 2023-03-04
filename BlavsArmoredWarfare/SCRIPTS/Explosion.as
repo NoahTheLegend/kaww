@@ -363,10 +363,7 @@ void WarfareExplode(CBlob@ this, f32 radius, f32 damage)
 		return;
 	}
 
-	//
-
 	makeLargeExplosionParticle(thisPos);
-
 
 	for (int i = 0; i < radius * 0.16; i++)
 	{
@@ -450,7 +447,7 @@ void WarfareExplode(CBlob@ this, f32 radius, f32 damage)
                                         HitInfo@ hi = hitInfos[i];
                                         CBlob@ b = hi.blob;
                                         // m_pos == position ignores blobs that are tiles when the explosion starts in the same tile
-                                        if (b !is null && b !is this && b.isCollidable() && b.getShape().isStatic() && m_pos != b.getPosition())
+                                        if (b !is null && b !is this && b.isCollidable() && b.getShape().isStatic())
                                         {
                                             canHit = false;
                                             break;

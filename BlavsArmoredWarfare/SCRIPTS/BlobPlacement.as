@@ -373,6 +373,21 @@ void onTick(CBlob@ this)
 		{
 			if (this.isKeyPressed(key_action1))
 			{
+				if (carryBlob.getName() == "barbedwire")
+				{
+					Vec2f pos = getBottomOfCursor(bc.tileAimPos, carryBlob);
+					TileType tb = map.getTile(pos+Vec2f(0,8)).type;
+					TileType tl = map.getTile(pos+Vec2f(-8,0)).type;
+					TileType tu = map.getTile(pos+Vec2f(0,-8)).type;
+					TileType tr = map.getTile(pos+Vec2f(8,0)).type;
+
+					if (!map.isTileSolid(tb) && !map.isTileSolid(tl)
+					&& !map.isTileSolid(tu) && !map.isTileSolid(tr))
+					{
+						return;
+					}
+				}
+				
 				if (snap && bc.cursorClose && bc.hasReqs && bc.buildable && bc.supported)
 				{
 					CMap@ map = getMap();

@@ -117,7 +117,7 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	}
 	{
 		AddIconToken("$barbedwire_icon$", "BarbedWire.png", Vec2f(16, 16), 0);
-		BuildBlock b(0, "barbedwire", "$barbedwire_icon$", "Barbed Wire\nHard to pass through. Breaks on impact with vehicles.\n");
+		BuildBlock b(0, "barbedwire", "$barbedwire_icon$", "Barbed Wire\nHard to pass through. Breaks on impact with vehicles.\nRequires to be next to solid blocks.");
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 1);
 		blocks[0].push_back(b);
 	}
@@ -150,8 +150,8 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	}
 	{
 		AddIconToken("$wooden_gate$", "WoodenGate.png", Vec2f(22, 16), 0, this.getTeamNum());
-		BuildBlock b(0, "woodengate", "$wooden_gate$", "Wooden Gate\nGate for vehicles.\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 400);
+		BuildBlock b(0, "woodengate", "$wooden_gate$", "Wooden Gate\nGate for vehicles. Face the direction you want to rotate it.\n");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 250);
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
 		b.buildOnGround = true;
 		b.size.Set(8, 40);

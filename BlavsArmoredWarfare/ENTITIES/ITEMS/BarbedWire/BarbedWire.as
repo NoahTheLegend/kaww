@@ -35,53 +35,21 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 void onTick(CBlob@ this)
 {
-	if ((getGameTime()+this.getNetworkID())%300==0)
+	if (isServer() && (getGameTime()+this.getNetworkID())%450==0)
 	{
 		CMap@ map = this.getMap();
-		bool kill = true;
-		for (u8 i = 0; i < 4; i++)
+		
+		Vec2f pos = this.getPosition();
+		TileType tb = map.getTile(pos+Vec2f(0,8)).type;
+		TileType tl = map.getTile(pos+Vec2f(-8,0)).type;
+		TileType tu = map.getTile(pos+Vec2f(0,-8)).type;
+		TileType tr = map.getTile(pos+Vec2f(8,0)).type;
+		
+		if (!map.isTileSolid(tb) && !map.isTileSolid(tl)
+		&& !map.isTileSolid(tu) && !map.isTileSolid(tr))
 		{
-			switch (i)
-			{
-				case 0:
-				{
-					TileType t = map.getTile(this.getPosition()+Vec2f(0,8)).type;
-					if (t != 0)
-					{
-						kill = false;
-						break;
-					}
-				}
-				case 1:
-				{
-					TileType t = map.getTile(this.getPosition()+Vec2f(8,0)).type;
-					if (t != 0)
-					{
-						kill = false;
-						break;
-					}
-				}
-				case 2:
-				{
-					TileType t = map.getTile(this.getPosition()+Vec2f(-8,0)).type;
-					if (t != 0)
-					{
-						kill = false;
-						break;
-					}
-				}
-				case 3:
-				{
-					TileType t = map.getTile(this.getPosition()+Vec2f(0,-8)).type;
-					if (t != 0)
-					{
-						kill = false;
-						break;
-					}
-				}
-			}
+			this.server_Die();
 		}
-		if (isServer() && kill) this.server_Die();
 	}
 }
 
@@ -96,7 +64,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if ((customData == Hitters::explosion && hitterBlob.getName() != "c4") || hitterBlob.hasTag("grenade"))
 	{
-		return damage * Maths::Max(0.0f, damage / (hitterBlob.getPosition() - this.getPosition()).Length());
+		return damage * Maths::Max(0.0f, damage*1.5f / (hitterBlob.getPosition() - this.getPosition()).Length()/2);
 	}
 	/*if (hitterBlob !is null && hitterBlob !is this && (customData == Hitters::builder || customData == Hitters::sword))
 	{
