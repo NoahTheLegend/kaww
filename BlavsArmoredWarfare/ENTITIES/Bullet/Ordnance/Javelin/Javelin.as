@@ -357,7 +357,7 @@ void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f coll
 	{
 		return;
 	}
-	if (blob !is null && blob.hasTag("bullet"))
+	if (blob !is null && blob.getName() != "bulletheavy" && !blob.hasTag("strong"))
 	{
 		return;
 	}

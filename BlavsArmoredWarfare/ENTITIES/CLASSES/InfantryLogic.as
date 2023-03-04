@@ -217,9 +217,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				return damage * 2;
 			}
 		}
-		else if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+		else if (!this.isOnGround() && !this.isOnLadder() && !this.isInWater()
+		&& getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 		{
-			return damage * 0.4f;
+			return damage * 0.5f;
 		}
 		else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
 		{

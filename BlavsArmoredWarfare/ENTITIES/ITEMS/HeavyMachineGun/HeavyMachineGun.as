@@ -77,17 +77,14 @@ void onInit(CBlob@ this)
 	// auto-load some ammo initially
 	if (getNet().isServer())
 	{
-		CBlob@ ammo = server_CreateBlob("mat_7mmround");
-		if (ammo !is null)
+		for (u8 i = 0; i < 4; i++)
 		{
-			if (!this.server_PutInInventory(ammo))
-				ammo.server_Die();
-		}
-		CBlob@ ammo2 = server_CreateBlob("mat_7mmround");
-		if (ammo2 !is null)
-		{
-			if (!this.server_PutInInventory(ammo2))
-				ammo2.server_Die();
+			CBlob@ ammo = server_CreateBlob("mat_7mmround");
+			if (ammo !is null)
+			{
+				if (!this.server_PutInInventory(ammo))
+					ammo.server_Die();
+			}
 		}
 	}
 }

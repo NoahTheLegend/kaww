@@ -67,7 +67,7 @@ void DoExplosion(CBlob@ this)
 	this.set_f32("map_damage_radius", 52.0f+XORRandom(5));
 	this.set_f32("map_damage_ratio", 0.15f);
 	
-	for (u8 i = 0; i < 6+XORRandom(2); i++)
+	for (u8 i = 0; i < 5+XORRandom(2); i++)
 	{
 		WarfareExplode(this, this.get_f32(projExplosionRadiusString), this.get_f32(projExplosionDamageString));
 	}
@@ -219,7 +219,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				this.set_bool("active", true);
 				this.set_bool("explode", true);
-				this.set_u16("exploding", 300);
+				this.set_u16("exploding", 7.5f*getTicksASecond());
 				this.Sync("active", true);
 				this.Sync("explode", true);
 				this.Sync("exploding", true);

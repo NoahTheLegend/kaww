@@ -139,9 +139,9 @@ void InitClasses(CBlob@ this)
 						"Paratrooper:\n\n"+"$9_class_icon$"+"Modernized Parachute"
 						+"\n                   - Use parachute any time"
 						+"\n                     (Hold W while falling)"
-						+"\n                   - Better parachute fly"
+						+"\n                   - Better parachute flight"
 						+"\n\n                  Heavy Load"
-						+"\n                   - Take 40% of damage \n                     while using parachute."
+						+"\n                   - Take 50% of damage \n                     while falling"
 						+"\n                   - Take 200% fall damage     "
 						);
 

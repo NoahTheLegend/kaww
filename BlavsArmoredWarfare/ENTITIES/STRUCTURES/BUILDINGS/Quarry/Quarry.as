@@ -303,3 +303,12 @@ void onRender(CSprite@ this)
 		//GUI::DrawText("Wood: " + blob.get_s16(fuel_prop), Vec2f(pos2d.x - dim.x - 7, pos2d.y + y + 9), color_white);
 	}
 }
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (hitterBlob.hasTag("grenade") || hitterBlob.getName() == "c4")
+	{
+		return damage * 3.0f;
+	}
+	return damage;
+}
