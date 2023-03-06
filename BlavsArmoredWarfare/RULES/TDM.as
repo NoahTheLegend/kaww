@@ -1350,7 +1350,8 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 		warn("Last player left, quitting the game");
 		if (isServer())
 		{
-			QuitGame();
+			//QuitGame();
+			printf("tried to quitgame tdm.as line 1353");
 		}
 	}
 
@@ -1440,6 +1441,8 @@ void onTick(CRules@ this)
 
 				// still a small issue with this in some cases
 
+				printf("tried to kick players tdm.as line 1453");
+				/*
 				for (u16 i = 0; i < getPlayerCount(); i++)
 				{
 					// shave off of applicable team
@@ -1460,6 +1463,7 @@ void onTick(CRules@ this)
 						}
 					}
 				}
+				*/
 			}
 		}
 	}
