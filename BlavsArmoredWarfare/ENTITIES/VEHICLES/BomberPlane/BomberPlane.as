@@ -165,7 +165,7 @@ void onTick(CBlob@ this)
 				this.set_f32("velocity", Maths::Min(SPEED_MAX, this.get_f32("velocity") - 1.25f));
 			}
 
-			if (ap_pilot.isKeyPressed(key_action3) && this.get_u32("lastDropTime") < getGameTime()) 
+			if (ap_pilot.isKeyPressed(key_action3) && !this.isOnGround() && this.getVelocity().Length() > 5.0f && this.get_u32("lastDropTime") < getGameTime()) 
 			{
 				CInventory@ inv = this.getInventory();
 				if (inv !is null) 
@@ -381,7 +381,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (isServer() && blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck")))
 	{
 		f32 mod_self = 0.5f;
-		f32 mod_target = 2.0f;
+		f32 mod_target = 8.75f;
 		blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
 		this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
 	}

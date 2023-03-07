@@ -23,6 +23,8 @@ void onInit(CBlob@ this)
 	this.SetLightRadius(86.0f);
 	this.SetLightColor(SColor(255, 255, 240, 155));
 
+	this.inventoryButtonPos = Vec2f(-18.0f, 0);
+
 	this.set_u16("max_respawns", MIN_RESPAWNS+(getPlayerCount()/ADD_RESPAWN_PER_PLAYERS));
 	//printf(""+this.get_u16("max_respawns"));
 
@@ -72,7 +74,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	if (caller is null) return;
 	if (!canSeeButtons(this, caller)) return;
 
-	this.set_Vec2f("shop offset", Vec2f(-18, 0));
+	this.set_Vec2f("shop offset", Vec2f(0, 0));
 
 	this.set_bool("shop available", true);
 
