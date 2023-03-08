@@ -71,12 +71,12 @@ void onInit(CBlob@ this)
 		case _pszh4turret: // smol APC cannon
 		case _heavygun: // MG
 		case _barge:
-		case _techbigtruck:
 		armorRating = 2; break;
 
 		case _uh1: // heli
 		case _techtruck: // MG truck
 		case _gun: // light MG
+		case _techbigtruck:
 		armorRating = 1; break;
 
 		case _bf109: // plane
@@ -173,8 +173,6 @@ void onInit(CBlob@ this)
 		backsideOffset = 20.0f; break;
 		
 		case _m60: // normal tank
-		backsideOffset = 16.0f; break;
-
 		case _btr82a: // big APC
 		case _bradley:
 		case _artillery:
@@ -193,6 +191,9 @@ void onInit(CBlob@ this)
 
 		case _bomberplane: // plane
 		backsideOffset = 16.0f; break;
+
+		case _techbigtruck:
+		backsideOffset = -32.0f; break;
 	}
 
 	// speedy stuff
@@ -226,6 +227,7 @@ void onInit(CBlob@ this)
 		intake = 100.0f; break;
 
 		case _motorcycle: // bike
+		case _artillery:
 		intake = 200.0f; break;
 	}
 	this.set_f32("add_gas_intake", intake);
@@ -926,14 +928,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.hasTag("grenade"))
 	{
+		if (this.hasTag("aerial")) return damage*4.5f;
+		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*0.75f;
+
 		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/8.0f);
 		if (blocks_between > 5) damage /= 1.0f-(5.0f-blocks_between);
-		return (this.getName() == "maus" || armorRating > 4 ? damage*0.5f : damage * (1.25+XORRandom(10)*0.01f));
+		return (this.getName() == "maus" || armorRating > 4 ? damage*0.9f : damage * (1.5f+XORRandom(21)*0.01f));
 	}
 
 	if (hitterBlob.getName() == "c4")
 	{
-		damage *= 1.5f;
+		damage *= 1.25f;
 	}
 
 	if (armorRating >= 3 && customData == Hitters::sword) return 0;

@@ -9,8 +9,8 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u16 cooldown_time = 600; // 20 sec cd
-const f32 damage_modifier = 1.33f;
+const u16 cooldown_time = 750; // 25 sec cd
+const f32 damage_modifier = 1.65f;
 
 const s16 init_gunoffset_angle = -2; // up by so many degrees
 const u8 barrel_compression = 6; // max barrel movement
@@ -379,7 +379,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		u8 charge_prop = _charge;
 
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
-		Vec2f vel = Vec2f(0.0f, -37.5f+XORRandom(51)*0.1f).RotateBy(angle);
+		Vec2f vel = Vec2f(0.0f, -42.5f+XORRandom(51)*0.1f).RotateBy(angle);
 		bullet.setVelocity(vel);
 		Vec2f bullet_pos = this.getPosition()+Vec2f(this.isFacingLeft()?-8.0f:8.0f, -4) + Vec2f((this.isFacingLeft() ? -1 : 1)*16.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
 		Vec2f pos = this.getPosition()+Vec2f(this.isFacingLeft()?-8.0f:8.0f, -4) + Vec2f((this.isFacingLeft() ? -1 : 1)*50.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));

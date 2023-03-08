@@ -46,7 +46,7 @@ void onInit(CBlob@ this)
 	
 
 
-	this.getShape().SetOffset(Vec2f(-4, 2));
+	this.getShape().SetOffset(Vec2f(4, 2.5f));
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
@@ -230,7 +230,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {
 	if (hitterBlob.hasTag("bullet"))
 	{
-		return damage *= 0.5f;
+		damage += 0.25f;
+		return (hitterBlob.hasTag("strong") ? damage * 0.775f : damage * 0.5f);
 	}
 	return damage;
 }

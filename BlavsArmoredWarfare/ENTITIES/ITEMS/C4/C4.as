@@ -219,7 +219,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				this.set_bool("active", true);
 				this.set_bool("explode", true);
-				this.set_u16("exploding", 300);
+				this.set_u16("exploding", 7.5f*getTicksASecond());
 				this.Sync("active", true);
 				this.Sync("explode", true);
 				this.Sync("exploding", true);
@@ -240,7 +240,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		this.SendCommand(this.getCommandID("switch"), params);
 	}
 
-	if (!this.isAttached())
+	if (!this.isAttached() && blob is null)
 	{
 		CMap@ map = getMap();
 		if (map !is null)

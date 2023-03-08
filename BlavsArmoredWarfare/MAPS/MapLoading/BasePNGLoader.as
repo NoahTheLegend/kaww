@@ -403,7 +403,7 @@ class PNGLoader
 			case map_colors::bomber:      autotile(offset); spawnVehicle(map, "bomber",   offset); break;
 
 			// KAWW
-			case map_colors::refinery:    autotile(offset); spawnBlob(map, "refinery", offset); break;
+			case map_colors::refinery:    autotile(offset); spawnBlob(map, "refinery", offset, -1); break;
 
 			case map_colors::red_turret:       autotile(offset); spawnVehicle(map, "defenseturret",   offset, 1); break;
 			case map_colors::blue_turret:      autotile(offset); spawnVehicle(map, "defenseturret",   offset, 0); break;
@@ -473,7 +473,8 @@ class PNGLoader
 			case map_colors::cacti:    autotile(offset); spawnBlob(map, "cacti", offset); break;
 
 			case map_colors::hanginglantern:    autotile(offset); spawnBlob(map, "hanginglantern", offset); break;
-			//case map_colors::bonepine:    autotile(offset); spawnBlob(map, "bonepine", offset); break;
+			case map_colors::bonepile:    autotile(offset); spawnBlob(map, "bonepile", offset); break;
+			case map_colors::crashedheli:    autotile(offset); spawnBlob(map, "crashedheli", offset); break;
 
 			case map_colors::blue_munitionsshop:        autotile(offset); spawnBlob(map, "munitionsshop", offset, 0); break;
 			case map_colors::red_munitionsshop:         autotile(offset); spawnBlob(map, "munitionsshop", offset, 1); break;
@@ -512,12 +513,45 @@ class PNGLoader
 
 			case map_colors::constructionyard:     autotile(offset); spawnBlob(map, "constructionyard", offset); break;
 			case map_colors::baseconstructionyard:     autotile(offset); spawnBlob(map, "baseconstructionyard", offset); break;
+
 			case map_colors::b_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, 0); break;
 			case map_colors::r_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, 1); break;
 			case map_colors::b_vehiclebuildert2:    autotile(offset); spawnBlob(map, "vehiclebuildert2", offset, 0); break;
 			case map_colors::r_vehiclebuildert2:    autotile(offset); spawnBlob(map, "vehiclebuildert2", offset, 1); break;
 			case map_colors::b_vehiclebuildert3:    autotile(offset); spawnBlob(map, "vehiclebuildert3", offset, 0); break;
 			case map_colors::r_vehiclebuildert3:    autotile(offset); spawnBlob(map, "vehiclebuildert3", offset, 1); break;
+
+			case map_colors::b_vehiclebuilderconst:     autotile(offset); spawnBlob(map, "vehiclebuilderconst", offset, 0); break;
+			case map_colors::r_vehiclebuilderconst:     autotile(offset); spawnBlob(map, "vehiclebuilderconst", offset, 1); break;
+			case map_colors::b_vehiclebuildert2const:    autotile(offset); spawnBlob(map, "vehiclebuildert2const", offset, 0); break;
+			case map_colors::r_vehiclebuildert2const:    autotile(offset); spawnBlob(map, "vehiclebuildert2const", offset, 1); break;
+			case map_colors::b_vehiclebuildert3const:    autotile(offset); spawnBlob(map, "vehiclebuildert3const", offset, 0); break;
+			case map_colors::r_vehiclebuildert3const:    autotile(offset); spawnBlob(map, "vehiclebuildert3const", offset, 1); break;
+
+			case map_colors::b_vehiclebuilderground:     autotile(offset); spawnBlob(map, "vehiclebuilderground", offset, 0); break;
+			case map_colors::r_vehiclebuilderground:     autotile(offset); spawnBlob(map, "vehiclebuilderground", offset, 1); break;
+			case map_colors::b_vehiclebuildert2ground:    autotile(offset); spawnBlob(map, "vehiclebuildert2ground", offset, 0); break;
+			case map_colors::r_vehiclebuildert2ground:    autotile(offset); spawnBlob(map, "vehiclebuildert2ground", offset, 1); break;
+			case map_colors::b_vehiclebuildert3ground:    autotile(offset); spawnBlob(map, "vehiclebuildert3ground", offset, 0); break;
+			case map_colors::r_vehiclebuildert3ground:    autotile(offset); spawnBlob(map, "vehiclebuildert3ground", offset, 1); break;
+
+			case map_colors::b_vehiclebuildergroundconst:     autotile(offset); spawnBlob(map, "vehiclebuildergroundconst", offset, 0); break;
+			case map_colors::r_vehiclebuildergroundconst:     autotile(offset); spawnBlob(map, "vehiclebuildergroundconst", offset, 1); break;
+			case map_colors::b_vehiclebuildert2groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2groundconst", offset, 0); break;
+			case map_colors::r_vehiclebuildert2groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2groundconst", offset, 1); break;
+			case map_colors::b_vehiclebuildert3groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert3groundconst", offset, 0); break;
+			case map_colors::r_vehiclebuildert3groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert3groundconst", offset, 1); break;
+
+			case map_colors::b_vehiclebuilderair:     autotile(offset); spawnBlob(map, "vehiclebuilderair", offset, 0); break;
+			case map_colors::r_vehiclebuilderair:     autotile(offset); spawnBlob(map, "vehiclebuilderair", offset, 1); break;
+			case map_colors::b_vehiclebuildert2air:    autotile(offset); spawnBlob(map, "vehiclebuildert2air", offset, 0); break;
+			case map_colors::r_vehiclebuildert2air:    autotile(offset); spawnBlob(map, "vehiclebuildert2air", offset, 1); break;
+
+			case map_colors::b_vehiclebuilderairconst:     autotile(offset); spawnBlob(map, "vehiclebuilderairconst", offset, 0); break;
+			case map_colors::r_vehiclebuilderairconst:     autotile(offset); spawnBlob(map, "vehiclebuilderairconst", offset, 1); break;
+			case map_colors::b_vehiclebuildert2airconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2airconst", offset, 0); break;
+			case map_colors::r_vehiclebuildert2airconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2airconst", offset, 1); break;
+
 			case map_colors::jourcop: 			   autotile(offset); spawnBlob(map, "jourcop", offset, 100); break;
 
 			// Ammo
@@ -665,13 +699,13 @@ class PNGLoader
 				map.CreateSky(color_black, Vec2f(1.0f, 1.0f), 200, "Sprites/Back/cloud", 0); // sky
 				map.CreateSkyGradient("Sprites/skygradient.png"); // override sky color with gradient
 				thisrules.set_bool("allowclouds", true);
-				thisrules.set_u8("brightmod", 0);
+				thisrules.set_u8("brightmod", 0); //100
 				
 				map.AddBackground("Backgrounds/BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
 				map.AddBackground("Backgrounds/City.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
 				map.AddBackground("Backgrounds/Forest.png", Vec2f(0.0f, -120.0f), Vec2f(0.35f, 0.35f), color_white);
 
-				SetScreenFlash(255,   0,   0,   0,   3.5);
+				SetScreenFlash(255,   0,   0,   0,   6.5);
 				break;
 			}
 			case 3: //snow

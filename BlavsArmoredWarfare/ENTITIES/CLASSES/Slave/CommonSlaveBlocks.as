@@ -36,7 +36,7 @@
 const string blocks_property = "blocks";
 const string inventory_offset = "inventory offset";
 
-void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_override = "")
+void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in gamemode_override = "")
 {
 	InitCosts();
 	CRules@ rules = getRules();
@@ -59,68 +59,74 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 	BuildBlock[] page_0;
 	blocks.push_back(page_0);
 	{
-		BuildBlock b(CMap::tile_castle, "stone_block", "$stone_block$", "Stone Block\nBasic building block");
+		BuildBlock b(CMap::tile_castle, "stone_block", "$stone_block$", "Stone Block\nBasic building block\n");
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(CMap::tile_castle_back, "back_stone_block", "$back_stone_block$", "Back Stone Wall\nExtra support");
+		BuildBlock b(CMap::tile_castle_back, "back_stone_block", "$back_stone_block$", "Back Stone Wall\nExtra support\n");
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 2);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "stone_door", "$stone_door$", "Stone Door\nPlace next to walls");
+		BuildBlock b(0, "trap_block", "$trap_block$", "Trap Block\nOnly enemies can pass\n");
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 25);
+		blocks[0].push_back(b);
+	}
+	{
+		BuildBlock b(0, "stone_door", "$stone_door$", "Stone Door\nPlace next to walls\n");
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 40);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(CMap::tile_wood, "wood_block", "$wood_block$", "Wood Block\nCheap block\nwatch out for fire!");
+		BuildBlock b(CMap::tile_wood, "wood_block", "$wood_block$", "Wood Block\nCheap block\nwatch out for fire!\n");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(CMap::tile_wood_back, "back_wood_block", "$back_wood_block$", "Back Wood Wall\nCheap extra support");
+		BuildBlock b(CMap::tile_wood_back, "back_wood_block", "$back_wood_block$", "Back Wood Wall\nCheap extra support\n");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 1);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "wooden_door", "$wooden_door$", "Wooden Door\nPlace next to walls");
+		BuildBlock b(0, "wooden_platform", "$wooden_platform$", "Wooden Platform\nOne way platform\n");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(CMap::tile_scrap, "scrap_block", "$scrap_block$", "Scrap block\nReinforced block of stone, resistable to explosions and direct hits.");
+		BuildBlock b(0, "wooden_door", "$wooden_door$", "Wooden Door\nPlace next to walls\n");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
+		blocks[0].push_back(b);
+	}
+	{
+		BuildBlock b(CMap::tile_scrap, "scrap_block", "$scrap_block$", "Scrap block\nReinforced block of stone, resistable to explosions and direct hits.\n");
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
 		blocks[0].push_back(b);
 	}
-	{
-		BuildBlock b(CMap::tile_cdirt, "cdirt_block", "$cdirt_block$", "Compacted dirt\nReinforced block of dirt, almost immune to explosions\nand bullets, can be built only on dirt walls.");
+	{ // TILEINDEX IN BLOCKPLACEMENT.AS IS SET MANUALLY TO THE INDEX OF THIS BLOCK!
+		BuildBlock b(CMap::tile_cdirt, "cdirt_block", "$cdirt_block$", "Compacted dirt\nReinforced block of dirt, almost immune to explosions\nand bullets, can be built only on dirt walls.\n");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 5);
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 1);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "trap_block", "$trap_block$", "Trap Block\nOnly enemies can pass");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 25);
-		blocks[0].push_back(b);
-	}
-	{
-		AddIconToken("$construction_yard_icon$", "CYardIcon.png", Vec2f(16, 16), 2);
-		BuildBlock b(0, "constructionyard", "$construction_yard_icon$", "Construction Yard\nStand in an open space\nand tap this button.");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
-		b.buildOnGround = true;
-		b.size.Set(32, 24);
-		blocks[0].insertAt(9, b);
-	}
-	{
-		BuildBlock b(0, "ladder", "$ladder$", "Ladder\nAnyone can climb it");
+		BuildBlock b(0, "ladder", "$ladder$", "Ladder\nAnyone can climb it\n");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 5);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "wooden_platform", "$wooden_platform$", "Wooden Platform\nOne way platform");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
+		AddIconToken("$barbedwire_icon$", "BarbedWire.png", Vec2f(16, 16), 0);
+		BuildBlock b(0, "barbedwire", "$barbedwire_icon$", "Barbed Wire\nHard to pass through. Breaks on impact with vehicles.\nRequires to be next to solid blocks.");
+		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 1);
+		blocks[0].push_back(b);
+	}
+	{
+		AddIconToken("$construction_yard_icon$", "CYardIcon.png", Vec2f(16, 16), 2);
+		BuildBlock b(0, "constructionyard", "$construction_yard_icon$", "Construction Yard\nStand in an open space\nand tap this button.\n");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
+		b.buildOnGround = true;
+		b.size.Set(24, 24);
 		blocks[0].push_back(b);
 	}
 	//{
@@ -130,22 +136,25 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, const string&in gamemode_ove
 	//}
 	{
 		AddIconToken("$sandbags_icon$", "SandbagIcon.png", Vec2f(16, 16), 0);
-		BuildBlock b(0, "sandbags", "$sandbags_icon$", "Sandbags\nBags densely filled with sand, great for stopping bullets");
+		BuildBlock b(0, "sandbags", "$sandbags_icon$", "Sandbags\nBags densely filled with sand, great for stopping bullets\n");
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 50);
 		b.buildOnGround = true;
 		b.size.Set(24, 8);
 		blocks[0].push_back(b);
 	}
 	{
-		AddIconToken("$barbedwire_icon$", "BarbedWire.png", Vec2f(16, 16), 0);
-		BuildBlock b(0, "barbedwire", "$barbedwire_icon$", "Barbed Wire\nHard to pass through. Breaks on impact with vehicles.");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
+		AddIconToken("$bush_icon$", "BushIcon.png", Vec2f(16, 16), 0);
+		BuildBlock b(0, "bush", "$bush_icon$", "Bush\nDisguises small area\n");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 15);
 		blocks[0].push_back(b);
 	}
 	{
-		AddIconToken("$bush_icon$", "BushIcon.png", Vec2f(16, 16), 0);
-		BuildBlock b(0, "bush", "$bush_icon$", "Bush\nDisguises small area");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 15);
+		AddIconToken("$wooden_gate$", "WoodenGate.png", Vec2f(22, 16), 0, this.getTeamNum());
+		BuildBlock b(0, "woodengate", "$wooden_gate$", "Wooden Gate\nGate for vehicles. Face the direction you want to rotate it.\n");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 250);
+		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
+		b.buildOnGround = true;
+		b.size.Set(8, 40);
 		blocks[0].push_back(b);
 	}
 }

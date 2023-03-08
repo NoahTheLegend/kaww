@@ -469,7 +469,6 @@ void ManageCamera(CBlob@ this)
 		CBlob@ localblob = getLocalPlayer().getBlob();
 		if (localblob.hasTag("binoculars"))
 		{
-			lock_zoom = true;
 			camera.mouseFactor = 0.65f;
 		}
 		else if (localblob.hasTag("artillery"))

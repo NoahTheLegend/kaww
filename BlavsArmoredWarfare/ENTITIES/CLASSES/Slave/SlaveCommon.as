@@ -59,8 +59,11 @@ CBlob@ server_BuildBlob(CBlob@ this, BuildBlock[]@ blocks, uint index)
 
 	Vec2f pos = this.getPosition();
 
+	bool building = false;
+
 	if (b.buildOnGround)
 	{
+		building = true;
 		const bool onground = this.isOnGround();
 
 		bool fail = !onground;
@@ -157,6 +160,7 @@ CBlob@ server_BuildBlob(CBlob@ this, BuildBlock[]@ blocks, uint index)
 		CBlob@ blockBlob = server_CreateBlob(b.name, this.getTeamNum(), Vec2f(0,0));
 		if (blockBlob !is null)
 		{
+			if (building) blockBlob.SetFacingLeft(this.isFacingLeft());
 			CShape@ shape = blockBlob.getShape();
 			shape.SetStatic(false);
 			shape.server_SetActive(false);

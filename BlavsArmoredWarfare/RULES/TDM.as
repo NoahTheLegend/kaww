@@ -304,7 +304,10 @@ shared class TDMSpawns : RespawnSystem
 		//{
 		//	printf("NULL");
 		//}
-		if (p !is null && getBlobByNetworkID(p.get_u16("spawnpick")) !is null && p.getTeamNum() == getBlobByNetworkID(p.get_u16("spawnpick")).getTeamNum())
+		CBlob@ sp = getBlobByNetworkID(p.get_u16("spawnpick"));
+		if (p !is null && sp !is null
+		&& sp.get_u16("capture time") == 0
+		&& p.getTeamNum() == sp.getTeamNum())
 		{// && getBlobByNetworkID(p.get_u16("spawnpick")).hasTag("spawn")
 			//printf("done");
 			CBlob@ b = getBlobByNetworkID(p.get_u16("spawnpick"));
@@ -436,12 +439,12 @@ shared class TDMCore : RulesCore
 				//print("2" + team.spawns[i]);
 
 				array<string> classes = {
-				"revolver",
-				"ranger",
-				"shotgun",
-				"sniper",
-				"mp5"
-				};
+					"revolver",
+					"ranger",
+					"shotgun",
+					"sniper",
+					"mp5"
+					};
 				
 				float exp = _rules.get_u32(info.username + "_exp");
 				int unlocked = 0;
@@ -456,7 +459,11 @@ shared class TDMCore : RulesCore
 				int index = Maths::Min(XORRandom(classes.length), unlocked);
 				string line = classes[index];
 
-                info.blob_name = line;//(XORRandom(100) >= 90 ? "revolver" : (XORRandom(100) >= 80 ? "shotgun" : (XORRandom(100) >= 70 ? "ranger" : (XORRandom(100) >= 60 ? "sniper" : (XORRandom(100) >= 50 ? "mp5" : "shotgun"))))); // dont ask
+				if (_rules.get_string("map_name") == "Abacus") {
+					line = "revolver";
+				}
+
+                info.blob_name = line;
             }
         }
     }
@@ -520,7 +527,7 @@ shared class TDMCore : RulesCore
 			}
 		}
 
-		if ((rules.isIntermission() || rules.isWarmup()) && (!allTeamsHavePlayers()))  //CHECK IF TEAMS HAVE ENOUGH PLAYERS
+		if ((rules.get_string("map_name") != "Abacus") && ((rules.isIntermission() || rules.isWarmup()) && (!allTeamsHavePlayers())))  //CHECK IF TEAMS HAVE ENOUGH PLAYERS
 		{
 			gametime = getGameTime() + warmUpTime;
 			rules.set_u32("game_end_time", gametime + gameDuration);
@@ -572,13 +579,8 @@ shared class TDMCore : RulesCore
 						CBlob@ player_blob = e_player.getBlob();
 						bool blob_alive = player_blob !is null && player_blob.getHealth() > 0.0f;
 
-						if (blob_alive)
-						{
-							temp += "k";
-						}
-						else {
-							temp += "s";
-						}
+						if (blob_alive) temp += "k";
+						else temp += "s";
 					}
 				}
 			}
@@ -653,7 +655,11 @@ shared class TDMCore : RulesCore
 		int index = Maths::Min(XORRandom(classes.length), unlocked);
 		string line = classes[index];
 
-		TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), line); //player.isBot() ? "revolver" : (XORRandom(512) >= 256 ? "revolver" : "revolver")
+		if (getRules().get_string("map_name") == "Abacus") {
+			line = "revolver";
+		}
+
+		TDMPlayerInfo p(player.getUsername(), player.getTeamNum(), line);
 		players.push_back(p);
 		ChangeTeamPlayerCount(p.team, 1);
 	}
@@ -759,11 +765,9 @@ shared class TDMCore : RulesCore
 		   	"Vietnam.png",
 		   	"FragFest.png",
 		   	"Florida.png",
-		   	"SiegeBeach.png",
 		   	"SoldiercombatTDM.png",
 		   	"Flattening.png",
 		   	"RooftopTanks.png",
-		   	"HamburgerHill.png"
 		};
 
 		//spawn the spawns :D
@@ -1098,16 +1102,22 @@ void Reset(CRules@ this)
 	//{
 	//	Reset(this);
 	//}
-
-	for (u16 i = 0; i < getPlayerCount(); i++)
-    {
-        CPlayer@ player = getPlayer(i);
-		if (player is null) continue;
-        if (isServer())
-        {
-            player.server_setCoins(40);
-        }
-    }
+	
+	if (this.get_string("map_name") == "Abacus") {
+		for (u16 i = 0; i < getPlayerCount(); i++)
+		{
+			CPlayer@ p = getPlayer(i);
+			if (p is null) continue;
+			if (isServer()) p.server_setCoins(0);
+		}
+	} else {
+		for (u16 i = 0; i < getPlayerCount(); i++)
+		{
+			CPlayer@ p = getPlayer(i);
+			if (p is null) continue;
+			if (isServer()) p.server_setCoins(40);
+		}
+	}
 
 	TDMSpawns spawns();
 	TDMCore core(this, spawns);
@@ -1339,7 +1349,8 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 		warn("Last player left, quitting the game");
 		if (isServer())
 		{
-			QuitGame();
+			//QuitGame();
+			printf("tried to quitgame tdm.as line 1353");
 		}
 	}
 
@@ -1429,6 +1440,8 @@ void onTick(CRules@ this)
 
 				// still a small issue with this in some cases
 
+				printf("tried to kick players tdm.as line 1453");
+				/*
 				for (u16 i = 0; i < getPlayerCount(); i++)
 				{
 					// shave off of applicable team
@@ -1449,6 +1462,7 @@ void onTick(CRules@ this)
 						}
 					}
 				}
+				*/
 			}
 		}
 	}
@@ -1539,22 +1553,25 @@ void onTick(CRules@ this)
 			this.set_s16("redTickets", 200);
 			this.Sync("redTickets", true);
 		}
-		for (u16 i = 0; i < getPlayerCount(); i++)
-        {
-            CPlayer@ player = getPlayer(i);
-			if (player is null || player.getBlob() is null) continue;
-            if (isServer())
-            {
-				if (this.get_string(player.getUsername() + "_perk") == "Wealthy")
+		if (this.get_string("map_name") != "Abacus")
+		{
+			for (u16 i = 0; i < getPlayerCount(); i++)
+			{
+				CPlayer@ player = getPlayer(i);
+				if (player is null || player.getBlob() is null) continue;
+				if (isServer())
 				{
-					player.server_setCoins(player.getCoins()+2); // double
+					if (this.get_string(player.getUsername() + "_perk") == "Wealthy")
+					{
+						player.server_setCoins(player.getCoins()+2); // double
+					}
+					else
+					{
+						player.server_setCoins(player.getCoins()+1);
+					}
 				}
-				else
-				{
-					player.server_setCoins(player.getCoins()+1);
-				}
-            }
-        }
+			}
+		}
 	}
 
 	if (getGameTime() % 9000 == 0) // auto save exp every 5 minutes
@@ -1594,6 +1611,8 @@ void onInit(CRules@ this)
 	this.set("maptypes-classic", ClassicMaps);
 	this.set("maptypes-large", LargeMaps);
 	this.set("maptypes-average", AverageMaps);
+	this.set("maptypes-flag", FlagMaps);
+	this.set("maptypes-truck", TruckMaps);
 	this.set("maptypes-tdm", TdmMaps);
 }
 
@@ -1630,17 +1649,16 @@ const string[] LargeMaps = {
 	"Vietnam.png",
 	"FragFest.png",
 	"Florida.png",
-	"SiegeBeach.png",
 	"SoldiercombatTDM.png",
 	"Flattening.png",
 	"RooftopTanks.png",
-	"HamburgerHill.png",
 	"Goldy_KAWW_Sewage.png",
 	"BloodGulch.png",
 	"WorldwarFlagless.png",
 	"ClassicFlagless.png",
 	"BridgeWater.png",
-	"SiegeBeachWater.png"
+	"SiegeBeachWater_v2.png",
+	"FrogsLudendorff.png"
 };
 
 const string[] AverageMaps = {
@@ -1665,6 +1683,26 @@ const string[] AverageMaps = {
 	"Stratego.png",
 	"TheCityTDM.png",
 	"TriPointTDM.png"
+};
+
+const string[] FlagMaps = {
+	"WinterFactory.png",
+	"Bridge.png",
+	"Classic.png",
+	"Goldy_KAWW_Megalith.png",
+	"Mortar.png",
+	"PlainHills.png",
+	"Valley.png",
+	"Worldwar.png",
+	"TriPointTDM.png"
+};
+
+const string[] TruckMaps = {
+	"OldTouge.png",
+	"Fugue.png",
+	"Cavern.png",
+	"Florida.png",
+	"BloodGulch.png"
 };
 
 const string[] TdmMaps = {

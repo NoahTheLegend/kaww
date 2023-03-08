@@ -92,7 +92,7 @@ void onTick(CBlob@ this)
 						CBlob@ blob = hitInfos[i].blob;
 						if (blob !is null)
 						{
-							if (blob.hasTag("vehicle") || blob.hasTag("bunker") || blob.hasTag("structure"))
+							if (blob.hasTag("vehicle") || blob.hasTag("bunker") || blob.hasTag("structure") || blob.hasTag("door"))
 							{
 								if (blob.hasTag("respawn") || blob.hasTag("never_repair")) continue; // dont repair outposts
 								if (team == blob.getTeamNum() || blob.getTeamNum() >= 2)
@@ -118,9 +118,17 @@ void onTick(CBlob@ this)
 									{
 										repair_amount *= 20;
 									}
+									else if (blob.getName() == "heavygun")
+									{
+										repair_amount *= 7.5f;
+									}
 									else if (blob.hasTag("vehicle"))
 									{
 										repair_amount *= 2;
+									}
+									else if (blob.hasTag("door"))
+									{
+										repair_amount *= blob.getInitialHealth()/5;
 									}
 
 									if (blob.getHealth() + repair_amount <= blob.getInitialHealth())

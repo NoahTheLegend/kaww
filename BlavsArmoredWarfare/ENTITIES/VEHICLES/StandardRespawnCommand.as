@@ -93,11 +93,11 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Bloodthirst", "$3_class_icon$", "Bloodthirsty",
 						"Bloodthirst:\n\n"+"$3_class_icon$"+"Vampirism"
 						+"\n                   - Regenerate health when killing     "
-						+"\n                   - Take only 33% of other heal     "
+						+"\n                   - Take only 50% of other heal     "
 						+"\n\n                  Healing"
 						+"\n                   - Faster rate of regeneration   "
 						+"\n\n                  Silver bullets"
-						+"\n                   - Take 120% damage from bullets       "
+						+"\n                   - Take 110% damage from bullets       "
 						);
 
 	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",
@@ -115,7 +115,7 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
 						"Lucky:\n\n"+"$4_class_icon$"+"Fate's Friend"
 						+"\n                   - Always survive on 1 health          "
-						+"\n                   - Food and medkits delay the ability          "
+						+"\n                   - Food and medkits delay the ability         "
 						+"\n\n                  Lucky Charm"
 						+"\n                   - Must carry an Ace of Spades           "
 						);
@@ -139,9 +139,9 @@ void InitClasses(CBlob@ this)
 						"Paratrooper:\n\n"+"$9_class_icon$"+"Modernized Parachute"
 						+"\n                   - Use parachute any time"
 						+"\n                     (Hold W while falling)"
-						+"\n                   - Better parachute fly"
+						+"\n                   - Better parachute flight"
 						+"\n\n                  Heavy Load"
-						+"\n                   - Take 40% of damage \n                     while using parachute."
+						+"\n                   - Take 50% of damage \n                     while falling"
 						+"\n                   - Take 200% fall damage     "
 						);
 
@@ -348,24 +348,34 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			if (caller !is null)
 			{
 				CPlayer@ callerPlayer = caller.getPlayer();
-				getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
-				if (getNet().isServer())
+				if (callerPlayer !is null)
 				{
-					// prevents doubling up on perks, although.. lucky + bloodthirsty is very fun
-					if (caller.hasBlob("aceofspades", 1))
+					getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
+					if (getNet().isServer())
 					{
-						caller.TakeBlob("aceofspades", 1);
+						bool single_switch = this.getName() == "outpost";
+						if (single_switch)
+						{
+							CBitStream stream;
+							stream.write_u16(caller.getNetworkID());
+							this.SendCommand(this.getCommandID("lock_perkchange"), stream);
+						}
+						// prevents doubling up on perks, although.. lucky + bloodthirsty is very fun
+						if (caller.hasBlob("aceofspades", 1))
+						{
+							caller.TakeBlob("aceofspades", 1);
+						}
 					}
-				}
-				//caller.Tag("reload_sprite");
+					//caller.Tag("reload_sprite");
 
-				if (caller.isMyPlayer())
-				{
-					// sound
-					this.getSprite().PlaySound("/SwitchPerk", 1.0, perkconfig == "No Ammo" ? 0.8 : 1.1);
+					if (caller.isMyPlayer())
+					{
+						// sound
+						this.getSprite().PlaySound("/SwitchPerk", 1.0, perkconfig == "No Ammo" ? 0.8 : 1.1);
 
-					// chat message
-					client_AddToChat("Perk switched to " + perkconfig, SColor(255, 42, 42, 42));
+						// chat message
+						client_AddToChat("Perk switched to " + perkconfig, SColor(255, 42, 42, 42));
+					}
 				}
 			}
 		}

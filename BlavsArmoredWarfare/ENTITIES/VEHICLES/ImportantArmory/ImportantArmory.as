@@ -55,7 +55,7 @@ void onInit(CBlob@ this)
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-26.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-27.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 
-	this.getShape().SetOffset(Vec2f(-4, 0)); //0,8
+	this.getShape().SetOffset(Vec2f(-4, 2)); //0,8
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
@@ -86,30 +86,30 @@ void onInit(CBlob@ this)
 
 	{
 		ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 5);
+		AddRequirement(s.requirements, "coin", "", "Coins", 3);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 25);
+		AddRequirement(s.requirements, "coin", "", "Coins", 15);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "105mm Shells", "$mat_bolts$", "mat_bolts", "Ammo for a tank's main gun.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 50);
+		AddRequirement(s.requirements, "coin", "", "Coins", 30);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total. Bonus: allows medics to perform healing faster.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 20);
+		AddRequirement(s.requirements, "coin", "", "Coins", 15);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 40);
+		AddRequirement(s.requirements, "coin", "", "Coins", 35);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
-		u8 cost = 40;
+		u8 cost = 35;
 		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", cost);
 	}
@@ -120,11 +120,11 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 25);
+		AddRequirement(s.requirements, "coin", "", "Coins", 15);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas an small explosion radius.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 60);
+		AddRequirement(s.requirements, "coin", "", "Coins", 50);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
@@ -140,11 +140,11 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nPLUSES: Good engine power, fast, good elevation angles\nMINUSES: Medium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 55);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 45);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nPLUSES: Thick armor, big cannon damage.\nMINUSES: Slow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses 105mm & 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 75);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 65);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
@@ -166,7 +166,7 @@ void onInit(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
@@ -178,7 +178,7 @@ void onInit(CBlob@ this)
 		s.buttonheight = 1;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "C-4 Explosive", "$c4$", "c4", "C-4\nA strong explosive, very effective against blocks and doors.\n\nTakes 10 seconds after activation to explode.\nYou can deactivate it as well.", false, false);
+		ShopItem@ s = addShopItem(this, "C-4 Explosive", "$c4$", "c4", "C-4\nA strong explosive, very effective against blocks and doors.\n\nTakes 7.5 seconds after activation to explode.\nYou can deactivate it as well.", false, false);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -527,13 +527,21 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), getGameTime()+150);
 	}
-	if (hitterBlob.getName() == "missile_javelin" || hitterBlob.getName() == "ballista_bolt")
+	if (hitterBlob.getName() == "missile_javelin")
 	{
-		return damage * 1.25f;
+		return damage * 0.7f;
+	}
+	if (hitterBlob.getName() == "ballista_bolt")
+	{
+		return damage * 1.4f;
 	}
 	if (hitterBlob.hasTag("grenade"))
 	{
 		return damage * 0.5f;
+	}
+	if (hitterBlob.getName() == "c4")
+	{
+		return damage * 0.25f;
 	}
 	if (hitterBlob.hasTag("bullet"))
 	{

@@ -77,6 +77,7 @@ void DoExplosion(CBlob@ this)
 			for (int i = 0; i < 6 + XORRandom(2) ; i++)
 			{
 				CBlob@ blob = server_CreateBlob("flame", -1, this.getPosition() + Vec2f(0, -8));
+				if (blob !is null) blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
 				Vec2f nv = Vec2f((XORRandom(100) * 0.01f * vel.x * 1.30f), -(XORRandom(100) * 0.01f * 3.00f));
 				
 				blob.setVelocity(nv);
@@ -92,7 +93,7 @@ void DoExplosion(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return ((blob.isCollidable() && !blob.hasTag("bullet") && blob.getTeamNum() != this.getTeamNum()) || (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())) && ((blob.getName() == "wooden_platform" || blob.hasTag("door")) || (blob.getTeamNum() == this.getTeamNum() && !blob.getShape().isStatic())); 
+	return ((blob.isCollidable() && !blob.hasTag("bullet") && (blob.getTeamNum() != this.getTeamNum() || blob.hasTag("friendly_collide"))) || (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())) && ((blob.getName() == "wooden_platform" || blob.hasTag("door")) || (blob.getTeamNum() == this.getTeamNum() && !blob.getShape().isStatic())); 
 }
 
 bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)

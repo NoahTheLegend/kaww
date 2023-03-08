@@ -77,17 +77,14 @@ void onInit(CBlob@ this)
 	// auto-load some ammo initially
 	if (getNet().isServer())
 	{
-		CBlob@ ammo = server_CreateBlob("mat_7mmround");
-		if (ammo !is null)
+		for (u8 i = 0; i < 4; i++)
 		{
-			if (!this.server_PutInInventory(ammo))
-				ammo.server_Die();
-		}
-		CBlob@ ammo2 = server_CreateBlob("mat_7mmround");
-		if (ammo2 !is null)
-		{
-			if (!this.server_PutInInventory(ammo2))
-				ammo2.server_Die();
+			CBlob@ ammo = server_CreateBlob("mat_7mmround");
+			if (ammo !is null)
+			{
+				if (!this.server_PutInInventory(ammo))
+					ammo.server_Die();
+			}
 		}
 	}
 }
@@ -339,7 +336,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 		u16 charge = v.charge;
 		f32 anglereal = Vehicle_getWeaponAngle(this, v);
 		f32 angle = anglereal * (this.isFacingLeft() ? -1 : 1);
-		angle += ((XORRandom(512) - 256) / 120.0f);
+		angle += ((XORRandom(400) - 200) / 120.0f);
 
 		Vec2f vel = Vec2f(500.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
 		bullet.setVelocity(vel);
@@ -467,7 +464,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (!this.isAttached())
 	{
 		if (customData == Hitters::explosion || customData == Hitters::keg) damage *= 2.5f;
-		damage *= 2.5f;
+		damage *= 1.5f;
 	}
 	return damage;
 }

@@ -93,7 +93,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
 			if (proj !is null)
 			{
-				proj.server_SetTimeToDie(4.0);
+				proj.server_SetTimeToDie(5.5);
 				proj.Tag("aircraft_bullet");
 			}
 
@@ -531,7 +531,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (isServer() && blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck")))
 	{
 		f32 mod_self = 0.5f;
-		f32 mod_target = 4.0f;
+		f32 mod_target = 7.5f;
 		blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
 		this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
 	}
@@ -628,6 +628,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
+		damage += 0.05f;
 		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.25f;
 		return damage * (hitterBlob.hasTag("strong") ? 0.75f : 0.6f);
 	}

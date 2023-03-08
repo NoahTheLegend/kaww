@@ -260,14 +260,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (!solid)
+	if (!solid || (blob !is null && blob.hasTag("bunker")))
 	{
 		if (!this.getShape().isStatic() && this.get_u16("follow_id") == 0 && this.getName() == "sagrenade" && !this.isAttached())
 		{
-			if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("vehicle") || blob.hasTag("player") || blob.hasTag("bunker")))
+			if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("vehicle") || blob.hasTag("player")
+			|| blob.hasTag("bunker") || blob.hasTag("door") || blob.getName() == "wooden_platform"))
 			{
 				this.getShape().setFriction(100.0f);
-				this.set_Vec2f("follow_offset", blob.getPosition() - this.getPosition());
+				this.set_Vec2f("follow_offset", blob.getPosition() - this.getPosition() - this.getOldVelocity()/2);
 				this.set_u16("follow_id", blob.getNetworkID());
 				this.set_bool("follow_fl", blob.isFacingLeft());
 				this.setVelocity(Vec2f(0,0));

@@ -21,6 +21,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (caller is null) return;
+	if (caller.exists("next_med") && caller.get_u32("next_med") >= getGameTime()) return;
 
 	if (caller.getHealth() < caller.getInitialHealth()-0.1f)
 	{
@@ -37,15 +38,21 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
 	if (cmd == this.getCommandID("usemed"))
 	{
+		u16 blob_id;
+		if (!params.saferead_u16(blob_id)) return;
+
+		CBlob@ blob = getBlobByNetworkID(blob_id);
+
+		if (blob !is null)
+		{
+			if (blob.get_u32("next_med") >= getGameTime()) return;
+			blob.set_u32("next_med", getGameTime()+15);
+		}
+
 		this.getSprite().PlaySound("Heart.ogg");
 
 		if (isServer())
 		{
-			u16 blob_id;
-			if (!params.saferead_u16(blob_id)) return;
-
-			CBlob@ blob = getBlobByNetworkID(blob_id);
-			
 			if (blob !is null)
 			{
 				//if (blob.getHealth() > oldHealth)
@@ -53,14 +60,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 					if (blob.hasBlob("aceofspades", 1))
 					{
 						blob.TakeBlob("aceofspades", 1);
-						blob.set_u32("aceofspades_timer", getGameTime()+30);
+						blob.set_u32("aceofspades_timer", getGameTime()+90);
 					}
 				}
 
 				f32 heal_amount = 1.5f;
 				if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
 				{
-					heal_amount /= 3;
+					heal_amount /= 2;
 				}
 				blob.server_Heal(heal_amount);
 				

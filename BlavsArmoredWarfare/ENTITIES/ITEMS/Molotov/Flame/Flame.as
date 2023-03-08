@@ -57,11 +57,18 @@ void onTick(CBlob@ this)
 				CBitStream params;
 				b.SendCommand(b.getCommandID("activate"), params);
 			}
-			if (b.hasTag("flesh") || b.hasTag("weak vehicle") || b.hasTag("apc"))
+			else if (b.hasTag("flesh") || b.hasTag("weak vehicle") || b.hasTag("apc"))
 			{
 				if (getGameTime() % 8 == 0)
 				{
 					this.server_Hit(b, this.getPosition(), Vec2f(0, 0.33f), 0.65f, Hitters::fire, true);
+				}
+			}
+			else if (b.getName() == "woodengate")
+			{
+				if (getGameTime() % 15 == 0)
+				{
+					this.server_Hit(b, this.getPosition(), Vec2f(0, 0.33f), 0.66f, Hitters::fire, true);
 				}
 			}
 		}

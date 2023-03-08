@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 
 	//this.set_TileType("background tile", CMap::tile_wood_back);
 
-	this.getSprite().SetZ(-50); //background
+	this.getSprite().SetZ(-100); //background
 	this.getShape().getConsts().mapCollisions = false;
 
 	//INIT COSTS
@@ -37,19 +37,28 @@ void onInit(CBlob@ this)
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Outpost", "$outpost$", "outpost", "An outpost. Allows your team to respawn here, but with shorter immunity time.\nHas limited uses (5+1 per 2 players).");
+		ShopItem@ s = addShopItem(this, "Outpost", "$outpost$", "outpost", "An outpost that llows your team to respawn here, but with shorter spawn immunity time.\nHas limited uses.");
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 200);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 250);
+		s.customButton = true;
+		s.buttonwidth = 2;
+		s.buttonheight = 2;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Bunker", "$bunker$", "bunker", "A tough encampment, great for holding important areas.");
-		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 250);
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 300);
+		s.customButton = true;
+		s.buttonwidth = 2;
+		s.buttonheight = 2;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy Bunker", "$heavybunker$", "heavybunker", "A terrifying reinforcement, ideal for holding landmarks.");
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 300);
 		AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 25);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+		s.customButton = true;
+		s.buttonwidth = 2;
+		s.buttonheight = 2;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Quarry", "$quarry$", "quarry", "A quarry to generate stone in exchange of wood.");
@@ -65,20 +74,32 @@ void onInit(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Repair Station", "$repairstation$", "repairstation", "Build in an open area, it will repair friendly vehicles nearby it.");
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 150);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 200);
+		s.customButton = true;
+		s.buttonwidth = 2;
+		s.buttonheight = 2;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Refinery", "$refinery$", "refinery", "Supply it with stone to produce scrap, which is used to build vehicles at the vehicle builder.");
-		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 150);
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 200);
+		s.customButton = true;
+		s.buttonwidth = 2;
+		s.buttonheight = 2;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Advanced Refinery", "$advancedrefinery$", "advancedrefinery", "An improved refinery for increased output.");
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 200);
 		AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 50);
+		s.customButton = true;
+		s.buttonwidth = 2;
+		s.buttonheight = 2;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Ammo Factory", "$ammofactory$", "ammofactory", "Produce all types of ammunition with metals.");
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 100);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 100);
+		s.customButton = true;
+		s.buttonwidth = 2;
+		s.buttonheight = 2;
 	}
 }
 

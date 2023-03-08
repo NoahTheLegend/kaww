@@ -162,7 +162,6 @@ void onTick(CBlob@ this)
 {
 	if (this !is null)
 	{
-		if (isServer() && !this.hasTag("falling")) this.Sync("result_force", true);
 		Vehicle_ensureFallingCollision(this);
 
 		if (getGameTime() >= this.get_u32("next_shoot"))
@@ -176,30 +175,6 @@ void onTick(CBlob@ this)
 		{
 			//this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y*0.16f));
 			this.AddForce(Vec2f(0, 220.0f));
-		}
-
-		for (u8 i = 0; i < 2; i++)
-		{
-			{
-				AttachmentPoint@ pass = this.getAttachments().getAttachmentPointByName("PASSENGER");
-				if (i == 0) @pass = this.getAttachments().getAttachmentPointByName("PASSENGER1");
-				if (pass !is null && pass.getOccupied() !is null)
-				{
-					CBlob@ b = pass.getOccupied();
-					if (b !is null)
-					{
-						if (pass.isKeyPressed(key_action1)) b.set_bool("is_a1", true);
-						if (pass.isKeyJustPressed(key_action1)) b.set_bool("just_a1", true);
-						b.Tag("show_gun");
-						b.Tag("can_shoot_if_attached");
-
-						//if (b.isKeyPressed(key_action1)) printf("e");
-
-						if (b.getAimPos().x < b.getPosition().x) b.SetFacingLeft(true);
-						else b.SetFacingLeft(false);
-					}
-				}
-			}
 		}
 
 		CSprite@ sprite = this.getSprite();
@@ -245,7 +220,7 @@ void onTick(CBlob@ this)
 
 						// shoot
 						
-						if (!this.hasTag("no_more_shooting") && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
+						if (!this.isOnGround() && !this.hasTag("no_more_shooting") && ap.isKeyPressed(key_action3) && this.get_u32("next_shoot") < getGameTime())
 						{
 							CInventory@ inv = this.getInventory();
 							if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_bolts")
@@ -337,8 +312,8 @@ void onTick(CBlob@ this)
 								return;
 							}
 
-							Vec2f aimvector = GunAimPos - minigun.getWorldTranslation();
-							aimvector.RotateBy(-this.getAngleDegrees());
+							Vec2f aimvector = GunAimPos - hooman.getPosition()+Vec2f(0,-16);
+							//aimvector.RotateBy(-this.getAngleDegrees());
 
 							const f32 angle = constrainAngle(-aimvector.Angle() + (flip ? 180 : 0)) * flip_factor;
 							const f32 clampedAngle = (Maths::Clamp(angle, gun_clampAngle.x, gun_clampAngle.y) * flip_factor);
@@ -346,7 +321,7 @@ void onTick(CBlob@ this)
 							this.set_f32("gunAngle", clampedAngle);
 
 							minigun.ResetTransform();
-							minigun.RotateBy(clampedAngle, Vec2f(5 * flip_factor, 1));
+							minigun.RotateBy(clampedAngle-this.getAngleDegrees(), Vec2f(5 * flip_factor, 1));
 
 							if (pressed_m1)
 							{
@@ -359,7 +334,7 @@ void onTick(CBlob@ this)
 								{
 									CBitStream params;
 									params.write_s32(this.get_f32("gunAngle"));
-									params.write_Vec2f(minigun.getWorldTranslation());
+									params.write_Vec2f(this.getPosition()+Vec2f(32.0f,8).RotateBy(this.getAngleDegrees()));
 									this.SendCommand(this.getCommandID("shoot"), params);
 									this.set_u32("fireDelayGun", getGameTime() + (shootDelay));
 								}
@@ -499,7 +474,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!params.saferead_Vec2f(arrowPos)) return;
 
 		Vec2f vel = Vec2f(500.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(arrowAngle);
-		ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 
 		arrowPos = arrowPos+(Vec2f(24 * (this.isFacingLeft()?1:-1), -8));
 		Vec2f arrowVel = Vec2f(27.5f, 0).RotateBy((this.isFacingLeft()?180:0)+arrowAngle);
@@ -517,6 +491,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					proj.Tag("aircraft_bullet");
 				}
 			}
+			//ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 		}
 	}
 	else if (cmd == this.getCommandID("shoot bullet"))
@@ -531,8 +506,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
 			
-			proj.set_f32(projExplosionRadiusString, 24.0f);
-			proj.set_f32(projExplosionDamageString, 10.0f);
+			proj.set_f32(projExplosionRadiusString, 16.0f);
+			proj.set_f32(projExplosionDamageString, 16.0f);
 
 			proj.set_f32("map_damage_radius", 16.0f);
 			proj.set_f32("map_damage_ratio", 0.01f);
@@ -581,14 +556,14 @@ CBlob@ CreateBullet(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 			proj.server_setTeamNum(this.getTeamNum());
 			proj.setVelocity(arrowVel.RotateBy(0.025f*(XORRandom(5)-2.0f)));
 
-			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PILOT");
-			if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null) //getting player is necessary in case when player leaves
+			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+			if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
 			{
 				proj.SetDamageOwnerPlayer(ap.getOccupied().getPlayer());
 			}
 			
 			proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
-			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -24.0f : 24.0f), 8.0f).RotateBy(this.getAngleDegrees()));
+			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -90.0f : 24.0f), 8.0f).RotateBy(this.getAngleDegrees()));
 		}
 		this.Tag("no_more_proj");
 		return proj;
@@ -721,9 +696,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.hasTag("bullet"))
 	{
+		damage += 0.1f;
 		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.3f;
 		else if (hitterBlob.getName() == "bulletheavy") return damage * 0.8f;
-		return damage * (hitterBlob.hasTag("strong") ? 1.0f : 0.65f);
+		return damage * (hitterBlob.hasTag("strong") ? 0.85f : 0.65f);
 	}
 	return damage;
 }
@@ -812,6 +788,7 @@ void onRender(CSprite@ this)
 
 			if (mode == 2) // outlines
 			{
+				force = force*1.75f;
 				GUI::DrawLine2D(offset+Vec2f(2,1), offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f)+Vec2f(2,-1), SColor(255, 255, 255, 255));
 				GUI::DrawLine2D(offset+Vec2f(-2,1), offset+Vec2f(force.x, force.y > 0 ? force.y : force.y * 2.75f)+Vec2f(-2,-1), SColor(255, 255, 255, 255));
 			}

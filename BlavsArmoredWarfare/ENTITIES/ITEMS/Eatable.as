@@ -31,7 +31,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 					if (theBlob.hasBlob("aceofspades", 1))
 					{
 						theBlob.TakeBlob("aceofspades", 1);
-						theBlob.set_u32("aceofspades_timer", getGameTime()+30);
+						theBlob.set_u32("aceofspades_timer", getGameTime()+90);
 					}
 				}
 
@@ -46,8 +46,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 				if (theBlob.getPlayer() !is null && getRules().get_string(theBlob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
 				{
-					if (heal_amount != 255) heal_amount /= 3;
-					res /= 3;
+					if (heal_amount != 255) heal_amount /= 2;
+					res /= 2;
 				}
 
 				if (heal_amount == 255)

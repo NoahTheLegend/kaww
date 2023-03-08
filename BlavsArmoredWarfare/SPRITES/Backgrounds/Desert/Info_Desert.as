@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 		//SetScreenFlash(255, 255, 255, 255);
 	
 		CMap@ map = this.getMap();
-		
+		map.CreateTileMap(0, 0, 8.0f, "worlddesert.png");
 		map.CreateSky(color_black, Vec2f(1.0f, 1.0f), 200, "Sprites/Back/cloud", 0); // sky
 		map.CreateSkyGradient("Sprites/skygradientdesert.png"); // override sky color with gradient
 		getRules().set_bool("allowclouds", false);
@@ -24,5 +24,9 @@ void onInit(CBlob@ this)
 		map.AddBackground("Backgrounds/BackgroundDesertRocky.png",  Vec2f(27.0f, -20.0f), Vec2f(0.12f, 0.5f), color_white);
 		map.AddBackground("Backgrounds/BackgroundDesert.png",       Vec2f(5.0f, -8.0f), Vec2f(0.25f, 2.0f), color_white);
 		map.AddBackground("Backgrounds/BackgroundDunes.png",        Vec2f(0.0f,  -7.0f), Vec2f(0.5f, 2.5f), color_white);
+
+		//setTextureSprite(this,"Bushes.png","BushesDesert.png");
+		//setTextureSprite(this,"BushyTree.png","BushyTreeDesert.png");
+		//swapBlobTextures();	
 	}
 }

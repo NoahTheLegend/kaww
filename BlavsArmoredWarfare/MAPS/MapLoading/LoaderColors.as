@@ -262,6 +262,40 @@ namespace map_colors
 		b_vehiclebuildert3     = 0xff3e3e47,
 		r_vehiclebuildert3     = 0xff473439,
 
+		//const means can not be upgraded
+		b_vehiclebuilderconst       = 0xff3e3a4f,
+		r_vehiclebuilderconst       = 0xff47133f,
+		b_vehiclebuildert2const     = 0xff3e3c4f,
+		r_vehiclebuildert2const     = 0xff47333f,
+		b_vehiclebuildert3const     = 0xff3e3e4f,
+		r_vehiclebuildert3const     = 0xff47343f,
+
+		//only ground vehicles
+		b_vehiclebuilderground       = 0xff3e3cf7,
+		r_vehiclebuilderground       = 0xff473df9,
+		b_vehiclebuildert2ground     = 0xff3e3cf8,
+		r_vehiclebuildert2ground     = 0xff4733fa,
+		b_vehiclebuildert3ground     = 0xff3e3df7,
+		r_vehiclebuildert3ground     = 0xff4734f9,
+
+		b_vehiclebuildergroundconst       = 0xfffd3c47,
+		r_vehiclebuildergroundconst       = 0xfff43339,
+		b_vehiclebuildert2groundconst     = 0xfffc3c48,
+		r_vehiclebuildert2groundconst     = 0xfff3333a,
+		b_vehiclebuildert3groundconst     = 0xfffa3e47,
+		r_vehiclebuildert3groundconst     = 0xfff23439,
+
+		//only air vehicles
+		b_vehiclebuilderair       = 0xff3efc47,
+		r_vehiclebuilderair       = 0xff47f439,
+		b_vehiclebuildert2air     = 0xff3efa48,
+		r_vehiclebuildert2air     = 0xff47f33a,
+
+		b_vehiclebuilderairconst       = 0xff3eec47,
+		r_vehiclebuilderairconst       = 0xff47e439,
+		b_vehiclebuildert2airconst     = 0xff3eea48,
+		r_vehiclebuildert2airconst     = 0xff47e33a,
+
 
 
 		heavygun               = 0xff1f11f4,
@@ -380,7 +414,8 @@ namespace map_colors
 		deadbush               = 0xFF8D4A16,
 		cacti                  = 0xff74dd0c,
 		hanginglantern         = 0xffadbd51,
-		//bonepine               = 0xffeaeadc,
+		bonepile               = 0xffeaeadc,
+		crashedheli			   = 0xff847a7a,
 
 		// OBJECTIVE
 		pointflag              = 0xfffdf8e8,

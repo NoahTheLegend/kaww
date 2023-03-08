@@ -24,6 +24,8 @@ void onInit(CBlob@ this)
 	missile.gravity_scale 				= JavelinParams::gravity_scale;
 	this.set("missileInfo", @missile);
 
+	this.Tag("missile");
+
 	this.set_f32(projExplosionRadiusString, 30.0f);
 	this.set_f32(projExplosionDamageString, damage);
 
@@ -287,6 +289,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	int thisTeamNum = this.getTeamNum();
 	int blobTeamNum = blob.getTeamNum();
+
+	if (blob.getTeamNum() != this.getTeamNum() && blob.hasTag("bullet"))
+	{
+		return true;
+	}
 	
 	if (blob.hasTag("door") && blob.getShape().getConsts().collidable)
 	{
@@ -347,7 +354,13 @@ void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f coll
 	}
 
 	if (!doesCollideWithBlob(this, blob))
-	{ return; }
+	{
+		return;
+	}
+	if (blob !is null && blob.getName() != "bulletheavy" && !blob.hasTag("strong"))
+	{
+		return;
+	}
 
 	this.server_Die();
 }

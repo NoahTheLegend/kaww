@@ -50,7 +50,7 @@ void onInit(CBlob@ this)
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-26.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-27.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 
-	this.getShape().SetOffset(Vec2f(-4, 0)); //0,8
+	this.getShape().SetOffset(Vec2f(-4, 2)); //0,8
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
@@ -72,12 +72,13 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(9, 2));
+	this.set_Vec2f("shop menu size", Vec2f(10, 2));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_barge$","IconBarge.png", Vec2f(32, 32), 0, 2);
 
 	{
 		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press SPACE while holding to arm, ~4 seconds until boom.", false);
@@ -119,6 +120,15 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+
+		s.customButton = true;
+
+		s.buttonwidth = 1;
+		s.buttonheight = 2;
+	}
+	{
 		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
 		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
@@ -137,7 +147,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "HEAT War Heads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammunition for anti-tank guns, helis, javelins, etc..", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 7);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "M22 Binoculars", "$binoculars$", "binoculars", "A pair of glasses with optical zooming.", false);
@@ -158,13 +168,11 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes and artillery.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
-
+		ShopItem@ s = addShopItem(this, "Barge", "$icon_barge$", "barge", "An armored boat for transporting vehicles across the water.", false, true);
 		s.customButton = true;
-
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 	//{
 	//	ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);

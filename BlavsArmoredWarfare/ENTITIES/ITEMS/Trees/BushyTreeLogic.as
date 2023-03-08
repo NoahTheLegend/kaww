@@ -3,7 +3,7 @@
 #include "TreeSync.as"
 #include "TreeCommon.as";
 
-const string spritefile = "BushyTree.png";
+string spritefile = "BushyTree.png";
 
 void onInit(CBlob@ this)
 {
@@ -41,20 +41,47 @@ void onInit(CBlob@ this)
 	u8 icon_frame = 8;
 	if (this.hasTag("startbig")) icon_frame = 10;
 
-	this.SetMinimapVars("GUI/Minimap/MinimapIcons.png", icon_frame, Vec2f(8, 32));
-	this.SetMinimapRenderAlways(true);
-	
-	if (isServer())
+	reloadSprite(this);
+}
+
+void reloadSprite(CBlob@ this)
+{
+	if (getBlobByName("info_desert") !is null)
 	{
-		this.set_u8("particle type", 0);	// 0: bushy, 1: pine
-		this.Sync("particle type", true);
+		spritefile = "BushyTreeDesert.png";
+		CSprite@ sprite = this.getSprite();
+		if (sprite !is null)
+		{
+			sprite.ReloadSprite("BushyTreeDesert.png", sprite.getFrameWidth(), sprite.getFrameHeight());
+			for (int j = 0; j < sprite.getSpriteLayerCount(); j++)
+			{
+				CSpriteLayer @layer = sprite.getSpriteLayer(j);
+				if (layer !is null)
+				{
+					layer.ReloadSprite("BushyTreeDesert.png", layer.getFrameWidth(), layer.getFrameHeight());
+				}
+			}
+		}
 	}
 }
 
 void onTick(CBlob@ this)
 {
-	if (isServer() && this.getTickSinceCreated() == 1)
+	if (this.getTickSinceCreated() == 3)
 	{
+		reloadSprite(this);
+	}
+	if (isServer() && this.getTickSinceCreated() == 3)
+	{
+		if (isServer())
+		{
+			if (getBlobByName("info_snow") !is null) this.set_u8("particle type", 1);
+			else if (getBlobByName("info_desert") !is null) this.set_u8("particle type", 2);
+			else this.set_u8("particle type", 0);
+
+			this.Sync("particle type", true);
+		}
+
 		if (getBlobByName("info_snow") !is null)
 		{
 			CBlob@ tree = server_CreateBlobNoInit("tree_pine");

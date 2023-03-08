@@ -62,7 +62,8 @@ bool serverTileCheck(CBlob@ blob, u8 tileIndex, Vec2f cursorPos)
 	if (map.isTileBedrock(backtile.type) || map.isTileSolid(backtile.type) && map.isTileGroundStuff(backtile.type)) 
 		return false;
 
-	if (tileIndex == 7 && !map.isTileGroundBack(backtile.type)) // TILEINDEX FOR COMPACTED DIRT (CDIRT) IS THE PLACE IN BUILDER INVENTORY
+	//printf(""+tileIndex);
+	if (tileIndex == 9 && !map.isTileGroundBack(backtile.type)) // TILEINDEX FOR COMPACTED DIRT (CDIRT) IS THE PLACE IN BUILDER INVENTORY
 	{
 		return false;
 	}

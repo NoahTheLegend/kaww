@@ -8,7 +8,9 @@ string g_lastUsernameVoted = "";
 const float required_minutes = 0; //time you have to wait after joining w/o skip_votewait.
 
 s32 g_lastNextmapCounter = 10;
+s32 g_lastExtendtimeCounter = 5;
 const float required_minutes_nextmap = 10; //global nextmap vote cooldown
+const float required_minutes_extendtime = 5;
 
 const s32 VoteKickTime = 30; //minutes (30min default)
 
@@ -25,6 +27,14 @@ enum kick_reason
 string[] kick_reason_string = { "Griefer", "Hacker", "Teamkiller", "Chat Spam", "Non-Participation" };
 
 string g_kick_reason = kick_reason_string[kick_reason_griefer]; //default
+
+//kick bots
+enum kickbots_reason
+{
+	kickbots_reason_remove = 0
+};
+string[] kickbots_reason_string = { "Remove bots" };
+
 
 //next map related globals and enums
 enum nextmap_reason
@@ -51,6 +61,7 @@ string[] extendtime_reason_string = { "Extend game time by 5 minutes", "Extend g
 //votekick and vote nextmap
 
 const string votekick_id = "vote: kick";
+const string votekickbots_id = "vote: kick bots";
 const string votenextmap_id = "vote: nextmap";
 const string votesurrender_id = "vote: surrender";
 const string votescramble_id = "vote: scramble";
@@ -61,6 +72,7 @@ const string voteextendtime_id = "vote: extend time";
 void onInit(CRules@ this)
 {
 	this.addCommandID(votekick_id);
+	this.addCommandID(votekickbots_id);
 	this.addCommandID(votenextmap_id);
 	this.addCommandID(votesurrender_id);
 	this.addCommandID(votescramble_id);
@@ -83,6 +95,11 @@ void onTick(CRules@ this)
 	if (g_lastNextmapCounter < 60 * getTicksASecond()*required_minutes_nextmap)
 	{
 		g_lastNextmapCounter++;
+	}
+
+	if (g_lastExtendtimeCounter < 60 * getTicksASecond()*required_minutes_extendtime)
+	{
+		g_lastExtendtimeCounter++;
 	}
 }
 
@@ -199,6 +216,64 @@ VoteObject@ Create_Votekick(CPlayer@ player, CPlayer@ byplayer, string reason)
 	return vote;
 }
 
+//VOTE KICK BOTS --------------------------------------------------------------------
+
+class VoteKickBotsFunctor : VoteFunctor
+{
+	VoteKickBotsFunctor() {} //dont use this
+
+	void Pass(bool outcome)
+	{
+		if (outcome)
+		{
+			client_AddToChat(
+				getTranslatedString("Votekick passed! Kicking bots..."),
+				vote_message_colour()
+			);
+
+			for (u8 i = 0; i < getPlayersCount(); i++)
+			{
+				CPlayer@ p = getPlayer(i);
+				if (p !is null && p.isBot()) KickPlayer(p);
+			}
+		}
+	}
+};
+
+class VoteKickBotsCheckFunctor : VoteCheckFunctor
+{
+	VoteKickBotsCheckFunctor() {}//dont use this
+	VoteKickBotsCheckFunctor(string _reason)
+	{
+		reason = _reason;
+	}
+
+	string reason;
+
+	bool PlayerCanVote(CPlayer@ player)
+	{
+		return true;
+	}
+};
+
+VoteObject@ Create_Votekickbots(CPlayer@ byplayer, string reason)
+{
+	VoteObject vote;
+
+	@vote.onvotepassed = VoteKickBotsFunctor();
+	@vote.canvote = VoteKickBotsCheckFunctor(reason);
+
+	vote.title = "Kick bots?";
+	vote.reason = reason;
+	vote.byuser = byplayer.getUsername();
+	vote.forcePassFeature = "ban";
+	vote.cancel_on_restart = true;
+
+	CalculateVoteThresholds(vote);
+
+	return vote;
+}
+
 //VOTE NEXT MAP ----------------------------------------------------------------
 //nextmap functors
 
@@ -235,7 +310,7 @@ class VoteNextmapFunctor : VoteFunctor
 			{
 				switch (MapType)
 				{
-					case 1:
+					case 0:
 					{
 						string[]@ ClassicMaps;
 						getRules().get("maptypes-classic", @ClassicMaps);
@@ -244,7 +319,7 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
-					case 2:
+					case 1:
 					{
 						string[]@ LargeMaps;
 						getRules().get("maptypes-large", @LargeMaps);
@@ -253,7 +328,7 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
-					case 3:
+					case 2:
 					{
 						string[]@ AverageMaps;
 						getRules().get("maptypes-average", @AverageMaps);
@@ -262,7 +337,25 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
+					case 3:
+					{
+						string[]@ FlagMaps;
+						getRules().get("maptypes-flag", @FlagMaps);
+
+						LoadMap(FlagMaps[XORRandom(FlagMaps.length)]);
+					}
+					break;
+
 					case 4:
+					{
+						string[]@ TruckMaps;
+						getRules().get("maptypes-truck", @TruckMaps);
+
+						LoadMap(TruckMaps[XORRandom(TruckMaps.length)]);
+					}
+					break;
+
+					case 5:
 					{
 						string[]@ TdmMaps;
 						getRules().get("maptypes-tdm", @TdmMaps);
@@ -307,7 +400,7 @@ VoteObject@ Create_VoteNextmap(CPlayer@ byplayer, string reason, u8 maptype)
 	@vote.canvote = VoteNextmapCheckFunctor();
 
 	vote.title = "Load new map";
-	vote.maptype = TypeToString[maptype % 4];
+	vote.maptype = TypeToString[maptype % 6];
 	vote.reason = reason;
 	vote.byuser = byplayer.getUsername();
 	vote.forcePassFeature = "nextmap";
@@ -596,6 +689,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 	CContextMenu@ extendtimemenu = Menu::addContextMenu(votemenu, getTranslatedString("Add Match Time"));
 	CContextMenu@ surrendermenu = Menu::addContextMenu(votemenu, getTranslatedString("Surrender"));
 	CContextMenu@ scramblemenu = Menu::addContextMenu(votemenu, getTranslatedString("Scramble"));
+	CContextMenu@ kickbotsmenu = Menu::addContextMenu(votemenu, getTranslatedString("Kick Bots"));
 	Menu::addSeparator(votemenu); //before the back button
 
 	bool can_skip_wait = getSecurity().checkAccess_Feature(me, "skip_votewait");
@@ -769,6 +863,8 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			CContextMenu@ classic_map_menu = Menu::addContextMenu(mapmenu, "Classic Map");
 			CContextMenu@ large_map_menu = Menu::addContextMenu(mapmenu, "Large Map");
 			CContextMenu@ average_map_menu = Menu::addContextMenu(mapmenu, "Small Map");
+			CContextMenu@ flag_map_menu = Menu::addContextMenu(mapmenu,  "Flags Map");
+			CContextMenu@ truck_map_menu = Menu::addContextMenu(mapmenu,  "Trucks Map");
 			CContextMenu@ tdm_map_menu = Menu::addContextMenu(mapmenu,  "TDM Map");
 
 			for (uint i = 0 ; i < nextmap_reason_count; ++i)
@@ -800,6 +896,22 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 				CBitStream params;
 				params.write_u8(i);
 				params.write_u8(3);
+				Menu::addContextItemWithParams(flag_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
+			}
+
+			for (uint i = 0 ; i < nextmap_reason_count; ++i)
+			{
+				CBitStream params;
+				params.write_u8(i);
+				params.write_u8(4);
+				Menu::addContextItemWithParams(truck_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
+			}
+
+			for (uint i = 0 ; i < nextmap_reason_count; ++i)
+			{
+				CBitStream params;
+				params.write_u8(i);
+				params.write_u8(5);
 				Menu::addContextItemWithParams(tdm_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
 			}
 		}
@@ -832,16 +944,15 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 		)
 		);
 	}
-	else if (g_lastNextmapCounter < 60 * getTicksASecond()*required_minutes_nextmap
+	else if (g_lastExtendtimeCounter < 60 * getTicksASecond()*required_minutes_extendtime
 			 && (!can_skip_wait || g_haveStartedVote))
 	{
 		string cantstart_info = getTranslatedString(
 			"Voting for additional match time\n" +
 			"requires a {NEXTMAP_MINS} min wait\n" +
 			"after each started vote\n" +
-			"to prevent spamming.\n\n" +
-			"Shares map/surrender votes delay.\n"
-		).replace("{NEXTMAP_MINS}", "" + required_minutes_nextmap);
+			"to prevent spamming.\n\n"
+		).replace("{NEXTMAP_MINS}", "" + required_minutes_extendtime);
 		Menu::addInfoBox(extendtimemenu, getTranslatedString("Can't Start Vote"), cantstart_info);
 	}
 	else
@@ -987,6 +1098,65 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 		Menu::addInfoBox(scramblemenu, getTranslatedString("Can't Start Vote"), cantstart_info);
 	}
 	Menu::addSeparator(scramblemenu);
+
+	//kick bots menu
+	if (getSecurity().checkAccess_Feature(me, "mark_player"))
+	{
+		if (duplicatePlayer)
+		{
+			Menu::addInfoBox(
+				kickbotsmenu,
+				getTranslatedString("Can't Start Vote"),
+				getTranslatedString(
+					"Voting to kick bots\n" +
+					"is not allowed when playing\n" +
+					"with a duplicate instance of KAG.\n\n" +
+					"Try rejoining the server\n" +
+					"if this was unintentional."
+				)
+			);
+		}
+		else if (g_lastVoteCounter < 60 * getTicksASecond()*required_minutes
+				&& (!can_skip_wait || g_haveStartedVote))
+		{
+			string cantstart_info = getTranslatedString(
+				"Voting requires a {REQUIRED_MIN} min wait\n" +
+				"after each started vote to\n" +
+				"prevent spamming/abuse.\n"
+			).replace("{REQUIRED_MIN}", "" + required_minutes);
+
+			Menu::addInfoBox(kickbotsmenu, getTranslatedString("Can't Start Vote"), cantstart_info);
+		}
+		else
+		{
+			string votekickbots_info = getTranslatedString(
+				"Vote to kick bots\nout of the game.\n"
+			);
+			Menu::addInfoBox(kickbotsmenu, getTranslatedString("Vote Kick Bots"), votekickbots_info);
+
+			Menu::addSeparator(kickbotsmenu);
+
+			CBitStream params;
+			Menu::addContextItemWithParams(
+				kickbotsmenu, getTranslatedString("Yes, I'm sure"),
+				"DefaultVotes.as", "Callback_KickBots",
+				params
+			);
+			Menu::addSeparator(kickbotsmenu);
+		}
+	}
+	else
+	{
+		Menu::addInfoBox(
+			kickbotsmenu,
+			getTranslatedString("Can't vote"),
+			getTranslatedString(
+				"You are now allowed to votekick\n" +
+				"bots on this server\n"
+			)
+		);
+	}
+	Menu::addSeparator(kickbotsmenu);
 }
 
 void CloseMenu()
@@ -998,6 +1168,7 @@ void onPlayerStartedVote()
 {
 	g_lastVoteCounter = 0;
 	g_lastNextmapCounter = 0;
+	g_lastExtendtimeCounter = 0;
 	g_haveStartedVote = true;
 }
 
@@ -1037,6 +1208,21 @@ void Callback_Kick(CBitStream@ params)
 	params2.write_string(g_kick_reason);
 
 	getRules().SendCommand(getRules().getCommandID(votekick_id), params2);
+	onPlayerStartedVote();
+}
+
+void Callback_KickBots(CBitStream@ params)
+{
+	CloseMenu(); //definitely close the menu
+
+	CPlayer@ me = getLocalPlayer();
+	if (me is null) return;
+
+	CBitStream params2;
+	params2.write_u16(me.getNetworkID());
+	params2.write_string("Remove bots");
+
+	getRules().SendCommand(getRules().getCommandID(votekickbots_id), params2);
 	onPlayerStartedVote();
 }
 
@@ -1135,6 +1321,19 @@ void onCommand(CRules@ this, u8 cmd, CBitStream @params)
 		if (player !is null && byplayer !is null)
 			Rules_SetVote(this, Create_Votekick(player, byplayer, reason));
 	}
+	else if (cmd == this.getCommandID(votekickbots_id))
+	{
+		u16 byplayerid;
+		string reason;
+
+		if (!params.saferead_u16(byplayerid)) return;
+		if (!params.saferead_string(reason)) return;
+
+		CPlayer@ byplayer = getPlayerByNetworkId(byplayerid);
+
+		if (byplayer !is null)
+			Rules_SetVote(this, Create_Votekickbots(byplayer, reason));
+	}
 	else if (cmd == this.getCommandID(votenextmap_id))
 	{
 		u16 byplayerid;
@@ -1188,7 +1387,7 @@ void onCommand(CRules@ this, u8 cmd, CBitStream @params)
 
 		if (byplayer !is null)
 			Rules_SetVote(this, Create_VoteExtendTime(byplayer));
-		g_lastNextmapCounter = 0;
+		g_lastExtendtimeCounter = 0;
 	}
 }
 
@@ -1196,5 +1395,7 @@ const string[] TypeToString = {
 	"Random",
 	"Large",
 	"Average",
+	"Capture Flag",
+	"Destroy Truck",
 	"TDM"
 };
