@@ -43,13 +43,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 		CBlob@ blob = getBlobByNetworkID(blob_id);
 
+		this.getSprite().PlaySound("Heart.ogg");
 		if (blob !is null)
 		{
 			if (blob.get_u32("next_med") >= getGameTime()) return;
 			blob.set_u32("next_med", getGameTime()+15);
 		}
-
-		this.getSprite().PlaySound("Heart.ogg");
 
 		if (isServer())
 		{

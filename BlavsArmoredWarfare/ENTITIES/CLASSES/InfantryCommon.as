@@ -58,8 +58,6 @@ const string[] arrowNames = { "Ammo", };
 const f32 SEEK_RANGE = 700.0f;
 const f32 ENEMY_RANGE = 400.0f;
 
-const u8 ACCURACY_HIT_DELAY = 5; // ticks
-
 // Show emotes?
 const bool USE_EMOTES = true;
 
@@ -84,8 +82,7 @@ class InfantryInfo
 	f32 length_of_recoil_arc; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
 	u8 inaccuracy_cap; // max amount of inaccuracy
-	u8 inaccuracy_pershot; // aim inaccuracy
-	u8 inaccuracy_hit; // onhit inaccuracy
+	u8 inaccuracy_pershot; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	bool semiauto;
@@ -126,7 +123,6 @@ class InfantryInfo
 		// ACCURACY
 		inaccuracy_cap 			= 85; // max amount of inaccuracy
 		inaccuracy_pershot 		= 50; // aim inaccuracy  (+3 per shot)
-		inaccuracy_hit  		= 0;
 		// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 		// GUN
 		semiauto 				= false;
@@ -175,7 +171,6 @@ namespace ShotgunParams
 	// ACCURACY
 	const ::u8 INACCURACY_CAP 			= 85; // max amount of inaccuracy
 	const ::u8 INACCURACY_PER_SHOT 		= 50; // aim inaccuracy  (+3 per shot)
-	const ::u8 INACCURACY_HIT  		    = 5;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
@@ -219,8 +214,7 @@ namespace RangerParams
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
 	const ::u8 INACCURACY_CAP 			= 35; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 10; // aim inaccuracy  (+3 per shot)
-	const ::u8 INACCURACY_HIT  		    = 5;
+	const ::u8 INACCURACY_PER_SHOT 		= 35; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
@@ -264,8 +258,7 @@ namespace Mp5Params
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.8f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
 	const ::u8 INACCURACY_CAP 			= 36; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 8; // aim inaccuracy  (+3 per shot)
-	const ::u8 INACCURACY_HIT  		    = 5;
+	const ::u8 INACCURACY_PER_SHOT 		= 22; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
@@ -309,8 +302,7 @@ namespace RevolverParams
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
 	const ::u8 INACCURACY_CAP 			= 55; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 25; // aim inaccuracy  (+3 per shot)
-	const ::u8 INACCURACY_HIT  		    = 5;
+	const ::u8 INACCURACY_PER_SHOT 		= 54; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
@@ -353,9 +345,8 @@ namespace SniperParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 45; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 45; // aim inaccuracy  (+3 per shot)
-	const ::u8 INACCURACY_HIT  		    = 10;
+	const ::u8 INACCURACY_CAP 			= 15; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 15; // aim inaccuracy  (+3 per shot)
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
@@ -400,7 +391,6 @@ namespace AntitankParams
 	// ACCURACY
 	const ::u8 INACCURACY_CAP 			= 150; // max amount of inaccuracy
 	const ::u8 INACCURACY_PER_SHOT 		= 150; // aim inaccuracy  (+3 per shot)
-	const ::u8 INACCURACY_HIT 		    = 100;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= true;
@@ -566,7 +556,7 @@ void getRecoilStats( int blobNameHash, float &out recoil_x, float &out recoil_y,
 }
 
 void getWeaponStats( int blobNameHash,
-	u8 &out inaccuracy_cap, u8 &out inaccuracy_pershot, u8 &out inaccuracy_hit,
+	u8 &out inaccuracy_cap, u8 &out inaccuracy_pershot, 
 	bool &out semiauto, u8 &out burst_size,	u8 &out burst_rate,
 	s16 &out reload_time, u8 &out noreloadtimer, u32 &out mag_size, u8 &out delayafterfire, u8 &out randdelay,
 	float &out bullet_velocity, float &out bullet_lifetime, s8 &out bullet_pen, bool &out emptyshellonfire)
@@ -577,7 +567,6 @@ void getWeaponStats( int blobNameHash,
 		{
 			inaccuracy_cap = RangerParams::INACCURACY_CAP;
 			inaccuracy_pershot = RangerParams::INACCURACY_PER_SHOT;
-			inaccuracy_hit = RangerParams::INACCURACY_HIT;
 
 			semiauto = RangerParams::SEMIAUTO;
 			burst_size = RangerParams::BURST_SIZE;
@@ -598,7 +587,6 @@ void getWeaponStats( int blobNameHash,
 		{
 			inaccuracy_cap = Mp5Params::INACCURACY_CAP;
 			inaccuracy_pershot = Mp5Params::INACCURACY_PER_SHOT;
-			inaccuracy_hit = Mp5Params::INACCURACY_HIT;
 
 			semiauto = Mp5Params::SEMIAUTO;
 			burst_size = Mp5Params::BURST_SIZE;
@@ -619,7 +607,6 @@ void getWeaponStats( int blobNameHash,
 		{
 			inaccuracy_cap = RevolverParams::INACCURACY_CAP;
 			inaccuracy_pershot = RevolverParams::INACCURACY_PER_SHOT;
-			inaccuracy_hit = RevolverParams::INACCURACY_HIT;
 
 			semiauto = RevolverParams::SEMIAUTO;
 			burst_size = RevolverParams::BURST_SIZE;
@@ -640,7 +627,6 @@ void getWeaponStats( int blobNameHash,
 		{
 			inaccuracy_cap = SniperParams::INACCURACY_CAP;
 			inaccuracy_pershot = SniperParams::INACCURACY_PER_SHOT;
-			inaccuracy_hit = SniperParams::INACCURACY_HIT;
 
 			semiauto = SniperParams::SEMIAUTO;
 			burst_size = SniperParams::BURST_SIZE;
@@ -661,7 +647,6 @@ void getWeaponStats( int blobNameHash,
 		{
 			inaccuracy_cap = AntitankParams::INACCURACY_CAP;
 			inaccuracy_pershot = AntitankParams::INACCURACY_PER_SHOT;
-			inaccuracy_hit = AntitankParams::INACCURACY_HIT;
 
 			semiauto = AntitankParams::SEMIAUTO;
 			burst_size = AntitankParams::BURST_SIZE;
@@ -682,7 +667,6 @@ void getWeaponStats( int blobNameHash,
 		{
 			inaccuracy_cap = ShotgunParams::INACCURACY_CAP;
 			inaccuracy_pershot = ShotgunParams::INACCURACY_PER_SHOT;
-			inaccuracy_hit = ShotgunParams::INACCURACY_HIT;
 
 			semiauto = ShotgunParams::SEMIAUTO;
 			burst_size = ShotgunParams::BURST_SIZE;

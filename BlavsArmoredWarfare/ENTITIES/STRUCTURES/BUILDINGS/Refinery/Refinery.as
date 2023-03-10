@@ -96,7 +96,8 @@ void onInit(CBlob@ this)
 	this.Tag("ignore_arrow");
 	this.Tag("builder always hit");
 	this.Tag("structure");
-	this.Tag("refinery");
+
+	
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
@@ -201,6 +202,35 @@ void onTick(CBlob@ this)
 	else if (!this.get_bool(working_prop))
 	{
 		sprite.SetEmitSoundPaused(true);
+	}
+
+	if (XORRandom(2) == 0)
+	{
+		CBlob@[] blobsInRadius;
+		if (this.getMap().getBlobsInRadius(this.getPosition(), this.getRadius() * 1.1f, @blobsInRadius))
+		{
+			for (uint i = 0; i < blobsInRadius.length; i++)
+			{
+				CBlob @b = blobsInRadius[i];
+
+				if (b.isOnGround() && !b.isAttached() && b.getName() == "mat_stone") // stone on floor
+				{
+					if (b is null) return;
+
+					//amount we'd _like_ to insert
+					int ammountToStore = Maths::Clamp(b.getQuantity(), 0, 500 - this.get_s16(stone_prop));
+
+					//can we even insert anything?
+					if (ammountToStore > 0)
+					{
+						b.server_SetQuantity(b.getQuantity() - ammountToStore);
+						this.set_s16(stone_prop, this.get_s16(stone_prop) + ammountToStore);
+
+						this.getSprite().PlaySound("FireFwoosh.ogg");
+					}
+				}
+			}
+		}
 	}
 }
 
