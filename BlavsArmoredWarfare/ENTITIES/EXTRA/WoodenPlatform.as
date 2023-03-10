@@ -1,4 +1,5 @@
 #include "Hitters.as"
+
 #include "FireCommon.as"
 
 void onInit(CBlob@ this)
@@ -30,12 +31,6 @@ void onInit(CBlob@ this)
 	}
 
 	MakeDamageFrame(this);
-}
-
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (customData == Hitters::explosion) damage *= 0.25f;
-	return damage;
 }
 
 void onHealthChange(CBlob@ this, f32 oldHealth)

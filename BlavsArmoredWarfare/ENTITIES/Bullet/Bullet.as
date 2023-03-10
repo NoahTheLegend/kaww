@@ -14,11 +14,7 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	if (sprite !is null) {
 		sprite.ResetTransform();
-
-		f32 scale = 1.0f;
-		this.hasTag("strong") ? scale = 1.33f : this.hasTag("shrapnel") ? scale = 0.66f : scale = 1.0f;
-
-		sprite.ScaleBy(Vec2f(scale,scale));
+		sprite.ScaleBy(Vec2f(0.25f + Maths::Sqrt(this.get_f32("bullet_damage_body")), 1.0f)); // multiplied by 2 on sv
 		sprite.SetZ(550.0f);
 	}
 
@@ -81,7 +77,7 @@ void onTick(CBlob@ this)
 	}
 
 	HitInfo@[] hitInfos;
-	bool hasHit = map.getHitInfosFromRay(pos, -vel.getAngleDegrees(), velDist*1.5f, this, @hitInfos);
+	bool hasHit = map.getHitInfosFromRay(pos, -vel.getAngleDegrees(), velDist, this, @hitInfos);
 
 	if (hasHit)
 	{

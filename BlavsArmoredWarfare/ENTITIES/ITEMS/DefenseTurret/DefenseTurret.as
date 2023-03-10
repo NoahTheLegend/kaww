@@ -1,4 +1,3 @@
-#include "Explosion.as"
 #include "WarfareGlobal.as"
 const string target_player_id = "target_player_id";
 
@@ -300,49 +299,4 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	{
 		return false;
 	}
-}
-
-void onDie(CBlob@ this)
-{
-	DoExplosion(this);
-}
-
-void DoExplosion(CBlob@ this)
-{
-	if (this.hasTag("exploded")) return;
-
-	f32 random = XORRandom(5);
-	f32 modifier = 1 + Maths::Log(this.getQuantity());
-	f32 angle = -this.get_f32("bomb angle");
-	
-	Vec2f pos = this.getPosition();
-	CMap@ map = getMap();
-
-	for (int i = 0; i < (v_fastrender ? 5: 15); i++)
-	{
-		MakeParticle(this, Vec2f( XORRandom(32) - 16, XORRandom(32) - 16), getRandomVelocity(-angle, XORRandom(220) * 0.01f, 90), particles[XORRandom(particles.length)]);
-	}
-	
-	this.Tag("exploded");
-	if (!v_fastrender) this.getSprite().Gib();
-}
-
-string[] particles = 
-{
-	"LargeSmoke",
-	"Explosion.png"
-};
-
-string[] smokes = 
-{
-	"LargeSmoke.png",
-	"SmallSmoke1.png",
-	"SmallSmoke2.png"
-};
-
-void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string filename = "SmallSteam")
-{
-	if (!getNet().isClient()) return;
-
-	ParticleAnimated(CFileMatcher(filename).getFirst(), this.getPosition() + pos, vel, float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 1 + XORRandom(4), XORRandom(100) * -0.00005f, true);
 }

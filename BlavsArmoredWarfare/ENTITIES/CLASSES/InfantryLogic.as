@@ -38,7 +38,6 @@ void onInit(CBlob@ this)
 	// ACCURACY
 	u8 inaccuracy_cap; // max amount of inaccuracy
 	u8 inaccuracy_pershot; // aim inaccuracy  (+3 per shot)
-	u8 inaccuracy_hit;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	bool semiauto;
@@ -60,7 +59,7 @@ void onInit(CBlob@ this)
 	getBasicStats( thisBlobHash, classname, reload_sfx, shoot_sfx, damage_body, damage_head );
 	getRecoilStats( thisBlobHash, recoil_x, recoil_y, recoil_length, recoil_force, recoil_cursor, sideways_recoil, sideways_recoil_damp, ads_cushion_amount, length_of_recoil_arc );
 	getWeaponStats( thisBlobHash, 
-	inaccuracy_cap, inaccuracy_pershot, inaccuracy_hit,
+	inaccuracy_cap, inaccuracy_pershot, 
 	semiauto, burst_size, burst_rate, 
 	reload_time, noreloadtimer, mag_size, delayafterfire, randdelay, 
 	bullet_velocity, bullet_lifetime, bullet_pen, emptyshellonfire);
@@ -85,7 +84,6 @@ void onInit(CBlob@ this)
 
 	infantry.inaccuracy_cap 		= inaccuracy_cap;
 	infantry.inaccuracy_pershot 	= inaccuracy_pershot;
-	infantry.inaccuracy_hit         = inaccuracy_hit;
 	infantry.semiauto 				= semiauto;
 	infantry.burst_size 			= burst_size;
 	infantry.burst_rate 			= burst_rate;
@@ -182,17 +180,6 @@ void onInit(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	{
-		InfantryInfo@ infantry;
-		if (this.get("infantryInfo", @infantry))
-		{
-			this.set_u32("accuracy_delay", getGameTime()+ACCURACY_HIT_DELAY);
-			f32 cap = this.get_u8("inaccuracy")+infantry.inaccuracy_hit;
-			if (cap < 255) this.add_u8("inaccuracy", infantry.inaccuracy_hit);
-			else this.set_u8("inaccuracy", infantry.inaccuracy_cap);
-		}
-	}
-
 	CPlayer@ p = this.getPlayer();
 	if (p !is null)
 	{
@@ -230,11 +217,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				return damage * 2;
 			}
 		}
-		else if (this.getVelocity().y > 0.0f && !this.isOnGround() && !this.isOnLadder()
-		&& !this.isInWater() && !this.isAttached()
+		else if (!this.isOnGround() && !this.isOnLadder() && !this.isInWater()
 		&& getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 		{
-			damage * 0.5f;
+			return damage * 0.5f;
 		}
 		else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
 		{
@@ -269,7 +255,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (customData != Hitters::explosion && hitterBlob.getName() == "ballista_bolt") return damage * 2;
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.hasTag("grenade"))
 	{
-		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*5.0f;
 		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
 		if (hitterBlob.exists("explosion_damage_scale")) damage *= hitterBlob.get_f32("explosion_damage_scale");
 
@@ -1015,9 +1000,19 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		}
 	}
 
-	if (this.get_u8("inaccuracy") > 0 && this.get_u32("accuracy_delay") < getGameTime())
+	if (this.get_u8("inaccuracy") > 0)
 	{
-		this.set_u8("inaccuracy", this.get_u8("inaccuracy") >= 5 ? this.get_u8("inaccuracy") - 5 : 0);
+		s8 testnum = (this.get_u8("inaccuracy") - 5);
+		if (testnum < 0)
+		{
+			this.set_u8("inaccuracy", 0);
+		}
+		else
+		{
+			this.set_u8("inaccuracy", this.get_u8("inaccuracy") - 5);
+		}
+		
+		if (this.get_u8("inaccuracy") > inaccuracyCap) {this.set_u8("inaccuracy", inaccuracyCap);}
 	}
 	
 	if (responsible)
@@ -1025,7 +1020,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		// set cursor
 		if (ismyplayer && !getHUD().hasButtons())
 		{
-			InfantryInfo@ infantry;
 			int frame = 0;
 
 			if (this.get_u8("inaccuracy") == 0)
@@ -1039,17 +1033,9 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					getHUD().SetCursorFrame(1);
 				}	
 			}
-			else if (this.get("infantryInfo", @infantry))
+			else
 			{
-				f32 max_frame = 9;
-				f32 frame;
-				f32 inaccuracy = this.get_u8("inaccuracy");
-				f32 inaccuracy_cap = infantry.inaccuracy_cap;
-
-				frame = Maths::Ceil((inaccuracy/inaccuracy_cap)*9);
-				//printf(""+frame);
-
-				getHUD().SetCursorFrame(Maths::Clamp(Maths::Floor(frame), 1, max_frame));
+				getHUD().SetCursorFrame(Maths::Clamp(Maths::Floor(this.get_u8("inaccuracy") / 5), 1, 9));
 			}
 		}
 
@@ -1186,8 +1172,6 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 		}
 	}
 
-	this.set_u32("accuracy_delay", getGameTime()+3);
-
 	float bulletSpread = getBulletSpread(infantry.class_hash) + (float(this.get_u8("inaccuracy")))/perk_mod;
 	if (this.get_bool("is_rpg"))
 	{
@@ -1304,6 +1288,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
 		if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
+		this.Untag("no_more_shoot");
 		if (this.get_u32("next_shoot") > getGameTime()) return;
 		this.set_u32("next_shoot", getGameTime()+1);
 		if (this is null || this.hasTag("dead")) return;
@@ -1372,8 +1357,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		const u32 magSize = infantry.mag_size;
 		if (this.get_u32("mag_bullets") > magSize) this.set_u32("mag_bullets", magSize);
 		if (isClient()) this.getSprite().PlaySound(infantry.shoot_sfx, 0.9f, 0.90f + XORRandom(40) * 0.01f);
-
-		this.Untag("no_more_shoot");
 	}
 	else if (cmd == this.getCommandID("shoot rpg"))
 	{

@@ -65,7 +65,7 @@ void onTick(CBlob@ this)
 	HitInfo@[] infos;
 	CMap@ map = this.getMap();
 	if (isServer() && map.isTileSolid(map.getTile(this.getPosition()).type)) this.server_Die();
-	if (map.getHitInfosFromArc(this.getPosition(), -angle, (this.getTickSinceCreated() > 5 ? 13 : (this.getTickSinceCreated() < 2 ? 65 : 40)), 40.0f, this, true, @infos))
+	if (map.getHitInfosFromArc(this.getPosition(), -angle, (this.getTickSinceCreated() > 5 ? 13 : (this.getTickSinceCreated() < 2 ? 65 : 40)), 27.0f, this, true, @infos))
 	{
 		for (uint i = 0; i < infos.length; i ++)
 		{
@@ -238,17 +238,9 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 	if (isServer() && this.getTeamNum() != blob.getTeamNum() && (blob.getName() == "wooden_platform" || blob.hasTag("door")))
 	{
-		if (blob.getName() != "stone_door")
-		{
-			// destroy doors. Will not touch "strong" tag for now.
-			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.25f, Hitters::builder);
-			this.server_Die();
-		}
-		else
-		{
-			this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), 0.075f, Hitters::builder);
-			this.server_Die();
-		}
+		// destroy doors. Will not touch "strong" tag for now.
+		this.server_Hit(blob, blob.getPosition(), this.getOldVelocity(), this.hasTag("strong") ? 1.0f : 0.25f, Hitters::builder);
+		this.server_Die();
 	}
 
 	if (!v_fastrender)

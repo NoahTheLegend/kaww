@@ -59,10 +59,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				{
 					if (holder.getPlayer() !is null)
 					{
-						AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
-
-						this.SetDamageOwnerPlayer(holder.getPlayer());
-
 						if (getRules().get_string(holder.getPlayer().getUsername() + "_perk") == "Camouflage")
 						{
 							if (getMap() !is null && XORRandom(100) < 33)
@@ -72,7 +68,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 						}
 					}
 					CBlob@ blob = server_CreateBlob("molotov", this.getTeamNum(), this.getPosition());
-					if (blob !is null) blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
 					holder.server_Pickup(blob);
 					this.server_Die();
 					

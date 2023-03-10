@@ -8,9 +8,7 @@ string g_lastUsernameVoted = "";
 const float required_minutes = 0; //time you have to wait after joining w/o skip_votewait.
 
 s32 g_lastNextmapCounter = 10;
-s32 g_lastExtendtimeCounter = 5;
 const float required_minutes_nextmap = 10; //global nextmap vote cooldown
-const float required_minutes_extendtime = 5;
 
 const s32 VoteKickTime = 30; //minutes (30min default)
 
@@ -95,11 +93,6 @@ void onTick(CRules@ this)
 	if (g_lastNextmapCounter < 60 * getTicksASecond()*required_minutes_nextmap)
 	{
 		g_lastNextmapCounter++;
-	}
-
-	if (g_lastExtendtimeCounter < 60 * getTicksASecond()*required_minutes_extendtime)
-	{
-		g_lastExtendtimeCounter++;
 	}
 }
 
@@ -944,15 +937,16 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 		)
 		);
 	}
-	else if (g_lastExtendtimeCounter < 60 * getTicksASecond()*required_minutes_extendtime
+	else if (g_lastNextmapCounter < 60 * getTicksASecond()*required_minutes_nextmap
 			 && (!can_skip_wait || g_haveStartedVote))
 	{
 		string cantstart_info = getTranslatedString(
 			"Voting for additional match time\n" +
 			"requires a {NEXTMAP_MINS} min wait\n" +
 			"after each started vote\n" +
-			"to prevent spamming.\n\n"
-		).replace("{NEXTMAP_MINS}", "" + required_minutes_extendtime);
+			"to prevent spamming.\n\n" +
+			"Shares map/surrender votes delay.\n"
+		).replace("{NEXTMAP_MINS}", "" + required_minutes_nextmap);
 		Menu::addInfoBox(extendtimemenu, getTranslatedString("Can't Start Vote"), cantstart_info);
 	}
 	else
@@ -1168,7 +1162,6 @@ void onPlayerStartedVote()
 {
 	g_lastVoteCounter = 0;
 	g_lastNextmapCounter = 0;
-	g_lastExtendtimeCounter = 0;
 	g_haveStartedVote = true;
 }
 
@@ -1387,7 +1380,7 @@ void onCommand(CRules@ this, u8 cmd, CBitStream @params)
 
 		if (byplayer !is null)
 			Rules_SetVote(this, Create_VoteExtendTime(byplayer));
-		g_lastExtendtimeCounter = 0;
+		g_lastNextmapCounter = 0;
 	}
 }
 
