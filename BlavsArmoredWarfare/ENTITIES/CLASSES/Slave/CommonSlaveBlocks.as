@@ -69,13 +69,13 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "stone_door", "$stone_door$", "Stone Door\nPlace next to walls\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 40);
+		BuildBlock b(0, "trap_block", "$trap_block$", "Trap Block\nOnly enemies can pass\n");
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 25);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "trap_block", "$trap_block$", "Trap Block\nOnly enemies can pass\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 25);
+		BuildBlock b(0, "stone_door", "$stone_door$", "Stone Door\nPlace next to walls\n");
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 40);
 		blocks[0].push_back(b);
 	}
 	{
@@ -89,12 +89,12 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "wooden_door", "$wooden_door$", "Wooden Door\nPlace next to walls\n");
+		BuildBlock b(0, "wooden_platform", "$wooden_platform$", "Wooden Platform\nOne way platform\n");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "wooden_platform", "$wooden_platform$", "Wooden Platform\nOne way platform\n");
+		BuildBlock b(0, "wooden_door", "$wooden_door$", "Wooden Door\nPlace next to walls\n");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
 		blocks[0].push_back(b);
 	}
