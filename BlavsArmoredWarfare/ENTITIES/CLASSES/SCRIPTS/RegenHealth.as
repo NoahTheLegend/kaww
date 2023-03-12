@@ -21,7 +21,7 @@ void onTick(CBlob@ this)
 	{
 		if (getRules().get_string(p.getUsername() + "_perk") == "Bloodthirsty")
 		{
-			this.server_Heal(XORRandom(16)*0.01f);
+			this.server_Heal(XORRandom(21)*0.01f);
 			is_vamp = true;
 		}
 	}
