@@ -1311,9 +1311,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!this.get( "infantryInfo", @infantry )) return;
 		ArcherInfo@ archer;
 		if (!this.get("archerInfo", @archer)) return;
-
+		
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
+
+		if (getGameTime() <= this.get_u32("next_create")) return;
+		this.set_u32("next_create", getGameTime()+infantry.delayafterfire);
 
 		float damageBody = infantry.damage_body;
 		float damageHead = infantry.damage_head;
@@ -1384,6 +1387,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!params.saferead_Vec2f(arrowVel)) return;
 		ArcherInfo@ archer;
 		if (!this.get("archerInfo", @archer)) return;
+
+		InfantryInfo@ infantry;
+		if (!this.get( "infantryInfo", @infantry )) return;
+
+		if (getGameTime() <= this.get_u32("next_create")) return;
+		this.set_u32("next_create", getGameTime()+infantry.delayafterfire);
 
 		if (getNet().isServer())
 		{

@@ -99,7 +99,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 {
-	this.getStatic(false);
+	this.getShape().SetStatic(false);
 	this.getShape().getConsts().mapCollisions = true;
     if (attached !is null) this.SetDamageOwnerPlayer(attached.getPlayer());
 	this.server_setTeamNum(attached.getTeamNum());
