@@ -267,7 +267,6 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 			if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("vehicle") || blob.hasTag("player")
 			|| blob.hasTag("bunker") || blob.hasTag("door") || blob.getName() == "wooden_platform"))
 			{
-				this.getShape().setFriction(100.0f);
 				this.set_Vec2f("follow_offset", blob.getPosition() - this.getPosition() - this.getOldVelocity()/2);
 				this.set_u16("follow_id", blob.getNetworkID());
 				this.set_bool("follow_fl", blob.isFacingLeft());

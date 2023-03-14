@@ -312,8 +312,8 @@ void onTick(CBlob@ this)
 								return;
 							}
 
-							Vec2f aimvector = GunAimPos - minigun.getWorldTranslation();
-							aimvector.RotateBy(-this.getAngleDegrees());
+							Vec2f aimvector = GunAimPos - hooman.getPosition()+Vec2f(0,-16);
+							//aimvector.RotateBy(-this.getAngleDegrees());
 
 							const f32 angle = constrainAngle(-aimvector.Angle() + (flip ? 180 : 0)) * flip_factor;
 							const f32 clampedAngle = (Maths::Clamp(angle, gun_clampAngle.x, gun_clampAngle.y) * flip_factor);
@@ -321,7 +321,7 @@ void onTick(CBlob@ this)
 							this.set_f32("gunAngle", clampedAngle);
 
 							minigun.ResetTransform();
-							minigun.RotateBy(clampedAngle, Vec2f(5 * flip_factor, 1));
+							minigun.RotateBy(clampedAngle-this.getAngleDegrees(), Vec2f(5 * flip_factor, 1));
 
 							if (pressed_m1)
 							{
@@ -334,7 +334,7 @@ void onTick(CBlob@ this)
 								{
 									CBitStream params;
 									params.write_s32(this.get_f32("gunAngle"));
-									params.write_Vec2f(minigun.getWorldTranslation());
+									params.write_Vec2f(this.getPosition()+Vec2f(32.0f,8).RotateBy(this.getAngleDegrees()));
 									this.SendCommand(this.getCommandID("shoot"), params);
 									this.set_u32("fireDelayGun", getGameTime() + (shootDelay));
 								}
@@ -491,7 +491,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					proj.Tag("aircraft_bullet");
 				}
 			}
-			ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+			//ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 		}
 	}
 	else if (cmd == this.getCommandID("shoot bullet"))
@@ -556,14 +556,14 @@ CBlob@ CreateBullet(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 			proj.server_setTeamNum(this.getTeamNum());
 			proj.setVelocity(arrowVel.RotateBy(0.025f*(XORRandom(5)-2.0f)));
 
-			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PILOT");
-			if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null) //getting player is necessary in case when player leaves
+			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+			if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
 			{
 				proj.SetDamageOwnerPlayer(ap.getOccupied().getPlayer());
 			}
 			
-			proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
-			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -24.0f : 24.0f), 8.0f).RotateBy(this.getAngleDegrees()));
+			//proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
+			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -90.0f : 24.0f), 8.0f).RotateBy(this.getAngleDegrees()));
 		}
 		this.Tag("no_more_proj");
 		return proj;
