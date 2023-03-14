@@ -573,7 +573,7 @@ void onRenderScoreboard(CRules@ this)
 	makeWebsiteLink(Vec2f(getScreenWidth()/2+500, 100.0f-scrollOffset), "Discord ", "https://discord.gg/55yueJWy7g");
 	makeWebsiteLink(Vec2f(getScreenWidth()/2+420, 100.0f-scrollOffset), "Github ", "https://github.com/NoahTheLegend/kaww");
 	makeWebsiteLink(Vec2f(getScreenWidth()/2+330, 100.0f-scrollOffset), "Patreon ", "https://www.patreon.com/armoredwarfare");
-	makeWebsiteLink(Vec2f(getScreenWidth()/2+198, 100.0f-scrollOffset), "Important Poll ", "https://docs.google.com/forms/d/e/1FAIpQLSdYi7ZN7R0Yl5142gTtKjcw8PhboYzDo9MACr_9vvJCAm0RMw/viewform");
+	//makeWebsiteLink(Vec2f(getScreenWidth()/2+198, 100.0f-scrollOffset), "Important Poll ", "https://docs.google.com/forms/d/e/1FAIpQLSdYi7ZN7R0Yl5142gTtKjcw8PhboYzDo9MACr_9vvJCAm0RMw/viewform");
 
 	mouseWasPressed1 = controls.mousePressed1;
 }

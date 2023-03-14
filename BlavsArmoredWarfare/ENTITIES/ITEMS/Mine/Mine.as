@@ -178,7 +178,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (getNet().isServer() && blob !is null)
+	if (getNet().isServer() && blob !is null && !this.isInInventory() && !this.isAttached())
 	{
 		if (this.get_u8(MINE_STATE) == PRIMED && explodeOnCollideWithBlob(this, blob))
 		{
