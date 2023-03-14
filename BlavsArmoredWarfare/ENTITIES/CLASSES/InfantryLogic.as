@@ -1315,8 +1315,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
 
-		if (getGameTime() <= this.get_u32("next_create")) return;
-		this.set_u32("next_create", getGameTime()+infantry.delayafterfire);
+		//if (getGameTime() <= this.get_u32("next_create")) return;
+		//this.set_u32("next_create", getGameTime()+infantry.delayafterfire);
 
 		float damageBody = infantry.damage_body;
 		float damageHead = infantry.damage_head;
