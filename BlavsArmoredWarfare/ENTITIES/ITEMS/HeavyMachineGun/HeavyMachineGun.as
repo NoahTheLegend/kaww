@@ -153,7 +153,7 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 void onTick(CBlob@ this)
 {
 	bool is_attached = this.isAttached();
-	if (is_attached && this.hasAttached())
+	if (this.isAttachedToPoint("PICKUP") && this.hasAttached())
 	{
 		if (isServer()) this.server_DetachFromAll();
 		return;
