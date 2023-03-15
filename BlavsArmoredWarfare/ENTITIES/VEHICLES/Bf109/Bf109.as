@@ -331,7 +331,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 				proj.SetDamageOwnerPlayer(ap.getOccupied().getPlayer());
 			}
 			
-			//proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
+			proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
 			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -16.0f : 16.0f), 8.0f).RotateBy(this.getAngleDegrees()));
 		}
 		this.Tag("no_more_proj");
@@ -531,7 +531,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (isServer() && blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck")))
 	{
 		f32 mod_self = 0.5f;
-		f32 mod_target = 7.5f;
+		f32 mod_target = 4.0f;
 		blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
 		this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
 	}

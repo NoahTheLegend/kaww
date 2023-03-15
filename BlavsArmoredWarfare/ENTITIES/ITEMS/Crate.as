@@ -169,7 +169,7 @@ void onTick(CBlob@ this)
 		{
 			this.set_u32("unpack time", 0);
 			this.getCurrentScript().tickFrequency = 1;
-			//this.getShape().setDrag(2.0);
+			this.getShape().setDrag(2.0);
 			return;
 		}
 
@@ -344,7 +344,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			if (canUnpackHere(this))
 			{
 				this.set_u32("unpack time", getGameTime() + this.get_u32("unpack secs") * getTicksASecond());
-				//this.getShape().setDrag(10.0f);
+				this.getShape().setDrag(10.0f);
 			}
 		}
 		else
