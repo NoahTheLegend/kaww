@@ -198,7 +198,7 @@ void PackerMenu(CBlob@ this, CBlob@ caller)
 		
 		if (menu !is null)
 		{
-			menu.deleteAfterClick = true;
+			menu.deleteAfterClick = false;
 
 			CGridButton@ button1 = menu.AddButton("$icon_1$", "Pick 1", this.getCommandID("pick_1"), Vec2f(1, 1), params);
 			CGridButton@ button2 = menu.AddButton("$icon_2%$", "Pick 2", this.getCommandID("pick_2"), Vec2f(1, 1), params);
