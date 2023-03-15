@@ -1,6 +1,5 @@
 //Main stairs script
 
-#include "Hitters.as"
 #include "Staircase.as";
 #include "KnockedCommon.as";
 #include "GenericButtonCommon.as";
@@ -156,13 +155,4 @@ void Travel(CBlob@ this, CBlob@ caller, CBlob@ floor, Vec2f position, bool serve
 			Sound::Play("Travel.ogg", caller.getPosition());
 		}
 	}
-}
-
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-    if (customData != Hitters::builder)
-    {
-        return 0;
-    }
-    return damage;
 }

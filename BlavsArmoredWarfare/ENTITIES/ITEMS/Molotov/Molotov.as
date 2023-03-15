@@ -77,7 +77,6 @@ void DoExplosion(CBlob@ this)
 			for (int i = 0; i < 6 + XORRandom(2) ; i++)
 			{
 				CBlob@ blob = server_CreateBlob("flame", -1, this.getPosition() + Vec2f(0, -8));
-				if (blob !is null) blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
 				Vec2f nv = Vec2f((XORRandom(100) * 0.01f * vel.x * 1.30f), -(XORRandom(100) * 0.01f * 3.00f));
 				
 				blob.setVelocity(nv);
