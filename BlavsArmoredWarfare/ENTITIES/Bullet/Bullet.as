@@ -18,7 +18,7 @@ void onInit(CBlob@ this)
 		f32 scale = 1.0f;
 		this.hasTag("strong") ? scale = 1.33f : this.hasTag("shrapnel") ? scale = 0.66f : scale = 1.0f;
 
-		sprite.ScaleBy(Vec2f(scale,scale));
+		sprite.ScaleBy(Vec2f(scale,1.0f));
 		sprite.SetZ(550.0f);
 	}
 
