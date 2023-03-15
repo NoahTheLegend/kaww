@@ -10,7 +10,7 @@ void onInit(CSprite@ this){
 		// emergency supplies
 		if (getNet().isServer())
 		{
-			CBlob@ ammo = server_CreateBlob("mat_7mmround");
+			CBlob@ ammo = server_CreateBlob("ammo");
 			if (ammo !is null)
 			{
 				ammo.server_SetQuantity(30);

@@ -20,9 +20,9 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	{
 		this.server_PutInInventory(blob);
 	}
-	if (this.getName() != "antitank" && blobName == "mat_7mmround")
+	if (this.getName() != "antitank" && blobName == "ammo")
 	{
-		if (!this.hasBlob("mat_7mmround", 50)) this.server_PutInInventory(blob);
+		if (!this.hasBlob("ammo", 50)) this.server_PutInInventory(blob);
 		
 	}
 }

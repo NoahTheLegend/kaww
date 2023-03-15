@@ -30,7 +30,7 @@ void onInit(CBlob@ this)
 	{
 		this.set_Vec2f("shop menu size", Vec2f(4, 3));
 		{
-			ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
+			ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 3);
 		}
 		{
@@ -82,7 +82,7 @@ void onInit(CBlob@ this)
 	{
 		this.set_Vec2f("shop menu size", Vec2f(4, 1));
 		{
-			ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
+			ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 3);
 		}
 		{

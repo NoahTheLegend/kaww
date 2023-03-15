@@ -326,7 +326,7 @@ void onTick(CBlob@ this)
 							if (pressed_m1)
 							{
 								CBlob@ ammocarry = getBlobByNetworkID(this.get_u16("ammocarryid"));
-								if (ammocarry !is null && ammocarry.hasBlob("mat_7mmround", 1))
+								if (ammocarry !is null && ammocarry.hasBlob("ammo", 1))
 								{
 									this.getSprite().PlaySound("AssaultFire.ogg", 1.33f, 1.15f + XORRandom(35) * 0.01f);
 								}
@@ -479,9 +479,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		Vec2f arrowVel = Vec2f(27.5f, 0).RotateBy((this.isFacingLeft()?180:0)+arrowAngle);
 
 		CBlob@ ammocarry = getBlobByNetworkID(this.get_u16("ammocarryid"));
-		if (ammocarry !is null && ammocarry.hasBlob("mat_7mmround", 1))
+		if (ammocarry !is null && ammocarry.hasBlob("ammo", 1))
 		{
-			ammocarry.TakeBlob("mat_7mmround", 1);
+			ammocarry.TakeBlob("ammo", 1);
 			if (getNet().isServer())
 			{
 				CBlob@ proj = CreateBullet(this, arrowPos, arrowVel);

@@ -363,7 +363,7 @@ class PNGLoader
 			case map_colors::sponge:
 			{
 				autotile(offset);
-				CBlob@ rounds = server_CreateBlobNoInit("mat_7mmround");
+				CBlob@ rounds = server_CreateBlobNoInit("ammo");
 				if (rounds !is null)
 				{
 					rounds.setPosition(getSpawnPosition(map, offset));

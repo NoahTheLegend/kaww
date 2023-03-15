@@ -22,8 +22,8 @@ void onInit(CBlob@ this)
 	                    2, // fire delay (ticks)
 	                    1, // fire bullets amount
 	                    1, // fire cost
-	                    "mat_7mmround", // bullet ammo config name
-	                    "7mm Bullets", // name for ammo selection
+	                    "ammo", // bullet ammo config name
+	                    "Ammo", // name for ammo selection
 	                    "bullet", // bullet config name
 	                    "", // fire sound  
 	                    "EmptyFire", // empty fire sound
@@ -68,7 +68,7 @@ void onInit(CBlob@ this)
 	}
 
 	this.getShape().SetRotationsAllowed(false);
-	this.set_string("autograb blob", "mat_7mmround");
+	this.set_string("autograb blob", "ammo");
 
 	sprite.SetZ(20.0f);
 
@@ -77,7 +77,7 @@ void onInit(CBlob@ this)
 	// auto-load some ammo initially
 	if (getNet().isServer())
 	{
-		CBlob@ ammo = server_CreateBlob("mat_7mmround");
+		CBlob@ ammo = server_CreateBlob("ammo");
 		if (ammo !is null)
 		{
 			if (!this.server_PutInInventory(ammo))

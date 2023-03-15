@@ -7,7 +7,7 @@ const string CTF = "CTF";
 
 enum                Index
 {
-	MAT_7MMROUND,
+	ammo,
 	MAT_WOOD,
 	MAT_STONE,
 	MAT_GOLD,
@@ -20,7 +20,7 @@ enum                Index
 
 const string[]      NAME =
 {
-	"mat_7mmround",
+	"ammo",
 	"mat_wood",
 	"mat_stone",
 	"mat_gold",
@@ -33,7 +33,7 @@ const string[]      NAME =
 
 const u8[]          WEIGHT =
 {
-	32,						// mat_7mm_round
+	32,						// ammo
 	40,                     // mat_wood
 	25,                     // mat_stone
 	10,                     // mat_gold
@@ -48,13 +48,13 @@ const u8[]          WEIGHT =
 // ━━━━━━━━━━━━━━━━━
 const u8[]          INDEX_ARCHER =
 {
-	MAT_7MMROUND,
+	ammo,
 	MINE
 };
 
 const u8[]          INDEX_BUILDER =
 {
-	MAT_7MMROUND,
+	ammo,
 	MAT_WOOD,
 	MAT_STONE,
 	MAT_GOLD,
@@ -63,7 +63,7 @@ const u8[]          INDEX_BUILDER =
 
 const u8[]          INDEX_KNIGHT =
 {
-	MAT_7MMROUND,
+	ammo,
 	MINE,
 	KEG
 };
@@ -72,7 +72,7 @@ const u8[]          INDEX_KNIGHT =
 // ━━━━━━━━━━━━━━━━━
 const u8[]          INDEX_CTF =
 {
-	MAT_7MMROUND,
+	ammo,
 	MAT_WOOD,
 	MAT_STONE,
 	MAT_GOLD,
@@ -85,7 +85,7 @@ const u8[]          INDEX_CTF =
 
 const u8[]          INDEX_TDM =
 {
-	MAT_7MMROUND,
+	ammo,
 	MINE,
 	KEG,
 	HEART,

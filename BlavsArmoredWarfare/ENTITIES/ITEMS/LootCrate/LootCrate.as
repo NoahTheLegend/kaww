@@ -100,7 +100,7 @@ void onDie(CBlob@ this)
     	"helmet",
     	"medkit",
         "food",
-        "mat_7mmround",
+        "ammo",
         "mat_14mmround",
         "mat_bolts",
         "mat_heatwarhead"

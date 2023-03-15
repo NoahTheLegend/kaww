@@ -58,7 +58,8 @@ class VehicleInfo
 
 	AmmoInfo@ getCurrentAmmo()
 	{
-		return ammo_types[current_ammo_index];
+		if (current_ammo_index < ammo_types.length) return ammo_types[current_ammo_index];
+		return ammo_types[0];
 	}
 };
 

@@ -10,6 +10,7 @@ const u8 COOLDOWN_TICKRATE = 5;
 void onInit(CBlob@ this)
 {
 	this.Tag("gun");
+	this.Tag("heavy weight");
 	
 	Vehicle_Setup(this,
 	              0.0f, // move speed
@@ -27,8 +28,8 @@ void onInit(CBlob@ this)
 	                    2, // fire delay (ticks), +1 tick on server due to onCommand delay
 	                    1, // fire bullets amount
 	                    1, // fire cost
-	                    "mat_7mmround", // bullet ammo config name
-	                    "7mm bullets", // name for ammo selection
+	                    "ammo", // bullet ammo config name
+	                    "Ammo", // name for ammo selection
 	                    "bulletheavy", // bullet config name
 	                    "M60fire", // fire sound  
 	                    "EmptyFire", // empty fire sound
@@ -64,7 +65,7 @@ void onInit(CBlob@ this)
 	}
 
 	this.getShape().SetRotationsAllowed(false);
-	this.set_string("autograb blob", "mat_7mmround");
+	this.set_string("autograb blob", "ammo");
 
 	sprite.SetZ(20.0f);
 
@@ -77,9 +78,9 @@ void onInit(CBlob@ this)
 	// auto-load some ammo initially
 	if (getNet().isServer())
 	{
-		for (u8 i = 0; i < 4; i++)
+		for (u8 i = 0; i < 3; i++)
 		{
-			CBlob@ ammo = server_CreateBlob("mat_7mmround");
+			CBlob@ ammo = server_CreateBlob("ammo");
 			if (ammo !is null)
 			{
 				if (!this.server_PutInInventory(ammo))
@@ -151,7 +152,14 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
-	if (this.getTickSinceCreated() == 1 && !this.isAttached())
+	bool is_attached = this.isAttached();
+	if (is_attached && this.hasAttached())
+	{
+		if (isServer()) this.server_DetachFromAll();
+		return;
+	}
+
+	if (this.getTickSinceCreated() == 1 && !is_attached)
 	{
 		if (isServer() && this.getPosition().x <= 8.0f && this.getPosition().y <= 64.0f) this.server_Die();
 		CBlob@[] turrets;
@@ -174,7 +182,7 @@ void onTick(CBlob@ this)
 		return;
 	}
 
-	if (this.getTickSinceCreated() < 5 && this.isAttached())
+	if (this.getTickSinceCreated() < 5 && is_attached)
 	{
 		if (!this.hasTag("angle_set"))
 		{
@@ -187,7 +195,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	if (this.isAttached())
+	if (is_attached)
 	{
 		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
 		if (ap !is null && ap.getOccupied() !is null)
@@ -211,7 +219,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	if (isClient() && this.isAttached())
+	if (isClient() && is_attached)
 	{
 		CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
 		if (cage !is null && cage.isVisible())
@@ -456,7 +464,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 {
-	return false;
+	return !this.isAttached() && !this.hasAttached();
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
