@@ -556,6 +556,9 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	bool just_action1;
 	bool is_action1;
 
+	bool is_shotgun = this.getName() == "shotgun";
+	bool is_rpg = this.getName() == "is_rpg";
+
 	just_action1 = (this.get_bool("just_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyJustPressed(key_action1));
 	is_action1 = (this.get_bool("is_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyPressed(key_action1));
 	bool was_action1 = this.wasKeyPressed(key_action1);
@@ -826,8 +829,15 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					charge_time = infantry.delayafterfire + XORRandom(infantry.randdelay);
 					charge_state = ArcherParams::fired;
 
-					float recoilForce = infantry.recoil_force;
-					this.AddForce(Vec2f(this.getAimPos() - this.getPosition()) * (scoped ? -recoilForce/1.6 : -recoilForce));
+					if (this.get_u8("inaccuracy")/infantry.inaccuracy_cap > 0.33f || is_shotgun || is_rpg)
+					{
+						float recoilForce = infantry.recoil_force;
+						f32 normalized = (this.getAimPos() - this.getPosition()).Angle();
+						Vec2f force = Vec2f(1, 0).RotateBy(normalized) * (scoped ? -recoilForce/1.6 : -recoilForce);
+						force *= 200;
+						if (is_rpg) force = Vec2f(force.x, force.y*1.5f); // funny
+						this.AddForce(Vec2f(force.x, -force.y));
+					}
 				}
 			}
 			else
