@@ -7,6 +7,7 @@
 #include "GameplayEvents.as";
 #include "Requirements.as"
 #include "RunnerTextures.as"
+#include "CustomBlocks.as";
 
 bool PlaceBlob(CBlob@ this, CBlob @blob, Vec2f cursorPos, bool repairing = false, CBlob@ repairBlob = null)
 {
@@ -381,8 +382,10 @@ void onTick(CBlob@ this)
 					TileType tu = map.getTile(pos+Vec2f(0,-8)).type;
 					TileType tr = map.getTile(pos+Vec2f(8,0)).type;
 
-					if (!map.isTileSolid(tb) && !map.isTileSolid(tl)
-					&& !map.isTileSolid(tu) && !map.isTileSolid(tr))
+					if (!map.isTileSolid(tb) && !isTileCompactedDirt(tb) && !isTileScrap(tb)
+					&& !map.isTileSolid(tl) && !isTileCompactedDirt(tl) && !isTileScrap(tl)
+					&& !map.isTileSolid(tu) && !isTileCompactedDirt(tu) && !isTileScrap(tu)
+					&& !map.isTileSolid(tr) && !isTileCompactedDirt(tr) && !isTileScrap(tr))
 					{
 						return;
 					}

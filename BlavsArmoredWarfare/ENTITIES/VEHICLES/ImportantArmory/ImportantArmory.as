@@ -85,7 +85,7 @@ void onInit(CBlob@ this)
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
 
 	{
-		ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$mat_7mmround$", "mat_7mmround", "Ammo for machine guns and infantry.", false);
+		ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 3);
 	}
 	{

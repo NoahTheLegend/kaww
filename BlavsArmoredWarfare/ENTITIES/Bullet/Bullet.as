@@ -141,7 +141,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 			}
 		}
 		if (!isTileCompactedDirt(tile) && (((tile == CMap::tile_ground || isTileScrap(tile))
-		&& XORRandom(100) <= 3) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 10)))
+		&& XORRandom(100) <= 1) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 5)))
 		{
 			if (map.getSectorAtPosition(end, "no build") is null)
 			{
@@ -395,23 +395,24 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	const bool is_young = this.getTickSinceCreated() <= 1;
+	const bool same_team = blob.getTeamNum() == this.getTeamNum();
+
+	if (blob.hasTag("always bullet collide"))
+	{
+		if (blob.hasTag("trap")) return true;
+		if (!same_team) return false;
+		return true;
+	}
+
 	if (blob.hasTag("respawn") || blob.hasTag("invincible") || blob.hasTag("dead") || blob.hasTag("projectile") || blob.hasTag("trap") || blob.hasTag("material") || this.hasTag("rico")) {
         return false;
     }
-
-	const bool is_young = this.getTickSinceCreated() <= 1;
-	const bool same_team = blob.getTeamNum() == this.getTeamNum();
 
 	CShape@ shape = blob.getShape();
 	if (shape is null) return false;
 
 	if (blob.hasTag("door") && shape.getConsts().collidable) return true; // blocked by closed doors
-
-	if (blob.hasTag("always bullet collide"))
-	{
-		if (!same_team) return false;
-		return true;
-	}
 
 	if (blob.hasTag("missile") && !same_team) return true;
 

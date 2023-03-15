@@ -37,22 +37,22 @@ void InitClasses(CBlob@ this)
 						"---- Mechanic ----\n\nBuild and break.\n\nHP: 200\nLMB: Build\nRMB: Mine");
 
 	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver",
-						"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 325\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Knife");
+						"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 325\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
 
 	addPlayerClass(this, "---- AK-47 ----", "$ranger_class_icon$", "ranger",
-						"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 225\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Buttstock");
+						"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 225\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Buttstock");
 
 	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun",
-						"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 275\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Dig");
+						"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 275\nLMB: Shoot | 4 Ammo per shot\nRMB: Aim\nSPACEBAR: Dig");
 
 	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper",
-						"---- Sniper ----\n\nLong range sniper.\n\nHP: 175\nLMB: Shoot\nRMB: Scope in\nSPACEBAR: Knife");
+						"---- Sniper ----\n\nLong range sniper.\n\nHP: 175\nLMB: Shoot | 3 Ammo per shot\nRMB: Scope in\nSPACEBAR: Knife");
 
 	addPlayerClass(this, "---- Anti-Tank ----", "$antitank_class_icon$", "antitank",
-						"---- Anti-Tank ----\n\nArmed with a powerful RPG launcher.\n\nHP: 225.\nLMB: RPG\nRMB: Aim\nSPACEBAR: Knife");
+						"---- Anti-Tank ----\n\nArmed with a powerful RPG launcher.\n\nHP: 225.\nLMB: RPG | 1 HEAT rocket per shot\nRMB: Aim\nSPACEBAR: Knife");
 
 	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5",
-						"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half of food healing\n\nHP: 250\nLMB: Shoot\nRMB: Aim\nSPACEBAR: Heal pack");
+						"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half of food healing\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
 
 	//addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg", "---- LMG ----\n\nExtreme firepower.\nLMB: LMG\nRMB: ADS");
 	

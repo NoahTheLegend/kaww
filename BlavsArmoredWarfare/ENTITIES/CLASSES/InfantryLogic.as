@@ -145,7 +145,8 @@ void onInit(CBlob@ this)
 	
 	this.set_u32("can_spot", 0);
 
-	this.set_string("ammo_prop", "mat_7mmround");
+	this.set_string("ammo_prop", "ammo");
+	this.set_u8("ammo_pershot", 1);
 
 	if (this.getName() == "revolver")
 	{
@@ -153,6 +154,7 @@ void onInit(CBlob@ this)
 		this.set_u8("stab timing", 13);
 		this.Tag("no bulletgib on shot");
 		this.set_f32("stab damage", 1.5f);
+		//this.set_u8("ammo_pershot", 2);
 	}
 	else if (this.getName() == "ranger")
 	{
@@ -164,11 +166,12 @@ void onInit(CBlob@ this)
 	{
 		this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
 		this.set_f32("stab damage", 1.75f);
+		this.set_u8("ammo_pershot", 4);
 	}
-	//else if (this.getName() == "sniper")
-	//{
-	//	this.Tag("simple reload");
-	//}
+	else if (this.getName() == "sniper")
+	{
+		this.set_u8("ammo_pershot", 3);
+	}
 	else if (this.getName() == "antitank")
 	{
 		this.set_bool("is_rpg", true);
@@ -848,50 +851,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				{
 					charge_time = 0;
 					if (isReloading)
-					{
-						// reload
-						CInventory@ inv = this.getInventory();
-						if (inv !is null)
-						{
-							//printf(""+need_ammo);
-							//printf(""+current);
-							for (u8 i = 0; i < 20; i++)
-							{
-								u32 current = this.get_u32("mag_bullets");
-								u32 miss = magSize-current;
-								CBlob@ mag;
-								for (u8 i = 0; i < inv.getItemsCount(); i++)
-								{
-									CBlob@ b = inv.getItem(i);
-									if (b is null || b.getName() != this.get_string("ammo_prop") || b.hasTag("dead")) continue;
-									@mag = @b;
-									break;
-								}
-								if (mag !is null)
-								{
-									u16 quantity = mag.getQuantity();
-									if (quantity <= miss)
-									{
-										//printf("a");
-										//printf(""+miss);
-										//printf(""+quantity);
-										this.add_u32("mag_bullets", quantity);
-										mag.Tag("dead");
-										if (isServer()) mag.server_Die();
-										continue;
-									}
-									else
-									{
-										//printf("e");
-										this.set_u32("mag_bullets", magSize);
-										if (isServer()) mag.server_SetQuantity(quantity - miss);
-										break;
-									}
-								}
-								else break;
-							}
-						}
-					}
+						TakeAmmo(this, magSize);
+
 					archer.isStabbing = false;
 					archer.isReloading = false;
 
@@ -907,50 +868,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			{
 				charge_time = 0;
 				if (isReloading)
-				{
-					// reload
-					CInventory@ inv = this.getInventory();
-					if (inv !is null)
-					{
-						//printf(""+need_ammo);
-						//printf(""+current);
-						for (u8 i = 0; i < 20; i++)
-						{
-							u32 current = this.get_u32("mag_bullets");
-							u32 miss = magSize-current;
-							CBlob@ mag;
-							for (u8 i = 0; i < inv.getItemsCount(); i++)
-							{
-								CBlob@ b = inv.getItem(i);
-								if (b is null || b.getName() != this.get_string("ammo_prop") || b.hasTag("dead")) continue;
-								@mag = @b;
-								break;
-							}
-							if (mag !is null)
-							{
-								u16 quantity = mag.getQuantity();
-								if (quantity <= miss)
-								{
-									//printf("a");
-									//printf(""+miss);
-									//printf(""+quantity);
-									this.add_u32("mag_bullets", quantity);
-									mag.Tag("dead");
-									if (isServer()) mag.server_Die();
-									continue;
-								}
-								else
-								{
-									//printf("e");
-									this.set_u32("mag_bullets", magSize);
-									if (isServer()) mag.server_SetQuantity(quantity - miss);
-									break;
-								}
-							}
-							else break;
-						}
-					}
-				}
+					TakeAmmo(this, magSize);
 
 				archer.isStabbing = false;
 				archer.isReloading = false;
@@ -1073,6 +991,48 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	this.set_s32("my_chargetime", charge_time);
 	this.Sync("my_chargetime", true);
 	archer.charge_state = charge_state;
+}
+
+void TakeAmmo(CBlob@ this, u32 magSize)
+{
+	CInventory@ inv = this.getInventory();
+	if (inv !is null)
+	{
+		//printf(""+need_ammo);
+		//printf(""+current);
+		for (u8 i = 0; i < 20; i++)
+		{
+			u8 multiplier = this.get_u8("ammo_pershot");
+			u32 current = this.get_u32("mag_bullets");
+			u32 miss = (magSize-current)*multiplier;
+			CBlob@ mag;
+			for (u8 i = 0; i < inv.getItemsCount(); i++)
+			{
+				CBlob@ b = inv.getItem(i);
+				if (b is null || b.getName() != this.get_string("ammo_prop") || b.hasTag("dead")) continue;
+				@mag = @b;
+				break;
+			}
+			if (mag !is null)
+			{
+				u16 quantity = mag.getQuantity();
+				if (quantity <= miss)
+				{
+					this.add_u32("mag_bullets", Maths::Max(1, quantity/multiplier));
+					mag.Tag("dead");
+					if (isServer()) mag.server_Die();
+					continue;
+				}
+				else
+				{
+					this.set_u32("mag_bullets", magSize);
+					if (isServer()) mag.server_SetQuantity(quantity - miss);
+					break;
+				}
+			}
+			else break;
+		}
+	}
 }
 
 void onTick(CBlob@ this)
@@ -1240,7 +1200,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 				ShakeScreen((Vec2f(recoilX - XORRandom(recoilX*2) + 1, -recoilY + XORRandom(recoilY) + 1) * mod), infantry.recoil_length*mod, this.getInterpolatedPosition());
 				ShakeScreen(28, 10, this.getPosition());
 
-				this.set_u8("inaccuracy", this.get_u8("inaccuracy") + infantry.inaccuracy_pershot * (this.hasTag("sprinting")?2.0f:1.0f));
+				this.set_u8("inaccuracy", Maths::Min(infantry.inaccuracy_cap, this.get_u8("inaccuracy") + infantry.inaccuracy_pershot * (this.hasTag("sprinting")?2.0f:1.0f)));
 			
 				if (infantry.emptyshellonfire)
 				makeGibParticle(

@@ -26,7 +26,7 @@ void onInit(CBlob@ this)
 	this.Tag("builder always hit");
 	this.Tag("structure");
 
-	this.set_string("prod_blob", "mat_7mmround");
+	this.set_string("prod_blob", "ammo");
 	this.set_u8("prod_amount", 50);
 	this.set_u8("prod_time", 0);
 	this.set_u8("cost", 1);
@@ -74,7 +74,7 @@ void onTick(CBlob@ this)
 			{
 				u8 index = 0;
 				string b = this.get_string("prod_blob");
-				if (b == "mat_7mmround")
+				if (b == "ammo")
 				{
 					index = 0;
 				}
@@ -277,7 +277,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("7mm"))
 	{
-		this.set_string("prod_blob", "mat_7mmround"); // blob cfg name
+		this.set_string("prod_blob", "ammo"); // blob cfg name
 		this.set_u8("prod_amount", 50); // how many
 		this.set_u8("prod_time", 2); // extra seconds time (10 sec for default)
 		this.set_u8("cost", 1); // how many scrap to take
@@ -365,7 +365,7 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 		{
 			menu.deleteAfterClick = true;
 
-			CGridButton@ button0 = menu.AddButton("$mat_7mmround$", "7mm Rounds", this.getCommandID("7mm"), Vec2f(1, 1), params);
+			CGridButton@ button0 = menu.AddButton("$ammo$", "Ammo", this.getCommandID("7mm"), Vec2f(1, 1), params);
 			CGridButton@ button1 = menu.AddButton("$mat_14mmround$", "14mm Shells", this.getCommandID("14mm"), Vec2f(1, 1), params);
 			CGridButton@ button2 = menu.AddButton("$mat_bolts$", "105mm Shells", this.getCommandID("105mm"), Vec2f(1, 1), params);
 			CGridButton@ button3 = menu.AddButton("$mat_heatwarhead$", "HEAT Warheads", this.getCommandID("heats"), Vec2f(1, 1), params);
@@ -376,7 +376,7 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 		
 			if (button0 !is null && button1 !is null && button2 !is null && button3 !is null && button4 !is null && button5 !is null && button6 !is null && button7 !is null)
 			{
-				if (this.get_string("prod_blob") == "mat_7mmround")
+				if (this.get_string("prod_blob") == "ammo")
 				{
 					button0.SetEnabled(false);
 				}

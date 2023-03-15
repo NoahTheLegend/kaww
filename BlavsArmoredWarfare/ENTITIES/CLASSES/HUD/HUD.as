@@ -34,7 +34,7 @@ void onRender(CSprite@ this)
 				CInventory@ inv = blob.getInventory();
 				
 				if (inv !is null && (
-					blob.getName() != "antitank" && inv.getItem("mat_7mmround") is null) || // is any normal class
+					blob.getName() != "antitank" && inv.getItem("ammo") is null) || // is any normal class
 					blob.getName() == "antitank" && inv.getItem("mat_heatwarhead") is null) // is antitank
 				{
 					GUI::SetFont("menu");

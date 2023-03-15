@@ -55,17 +55,17 @@ void onInit(CBlob@ this)
 	{
 		if (XORRandom(2) == 0)
 		{
-			CBlob@ b = server_CreateBlob("mat_7mmround", -1, this.getPosition());
+			CBlob@ b = server_CreateBlob("ammo", -1, this.getPosition());
 			this.server_PutInInventory(b);
 		}
 		if (XORRandom(2) == 0)
 		{
-			CBlob@ b = server_CreateBlob("mat_7mmround", -1, this.getPosition());
+			CBlob@ b = server_CreateBlob("ammo", -1, this.getPosition());
 			this.server_PutInInventory(b);
 		}
 		if (XORRandom(2) == 0)
 		{
-			CBlob@ b = server_CreateBlob("mat_7mmround", -1, this.getPosition());
+			CBlob@ b = server_CreateBlob("ammo", -1, this.getPosition());
 			this.server_PutInInventory(b);
 		}
 		if (XORRandom(3) == 0)
@@ -163,7 +163,7 @@ void onTick(CBlob@ this)
 			{
 				if (XORRandom(4) == 0)
 				{
-					CBlob@ b = server_CreateBlob("mat_7mmround", -1, this.getPosition());
+					CBlob@ b = server_CreateBlob("ammo", -1, this.getPosition());
 					this.server_PutInInventory(b);
 				}
 				else if (XORRandom(5) == 0)
@@ -311,7 +311,7 @@ void onDie(CBlob@ this)
     	"helmet",
     	"medkit",
         "food",
-        "mat_7mmround",
+        "ammo",
         "mat_bolts",
         "pipewrench"
     };

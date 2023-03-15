@@ -111,7 +111,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	TileType tile = map.getTile(end).type;
 
 	if ((isTileCompactedDirt(tile) && XORRandom(100)<=1) || ((tile == CMap::tile_ground || isTileScrap(tile))
-	&& XORRandom(100) <= 3) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 15))
+	&& XORRandom(100) <= 2) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 8))
 	{
 		if (map.getSectorAtPosition(end, "no build") is null)
 		{

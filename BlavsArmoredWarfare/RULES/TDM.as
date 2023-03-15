@@ -1027,14 +1027,14 @@ shared class TDMCore : RulesCore
 			CBlob@[] blobsInRadius;
 			CMap@ map = getMap();
 			bool found = false;
-			if (!blob.hasBlob("mat_7mmround", 1))
+			if (!blob.hasBlob("ammo", 1))
 			{
 				if (map.getBlobsInRadius(blob.getPosition(), 164.0f, @blobsInRadius))
 				{
 					for (uint i = 0; i < blobsInRadius.length; i++)
 					{
 						CBlob @b = blobsInRadius[i];
-						if (b.getName() == "mat_7mmround")
+						if (b.getName() == "ammo")
 						{
 							found = true;
 							if (!found)
@@ -1051,10 +1051,9 @@ shared class TDMCore : RulesCore
 
 				if (!found)
 				{
-					CBlob@ mat = server_CreateBlob("mat_7mmround");
+					CBlob@ mat = server_CreateBlob("ammo");
 					if (mat !is null)
 					{
-						if (blob.getName() == "mp5" || blob.getName() == "ranger") mat.server_SetQuantity(100);
 						if (!blob.server_PutInInventory(mat))
 						{
 							mat.setPosition(blob.getPosition());

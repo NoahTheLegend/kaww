@@ -539,8 +539,7 @@ void onTick(CMovement@ this)
 			}
 			if (items > 0)
 			{
-
-				moveVars.walkFactor *= 1.00f - (0.0225f * items);
+				moveVars.walkFactor *= 1.00f - (0.03f * items);
 				moveVars.jumpStart = 0.7 - (0.1f * items);
 				moveVars.jumpMid = 0.2f;
 				moveVars.jumpEnd = 0.1f;
@@ -551,7 +550,7 @@ void onTick(CMovement@ this)
 		CBlob@ carryBlob = blob.getCarriedBlob();
 		if (carryBlob !is null)
 		{
-            if (blob.getPlayer() !is null && is_engi
+            if (blob.getPlayer() !is null && is_engi && carryBlob.getName() != "heavygun"
             && (carryBlob.hasTag("medium weight") || carryBlob.hasTag("heavy weight")))
             {
                 moveVars.walkFactor *= 0.95f;

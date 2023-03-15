@@ -5,6 +5,8 @@ void onInit(CBlob@ this)
 	this.server_setTeamNum(255);
 
 	this.Tag("builder always hit");
+	this.Tag("always bullet collide");
+	this.Tag("trap");
 
 	this.getShape().SetRotationsAllowed(false);
 
@@ -18,7 +20,7 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return false;
+	return blob.hasTag("bullet");
 }
 
 void DoExplosion(CBlob@ this)
