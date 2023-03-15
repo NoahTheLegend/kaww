@@ -713,7 +713,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.0f, 0.1f));
 
 							// brake!
-							this.getShape().setFriction(0.46); todo: find a new way 
+							this.getShape().setFriction(0.46);// todo: find a new way 
 						}
 						else{
 							// release brakes
