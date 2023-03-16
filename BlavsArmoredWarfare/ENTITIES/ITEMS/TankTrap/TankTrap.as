@@ -57,7 +57,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	{
 		if (blob.hasTag("vehicle") && blob.getTeamNum() < 7 && this.getTeamNum() != blob.getTeamNum())
 		{
-			this.server_Hit(blob, blob.getPosition(), Vec2f_zero, 22.0f, Hitters::explosion);
+			this.server_Hit(blob, blob.getPosition(), Vec2f_zero, 45.0f, Hitters::explosion);
 
 			if (blob.isOnMap())
 			{

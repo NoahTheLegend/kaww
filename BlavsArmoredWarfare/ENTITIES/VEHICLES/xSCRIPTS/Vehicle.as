@@ -928,6 +928,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.hasTag("grenade"))
 	{
+		if (this.hasTag("truck") && this.getName() != "importantarmory")
+		{
+			damage *= 2;
+		}
+		
 		if (this.hasTag("aerial")) return damage*4.5f;
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*0.75f;
 
