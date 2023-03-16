@@ -196,8 +196,8 @@ namespace RangerParams
 {
 	const ::string CLASSNAME 			= "Ranger"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.4f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.7f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.3f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.5f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.9f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
@@ -241,8 +241,8 @@ namespace Mp5Params
 {
 	const ::string CLASSNAME 			= "Mp5"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.26f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.48f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.2f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.35f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.85f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
