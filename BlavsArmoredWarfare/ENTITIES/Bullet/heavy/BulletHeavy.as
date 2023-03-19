@@ -380,13 +380,13 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		}
 	}
 
-	if (blob.hasTag("player"))
-	{
-		if (blob.hasTag("bushy") && this.getTickSinceCreated() > 12)
-		{
-			return false;
-		}
-	}
+	//if (blob.hasTag("player")) the tag is only clientside
+	//{
+	//	if (blob.hasTag("bushy") && this.getTickSinceCreated() > 12)
+	//	{
+	//		return false;
+	//	}
+	//}
 
 	if (blob.hasTag("vehicle"))
 	{
