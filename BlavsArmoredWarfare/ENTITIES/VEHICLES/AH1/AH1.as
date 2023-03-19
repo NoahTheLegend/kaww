@@ -502,7 +502,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		Vec2f arrowVel;
 		if (!params.saferead_Vec2f(arrowVel)) return;
 
-		if (getNet().isServer() && !this.hasTag("no_more_proj"))
+		if (getGameTime() <= this.get_u32("next_create")) return;
+		this.set_u32("next_create", getGameTime()+15);
+		
+		if (getNet().isServer())
 		{
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
 			

@@ -104,7 +104,7 @@ string[] lastblobs = {
 
 void onBlobCreated( CRules@ this, CBlob@ blob )
 {
-	if (isServer() && blob !is null && !blob.hasTag("bullet"))
+	if (isServer() && getGameTime() > 5 && blob !is null && !blob.hasTag("bullet"))
 	{
 		lastblobs.push_back(blob.getName());
 	}

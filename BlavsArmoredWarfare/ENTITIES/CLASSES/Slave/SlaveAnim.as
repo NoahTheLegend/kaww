@@ -157,6 +157,7 @@ void onTick(CSprite@ this)
 				{
 					if (getGameTime()>=blob.get_u32("become_a_bush"))
 					{
+						blob.Tag("bushy");
 						if (getGameTime() == blob.get_u32("become_a_bush"))
 						{
 							this.PlaySound("LeafRustle"+(XORRandom(3)+1)+".ogg", 0.33f, 1.0f);
@@ -195,9 +196,11 @@ void onTick(CSprite@ this)
 							}
 						}
 					}
+					else blob.Untag("bushy");
 				}
 				else
 				{
+					blob.Untag("bushy");
 					blob.set_u32("become_a_bush", 0);
 					this.SetVisible(true);
 					camo.SetVisible(!blob.isAttached());

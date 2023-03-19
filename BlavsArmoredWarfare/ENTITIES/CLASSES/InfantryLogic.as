@@ -1120,7 +1120,7 @@ bool canSend( CBlob@ this )
 void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 {
 	if (this.hasTag("had_menus") || this.getTickSinceCreated() <= 5) return;
-	Vec2f thisAimPos = this.getAimPos();
+	Vec2f thisAimPos = this.getAimPos() - Vec2f(0,4);
 
 	if (this.get_u32("mag_size") > 0) this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
 

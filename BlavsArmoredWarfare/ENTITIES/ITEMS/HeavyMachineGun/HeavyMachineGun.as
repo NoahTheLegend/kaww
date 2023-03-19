@@ -10,7 +10,7 @@ const u8 COOLDOWN_TICKRATE = 5;
 void onInit(CBlob@ this)
 {
 	this.Tag("gun");
-	this.Tag("heavy weight");
+	this.Tag("very heavy weight");
 	
 	Vehicle_Setup(this,
 	              0.0f, // move speed
