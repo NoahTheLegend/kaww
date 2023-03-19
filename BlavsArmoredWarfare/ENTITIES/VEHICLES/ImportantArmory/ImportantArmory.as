@@ -90,11 +90,11 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 20);
+		AddRequirement(s.requirements, "coin", "", "Coins", 15);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "105mm Shells", "$mat_bolts$", "mat_bolts", "Ammo for a tank's main gun.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 40);
+		AddRequirement(s.requirements, "coin", "", "Coins", 30);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total. Bonus: allows medics to perform healing faster.", false);
@@ -102,7 +102,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 45);
+		AddRequirement(s.requirements, "coin", "", "Coins", 35);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
@@ -124,7 +124,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas an small explosion radius.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 60);
+		AddRequirement(s.requirements, "coin", "", "Coins", 50);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
@@ -140,11 +140,11 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nPLUSES: Good engine power, fast, good elevation angles\nMINUSES: Medium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 45);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nPLUSES: Thick armor, big cannon damage.\nMINUSES: Slow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses 105mm & 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 65);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
@@ -166,7 +166,7 @@ void onInit(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
@@ -528,9 +528,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), getGameTime()+150);
 	}
-	if (hitterBlob.getName() == "missile_javelin" || hitterBlob.getName() == "ballista_bolt")
+	if (hitterBlob.getName() == "missile_javelin")
 	{
-		return damage * 1.25f;
+		return damage * 0.7f;
+	}
+	if (hitterBlob.getName() == "ballista_bolt")
+	{
+		return damage * 1.4f;
 	}
 	if (hitterBlob.hasTag("grenade"))
 	{
