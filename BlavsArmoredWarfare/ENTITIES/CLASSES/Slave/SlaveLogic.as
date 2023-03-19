@@ -95,10 +95,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				return damage * 2;
 			}
 		}
-		else if (!this.isOnGround() && !this.isOnLadder() && !this.isInWater()
+		else if (this.getVelocity().y > 0.0f && !this.isOnGround() && !this.isOnLadder()
+		&& !this.isInWater() && !this.isAttached()
 		&& getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 		{
-			return damage * 0.5f;
+			damage * 0.5f;
 		}
 		else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
 		{
@@ -132,6 +133,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") && hitterBlob.getName() != "grenade")
 	{
+		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*5.0f;
 		bool at_bunker = false;
 		Vec2f pos = this.getPosition();
 		Vec2f hit_pos = hitterBlob.getPosition();

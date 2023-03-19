@@ -163,7 +163,7 @@ void onTick(CBlob@ this)
 				turret.set_u16("tankid", this.getNetworkID());
 
 				turret.SetFacingLeft(this.isFacingLeft());
-				turret.SetMass(this.getMass());
+				//turret.SetMass(this.getMass());
 			}
 		}
 	}
