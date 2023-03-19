@@ -111,7 +111,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	TileType tile = map.getTile(end).type;
 
 	if ((isTileCompactedDirt(tile) && XORRandom(100)<=1) || ((tile == CMap::tile_ground || isTileScrap(tile))
-	&& XORRandom(100) <= 2) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 8))
+	&& XORRandom(100) <= 2) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 6))
 	{
 		if (map.getSectorAtPosition(end, "no build") is null)
 		{
@@ -375,6 +375,14 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		}
 
 		if (blob.hasTag("trap") || blob.hasTag("material"))
+		{
+			return false;
+		}
+	}
+
+	if (blob.hasTag("player"))
+	{
+		if (blob.hasTag("bushy") && this.getTickSinceCreated() > 12)
 		{
 			return false;
 		}

@@ -145,7 +145,9 @@ void drawAmmoCount(CBlob@ blob, VehicleInfo@ v)
 	GUI::SetFont("menu");
 	GUI::DrawText(reqsText, upperleft + Vec2f(2, 1), color_white);
 
-	GUI::DrawIcon("Materials", 31, Vec2f(16, 16), upperleft + Vec2f(-4,-15));
+	u8 icon = 63;
+	if (blob.getName()=="heavygun") icon = 31;
+	GUI::DrawIcon("Materials", icon, Vec2f(16, 16), upperleft + Vec2f(-4,-15));
 }
 
 void drawCooldownBar(CBlob@ blob, VehicleInfo@ v)
