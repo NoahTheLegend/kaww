@@ -751,10 +751,11 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			if (controls !is null &&
 				!isReloading && this.get_u32("end_stabbing") < getGameTime()
 				&& (((controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient()))
-				&& this.get_u32("no_reload") < getGameTime() && done_shooting
-				&& this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max")) || (this.hasTag("forcereload") && done_shooting)))
+				&& this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max")) || (this.hasTag("forcereload"))))
 			{
 				bool forcereload = false;
+				this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
+				
 				if (this.hasTag("forcereload"))
 				{
 					this.set_u32("mag_bullets", this.get_u32("mag_bullets_max"));
@@ -1122,8 +1123,6 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	if (this.hasTag("had_menus") || this.getTickSinceCreated() <= 5) return;
 	Vec2f thisAimPos = this.getAimPos() - Vec2f(0,4);
 
-	if (this.get_u32("mag_size") > 0) this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
-
 	float angle = Maths::ATan2(thisAimPos.y - this.getPosition().y, thisAimPos.x - this.getPosition().x) * 180 / 3.14159;
 	angle += -0.099f + (XORRandom(2) * 0.01f);
 
@@ -1182,6 +1181,10 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	{
 		ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity, bulletSpread*targetFactor, infantry.burst_size );
 	}
+
+	//if (this.get_u32("mag_size") > 0)
+	this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
+	//printf(""+this.get_u32("no_reload"));
 
 	// this causes backwards shit
 	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -12.0f : 12.0f, -0.0f).RotateBy(this.isFacingLeft()?angle+180:angle), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
@@ -1266,8 +1269,11 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
-		this.set_s32("my_chargetime", infantry.delayafterfire);
-		this.Tag("no_more_shoot");
+		if (this.get_u32("my_chargetime") == 0)
+		{
+			this.set_s32("my_chargetime", infantry.delayafterfire);
+			this.Tag("no_more_shoot");
+		}
 	}
 
 	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
