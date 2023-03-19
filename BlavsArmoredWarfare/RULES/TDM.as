@@ -96,23 +96,30 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 	
 	return false;			//team not red or blue (probably spectator so dont want to check game over)
 }
-/*
+
 int blobcount = 0;
+string[] lastblobs = {
+
+};
 
 void onBlobCreated( CRules@ this, CBlob@ blob )
 {
-	if (isServer())
+	if (isServer() && blob !is null && !blob.hasTag("bullet"))
 	{
-		if (getGameTime()%90==0 && blob !is null && blob.getNetworkID() > 55000)
-		{
-			//warn("BLOB: "+blob.getName()+" NETID: "+blob.getNetworkID());
-			blobcount = blob.getNetworkID();
-			CBitStream params;
-			this.SendCommand(222, params);
-		}
+		lastblobs.push_back(blob.getName());
 	}
+	//if (isServer())
+	//{
+	//	if (getGameTime()%90==0 && blob !is null && blob.getNetworkID() > 55000)
+	//	{
+	//		//warn("BLOB: "+blob.getName()+" NETID: "+blob.getNetworkID());
+	//		blobcount = blob.getNetworkID();
+	//		CBitStream params;
+	//		this.SendCommand(222, params);
+	//	}
+	//}
 }
-*/
+
 string cost_config_file = "tdm_vars.cfg";
 
 void Config(TDMCore@ this)
@@ -1361,6 +1368,43 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 
 void onTick(CRules@ this)
 {
+	if (isServer() && getGameTime() > 5)
+	{
+		u16 count = 0;
+		u16 tempcount = 0;
+		string name;
+		u16 len = lastblobs.length;
+		for (u16 i = 0; i < len; i++)
+		{
+			for (u16 j = 0; j < len; j++)
+			{
+				if (lastblobs[i] == lastblobs[j])
+				{
+					tempcount++;
+					if (j == len-i && count < tempcount)
+					{
+						count = tempcount;
+						name = lastblobs[i];
+					}
+				}
+			}
+			tempcount = 0;
+		}
+		string[] empty;
+		lastblobs = empty;
+
+		if (count > 30)
+		{
+			printf("WARNING: BLOB SPAMMED - "+count+" OF "+name);
+			ConfigFile cfg = ConfigFile();
+			if (!cfg.loadFile("../Cache/crash.cfg"))
+			{
+				cfg.add_string(name, name+": "+count);
+				cfg.saveFile("crash.cfg");
+			}
+		}
+	}
+
 	if (getGameTime() == 1)
 	{
 		u16 count = 10 + getPlayersCount();
