@@ -109,10 +109,6 @@ void onRender(CRules@ this)
 	{
 		const string shiprektVersion = "Armored Warfare\n";
 		const string lastChangesInfo = "\nChanges:\n\n"
-		+ "  * C4 now explodes in 7.5 seconds\n"
-        + "  * Barbed wire now requires to be put next to blocks\n"
-        + "  * You can no longer respawn on outpost that are being captured\n"
-        + "  * Wooden gates are now automatically opened when friendly entity is passed\n"
         + "  * Balance changes & bug fixes & QOL\n";
 		
 		GUI::SetFont("menu");

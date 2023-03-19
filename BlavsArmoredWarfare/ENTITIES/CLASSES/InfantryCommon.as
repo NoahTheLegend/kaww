@@ -196,7 +196,7 @@ namespace RangerParams
 {
 	const ::string CLASSNAME 			= "Ranger"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.3f; // damage dealt to body
+	const ::f32 DAMAGE_BODY 			= 0.275f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.5f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.9f; // walk
@@ -290,7 +290,7 @@ namespace RevolverParams
 	const ::f32 DAMAGE_HEAD 			= 1.15f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.95f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
+	const ::f32 AIRWALK_STAT 			= 2.6f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.87f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 1.2f; // walk (sprint)
 	const ::f32 AIRWALK_STAT_SPRINT 	= 3.25f; // airwalk (sprint)
@@ -309,14 +309,14 @@ namespace RevolverParams
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
 	const ::u8 INACCURACY_CAP 			= 55; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 25; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_PER_SHOT 		= 15; // aim inaccuracy  (+3 per shot)
 	const ::u8 INACCURACY_HIT  		    = 5;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 			= 64; // time to reload
+	const ::s16 RELOAD_TIME 			= 50; // time to reload
 	const ::u8 NORELOADTIMER 			= 3; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 7; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
@@ -591,6 +591,8 @@ void getWeaponStats( int blobNameHash,
 			bullet_velocity = RangerParams::BULLET_VELOCITY;
 			bullet_lifetime = RangerParams::BULLET_LIFETIME;
 			bullet_pen = RangerParams::BULLET_PEN;
+
+			emptyshellonfire = RangerParams::EMPTYSHELLONFIRE;
 		}
 		break;
 

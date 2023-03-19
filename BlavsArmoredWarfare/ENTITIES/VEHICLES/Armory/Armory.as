@@ -132,6 +132,7 @@ void onInit(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
 		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
+		AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Standard Ammo", "$ammo$", "ammo", "Used by all small arms guns, and vehicle machineguns.", false);
@@ -172,7 +173,7 @@ void onInit(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
 	//{
 	//	ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);

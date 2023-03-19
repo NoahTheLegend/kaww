@@ -37,7 +37,7 @@ void InitClasses(CBlob@ this)
 						"---- Mechanic ----\n\nBuild and break.\n\nHP: 200\nLMB: Build\nRMB: Mine");
 
 	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver",
-						"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 325\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
+						"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 350\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
 
 	addPlayerClass(this, "---- AK-47 ----", "$ranger_class_icon$", "ranger",
 						"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 225\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Buttstock");
