@@ -52,6 +52,7 @@ void onInit(CBlob@ this)
 		{
 			ShopItem@ s = addShopItem(this, "Sticky Grenade", "$sgrenade$", "sgrenade", "An analogue for default grenades, but also\nsticks to flesh, bunkers and any type of vehicles.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 35);
+			AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);

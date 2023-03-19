@@ -745,44 +745,47 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	
 		bool done_shooting = this.get_s8("charge_time") <= 0 && this.get_s32("my_chargetime") <= 0;
 
-		// reload
-		if (controls !is null &&
-			!isReloading && this.get_u32("end_stabbing") < getGameTime()
-			&& this.get_u32("no_reload") < getGameTime() && done_shooting
-			&& (((controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient()))
-			&& this.get_u32("no_reload") < getGameTime() && done_shooting
-			&& this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max")) || (this.hasTag("forcereload") && done_shooting)))
+		if (done_shooting && this.get_u32("no_reload") < getGameTime())
 		{
-			bool forcereload = false;
-			if (this.hasTag("forcereload"))
+			// reload
+			if (controls !is null &&
+				!isReloading && this.get_u32("end_stabbing") < getGameTime()
+				&& (((controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient()))
+				&& this.get_u32("no_reload") < getGameTime() && done_shooting
+				&& this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max")) || (this.hasTag("forcereload") && done_shooting)))
 			{
-				this.set_u32("mag_bullets", this.get_u32("mag_bullets_max"));
-				this.Untag("forcereload");
-				forcereload = true;
-			}
-			bool reloadistrue = false;
-			CInventory@ inv = this.getInventory();
-			if ((inv !is null && inv.getItem(this.get_string("ammo_prop")) !is null) || forcereload)
-			{
-				// actually reloading
-				reloadistrue = true;
-				charge_time = reloadTime;
-
-				isReloading = true;
-				this.set_bool("isReloading", true);
-	
-				CBitStream params; // sync to server
-				if (ismyplayer && !this.isBot()) // isClient()
+				bool forcereload = false;
+				if (this.hasTag("forcereload"))
 				{
-					params.write_s8(charge_time);
-					this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
+					this.set_u32("mag_bullets", this.get_u32("mag_bullets_max"));
+					this.Untag("forcereload");
+					forcereload = true;
 				}
+				bool reloadistrue = false;
+				CInventory@ inv = this.getInventory();
+				if ((inv !is null && inv.getItem(this.get_string("ammo_prop")) !is null) || forcereload)
+				{
+					// actually reloading
+					reloadistrue = true;
+					charge_time = reloadTime;
+
+					isReloading = true;
+					this.set_bool("isReloading", true);
+
+					CBitStream params; // sync to server
+					if (ismyplayer && !this.isBot()) // isClient()
+					{
+						params.write_s8(charge_time);
+						this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
+					}
+				}
+				//else if (ismyplayer)
+				//{
+				//	sprite.PlaySound("NoAmmo.ogg", 0.85);
+				//}
 			}
-			//else if (ismyplayer)
-			//{
-			//	sprite.PlaySound("NoAmmo.ogg", 0.85);
-			//}
 		}
+		
 		if (isServer() && this.hasTag("sync_reload"))
 		{
 			s8 reload = charge_time > 0 ? charge_time : this.get_s8("reloadtime");
@@ -1119,6 +1122,8 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	if (this.hasTag("had_menus") || this.getTickSinceCreated() <= 5) return;
 	Vec2f thisAimPos = this.getAimPos();
 
+	if (this.get_u32("mag_size") > 0) this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
+
 	float angle = Maths::ATan2(thisAimPos.y - this.getPosition().y, thisAimPos.x - this.getPosition().x) * 180 / 3.14159;
 	angle += -0.099f + (XORRandom(2) * 0.01f);
 
@@ -1178,7 +1183,6 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 		ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity, bulletSpread*targetFactor, infantry.burst_size );
 	}
 
-	if (this.get_u32("mag_size") > 0) this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
 	// this causes backwards shit
 	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -12.0f : 12.0f, -0.0f).RotateBy(this.isFacingLeft()?angle+180:angle), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 	
@@ -1201,7 +1205,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 				ShakeScreen(28, 10, this.getPosition());
 
 				this.set_u8("inaccuracy", Maths::Min(infantry.inaccuracy_cap, this.get_u8("inaccuracy") + infantry.inaccuracy_pershot * (this.hasTag("sprinting")?2.0f:1.0f)));
-			
+				
 				if (infantry.emptyshellonfire)
 				makeGibParticle(
 					"EmptyShellSmall",	                    // file name
@@ -1365,7 +1369,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!this.get( "infantryInfo", @infantry )) return;
 
 		if (getGameTime() <= this.get_u32("next_create")) return;
-		this.set_u32("next_create", getGameTime()+infantry.delayafterfire);
+		this.set_u32("next_create", getGameTime()+15);
 
 		if (getNet().isServer())
 		{

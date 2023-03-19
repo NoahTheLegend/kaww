@@ -141,7 +141,7 @@ void onHitWorld(CBlob@ this, Vec2f end)
 			}
 		}
 		if (!isTileCompactedDirt(tile) && (((tile == CMap::tile_ground || isTileScrap(tile))
-		&& XORRandom(100) <= 1) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 5)))
+		&& XORRandom(100) <= 1) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 3)))
 		{
 			if (map.getSectorAtPosition(end, "no build") is null)
 			{

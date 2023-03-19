@@ -59,7 +59,7 @@ void buildT1ShopCombined(CBlob@ this)
 		s.buttonwidth = 2;
 		s.buttonheight = 1;
 		
-		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "lurker", "You can't upgrade it on this map!\n", 1);
+		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
 	}
 }
@@ -141,7 +141,7 @@ void buildT2ShopCombined(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 2;
 		
-		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "lurker", "You can't upgrade it on this map!\n", 1);
+		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 225);
 	}
 }
@@ -244,6 +244,7 @@ void buildT3ShopCombined(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
+		AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
 	}
 }
 
@@ -300,7 +301,7 @@ void buildT1ShopGround(CBlob@ this)
 		s.buttonwidth = 2;
 		s.buttonheight = 1;
 		
-		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "lurker", "You can't upgrade it on this map!\n", 1);
+		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 100);
 	}
 }
@@ -370,7 +371,7 @@ void buildT2ShopGround(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 2;
 		
-		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "lurker", "You can't upgrade it on this map!\n", 1);
+		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 175);
 	}
 }
@@ -457,6 +458,7 @@ void buildT3ShopGround(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
+		AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
 	}
     {
 		ShopItem@ s = addShopItem(this, "Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for artillery.", false);
@@ -486,7 +488,7 @@ void buildT1ShopAir(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 2;
 		
-		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "lurker", "You can't upgrade it on this map!\n", 1);
+		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 150);
 	}
 }
