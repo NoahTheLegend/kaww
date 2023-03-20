@@ -748,9 +748,9 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		if (done_shooting && this.get_u32("no_reload") < getGameTime())
 		{
 			// reload
-			if (controls !is null &&
-				!isReloading && this.get_u32("end_stabbing") < getGameTime()
-				&& (((controls.isKeyJustPressed(KEY_KEY_R) || (this.get_u8("reloadqueue") > 0 && isClient()))
+			if (controls !is null // bots may break
+				&& !isReloading && this.get_u32("end_stabbing") < getGameTime()
+				&& ((((controls.isKeyJustPressed(KEY_KEY_R) && isClient()) || (this.get_u8("reloadqueue") > 0))
 				&& this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max")) || (this.hasTag("forcereload"))))
 			{
 				bool forcereload = false;
@@ -1098,13 +1098,13 @@ void onTick(CBlob@ this)
 	
 	if (this.get_u8("reloadqueue") > 0) this.sub_u8("reloadqueue", 1);
 	CControls@ controls = this.getControls();
-	if (controls !is null)
+	if (controls !is null && isClient())
 	{
 		// queue reloading timer
 		if (controls.isKeyJustPressed(KEY_KEY_R))
 		{
 			this.set_u8("reloadqueue", 8);
-			this.Sync("reloadqueue", true);
+			//this.Sync("reloadqueue", true);
 		}
 	}
 	

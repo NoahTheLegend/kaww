@@ -189,7 +189,7 @@ void onTick(CBlob@ this)
 	}
 
 	float robotechHeight = this.get_f32(robotechHeightString);
-	if (draw_robotech)
+	if (draw_robotech && isClient())
 	{
 		if (controls.isKeyJustPressed(MOUSE_SCROLL_DOWN))
 		{

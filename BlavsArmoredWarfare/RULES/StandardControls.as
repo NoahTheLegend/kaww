@@ -412,7 +412,7 @@ void ManageCamera(CBlob@ this)
 	CControls@ controls = this.getControls();
 
 	// mouse look & zoom
-	if ((getGameTime() - this.get_s32("tap_time") > 5) && controls !is null)
+	if (isClient() && (getGameTime() - this.get_s32("tap_time") > 5) && controls !is null)
 	{
 		if (controls.isKeyJustPressed(controls.getActionKeyKey(AK_ZOOMOUT)))
 		{
@@ -423,7 +423,7 @@ void ManageCamera(CBlob@ this)
 
 			Tap(this);
 		}
-		else  if (controls.isKeyJustPressed(controls.getActionKeyKey(AK_ZOOMIN)))
+		else if (controls.isKeyJustPressed(controls.getActionKeyKey(AK_ZOOMIN)))
 		{
 			zoomModifier = controls.isKeyPressed(KEY_LCONTROL);
 
