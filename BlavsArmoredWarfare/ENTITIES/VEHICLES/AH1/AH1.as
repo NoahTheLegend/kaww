@@ -209,7 +209,7 @@ void onTick(CBlob@ this)
 						const bool pressed_m1 = ap.isKeyPressed(key_action1);
 						const bool pressed_m2 = ap.isKeyPressed(key_action2);
 
-						if (hooman.getControls() !is null)
+						if (hooman.isMyPlayer() && hooman.getControls() !is null)
 						{
 							if (hooman.getControls().isKeyJustPressed(KEY_LCONTROL))
 							{
