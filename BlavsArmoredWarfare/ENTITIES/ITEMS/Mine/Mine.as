@@ -178,9 +178,10 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (getNet().isServer() && blob !is null && !this.isInInventory() && !this.isAttached())
+	if (getNet().isServer() && blob !is null && !this.isInInventory() && !this.isAttached()
+	&& !blob.hasTag("falling"))
 	{
-		if (this.get_u8(MINE_STATE) == PRIMED && explodeOnCollideWithBlob(this, blob))
+		if (this.get_u8(MINE_STATE) == PRIMED && explodeOnCollideWithBlob(this, blob) && blob.getTeamNum() < 7)
 		{
 			this.Tag("exploding");
 			this.Sync("exploding", true);

@@ -104,7 +104,7 @@ string[] lastblobs = {
 
 void onBlobCreated( CRules@ this, CBlob@ blob )
 {
-	if (isServer() && getGameTime() > 5 && blob !is null && !blob.hasTag("bullet"))
+	if (isServer() && getGameTime() > 15 && blob !is null && !blob.hasTag("bullet"))
 	{
 		lastblobs.push_back(blob.getName());
 	}
@@ -1056,7 +1056,6 @@ shared class TDMCore : RulesCore
 					}
 				}
 
-				if (!found)
 				{
 					CBlob@ mat = server_CreateBlob("ammo");
 					if (mat !is null)
