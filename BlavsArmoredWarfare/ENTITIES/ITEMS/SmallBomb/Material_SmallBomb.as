@@ -38,7 +38,7 @@ void onDie(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return false;
+	return blob.getName() == "barge" || ((blob.hasTag("door") && blob.getShape().getConsts().collidable) || blob.getName() == "wooden_platform");
 }
 
 void onThisAddToInventory(CBlob@ this, CBlob@ inventoryBlob)
