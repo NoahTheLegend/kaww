@@ -814,6 +814,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			{
 				if (menuopen) return;
 				if (isReloading) return;
+				if (this.get_u32("my_chargetime") > 0) return;
 
 				charge_state = ArcherParams::readying;
 
