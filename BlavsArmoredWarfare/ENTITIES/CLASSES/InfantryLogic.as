@@ -814,7 +814,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			{
 				if (menuopen) return;
 				if (isReloading) return;
-				if (this.get_u32("my_chargetime") > 0) return;
+				if (this.get_s32("my_chargetime") > 0) return;
 
 				charge_state = ArcherParams::readying;
 
@@ -1270,7 +1270,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
-		if (this.get_u32("my_chargetime") == 0)
+		if (this.get_s32("my_chargetime") == 0)
 		{
 			this.set_s32("my_chargetime", infantry.delayafterfire);
 			this.Tag("no_more_shoot");
