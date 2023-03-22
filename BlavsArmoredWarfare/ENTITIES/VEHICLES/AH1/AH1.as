@@ -508,6 +508,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (getNet().isServer())
 		{
 			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
+			if (proj is null) return;
 			
 			proj.set_f32(projExplosionRadiusString, 16.0f);
 			proj.set_f32(projExplosionDamageString, 16.0f);
