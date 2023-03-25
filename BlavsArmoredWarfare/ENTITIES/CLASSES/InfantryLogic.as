@@ -916,7 +916,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			{
 				charge_time--;
 
-				if (charge_time <= 0)
+				if (charge_time <= 0 && reload_time <= 0)
 				{
 					charge_time = 0;
 					if (isReloading)
@@ -933,7 +933,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		{
 			charge_time--;
 
-			if (charge_time <= 0)
+			if (charge_time <= 0 && reload_time <= 0)
 			{
 				charge_time = 0;
 				if (isReloading)
@@ -1065,7 +1065,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 void TakeAmmo(CBlob@ this, u32 magSize)
 {
 	this.set_s32("my_reloadtime", 0);
-	
+
 	CInventory@ inv = this.getInventory();
 	if (inv !is null)
 	{
