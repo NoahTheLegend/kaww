@@ -975,13 +975,13 @@ void ManageParachute(CBlob@ this)
 			}
 		}
 	} // make a parachute
-	else if (!this.hasTag("parachute") || isServer())
+	else if (!this.hasTag("parachute") || (isServer() && !isClient()))
 	{
 		if (this.getPlayer() !is null && this.get_u32("last_parachute") < getGameTime())
 		{
 			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 			{
-				if ((this.isKeyPressed(key_up) || isServer()) && (isServer() ? this.getVelocity().y > 4.0f : this.getVelocity().y > 4.75f))
+				if ((this.isKeyPressed(key_up) || (isServer() && !isClient())) && (isServer() ? this.getVelocity().y > 4.0f : this.getVelocity().y > 4.75f))
 				{
 					if (isClient())
 					{
@@ -1031,7 +1031,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	{
 		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 150.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
 		{
-			if (!this.hasTag("parachute") || isServer())
+			if (!this.hasTag("parachute") || (isServer() && !isClient()))
 			{
 				Sound::Play("/ParachuteOpen", detached.getPosition());
 				this.Tag("parachute");
