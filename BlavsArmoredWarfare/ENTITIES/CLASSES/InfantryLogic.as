@@ -618,8 +618,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	bool is_shotgun = this.getName() == "shotgun";
 	bool is_rpg = this.getName() == "is_rpg";
 
-	printf(""+reload_time);
-
 	just_action1 = reload_time <= 0 && (this.get_bool("just_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyJustPressed(key_action1));
 	is_action1 = reload_time <= 0 && (this.get_bool("is_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyPressed(key_action1));
 	bool was_action1 = reload_time <= 0 && this.wasKeyPressed(key_action1);
@@ -1482,7 +1480,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			s8 reload = params.read_s8();
 			this.set_s8("reloadtime", reload);
-			
+
 			this.set_s32("my_chargetime", reload);
 			//printf("Synced to server: "+this.get_s8("reloadtime"));
 			this.Tag("sync_reload");
