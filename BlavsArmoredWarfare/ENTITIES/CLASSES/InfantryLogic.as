@@ -815,6 +815,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 				this.set_u32("no_reload", delay);
 				this.set_s32("my_reloadtime", infantry.reload_time);
+				this.set_u32("reset_reloadtime", infantry.reload_time+getGameTime());
 				
 				if (this.hasTag("forcereload"))
 				{
@@ -1119,6 +1120,11 @@ void onTick(CBlob@ this)
 		this.SetLightRadius(8.0f);
 		this.SetLightColor(SColor(255, 255, 255, 255));
 		this.SetLight(true);
+	}
+
+	if (this.get_u32("reset_reloadtime") < getGameTime())
+	{
+		this.set_s32("my_reloadtime", 0);
 	}
 
 	InfantryInfo@ infantry;
