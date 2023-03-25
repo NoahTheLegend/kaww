@@ -1016,9 +1016,9 @@ void ManageParachute(CBlob@ this)
 		if (aughhh)
 		{
 			if (this.isKeyPressed(key_left))
-				this.AddForce(Vec2f(-2.0f, 0));
+				this.AddForce(Vec2f(-0.5f, 0));
 			else if (this.isKeyPressed(key_right))
-				this.AddForce(Vec2f(2.0f, 0));
+				this.AddForce(Vec2f(0.5f, 0));
 		}
 		this.setVelocity(Vec2f(vel.x, vel.y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.55f / mod : 0.73/*default fall speed*/)));
 	}
