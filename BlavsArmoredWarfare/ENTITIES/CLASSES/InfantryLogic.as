@@ -124,6 +124,7 @@ void onInit(CBlob@ this)
 	// one of these two has to go
 	this.set_s8("charge_time", 0);
 	this.set_s32("my_chargetime", 0);
+	this.set_s32("my_reloadtime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
 
 	this.set_s8("recoil_direction", 0);
@@ -602,6 +603,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	CControls@ controls = this.getControls();
 	CSprite@ sprite = this.getSprite();
 	s8 charge_time = this.get_s32("my_chargetime");
+	s8 reload_time = this.get_s32("my_reload");
 	this.set_s8("charge_time", charge_time);
 	if (this.get_u32("end_stabbing") >= getGameTime())
 	{
@@ -798,17 +800,21 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		const u32 magSize = infantry.mag_size;
 	
 		bool done_shooting = this.get_s8("charge_time") <= 0 && this.get_s32("my_chargetime") <= 0;
+		bool not_full = this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max");
 
 		if (done_shooting && this.get_u32("no_reload") < getGameTime())
 		{
 			// reload
 			if (controls !is null // bots may break
 				&& !isReloading && this.get_u32("end_stabbing") < getGameTime()
-				&& ((((controls.isKeyJustPressed(KEY_KEY_R) && isClient()) || (this.get_u8("reloadqueue") > 0))
-				&& this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max")) || (this.hasTag("forcereload"))))
+				&& ((((controls.isKeyJustPressed(KEY_KEY_R) && isClient()) || (this.get_u8("reloadqueue") > 0)) && not_full)
+				|| (this.hasTag("forcereload"))))
 			{
 				bool forcereload = false;
-				this.set_u32("no_reload", getGameTime()+this.get_u8("noreload_custom"));
+				s32 delay = getGameTime()+this.get_u8("noreload_custom");
+
+				this.set_u32("no_reload", delay);
+				this.set_s32("my_reloadtime", delay);
 				
 				if (this.hasTag("forcereload"))
 				{
@@ -846,7 +852,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			s8 reload = charge_time > 0 ? charge_time : this.get_s8("reloadtime");
 			if (reload > 0)
 			{
-				charge_time = reload;
+				reload_time = reload;
 				//archer.isReloading = true;
 				this.set_bool("isReloading", true);
 				this.Sync("isReloading", true);
@@ -868,7 +874,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			{
 				if (menuopen) return;
 				if (isReloading) return;
-				if (this.get_s32("my_chargetime") > 0) return;
+				if (this.get_s32("my_chargetime") > 0 || this.get_s32("my_reloadtime") > 0) return;
 
 				charge_state = ArcherParams::readying;
 
@@ -1058,6 +1064,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 void TakeAmmo(CBlob@ this, u32 magSize)
 {
+	this.set_s32("my_reloadtime", 0);
+	
 	CInventory@ inv = this.getInventory();
 	if (inv !is null)
 	{
