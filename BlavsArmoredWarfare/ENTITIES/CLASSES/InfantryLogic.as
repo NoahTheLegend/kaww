@@ -331,6 +331,11 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 			g_fixedcamera = false;
 		}
 	}
+
+	if (attachedPoint !is null && attachedPoint.name == "PICKUP" && attached !is this)
+	{
+		this.Untag("parachute");
+	}
 }
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
@@ -340,10 +345,12 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	{
 		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 120.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
 		{
-			if (!this.hasTag("parachute"))
+			if (!this.hasTag("parachute") || isServer())
 			{
 				Sound::Play("/ParachuteOpen", detached.getPosition());
 				this.Tag("parachute");
+
+				AttachParachute(this);
 			}
 		}
 	}
@@ -433,10 +440,33 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 	}
 }
 
-void ManageParachute( CBlob@ this )
+void AttachParachute(CBlob@ this)
+{
+	if (isServer())
+	{
+		CAttachment@ aps = this.getAttachments();
+		if (aps !is null)
+		{			
+			AttachmentPoint@ att = aps.getAttachmentPointByName("PARACHUTE");
+			CBlob@ para = server_CreateBlob("parachuteblob", this.getTeamNum(), this.getPosition());
+			if (para !is null)
+			{
+				CBlob@ carry = this.getCarriedBlob();
+				if (carry !is null)
+				{
+					carry.server_DetachFromAll();
+					this.server_PutInInventory(carry);
+				}
+				this.server_AttachTo(para, att);
+			}
+		}
+	}
+}
+
+void ManageParachute(CBlob@ this)
 {
 	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder())
-	{	
+	{ // disable parachute
 		if (this.hasTag("parachute"))
 		{
 			for (uint i = 0; i < 50; i ++)
@@ -446,23 +476,43 @@ void ManageParachute( CBlob@ this )
 			}
 		}
 		this.Untag("parachute");
-	}
-	else if (!this.hasTag("parachute"))
+
+		if (isServer())
+		{
+			CAttachment@ aps = this.getAttachments();
+			if (aps !is null)
+			{
+				AttachmentPoint@ ap = aps.getAttachmentPointByName("PARACHUTE");
+				if (ap !is null && ap.getOccupied() !is null)
+				{
+					CBlob@ para = ap.getOccupied();
+					para.server_Die();
+				}
+			}
+		}
+	} // make a parachute
+	else if (!this.hasTag("parachute") || isServer())
 	{
 		if (this.getPlayer() !is null && this.get_u32("last_parachute") < getGameTime())
 		{
 			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 			{
-				if (this.isKeyPressed(key_up) && this.getVelocity().y > 4.75f)
+				if ((this.isKeyPressed(key_up) || isServer()) && (isServer() ? this.getVelocity().y > 4.0f : this.getVelocity().y > 4.75f))
 				{
-					Sound::Play("/ParachuteOpen", this.getPosition());
-					this.set_u32("last_parachute", getGameTime()+60);
-					this.Tag("parachute");
+					if (isClient())
+					{
+						Sound::Play("/ParachuteOpen", this.getPosition());
+						this.set_u32("last_parachute", getGameTime()+60);
+						this.Tag("parachute");
+					}
+
+					AttachParachute(this);
 				}
 			}
 		}
 	}
 	
+	// maintain flying
 	if (this.hasTag("parachute"))
 	{
 		f32 mod = 1.0f;

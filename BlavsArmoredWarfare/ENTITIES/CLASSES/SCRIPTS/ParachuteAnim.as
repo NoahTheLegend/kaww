@@ -6,7 +6,7 @@
 void onInit(CSprite@ this)
 {
 	this.RemoveSpriteLayer("parachute");
-	CSpriteLayer@ parachute = this.addSpriteLayer("parachute", "Parachute.png", 64, 64);
+	CSpriteLayer@ parachute = this.addSpriteLayer("parachute", "ParachuteSL.png", 64, 64);
 
 	if (parachute !is null)
 	{
@@ -23,7 +23,7 @@ void onTick(CSprite@ this)
 
 	CSpriteLayer@ parachute = this.getSpriteLayer("parachute");
 
-	if (parachute !is null)
+	if (parachute !is null && blob.isMyPlayer())
 	{
 		if (blob.hasTag("parachute") && !blob.isAttached() && !blob.hasTag("dead"))
 		{
