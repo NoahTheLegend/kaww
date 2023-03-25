@@ -1338,9 +1338,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
-		if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
-		if (this.get_u32("next_shoot") > getGameTime()) return;
-		this.set_u32("next_shoot", getGameTime()+1);
 		if (this is null || this.hasTag("dead")) return;
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
