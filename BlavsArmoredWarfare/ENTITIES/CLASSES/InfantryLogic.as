@@ -1408,6 +1408,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (isServer())
 		{
 			if (this.get_u32("mag_bullets") > 0) this.set_u32("mag_bullets", this.get_u32("mag_bullets") - 1);
+			this.Sync("mag_bullets", true);
 		}
 
 		const u32 magSize = infantry.mag_size;
