@@ -603,7 +603,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	CControls@ controls = this.getControls();
 	CSprite@ sprite = this.getSprite();
 	s8 charge_time = this.get_s32("my_chargetime");
-	s8 reload_time = this.get_s32("my_reload");
+	s8 reload_time = this.get_s32("my_reloadtime");
 	this.set_s8("charge_time", charge_time);
 	if (this.get_u32("end_stabbing") >= getGameTime())
 	{
