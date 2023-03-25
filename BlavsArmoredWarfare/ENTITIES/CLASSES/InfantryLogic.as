@@ -610,7 +610,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		archer.isStabbing = true;
 	}
 	bool isStabbing = archer.isStabbing;
-	bool isReloading = this.get_bool("isReloading");
+	bool isReloading = this.get_bool("isReloading") || this.get_s32("my_reloadtime") > 0;
 	u8 charge_state = archer.charge_state;
 	bool just_action1;
 	bool is_action1;
@@ -814,7 +814,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				s32 delay = getGameTime()+this.get_u8("noreload_custom");
 
 				this.set_u32("no_reload", delay);
-				this.set_s32("my_reloadtime", delay);
+				this.set_s32("my_reloadtime", infantry.reload_time);
 				
 				if (this.hasTag("forcereload"))
 				{
