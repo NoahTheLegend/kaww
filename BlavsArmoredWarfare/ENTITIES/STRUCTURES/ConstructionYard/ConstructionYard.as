@@ -103,6 +103,20 @@ void onInit(CBlob@ this)
 	}
 }
 
+void onTick(CBlob@ this)
+{
+	if (getGameTime() % 90 == 0)
+	{
+		if (getMap() !is null
+		&& !getMap().hasSupportAtPos(this.getPosition()+Vec2f(0,8))
+		&& !getMap().hasSupportAtPos(this.getPosition()+Vec2f(8,8))
+		&& !getMap().hasSupportAtPos(this.getPosition()+Vec2f(-8,8)))
+		{
+			this.server_Die();
+		}
+	}
+}
+
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!canSeeButtons(this, caller)) return;

@@ -19,6 +19,10 @@ void onInit(CBlob@ this)
 	this.addCommandID("lock_classchange");
 	this.addCommandID("lock_perkchange");
 
+	this.set_TileType("background tile", CMap::tile_wood_back);
+	this.getSprite().getConsts().accurateLighting = true;
+	this.getShape().getConsts().mapCollisions = false;
+
 	this.SetLight(true);
 	this.SetLightRadius(86.0f);
 	this.SetLightColor(SColor(255, 255, 240, 155));
@@ -96,7 +100,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (hitterBlob.getTeamNum() == this.getTeamNum()) return damage / 10.0f;
+	if (hitterBlob.getTeamNum() == this.getTeamNum() && customData != 0) return damage / 10.0f;
 	return damage;
 }
 

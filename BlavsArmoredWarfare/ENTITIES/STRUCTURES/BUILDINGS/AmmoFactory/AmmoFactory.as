@@ -429,7 +429,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	return damage;
 }
 
-bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+/*bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (!blob.isCollidable() || blob.isAttached() || blob.getTeamNum() == this.getTeamNum() || blob.hasTag("vehicle")) // no colliding against people inside vehicles
 		return false;
@@ -440,7 +440,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return true;
 	}
 	return false;
-}
+}*/
 
 // draw a mat bar on mouse hover
 
