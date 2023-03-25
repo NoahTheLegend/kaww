@@ -1356,6 +1356,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			}
 		}
 
+		if (this.get_u32("next_bullet") > getGameTime()) return;
+		this.set_u32("next_bullet", getGameTime()+2);
+
 		float damageBody = infantry.damage_body;
 		float damageHead = infantry.damage_head;
 
