@@ -8,7 +8,9 @@
 void onInit(CMovement@ this)
 {
 	this.getCurrentScript().removeIfTag = "dead";
-	this.getCurrentScript().runFlags |= Script::tick_not_attached;
+	
+	if (this.getBlob() !is null && this.getBlob().getName() != "antitank")
+		this.getCurrentScript().runFlags |= Script::tick_not_attached;
 }
 
 void onTick(CMovement@ this)
@@ -694,7 +696,7 @@ void onTick(CMovement@ this)
 			moveVars.jumpCount++;
 		}
 
-		if (up && vel.y > -moveVars.jumpMaxVel)
+		if (!blob.isAttached() && up && vel.y > -moveVars.jumpMaxVel)
 		{
 			if (!set_jump_height)
 			{
