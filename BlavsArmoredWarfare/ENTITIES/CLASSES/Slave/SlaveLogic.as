@@ -981,7 +981,7 @@ void ManageParachute(CBlob@ this)
 		{
 			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 			{
-				if ((this.isKeyPressed(key_up) || (isServer() && !isClient())) && (isServer() ? this.getVelocity().y > 4.0f : this.getVelocity().y > 4.75f))
+				if (this.isKeyPressed(key_up) && (isServer() ? this.getVelocity().y > 4.0f : this.getVelocity().y > 4.75f))
 				{
 					if (isClient())
 					{
