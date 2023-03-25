@@ -7,6 +7,15 @@ void onInit(CBlob@ this)
 {
 	CShape@ shape = this.getShape();
 	shape.SetGravityScale(0.1f);
+
+	if (isServer())
+	{
+		CPlayer@ p = this.getDamageOwnerPlayer();
+		if (p !is null && p.getBlob() !is null)
+		{
+			p.Tag("created");
+		}
+	}
 	
 	if (!this.exists("bullet_damage_body")) { this.set_f32("bullet_damage_body", 0.15f); }
 	if (!this.exists("bullet_damage_head")) { this.set_f32("bullet_damage_head", 0.4f); }
