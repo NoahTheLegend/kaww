@@ -1441,8 +1441,8 @@ void onTick(CRules@ this)
 	//		QuitGame();
 	//	}
 	//}
-	///*
-	/*if (getGameTime() == 10)
+	//
+	if (getGameTime() == 10)
 	{
 		u8 bots = 0; // count bots
 		for (u8 i = 0; i < getPlayersCount(); i++)
@@ -1483,9 +1483,7 @@ void onTick(CRules@ this)
 				//print("redteamcount: " + redteamcount);
 
 				// still a small issue with this in some cases
-
-				printf("tried to kick players tdm.as line 1453");
-				/*
+				
 				for (u16 i = 0; i < getPlayerCount(); i++)
 				{
 					// shave off of applicable team
@@ -1506,7 +1504,6 @@ void onTick(CRules@ this)
 						}
 					}
 				}
-				* /
 			}
 		}
 	}
@@ -1543,7 +1540,7 @@ void onTick(CRules@ this)
 			}
 		}
 	}
-	*/
+	
 	if (getGameTime() % 30 == 0)
 	{
 		CBlob@[] flags;

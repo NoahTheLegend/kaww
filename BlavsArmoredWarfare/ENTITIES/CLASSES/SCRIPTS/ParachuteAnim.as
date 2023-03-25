@@ -13,6 +13,7 @@ void onInit(CSprite@ this)
 		Animation@ anim = parachute.addAnimation("default", 3, true);
 		int[] frames = {0, 1, 2};
 		anim.AddFrames(frames);
+		parachute.SetVisible(false);
 		parachute.SetRelativeZ(-100);
 	}
 }

@@ -442,7 +442,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 
 void AttachParachute(CBlob@ this)
 {
-	if (isServer())
+	if (isServer() && this.getTickSinceCreated() > 5)
 	{
 		CAttachment@ aps = this.getAttachments();
 		if (aps !is null)
