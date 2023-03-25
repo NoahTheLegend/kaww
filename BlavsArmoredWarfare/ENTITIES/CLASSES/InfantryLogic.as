@@ -1482,6 +1482,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			s8 reload = params.read_s8();
 			this.set_s8("reloadtime", reload);
+			
+			this.set_s32("my_chargetime", reload);
 			//printf("Synced to server: "+this.get_s8("reloadtime"));
 			this.Tag("sync_reload");
 			this.Sync("isReloading", true);
