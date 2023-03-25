@@ -858,7 +858,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		const bool oldEnough = this.getTickSinceCreated() > 5;
 		const bool is_m1 = infantry.semiauto ? just_action1 : is_action1;
 		// shoot
-		if (!isReloading && charge_time == 0 && oldEnough && is_m1)
+		if (charge_time == 0 && oldEnough && is_m1)
 		{
 			moveVars.walkFactor *= 0.75f;
 			moveVars.jumpFactor *= 0.7f;
