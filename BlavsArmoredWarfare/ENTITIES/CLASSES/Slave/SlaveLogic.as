@@ -1026,6 +1026,10 @@ void ManageParachute(CBlob@ this)
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
+	if (detached.hasTag("vehicle"))
+	{
+		this.setVelocity(detached.getVelocity());
+	}
 	// Deploy parachute!
 	if (detached.hasTag("aerial"))
 	{
