@@ -618,9 +618,9 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	bool is_shotgun = this.getName() == "shotgun";
 	bool is_rpg = this.getName() == "is_rpg";
 
-	just_action1 = (this.get_bool("just_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyJustPressed(key_action1));
-	is_action1 = (this.get_bool("is_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyPressed(key_action1));
-	bool was_action1 = this.wasKeyPressed(key_action1);
+	just_action1 = reload_time <= 0 && (this.get_bool("just_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyJustPressed(key_action1));
+	is_action1 = reload_time <= 0 && (this.get_bool("is_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyPressed(key_action1));
+	bool was_action1 = reload_time <= 0 && this.wasKeyPressed(key_action1);
 	bool hidegun = false;
 
 	if (this.hasTag("dead"))
@@ -916,7 +916,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			{
 				charge_time--;
 
-				if (charge_time <= 0 && reload_time <= 0)
+				if (charge_time <= 0)
 				{
 					charge_time = 0;
 					if (isReloading)
@@ -933,7 +933,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		{
 			charge_time--;
 
-			if (charge_time <= 0 && reload_time <= 0)
+			if (charge_time <= 0)
 			{
 				charge_time = 0;
 				if (isReloading)
@@ -1065,7 +1065,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 void TakeAmmo(CBlob@ this, u32 magSize)
 {
 	this.set_s32("my_reloadtime", 0);
-
+	
 	CInventory@ inv = this.getInventory();
 	if (inv !is null)
 	{
