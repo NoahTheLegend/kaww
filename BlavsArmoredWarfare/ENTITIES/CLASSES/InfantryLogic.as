@@ -1051,7 +1051,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		//}
 	}
 
-	this.set_s32("my_chargetime", Maths::Max(this.get_s32("my_chargetime", charge_time)));
+	this.set_s32("my_chargetime", charge_time);
 	this.Sync("my_chargetime", true);
 	archer.charge_state = charge_state;
 }
@@ -1330,7 +1330,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 		if (!this.get( "infantryInfo", @infantry )) return;
 		if (this.get_s32("my_chargetime") == 0)
 		{
-			this.set_s32("my_chargetime", Maths::Max(this.get_s32("my_chargetime", infantry.delayafterfire)));
+			this.set_s32("my_chargetime", infantry.delayafterfire);
 			this.Tag("no_more_shoot");
 		}
 	}
