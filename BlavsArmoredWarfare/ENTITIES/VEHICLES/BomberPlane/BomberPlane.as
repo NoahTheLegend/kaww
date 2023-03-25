@@ -301,7 +301,40 @@ void onTick(CBlob@ this)
 	
 	if (getNet().isClient())
 	{
-		this.getSprite().SetEmitSoundSpeed(0.4f + (this.get_f32("velocity") / SPEED_MAX * 0.35f) * (this.getVelocity().Length() * 0.15f));
+		if (this.hasAttached() && v > 4.0f)
+		{
+			this.set_f32("soundspeed", 0.4f + (this.get_f32("velocity") / SPEED_MAX * 0.35f) * (this.getVelocity().Length() * 0.15f));
+		}
+		else
+		{
+			if (this.hasAttached() && v < 4.0f)
+			{
+				this.add_f32("soundspeed", 0.05f);
+				if (this.get_f32("soundspeed") > 0.5f) this.set_f32("soundspeed", 0.5f);
+			}
+			else
+			{
+				this.set_f32("soundspeed", Maths::Max(0, this.get_f32("soundspeed") - 0.01f));
+			}
+		}
+
+		Animation@ anim = this.getSprite().getAnimation("default");
+		if (anim !is null)
+		{
+			anim.time = Maths::Max(1, Maths::Min(5, (1.0f-this.get_f32("soundspeed"))*10));
+			//printf(""+anim.time);
+			//printf(""+this.get_f32("soundspeed"));
+			if (anim.time == 5 && this.get_f32("soundspeed") == 0)
+			{
+				this.getSprite().SetFrameIndex(0);
+				anim.time = 0;
+			}
+		}
+
+		this.getSprite().SetEmitSoundPaused(this.get_f32("soundspeed") <= 0.1f);
+		this.getSprite().SetEmitSoundVolume(Maths::Sqrt(this.get_f32("soundspeed"))*1.5f);
+		this.getSprite().SetEmitSoundSpeed(this.get_f32("soundspeed"));
+		
 		
 		if (hmod < 0.7 && u32(getGameTime() % 20 * hmod) == 0) ParticleAnimated(CFileMatcher(smokes[XORRandom(smokes.length)]).getFirst(), this.getPosition(), Vec2f(0, 0), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 3 + XORRandom(4), XORRandom(100) * -0.001f, true);
 	}
