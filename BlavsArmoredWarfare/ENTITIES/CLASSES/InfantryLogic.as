@@ -470,7 +470,7 @@ void AttachParachute(CBlob@ this)
 
 void ManageParachute(CBlob@ this)
 {
-	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder())
+	if (this.isOnGround() || this.isInWater() || this.isAttached())
 	{ // disable parachute
 		if (this.hasTag("parachute"))
 		{
