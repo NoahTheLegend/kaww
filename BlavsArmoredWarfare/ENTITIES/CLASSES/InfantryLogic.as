@@ -1349,9 +1349,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		if (isServer())
 		{
-			if (getGameTime() <= this.get_u32("next_create")) return;
-			this.set_u32("next_create", getGameTime()+infantry.delayafterfire);
-			this.Sync("mag_bullets", true);
+			if (this.hasTag("created"))
+			{
+				this.Untag("created");
+				return;
+			}
 		}
 
 		float damageBody = infantry.damage_body;
@@ -1380,8 +1382,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				{
 					if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
 					CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
-					if (this.getName() == "sniper") proj.Tag("strong");
-					else if (this.getName() == "shotgun") proj.Tag("shrapnel");
+					proj.Tag("shrapnel");
 					proj.server_SetTimeToDie(infantry.bullet_lifetime);
 				}
 				else break;
@@ -1396,7 +1397,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
 					CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
 					if (this.getName() == "sniper") proj.Tag("strong");
-					else if (this.getName() == "shotgun") proj.Tag("shrapnel");
 					proj.server_SetTimeToDie(infantry.bullet_lifetime);
 				}
 				shotOnce = true;
@@ -1405,8 +1405,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		if (!shotOnce) return;
 		
-		if (this.get_u32("mag_bullets") > 0 && this.get_u32("next_bullet_take") <= getGameTime()) this.set_u32("mag_bullets", this.get_u32("mag_bullets") - 1);
-		this.set_u32("next_bullet_take", getGameTime()+1);
+		if (isServer())
+		{
+			if (this.get_u32("mag_bullets") > 0 && this.get_u32("next_bullet_take") <= getGameTime()) this.set_u32("mag_bullets", this.get_u32("mag_bullets") - 1);
+			this.Sync("mag_bullets", true);
+		}
 
 		const u32 magSize = infantry.mag_size;
 		if (this.get_u32("mag_bullets") > magSize) this.set_u32("mag_bullets", magSize);
