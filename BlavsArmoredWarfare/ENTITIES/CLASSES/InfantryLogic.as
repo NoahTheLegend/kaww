@@ -898,6 +898,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 						ClientFire(this, charge_time, infantry);
 						this.Tag("client_shoot_lock");
 					}
+					else this.Untag("client_shoot_lock");
 
 					charge_time = infantry.delayafterfire + XORRandom(infantry.randdelay);
 					charge_state = ArcherParams::fired;
