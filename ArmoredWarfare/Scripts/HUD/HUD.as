@@ -1,4 +1,5 @@
 #include "ActorHUDCON.as";
+#include "InfantryCommon.as";
 
 const int slotsSize = 6;
 
@@ -25,20 +26,56 @@ void onRender(CSprite@ this)
 	{
 		if (blob.getName() != "mechanic") // is not a builder
 		{
-			getHUD().SetCursorImage("GunCursor.png", Vec2f(32, 32));
-			getHUD().SetCursorOffset(Vec2f(-38, -38)); // -38 is perfect alignment but messes up esc cursor
+			// gun reload cursor, fully relative. Change `icons_total` to the amount of icons on PNG
+			InfantryInfo@ infantry;
+			if (!blob.get("infantryInfo", @infantry)) return;
 
-			CControls@ controls = blob.getControls();
-			if (controls !is null)
+			f32 end = blob.get_u32("reset_reloadtime");
+			CPlayer@ p = blob.getPlayer();
+			if (blob.get_bool("isReloading") && p !is null)
 			{
-				CInventory@ inv = blob.getInventory();
-				
-				if (inv !is null && (
-					blob.getName() != "rpg" && inv.getItem("ammo") is null) || // is any normal class
-					blob.getName() == "rpg" && inv.getItem("mat_heatwarhead") is null) // is rpg
+				f32 mod = 1.0f;
+
+				if (getRules().get_string(p.getUsername() + "_perk") == "Sharp Shooter")
 				{
-					GUI::SetFont("menu");
-					GUI::DrawTextCentered("No Ammo", controls.getInterpMouseScreenPos() + Vec2f(-2,35), controls.isKeyPressed(KEY_KEY_R) ? SColor(0xfff20101) : SColor(0xffffffff));
+					mod = 1.5f;
+				}
+				else if (getRules().get_string(p.getUsername() + "_perk") == "Bull")
+				{
+					mod = 0.70f;
+				}
+
+				f32 reloadtime = infantry.reload_time * mod;
+				f32 diff = (end-getGameTime());
+				f32 perc = (diff/reloadtime);
+
+				printf(""+perc);
+
+				u8 icons_total = 8;
+				u8 icon = icons_total/mod-(Maths::Ceil(icons_total*perc));
+
+				getHUD().SetCursorImage("GunReload.png", Vec2f(32, 32));
+				getHUD().SetCursorFrame(icon);
+				getHUD().SetCursorOffset(Vec2f(-38, -38)); // -38 is perfect alignment but messes up esc cursor
+			}
+			else
+			{
+				getHUD().SetCursorImage("GunCursor.png", Vec2f(32, 32));
+				if (end == getGameTime()+1) getHUD().SetCursorFrame(1); // remove annoying flickering
+				getHUD().SetCursorOffset(Vec2f(-38, -38)); // -38 is perfect alignment but messes up esc cursor
+
+				CControls@ controls = blob.getControls();
+				if (controls !is null)
+				{
+					CInventory@ inv = blob.getInventory();
+
+					if (inv !is null && (
+						blob.getName() != "rpg" && inv.getItem("ammo") is null) || // is any normal class
+						blob.getName() == "rpg" && inv.getItem("mat_heatwarhead") is null) // is rpg
+					{
+						GUI::SetFont("menu");
+						GUI::DrawTextCentered("No Ammo", controls.getInterpMouseScreenPos() + Vec2f(-2,35), controls.isKeyPressed(KEY_KEY_R) ? SColor(0xfff20101) : SColor(0xffffffff));
+					}
 				}
 			}
 		}

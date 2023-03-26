@@ -15,17 +15,15 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	bool is_vamp;
 	CPlayer@ p = this.getPlayer();
 	if (p !is null)
 	{
 		if (getRules().get_string(p.getUsername() + "_perk") == "Bloodthirsty")
 		{
-			this.server_Heal(XORRandom(21)*0.01f);
-			is_vamp = true;
+			return;
 		}
 	}
 
-	if (this.getHealth() > this.getInitialHealth() * 0.33f || is_vamp) // regen health when its above 33%
+	if (this.getHealth() > this.getInitialHealth() * 0.33f) // regen health when its above 33%
 		this.server_Heal(0.05f);
 }
