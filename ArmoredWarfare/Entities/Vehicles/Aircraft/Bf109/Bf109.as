@@ -114,6 +114,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onTick(CBlob@ this)
 {
+	this.set_Vec2f("oldpos", getDriver().getScreenPosFromWorldPos(this.getPosition()));
 	if (this.hasTag("falling"))
 	{
 		Vehicle_ensureFallingCollision(this);
@@ -670,3 +671,24 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
 
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}
+
+void onRender(CSprite@ this)
+{
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+
+	AttachmentPoint@ pilot = blob.getAttachments().getAttachmentPointByName("PILOT");
+	if (pilot !is null && pilot.getOccupied() !is null)
+	{
+		CBlob@ driver_blob = pilot.getOccupied();
+
+		// draw ammo count
+		Vec2f pos2d = blob.get_Vec2f("oldpos"); // is set each tick, since render has 60 ticks a second and the position is moving draggy
+
+		GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
+		GUI::DrawIcon("Materials.png", 31, Vec2f(16,16), pos2d+Vec2f(-40, 42.0f), 0.75f, 1.0f);
+		GUI::SetFont("menu");
+		if (blob.getInventory() !is null)
+			GUI::DrawTextCentered(""+blob.getInventory().getCount("ammo"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
+	}
+}
