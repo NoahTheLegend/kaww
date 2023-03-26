@@ -1,4 +1,4 @@
-// SlaveCommon.as
+// MechanicCommon.as
 
 #include "BuildBlock.as";
 #include "PlacementCommon.as";

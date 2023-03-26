@@ -1,8 +1,8 @@
-// Slave logic
+// Mechanic logic
 
 #include "WarfareGlobal.as"
 #include "Hitters.as";
-#include "SlaveCommon.as";
+#include "MechanicCommon.as";
 #include "ThrowCommon.as";
 #include "RunnerCommon.as";
 #include "Requirements.as"
@@ -39,6 +39,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("levelup_effects");
 	this.addCommandID("bootout");
 	this.addCommandID("addxp_universal");
+	this.addCommandID("attach_parachute");
 
 	this.set_u32("turret_delay", 0);
 
@@ -509,6 +510,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				this);	
 		}
 	}
+	else if (cmd == this.getCommandID("attach_parachute"))
+	{
+		if (isServer())
+		{
+			AttachParachute(this);
+		}
+	}
 	else if (cmd == this.getCommandID("addxp_universal"))
 	{
 		u8 exp_reward;
@@ -975,22 +983,23 @@ void ManageParachute(CBlob@ this)
 			}
 		}
 	} // make a parachute
-	else if (!this.hasTag("parachute") || (isServer() && !isClient()))
+	else if (!this.hasTag("parachute"))
 	{
 		if (this.getPlayer() !is null && this.get_u32("last_parachute") < getGameTime())
 		{
 			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 			{
-				if (this.isKeyPressed(key_up) && (isServer() ? this.getVelocity().y > 4.0f : this.getVelocity().y > 4.75f))
+				if (this.isKeyPressed(key_up) && this.getVelocity().y > 5.0f)
 				{
 					if (isClient())
 					{
 						Sound::Play("/ParachuteOpen", this.getPosition());
 						this.set_u32("last_parachute", getGameTime()+60);
 						this.Tag("parachute");
-					}
 
-					AttachParachute(this);
+						CBitStream params;
+						this.SendCommand(this.getCommandID("attach_parachute"), params);
+					}
 				}
 			}
 		}
@@ -999,6 +1008,20 @@ void ManageParachute(CBlob@ this)
 	// maintain flying
 	if (this.hasTag("parachute"))
 	{
+		if (this.isMyPlayer() && getGameTime()%30==0)
+		{
+			CAttachment@ aps = this.getAttachments();
+			if (aps !is null)
+			{
+				AttachmentPoint@ ap = aps.getAttachmentPointByName("PARACHUTE");
+				if (ap !is null && ap.getOccupied() is null)
+				{
+					CBitStream params;
+					this.SendCommand(this.getCommandID("attach_parachute"), params);
+				}
+			}
+		}
+
 		f32 mod = 1.0f;
 		bool aughhh = false;
 		if (this.getPlayer() !is null)

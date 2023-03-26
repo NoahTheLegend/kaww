@@ -1,12 +1,12 @@
 enum EntityHash
 {
 	//characters
-	_slave = -1132421824,
+	_mechanic = 2084092111,
 	_revolver = -474550122,
 	_ranger = -2006458400,
 	_shotgun = 234279893,
 	_sniper = 1983016758,
-	_rpg = 1668297873,
+	_rpg = 1406715976,
 	_mp5 = -1636222121,
 
 	//vehicles

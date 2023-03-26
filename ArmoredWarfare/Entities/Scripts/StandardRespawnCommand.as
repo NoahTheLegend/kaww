@@ -29,11 +29,11 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$rpg_class_icon$", "ClassIcon.png", Vec2f(48, 48), 5);
 	AddIconToken("$medic_class_icon$", "ClassIcon.png", Vec2f(48, 48), 6);
 	AddIconToken("$lmg_class_icon$", "ClassIcon.png", Vec2f(48, 48), 7);
-	AddIconToken("$slave_class_icon$", "ClassIcon.png", Vec2f(48, 48), 0);
+	AddIconToken("$mechanic_class_icon$", "ClassIcon.png", Vec2f(48, 48), 0);
 	AddIconToken("$change_class$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 12, 2);
 	AddIconToken("$change_perk$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 11);
 	
-	addPlayerClass(this, "---- Mechanic ----", "$slave_class_icon$", "mechanic",
+	addPlayerClass(this, "---- Mechanic ----", "$mechanic_class_icon$", "mechanic",
 						"---- Mechanic ----\n\nBuild and break.\n\nHP: 200\nLMB: Build\nRMB: Mine");
 
 	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver",
