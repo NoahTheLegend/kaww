@@ -1,9 +1,9 @@
-// Slave logic
+// Mechanic logic
 
-#include "SlaveCommon.as";
+#include "MechanicCommon.as";
 #include "PlacementCommon.as";
 #include "Help.as";
-#include "CommonSlaveBlocks.as";
+#include "CommonMechanicBlocks.as";
 #include "KnockedCommon.as";
 
 namespace Builder

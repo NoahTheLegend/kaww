@@ -249,7 +249,7 @@ u8 getIndicatorFrame( int hash )
 	u8 frame = 0;
 	switch(hash)
 	{
-		case _slave:
+		case _mechanic:
 		case _m60:
 		frame = 1; break;
 

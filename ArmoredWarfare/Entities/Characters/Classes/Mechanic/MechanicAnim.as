@@ -1,6 +1,6 @@
-// Slave animations
+// Mechanic animations
 
-#include "SlaveCommon.as"
+#include "MechanicCommon.as"
 #include "FireCommon.as"
 #include "Requirements.as"
 #include "RunnerAnimCommon.as"
@@ -46,13 +46,13 @@ void LoadSprites(CSprite@ this)
 	switch (armour)
 	{
 	case PLAYER_ARMOUR_STANDARD:
-		ensureCorrectRunnerTexture(this, "mechanic", "SlaveMale");
+		ensureCorrectRunnerTexture(this, "mechanic", "MechanicMale");
 		break;
 	case PLAYER_ARMOUR_CAPE:
-		ensureCorrectRunnerTexture(this, "mechanic", "SlaveMale");
+		ensureCorrectRunnerTexture(this, "mechanic", "MechanicMale");
 		break;
 	case PLAYER_ARMOUR_GOLD:
-		ensureCorrectRunnerTexture(this, "mechanic", "SlaveMale");
+		ensureCorrectRunnerTexture(this, "mechanic", "MechanicMale");
 		break;
 	}
 
