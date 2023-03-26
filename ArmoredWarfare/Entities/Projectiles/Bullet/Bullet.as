@@ -258,6 +258,24 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 			// play sound
 			if (blob.hasTag("flesh"))
 			{
+				if (isServer() && !blob.hasTag("dead") && this.getDamageOwnerPlayer() !is null)
+				{
+					CPlayer@ p = this.getDamageOwnerPlayer();
+
+					if (getRules().get_string(p.getUsername() + "_perk") == "Bloodthirsty")
+					{
+						CBlob@ pblob = p.getBlob();
+						if (pblob !is null)
+						{
+							f32 mod = 0.2f+XORRandom(15)*0.01f;
+							f32 amount = this.get_f32("bullet_damage_body") * mod;
+
+							if (pblob.getHealth()+amount < pblob.getInitialHealth())
+								pblob.server_Heal(amount);
+							else pblob.server_SetHealth(pblob.getInitialHealth());
+						}
+					}
+				}
 				if (isClient() && XORRandom(100) < 60)
 				{
 					sprite.PlaySound("Splat.ogg");
@@ -390,7 +408,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 				// player is using bloodthirsty
 				if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
 				{
-					dmg *= 1.10f; // take extra damage
+					dmg *= 1.25f; // take extra damage
 				}
 			}
 		}

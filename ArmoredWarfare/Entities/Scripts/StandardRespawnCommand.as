@@ -94,10 +94,11 @@ void InitClasses(CBlob@ this)
 						"Bloodthirst:\n\n"+"$3_class_icon$"+"Vampirism"
 						+"\n                   - Regenerate health when killing     "
 						+"\n                   - Take only 50% of other heal     "
-						+"\n\n                  Healing"
-						+"\n                   - Faster rate of regeneration   "
+						+"\n                   - Can't regenerate passively     "					
+						+"\n\n                  Leech"
+						+"\n                   - Bullets restore health on hit"
 						+"\n\n                  Silver bullets"
-						+"\n                   - Take 110% damage from bullets       "
+						+"\n                   - Take 125% damage from bullets       "
 						);
 
 	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",
