@@ -244,7 +244,7 @@ void buildT3ShopCombined(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
-		//AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
+		AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
 	}
 }
 
@@ -458,7 +458,7 @@ void buildT3ShopGround(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
-		//AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
+		AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
 	}
     {
 		ShopItem@ s = addShopItem(this, "Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for artillery.", false);
