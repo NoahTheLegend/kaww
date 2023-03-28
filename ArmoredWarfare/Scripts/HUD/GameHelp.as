@@ -108,7 +108,7 @@ void onRender(CRules@ this)
 
 	{
 		const string shiprektVersion = "Armored Warfare\n";
-		const string lastChangesInfo = "\nChanges:\n\n"
+		const string lastChangesInfo = "\nChanges:\n\n",
         + "  * Added tier 2 armory for Break The Truck mode\n",
         + "  * Captured flags now drop crates with valuable loot\n",
         + "  * Added gun reload timer on cursor\n",
