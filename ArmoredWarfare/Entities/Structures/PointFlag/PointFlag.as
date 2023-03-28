@@ -534,7 +534,7 @@ void SpawnLootCrate(CBlob@ this)
 			spawn_at_sky = false;
 	}
 
-	CBlob@ crate = server_CreateBlob("paracrate", this.getTeamNum(), spawn_at_sky ? Vec2f(this.getPosition().x, 0) : Vec2f(this.getPosition().x, this.getPosition().y - this.getHeight()/2));
+	CBlob@ crate = server_CreateBlob("paracrate", this.getTeamNum(), spawn_at_sky ? Vec2f(this.getPosition().x+XORRandom(33), 0) : Vec2f(this.getPosition().x+XORRandom(33), this.getPosition().y - this.getHeight()/2));
 	if (crate !is null)
 	{
 		crate.Tag("no_expiration");
