@@ -729,11 +729,19 @@ shared class TDMCore : RulesCore
 	void SetupBases()
 	{
 		Vec2f[] respawnPositions;
+		Vec2f[] temp;
 		CBlob@[] tents;
         getBlobsByName("tent", @tents);
 		string spawn_prop = "tent";
-		if (!getMap().getMarkers("blue main spawn", respawnPositions) && !getMap().getMarkers("red main spawn", respawnPositions))
+		// adding markers directly to array will cause doubled blue tents if there are more than 1
+		if (!getMap().getMarkers("blue main spawn", temp) && !getMap().getMarkers("red main spawn", temp))
 			spawn_prop = "importantarmory";
+		//else
+		//{
+			//getMap().getMarkers("blue main spawn", respawnPositions);
+			//getMap().getMarkers("red main spawn", respawnPositions);
+		//}
+
 		const string base_name = spawn_prop;
 
 		string map_name = getMap().getMapName();
@@ -793,11 +801,8 @@ shared class TDMCore : RulesCore
 			//BLUE
 			if (!getMap().getMarkers("blue main spawn", respawnPositions))
 			{
-				if (map.tilesize > 0)
-				{
-					respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
-					if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
-				}
+				respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
+				if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
 			}
 			else
 			{
