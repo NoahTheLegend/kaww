@@ -108,12 +108,12 @@ void onRender(CRules@ this)
 
 	{
 		const string shiprektVersion = "Armored Warfare\n";
-		const string lastChangesInfo = "\nChanges:\n\n",
-        + "  * Added tier 2 armory for Break The Truck mode\n",
-        + "  * Captured flags now drop crates with valuable loot\n",
-        + "  * Added gun reload timer on cursor\n",
-        + "  * Added ammo indicators for most of the vehicles\n",
-        + "  * Tweaked Bloodthirsty perk significantly\n",
+		const string lastChangesInfo = "\nChanges:\n\n"
+        + "  * Added tier 2 armory for Break The Truck mode\n"
+        + "  * Captured flags now drop crates with valuable loot\n"
+        + "  * Added gun reload timer on cursor\n"
+        + "  * Added ammo indicators for most of the vehicles\n"
+        + "  * Tweaked Bloodthirsty perk significantly\n"
         + "  * Balance changes & bug fixes & QOL\n";
 		
 		GUI::SetFont("menu");
