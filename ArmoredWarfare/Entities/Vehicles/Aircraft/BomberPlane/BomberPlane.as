@@ -197,6 +197,7 @@ void onTick(CBlob@ this)
 								CBlob@ b = server_CreateBlob("paracrate", this.getTeamNum(), this.getPosition()+Vec2f(0,8));
 								if (b !is null)
 								{
+									b.Tag("no_expiration");
 									for (u8 i = 0; i < inv.getItemsCount(); i++)
 									{
 										CBlob@ put = inv.getItem(i);
@@ -241,6 +242,10 @@ void onTick(CBlob@ this)
 			
 			this.set_Vec2f("direction", dir);
 		}		
+	}
+	else if (this.isOnGround())
+	{
+		this.set_f32("velocity", Maths::Max(0, this.get_f32("velocity") - 0.25f));
 	}
 
 	if (this.hasTag("falling") || this.getHealth() <= this.getInitialHealth() * 0.33f)
