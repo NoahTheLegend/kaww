@@ -50,7 +50,7 @@ void onRender(CSprite@ this)
 				f32 perc = (diff/(reloadtime*mod));
 
 				u8 icons_total = 8;
-				u8 icon = Maths::Clamp(icons_total/mod-(Maths::Ceil(icons_total*perc)), 0, icons_total);
+				u8 icon = Maths::Clamp(icons_total/mod-(Maths::Ceil(icons_total*perc)), 0, icons_total-1);
 
 				getHUD().SetCursorImage("GunReload.png", Vec2f(32, 32));
 				getHUD().SetCursorFrame(icon);
