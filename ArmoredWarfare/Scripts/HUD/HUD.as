@@ -30,12 +30,12 @@ void onRender(CSprite@ this)
 			InfantryInfo@ infantry;
 			if (!blob.get("infantryInfo", @infantry)) return;
 
-			f32 end = blob.get_u32("reset_reloadtime");
-			CPlayer@ p = blob.getPlayer();
-			if (blob.get_bool("isReloading") && p !is null)
+			if (blob.get_bool("isReloading"))
 			{
-				f32 mod = 1.0f;
+				CPlayer@ p = blob.getPlayer();
+				if (p is null) return;
 
+				f32 mod = 1.0f;
 				if (getRules().get_string(p.getUsername() + "_perk") == "Sharp Shooter")
 				{
 					mod = 1.5f;
@@ -44,24 +44,26 @@ void onRender(CSprite@ this)
 				{
 					mod = 0.70f;
 				}
-
-				f32 reloadtime = infantry.reload_time * mod;
+				f32 end = blob.get_u32("reset_reloadtime");
+				f32 reloadtime = infantry.reload_time;
 				f32 diff = (end-getGameTime());
-				f32 perc = (diff/reloadtime);
-
-				printf(""+perc);
+				f32 perc = (diff/(reloadtime*mod));
 
 				u8 icons_total = 8;
-				u8 icon = icons_total/mod-(Maths::Ceil(icons_total*perc));
+				u8 icon = Maths::Clamp(icons_total/mod-(Maths::Ceil(icons_total*perc)), 0, icons_total);
 
 				getHUD().SetCursorImage("GunReload.png", Vec2f(32, 32));
 				getHUD().SetCursorFrame(icon);
 				getHUD().SetCursorOffset(Vec2f(-38, -38)); // -38 is perfect alignment but messes up esc cursor
+
+				blob.set_u32("wasReloading", getGameTime()+2);
 			}
 			else
 			{
 				getHUD().SetCursorImage("GunCursor.png", Vec2f(32, 32));
-				if (end == getGameTime()+1) getHUD().SetCursorFrame(1); // remove annoying flickering
+
+				if (getGameTime() < blob.get_u32("wasReloading")) getHUD().SetCursorFrame(1); // remove annoying flickering
+
 				getHUD().SetCursorOffset(Vec2f(-38, -38)); // -38 is perfect alignment but messes up esc cursor
 
 				CControls@ controls = blob.getControls();
