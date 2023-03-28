@@ -131,7 +131,7 @@ void onTick(CBlob@ this)
         }
     }
 
-	if (isServer() && getGameTime() % 30 == 0 && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0)) && this.getTeamNum() < 2)
+	if (getGameTime() % 30 == 0 && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0)) && this.getTeamNum() < 2)
 	{
 		this.set_u32("crate_timer", Maths::Min(this.get_u32("crate_timer")+1, crate_frequency_seconds));
 
@@ -141,7 +141,7 @@ void onTick(CBlob@ this)
 			if (crate is null)
 			{
 				this.set_u32("crate_timer", 0);
-				SpawnLootCrate(this);
+				if (isServer()) SpawnLootCrate(this);
 			}
 		}
 	}
@@ -420,7 +420,7 @@ void onRender(CSprite@ this)
 	
 	// draw crate generation progress
 	dimension = Vec2f(50, 15);
-	y = 16.0f;
+	y = 32.0f;
 	perc = float(blob.get_u32("crate_timer")) / float(crate_frequency_seconds);
 
 	// Border
