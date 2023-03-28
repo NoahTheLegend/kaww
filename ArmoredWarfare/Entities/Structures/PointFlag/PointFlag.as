@@ -4,6 +4,9 @@ const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
 const u16 capture_time = 3000;
+const u16 crate_frequency_seconds = 3*60;
+const u16 min_items = 10;
+const u16 rand_items = 2;
 
 //flags HUD is in TDM_Interface
 
@@ -17,6 +20,8 @@ void onInit(CBlob@ this)
 	//this.set_bool(isbluecapture, false); //false is red, true is blue, this is also a commentary on the nature of good and evil, and colors.
 	this.set_u8("numcapping", 0);
 	this.set_f32("offsety", -51.0f);
+
+	this.set_u32("crate_timer", 0);
 
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
@@ -125,6 +130,21 @@ void onTick(CBlob@ this)
         	}
         }
     }
+
+	if (isServer() && getGameTime() % 30 == 0 && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0)) && this.getTeamNum() < 2)
+	{
+		this.set_u32("crate_timer", Maths::Min(this.get_u32("crate_timer")+1, crate_frequency_seconds));
+
+		if (this.get_u32("crate_timer") >= crate_frequency_seconds)
+		{
+			CBlob@ crate = getBlobByNetworkID(this.get_u16("last_crateid"));
+			if (crate is null)
+			{
+				this.set_u32("crate_timer", 0);
+				SpawnLootCrate(this);
+			}
+		}
+	}
 
     bool isTDM = (getMap().tilemapwidth < 200);
 
@@ -305,11 +325,14 @@ void onRender(CSprite@ this)
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
 
+	bool focus = false;
+	if (getLocalPlayer() !is null && getLocalPlayer().getBlob() !is null
+	&& (getLocalPlayer().getBlob().getAimPos() - blob.getPosition()).Length() <= 88.0f)
+		focus = true;
 	u16 returncount = blob.get_u16(capture_prop);
-	if (returncount == 0) return;
 
+	if (returncount == 0 && !focus) return;
 	GUI::SetFont("menu");
-
 	// adjust vertical offset depending on zoom
 	Vec2f pos2d =  blob.getInterpolatedScreenPos() + Vec2f(0.0f, (blob.getHeight()-50.0f));
 	
@@ -317,16 +340,17 @@ void onRender(CSprite@ this)
 
 	Vec2f pos = pos2d + Vec2f(8.0f, 150.0f);
 	Vec2f dimension = Vec2f(115.0f - 8.0f, 22.0f);
-	const f32 y = 0.0f;//blob.getHeight() * 100.8f;
+	f32 y = 0.0f;//blob.getHeight() * 100.8f;
 	
 	f32 percentage = 1.0f - float(returncount) / float(blob.getTeamNum() == 255 ? capture_time/2 : capture_time);
 	Vec2f bar = Vec2f(pos.x + (dimension.x * percentage), pos.y + dimension.y);
 
-	const f32 perc  = float(returncount) / float(blob.getTeamNum() == 255 ? capture_time/2 : capture_time);
+	f32 perc  = float(returncount) / float(blob.getTeamNum() == 255 ? capture_time/2 : capture_time);
 
 	SColor color_light;
 	SColor color_mid;
 	SColor color_dark;
+	SColor color_darker;
 
 	SColor color_team;
 
@@ -335,6 +359,7 @@ void onRender(CSprite@ this)
 		color_light = 0xff2cafde;
 		color_mid	= 0xff1d85ab; //  0xff1d85ab
 		color_dark	= 0xff1a4e83;
+		color_darker= 0xff092751;
 	}
 	
 	if (blob.getTeamNum() == 0 && returncount > 0 || blob.getTeamNum() == 1 && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == 1)
@@ -342,6 +367,7 @@ void onRender(CSprite@ this)
 		color_light = 0xffd5543f;
 		color_mid	= 0xffb73333; // 0xffb73333
 		color_dark	= 0xff941b1b;
+		color_darker= 0xff520909;
 	}
 
 	if (blob.getTeamNum() == 0)
@@ -357,33 +383,239 @@ void onRender(CSprite@ this)
 		color_team = 0xff1c2525;//ff36373f;
 	}
 
+	if (returncount != 0)
+	{
+		// Border
+		GUI::DrawRectangle(Vec2f(pos.x - dimension.x - 1,                        pos.y + y - 1),
+						   Vec2f(pos.x + dimension.x + 2,                        pos.y + y + dimension.y - 1));
+
+
+		GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 3,                        pos.y + y + 1),
+						   Vec2f(pos.x + dimension.x - 2,                        pos.y + y + dimension.y - 3), color_team);
+
+
+		// whiteness
+		GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 1),
+						   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 1, pos.y + y + dimension.y - 3), SColor(0xffffffff));
+		// growing outline
+		GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
+						   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 1, pos.y + y + dimension.y - 2), SColor(perc*255, 255, 255, 255));
+
+		// Health meter trim
+		GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 3,                        pos.y + y + 1),
+						   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 2, pos.y + y + dimension.y - 3), color_mid);
+
+		// Health meter inside
+		GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 7,                        pos.y + y + 1),
+							Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 6, pos.y + y + dimension.y - 4), color_light);
+
+		if (blob.get_u8("numcapping") > 0)
+		{
+			//GUI::SetFont("menu");
+			GUI::DrawShadowedText("★ " + blob.get_u8("numcapping") + " player" + (blob.get_u8("numcapping") > 1 ? "s are" : " is") + " capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 22), SColor(0xffffffff));
+		}
+	}
+
+	if (blob.getTeamNum() >= 2 || blob.get_u8("numcapping") > 0) return;
+	
+	// draw crate generation progress
+	dimension = Vec2f(50, 15);
+	y = 16.0f;
+	perc = float(blob.get_u32("crate_timer")) / float(crate_frequency_seconds);
+
 	// Border
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x - 1,                        pos.y + y - 1),
-					   Vec2f(pos.x + dimension.x + 2,                        pos.y + y + dimension.y - 1));
+						 Vec2f(pos.x + dimension.x + 2,                        pos.y + y + dimension.y - 1), color_darker);
 
-	
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 3,                        pos.y + y + 1),
-					   Vec2f(pos.x + dimension.x - 2,                        pos.y + y + dimension.y - 3), color_team);
+					    Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 2, pos.y + y + dimension.y - 3), color_mid);
 
-
-	// whiteness
-	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 1),
-					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 1, pos.y + y + dimension.y - 3), SColor(0xffffffff));
-	// growing outline
-	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
-					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 1, pos.y + y + dimension.y - 2), SColor(perc*255, 255, 255, 255));
-
-	// Health meter trim
-	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 3,                        pos.y + y + 1),
-					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 2, pos.y + y + dimension.y - 3), color_mid);
-	
-	// Health meter inside
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 7,                        pos.y + y + 1),
 						Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 6, pos.y + y + dimension.y - 4), color_light);
-	
-	if (blob.get_u8("numcapping") > 0)
+}
+
+// resources
+const array<string> _items_res =
+{
+	"mat_scrap",
+    "mat_wood",
+    "mat_stone",
+    "mat_gold"
+};
+const array<float> _amounts_res =
+{
+	2+XORRandom(5),
+	250+XORRandom(201),
+	100+XORRandom(101),
+	20+XORRandom(41),
+};
+const array<float> _chances_res =
+{
+	0.5,
+	0.75,
+	0.65,
+	0.25
+};
+
+// offense
+const array<string> _items_off =
+{
+	"ammo",
+    "mat_14mmround",
+    "mat_bolts",
+    "mat_smallbomb",
+	"grenade",
+	"mat_molotov",
+	"launcher_javelin",
+	"mat_heatwarhead"
+};
+const array<float> _amounts_off =
+{
+	100,
+	35,
+	12,
+	4,
+	1,
+	1,
+	1,
+	2
+};
+const array<float> _chances_off =
+{
+	0.5,
+	0.2,
+	0.4,
+	0.15,
+	0.35,
+	0.4,
+	0.05,
+	0.3
+};
+
+// defence
+const array<string> _items_def =
+{
+	"food",
+    "medkit",
+    "helmet",
+    "mine",
+	"binoculars",
+	"pipewrench",
+	"launcher_javelin"
+};
+const array<float> _amounts_def =
+{
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+};
+const array<float> _chances_def =
+{
+	0.4,
+	0.3,
+	0.6,
+	0.25,
+	0.15,
+	0.3,
+	0.05
+};
+
+void SpawnLootCrate(CBlob@ this)
+{
+	if (!isServer()) return;
+	bool spawn_at_sky = true; // cast a ray from sky to make sure it wont stuck above
+	for (f32 i = -2; i < 3; i++)
 	{
-		//GUI::SetFont("menu");
-		GUI::DrawShadowedText("★ " + blob.get_u8("numcapping") + " player" + (blob.get_u8("numcapping") > 1 ? "s are" : " is") + " capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 22), SColor(0xffffffff));
+		if (getMap().rayCastSolidNoBlobs(Vec2f(this.getPosition().x + 12*i, 0), this.getPosition()))
+			spawn_at_sky = false;
 	}
+
+	CBlob@ crate = server_CreateBlob("paracrate", this.getTeamNum(), spawn_at_sky ? Vec2f(this.getPosition().x, 0) : Vec2f(this.getPosition().x, this.getPosition().y - this.getHeight()/2));
+	if (crate !is null)
+	{
+		crate.Tag("no_expiration");
+		this.set_u16("last_crateid", crate.getNetworkID());
+
+		string[] _items;
+		float[] _amounts;
+		float[] _chances;
+
+		u8 rand = XORRandom(3);
+		switch(rand)
+		{
+			case 0: // resources
+			{
+				_items = _items_res;
+				_amounts = _amounts_res;
+				_chances = _chances_res;
+				break;
+			}
+			case 1: // military (offensive)
+			{
+				_items = _items_off;
+				_amounts = _amounts_off;
+				_chances = _chances_off;
+				break;
+			}
+			case 2: // military (defensive)
+			{
+				_items = _items_def;
+				_amounts = _amounts_def;
+				_chances = _chances_def;
+				break;
+			}
+		}
+
+		u8 items_amount = min_items + XORRandom(rand_items+1);
+
+		for (int i = 0; i < items_amount; i++)
+		{
+			u32 element = RandomWeightedPicker(_chances, XORRandom(1000));
+
+	        CBlob@ b = server_CreateBlob(_items[element], -1, this.getPosition());
+			 
+			if (b !is null)
+			{
+	        	if (b.getMaxQuantity() > 1)
+	        	{
+	        	    b.server_SetQuantity(_amounts[element]);
+	        	}
+				crate.server_PutInInventory(b);
+			}
+    	}
+	}
+}
+
+shared u32 RandomWeightedPicker(array<float> chances, u32 seed = 0)
+{
+    if (seed == 0) {seed = (getGameTime() * 404 + 1337 - Time_Local());}
+
+    u32 i;
+    float sum = 0.0f;
+
+    for (i = 0; i < chances.size(); i++) {sum += chances[i];}
+
+    Random@ rnd = Random(seed);//Random with seed
+
+    float random_number = (rnd.Next() + rnd.NextFloat()) % sum;//Get our random number between 0 and the sum
+
+    float current_pos = 0.0f;//Current pos in the bar
+
+    for (i = 0; i < chances.size(); i++)//For every chance
+    {
+        if(current_pos + chances[i] > random_number)
+        {
+            break;//Exit out with i untouched
+        }
+        else//Random number has not yet reached the chance
+        {
+            current_pos += chances[i];//Add to current_pos
+        }
+    }
+
+    return i;//Return the chance that was got
 }
