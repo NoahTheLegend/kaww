@@ -310,7 +310,7 @@ void onTick(CBlob@ this)
 			if (this.hasAttached() && v < 4.0f)
 			{
 				this.add_f32("soundspeed", 0.05f);
-				if (this.get_f32("soundspeed") > 0.5f) this.set_f32("soundspeed", 0.5f);
+				if (this.get_f32("soundspeed") > 0.4f) this.set_f32("soundspeed", 0.4f);
 			}
 			else
 			{
@@ -531,6 +531,7 @@ void onRender(CSprite@ this)
 	if (pilot !is null && pilot.getOccupied() !is null)
 	{
 		CBlob@ driver_blob = pilot.getOccupied();
+		if (!driver_blob.isMyPlayer()) return;
 
 		// draw ammo count
 		Vec2f pos2d = blob.get_Vec2f("oldpos"); // is set each tick, since render has 60 ticks a second and the position is moving draggy
