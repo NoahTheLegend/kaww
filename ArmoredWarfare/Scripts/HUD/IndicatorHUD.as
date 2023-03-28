@@ -39,7 +39,9 @@ void onRender( CRules@ this )
 	Vec2f timelineLPos = Vec2f(timelineLDist - 16, timelineHeight);
 	Vec2f timelineRPos = Vec2f(timelineRDist - 16, timelineHeight);
 
-	if (getBlobByName("pointflag") is null && getBlobByName("importantarmory") is null)
+	if (getBlobByName("pointflag") is null
+	&& getBlobByName("importantarmory") is null
+	&& getBlobByName("importantarmoryt2") is null)
 	{
 		blueTickets=this.get_s16("blueTickets");
 		redTickets=this.get_s16("redTickets");
@@ -235,7 +237,7 @@ void onRender( CRules@ this )
 		if (frame == 10 || frame == 11) custom_offset = Vec2f(0, -48);
 		else if (frame == 12) custom_offset = Vec2f(0, 24);
 
-		if (curVehicle.getName() == "importantarmory") // importantarmory HP
+		if (curVehicle.hasTag("importantarmory")) // importantarmory HP
 		{
 			RenderHPBar(this, curVehicle, indicatorPos + custom_offset);
 		}

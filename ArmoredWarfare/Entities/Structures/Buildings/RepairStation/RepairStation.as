@@ -51,9 +51,9 @@ void onTick(CBlob@ this)
 			if (blob.get_u32("no_heal") > getGameTime()) continue; 
             if (blob.getHealth() + repair_amount <= blob.getInitialHealth())//This will only happen if the health does not go above the inital (max health) when repair_amount is added. 
             {
-				if (blob.getName() == "importantarmory")
+				if (blob.hasTag("importantarmory"))
 				{
-					repair_amount *= 0.5f;
+					repair_amount *= 0.33f;
 				}
 
 				CAttachment@ atc = blob.getAttachments();

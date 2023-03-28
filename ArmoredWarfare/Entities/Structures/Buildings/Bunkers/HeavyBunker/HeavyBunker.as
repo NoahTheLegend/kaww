@@ -33,7 +33,7 @@ void onTick(CBlob@ this)
 
 		CBlob@[] enemyspawns;
 		getBlobsByName("tent", @enemyspawns);
-		getBlobsByName("importantarmory", @enemyspawns);
+		getBlobsByTag("importantarmory", @enemyspawns);
 
 		f32 dist = 99999.0f;
 		u16 id = 0;

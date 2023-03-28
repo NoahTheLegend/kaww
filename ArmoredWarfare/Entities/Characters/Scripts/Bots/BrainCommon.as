@@ -742,7 +742,7 @@ void LocateGeneralEnemyDirection(CBlob@ blob)
 {
 	CBlob@[] threats;
 	CBlob@[] enemythreats;
-	getBlobsByName("importantarmory", @threats);
+	getBlobsByTag("armory", @threats);
 	getBlobsByName("tent", @threats);
 	getBlobsByTag("vehicle", @threats);
 	getBlobsByTag("player", @threats);
@@ -767,7 +767,7 @@ void LocateGeneralFriendDirection(CBlob@ blob)
 {
 	CBlob@[] threats;
 	CBlob@[] friendlies;
-	getBlobsByName("importantarmory", @threats);
+	getBlobsByTag("armory", @threats);
 	getBlobsByName("tent", @threats);
 	getBlobsByTag("player", @threats);
 	getBlobsByTag("bunker", @threats);

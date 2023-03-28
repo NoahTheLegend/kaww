@@ -242,10 +242,6 @@ void onTick(CBlob@ this)
 			this.set_Vec2f("direction", dir);
 		}		
 	}
-	else
-	{
-		this.set_f32("velocity", Maths::Max(0, this.get_f32("velocity") - 1.00f));
-	}
 
 	if (this.hasTag("falling") || this.getHealth() <= this.getInitialHealth() * 0.33f)
 	{
@@ -286,7 +282,13 @@ void onTick(CBlob@ this)
 	{
 		d = Vec2f(d.x, d.y/10);
 	}
-	// Vec2f grav = Vec2f(0, 1) * 4 * (SPEED_MAX - v);
+
+	if (!this.hasAttached() && this.getVelocity().Length() > 0.5f
+	&& (this.getAngleDegrees() < 85 || this.getAngleDegrees() > 275))
+	{
+		d.RotateBy(this.isFacingLeft() ? -0.75f - XORRandom(50)*0.01f : 0.75f + XORRandom(50)*0.01f);
+		this.set_Vec2f("direction", d);
+	}
 	
 	this.AddForce(-d * v * hmod);
 

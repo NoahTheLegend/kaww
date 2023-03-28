@@ -405,7 +405,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		}
 	}
 
-	if ((blob.hasTag("respawn") && blob.getName() != "importantarmory") || blob.hasTag("invincible"))
+	if ((blob.hasTag("respawn") && !blob.hasTag("importantarmory")) || blob.hasTag("invincible"))
 	{
 		return false;
 	}

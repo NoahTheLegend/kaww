@@ -207,7 +207,7 @@ void onTick(CBlob@ this)
 			}
 			
 			// bool pressed_s = ap_pilot.isKeyPressed(key_down);
-		
+
 			if (pressed_w) 
 			{
 				this.set_f32("velocity", Maths::Min(SPEED_MAX, this.get_f32("velocity") + 2.5f));
@@ -224,11 +224,7 @@ void onTick(CBlob@ this)
 			}
 			
 			this.set_Vec2f("direction", dir);
-		}		
-	}
-	else
-	{
-		this.set_f32("velocity", Maths::Max(0, this.get_f32("velocity") - 1.00f));
+		}
 	}
 
 	if (this.hasTag("falling") || this.getHealth() <= this.getInitialHealth() * 0.33f)
@@ -264,13 +260,18 @@ void onTick(CBlob@ this)
 
 	const f32 hmod = 1.0f;
 	f32 v = this.get_f32("velocity");
-	//printf(""+v);
 	Vec2f d = this.get_Vec2f("direction");
 	if (v < 48.0f && this.isOnGround())
 	{
 		d = Vec2f(d.x, d.y/10);
 	}
-	// Vec2f grav = Vec2f(0, 1) * 4 * (SPEED_MAX - v);
+
+	if (!this.hasAttached() && this.getVelocity().Length() > 0.5f
+	&& (this.getAngleDegrees() < 85 || this.getAngleDegrees() > 275))
+	{
+		d.RotateBy(this.isFacingLeft() ? -0.75f - XORRandom(50)*0.01f : 0.75f + XORRandom(50)*0.01f);
+		this.set_Vec2f("direction", d);
+	}
 	
 	this.AddForce(-d * v * hmod);
 
