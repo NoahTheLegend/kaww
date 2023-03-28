@@ -226,6 +226,10 @@ void onTick(CBlob@ this)
 			this.set_Vec2f("direction", dir);
 		}
 	}
+	else if (this.isOnGround())
+	{
+		this.set_f32("velocity", Maths::Max(0, this.get_f32("velocity") - 0.25f));
+	}
 
 	if (this.hasTag("falling") || this.getHealth() <= this.getInitialHealth() * 0.33f)
 	{
