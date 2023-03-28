@@ -322,7 +322,7 @@ shared class TDMSpawns : RespawnSystem
 			teamspawns.push_back(b);
 			return b.getPosition();
 		}
-		else if (getBlobsByName("tent", @spawns) || getBlobsByName("importantarmory", @spawns))
+		else if (getBlobsByName("tent", @spawns) || getBlobsByTag("importantarmory", @spawns))
 		{
 			for (uint step = 0; step < spawns.length; ++step)
 			{

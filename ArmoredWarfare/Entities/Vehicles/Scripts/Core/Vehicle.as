@@ -709,6 +709,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onDie(CBlob@ this)
 {
+	if (this.hasTag("upgrade")) return;
+	
 	if (isServer())
 	{
 		this.Tag("explosion always teamkill");
@@ -928,7 +930,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.hasTag("grenade"))
 	{
-		if (this.hasTag("truck") && this.getName() != "importantarmory")
+		if (this.hasTag("truck") && !this.hasTag("importantarmory"))
 		{
 			damage *= 2;
 		}
