@@ -4,7 +4,7 @@ const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
 const u16 capture_time = 3000;
-const u16 crate_frequency_seconds = 3*60;
+const u16 crate_frequency_seconds = 2.5*60;
 const u16 min_items = 10;
 const u16 rand_items = 2;
 
@@ -534,7 +534,7 @@ void SpawnLootCrate(CBlob@ this)
 			spawn_at_sky = false;
 	}
 
-	CBlob@ crate = server_CreateBlob("paracrate", this.getTeamNum(), spawn_at_sky ? Vec2f(this.getPosition().x+XORRandom(33), 0) : Vec2f(this.getPosition().x+XORRandom(33), this.getPosition().y - this.getHeight()/2));
+	CBlob@ crate = server_CreateBlob("paracrate", this.getTeamNum(), spawn_at_sky ? Vec2f(this.getPosition().x+XORRandom(23), 0) : Vec2f(this.getPosition().x+XORRandom(23), this.getPosition().y - this.getHeight()/2));
 	if (crate !is null)
 	{
 		crate.Tag("no_expiration");
