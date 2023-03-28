@@ -124,12 +124,14 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	if (this.isAttached()) Land(this);
+
 	// parachute
 	if (this.getName() == "paracrate")
 	{
 		if (isServer())
 		{
-			if ((this.isAttached() || this.isOnGround()) && getGameTime()%15==0)
+			if (!this.hasTag("no_expiration") && (this.isAttached() || this.isOnGround()) && getGameTime()%15==0)
 			{
 				this.server_Hit(this, this.getPosition(), this.getOldVelocity(), this.isAttached()?2.0f:0.5f, Hitters::builder);
 			}
@@ -146,7 +148,7 @@ void onTick(CBlob@ this)
 
 	if (this.hasTag("parachute"))		// wont work with the tick frequency
 	{
-		if (this.getSprite().getSpriteLayer("parachute") is null)
+		if (this.getSprite().getSpriteLayer("parachutesl") is null)
 		{
 			ShowParachute(this);
 		}
@@ -254,6 +256,7 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
+	return;
 	if (!canSeeButtons(this, caller)) return;
 
 	Vec2f buttonpos(0, 0);
@@ -501,25 +504,28 @@ bool isUnpacking(CBlob@ this)
 void ShowParachute(CBlob@ this)
 {
 	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ parachute = sprite.addSpriteLayer("parachute",   32, 32);
+	CSpriteLayer@ parachute = sprite.addSpriteLayer("parachutesl", "ParachuteSL.png", 64, 64);
 
 	if (parachute !is null)
 	{
-		Animation@ anim = parachute.addAnimation("default", 0, true);
-		anim.AddFrame(4);
-		parachute.SetOffset(Vec2f(0.0f, - 17.0f));
+		Animation@ anim = parachute.addAnimation("default", 3, true);
+		anim.AddFrame(0);
+		anim.AddFrame(1);
+		anim.AddFrame(2);
+		parachute.SetOffset(Vec2f(-1.0f, - 28.0f));
+		parachute.SetRelativeZ(-100.0f);
 	}
 }
 
 void HideParachute(CBlob@ this)
 {
 	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ parachute = sprite.getSpriteLayer("parachute");
+	CSpriteLayer@ parachute = sprite.getSpriteLayer("parachutesl");
 
 	if (parachute !is null && parachute.isVisible())
 	{
 		parachute.SetVisible(false);
-		ParticlesFromSprite(parachute);
+		if (!v_fastrender) ParticlesFromSprite(parachute);
 	}
 }
 
@@ -546,6 +552,12 @@ void onCreateInventoryMenu(CBlob@ this, CBlob@ forBlob, CGridMenu @gridmenu)
 	}
 }
 
+// let people bring it home
+/*void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ ap)
+{
+	this.Untag("no_expiration");
+}*/
+
 void onAddToInventory(CBlob@ this, CBlob@ blob)
 {
 	this.getSprite().PlaySound("thud.ogg");
@@ -564,6 +576,11 @@ void onAddToInventory(CBlob@ this, CBlob@ blob)
 
 void onRemoveFromInventory(CBlob@ this, CBlob@ blob)
 {
+	if (this.getInventory() !is null && this.getInventory().getItemsCount() == 0)
+	{
+		this.server_Die();
+	}
+
 	if (blob.hasTag("player"))
 	{
 		if (this.hasTag("crate exploded"))
@@ -829,5 +846,13 @@ void ManageParachute( CBlob@ this )
 	{
 		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 5, (Maths::Sin(getGameTime() / 4.2f) * 8)));
 		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y * 0.75f));
+	}
+}
+
+void onCollision(CBlob@ this, CBlob@ blob, bool solid)
+{
+	if (solid)
+	{
+		Land(this);
 	}
 }
