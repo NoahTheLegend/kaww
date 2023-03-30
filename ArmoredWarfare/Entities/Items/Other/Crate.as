@@ -256,7 +256,6 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	return;
 	if (!canSeeButtons(this, caller)) return;
 
 	Vec2f buttonpos(0, 0);
@@ -265,7 +264,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	bool canput = putting && this.getInventory().canPutItem(caller.getCarriedBlob());
 	CBlob@ sneaky_player = getPlayerInside(this);
 	// If there's a player inside and we aren't just dropping in an item
-	if (sneaky_player !is null && !(putting && canput))
+	/*if (sneaky_player !is null && !(putting && canput))
 	{
 		if (sneaky_player.getTeamNum() == caller.getTeamNum())
 		{
@@ -298,7 +297,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 			}
 		}
 	}
-	else if (this.hasTag("unpackall"))
+	else */if (this.hasTag("unpackall"))
 	{
 		caller.CreateGenericButton(12, buttonpos, this, this.getCommandID("unpack"), getTranslatedString("Unpack all"));
 	}
