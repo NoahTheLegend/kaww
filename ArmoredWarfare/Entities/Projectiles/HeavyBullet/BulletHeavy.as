@@ -330,7 +330,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 			// player is using bloodthirsty
 			if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
 			{
-				dmg *= 1.25f; // take extra damage
+				dmg *= 1.1f; // take extra damage
 			}
 		}
 	}

@@ -98,7 +98,7 @@ void InitClasses(CBlob@ this)
 						+"\n\n                  Leech"
 						+"\n                   - Bullets restore health on hit"
 						+"\n\n                  Silver bullets"
-						+"\n                   - Take 125% damage from bullets       "
+						+"\n                   - Take 110% damage from bullets       "
 						);
 
 	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",
