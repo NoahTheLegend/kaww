@@ -189,7 +189,7 @@ void onInit(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 300);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 200);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
