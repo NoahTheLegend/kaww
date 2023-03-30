@@ -1353,8 +1353,6 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 		}
 		
 		this.SendCommand(this.getCommandID("shoot bullet"), params);
-		this.SendCommand(this.getCommandID("shoot bullet"), params);
-		this.SendCommand(this.getCommandID("shoot bullet"), params);
 
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
