@@ -319,7 +319,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	{
 		caller.CreateGenericButton(12, buttonpos, this, this.getCommandID("unpack"), getTranslatedString("Unpack {ITEM}").replace("{ITEM}", getTranslatedString(this.get_string("packed name"))));
 	}
-	else if (caller.getCarriedBlob() is this)
+	/*else if (caller.getCarriedBlob() is this)
 	{
 		CBitStream params;
 		params.write_u16( caller.getNetworkID() );
@@ -334,7 +334,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 			CButton@ button = caller.CreateGenericButton(13, Vec2f(), this, this.getCommandID("getout"), getTranslatedString("Crate"));
 			button.SetEnabled(false); // they shouldn't be able to actually press it tho
 		}
-	}
+	}*/
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
