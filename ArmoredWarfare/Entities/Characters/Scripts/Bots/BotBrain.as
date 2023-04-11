@@ -133,64 +133,75 @@ void onTick(CBrain@ this)
 				int vehicledangerlevel = 0;
 
 				// check if this vehicle has a gunner seat
-				AttachmentPoint@ gunnerseat = vehicle.getAttachments().getAttachmentPointByName("GUNNER");
-				if (gunnerseat !is null)
+				CAttachment@ at = vehicle.getAttachments();
+				if (at !is null)
 				{
-					// do we have a gunner?
-					if (gunnerseat.getOccupied() !is null)
+					AttachmentPoint@ gunnerseat = at.getAttachmentPointByName("GUNNER");
+					if (gunnerseat !is null)
 					{
-						shouldigo = true;
-					}
-				}
-				else // either we have no gunner seat, or we have a turret, or an mg
-				{
-					// check for turret
-					AttachmentPoint@ turret = vehicle.getAttachments().getAttachmentPointByName("TURRET");
-					if (turret !is null)
-					{
-						CBlob@ turretblob = turret.getOccupied();
-						if (turretblob !is null)
+						// do we have a gunner?
+						if (gunnerseat.getOccupied() !is null)
 						{
-							//turretblob.getAttach
-							// we have a turret
-							AttachmentPoint@ turretgunnerseat = turretblob.getAttachments().getAttachmentPointByName("GUNNER");
-							if (turretgunnerseat !is null)
-							{
-								if (turretgunnerseat.getOccupied() !is null)
-								{
-									shouldigo = true;
-								}
-								else
-								{
-									//turret has no gunner, lets wait
-								}
-							}
+							shouldigo = true;
 						}
 					}
-					else
+					else // either we have no gunner seat, or we have a turret, or an mg
 					{
-						AttachmentPoint@ mg = vehicle.getAttachments().getAttachmentPointByName("BOW");
-						if (mg !is null)
+						// check for turret
+						AttachmentPoint@ turret = at.getAttachmentPointByName("TURRET");
+						if (turret !is null)
 						{
-							CBlob@ mgblob = mg.getOccupied();
-							if (mgblob !is null)
+							CBlob@ turretblob = turret.getOccupied();
+							if (turretblob !is null)
 							{
-								// check if mg has a gunner
-								AttachmentPoint@ mgseat = mgblob.getAttachments().getAttachmentPointByName("GUNNER");
-								if (mgseat !is null)
+								//turretblob.getAttach
+								// we have a turret
+								CAttachment@ turretat = turretblob.getAttachments();
+								if (turretat !is null)
 								{
-									if (mgseat.getOccupied() !is null)
+									AttachmentPoint@ turretgunnerseat = turretat.getAttachmentPointByName("GUNNER");
+									if (turretgunnerseat !is null)
 									{
-										// we have a gunner, go
-										shouldigo = true;
+										if (turretgunnerseat.getOccupied() !is null)
+										{
+											shouldigo = true;
+										}
+										else
+										{
+											//turret has no gunner, lets wait
+										}
 									}
 								}
 							}
 						}
 						else
 						{
-							// no gunner seat, lets move
-							shouldigo = true;
+							AttachmentPoint@ mg = at.getAttachmentPointByName("BOW");
+							if (mg !is null)
+							{
+								CBlob@ mgblob = mg.getOccupied();
+								if (mgblob !is null)
+								{
+									// check if mg has a gunner
+									if (mgblob.getAttachments() !is null)
+									{
+										AttachmentPoint@ mgseat = mgblob.getAttachments().getAttachmentPointByName("GUNNER");
+										if (mgseat !is null)
+										{
+											if (mgseat.getOccupied() !is null)
+											{
+												// we have a gunner, go
+												shouldigo = true;
+											}
+										}
+									}
+								}
+							}
+							else
+							{
+								// no gunner seat, lets move
+								shouldigo = true;
+							}
 						}
 					}
 				}
@@ -247,7 +258,7 @@ void onTick(CBrain@ this)
 									// stay still so gunner can aim
 
 									bool listentogunner = false;
-									if ((target.getPosition() - blob.getPosition()).getLength() < 560.0f)
+									if ((target.getPosition() - blob.getPosition()).getLength() < 560.0f && vehicle.getAttachments() !is null)
 									{
 										// is gunner aiming at the target?
 										
@@ -261,7 +272,7 @@ void onTick(CBrain@ this)
 											{
 												CBlob@ turret = turretpoint.getOccupied();
 
-												if (turret !is null)
+												if (turret !is null && turret.getAttachments() !is null)
 												{
 													VehicleInfo@ v;
 													if (!turret.get("VehicleInfo", @v)) return;
@@ -861,7 +872,7 @@ void onTick(CBrain@ this)
 						{
 							if (emotes) set_emote(blob, Emotes::cog, 2);
 
-							if ((secondarytarget.getPosition() - blob.getPosition()).getLength() < 40)
+							if ((secondarytarget.getPosition() - blob.getPosition()).getLength() < 40 && secondarytarget.getAttachments() !is null)
 							{
 								// fine tuned sitting
 								AttachmentPoint@ choosen_seat = null;
@@ -898,7 +909,7 @@ void onTick(CBrain@ this)
 											{
 												if (sitinoccupied)
 												{
-													if (choosen_seat.getOccupied() !is null)
+													if (choosen_seat.getOccupied() !is null && choosen_seat.getOccupied().getAttachments() !is null)
 													{
 														AttachmentPoint@ new_seat = choosen_seat.getOccupied().getAttachments().getAttachmentPointByName("GUNNER");
 
@@ -1322,7 +1333,7 @@ void onTick(CBrain@ this)
 												if (ats !is null)
 												{
 													AttachmentPoint@ point = ats.getAttachmentPointByName("DRIVER");
-													if (point !is null && vehicle !is null)
+													if (point !is null && vehicle !is null && vehicle.getAttachments() !is null)
 													{
 														CBlob@ occupied = point.getOccupied();
 														if (occupied !is null)
@@ -1344,7 +1355,7 @@ void onTick(CBrain@ this)
 																if (turret !is null)
 																{
 																	CBlob@ turretblob = turret.getOccupied();
-																	if (turretblob !is null)
+																	if (turretblob !is null && turretblob.getAttachments() !is null)
 																	{
 																		AttachmentPoint@ turretgunnerseat = turretblob.getAttachments().getAttachmentPointByName("GUNNER");
 																		if (turretgunnerseat !is null)
@@ -1359,7 +1370,7 @@ void onTick(CBrain@ this)
 																	if (mg !is null)
 																	{
 																		CBlob@ mgblob = mg.getOccupied();
-																		if (mgblob !is null)
+																		if (mgblob !is null && mgblob.getAttachments() !is null)
 																		{
 																			// check if mg has a gunner
 																			AttachmentPoint@ mgseat = mgblob.getAttachments().getAttachmentPointByName("GUNNER");
