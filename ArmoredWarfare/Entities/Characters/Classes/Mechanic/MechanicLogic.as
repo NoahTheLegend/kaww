@@ -1028,7 +1028,7 @@ void ManageParachute(CBlob@ this)
 		{
 			if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 			{
-				mod = 3.0f;
+				mod = 10.0f;
 				aughhh = true;
 			}
 		}
