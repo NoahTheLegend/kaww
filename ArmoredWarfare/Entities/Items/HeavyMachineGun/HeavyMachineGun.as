@@ -457,6 +457,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 }
 
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	if (blob.getName() == "barge") return true;
+	return (!blob.hasTag("flesh") && !blob.hasTag("trap") && !blob.hasTag("food") && !blob.hasTag("material") && !blob.hasTag("dead") && !blob.hasTag("vehicle") && blob.isCollidable()) || (blob.hasTag("door") && blob.getShape().getConsts().collidable);
+}
+
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (blob !is null)
