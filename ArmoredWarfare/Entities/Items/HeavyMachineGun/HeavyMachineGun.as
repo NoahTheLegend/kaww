@@ -467,7 +467,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 {
-	return !this.isAttached() && !this.hasAttached();
+	return !this.isAttached() && !this.hasAttached() && byBlob !is null && this.getTeamNum() == byBlob.getTeamNum();
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
