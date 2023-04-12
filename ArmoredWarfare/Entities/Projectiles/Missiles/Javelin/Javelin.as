@@ -291,7 +291,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	int thisTeamNum = this.getTeamNum();
 	int blobTeamNum = blob.getTeamNum();
 
-	if (blob.getTeamNum() != this.getTeamNum() && blob.hasTag("bullet"))
+	if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("bullet") || blob.get_bool("state")))
 	{
 		return true;
 	}
@@ -355,10 +355,6 @@ void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f coll
 	}
 
 	if (!doesCollideWithBlob(this, blob))
-	{
-		return;
-	}
-	if (blob !is null && blob.getName() != "bulletheavy" && !blob.hasTag("strong"))
 	{
 		return;
 	}
