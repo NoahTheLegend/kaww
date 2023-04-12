@@ -46,11 +46,11 @@ void onInit(CBlob@ this)
 			armorRating = 5;
 			hardShelled = true;
 		}
-		break;
-
-		case _maus: // maus
 		case _t10: // T10
 		case _t10turret: // T10 Shell cannon
+		armorRating = 5; break;
+
+		case _maus: // maus
 		case _importantarmory:
 		case _importantarmoryt2:
 		armorRating = 4; break;
