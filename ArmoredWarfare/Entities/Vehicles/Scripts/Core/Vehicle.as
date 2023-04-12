@@ -51,6 +51,8 @@ void onInit(CBlob@ this)
 		case _maus: // maus
 		case _t10: // T10
 		case _t10turret: // T10 Shell cannon
+		case _importantarmory:
+		case _importantarmoryt2:
 		armorRating = 4; break;
 			
 		case _m60: // normal tank
@@ -62,7 +64,6 @@ void onInit(CBlob@ this)
 
 		case _transporttruck: // vanilla truck?
 		case _armory: // shop truck
-		case _importantarmory:
 		case _btr82a: // big APC
 		case _btrturret: // big APC cannon
 		case _bradley:
@@ -223,6 +224,7 @@ void onInit(CBlob@ this)
 
 		case _armory: // armory
 		case _importantarmory:
+		case _importantarmoryt2:
 		case _civcar:
 		intake = 100.0f; break;
 
@@ -787,10 +789,6 @@ void onDie(CBlob@ this)
 			} // shop truck
 			case _importantarmory:
 			{
-				scrap_amount = 5+XORRandom(6);
-				explosion_radius = 48.0f;
-				explosion_map_damage = 0.15f;
-				explosion_damage = 1.5f;
 				break;
 			} // break the truck truck
 			case _outpost:
