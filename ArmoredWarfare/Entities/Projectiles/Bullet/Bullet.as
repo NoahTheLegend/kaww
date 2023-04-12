@@ -267,7 +267,7 @@ void onHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, CBlob@ blob, u8 
 						CBlob@ pblob = p.getBlob();
 						if (pblob !is null)
 						{
-							f32 mod = 0.25f+XORRandom(175)*0.001f;
+							f32 mod = 0.35f+XORRandom(6)*0.01f;
 							f32 amount = this.get_f32("bullet_damage_body") * mod;
 
 							if (pblob.getHealth()+amount < pblob.getInitialHealth())

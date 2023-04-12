@@ -8,6 +8,15 @@ void onInit(CBlob@ this)
 	this.getCurrentScript().removeIfTag = "dead";
 }
 
+bool canHeal(CBlob@ this)
+{
+	if (this.getPlayer() is null) return true;
+	if (getRules() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+		return false;
+
+	return true;
+}
+
 void onTick(CBlob@ this)
 {
 	if (isServer() &&
@@ -15,7 +24,7 @@ void onTick(CBlob@ this)
 		!isKnocked(this) &&
 		this.getHealth() < this.getInitialHealth()
 	) {
-        if (this.get_u32("regen") <= getGameTime())
+        if (this.get_u32("regen") <= getGameTime() && canHeal(this))
         {
 		    CBlob @carried = this.getCarriedBlob();
 		    if (carried !is null && canEat(carried)) // consume what is held

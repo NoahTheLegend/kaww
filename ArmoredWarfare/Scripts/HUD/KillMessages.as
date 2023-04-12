@@ -303,7 +303,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 					int exp_reward = 5+XORRandom(6); // 5 - 10
 					if (rules.get_string(killer.getUsername() + "_perk") == "Death Incarnate")
 					{
-						exp_reward *= 3; // 10 - 20
+						exp_reward *= 5;
 					}
 
 					if (victim.isBot())
