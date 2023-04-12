@@ -22,6 +22,10 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (caller is null) return;
 	if (caller.exists("next_med") && caller.get_u32("next_med") >= getGameTime()) return;
+	if (caller.getPlayer() !is null && getRules() !is null && getRules().get_string(caller.getPlayer().getUsername() + "_perk") == "Bull")
+	{
+		return;
+	}
 
 	if (caller.getHealth() < caller.getInitialHealth()-0.1f)
 	{

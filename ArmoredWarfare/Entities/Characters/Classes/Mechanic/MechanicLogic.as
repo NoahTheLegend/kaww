@@ -104,7 +104,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
 		{
-			damage *= 0.85f;
+			damage *= 0.75f;
 		}
 	}
 	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
@@ -179,7 +179,7 @@ void onTick(CBlob@ this)
 	bool lock_stab = false;
 	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && this.isKeyPressed(key_down) && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
 	{
-		if (this.hasBlob("mat_scrap", 3) && this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		if (this.hasBlob("mat_scrap", 1) && this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Field Engineer")
 		{
 			if (getGameTime()%12 == 0 && this.getSprite() !is null)
 			{
@@ -323,9 +323,9 @@ void onTick(CBlob@ this)
 
 				if (this.get_u32("bull_boost") != 0 && this.get_u32("bull_boost") > getGameTime())
 				{
-					moveVars.walkFactor *= 1.1f;
-					moveVars.walkSpeedInAir = 2.5f;
-					moveVars.jumpFactor *= 1.35f;
+					moveVars.walkFactor *= 1.075f;
+					moveVars.walkSpeedInAir = 2.25f;
+					moveVars.jumpFactor *= 1.25f;
 				}
 			}
 			else  if (this.getPlayer() !is null)

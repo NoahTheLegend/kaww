@@ -243,7 +243,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
 		{
-			damage *= 0.85f;
+			damage *= 0.75f;
 		}
 	}
 	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
@@ -663,7 +663,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	bool lock_stab = false;
 	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && this.isKeyPressed(key_down) && !hidegun && !isReloading && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
 	{
-		if (this.hasBlob("mat_scrap", 3) && this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		if (this.hasBlob("mat_scrap", 1) && this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Field Engineer")
 		{
 			if (getGameTime()%12 == 0 && this.getSprite() !is null)
 			{

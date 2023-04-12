@@ -108,9 +108,22 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	}
 }
 
+bool canHeal(CBlob@ this, CBlob@ blob)
+{
+	if (blob.getPlayer() is null) return true;
+	if (getRules() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+		return false;
+
+	return true;
+}
+
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (blob is null || blob.get_u32("regen") > getGameTime())
+	{
+		return;
+	}
+	if (!canHeal(this, blob))
 	{
 		return;
 	}
@@ -126,7 +139,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
 	if (this is null || attached is null) {return;}
 
-	if (isServer() && attached.get_u32("regen") <= getGameTime())
+	if (isServer() && canHeal(this, attached) && attached.get_u32("regen") <= getGameTime())
 	{
 		Heal(attached, this);
 	}
@@ -141,7 +154,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint @attachedPoint)
 {
 	if (this is null || detached is null) {return;}
 
-	if (isServer() && detached.get_u32("regen") <= getGameTime())
+	if (isServer() && canHeal(this, detached) && detached.get_u32("regen") <= getGameTime())
 	{
 		Heal(detached, this);
 	}
