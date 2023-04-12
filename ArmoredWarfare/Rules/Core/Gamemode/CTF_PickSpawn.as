@@ -9,6 +9,7 @@ void onInit(CRules@ this)
 {
 	this.addCommandID("pick default");
 	this.addCommandID("pick spawn");
+	this.addCommandID("iarmorywarn");
 }
 
 void BuildRespawnMenu(CRules@ this, CPlayer@ player)

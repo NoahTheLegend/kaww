@@ -215,3 +215,15 @@ void onRender(CRules@ this)
 		}
 	}
 }
+
+void onCommand(CRules@ this, u8 cmd, CBitStream @params)
+{
+	if (isClient())
+	{
+		if (cmd == this.getCommandID("iarmorywarn"))
+		{
+			u8 team = params.read_u8();
+			this.set_u32("iarmory_warn"+team, getGameTime()+150);
+		}
+	}
+}
