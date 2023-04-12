@@ -84,7 +84,7 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Sharp Shooter", "$1_class_icon$", "Sharp Shooter",
 						"Sharp Shooter:\n\n"+"$1_class_icon$"+"Marksman"
-						+"\n                   - Bullet damage: 133%       "
+						+"\n                   - Bullet deal 33% more damage       "
 						+"\n                   - Increased accuracy"
 						+"\n\n                  Long reload"
 						+"\n                   - 50% Slower reload     "
@@ -93,8 +93,9 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Bloodthirst", "$3_class_icon$", "Bloodthirsty",
 						"Bloodthirst:\n\n"+"$3_class_icon$"+"Vampirism"
 						+"\n                   - Regenerate health when killing     "
-						+"\n                   - Take only 50% of other heal     "
-						+"\n                   - Can't regenerate passively     "					
+						+"\n                   - Get only 50% of other heal     "
+						+"\n                   - Can't regenerate passively     "	
+						+"\n                   - Can't eat food     "					
 						+"\n\n                  Leech"
 						+"\n                   - Bullets restore health on hit"
 						+"\n\n                  Silver bullets"
@@ -131,7 +132,7 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Death Incarnate", "$7_class_icon$", "Death Incarnate",
 						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
-						+"\n                   - Enemy kill XP gain: 300%  "
+						+"\n                   - Enemy kill XP gain: 500%  "
 						+"\n\n                 Hardcore Soldier     "
 						+"\n                   - Take twice as much damage     "
 						);
@@ -150,10 +151,11 @@ void InitClasses(CBlob@ this)
 						"Bull:\n\n"+"$10_class_icon$"+"Physical Strength"
 						+"\n                   - Better walking, jumping, sprinting     "
 						+"\n                   - 33% Faster reload" //25% actually
-						+"\n                   - Take 85% of damage"
+						+"\n                   - Take 75% of damage"
 						+"\n\n                  Restlessness"
 						+"\n                   - Killing an enemy speeds you up"
 						+"\n                   - Can't use vehicles"
+						+"\n                   - Can't use medkits"
 						);
 	
 	addPlayerPerk(this, "Field Engineer", "$11_class_icon$", "Field Engineer",
@@ -169,7 +171,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Deploy a sentry gun,"
 						+"\n                      hold DOWN+SPACEBAR"
 						+"\n                      on the ground"
-						+"\n                      (requires 3 scrap)"
+						+"\n                      (requires 1 scrap)"
 						+"\n\n                  Overstaffed"
 						+"\n                   - Jump height and walking"
 						+"\n                     speed reduce by amount"
