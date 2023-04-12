@@ -69,6 +69,12 @@ void onRender(CSprite@ this)
 
 			GUI::DrawRectangle(Vec2f(pos2d.x - heatdim.x + 2,                    pos2d.y + y + 0),
 							   Vec2f(pos2d.x + heatdim.x - 1,                    pos2d.y + y + heatdim.y - 1), color);
+
+			if (blob.isAttached())
+			{
+				GUI::SetFont("menu");
+				GUI::DrawTextCentered("Hold RMB to hide", pos2d+Vec2f(0, y+24), SColor(75, 255,255,255));
+			}
 		}
 		else
 		{
