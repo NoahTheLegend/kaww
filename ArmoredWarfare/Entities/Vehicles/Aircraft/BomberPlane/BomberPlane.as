@@ -247,6 +247,10 @@ void onTick(CBlob@ this)
 	{
 		this.set_f32("velocity", Maths::Max(0, this.get_f32("velocity") - 0.25f));
 	}
+	else
+	{
+		this.set_f32("velocity", Maths::Max(0, this.get_f32("velocity") - 0.01f));
+	}
 
 	if (this.hasTag("falling") || this.getHealth() <= this.getInitialHealth() * 0.33f)
 	{
@@ -519,7 +523,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	else if (hitterBlob.hasTag("bullet"))
 	{
 		damage += 0.05f;
-		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.25f;
+		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.4f;
 		return damage * (hitterBlob.hasTag("strong") ? 0.75f : 0.6f);
 	}
 	return damage;
