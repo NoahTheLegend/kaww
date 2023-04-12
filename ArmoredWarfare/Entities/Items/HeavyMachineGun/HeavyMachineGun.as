@@ -3,8 +3,8 @@
 
 const Vec2f arm_offset = Vec2f(-2, 0);
 const f32 MAX_OVERHEAT = 2.0f;
-const f32 OVERHEAT_PER_SHOT = 0.05f;
-const f32 COOLDOWN_RATE = 0.06f;
+const f32 OVERHEAT_PER_SHOT = 0.07475f;
+const f32 COOLDOWN_RATE = 0.065f;
 const u8 COOLDOWN_TICKRATE = 5;
 
 void onInit(CBlob@ this)
@@ -104,6 +104,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
 	detached.Untag("mgunner");
+	if (detached.getSprite() !is null) detached.getSprite().ResetTransform();
 	if (this.isAttached()) return;
 
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
@@ -182,6 +183,8 @@ void onTick(CBlob@ this)
 		return;
 	}
 
+	v.firing = false;
+
 	if (this.getTickSinceCreated() < 5 && is_attached)
 	{
 		if (!this.hasTag("angle_set"))
@@ -192,30 +195,6 @@ void onTick(CBlob@ this)
 				this.getSprite().getSpriteLayer("arm").RotateBy(this.isFacingLeft()?30:-30, Vec2f(0,0));
 			}
 			this.Tag("angle_set");
-		}
-	}
-
-	if (is_attached)
-	{
-		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
-		if (ap !is null && ap.getOccupied() !is null)
-		{
-			CBlob@ gunner = ap.getOccupied();
-			CSprite@ gsprite = gunner.getSprite();
-			f32 perc = (gunner.get_u8("mg_offset")*0.8f) / 4.0f;
-
-			if (gsprite !is null)
-			{
-				gsprite.ResetTransform();
-				gsprite.SetOffset(Vec2f(0, -4.0f*perc));
-			}
-			if (ap.isKeyPressed(key_action2))
-			{
-				gunner.set_u32("mg_invincible", getGameTime()+1);
-				if (gunner.get_u8("mg_offset") > 0) gunner.set_u8("mg_offset", gunner.get_u8("mg_offset") - 1);
-			}
-			else if (gunner.get_u8("mg_offset") < 5) gunner.set_u8("mg_offset", gunner.get_u8("mg_offset") + 1);
-			if (gunner.get_u8("mg_offset") < 5) return;
 		}
 	}
 
@@ -244,6 +223,41 @@ void onTick(CBlob@ this)
 	{
 		this.set_bool("overheated", true);
 		v.firing = false;
+	}
+
+	if (this.get_bool("overheated") && getGameTime() % 3 == 0)
+	{
+		if (this.getSprite() !is null)
+		{
+			if (this.get_f32("overheat") >= this.get_f32("max_overheat")-this.get_f32("overheat_per_shot"))
+				this.getSprite().PlaySound("DrillOverheat.ogg", 1.0f, 0.95f);
+			else if (getGameTime() % 3 + XORRandom(2) == 0) this.getSprite().PlaySound("Steam.ogg", 0.85f, 1.075f);
+		}
+		MakeParticle(this, Vec2f(0, -0.5), v);
+	}
+
+	if (is_attached)
+	{
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+		if (ap !is null && ap.getOccupied() !is null)
+		{
+			CBlob@ gunner = ap.getOccupied();
+			CSprite@ gsprite = gunner.getSprite();
+			f32 perc = (gunner.get_u8("mg_offset")*0.8f) / 4.0f;
+
+			if (gsprite !is null)
+			{
+				gsprite.ResetTransform();
+				gsprite.SetOffset(Vec2f(0, -4.0f*perc));
+			}
+			if (ap.isKeyPressed(key_action2))
+			{
+				gunner.set_u32("mg_invincible", getGameTime()+1);
+				if (gunner.get_u8("mg_offset") > 0) gunner.set_u8("mg_offset", gunner.get_u8("mg_offset") - 1);
+			}
+			else if (gunner.get_u8("mg_offset") < 5) gunner.set_u8("mg_offset", gunner.get_u8("mg_offset") + 1);
+			if (gunner.get_u8("mg_offset") < 5) return;
+		}
 	}
 
 	f32 angle = getAimAngle(this, v);
@@ -279,17 +293,6 @@ void onTick(CBlob@ this)
 	}
 
 	Vehicle_StandardControls(this, v);
-	
-	if (this.get_bool("overheated") && getGameTime() % 3 == 0)
-	{
-		if (this.getSprite() !is null)
-		{
-			if (this.get_f32("overheat") >= this.get_f32("max_overheat")-this.get_f32("overheat_per_shot"))
-				this.getSprite().PlaySound("DrillOverheat.ogg", 1.0f, 0.95f);
-			else if (getGameTime() % 3 + XORRandom(2) == 0) this.getSprite().PlaySound("Steam.ogg", 0.85f, 1.075f);
-		}
-		MakeParticle(this, Vec2f(0, -0.5), v);
-	}
 }
 
 void MakeParticle(CBlob@ this, const Vec2f vel, VehicleInfo@ v, const string filename = "SmallSteam")
