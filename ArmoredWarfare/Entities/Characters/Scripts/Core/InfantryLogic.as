@@ -251,7 +251,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (this.hasBlob("aceofspades", 1))
 		{
 			this.TakeBlob("aceofspades", 1);
-			this.set_u32("aceofspades_timer", getGameTime()+30);
+			this.set_u32("aceofspades_timer", getGameTime()+90);
 
 			this.server_SetHealth(0.01f);
 
@@ -422,6 +422,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 				const bool large = b.hasTag("blocks sword") && !b.isAttached() && b.isCollidable();
 				if (b.hasTag("ignore sword")) continue;
 				if (b.getTeamNum() == this.getTeamNum()) continue;
+				if (b.exists("mg_invincible") && b.get_u32("mg_invincible") >= getGameTime()) continue;
 				if (b.getName() == "wooden_platform" || b.hasTag("door")) damage *= 1.5;
 
 				//big things block attacks
@@ -471,7 +472,7 @@ void AttachParachute(CBlob@ this)
 
 void ManageParachute(CBlob@ this)
 {
-	if (this.isOnGround() || this.isInWater() || this.isAttached())
+	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.hasTag("dead"))
 	{ // disable parachute
 		if (this.hasTag("parachute"))
 		{

@@ -112,7 +112,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (this.hasBlob("aceofspades", 1))
 		{
 			this.TakeBlob("aceofspades", 1);
-			this.set_u32("aceofspades_timer", getGameTime()+30);
+			this.set_u32("aceofspades_timer", getGameTime()+90);
 
 			this.server_SetHealth(0.01f);
 
@@ -957,7 +957,7 @@ void AttachParachute(CBlob@ this)
 
 void ManageParachute(CBlob@ this)
 {
-	if (this.isOnGround() || this.isInWater() || this.isAttached())
+	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.hasTag("dead"))
 	{ // disable parachute
 		if (this.hasTag("parachute"))
 		{
