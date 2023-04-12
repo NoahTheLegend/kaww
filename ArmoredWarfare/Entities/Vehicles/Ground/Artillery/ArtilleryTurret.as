@@ -9,7 +9,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u16 cooldown_time = 750; // 25 sec cd
+const u16 cooldown_time = 510; // 17 sec cd
 const f32 damage_modifier = 1.65f;
 
 const s16 init_gunoffset_angle = -2; // up by so many degrees
@@ -232,7 +232,7 @@ void onTick(CBlob@ this)
 
 		if (!this.hasTag("nogunner"))
 		{
-			if (getGameTime()%2==0)
+			//if (getGameTime()%2==0)
 			{
 				int factor = 1;
 				if (isOperator) factor = 2;
@@ -379,12 +379,19 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		u8 charge_prop = _charge;
 
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
-		Vec2f vel = Vec2f(0.0f, -42.5f+XORRandom(51)*0.1f).RotateBy(angle);
+		Vec2f vel = Vec2f(0.0f, -45.0f+XORRandom(16)*0.1f).RotateBy(angle);
 		bullet.setVelocity(vel);
 		Vec2f bullet_pos = this.getPosition()+Vec2f(this.isFacingLeft()?-12.0f:12.0f, -5) + Vec2f((this.isFacingLeft() ? -1 : 1)*16.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
 		Vec2f pos = this.getPosition()+Vec2f(this.isFacingLeft()?-12.0f:12.0f, -5) + Vec2f((this.isFacingLeft() ? -1 : 1)*50.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
 		bullet.setPosition(bullet_pos);
 		bullet.Tag("rpg");
+		bullet.AddScript("ShrapnelOnDie.as");
+		bullet.set_u8("shrapnel_count", 8+XORRandom(5));
+		bullet.set_f32("shrapnel_vel", 10.0f+XORRandom(5)*0.1f);
+		bullet.set_f32("shrapnel_vel_random", 2.5f+XORRandom(26)*0.1f);
+		bullet.set_Vec2f("shrapnel_offset", Vec2f(0,-1));
+		bullet.set_f32("shrapnel_angle_deviation", 15.0f);
+		bullet.set_f32("shrapnel_angle_max", 05.0f+XORRandom(21));
 		//bullet.Tag("artillery_shell"); // this tag disables aircraft collision
 
 		CBlob@ hull = getBlobByNetworkID(this.get_u16("tankid"));
