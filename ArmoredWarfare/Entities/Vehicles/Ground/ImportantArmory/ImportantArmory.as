@@ -284,7 +284,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	if (!canSeeButtons(this, caller)) return;
 
-	if (caller.isOverlapping(this))
+	if (this.getDistanceTo(caller) < this.getRadius())
 	{
 		CBitStream params;
 		params.write_u16(caller.getNetworkID());
@@ -402,7 +402,7 @@ void onDie(CBlob@ this)
 		getRules().SetTeamWon(team);
 		getRules().SetCurrentState(GAME_OVER);
 		CTeam@ teamis = getRules().getTeam(team);
-		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
+		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " destroyed the enemy Truck!\n\nLoading next map..." );
 	}
 }
 
@@ -628,9 +628,19 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (hitterBlob.hasTag("plane")) return damage*0.075f;
-	if (hitterBlob.getTeamNum() != this.getTeamNum())
+
+	if (getRules() !is null && isServer() && hitterBlob.getTeamNum() != this.getTeamNum()
+	&& getRules().get_u32("iarmory_warn"+this.getTeamNum()) <= getGameTime())
 	{
-		if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), getGameTime()+150);
+		this.set_u32("iarmory_warn"+this.getTeamNum(), getGameTime()+150);
+
+		CBitStream params;
+		params.write_u8(this.getTeamNum());
+		getRules().SendCommand(getRules().getCommandID("iarmorywarn"), params);
+	}
+	if (hitterBlob.getName() == "mat_smallbomb" && hitterBlob.getQuantity() > 0)
+	{
+		return damage / hitterBlob.getQuantity();
 	}
 	if (hitterBlob.getName() == "missile_javelin")
 	{
@@ -638,11 +648,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (hitterBlob.getName() == "ballista_bolt")
 	{
-		return damage * 1.4f;
+		if (hitterBlob.hasTag("rpg")) return damage * 1.1f;
+		return damage * 1.5f;
 	}
 	if (hitterBlob.hasTag("grenade"))
 	{
-		return damage * 0.5f;
+		return damage * 0.75f;
 	}
 	if (hitterBlob.getName() == "c4")
 	{
@@ -650,7 +661,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (hitterBlob.hasTag("bullet"))
 	{
-		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.25f;
+		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.3f;
 		else if (hitterBlob.hasTag("strong")) return damage *= 1.5f;
 		return damage;
 	}

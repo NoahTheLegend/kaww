@@ -235,7 +235,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	this.set_bool("shop available", true);
 
-	if (caller.isOverlapping(this))
+	if (this.getDistanceTo(caller) < this.getRadius())
 	{
 		CBitStream params;
 		params.write_u16(caller.getNetworkID());
