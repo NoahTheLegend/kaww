@@ -44,7 +44,7 @@ void onInit(CBlob@ this)
 	    1, // fire bullets amount
 	    1, // fire cost
 	    "mat_bolts", // bullet ammo config name
-	    "Ballista Bolts", // name for ammo selection
+	    "105mm Shells", // name for ammo selection
 	    "ballista_bolt", // bullet config name
 	    //"sound_100mm", // fire sound
 		"sound_128mm",
@@ -489,4 +489,13 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	}
 	this.getShape().SetStatic(false);
 	Vehicle_onDetach(this, v, detached, attachedPoint);
+}
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (hitterBlob.getName() == "missile_javelin")
+	{
+		return damage * 0.9f;
+	}
+	return damage;
 }
