@@ -572,7 +572,7 @@ void onTick(CMovement@ this)
 			    }
 				else if (carryBlob.hasTag("very heavy weight"))
 				{
-					moveVars.walkFactor *= 0.35f;
+					moveVars.walkFactor *= 0.4f;
 			    	moveVars.jumpFactor *= 0.5f;
 				}
             }
