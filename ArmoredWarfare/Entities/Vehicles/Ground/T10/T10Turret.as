@@ -43,7 +43,7 @@ void onInit(CBlob@ this)
 	    1, // fire bullets amount
 	    1, // fire cost
 	    "mat_bolts", // bullet ammo config name
-	    "Ballista Bolts", // name for ammo selection
+	    "105mm Shells", // name for ammo selection
 	    "ballista_bolt", // bullet config name
 	    //"sound_100mm", // fire sound
 		"sound_105mm",
