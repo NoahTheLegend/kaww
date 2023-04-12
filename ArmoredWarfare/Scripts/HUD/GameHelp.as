@@ -109,12 +109,13 @@ void onRender(CRules@ this)
 	{
 		const string shiprektVersion = "Armored Warfare\n";
 		const string lastChangesInfo = "\nChanges:\n\n"
-        + "  * Added tier 2 armory for Break The Truck mode\n"
-        + "  * Captured flags now drop crates with valuable loot\n"
-        + "  * Added gun reload timer on cursor\n"
-        + "  * Added ammo indicators for most of the vehicles\n"
-        + "  * Tweaked Bloodthirsty perk significantly\n"
-        + "  * Balance changes & bug fixes & QOL\n";
+        + "  * Artillery now deploys shrapnel on explosion\n"
+        + "  * Perks:\n"
+        + "  * Bloodthirsty - more heal on bullet damage, can't eat food; Lucky - bigger cooldown after activation\\heal\n"
+        + "  * Bull - can't use medkits, increased damage resistance to 25%, nerf killing spree movement buff\n"
+        + "  * Field Engineer - sentry costs 1 scrap now; Paratrooper - better parachute handling\n"
+        + "  * Reworked food heal, now its passive\n"
+        + "  * Balance changes & bug fixes & QOL enhancements\n";
 		
 		GUI::SetFont("menu");
 		Vec2f lastChangesSize;
