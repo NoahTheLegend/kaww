@@ -201,7 +201,7 @@ void buildT3ShopCombined(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build AH1 Cobra Helicopter", "$ah1$", "ah1", "A fighter-helicopter with a co-pilot seat operating machinegun.\nPress SPACEBAR to launch 105mm Rockets");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a Large Technical Truck", "$techbigtruck$", "techbigtruck", "A modernized truck. Commonly used for gang battles.\n\nUses 7.62mm.");
@@ -510,6 +510,6 @@ void buildT2ShopAir(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build AH1 Cobra Helicopter", "$ah1$", "ah1", "A fighter-helicopter with a co-pilot seat operating machinegun.\nPress SPACEBAR to launch 105mm Rockets");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
 	}
 }
