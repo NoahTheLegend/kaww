@@ -31,19 +31,32 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 					if (theBlob.hasBlob("aceofspades", 1))
 					{
 						theBlob.TakeBlob("aceofspades", 1);
-						theBlob.set_u32("aceofspades_timer", getGameTime()+90);
+						theBlob.set_u32("aceofspades_timer", getGameTime()+180);
 					}
 				}
 
-				f32 res = 1.5f;
 				u8 heal_amount;
 				if (!params.saferead_u8(heal_amount)) return;
-                if (theBlob.getName() == "mp5")
+
+				bool is_burger = false;
+				if (heal_amount == 255) is_burger = true;
+				f32 extra = theBlob.get_u32("regen") > getGameTime() ? float(theBlob.get_u32("regen"))-float(getGameTime()) : 0;
+
+				if (is_burger)
 				{
-					if (heal_amount != 255) heal_amount /= 2;
-					res /= 2;
+					theBlob.set_u32("regen", extra + getGameTime()+120);
+					theBlob.set_u8("step_max_temp", 6);
+					theBlob.set_f32("regen_amount", 0.5f);
+				}
+				else
+				{
+					theBlob.set_u32("regen", extra + getGameTime()+90);
+					theBlob.set_u8("step_max_temp", 4);
+					theBlob.set_f32("regen_amount", 0.125f);
 				}
 
+				/*
+				f32 res = 1.5f;
 				if (theBlob.getPlayer() !is null && getRules().get_string(theBlob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
 				{
 					if (heal_amount != 255) heal_amount /= 2;
@@ -63,6 +76,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 					theBlob.server_Heal(f32(heal_amount) * 0.25f);
 					theBlob.add_f32("heal amount", theBlob.getHealth() - oldHealth);
 				}
+				*/
 
 				//give coins for healing teammate
 				if (this.exists("healer"))
@@ -96,7 +110,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (blob is null)
+	if (blob is null || blob.get_u32("regen") > getGameTime())
 	{
 		return;
 	}
@@ -112,7 +126,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
 	if (this is null || attached is null) {return;}
 
-	if (isServer())
+	if (isServer() && attached.get_u32("regen") <= getGameTime())
 	{
 		Heal(attached, this);
 	}
@@ -127,7 +141,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint @attachedPoint)
 {
 	if (this is null || detached is null) {return;}
 
-	if (isServer())
+	if (isServer() && detached.get_u32("regen") <= getGameTime())
 	{
 		Heal(detached, this);
 	}
