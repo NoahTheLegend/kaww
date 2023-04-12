@@ -60,7 +60,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 					if (blob.hasBlob("aceofspades", 1))
 					{
 						blob.TakeBlob("aceofspades", 1);
-						blob.set_u32("aceofspades_timer", getGameTime()+90);
+						blob.set_u32("aceofspades_timer", getGameTime()+180);
 					}
 				}
 
