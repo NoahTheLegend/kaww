@@ -497,5 +497,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 0.9f;
 	}
+
 	return damage;
 }
