@@ -17,6 +17,7 @@ void onInit(CBlob@ this)
 	//transfer fire to underlying tiles
 	this.Tag(spread_fire_tag);
 	this.Tag("passable");
+	this.Tag("platform");
 
 	if (this.getName() == "wooden_platform")
 	{

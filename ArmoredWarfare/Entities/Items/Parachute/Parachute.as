@@ -22,7 +22,7 @@ void onTick(CSprite@ this)
 		if (ap !is null && ap.getOccupied() !is null)
 		{
 			CBlob@ at = ap.getOccupied();
-			if (at.isOnGround() || at.isInWater() || at.isOnLadder())
+			if (at.isOnGround() || at.isInWater() || at.isOnLadder() || at.hasTag("dead"))
 			{
 				blob.server_Die();	
 				return;

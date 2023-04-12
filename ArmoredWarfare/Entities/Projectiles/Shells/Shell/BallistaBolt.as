@@ -329,6 +329,20 @@ void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f vel
 	}
 }
 
+void onDie(CBlob@ this)
+{/*
+	if (!isServer()) return;
+	if (this.hasTag("artillery"))
+	{
+		CBlob@ ensureEffects = server_CreateBlob("ensureeffects", this.getTeamNum(), this.getPosition());
+		if (ensureEffects !is null)
+		{
+			
+		}
+	}
+	*/
+}
+
 void Boom(CBlob@ this)
 {
 	if (getNet().isClient()) {
