@@ -405,10 +405,10 @@ void onTick(CBlob@ this)
 			tailrotor.SetFrameIndex(1);
 		}
 
-		//f32 volume = Maths::Sqrt(resultForce.getLength()/(Maths::Pow(1, 2)));
-		//sprite.SetEmitSoundVolume(Maths::Min(volume, 1.0f));
+		f32 volume = (Maths::Log(4.5)*(resultForce.getLength()+0.2)+2)/4;
+		sprite.SetEmitSoundVolume(Maths::Min(volume*1.5, 1.5f));
 
-		sprite.SetEmitSoundSpeed(Maths::Min(0.005f + Maths::Abs(resultForce.getLength() * 1.00f), 0.75f) * 1.55);
+		sprite.SetEmitSoundSpeed(Maths::Min(0.0075f + Maths::Abs(resultForce.getLength() * 4.00f), 1.33f) * volume);
 		if (this.hasTag("falling")) sprite.SetEmitSoundSpeed(Maths::Min(0.000075f + Maths::Abs(this.get_Vec2f("result_force").getLength() * 1.00f), 0.85f) * 1.55);
 
 		this.set_Vec2f("target_force", clampedTargetForce);
