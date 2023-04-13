@@ -45,14 +45,8 @@ void onTick(CBlob@ this)
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (solid)
-	{
-		if (isServer()) this.server_Die();
-		return;
-	}
-
 	if (blob is null) return;
-	if (blob.hasTag("flesh") && blob.getTeamNum() != this.getTeamNum()) return;
+	if (blob.hasTag("flesh") && blob.getTeamNum() == this.getTeamNum()) return;
 
 	if (blob.hasTag("door") || blob.hasTag("platform"))
 	{
@@ -61,6 +55,12 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 			this.server_Hit(blob, this.getPosition(), Vec2f_zero, 1.0f+XORRandom(6)*0.1f, Hitters::spikes, true);
 		 	this.server_Die();
 		}
+		return;
+	}
+
+	if (solid)
+	{
+		if (isServer()) this.server_Die();
 		return;
 	}
 	
