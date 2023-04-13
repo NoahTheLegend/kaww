@@ -496,8 +496,8 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 		return null;
 }
 
-const f32 lerp_speed_x = 0.20f;
-const f32 lerp_speed_y = 0.20f;
+const f32 lerp_speed_x = 0.25f;
+const f32 lerp_speed_y = 1.5f;
 
 f32 Lerp(f32 a, f32 b, f32 time)
 {

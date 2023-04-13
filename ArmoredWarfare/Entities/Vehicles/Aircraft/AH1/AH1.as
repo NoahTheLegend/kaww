@@ -404,8 +404,11 @@ void onTick(CBlob@ this)
 		{
 			tailrotor.SetFrameIndex(1);
 		}
-		
-		sprite.SetEmitSoundSpeed((Maths::Abs(resultForce.getLength()) > 0.1f ? 0.1f : 0)+Maths::Min(0.000075f + Maths::Abs(resultForce.getLength() * 1.00f), 0.85f) * 1.55);
+
+		//f32 volume = Maths::Sqrt(resultForce.getLength()/(Maths::Pow(1, 2)));
+		//sprite.SetEmitSoundVolume(Maths::Min(volume, 1.0f));
+
+		sprite.SetEmitSoundSpeed(Maths::Min(0.005f + Maths::Abs(resultForce.getLength() * 1.00f), 0.75f) * 1.55);
 		if (this.hasTag("falling")) sprite.SetEmitSoundSpeed(Maths::Min(0.000075f + Maths::Abs(this.get_Vec2f("result_force").getLength() * 1.00f), 0.85f) * 1.55);
 
 		this.set_Vec2f("target_force", clampedTargetForce);
@@ -600,8 +603,8 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 		return null;
 }
 
-const f32 lerp_speed_x = 0.20f;
-const f32 lerp_speed_y = 0.20f;
+const f32 lerp_speed_x = 0.3f;
+const f32 lerp_speed_y = 1.75f;
 
 f32 Lerp(f32 a, f32 b, f32 time)
 {
