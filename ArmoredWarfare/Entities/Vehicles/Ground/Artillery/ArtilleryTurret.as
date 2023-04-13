@@ -391,7 +391,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		bullet.set_f32("shrapnel_vel_random", 1.5f+XORRandom(16)*0.1f);
 		bullet.set_Vec2f("shrapnel_offset", Vec2f(0,-1));
 		bullet.set_f32("shrapnel_angle_deviation", 10.0f);
-		bullet.set_f32("shrapnel_angle_max", 05.0f+XORRandom(21));
+		bullet.set_f32("shrapnel_angle_max", 45.0f+XORRandom(21));
 		//bullet.Tag("artillery_shell"); // this tag disables aircraft collision
 
 		CBlob@ hull = getBlobByNetworkID(this.get_u16("tankid"));
