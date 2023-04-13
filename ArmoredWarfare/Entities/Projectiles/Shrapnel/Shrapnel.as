@@ -48,6 +48,12 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (blob is null) return;
 	if (blob.hasTag("flesh") && blob.getTeamNum() == this.getTeamNum()) return;
 
+	if (solid)
+	{
+		if (isServer()) this.server_Die();
+	}
+	
+
 	if (blob.hasTag("flesh") || blob.hasTag("door") || blob.hasTag("platform"))
 	{
 		if (isServer())
@@ -55,15 +61,8 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 			this.server_Hit(blob, this.getPosition(), Vec2f_zero, 1.0f+XORRandom(6)*0.1f, Hitters::spikes, true);
 		 	this.server_Die();
 		}
-		return;
 	}
 
-	if (solid)
-	{
-		if (isServer()) this.server_Die();
-		return;
-	}
-	
 	/*
 	CMap@ map = getMap();
 	for (int i = 0; i < dir.length; i++)
