@@ -45,14 +45,13 @@ void onTick(CBlob@ this)
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (blob is null) return;
-	if (blob.hasTag("flesh") && blob.getTeamNum() == this.getTeamNum()) return;
-
-	if (solid)
+	if (blob is null)
 	{
-		if (isServer()) this.server_Die();
+		this.server_Die();
+		return;
 	}
-	
+
+	if (blob.hasTag("flesh") && blob.getTeamNum() == this.getTeamNum()) return;
 
 	if (blob.hasTag("flesh") || blob.hasTag("door") || blob.hasTag("platform"))
 	{
