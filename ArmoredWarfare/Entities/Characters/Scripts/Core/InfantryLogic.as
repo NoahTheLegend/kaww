@@ -150,24 +150,25 @@ void onInit(CBlob@ this)
 	this.set_string("ammo_prop", "ammo");
 	this.set_u8("ammo_pershot", 1);
 
+	// todo: move this to infantrycommon.as
 	if (this.getName() == "revolver")
 	{
 		this.set_u8("stab time", 19);
 		this.set_u8("stab timing", 13);
 		this.Tag("no bulletgib on shot");
-		this.set_f32("stab damage", 1.5f);
+		this.set_f32("stab damage", 1.25f);
 		//this.set_u8("ammo_pershot", 2);
 	}
 	else if (this.getName() == "ranger")
 	{
 		this.set_u8("stab time", 33);
 		this.set_u8("stab timing", 14);
-		this.set_f32("stab damage", 1.75f);
+		this.set_f32("stab damage", 1.5f);
 	}
 	else if (this.getName() == "shotgun")
 	{
 		this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
-		this.set_f32("stab damage", 1.75f);
+		this.set_f32("stab damage", 1.5f);
 		this.set_u8("ammo_pershot", 4);
 	}
 	else if (this.getName() == "sniper")
