@@ -141,11 +141,11 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	bool isStrong = this.hasTag("strong");
 	if (isServer())
 	{
-		if (this.hasTag("shrapnel"))
+		//if (this.hasTag("shrapnel"))
 		{
-			if (tile == CMap::tile_wood)
+			if (map.isTileWood(tile) && XORRandom(3)==0)
 			{
-				map.server_DestroyTile(end, XORRandom(4)==0 ? 15.0f : 7.5f, this);
+				map.server_DestroyTile(end, 0.1f, this);
 				this.server_Die();
 			}
 		}
