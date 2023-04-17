@@ -128,7 +128,7 @@ void onTick(CBlob@ this)
 // Blow up
 void onDie(CBlob@ this)
 {
-	Explode(this, 64.0f, 1.0f);
+	Explode(this, 32.0f, 1.0f);
 
 	this.getSprite().PlaySound("/vehicle_die");
 
