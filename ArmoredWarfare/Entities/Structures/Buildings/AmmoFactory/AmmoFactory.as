@@ -306,8 +306,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "mat_heatwarhead");
 		this.set_u8("prod_amount", 3);
-		this.set_u8("prod_time", 25);
-		this.set_u8("cost", 6);
+		this.set_u8("prod_time", 35);
+		this.set_u8("cost", 7);
 
 		ResetTimer(this);
 	}
