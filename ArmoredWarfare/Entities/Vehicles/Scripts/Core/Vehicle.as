@@ -810,14 +810,13 @@ void onDie(CBlob@ this)
 			case _jourcop:
 			{
 				break;
-			} // journalist
+			}
 			case _uh1:
 			case _artillery:
 			{
 				scrap_amount = 10+XORRandom(9);
-				// same as bf109
 				break;
-			} // heli
+			}
 			case _techtruck:
 			case _techbigtruck:
 			{
