@@ -423,7 +423,8 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 				if (b.hasTag("ignore sword")) continue;
 				if (b.getTeamNum() == this.getTeamNum()) continue;
 				if (b.exists("mg_invincible") && b.get_u32("mg_invincible") >= getGameTime()) continue;
-				if (b.getName() == "wooden_platform" || b.hasTag("door")) damage *= 1.5;
+				if (b.getName() == "wooden_platform") damage *= 1.25f;
+				if (b.hasTag("door")) damage *= 2.5f;
 
 				//big things block attacks
 				{
