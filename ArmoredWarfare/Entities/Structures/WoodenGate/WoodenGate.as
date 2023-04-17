@@ -300,6 +300,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	// add 'return' only after animation code
 
+	if (customData == Hitters::builder)
+	{
+		return damage * 3;
+	}
 	if (hitterBlob.hasTag("grenade"))
 	{
 		return damage * Maths::Max(0.0f, damage*10 / (hitterBlob.getPosition() - this.getPosition()).Length()*0.25f);
