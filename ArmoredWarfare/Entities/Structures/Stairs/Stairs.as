@@ -18,6 +18,7 @@ bool doesStaircaseExist;
 void onInit(CBlob@ this)
 {
     this.Tag("stairs");
+    this.Tag("structure");
     this.Tag("builder always hit");
     this.addCommandID("go up");
     this.addCommandID("go down");
