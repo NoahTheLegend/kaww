@@ -60,7 +60,7 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	blocks.push_back(page_0);
 	{
 		BuildBlock b(CMap::tile_castle, "stone_block", "$stone_block$", "Stone Block\nBasic building block\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
 		blocks[0].push_back(b);
 	}
 	{
@@ -75,7 +75,7 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	}
 	{
 		BuildBlock b(0, "stone_door", "$stone_door$", "Stone Door\nPlace next to walls\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 40);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 70);
 		blocks[0].push_back(b);
 	}
 	{
@@ -85,17 +85,17 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	}
 	{
 		BuildBlock b(CMap::tile_wood_back, "back_wood_block", "$back_wood_block$", "Back Wood Wall\nCheap extra support\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 1);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 2);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(0, "wooden_platform", "$wooden_platform$", "Wooden Platform\nOne way platform\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 15);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(0, "wooden_door", "$wooden_door$", "Wooden Door\nPlace next to walls\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 20);
 		blocks[0].push_back(b);
 	}
 	{
@@ -106,13 +106,13 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	}
 	{ // TILEINDEX IN BLOCKPLACEMENT.AS IS SET MANUALLY TO THE INDEX OF THIS BLOCK!
 		BuildBlock b(CMap::tile_cdirt, "cdirt_block", "$cdirt_block$", "Compacted dirt\nReinforced block of dirt, almost immune to explosions\nand bullets, can be built only on dirt walls.\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 5);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 1);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(0, "ladder", "$ladder$", "Ladder\nAnyone can climb it\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 5);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
 		blocks[0].push_back(b);
 	}
 	{
@@ -124,7 +124,7 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	{
 		AddIconToken("$construction_yard_icon$", "CYardIcon.png", Vec2f(16, 16), 2);
 		BuildBlock b(0, "constructionyard", "$construction_yard_icon$", "Construction Yard\nStand in an open space\nand tap this button.\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 50);
 		b.buildOnGround = true;
 		b.size.Set(24, 24);
 		blocks[0].push_back(b);
