@@ -45,7 +45,6 @@ void onInit(CBlob@ this)
 		}
 	}
 	this.Tag("door");
-	this.Tag("blocks water");
 	this.Tag("explosion always teamkill"); // ignore 'no teamkill' for explosives
 }
 
@@ -186,7 +185,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if ((customData == Hitters::explosion && hitterBlob.getName() != "c4") || hitterBlob.hasTag("grenade"))
 		{
-			return damage * Maths::Max(0.0f, damage*0.33f / (hitterBlob.getPosition() - this.getPosition()).Length());
+			return damage * 4 * Maths::Max(0.0f, damage*1.5f / (hitterBlob.getPosition() - this.getPosition()).Length()/8);
 		}
 	}
 
