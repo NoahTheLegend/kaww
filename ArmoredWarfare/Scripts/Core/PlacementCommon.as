@@ -53,6 +53,31 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 		radius = blob.getRadius();
 	}
 
+	if (buildTile != CMap::tile_wood_back && buildTile != CMap::tile_castle_back
+	&& (blob is null || blob.hasTag("door") || blob.hasTag("platform")))
+	{
+		f32 checkdist = 24.0f;
+		u8 step = 18;
+		for (u8 i = 0; i < step; i++)
+		{
+			HitInfo@[] hs;
+			if (getMap().getHitInfosFromRay(p, 360/step*i, checkdist, blob, @hs))
+			{
+				for (u8 j = 0; j < hs.length; j++)
+				{
+					HitInfo@ hi = hs[j];
+					if (hi is null) continue;
+					if (hi.blob is null || hi.blob.hasTag("dead")) continue;
+					if (!hi.blob.isCollidable() || !hi.blob.getShape().getConsts().collidable
+					|| !this.doesCollideWithBlob(hi.blob)) continue;
+					if (hi.blob.getTeamNum() >= 2) continue;
+
+					if (hi.blob.getTeamNum() != this.getTeamNum()) return false;
+				}
+			}
+		}
+	}
+
 	//check height + edge proximity
 	if (p.y < 2 * map.tilesize ||
 			p.x < 2 * map.tilesize ||
