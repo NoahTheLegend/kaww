@@ -46,7 +46,7 @@ void InitClasses(CBlob@ this)
 						"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 275\nLMB: Shoot | 4 Ammo per shot\nRMB: Aim\nSPACEBAR: Dig");
 
 	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper",
-						"---- Sniper ----\n\nLong range sniper.\n\nHP: 175\nLMB: Shoot | 3 Ammo per shot\nRMB: Scope in\nSPACEBAR: Knife");
+						"---- Sniper ----\n\nLong range sniper.\n\nHP: 200\nLMB: Shoot | 3 Ammo per shot\nRMB: Scope in\nSPACEBAR: Knife");
 
 	addPlayerClass(this, "---- RPG ----", "$rpg_class_icon$", "rpg",
 						"---- RPG ----\n\nArmed with a powerful RPG launcher.\n\nHP: 225.\nLMB: RPG | 1 HEAT rocket per shot\nRMB: Aim\nSPACEBAR: Knife");
