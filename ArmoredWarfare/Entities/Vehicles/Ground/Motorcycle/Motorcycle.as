@@ -4,6 +4,7 @@
 
 void onInit(CBlob@ this)
 {
+	this.Tag("motorcycle");
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
 	this.Tag("shootseat");
