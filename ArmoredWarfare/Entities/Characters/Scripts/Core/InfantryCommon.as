@@ -585,7 +585,7 @@ void getWeaponStats( int blobNameHash,
 
 			reload_time = RangerParams::RELOAD_TIME;
 			mag_size = RangerParams::MAG_SIZE;
-			delayafterfire = RangerParams::DELAYAFTERFIRE;
+			delayafterfire = RangerParams::DELAYAFTERFIRE - (isServer() ? 1 : 0); // test
 			randdelay = RangerParams::RANDDELAY;
 
 			bullet_velocity = RangerParams::BULLET_VELOCITY;
