@@ -333,6 +333,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f collisionPos )
 {
+	if (!isServer()) return;
 	if (blob !is null && blob.hasTag("vehicle") && !this.get_bool("state") && blob.getTeamNum() != this.getTeamNum())
 	{
 		f32 damage = 0.0f;
@@ -343,6 +344,11 @@ void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f coll
 		else if (blob.getName() == "maus") damage *= 15.0f;
 		else if (blob.hasTag("heavy")) damage *= 7.5f;
 		else if (blob.hasTag("tank")) damage *= 3.0f;
+		else if (blob.hasTag("motorcycle"))
+		{
+			damage = 0.25f;
+			this.server_Hit(blob, blob.getPosition(), blob.getVelocity(), damage*4, Hitters::fall);
+		}
 
 		damage *= 1.0f;
 		
