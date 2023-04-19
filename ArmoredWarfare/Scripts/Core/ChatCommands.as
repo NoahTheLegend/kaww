@@ -112,6 +112,11 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 						b.server_SetQuantity(parseInt(sub[1]));
 					}
 				}
+				else if (sub[0] == "!addtime")
+				{
+					f32 time = parseFloat(sub[1]);
+					this.add_u32("game_end_time", time);
+				}
 				else if (sub.length > 2)
 				{
 					if (sub[0] == "!spawn")
@@ -140,7 +145,7 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 		{
 			//xp
 		}
-		if (text_in == "!bot")
+		else if (text_in == "!bot")
 		{
 			AddBot("Bot");
 			return true;
