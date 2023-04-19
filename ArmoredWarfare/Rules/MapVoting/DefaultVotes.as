@@ -879,7 +879,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			{
 				CBitStream params;
 				params.write_u8(i);
-				params.write_u8(1);
+				params.write_u8(2);
 				Menu::addContextItemWithParams(large_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
 			}
 
@@ -887,7 +887,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			{
 				CBitStream params;
 				params.write_u8(i);
-				params.write_u8(2);
+				params.write_u8(3);
 				Menu::addContextItemWithParams(average_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
 			}
 
@@ -895,7 +895,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			{
 				CBitStream params;
 				params.write_u8(i);
-				params.write_u8(3);
+				params.write_u8(4);
 				Menu::addContextItemWithParams(flag_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
 			}
 
@@ -903,7 +903,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			{
 				CBitStream params;
 				params.write_u8(i);
-				params.write_u8(4);
+				params.write_u8(5);
 				Menu::addContextItemWithParams(truck_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
 			}
 
@@ -911,7 +911,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			{
 				CBitStream params;
 				params.write_u8(i);
-				params.write_u8(5);
+				params.write_u8(6);
 				Menu::addContextItemWithParams(tdm_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
 			}
 		}
@@ -1393,9 +1393,10 @@ void onCommand(CRules@ this, u8 cmd, CBitStream @params)
 
 const string[] TypeToString = {
 	"Random",
+	"Classic",
 	"Large",
 	"Average",
-	"Capture Flag",
-	"Destroy Truck",
+	"CTF",
+	"DTT",
 	"TDM"
 };
