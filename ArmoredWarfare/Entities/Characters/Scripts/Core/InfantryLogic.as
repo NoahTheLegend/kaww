@@ -252,7 +252,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (this.hasBlob("aceofspades", 1))
 		{
 			this.TakeBlob("aceofspades", 1);
-			this.set_u32("aceofspades_timer", getGameTime()+90);
+			this.set_u32("aceofspades_timer", getGameTime()+30);
 
 			this.server_SetHealth(0.01f);
 
@@ -604,11 +604,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					int yslots = inv.getInventorySlots().y;
 					CBlob@ item = inv.getItem(xslots * yslots - 1);
 					
-					//if (item !is null) // theres an item in the last slot
-					//{
-					//	item.server_RemoveFromInventories();
-					//}
-					//else //if (!this.hasBlob("aceofspades", 1))  // theres no item in the last slot
 					{
 						// give ace
 						CBlob@ b = server_CreateBlob("aceofspades", -1, this.getPosition());
