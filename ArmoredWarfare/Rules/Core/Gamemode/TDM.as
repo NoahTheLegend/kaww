@@ -1413,6 +1413,19 @@ void onTick(CRules@ this)
 
 	if (getGameTime() == 1)
 	{
+		ConfigFile map_ratios;
+		if (isServer() && getMap() !is null && map_ratios !is null)
+		{
+ 			if (!map_ratios.loadFile("../Cache/aw_map_ratios.cfg"))
+    		{
+    		    map_ratios = ConfigFile("aw_map_ratios.cfg");
+    		}
+			string mapname = getMap().getMapName();
+			u16 current_amount = map_ratios.read_u16(mapname, 1);
+			map_ratios.add_u16(mapname, current_amount+1);
+			map_ratios.saveFile("aw_map_ratios.cfg");
+		}
+
 		u16 count = 10 + getPlayersCount();
 		if (this.get_s16("blueTickets") == 0 && this.get_s16("redTickets") == 0)
 		{
