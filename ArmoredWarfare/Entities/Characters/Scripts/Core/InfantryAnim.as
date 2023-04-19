@@ -106,10 +106,19 @@ void LoadSprites(CSprite@ this)
 	if (skull !is null)
 	{
 		skull.SetFrameIndex(0);
-		skull.SetOffset(Vec2f(0.0f, -15.0f));
+		skull.SetOffset(Vec2f(0.0f, -16.0f));
 		skull.ScaleBy(Vec2f(0.75f,0.75f));
 		skull.SetRelativeZ(-5.0f);
 		skull.SetVisible(false);
+	}
+	CSpriteLayer@ aos = this.addSpriteLayer("aos", "AOS.png", 16, 16, 0, 0);
+	if (aos !is null)
+	{
+		aos.SetFrameIndex(1);
+		aos.SetOffset(Vec2f(0.5f, -18.0f));
+		aos.ScaleBy(Vec2f(0.75f,0.75f));
+		aos.SetRelativeZ(-5.0f);
+		aos.SetVisible(false);
 	}
 }
 
@@ -363,16 +372,29 @@ void onTick(CSprite@ this)
 		showgun = false;
 	}
 
+	string perk;
+	if (blob.getPlayer() !is null) perk = getRules().get_string(blob.getPlayer().getUsername() + "_perk");
+
 	CSpriteLayer@ skull = this.getSpriteLayer("skull");
 	if (skull !is null)
 	{
-		skull.SetFacingLeft(false);
-		if ((showgun || isReloading)
-		&& blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Death Incarnate")
+		if (perk == "Death Incarnate")
 		{
+			skull.SetFacingLeft(false);
 			skull.SetVisible(true);
 		}
-		else skull.SetVisible(false);	
+		else if (skull.isVisible()) skull.SetVisible(false);	
+	}
+
+	CSpriteLayer@ aos = this.getSpriteLayer("aos");
+	if (aos !is null)
+	{
+		if (perk == "Lucky")
+		{
+			aos.SetFacingLeft(false);
+			aos.SetVisible(blob.hasBlob("aceofspades", 1) && blob.getHealth() > 0.01f);
+		}
+		else if (aos.isVisible()) aos.SetVisible(false);
 	}
 
 	if (knocked)
