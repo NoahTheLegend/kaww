@@ -716,7 +716,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			}
 		}	
 	}
-	else if (this.isKeyJustReleased(key_action3))
+	else if (this.isKeyJustReleased(key_action3) || this.isKeyPressed(key_right) || this.isKeyPressed(key_left) || this.isKeyJustReleased(key_down))
 	{
 		Bar@ bars;
 		if (this.get("Bar", @bars))
