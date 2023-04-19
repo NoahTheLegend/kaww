@@ -359,12 +359,6 @@ void onTick(CSprite@ this)
 {
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
-
-	if (blob.getTickSinceCreated()==210)
-	{
-		blob.Tag('falling');
-		blob.set_u32("falling_time", getGameTime());
-	}
 	
 	if (blob.hasTag("rotated") && !blob.isOnGround())
 	{
