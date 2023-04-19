@@ -174,7 +174,7 @@ void onTick(CBlob@ this)
 			this.set_bool(working_prop, true);
 
 			//only convert every conversion_frequency seconds
-			if (getGameTime() % (10 * getTicksASecond()) == 0)
+			if ((getGameTime()+this.getNetworkID()) % (7.5f * getTicksASecond()) == 0)
 			{
 				spawnMetal(this);
 
