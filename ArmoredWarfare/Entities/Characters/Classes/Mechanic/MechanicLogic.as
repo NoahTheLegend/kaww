@@ -234,7 +234,7 @@ void onTick(CBlob@ this)
 			}
 		}	
 	}
-	else if (this.isKeyJustReleased(key_action3) || this.isKeyJustPressed(key_right) || this.isKeyJustPressed(key_left) || this.isKeyJustReleased(key_down))
+	else if (this.isKeyJustReleased(key_action3) || this.isKeyPressed(key_right) || this.isKeyPressed(key_left) || this.isKeyJustReleased(key_down))
 	{
 		Bar@ bars;
 		if (this.get("Bar", @bars))
