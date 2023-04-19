@@ -47,7 +47,10 @@ void onRender(CSprite@ this)
 	Vec2f center = blob.getPosition();
 	Vec2f mouseWorld = getControls().getMouseWorldPos();
 
-	Vec2f pos2d = blob.getScreenPos() + Vec2f(0, -40);
+	//Vec2f pos2d = blob.getScreenPos() + Vec2f(0, -40);
+	Vec2f oldpos = blob.getOldPosition();
+	Vec2f pos = blob.getPosition();
+	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) + Vec2f(0, -40);
 	const f32 y = blob.getHeight() * 8.8f;
 	const f32 initialHealth = blob.getInitialHealth();
 	Vec2f dim = Vec2f((initialHealth*1.5)+60, 23); //95

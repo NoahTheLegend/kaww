@@ -114,7 +114,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onTick(CBlob@ this)
 {
-	this.set_Vec2f("oldpos", getDriver().getScreenPosFromWorldPos(this.getPosition()));
 	if (this.hasTag("falling"))
 	{
 		Vehicle_ensureFallingCollision(this);
@@ -693,7 +692,9 @@ void onRender(CSprite@ this)
 		if (!driver_blob.isMyPlayer()) return;
 
 		// draw ammo count
-		Vec2f pos2d = blob.get_Vec2f("oldpos"); // is set each tick, since render has 60 ticks a second and the position is moving draggy
+		Vec2f oldpos = driver_blob.getOldPosition();
+		Vec2f pos = driver_blob.getPosition();
+		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
 
 		GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
 		GUI::DrawIcon("Materials.png", 31, Vec2f(16,16), pos2d+Vec2f(-40, 42.0f), 0.75f, 1.0f);

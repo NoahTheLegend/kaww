@@ -67,7 +67,7 @@ void onRender(CSprite@ sprite)
 
     Vec2f pos = this.getPosition();
     Vec2f oldpos = this.getOldPosition();
-    this.set_Vec2f("renderbar_lastpos", getDriver().getScreenPosFromWorldPos(Vec2f(Maths::Lerp(oldpos.x, pos.x, getInterpolationFactor()), Maths::Lerp(oldpos.y, pos.y, getInterpolationFactor()))));
+    this.set_Vec2f("renderbar_lastpos", getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())));
 
 	GUI::SetFont("menu");
     
@@ -178,7 +178,7 @@ class Bar : BarHandler{
 
             BarHandler::Fadeout(active);
 
-            if (active.remove_on_fill && active.percent == 1) // todo, fix remove_on_fill setting back to false
+            if (active.remove_on_fill && active.percent == 1)
             {
                 BarHandler::RemoveBar(active.name, false);
             }

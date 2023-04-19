@@ -408,7 +408,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 		}
 
 		CPlayer@ p = getLocalPlayer();
-		if (p !is null)
+		if (p !is null && !v_fastrender)
 		{
 			CBlob@ local = p.getBlob();
 			if (local !is null)

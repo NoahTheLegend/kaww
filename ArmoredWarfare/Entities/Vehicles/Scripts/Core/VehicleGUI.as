@@ -29,7 +29,10 @@ void onRender(CSprite@ this)
 		AttachmentPoint@ driver = blob.getAttachments().getAttachmentPointByName("DRIVER");
 		if (getGameTime() <= 60*30 && driver !is null && driver.getOccupied() !is null)
 		{
-			Vec2f pos2d = blob.getScreenPos() + Vec2f(0, -40);
+			//Vec2f pos2d = blob.getScreenPos() + Vec2f(0, -40);
+			Vec2f oldpos = blob.getOldPosition();
+			Vec2f pos = blob.getPosition();
+			Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , -40);
 			const f32 y = blob.getHeight() * 7.8f;
 			Vec2f dim = Vec2f(115, 15);
 			GUI::SetFont("menu");
@@ -51,7 +54,9 @@ void onRender(CSprite@ this)
 		//drawShellTrajectory(blob, v, gunner.getOccupied());
 	
 
-		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 0);
+		Vec2f oldpos = blob.getOldPosition();
+		Vec2f pos = blob.getPosition();
+		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
 		if (blob.getName() == "heavygun")
 		{
 			f32 overheat = blob.get_f32("overheat");
@@ -73,7 +78,7 @@ void onRender(CSprite@ this)
 			if (blob.isAttached())
 			{
 				GUI::SetFont("menu");
-				GUI::DrawTextCentered("Hold RMB to hide", pos2d+Vec2f(0, y+24), SColor(75, 255,255,255));
+				GUI::DrawTextCentered("Hold RMB to hide", pos2d+Vec2f(0, y+24), SColor(100, 255,255,255));
 			}
 		}
 		else
@@ -106,7 +111,10 @@ void drawAmmoCount(CBlob@ blob, VehicleInfo@ v)
 	// draw ammo count
 	Vec2f pos2d1 = blob.getScreenPos() - Vec2f(0, 10);
 
-	Vec2f pos2d = blob.getScreenPos() - Vec2f(0, 60);
+	//Vec2f pos2d = blob.getScreenPos() - Vec2f(0, 60);
+	Vec2f oldpos = blob.getOldPosition();
+	Vec2f pos = blob.getPosition();
+	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(20, 60);
 	Vec2f dim = Vec2f(120, 8);
 	const f32 y = blob.getHeight() * 2.4f;
 	f32 charge_percent = 1.0f;
@@ -189,7 +197,10 @@ void drawShellTrajectory(CBlob@ blob, VehicleInfo@ v, CBlob@ gunner)
 
 void drawAngleCount(CBlob@ blob, VehicleInfo@ v)
 {
-	Vec2f pos2d = blob.getScreenPos() - Vec2f(-48 , 52);
+	//Vec2f pos2d = blob.getScreenPos() - Vec2f(-48 , 52);
+	Vec2f oldpos = blob.getOldPosition();
+	Vec2f pos = blob.getPosition();
+	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(-48 , 52);
 	Vec2f upperleft(pos2d.x - 18, pos2d.y + blob.getHeight() + 30);
 	Vec2f lowerright(pos2d.x + 18, upperleft.y + 20);
 

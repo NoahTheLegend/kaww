@@ -681,8 +681,12 @@ void onRender(CSprite@ this)
 			f32 screenWidth = getScreenWidth();
 			f32 screenHeight = getScreenHeight();
 
-			Vec2f oldpos2d = getDriver().getScreenPosFromWorldPos(driver_blob.getOldPosition());
-			Vec2f pos2d = oldpos2d;
+			//Vec2f oldpos2d = getDriver().getScreenPosFromWorldPos(driver_blob.getOldPosition());
+			//Vec2f pos2d = oldpos2d;
+
+			Vec2f oldpos = driver_blob.getOldPosition();
+			Vec2f pos = driver_blob.getPosition();
+			Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
 
 			Vec2f force = blob.get_Vec2f("target_force")*64+Vec2f(0, 36);	
 			Vec2f offset = pos2d;
