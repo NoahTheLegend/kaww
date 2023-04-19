@@ -1,31 +1,11 @@
 
 // add this to sprite and script lists to work
-// todo: grid, reverse \ toleft-toright mode
-void onInit(CBlob@ this)
+// add an f32 property name to input as current value and max value as static number
+// you may configurate colors as well
+
+// todo: grid, reverse \ toleft-toright mode, callback for sendcommand when done loading
+void barInit(CBlob@ this)
 {
-    this.set_f32("renderbar_max", 7);
-    this.set_f32("renderbar_current", 0);
-
-    //default bar
-    /*
-    ProgressBar setbar;
-    setbar.dim = Vec2f(64.0f, 16.0f);
-    setbar.offset = Vec2f(0, 40);
-    setbar.inherit = Vec2f(3,2);
-    setbar.color_back = back;
-    setbar.color_front = front;
-    setbar.max = this.get_f32("renderbar_max")+4 - (this.get_f32("renderbar_max")-i);
-    setbar.lerp = 0.15f;
-    setbar.fadeout_time = 5;
-    setbar.fadeout_delay = 10;
-    @setbar.blob = @this;
-    setbar.name = "bar";
-    if (i > 0) setbar.name = setbar.name+i;
-    string arr = "ProgressBar";
-    if (i > 0) arr = arr+i;
-    this.set(arr, setbar);
-    */
-
     Bar@ bars;
     if (!this.get("Bar", @bars))
     {
@@ -33,20 +13,12 @@ void onInit(CBlob@ this)
         setbars.gap = 20.0f;
         this.set("Bar", setbars);
     }
-
-    //if (this.get("Bar", @bars))
-    //{
-        //string arr = "ProgressBar";
-        //ProgressBar@ bar;
-        //if (this.get(arr, @bar)) {}
-        //bars.AddBar(this, bar, true);
-    //}
 }
 
 const SColor back = SColor(255, 75, 75, 0);
 const SColor front = SColor(255, 255, 255, 255);
 
-void onTick(CBlob@ this)
+void barTick(CBlob@ this)
 {
     Bar@ bars;
     if (!this.get("Bar", @bars))
@@ -81,6 +53,12 @@ void onRender(CSprite@ sprite)
     bars.render();
 }
 
+bool hasBar(Bar@ bar, string name)
+{
+    if (bar is null) return false;
+    return bar.getBar(name) !is null;
+}
+
 // fills from left to right
 class ProgressBar : Bar {
     bool reverse; bool toright;
@@ -90,27 +68,30 @@ class ProgressBar : Bar {
 
     ProgressBar()
     {
+        this.percent = 0;
         this.fadeout = false;
         this.fadeout_end = 0;
         this.alpha = 255;
         this.current = 0;
         this.target = 0;
+        this.tick_since_created = getGameTime();
     }
 
     void Set(CBlob@ _blob, string _name, Vec2f _dim, Vec2f _offset, Vec2f _inherit,
-    SColor _color_back, SColor _color_front, f32 _max, f32 _lerp, f32 _fadeout_time, f32 _fadeout_delay)
+    SColor _color_back, SColor _color_front, string _prop, f32 _max, f32 _lerp, f32 _fadeout_time, f32 _fadeout_delay)
     {
+        @this.blob = _blob;
+        this.name = _name;
         this.dim = _dim;
         this.offset = _offset;
         this.inherit = _inherit;
         this.color_back = _color_back;
         this.color_front = _color_front;
+        this.prop = _prop;
         this.max = _max;
         this.lerp = _lerp;
         this.fadeout_time = _fadeout_time;
         this.fadeout_delay = _fadeout_delay;
-        @this.blob = _blob;
-        this.name = _name;
     }
     
     void updatebar()
@@ -120,9 +101,16 @@ class ProgressBar : Bar {
             if (this.current < this.target)
                 this.current = Maths::Min(this.max, Maths::Lerp(this.current, this.target+1, this.lerp));
             else
-               this.target = this.blob.get_f32("renderbar_current");
+            {
+                this.target = this.blob.get_f32(this.prop);
+            }
         }
         this.percent = Maths::Min(this.current/this.max, 1.0f);
+        
+        if (this.current == 0 && this.target == 0)
+        {
+            this.fadeout_start = 0;
+        }
     }
 
     void renderbar()
@@ -134,7 +122,7 @@ class ProgressBar : Bar {
         mod_offset *= this.camera_factor;
 
         this.drawpos = this.pos2d + mod_offset;
-        GUI::DrawPane(this.drawpos - (mod_dim*0.5f), this.drawpos + (mod_dim*0.5f), this.color_back);
+        GUI::DrawPane(this.drawpos - (mod_dim*0.5f) - (this.inherit*0.5f), this.drawpos + (mod_dim*0.5f) + (this.inherit*0.5f), this.color_back);
         if (this.blob !is null && this.blob.getTickSinceCreated() <= 5) return;
 
         if (this.percent != 0.0f)
@@ -150,6 +138,7 @@ class Bar : BarHandler{
     // other
     bool remove_on_fill; bool removing; string name;
     f32 gap; f32 mod_gap; f32 camera_factor;
+    string prop; u32 tick_since_created;
 
     ProgressBar@ getBar(string name)
     {
@@ -258,7 +247,7 @@ class BarHandler {
         if (active.fadeout)
         {
             active.removing = true;
-            if (active.fadeout_delay == 0 || active.fadeout_start <= getGameTime())
+            if (active.fadeout_delay == 0 || (active.fadeout_start != 0 && active.fadeout_start <= getGameTime()))
             {
                 active.alpha = 255*(float(active.fadeout_end - getGameTime()) / float(active.fadeout_time));
                 if (active.alpha == 0)
