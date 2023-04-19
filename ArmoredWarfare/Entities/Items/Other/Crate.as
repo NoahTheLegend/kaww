@@ -36,73 +36,22 @@ void onInit(CBlob@ this)
 	}
 	this.set_s32("gold building amount", goldAmount);
 
+
+	this.getAttachments().getAttachmentPointByName("PICKUP").offset = Vec2f(3, 4);
+	this.getAttachments().getAttachmentPointByName("PICKUP").offsetZ = -10;
+	this.getSprite().SetRelativeZ(-10.0f);
+	this.AddScript("BehindWhenAttached.as");
+
+	this.Tag("dont deactivate");
+
 	u8 frame = 0;
-	if (this.exists("frame"))
-	{
-		frame = this.get_u8("frame");
+	if (packed == "launcher_javelin") frame = 1;
+	else if (packed == "heavygun") frame = 2;
+	else if (packed == "barge") frame = 3;
 
-		// GIANT HACK!!!
-		if (packed == "catapult" || packed == "bomber" || packed == "ballista" || packed == "outpost" || packed == "mounted_bow" || packed == "longboat" || packed == "warboat")
-		{
-			CSpriteLayer@ icon = this.getSprite().addSpriteLayer("icon", "/MiniIcons.png" , 16, 16, this.getTeamNum(), -1);
-			if (icon !is null)
-			{
-				Animation@ anim = icon.addAnimation("display", 0, false);
-				anim.AddFrame(frame);
+	this.SetInventoryIcon("Crate.png", frame+4, Vec2f(32,16));
 
-				icon.SetOffset(Vec2f(-2, 1));
-				icon.SetRelativeZ(1);
-			}
-			this.getSprite().SetAnimation("label");
-
-			// help
-			const string iconToken = "$crate_" + packed + "$";
-			AddIconToken("$crate_" + packed + "$", "/MiniIcons.png", Vec2f(16, 16), frame);
-			SetHelp(this, "help use", "", iconToken + getTranslatedString("Unpack {ITEM}   $KEY_E$").replace("{ITEM}", packed), "", 4);
-		}
-		else
-		{
-			u8 newFrame = 0;
-
-			if (packed == "kitchen")
-				newFrame = FactoryFrame::kitchen;
-			if (packed == "nursery")
-				newFrame = FactoryFrame::nursery;
-			if (packed == "tunnel")
-				newFrame = FactoryFrame::tunnel;
-			if (packed == "healing")
-				newFrame = FactoryFrame::healing;
-			if (packed == "factory")
-				newFrame = FactoryFrame::factory;
-			if (packed == "storage")
-				newFrame = FactoryFrame::storage;
-
-			if (newFrame > 0)
-			{
-				CSpriteLayer@ icon = this.getSprite().addSpriteLayer("icon", "/MiniIcons.png" , 16, 16, this.getTeamNum(), -1);
-				if (icon !is null)
-				{
-					icon.SetFrame(newFrame);
-					icon.SetOffset(Vec2f(-2, 1));
-					icon.SetRelativeZ(1);
-				}
-				this.getSprite().SetAnimation("label");
-			}
-
-		}	 //END OF HACK
-	}
-	else
-	{
-		this.getAttachments().getAttachmentPointByName("PICKUP").offset = Vec2f(3, 4);
-		this.getAttachments().getAttachmentPointByName("PICKUP").offsetZ = -10;
-		this.getSprite().SetRelativeZ(-10.0f);
-		this.AddScript("BehindWhenAttached.as");
-
-		this.Tag("dont deactivate");
-	}
-	// Kinda hacky, only normal crates ^ with "dont deactivate" will ignore "activated"
-	this.Tag("activated");
-
+	this.getSprite().SetFrameIndex(frame);
 
 	const uint unpackSecs = 3;
 	this.set_u32("unpack secs", unpackSecs);
@@ -210,6 +159,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 {
 	return (this.getTeamNum() == byBlob.getTeamNum() || this.isOverlapping(byBlob));
+}
+
+bool canBePutInInventory( CBlob@ this, CBlob@ inventoryBlob )
+{
+	return this.getInventory() !is null && this.getInventory().getItemsCount() == 0;
 }
 
 bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
