@@ -156,6 +156,7 @@ void onTick(CBlob@ this)
 					mod = 0.15f;
 				}
 			}
+			if (this.hasTag('falling')) mod = 0.15f;
 			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, mod);
 
 			// this.SetFacingLeft(dir.x > 0);
@@ -506,6 +507,12 @@ void onTick(CSprite@ this)
 {
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
+
+	if (blob.getTickSinceCreated()==210)
+	{
+		blob.Tag('falling');
+		blob.set_u32("falling_time", getGameTime());
+	}
 	
 	if (blob.hasTag("rotated") && !blob.isOnGround())
 	{
