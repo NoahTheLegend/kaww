@@ -1574,11 +1574,6 @@ void onTick(CRules@ this)
 				else if (flags[i].getTeamNum() == 1) red_flags++;
 			}
 		}
-		if (blue_flags != red_flags && getGameTime() < (this.get_u32("game_end_time") - 60*30))
-		{
-			//printf("b "+blue_flags+" r "+red_flags);
-			this.set_u32("game_end_time", this.get_u32("game_end_time") - 30);
-		}
 	}
 	//if (!this.hasTag("synced_siege"))
 	//{
