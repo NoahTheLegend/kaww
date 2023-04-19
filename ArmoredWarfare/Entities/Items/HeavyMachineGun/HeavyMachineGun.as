@@ -478,6 +478,7 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	damage *= 0.2f;
 	if (!this.isAttached())
 	{
 		if (customData == Hitters::explosion || customData == Hitters::keg) damage *= 2.5f;
