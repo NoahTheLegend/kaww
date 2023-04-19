@@ -110,6 +110,14 @@ void onHitWorld(CBlob@ this, Vec2f end)
 	bool isStrong = this.hasTag("strong");
 	TileType tile = map.getTile(end).type;
 
+	{
+		if (map.isTileWood(tile) && XORRandom(4)==0)
+		{
+			map.server_DestroyTile(end, 0.1f, this);
+			this.server_Die();
+		}
+	}
+
 	if ((isTileCompactedDirt(tile) && XORRandom(100)<=1) || ((tile == CMap::tile_ground || isTileScrap(tile))
 	&& XORRandom(100) <= 2) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 6))
 	{
