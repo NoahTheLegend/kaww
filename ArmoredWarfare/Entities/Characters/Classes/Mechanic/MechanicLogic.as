@@ -179,7 +179,7 @@ void onTick(CBlob@ this)
 	ManageParachute(this);
 
 	bool lock_stab = false;
-	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && this.isKeyPressed(key_down) && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
+	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && this.isKeyPressed(key_down) && !hidegun && !isReloading && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
 	{
 		if (this.hasBlob("mat_scrap", 1) && this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Field Engineer")
 		{
@@ -196,6 +196,7 @@ void onTick(CBlob@ this)
 			{
 				this.set_f32("turret_load", 0);
 				this.set_u32("turret_delay", getGameTime()+150);
+
 				if (isServer())
 				{
 					this.TakeBlob("mat_scrap", 3);
@@ -219,7 +220,27 @@ void onTick(CBlob@ this)
 
 	if (this.get_f32("turret_load") > 0)
 	{
-		
+		Bar@ bars;
+		if (this.get("Bar", @bars))
+		{
+			if (!hasBar(bars, "sentry_build"))
+			{
+				SColor team_front = this.getTeamNum() == 0 ? SColor(255, 115, 115, 255) : SColor(255, 255, 75, 75);
+				ProgressBar setbar;
+				setbar.Set(this, "sentry_build", Vec2f(64.0f, 16.0f), Vec2f(0, 40), Vec2f(2, 2), back, team_front,
+					"turret_load", 90/*sentry buildtime*/, 1.0f, 5, 5);
+
+    			bars.AddBar(this, setbar, true);
+			}
+		}	
+	}
+	else if (this.isKeyJustReleased(key_action3))
+	{
+		Bar@ bars;
+		if (this.get("Bar", @bars))
+		{
+			bars.RemoveBar("sentry_build", false);
+		}
 	}
 
 	if (ismyplayer && getHUD().hasMenus())
