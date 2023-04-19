@@ -20,6 +20,9 @@ void BuildRespawnMenu(CRules@ this, CPlayer@ player)
 	const int teamNum = player.getTeamNum();
 	const u16 localID = getLocalPlayer().getNetworkID();
 
+	if ((teamNum == 0 && this.get_s16("blueTickets") == 0)
+	|| (teamNum == 1 && this.get_s16("redTickets") == 0)) return;
+
     CBlob@ oldrespawn = getBlobByNetworkID(LAST_PICK);
     if(oldrespawn !is null ) //don't use last pick if it's under raid
     {
