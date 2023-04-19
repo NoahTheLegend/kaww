@@ -12,6 +12,7 @@
 #include "MaterialCommon.as";
 #include "HoverMessage.as";
 #include "PlayerRankInfo.as";
+#include "ProgressBar.as";
 
 //can't be <2 - needs one frame less for gathering infos
 const s32 hit_frame = 2;
@@ -19,6 +20,8 @@ const f32 hit_damage = 0.5f;
 
 void onInit(CBlob@ this)
 {
+	barInit(this);
+
 	this.set_f32("pickaxe_distance", 10.0f);
 	this.set_f32("gib health", -1.5f);
 
@@ -170,8 +173,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 void onTick(CBlob@ this)
 {
-	if (this.isInInventory())
-		return;
+	barTick(this);
 
 	const bool ismyplayer = this.isMyPlayer();
 	ManageParachute(this);
@@ -186,7 +188,7 @@ void onTick(CBlob@ this)
 				this.getSprite().PlaySound("SentryBuild.ogg", 0.33f, 1.05f+0.001f*XORRandom(115));
 			}
 			lock_stab = true;
-			if (this.get_f32("turret_load") < 120)
+			if (this.get_f32("turret_load") < 90)
 			{
 				this.add_f32("turret_load", 1);
 			}
@@ -217,23 +219,7 @@ void onTick(CBlob@ this)
 
 	if (this.get_f32("turret_load") > 0)
 	{
-		for (int i = 0; i < this.get_f32("turret_load"); i++)
-		{
-			SColor color = this.getTeamNum() == 0 ? 0xff2cafde : 0xffd5543f;
-			Vec2f pbPos = this.getOldPosition() + Vec2f(0,-16.0f) + Vec2f_lengthdir(i < 30 ? 2.75f : i < 60 ? 2.0f : i < 90 ? 1.25f : 0.5f, i*12).RotateBy(90, Vec2f(0,0));
-			CParticle@ pb = ParticlePixelUnlimited( pbPos, this.getVelocity(), color , true );
-			if(pb !is null)
-			{
-				pb.timeout = 0.01f;
-				pb.gravity = Vec2f_zero;
-				pb.damping = 0.9;
-				pb.collides = false;
-				pb.fastcollision = true;
-				pb.bounce = 0;
-				pb.lighting = false;
-				pb.Z = 500;
-			}
-		}
+		
 	}
 
 	if (ismyplayer && getHUD().hasMenus())

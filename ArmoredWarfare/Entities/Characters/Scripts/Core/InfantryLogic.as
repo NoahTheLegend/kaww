@@ -12,9 +12,12 @@
 #include "RunnerHead.as";
 #include "PlayerRankInfo.as";
 #include "HoverMessage.as";
+#include "ProgressBar.as";
 
 void onInit(CBlob@ this)
 {
+	barInit(this);
+
 	const string thisBlobName = this.getName();
 	const int thisBlobHash = thisBlobName.getHash();
 
@@ -667,7 +670,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				this.getSprite().PlaySound("SentryBuild.ogg", 0.33f, 1.05f+0.001f*XORRandom(115));
 			}
 			lock_stab = true;
-			if (this.get_f32("turret_load") < 120)
+			if (this.get_f32("turret_load") < 90)
 			{
 				this.add_f32("turret_load", 1);
 			}
@@ -675,6 +678,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			{
 				this.set_f32("turret_load", 0);
 				this.set_u32("turret_delay", getGameTime()+150);
+
 				if (isServer())
 				{
 					this.TakeBlob("mat_scrap", 3);
@@ -698,22 +702,26 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 	if (this.get_f32("turret_load") > 0)
 	{
-		for (int i = 0; i < this.get_f32("turret_load"); i++)
+		Bar@ bars;
+		if (this.get("Bar", @bars))
 		{
-			SColor color = this.getTeamNum() == 0 ? 0xff2cafde : 0xffd5543f;
-			Vec2f pbPos = this.getOldPosition() + Vec2f(0,-16.0f) + Vec2f_lengthdir(i < 30 ? 2.75f : i < 60 ? 2.0f : i < 90 ? 1.25f : 0.5f, i*12).RotateBy(90, Vec2f(0,0));
-			CParticle@ pb = ParticlePixelUnlimited( pbPos, this.getVelocity(), color , true );
-			if(pb !is null)
+			if (!hasBar(bars, "sentry_build"))
 			{
-				pb.timeout = 0.01f;
-				pb.gravity = Vec2f_zero;
-				pb.damping = 0.9;
-				pb.collides = false;
-				pb.fastcollision = true;
-				pb.bounce = 0;
-				pb.lighting = false;
-				pb.Z = 500;
+				SColor team_front = this.getTeamNum() == 0 ? SColor(255, 115, 115, 255) : SColor(255, 255, 75, 75);
+				ProgressBar setbar;
+				setbar.Set(this, "sentry_build", Vec2f(64.0f, 16.0f), Vec2f(0, 40), Vec2f(2, 2), back, team_front,
+					"turret_load", 90/*sentry buildtime*/, 1.0f, 5, 5);
+
+    			bars.AddBar(this, setbar, true);
 			}
+		}	
+	}
+	else if (this.isKeyJustReleased(key_action3))
+	{
+		Bar@ bars;
+		if (this.get("Bar", @bars))
+		{
+			bars.RemoveBar("sentry_build", false);
 		}
 	}
 
@@ -1121,6 +1129,8 @@ void TakeAmmo(CBlob@ this, u32 magSize)
 
 void onTick(CBlob@ this)
 {
+	barTick(this);
+
 	if (isServer()&&getGameTime()%30==0)
 	{
 		if (!(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
