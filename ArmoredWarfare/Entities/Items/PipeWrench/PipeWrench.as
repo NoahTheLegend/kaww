@@ -85,7 +85,7 @@ void onTick(CBlob@ this)
 				u8 team = holder.getTeamNum();
 				
 				HitInfo@[] hitInfos;
-				if (getMap().getHitInfosFromArc(this.getPosition(), -(holder.getAimPos() - this.getPosition()).Angle(), 60, 16, this, @hitInfos))
+				if (getMap().getHitInfosFromArc(this.getPosition(), -(holder.getAimPos() - this.getPosition()).Angle(), 96, 16, this, @hitInfos))
 				{
 					for (uint i = 0; i < hitInfos.length; i++)
 					{
