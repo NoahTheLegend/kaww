@@ -33,98 +33,67 @@ void onTick(CBlob@ this)
 		}
 	}
 
-    float repair_distance = 16.0f; //Distance from this blob where other blobs are repaired
-    float repair_amount = 1.2f;   //Amount the blob is repaired every 15 ticks
+    float repair_distance = 16.0f;
+    float repair_amount = 1.2f;  
+
+	f32 weakest = 999.0f;
+	u16 blobid = 0;
 
     array<CBlob@> blobs;//Blob array full of blobs
     CMap@ map = getMap();
-    map.getBlobsInRadius(this.getPosition(), repair_distance, blobs);//Put the blobs within the repair distance into the "blobs" array
+    map.getBlobsInRadius(this.getPosition(), repair_distance, blobs);
 
-    for (u16 i = 0; i < blobs.size(); i++)//For every blob in this array
+    for (u16 i = 0; i < blobs.size(); i++)
     {
 		CBlob@ blob = blobs[i];
 
-        if (blob.hasTag("vehicle") && (blob.getTeamNum() == this.getTeamNum() || blob.getTeamNum() >= 2)) //If they have the repair tag
+        if (blob.hasTag("vehicle") && (blob.getTeamNum() == this.getTeamNum() || blob.getTeamNum() >= 2))
         {
+			//printf(blob.getName()+" "+(blob.getHealth()/blob.getInitialHealth()));
+			if (blob.getHealth()/blob.getInitialHealth() >= weakest) continue;
 			if (blob.hasTag("never_repair")) continue;
 			if (blob.getHealth() == blob.getInitialHealth()) continue;
 			if (blob.get_u32("no_heal") > getGameTime()) continue; 
-            if (blob.getHealth() + repair_amount <= blob.getInitialHealth())//This will only happen if the health does not go above the inital (max health) when repair_amount is added. 
-            {
-				if (blob.hasTag("importantarmory"))
-				{
-					repair_amount *= 0.33f;
-				}
+            
+			weakest = blob.getHealth()/blob.getInitialHealth();
+			blobid = blob.getNetworkID();
 
-				CAttachment@ atc = blob.getAttachments();
-				if (atc is null) return;
-				AttachmentPoint@ drv = atc.getAttachmentPointByName("DRIVER");
-				
-				if (drv !is null)
-				{
-					CBlob@ driver = drv.getOccupied();
-					if (driver !is null)
-					{
-						CPlayer@ p = driver.getPlayer();
-						if (p !is null)
-						{
-							if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
-							{
-								repair_amount *= 1.75f;
-							}
-						}
-					}
-				}
-				else{
-					AttachmentPoint@ gun = blob.getAttachments().getAttachmentPointByName("GUNNER");
-
-					if (gun !is null)
-					{
-						CBlob@ driver = gun.getOccupied();
-						if (driver !is null)
-						{
-							CPlayer@ p = driver.getPlayer();
-							if (p !is null)
-							{
-								if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
-								{
-									repair_amount *= 1.75f;
-								}
-							}
-						}
-					}
-				}
-
-                blob.server_SetHealth(blob.getHealth() + repair_amount); //Add the repair amount.
-				blob.set_u32("no_heal", getGameTime() + 60);
-
-				if (repair_amount > 2.0f)
-				{
-					this.getSprite().PlayRandomSound("RepairVehicle.ogg", 1.2f, 0.7f + XORRandom(10) * 0.01f);
-				}
-				else
-				{
-					this.getSprite().PlayRandomSound("RepairVehicle.ogg", 1.2f, 0.9f + XORRandom(20) * 0.01f);
-				}
-                
-
-            	const Vec2f pos = blob.getPosition() + getRandomVelocity(0, blob.getRadius()*0.3f, 360);
-				CParticle@ p = ParticleAnimated("SparkParticle.png", pos, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
-				if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
-
-				Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
-				velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
-
-				ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
-
-				break;
-            }
-            else //Repair amount would go above the inital health (max health). 
-            {
-                blob.server_SetHealth(blob.getInitialHealth());//Set health to the inital health (max health)
-            }
+			if (blob.hasTag("importantarmory"))
+			{
+				repair_amount *= 0.33f;
+			}
         }
     }
+
+	CBlob@ repair_blob = getBlobByNetworkID(blobid);
+	if (repair_blob !is null)
+	{
+		//printf(""+weakest);
+		if (repair_blob.getHealth() + repair_amount <= repair_blob.getInitialHealth())
+        {
+			repair_blob.server_SetHealth(repair_blob.getHealth() + repair_amount); //Add the repair amount.
+			repair_blob.set_u32("no_heal", getGameTime() + 60);
+			if (repair_amount > 2.0f)
+			{
+				this.getSprite().PlayRandomSound("RepairVehicle.ogg", 1.2f, 0.7f + XORRandom(10) * 0.01f);
+			}
+			else
+			{
+				this.getSprite().PlayRandomSound("RepairVehicle.ogg", 1.2f, 0.9f + XORRandom(20) * 0.01f);
+			}
+			    
+        	const Vec2f pos = repair_blob.getPosition() + getRandomVelocity(0, repair_blob.getRadius()*0.3f, 360);
+			CParticle@ p = ParticleAnimated("SparkParticle.png", pos, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
+			if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
+			Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
+			velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+			ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
+		}
+        else
+        {
+            repair_blob.server_SetHealth(repair_blob.getInitialHealth());
+        }
+	}
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
