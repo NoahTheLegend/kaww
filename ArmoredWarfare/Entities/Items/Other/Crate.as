@@ -49,7 +49,7 @@ void onInit(CBlob@ this)
 	else if (packed == "heavygun") frame = 2;
 	else if (packed == "barge") frame = 3;
 
-	this.SetInventoryIcon("Crate.png", frame+4, Vec2f(32,16));
+	this.SetInventoryIcon("AWCrate.png", frame+4, Vec2f(32,16));
 
 	this.getSprite().SetFrameIndex(frame);
 
@@ -607,7 +607,7 @@ void onDie(CBlob@ this)
 	Vec2f pos = this.getPosition();
 	Vec2f vel = this.getVelocity();
 	//custom gibs
-	string fname = CFileMatcher("/Crate.png").getFirst();
+	string fname = CFileMatcher("AWCrate.png").getFirst();
 	for (int i = 0; i < 4; i++)
 	{
 		CParticle@ temp = makeGibParticle(fname, pos, vel + getRandomVelocity(90, 1 , 120), 9, 2 + i, Vec2f(16, 16), 2.0f, 20, "Sounds/material_drop.ogg", 0);
