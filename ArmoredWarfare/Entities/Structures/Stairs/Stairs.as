@@ -25,7 +25,7 @@ void onInit(CBlob@ this)
     this.set_TileType("background tile", CMap::tile_castle_back);
 }
 
-
+/*
 void GetButtonsFor( CBlob@ this, CBlob@ caller )
 {
     
@@ -62,7 +62,7 @@ void GetButtonsFor( CBlob@ this, CBlob@ caller )
         }
         print("Staircase length: " + staircase.length);
         print("Debug end"); */
-
+/*
         if (nextfloor !is null)                                                                                 //Show "go up" button if there is next floor
         {
             caller.CreateGenericButton( 16, Vec2f(4,0), this, this.getCommandID("go up"), "Go Up", params );
@@ -77,6 +77,7 @@ void GetButtonsFor( CBlob@ this, CBlob@ caller )
     }
 
 }
+*/
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
