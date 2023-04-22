@@ -64,7 +64,6 @@ class ProgressBar : Bar {
     bool reverse; bool toright;
     CBlob@ blob;
     u8 alpha;
-    f32 test;
 
     ProgressBar()
     {
