@@ -174,7 +174,7 @@ void InitClasses(CBlob@ this)
 						+"\n                      (requires 1 scrap)"
 						+"\n\n                  Overstaffed"
 						+"\n                   - Jump height and walking"
-						+"\n                     speed reduce by amount"
+						+"\n                     speed reduces by amount"
 						+"\n                   	  of items in your inventory"
 						);
 						
