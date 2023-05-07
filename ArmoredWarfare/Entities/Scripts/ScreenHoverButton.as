@@ -1,5 +1,7 @@
 #define CLIENT_ONLY
 
+// its better to use less than 255 buttons (u8 limit), you won't need more anyways
+
 void onInit(CSprite@ this)
 {
     CBlob@ blob = this.getBlob();
@@ -9,16 +11,23 @@ void onInit(CSprite@ this)
     if (!blob.get("HoverButton", @buttons))
     {
         HoverButton setbuttons(blob);
-        setbuttons.offset = Vec2f(0,-32);
-        for (u8 i = 0; i < 2; i++)
+        setbuttons.offset = Vec2f(0,-64);
+        for (u16 i = 0; i < 8; i++)
         {
+            // Align method props are clockwise, starting from top
             SimpleHoverButton btn(blob);
-            btn.dim = Vec2f(60, 30);
-            if (i == 1) btn.dim = Vec2f(60, 20);
+            btn.dim = Vec2f(60, 40);
+
+            if (i == 0)
+            {
+                btn.text = "hellohellohellohello";
+            }
 
             setbuttons.AddButton(btn);
         }
         setbuttons.draw_overlap = true;
+        setbuttons.grid = Vec2f(3,2);
+        setbuttons.gap = Vec2f(8,4);
         blob.set("HoverButton", setbuttons);
     }
     if (!blob.get("HoverButton", @buttons)) return;
@@ -44,6 +53,8 @@ class SimpleHoverButton : HoverButton
     bool hover; bool just_pressed; bool pressed;
     bool show;
     u8 cmd;
+    string text; string font; SColor text_color;
+    string icon; Vec2f icon_offset; f32 icon_scale;
 
     SimpleHoverButton(CBlob@ _blob)
     {
@@ -53,6 +64,25 @@ class SimpleHoverButton : HoverButton
         this.show = true;
         this.just_pressed = false;
         this.pressed = false;
+        this.text = "";
+        this.font = "default";
+        this.text_color = SColor(255,255,255,255);
+        this.icon = "";
+        this.icon_offset = Vec2f(0,0);
+        this.icon_scale = 1.0f;
+
+        this.t = false;
+        this.r = false;
+        this.b = false;
+        this.l = false;
+    }
+
+    void Align(bool top, bool right, bool bottom, bool left)
+    {
+        this.t = top;
+        this.r = right;
+        this.b = bottom;
+        this.l = left;
     }
 
     void render_button()
@@ -62,17 +92,22 @@ class SimpleHoverButton : HoverButton
 
         if (this.blob is null) return;
         Vec2f drawpos = getDriver().getScreenPosFromWorldPos(this.offset + Vec2f_lerp(this.blob.getOldPosition(), this.blob.getPosition(), getInterpolationFactor()));
-        if (this.pressed)
+        CCamera@ camera = getCamera();
+        if (camera is null) return;
+        f32 mod = 0.5f * camera.targetDistance;
+        
+        DrawSimpleButton(drawpos - (this.dim*mod), drawpos + (this.dim*mod),
+            SColor(255, 125, 135, 115), SColor(255, 40, 50, 50), this.hover, this.pressed,
+                2, 2);
+
+        if (this.text != "")
         {
-            GUI::DrawButtonPressed(drawpos - (this.dim*0.5), drawpos + (this.dim*0.5));
+            GUI::SetFont(this.font);
+            GUI::DrawTextCentered(this.text, drawpos, this.text_color);
         }
-        else if (this.hover)
+        if (this.icon != "")
         {
-            GUI::DrawButtonHover(drawpos - (this.dim*0.5), drawpos + (this.dim*0.5));
-        }
-        else
-        {
-            GUI::DrawButton(drawpos - (this.dim*0.5), drawpos + (this.dim*0.5));
+            GUI::DrawIconByName(this.icon, drawpos + this.icon_offset, this.icon_scale);
         }
     }
 
@@ -110,9 +145,11 @@ class SimpleHoverButton : HoverButton
 class HoverButton
 {
     CBlob@ blob; CBlob@ local_blob;
-    Vec2f offset; Vec2f dim; bool active;
+    Vec2f offset; Vec2f dim; Vec2f cell; bool active;
     Vec2f grid; Vec2f gap; f32 hover_dist;
     bool draw_overlap; bool draw_hover;
+    // aligns
+    bool t; bool r; bool b; bool l;
 
     SimpleHoverButton@[] list;
 
@@ -121,10 +158,11 @@ class HoverButton
         @this.blob = @_blob;
         this.active = false; 
         this.grid = Vec2f(1,1);
-        this.gap = Vec2f(4,4);
+        this.gap = Vec2f(0,0);
         this.hover_dist = 24.0f;
         this.draw_overlap = false;
         this.draw_hover = false;
+        this.cell = Vec2f(0,0);
     }
 
     void render()
@@ -139,24 +177,39 @@ class HoverButton
             SimpleHoverButton@ button = list[i];
             if (button is null || !button.show) continue;
 
-            u8 elements = this.grid.x * this.grid.y;
-            u8 row = Maths::Floor(float(i)/this.grid.x);
-            f32 row_width;
-            for (u8 j = row*this.grid.x; j < row*this.grid.x + this.grid.x; j++)
+            for (u8 j = 0; j < list.length; j++)    
             {
-                if (j >= list.length) continue;
+                // set max size of a cell for centralizing buttons
                 SimpleHoverButton@ btn = list[j];
                 if (btn is null) continue;
-
-                row_width += btn.dim.x;
+                this.cell = Vec2f(btn.dim.x > this.cell.x ? btn.dim.x : this.cell.x, btn.dim.y > this.cell.y ? btn.dim.y : this.cell.y);
             }
 
-            // todo: make grid
-            Vec2f current_offset = this.offset + this.gap + Vec2f(button.dim.x*this.grid.x, 0) - Vec2f(button.dim.x*(this.grid.x%(i+1)),0);
-            if (getGameTime()%15==0)printf("currentoffset "+current_offset.x+":"+current_offset.y);
+            u8 elements = this.grid.x * this.grid.y;
+
+            // define the "position" in grid
+            u8 row = Maths::Floor(float(i)/this.grid.x);
+            f32 row_width = 0;
+            f32 col_height = 0;
+
+            Vec2f bdim = button.dim;
+            f32 factor = 2; // 1.0f is 1 pixel of a tile, but GUI uses smaller pixels, so divide them by this value
+            this.cell /= factor;
+            Vec2f grid_size = Vec2f(this.cell.x*this.grid.x, this.cell.y*this.grid.y) / factor;
+            Vec2f grid_gap = (this.gap-Vec2f(12,12)) / factor;
+
+            Vec2f place = Vec2f(i%this.grid.x, row%this.grid.y);
+            Vec2f avg = Vec2f(this.cell.x/2 * this.grid.x, this.cell.y/2 * this.grid.y);
+            Vec2f current_offset = this.offset - avg + cell/2 + Vec2f(this.cell.x*place.x, this.cell.y*place.y);
+
+            Vec2f diff = (this.cell-bdim*0.5f)/factor-Vec2f(2.0f,2.0f);
+
+            if (button.t) current_offset -= Vec2f(0, diff.y);//Vec2f(0, cell.y/2 + bdim.y/2);
+            if (button.r) current_offset += Vec2f(diff.x,0);//Vec2f(cell.x/2 - bdim.x/2, 0); 
+            if (button.b) current_offset += Vec2f(0,diff.y);//Vec2f(0, cell.y/2 - bdim.y/2);
+            if (button.l) current_offset -= Vec2f(diff.x,0);//Vec2f(cell.x/2 + bdim.x/2, 0);
 
             button.offset = current_offset;
-
             //button.offset = this.offset;
             @button.local_blob = @this.local_blob;
             button.render_button();
@@ -185,4 +238,27 @@ class HoverButton
         Vec2f mpos = controls.getMouseWorldPos() + Vec2f(-2, -3);
         this.active = ((mpos - this.blob.getPosition()).Length() <= this.hover_dist);
     }
+}
+
+void DrawSimpleButton(Vec2f tl, Vec2f br, SColor color, SColor bordercolor, bool hover, bool pressed, f32 outer, f32 inner)
+{
+    if (pressed)
+    {
+        tl += Vec2f(0,1);
+        br += Vec2f(0,1);
+    }
+    Vec2f combined = Vec2f(inner,inner);
+
+    u8 hv = hover && !pressed ? 50 : 25;
+    GUI::DrawRectangle(tl-Vec2f(outer,outer), br+Vec2f(outer,outer), bordercolor); // draw a bit bigger rectangle for border effect
+    GUI::DrawRectangle(tl, br, SColor(color.getAlpha(), color.getRed()+hv, color.getGreen()+hv, color.getBlue()+hv)); // draw inner rectangle border
+    if (pressed)
+    {
+        GUI::DrawRectangle(tl+Vec2f(inner,inner), br-Vec2f(inner,inner), bordercolor);
+        combined = Vec2f(outer+inner,outer+inner);
+    }
+
+    hv = hover ? 25 : 0;
+    GUI::DrawRectangle(tl+combined, br-combined, pressed ? SColor(color.getAlpha(), color.getRed()-25, color.getGreen()-25, color.getBlue()-25)
+        : hover ? SColor(color.getAlpha(), color.getRed()+hv, color.getGreen()+hv, color.getBlue()+hv) : color);
 }

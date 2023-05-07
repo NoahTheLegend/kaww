@@ -104,6 +104,7 @@ void onRender(CRules@ this)
         GUI::DrawTextCentered("Mod is developed with big effort by Blav (Yeti5000707) and salty Snek (NoahTheLegend)", Vec2f(sMid, tlBox.y + 60), SColor(255, 255,255,0));
         GUI::DrawTextCentered("You may thank us or donate if you wish. Click the button in TAB menu.", Vec2f(sMid, tlBox.y + 75), SColor(255, 255,255,0));
         GUI::DrawTextCentered("Special thanks to contributors: Nevrotik, Skemonde, PURPLExeno, Goldy, GoldenGuy (hoster), petey5 and ThinkAbout!", Vec2f(sMid, tlBox.y + 92.5f), SColor(255, 255,255,0));
+        GUI::DrawTextCentered("F1 Disables this window", Vec2f(sMid+350, tlBox.y + 17.5f), SColor(255, 155,155,155));
     }
 
 	{
