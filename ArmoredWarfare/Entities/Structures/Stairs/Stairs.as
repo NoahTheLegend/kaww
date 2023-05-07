@@ -4,9 +4,9 @@
 #include "Staircase.as";
 #include "KnockedCommon.as";
 #include "GenericButtonCommon.as";
+#include "ScreenHoverButton.as";
 
-const float INTERDIST = 10.0f; // Minimal distance to staircase in order to interact with it (Keep it a small value to prevent using other floors)
-const int STUNTIME = 45;       // Should be balanced between "Can be abused to avoid players" and "Too annoying to wait"
+const int STUNTIME = 45;
 CBlob@ nextfloor;
 CBlob@ prevfloor;
 Vec2f Up;
@@ -23,68 +23,49 @@ void onInit(CBlob@ this)
     this.addCommandID("go up");
     this.addCommandID("go down");
     this.set_TileType("background tile", CMap::tile_castle_back);
-}
 
-/*
-void GetButtonsFor( CBlob@ this, CBlob@ caller )
-{
-    
-    if (!canSeeButtons(this, caller))
+    HoverButton@ buttons;
+    if (!this.get("HoverButton", @buttons))
     {
-        return;
+        HoverButton setbuttons(this);
+        setbuttons.offset = Vec2f(0,-16);
+        for (u16 i = 0; i < 2; i++)
+        {
+            SimpleHoverButton btn(this);
+            btn.dim = Vec2f(50, 20);
+            btn.font = "menu";
+
+            if (i == 0)
+            {
+                //btn.text = "UP";
+                btn.callback_command = "go up";
+                btn.write_local = true;
+            }
+            else
+            {
+                //btn.text = "DOWN";
+                btn.callback_command = "go down";
+                btn.write_local = true;
+            }
+
+            setbuttons.AddButton(btn);
+        }
+        setbuttons.draw_overlap = true;
+        setbuttons.draw_attached = false;
+        setbuttons.grid = Vec2f(1,2);
+        setbuttons.gap = Vec2f(0,64);
+        this.set("HoverButton", setbuttons);
     }
-
-    bool doesStaircaseExist = getStaircase(this, staircase);
-    @nextfloor = getNextFloor(this, staircase); 
-    @prevfloor = getPreviousFloor(this, staircase);
-    CBitStream params;
-	params.write_u16(caller.getNetworkID());
-
-    if(doesStaircaseExist && this.getDistanceTo(caller) < INTERDIST)       //Are there even other stairs?
-    {
-        /*print("Debug start");                                 //DEBUG STUFF, IGNORE
-        print("thispos: " + this.getPosition());
-        if(@nextfloor !is null)
-        {
-            print(" nextfloorpos: " + nextfloor.getPosition());
-        }
-        else 
-        {
-            print("Next floor does not exist");
-        }
-        if(@prevfloor !is null)
-        {
-            print("prevfloorpos:" + prevfloor.getPosition());
-        }
-        else
-        {
-            print("Previous floor does not exist");
-        }
-        print("Staircase length: " + staircase.length);
-        print("Debug end"); */
-/*
-        if (nextfloor !is null)                                                                                 //Show "go up" button if there is next floor
-        {
-            caller.CreateGenericButton( 16, Vec2f(4,0), this, this.getCommandID("go up"), "Go Up", params );
-            
-        }
-
-        if (prevfloor !is null)                                                                                 //Shows "go down" button if there is previous floor
-        {
-            caller.CreateGenericButton( 19, Vec2f(-4,0), this, this.getCommandID("go down"), "Go Down", params );
-            
-        }
-    }
-
+    if (!this.get("HoverButton", @buttons)) return;
+    if (buttons is null) return;
 }
-*/
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
     const u16 callerID = params.read_u16();
 	CBlob@ caller = getBlobByNetworkID(callerID);
 
-    if(caller !is null && this.getDistanceTo(caller) < INTERDIST && !isKnocked(caller))
+    if(caller !is null && this.getDistanceTo(caller) < this.getRadius() && !isKnocked(caller))
     {
         if(cmd == this.getCommandID("go up") )
         {

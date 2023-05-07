@@ -2,38 +2,6 @@
 
 // its better to use less than 255 buttons (u8 limit), you won't need more anyways
 
-void onInit(CSprite@ this)
-{
-    CBlob@ blob = this.getBlob();
-    if (blob is null) return;
-
-    HoverButton@ buttons;
-    if (!blob.get("HoverButton", @buttons))
-    {
-        HoverButton setbuttons(blob);
-        setbuttons.offset = Vec2f(0,-64);
-        for (u16 i = 0; i < 8; i++)
-        {
-            // Align method props are clockwise, starting from top
-            SimpleHoverButton btn(blob);
-            btn.dim = Vec2f(60, 40);
-
-            if (i == 0)
-            {
-                btn.text = "hellohellohellohello";
-            }
-
-            setbuttons.AddButton(btn);
-        }
-        setbuttons.draw_overlap = true;
-        setbuttons.grid = Vec2f(3,2);
-        setbuttons.gap = Vec2f(8,4);
-        blob.set("HoverButton", setbuttons);
-    }
-    if (!blob.get("HoverButton", @buttons)) return;
-    if (buttons is null) return;
-}
-
 void onRender(CSprite@ this)
 {
     CBlob@ blob = this.getBlob();
@@ -52,9 +20,9 @@ class SimpleHoverButton : HoverButton
 {
     bool hover; bool just_pressed; bool pressed;
     bool show;
-    u8 cmd;
+    string callback_command; bool write_blob; bool write_local; // cmd name; this.blob.netid for params; local_blob.netid for params
     string text; string font; SColor text_color;
-    string icon; Vec2f icon_offset; f32 icon_scale;
+    string icon; Vec2f icon_offset; f32 icon_scale; u32 icon_frame; Vec2f icon_dim;
 
     SimpleHoverButton(CBlob@ _blob)
     {
@@ -68,13 +36,27 @@ class SimpleHoverButton : HoverButton
         this.font = "default";
         this.text_color = SColor(255,255,255,255);
         this.icon = "";
+        this.icon_frame = 0;
+        this.icon_dim = Vec2f(1,1);
         this.icon_offset = Vec2f(0,0);
         this.icon_scale = 1.0f;
+        this.callback_command = "";
+        this.write_local = false;
+        this.write_blob = false;
 
         this.t = false;
         this.r = false;
         this.b = false;
         this.l = false;
+    }
+
+    void AddIcon(string _icon, u32 _icon_frame, Vec2f _icon_dim, Vec2f _icon_offset, f32 _icon_scale)
+    {
+        this.icon = _icon;
+        this.icon_frame = _icon_frame;
+        this.icon_dim = _icon_dim;
+        this.icon_offset = _icon_offset;
+        this.icon_scale = _icon_scale;
     }
 
     void Align(bool top, bool right, bool bottom, bool left)
@@ -107,7 +89,7 @@ class SimpleHoverButton : HoverButton
         }
         if (this.icon != "")
         {
-            GUI::DrawIconByName(this.icon, drawpos + this.icon_offset, this.icon_scale);
+            GUI::DrawIcon(this.icon, this.icon_frame, this.icon_dim, drawpos - (this.icon_dim*this.icon_scale) + this.icon_offset, this.icon_scale);
         }
     }
 
@@ -137,8 +119,20 @@ class SimpleHoverButton : HoverButton
             this.just_pressed = false;
             return;
         }
+
         this.pressed = _local_blob.isKeyPressed(key_action1) || _local_blob.isKeyPressed(key_action2);
         this.just_pressed = _local_blob.isKeyJustPressed(key_action1) || _local_blob.isKeyJustPressed(key_action2);
+        
+        if (_local_blob.isKeyJustPressed(key_action1) || _local_blob.isKeyJustPressed(key_action2))
+        {
+            if (this.callback_command != "")
+            {
+                CBitStream params;
+                if (this.write_blob) params.write_u16(this.blob.getNetworkID());
+                if (this.write_local) params.write_u16(_local_blob.getNetworkID());
+                this.blob.SendCommand(this.blob.getCommandID(this.callback_command), params);
+            }
+        }
     }
 }
 
@@ -147,7 +141,7 @@ class HoverButton
     CBlob@ blob; CBlob@ local_blob;
     Vec2f offset; Vec2f dim; Vec2f cell; bool active;
     Vec2f grid; Vec2f gap; f32 hover_dist;
-    bool draw_overlap; bool draw_hover;
+    bool draw_overlap; bool draw_hover; bool draw_attached;
     // aligns
     bool t; bool r; bool b; bool l;
 
@@ -163,6 +157,7 @@ class HoverButton
         this.draw_overlap = false;
         this.draw_hover = false;
         this.cell = Vec2f(0,0);
+        this.draw_attached = true;
     }
 
     void render()
@@ -171,7 +166,7 @@ class HoverButton
         if (this.draw_hover) this.EventHover();
         if (this.draw_overlap) this.EventOverlap();
 
-        if (!this.active) return;
+        if (!this.active || (!this.draw_attached && this.local_blob.isAttached())) return;
         for (int i = 0; i < list.length(); i++)
         {
             SimpleHoverButton@ button = list[i];
@@ -196,11 +191,11 @@ class HoverButton
             f32 factor = 2; // 1.0f is 1 pixel of a tile, but GUI uses smaller pixels, so divide them by this value
             this.cell /= factor;
             Vec2f grid_size = Vec2f(this.cell.x*this.grid.x, this.cell.y*this.grid.y) / factor;
-            Vec2f grid_gap = (this.gap-Vec2f(12,12)) / factor;
+            Vec2f grid_gap = this.gap / factor;
 
             Vec2f place = Vec2f(i%this.grid.x, row%this.grid.y);
             Vec2f avg = Vec2f(this.cell.x/2 * this.grid.x, this.cell.y/2 * this.grid.y);
-            Vec2f current_offset = this.offset - avg + cell/2 + Vec2f(this.cell.x*place.x, this.cell.y*place.y);
+            Vec2f current_offset = this.offset - avg + cell/2 + Vec2f(this.cell.x*place.x, this.cell.y*place.y) + Vec2f(grid_gap.x*place.x, grid_gap.y*place.y);
 
             Vec2f diff = (this.cell-bdim*0.5f)/factor-Vec2f(2.0f,2.0f);
 
