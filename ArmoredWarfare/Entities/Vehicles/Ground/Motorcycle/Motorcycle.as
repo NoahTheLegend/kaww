@@ -22,7 +22,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	              6350.0f, // move speed
+	              6500.0f, // move speed
 	              0.47f,  // turn speed
 	              Vec2f(0.0f, 0.56f), // jump out velocity
 	              true  // inventory access
@@ -43,15 +43,6 @@ void onInit(CBlob@ this)
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
-	//CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
-	//if (front !is null)
-	//{
-	//	front.addAnimation("default", 0, false);
-	//	int[] frames = { 0, 1, 2 };
-	//	front.animation.AddFrames(frames);
-	//	front.SetRelativeZ(0.8f);
-	//	front.SetOffset(Vec2f(0.0f, 0.0f));
-	//}
 
 	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
 
@@ -126,17 +117,27 @@ void onTick(CBlob@ this)
 			}
 		}
 
-		//stabilize rotation
-		f32 deg = this.getAngleDegrees();
-		if ((!this.isFacingLeft() && deg > 270)
-		|| (this.isFacingLeft() && deg < 90))
+		AttachmentPoint@ driver = this.getAttachments().getAttachmentPointByName("DRIVER");
+		if (driver !is null)
 		{
-			this.AddTorque(this.isFacingLeft() ? -350.0f : 350.0f);
-		}
-		else if ((!this.isFacingLeft() && deg < 90)
-		|| (this.isFacingLeft() && deg > 270))
-		{
-			this.AddTorque(this.isFacingLeft() ? 350.0f : -350.0f);
+			if (driver.isKeyPressed(key_down) && !this.isOnGround())
+			{
+				this.AddTorque(this.isFacingLeft() ? 300.0f : -300.0f);
+			}
+			else
+			{
+				f32 deg = this.getAngleDegrees();
+				if ((!this.isFacingLeft() && deg > 270)
+				|| (this.isFacingLeft() && deg < 90))
+				{
+					this.AddTorque(this.isFacingLeft() ? -400.0f : 400.0f);
+				}
+				else if ((!this.isFacingLeft() && deg < 90)
+				|| (this.isFacingLeft() && deg > 270))
+				{
+					this.AddTorque(this.isFacingLeft() ? 400.0f : -400.0f);
+				}
+			}
 		}
 
 		CSprite@ sprite = this.getSprite();
