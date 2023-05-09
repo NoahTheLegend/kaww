@@ -133,11 +133,13 @@ void onTick(CBlob@ this)
         }
     }
 
-	if (getGameTime() % 30 == 0 && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0)) && this.getTeamNum() < 2)
+	bool isTDM = (getMap().tilemapwidth < 200);
+
+	if (!isTDM && getGameTime() % 30 == 0 && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0)) && this.getTeamNum() < 2)
 	{
 		u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
 		this.set_u32("crate_timer", Maths::Min(this.get_u32("crate_timer")+1, num));
-		printf('n '+num+" t "+this.get_u32("crate_timer"));
+		//printf('n '+num+" t "+this.get_u32("crate_timer"));
 
 		if (this.get_u32("crate_timer") >= num)
 		{
@@ -149,8 +151,6 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-
-    bool isTDM = (getMap().tilemapwidth < 200);
 
     this.set_u8("numcapping", 0);
 
@@ -421,6 +421,9 @@ void onRender(CSprite@ this)
 	}
 
 	if (blob.getTeamNum() >= 2 || blob.get_u8("numcapping") > 0) return;
+
+	bool isTDM = (getMap().tilemapwidth < 200);
+	if (isTDM) return;
 	
 	// draw crate generation progress
 	dimension = Vec2f(50, 15);
