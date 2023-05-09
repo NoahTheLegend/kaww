@@ -31,25 +31,35 @@ void onInit(CBlob@ this)
 	                        1.33f // movement sound pitch modifier     0.0f = no manipulation
 	                       );
 
-	this.getShape().SetOffset(Vec2f(-6, 9));
+	this.getShape().SetOffset(Vec2f(this.getTeamNum()==0?-3:3, 9));
 	this.getShape().getConsts().transports = true;
 	this.getSprite().SetZ(50);
 
+	f32 corellate = 0;
+	if (this.getTeamNum() == 1) corellate = 8;
+
+	Vec2f[] backbackShape;
+	backbackShape.push_back(Vec2f(4.0f, -2.0f));
+	backbackShape.push_back(Vec2f(6.0f , -2.0f));
+	backbackShape.push_back(Vec2f(6.0f , 8.0f));
+	backbackShape.push_back(Vec2f(4.0f, 8.0f));
+	this.getShape().AddShape(backbackShape);
+
 	Vec2f[] backShape;
-	backShape.push_back(Vec2f(4.0f, 0.0f));
-	backShape.push_back(Vec2f(5.0f, 0.0f));
-	backShape.push_back(Vec2f(5.0f, 4.0f));
-	backShape.push_back(Vec2f(4.0f, 4.0f));
+	backShape.push_back(Vec2f(25.0f, -6.0f));
+	backShape.push_back(Vec2f(27.0f, -6.0f));
+	backShape.push_back(Vec2f(27.0f, 10.0f));
+	backShape.push_back(Vec2f(25.0f, 10.0f));
 	this.getShape().AddShape(backShape);
 
 	Vec2f[] frontShape;
-	frontShape.push_back(Vec2f(86.0f, 6.0f));
-	frontShape.push_back(Vec2f(96.0f, 16.0f));
-	frontShape.push_back(Vec2f(80.0f, 16.0f));
-	frontShape.push_back(Vec2f(78.0f, 16.0f));
+	frontShape.push_back(Vec2f(108.0f, 0.0f));
+	frontShape.push_back(Vec2f(120.0f, 16.0f));
+	frontShape.push_back(Vec2f(108.0f, 16.0f));
+	frontShape.push_back(Vec2f(108.0f, 16.0f));
 	this.getShape().AddShape(frontShape);
 
-	getMap().server_AddMovingSector(Vec2f(-56.0f, 0.0f), Vec2f(-44.0f, 16.0f), "ladder", this.getNetworkID());
+	getMap().server_AddMovingSector(Vec2f(-60.0f, 0.0f), Vec2f(-48.0f, 16.0f), "ladder", this.getNetworkID());
 }
 
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
@@ -59,6 +69,20 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 
 void onTick(CBlob@ this)
 {
+	HitInfo@[] subjects;
+	if (getMap().getHitInfosFromRay(this.getPosition()-Vec2f(this.getRadius()*0.95f, 0), 0, this.getRadius()*1.75f, this, @subjects))
+	{
+		for (u16 i = 0; i < subjects.length; i++)
+		{
+			HitInfo@ subj = subjects[i];
+			if (subj is null || subj.blob is null) continue;
+			if (subj.blob.hasTag("player") && doesCollideWithBlob(this, subj.blob))
+			{
+				subj.blob.AddForce(this.getVelocity()*subj.blob.getMass()/10);
+			}
+		}
+	}
+
 	if (isServer() && getGameTime()%60 == 0)
 	{
 		if (this.isOnGround() && !this.isInWater())
@@ -226,13 +250,11 @@ void Splash(Vec2f pos, Vec2f vel, int randomnum)
 	}
 }
 
-void onCollision(CBlob@ this, CBlob@ blob, bool solid)
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (blob !is null)
+	if (customData == Hitters::explosion || customData == Hitters::keg)
 	{
-		if (blob.hasTag("vehicle") && doesCollideWithBlob(this, blob))
-		{
-			blob.setVelocity(Vec2f(this.getVelocity().x, blob.getVelocity().y));
-		}
+		return damage *= 0.5f;
 	}
+	return damage;
 }
