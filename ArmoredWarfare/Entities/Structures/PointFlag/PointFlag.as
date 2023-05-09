@@ -4,7 +4,9 @@ const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
 const u16 capture_time = 3000;
-const u16 crate_frequency_seconds = 2.5*60;
+const u16 crate_frequency_min = 90; // 1.5 min
+const u16 crate_frequency_seconds = 4.0f * 60; // 4 min by default
+const u16 increase_frequency_byplayer = 6; // 10 players decrease by 1 min
 const u16 min_items = 10;
 const u16 rand_items = 2;
 
@@ -133,9 +135,11 @@ void onTick(CBlob@ this)
 
 	if (getGameTime() % 30 == 0 && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0)) && this.getTeamNum() < 2)
 	{
-		this.set_u32("crate_timer", Maths::Min(this.get_u32("crate_timer")+1, crate_frequency_seconds));
+		u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
+		this.set_u32("crate_timer", Maths::Min(this.get_u32("crate_timer")+1, num));
+		printf('n '+num+" t "+this.get_u32("crate_timer"));
 
-		if (this.get_u32("crate_timer") >= crate_frequency_seconds)
+		if (this.get_u32("crate_timer") >= num)
 		{
 			CBlob@ crate = getBlobByNetworkID(this.get_u16("last_crateid"));
 			if (crate is null)
@@ -421,7 +425,8 @@ void onRender(CSprite@ this)
 	// draw crate generation progress
 	dimension = Vec2f(50, 15);
 	y = 32.0f;
-	perc = float(blob.get_u32("crate_timer")) / float(crate_frequency_seconds);
+	u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
+	perc = float(blob.get_u32("crate_timer")) / float(num);
 
 	// Border
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x - 1,                        pos.y + y - 1),
@@ -488,7 +493,7 @@ const array<float> _chances_off =
 	0.15,
 	0.35,
 	0.4,
-	0.05,
+	0.01,
 	0.3
 };
 
@@ -539,6 +544,7 @@ void SpawnLootCrate(CBlob@ this)
 	{
 		crate.Tag("no_expiration");
 		this.set_u16("last_crateid", crate.getNetworkID());
+		crate.server_setTimeToDie(3*60); // 3 min
 
 		string[] _items;
 		float[] _amounts;
