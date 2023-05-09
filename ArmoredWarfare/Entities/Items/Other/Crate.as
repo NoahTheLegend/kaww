@@ -71,8 +71,14 @@ void onInit(CBlob@ this)
 	this.getSprite().SetZ(-10.0f);
 }
 
+void onThisAddToInventory(CBlob@ this)
+{
+	this.set_u32("unpack time", 0);
+}
+
 void onTick(CBlob@ this)
 {
+	this.SetFacingLeft(false);
 	if (this.isAttached()) Land(this);
 
 	// parachute
