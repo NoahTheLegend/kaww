@@ -107,6 +107,21 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
     }
 }
 
+void onTick(CBlob@ this)
+{
+    if (getLocalPlayer() !is null)
+    {
+        CBlob@ local = getLocalPlayer().getBlob();
+        if (local !is null)
+        {
+            HoverButton@ buttons;
+            if (this.get("HoverButton", @buttons))
+            {
+                buttons.active = local.isOverlapping(this) && local.isKeyPressed(key_down);
+            }
+        }
+    }
+}
 
 void Travel(CBlob@ this, CBlob@ caller, CBlob@ floor, Vec2f position, bool server)
 {

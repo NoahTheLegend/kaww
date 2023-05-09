@@ -206,7 +206,7 @@ void onRender(CSprite@ this)
 			GUI::SetFont("menu");
 			GUI::DrawText(rank + " | "+player.getCharacterName(), Vec2f(60, 10), SColor(0xffffffff));
 			//GUI::SetFont("text");
-			//GUI::DrawText("\n\nNext rank: "+RANKS[level].toLower(), Vec2f(60, 10), SColor(0xffffffff));
+			//GUI::DrawText("\n\nNext rank: "+RANKS[level], Vec2f(60, 10), SColor(0xffffffff));
 
 			// draw perk icon
 			int icon_num = 0;

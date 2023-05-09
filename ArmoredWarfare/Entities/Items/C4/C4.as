@@ -1,5 +1,9 @@
 #include "WarfareGlobal.as"
-#include "Explosion.as";
+#include "Explosion.as"
+#include "ProgressBar.as"
+
+const f32 EXPLODE_TIME = 10.0f;
+const f32 DEFUSE_REQ_TIME = 75;
 
 void onInit(CBlob@ this)
 {
@@ -13,6 +17,9 @@ void onInit(CBlob@ this)
 
 	this.set_u16("exploding", 0);
 	this.set_bool("explode", false);
+	this.set_bool("deactivating", false);
+	this.set_f32("defuse_endtime", DEFUSE_REQ_TIME);
+	this.set_f32("defuse_time", 15);
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)
@@ -23,11 +30,14 @@ void onInit(CBlob@ this)
 	this.Tag("change team on pickup");
 
 	this.Tag("medium weight");
-
 	this.addCommandID("switch");
+	this.addCommandID("deactivate");
 
 	CSprite@ sprite = this.getSprite();
 	sprite.ScaleBy(0.75f, 0.75f);
+
+	ShapeConsts@ consts = this.getShape().getConsts();
+	consts.net_threshold_multiplier = 16.0f;
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -87,12 +97,12 @@ void DoExplosion(CBlob@ this)
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (this.exists("delay") && this.get_u32("delay") > getGameTime()) return;
- 	if (caller is null) return;
-	if (!caller.isMyPlayer()) return;
-	if (this.getDistanceTo(caller) > 16.0f) return;
+ 	if (caller is null || !caller.isMyPlayer()) return;
+	if (!this.isOverlapping(caller) || this.get_bool("deactivating")) return;
 	if (this.isAttachedTo(caller) || !this.isAttached())
 	{
 		CBitStream params;
+		params.write_u16(caller.getNetworkID());
 		CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("switch"), "\n\n"+(this.get_bool("explode") ? "Deactivate" : "Activate")+" C-4", params);
 	}
 }
@@ -107,6 +117,55 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 
 void onTick(CBlob@ this)
 {
+	barTick(this);
+
+	if (this.isAttached())
+	{
+		this.Untag("setstatic");
+		this.getShape().SetStatic(false);
+		this.getShape().getConsts().mapCollisions = true;
+	}
+
+	if (this.hasTag("setstatic"))
+	{
+		this.Untag("setstatic");
+		this.getShape().SetStatic(true);
+		this.getShape().getConsts().mapCollisions = false;
+		this.setVelocity(Vec2f(0,0));
+	}
+
+	if (this.get_bool("deactivating"))
+	{
+		CBlob@ caller = getBlobByNetworkID(this.get_u16("caller_id"));
+		if (caller !is null && caller.isOverlapping(this))
+		{
+			if (this.get_f32("defuse_time") > DEFUSE_REQ_TIME)
+			{
+				Bar@ bars;
+				if (this.get("Bar", @bars))
+				{
+					bars.RemoveBar("defuse", false);
+				}
+			}
+			this.add_f32("defuse_time", 1);
+		}
+		else
+		{
+			this.set_f32("defuse_time", 15);
+			this.set_bool("deactivating", false);
+
+			Bar@ bars;
+			if (this.get("Bar", @bars))
+			{
+				ProgressBar@ defuse = bars.getBar("defuse");
+				if (defuse !is null)
+					defuse.callback_command = "";
+
+				bars.RemoveBar("defuse", false);
+			}
+		}
+	}
+
 	if (isServer() && this.get_bool("explode") && this.get_u16("exploding") > 90) // experimental
 	{
 		if (getGameTime()%15==0)
@@ -115,13 +174,18 @@ void onTick(CBlob@ this)
 			this.Sync("exploding", true);
 		}
 	}
+
 	if (this.getShape() is null) return;
+	u8 scale = Maths::Min(27, (EXPLODE_TIME - this.get_u16("exploding")/30) * 3.0f);
 	if (this.get_bool("explode") && this.get_u16("exploding") > 0)
 	{
-		if (getGameTime() % 30 == 0)
+		if (this.get_u8("timer") >= 30-scale && this.get_u16("exploding") > 20)
 		{
-			this.getSprite().PlaySound("C4Beep.ogg", 1.0f, 1.1f);
+			this.getSprite().PlaySound("C4Beep.ogg", 1.0f, 1.0f+scale*0.0075f);
+			this.set_u8("timer", 0);
 		}
+		this.add_u8("timer", 1);
+
 		this.set_u16("exploding", this.get_u16("exploding") - 1);
 		f32 angle = -this.get_f32("bomb angle");
 
@@ -186,26 +250,55 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-   	if (cmd == this.getCommandID("switch"))
+	if (cmd == this.getCommandID("deactivate"))
 	{
 		if (this.get_bool("explode"))
 		{
 			if (isClient())
 			{
-				Sound::Play("C4Defuse.ogg", this.getPosition(), 0.75f, 1.075f);
+				Sound::Play("C4Defuse.ogg", this.getPosition(), 1.0f, 1.15f);
 			}
 
-			
+			this.set_bool("active", false);
+			this.set_bool("explode", false);
+			this.set_u16("exploding", 0);
 
-			if (isServer())
+			this.set_f32("defuse_time", 15);
+			this.set_u16("caller_id", 0);
+		}
+		this.set_bool("deactivating", false);
+	}
+   	else if (cmd == this.getCommandID("switch"))
+	{
+		if (this.get_bool("explode"))
+		{
+			if (isClient())
 			{
-				this.set_bool("active", false);
-				this.set_bool("explode", false);
-				this.set_u16("exploding", 0);
-				this.Sync("active", true);
-				this.Sync("explode", true);
-				this.Sync("exploding", true);
+				Sound::Play("C4Defuse.ogg", this.getPosition(), 0.75f, 1.05f);
 			}
+
+			Bar@ bars;
+			if (!this.get("Bar", @bars))
+			{
+				Bar setbars;
+    			setbars.gap = 20.0f;
+    			this.set("Bar", setbars);
+			}
+			if (this.get("Bar", @bars))
+			{
+				if (!hasBar(bars, "defuse"))
+				{
+					SColor team_front = SColor(255, 255, 255, 55);
+					ProgressBar setbar;
+					setbar.Set(this, "defuse", Vec2f(48.0f, 12.0f), true, Vec2f(0, 16), Vec2f(2, 2), back, team_front,
+						"defuse_time", this.get_f32("defuse_endtime"), 0.33f, 5, 5, false, "deactivate");
+
+    				bars.AddBar(this, setbar, true);
+				}
+			}	
+			this.set_bool("deactivating", true);
+			u16 callerid = params.read_u16();
+			this.set_u16("caller_id", callerid);
 		}
 		else
 		{
@@ -213,18 +306,26 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				Sound::Play("C4Plant.ogg", this.getPosition(), 0.75f, 1.075f);
 			}
-			this.set_u32("delay", getGameTime()+30);
-			
+			this.set_u32("delay", getGameTime()+15);
+			this.set_f32("defuse_time", 15);
+
+			this.set_bool("active", true);
+			this.set_bool("explode", true);
+			this.set_u16("exploding", EXPLODE_TIME*getTicksASecond());
+
 			if (isServer())
 			{
-				this.set_bool("active", true);
-				this.set_bool("explode", true);
-				this.set_u16("exploding", 7.5f*getTicksASecond());
-				this.Sync("active", true);
-				this.Sync("explode", true);
-				this.Sync("exploding", true);
 				this.server_DetachFromAll();
 			}
+
+			Bar@ bars;
+			if (this.get("Bar", @bars))
+			{
+				ProgressBar@ defuse = bars.getBar("defuse");
+				if (defuse !is null)
+					defuse.callback_command = "deactivate";
+			}
+			this.set_bool("deactivating", false);
 		}
 	}
 }
@@ -240,33 +341,9 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		this.SendCommand(this.getCommandID("switch"), params);
 	}
 
-	if (!this.isAttached() && blob is null)
+	if (solid && !this.isAttached() && blob is null)
 	{
-		CMap@ map = getMap();
-		if (map !is null)
-		{
-			Vec2f v = this.getOldVelocity();
-			bool stop = false;
-			for (u8 i = 0; i < 12; i++)
-			{
-				if (stop) break;
-				for (u8 j = 0; j < 4; j++)
-				{
-					Vec2f offset = Vec2f(i, 0).RotateBy(-(this.getPosition()-this.getOldPosition()).Angle()).RotateBy(Maths::Min(0.0f, j*90.0f)); // j*90.0f - rot
-					
-					if (map.isTileSolid(map.getTile(this.getPosition()+offset)))
-					{
-						this.setPosition(this.getPosition()+offset-(offset*0.25f));
-						this.getShape().SetStatic(true);
-						this.getShape().getConsts().mapCollisions = false;
-						stop = true;
-						break;
-					}
-				}
-			}
-		}
-
-		this.setVelocity(Vec2f(0,0));
+		this.Tag("setstatic");
 	}
 }
 

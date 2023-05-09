@@ -648,7 +648,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	if (cmd == this.getCommandID("sync_flipping"))
 	{
-		if (!isClient()) return;
 		if (!isFlipped(this))
 		{
 			this.set_u32("flipping_endtime", 0);
@@ -1072,7 +1071,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		
 		if (this.hasTag("aerial")) return damage*4.5f;
-		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*0.75f;
+		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*1.5f;
 
 		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/8.0f);
 		if (blocks_between > 5) damage /= 1.0f-(5.0f-blocks_between);
