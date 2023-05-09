@@ -544,7 +544,7 @@ void SpawnLootCrate(CBlob@ this)
 	{
 		crate.Tag("no_expiration");
 		this.set_u16("last_crateid", crate.getNetworkID());
-		crate.server_setTimeToDie(3*60); // 3 min
+		crate.server_SetTimeToDie(3*60); // 3 min
 
 		string[] _items;
 		float[] _amounts;
