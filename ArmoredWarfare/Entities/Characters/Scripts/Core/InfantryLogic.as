@@ -41,6 +41,7 @@ void onInit(CBlob@ this)
 	// ACCURACY
 	u8 inaccuracy_cap; // max amount of inaccuracy
 	u8 inaccuracy_pershot; // aim inaccuracy  (+3 per shot)
+	u8 inaccuracy_midair;
 	u8 inaccuracy_hit;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
@@ -63,7 +64,7 @@ void onInit(CBlob@ this)
 	getBasicStats( thisBlobHash, classname, reload_sfx, shoot_sfx, damage_body, damage_head );
 	getRecoilStats( thisBlobHash, recoil_x, recoil_y, recoil_length, recoil_force, recoil_cursor, sideways_recoil, sideways_recoil_damp, ads_cushion_amount, length_of_recoil_arc );
 	getWeaponStats( thisBlobHash, 
-	inaccuracy_cap, inaccuracy_pershot, inaccuracy_hit,
+	inaccuracy_cap, inaccuracy_pershot, inaccuracy_midair, inaccuracy_hit,
 	semiauto, burst_size, burst_rate, 
 	reload_time, noreloadtimer, mag_size, delayafterfire, randdelay, 
 	bullet_velocity, bullet_lifetime, bullet_pen, emptyshellonfire);
@@ -88,6 +89,7 @@ void onInit(CBlob@ this)
 
 	infantry.inaccuracy_cap 		= inaccuracy_cap;
 	infantry.inaccuracy_pershot 	= inaccuracy_pershot;
+	infantry.inaccuracy_midair      = inaccuracy_midair;
 	infantry.inaccuracy_hit         = inaccuracy_hit;
 	infantry.semiauto 				= semiauto;
 	infantry.burst_size 			= burst_size;
@@ -101,6 +103,7 @@ void onInit(CBlob@ this)
 	infantry.bullet_lifetime 		= bullet_lifetime;
 	infantry.bullet_pen 			= bullet_pen;
 	infantry.emptyshellonfire 		= emptyshellonfire;
+
 	this.set("infantryInfo", @infantry);
 
 	this.set_u32("mag_bullets_max", mag_size);
@@ -197,7 +200,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			this.set_u32("accuracy_delay", getGameTime()+ACCURACY_HIT_DELAY);
 			f32 cap = this.get_u8("inaccuracy")+infantry.inaccuracy_hit;
-			if (cap < 255) this.add_u8("inaccuracy", infantry.inaccuracy_hit);
+			if (cap < infantry.inaccuracy_cap) this.add_u8("inaccuracy", infantry.inaccuracy_hit);
 			else this.set_u8("inaccuracy", infantry.inaccuracy_cap);
 		}
 	}
@@ -1176,7 +1179,7 @@ void onTick(CBlob@ this)
 	{
 		archer.charge_state = 0;
 		this.set_s32("my_chargetime", 0);
-		getHUD().SetCursorFrame(0);
+		//getHUD().SetCursorFrame(0);
 		return;
 	}
 
