@@ -3,7 +3,7 @@
 // add an f32 property name to input as current value and max value as static number
 // you may configurate colors as well
 
-// todo: grid, reverse \ toleft-toright mode, callback for sendcommand when done loading
+// todo: grid, reverse \ toleft-toright mode
 void barInit(CBlob@ this)
 {
     Bar@ bars;
@@ -26,8 +26,7 @@ void barTick(CBlob@ this)
         return;
     }
     if (bars is null) return;
-
-    bars.update();
+    if (bars.hasBars()) bars.update();
 }
 
 void onRender(CSprite@ sprite)
@@ -37,19 +36,20 @@ void onRender(CSprite@ sprite)
 	CBlob@ this = sprite.getBlob();
 	if (this is null) return;
 
-    Vec2f pos = this.getPosition();
-    Vec2f oldpos = this.getOldPosition();
-    this.set_Vec2f("renderbar_lastpos", getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())));
-
-	GUI::SetFont("menu");
-    
     // initialize all bars, add ProgressBar to the list, then begin rendering
     Bar@ bars;
     if (!this.get("Bar", @bars))
     {
         return;
     }
-    if (bars is null) return;
+
+    Vec2f pos = this.getPosition();
+    Vec2f oldpos = this.getOldPosition();
+    this.set_Vec2f("renderbar_lastpos", getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())));
+
+	GUI::SetFont("menu");
+    
+    if (bars is null || !bars.hasBars()) return;
     bars.render();
 }
 
@@ -74,14 +74,22 @@ class ProgressBar : Bar {
         this.current = 0;
         this.target = 0;
         this.tick_since_created = getGameTime();
+        this.max = 0;
+        this.lerp = 1;
+        this.fadeout_time = 0;
+
+        this.write_blob = false;
+        this.callback_command = "";
     }
 
-    void Set(CBlob@ _blob, string _name, Vec2f _dim, Vec2f _offset, Vec2f _inherit,
-    SColor _color_back, SColor _color_front, string _prop, f32 _max, f32 _lerp, f32 _fadeout_time, f32 _fadeout_delay)
+    void Set(CBlob@ _blob, string _name, Vec2f _dim, bool _reoffset, Vec2f _offset, Vec2f _inherit,
+    SColor _color_back, SColor _color_front, string _prop, f32 _max, f32 _lerp,
+    f32 _fadeout_time, f32 _fadeout_delay, bool _write_blob, string _callback_command)
     {
         @this.blob = _blob;
         this.name = _name;
         this.dim = _dim;
+        this.reoffset = _reoffset;
         this.offset = _offset;
         this.inherit = _inherit;
         this.color_back = _color_back;
@@ -91,6 +99,8 @@ class ProgressBar : Bar {
         this.lerp = _lerp;
         this.fadeout_time = _fadeout_time;
         this.fadeout_delay = _fadeout_delay;
+        this.write_blob = _write_blob;
+        this.callback_command = _callback_command;
     }
     
     void updatebar()
@@ -135,9 +145,10 @@ class Bar : BarHandler{
     f32 current; f32 max; f32 percent; f32 lerp; f32 target; // logic
     bool fadeout; u32 fadeout_start; u32 fadeout_end; u32 fadeout_time; u32 fadeout_delay; // fadeout
     // other
-    bool remove_on_fill; bool removing; string name;
+    bool remove_on_fill; bool removing; string name; string callback_command; bool write_blob;
     f32 gap; f32 mod_gap; f32 camera_factor;
     string prop; u32 tick_since_created;
+    bool reoffset;
 
     ProgressBar@ getBar(string name)
     {
@@ -156,6 +167,11 @@ class Bar : BarHandler{
         BarHandler::AddBar(_blob, bar, remove);
         @this.tempblob = @_blob;
     }
+
+    bool hasBars()
+    {
+        return this.active_bars.size() > 0;
+    }
     
     void update()
     {
@@ -165,8 +181,7 @@ class Bar : BarHandler{
             if (active is null) continue;
 
             BarHandler::Fadeout(active);
-
-            if (active.remove_on_fill && active.percent == 1)
+            if (active.remove_on_fill && active.percent == 1.0f)
             {
                 BarHandler::RemoveBar(active.name, false);
             }
@@ -183,16 +198,16 @@ class Bar : BarHandler{
             this.camera_factor = Maths::Max(0.75f, camera.targetDistance);
             this.mod_gap = gap / this.camera_factor;
         }
-            
+        
         for (int i = 0; i < this.active_bars.length; i++)
         {
             ProgressBar@ active = @this.active_bars[i];
             if (this.tempblob !is null) active.pos2d = this.tempblob.get_Vec2f("renderbar_lastpos");
     
-            active.target_offset = Vec2f(0, 40 + this.mod_gap*i);
-            active.offset = Vec2f(Maths::Lerp(active.offset.x, active.target_offset.x, 0.33f), Maths::Lerp(active.offset.y, active.target_offset.y, 0.33f));
             active.camera_factor = this.camera_factor;
-           
+            active.target_offset = Vec2f(0, 40 / active.camera_factor + this.mod_gap*i);
+            active.offset = Vec2f(Maths::Lerp(active.offset.x, active.target_offset.x, 0.33f), Maths::Lerp(active.offset.y, active.target_offset.y, 0.33f));
+
             active.renderbar();
         }
     }
@@ -225,10 +240,12 @@ class BarHandler {
                 {
                     this.active_bars.erase(i);
                     @active = null;
+                    this.SendCommand(active);
                 }
                 else if (!active.fadeout)
                 {
-                    BarHandler::onBarRemoved(active, active.fadeout_time);
+                    this.onBarRemoved(active, active.fadeout_time);
+                    this.SendCommand(active);
                 }
             }
         }
@@ -239,6 +256,17 @@ class BarHandler {
         active.fadeout = true;
         active.fadeout_start = getGameTime() + active.fadeout_delay;
         active.fadeout_end = getGameTime() + _fadeout_time + active.fadeout_delay;
+    }
+
+    void SendCommand(ProgressBar@ active)
+    {
+        if (active is null) return;
+        if (active.callback_command == "") return;
+    
+        CBitStream params;
+        if (active.write_blob)
+            params.write_u16(active.blob.getNetworkID());
+        active.blob.SendCommand(active.blob.getCommandID(active.callback_command), params);
     }
 
     void Fadeout(ProgressBar@ active)

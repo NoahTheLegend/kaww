@@ -869,9 +869,10 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							this.AddForce(force * (faceleft ? -1.0f : 1.0f));
 						force.RotateBy(this.getShape().getAngleDegrees());
 					}
-
+					
 					// tilt 
 					const bool down = ap.isKeyPressed(key_down);
+					
 					if (down)
 					{
 						this.Tag("holding_down");
@@ -889,6 +890,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					else{
 						this.Untag("holding_down");
 					}
+					
 
 					if (onground)
 					{
@@ -897,6 +899,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						{
 							f32 wallMultiplier = (this.isOnWall() && (angle > 350 || angle < 10)) ? 4.0f : 1.0f;
 							f32 torque = 420.0f * wallMultiplier;
+
 							if (down)
 							{
 								f32 mod = 1.0f;
@@ -909,7 +912,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							this.AddForce(Vec2f(0.0f, -100.0f * wallMultiplier));
 						}
 
-						if (isFlipped(this))
+						if (isFlipped(this) && this.hasTag("autoflip"))
 						{
 							f32 angle = this.getAngleDegrees();
 							if (!left && !right)
@@ -920,7 +923,11 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						}
 					}
 
-					if (this.get_f32("engine_throttle") >= 0.5f) // make this an equation
+					if (isFlipped(this))
+					{
+						this.set_f32("engine_RPMtarget", 1500);
+					}
+					else if (this.get_f32("engine_throttle") >= 0.5f) // make this an equation
 					{
 						this.set_f32("engine_RPMtarget", 8000); // gas gas gas
 					}

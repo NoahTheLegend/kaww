@@ -199,7 +199,7 @@ void onTick(CBlob@ this)
 
 				if (isServer())
 				{
-					this.TakeBlob("mat_scrap", 3);
+					this.TakeBlob("mat_scrap", 1);
 					CBlob@ turret_exists = getBlobByNetworkID(this.getPlayer().get_u16("turret_netid"));
 					if (turret_exists !is null && turret_exists.getName() == "sentrygun")
 					{
@@ -227,8 +227,8 @@ void onTick(CBlob@ this)
 			{
 				SColor team_front = this.getTeamNum() == 0 ? SColor(255, 115, 115, 255) : SColor(255, 255, 75, 75);
 				ProgressBar setbar;
-				setbar.Set(this, "sentry_build", Vec2f(64.0f, 16.0f), Vec2f(0, 40), Vec2f(2, 2), back, team_front,
-					"turret_load", 90/*sentry buildtime*/, 1.0f, 5, 5);
+				setbar.Set(this, "sentry_build", Vec2f(64.0f, 16.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, team_front,
+					"turret_load", 90/*sentry buildtime*/, 1.0f, 5, 5, false, "");
 
     			bars.AddBar(this, setbar, true);
 			}
