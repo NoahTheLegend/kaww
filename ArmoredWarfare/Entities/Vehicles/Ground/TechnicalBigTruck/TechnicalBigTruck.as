@@ -19,7 +19,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	              7750.0f, // move speed
+	              8000.0f, // move speed
 	              0.87f,  // turn speed
 	              Vec2f(0.0f, 0.56f), // jump out velocity
 	              true  // inventory access
@@ -46,7 +46,7 @@ void onInit(CBlob@ this)
 	
 
 
-	this.getShape().SetOffset(Vec2f(4, 2.5f));
+	this.getShape().SetOffset(Vec2f(0, 3.5f));
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);

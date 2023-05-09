@@ -6,6 +6,7 @@
 #include "GenericButtonCommon.as"
 #include "Hitters.as";
 #include "Explosion.as";
+#include "ProgressBar.as";
 
 string[] particles = 
 {
@@ -31,6 +32,9 @@ void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
 	this.addCommandID("jam_engine");
+	this.addCommandID("init_flipping");
+	this.addCommandID("sync_flipping");
+	this.addCommandID("flip_vehicle");
 
 	s8 armorRating = 0;
 	bool hardShelled = false;
@@ -249,16 +253,55 @@ void onInit(CBlob@ this)
 
 	this.set_u32("show_hp", 0);
 	this.set_string("invname", this.getInventoryName());
+
+	this.set_u32("flipping_endtime", 0);
+	this.set_f32("flipping_time", 0);
 }
 
-void onTick(CBlob@ this)
+void ManageFlipping(CBlob@ this)
+{
+	u32 endtime = this.get_u32("flipping_endtime");
+	if (endtime != 0) this.add_f32("flipping_time", 1);
+
+	if (this.get_f32("flipping_time") >= endtime)
+	{
+		Bar@ bars;
+		if (this.get("Bar", @bars))
+		{
+			if (hasBar(bars, "flipping"))
+				bars.RemoveBar("flipping", false);
+		}
+	}
+	
+	if (!isServer()) return;
+	if (getGameTime() % 30 == 0 && endtime != 0)
+	{
+		if (this.get_f32("flipping_time") >= endtime)
+		{
+			CBitStream params;
+			params.write_bool(false);
+			params.write_u32(0);
+			this.SendCommand(this.getCommandID("sync_flipping"), params);
+
+			this.set_f32("flipping_time", 0);
+		}
+
+		CBitStream params;
+		params.write_bool(true);
+		params.write_f32(this.get_f32("flipping_time"));
+		this.SendCommand(this.getCommandID("sync_flipping"), params);
+	}
+}
+
+void ManageDisguise(CBlob@ this)
 {
 	if (getGameTime() % 45 == 0 && !this.hasTag("gun"))
 	{
 		if ((this.getPosition()-this.getOldPosition()).Length() <= 0.1f)
 		{
 			CBlob@[] bushes;
-			if (getMap() !is null) getMap().getBlobsInRadius(this.getPosition(), this.getRadius(), @bushes);
+			this.getOverlapping(@bushes);
+			
 			int bushcount = 0;
 			for (u16 i = 0; i < bushes.length; i++)
 			{
@@ -285,6 +328,15 @@ void onTick(CBlob@ this)
 			this.setInventoryName(this.get_string("invname"));
 		}
 	}
+}
+
+void onTick(CBlob@ this)
+{
+	barTick(this);
+
+	ManageFlipping(this);
+	ManageDisguise(this);
+
 	if (!(isClient() && isServer()) && !this.hasTag("aerial") && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
 	{
 		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
@@ -510,65 +562,152 @@ void onTick(CBlob@ this)
 	}
 }
 
+void GetButtonsFor(CBlob@ this, CBlob@ caller)
+{
+	if (!isFlipped(this)) return;
+	if (caller.getDistanceTo(this) > this.getRadius()) return;
+	if (this.hasTag("turret") || (!this.hasTag("tank") && !this.hasTag("truck"))) return;
+	
+	CBitStream params;
+	CButton@ button = caller.CreateGenericButton(12, Vec2f(0, -12), this, this.getCommandID("init_flipping"), "Flip this vehicle.", params);
+}
+
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	bool isServer = getNet().isServer();
 
 	/// LOAD AMMO
-	if (isServer && cmd == this.getCommandID("load_ammo"))
+	if (isServer)
 	{
-		VehicleInfo@ v;
-		if (!this.get("VehicleInfo", @v))
+		if (cmd == this.getCommandID("load_ammo"))
 		{
-			return;
-		}
-		CBlob@ caller = getBlobByNetworkID(params.read_u16());
-		if (caller !is null)
-		{
-			array < CBlob@ > ammos;
-			array < string > eligible_ammo_names;
-
-			for (int i = 0; i < v.ammo_types.length(); ++i)
+			VehicleInfo@ v;
+			if (!this.get("VehicleInfo", @v))
 			{
-				const string ammo = v.ammo_types[i].ammo_name;
-				eligible_ammo_names.push_back(ammo);
+				return;
 			}
-
-			CBlob@ carryObject = caller.getCarriedBlob();
-			// if player has item in hand, we only put that item into vehicle's inventory
-			if (carryObject !is null && eligible_ammo_names.find(carryObject.getName()) != -1)
+			CBlob@ caller = getBlobByNetworkID(params.read_u16());
+			if (caller !is null)
 			{
-				ammos.push_back(carryObject);
-			}
-			else
-			{
-				CInventory@ inv = caller.getInventory();
+				array < CBlob@ > ammos;
+				array < string > eligible_ammo_names;
 
 				for (int i = 0; i < v.ammo_types.length(); ++i)
 				{
 					const string ammo = v.ammo_types[i].ammo_name;
+					eligible_ammo_names.push_back(ammo);
+				}
 
-					for (int i = 0; i < inv.getItemsCount(); i++)
+				CBlob@ carryObject = caller.getCarriedBlob();
+				// if player has item in hand, we only put that item into vehicle's inventory
+				if (carryObject !is null && eligible_ammo_names.find(carryObject.getName()) != -1)
+				{
+					ammos.push_back(carryObject);
+				}
+				else
+				{
+					CInventory@ inv = caller.getInventory();
+
+					for (int i = 0; i < v.ammo_types.length(); ++i)
 					{
-						CBlob@ invItem = inv.getItem(i);
-						if (invItem.getName() == ammo)
+						const string ammo = v.ammo_types[i].ammo_name;
+
+						for (int i = 0; i < inv.getItemsCount(); i++)
 						{
-							ammos.push_back(invItem);
+							CBlob@ invItem = inv.getItem(i);
+							if (invItem.getName() == ammo)
+							{
+								ammos.push_back(invItem);
+							}
 						}
 					}
 				}
-			}
 
-			for (int i = 0; i < ammos.length; i++)
-			{
-				if (!this.server_PutInInventory(ammos[i]))
+				for (int i = 0; i < ammos.length; i++)
 				{
-					caller.server_PutInInventory(ammos[i]);
+					if (!this.server_PutInInventory(ammos[i]))
+					{
+						caller.server_PutInInventory(ammos[i]);
+					}
 				}
-			}
 
-			RecountAmmo(this, v);
+				RecountAmmo(this, v);
+			}
 		}
+		else if (cmd == this.getCommandID("init_flipping"))
+		{
+			f32 endtime = this.get_u32("flipping_endtime");
+			if (endtime == 0)
+				this.set_u32("flipping_endtime", 30*Maths::Round(this.getMass()/750));
+
+			CBitStream params1;
+			params1.write_bool(false);
+			params1.write_u32(this.get_u32("flipping_endtime"));
+			this.SendCommand(this.getCommandID("sync_flipping"), params1);
+		}
+	}
+	if (cmd == this.getCommandID("sync_flipping"))
+	{
+		if (!isClient()) return;
+		if (!isFlipped(this))
+		{
+			this.set_u32("flipping_endtime", 0);
+			this.set_f32("flipping_time", 0);
+			Bar@ bars;
+			if (this.get("Bar", @bars))
+			{
+				bars.RemoveBar("flipping", false);
+			}
+			return;
+		}
+
+		bool current = false;
+		u32 endtime;
+		f32 time;
+		if (!params.saferead_bool(current)) return;
+		if (!current)
+		{
+			if (!params.saferead_u32(endtime)) return;
+			this.set_u32("flipping_endtime", endtime);
+		}
+		else
+		{
+			if (!params.saferead_f32(time)) return;
+			this.set_f32("flipping_time", time);
+		}
+
+		Bar@ bars;
+		if (!this.get("Bar", @bars))
+		{
+			Bar setbars;
+        	setbars.gap = 20.0f;
+        	this.set("Bar", setbars);
+		}
+		if (this.get("Bar", @bars))
+		{
+			if (!hasBar(bars, "flipping"))
+			{
+				SColor team_front = SColor(255, 133, 133, 160);
+				ProgressBar setbar;
+				setbar.Set(this, "flipping", Vec2f(128.0f, 24.0f), true, Vec2f(0, 64), Vec2f(2, 2), back, team_front,
+					"flipping_time", this.get_u32("flipping_endtime"), 0.25f, 5, 5, false, "flip_vehicle");
+
+    			bars.AddBar(this, setbar, true);
+			}
+		}
+	}
+	else if (cmd == this.getCommandID("flip_vehicle"))
+	{
+		Bar@ bars;
+		if (this.get("Bar", @bars))
+		{
+			bars.RemoveBar("flipping", false);
+		}
+
+		this.set_u32("flipping_endtime", 0);
+		this.set_f32("flipping_time", 0);
+		this.setAngleDegrees(this.getAngleDegrees()+180);
+		this.SetFacingLeft(!this.isFacingLeft());
 	}
 	// SWAP AMMO
 	else if (cmd == this.getCommandID("swap_ammo"))
