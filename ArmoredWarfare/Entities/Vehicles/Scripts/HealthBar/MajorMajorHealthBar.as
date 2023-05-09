@@ -1,3 +1,5 @@
+#include "TeamColorCollections.as"
+
 const string linadj_hp = "linear adjustment";
 
 void onInit(CBlob@ this)
@@ -69,22 +71,10 @@ void onRender(CSprite@ this)
 		const f32 perc  = blob.getHealth() / initialHealth;
 		const f32 perc2 = blob.get_f32(linadj_hp) / initialHealth;
 
-		SColor color_light;
-		SColor color_mid;
-		SColor color_dark;
-
-		if (blob.getTeamNum() == 0)
-		{
-			color_light = 0xff2cafde;
-			color_mid	= 0xff1d85ab;
-			color_dark	= 0xff1a4e83;
-		}
-		else
-		{
-			color_light = 0xffd5543f;
-			color_mid	= 0xffb73333;
-			color_dark	= 0xff941b1b;
-		}
+		u8 team = blob.getTeamNum();
+		SColor color_light = getNeonColor(team, 0);
+		SColor color_mid = getNeonColor(team, 1);
+		SColor color_dark = getNeonColor(team, 2);
 
 		if (perc >= 0.0f)
 		{

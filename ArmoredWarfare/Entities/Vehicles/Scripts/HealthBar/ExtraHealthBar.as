@@ -1,3 +1,5 @@
+#include "TeamColorCollections.as"
+
 void onRender(CSprite@ this)
 {
 	if (g_videorecording) return;
@@ -32,22 +34,10 @@ void onRender(CSprite@ this)
 
 	if (initialHealth > 0.0f)
 	{
-		SColor color_light;
-		SColor color_mid;
-		SColor color_dark;
-
-		if (blob.getTeamNum() == 0)
-		{
-			color_light = 0xff2cafde;
-			color_mid	= 0xff1d85ab;
-			color_dark	= 0xff1a4e83;
-		}
-		else
-		{
-			color_light = 0xffd5543f;
-			color_mid	= 0xffb73333;
-			color_dark	= 0xff941b1b;
-		}
+		u8 team = blob.getTeamNum();
+		SColor color_light = getNeonColor(team, 0);
+		SColor color_mid = getNeonColor(team, 1);
+		SColor color_dark = getNeonColor(team, 2);
 
 		if (perc >= 0.0f)
 		{
