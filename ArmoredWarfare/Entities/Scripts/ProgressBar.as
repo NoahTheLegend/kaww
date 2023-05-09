@@ -240,12 +240,12 @@ class BarHandler {
                 {
                     this.active_bars.erase(i);
                     @active = null;
-                    this.SendCommand(active);
+                    if (isServer()) this.SendCommand(active);
                 }
                 else if (!active.fadeout)
                 {
                     this.onBarRemoved(active, active.fadeout_time);
-                    this.SendCommand(active);
+                    if (isServer()) this.SendCommand(active);
                 }
             }
         }

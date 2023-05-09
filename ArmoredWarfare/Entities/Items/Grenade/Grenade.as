@@ -39,12 +39,6 @@ void onInit(CBlob@ this)
 	{
 		this.set_u8("exploding_2", 110);
 	}
-
-	// let it be not heavy, we'll see how OP it is
-	//if (this.getName() == "sgrenade" || this.getName() == "sagrenade")
-	//{
-	//	this.Tag("medium weight");
-	//}
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -260,9 +254,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
+	const f32 vellen = this.getOldVelocity().Length();
+	const u8 hitter = this.get_u8("custom_hitter");
+
 	if (!solid || (blob !is null && blob.hasTag("bunker")))
 	{
-		if (!this.getShape().isStatic() && this.get_u16("follow_id") == 0 && this.getName() == "sagrenade" && !this.isAttached())
+		if (!this.getShape().isStatic() && this.get_u16("follow_id") == 0 && this.getName() == "sagrenade"
+			&& !this.isAttached() && !this.getShape().isStatic())
 		{
 			if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("vehicle") || blob.hasTag("player")
 			|| blob.hasTag("bunker") || blob.hasTag("door") || blob.getName() == "wooden_platform"))
@@ -271,46 +269,27 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 				this.set_u16("follow_id", blob.getNetworkID());
 				this.set_bool("follow_fl", blob.isFacingLeft());
 				this.setVelocity(Vec2f(0,0));
+				Sound::Play("/BombBounce.ogg", this.getPosition(), Maths::Min(vellen / 9.0f, 1.0f), 1.3f);
 			}
 		}
 		return;
 	}
 
-	const f32 vellen = this.getOldVelocity().Length();
-	const u8 hitter = this.get_u8("custom_hitter");
 	if (vellen > 1.7f)
 	{
 		Sound::Play("/BombBounce.ogg", this.getPosition(), Maths::Min(vellen / 9.0f, 1.0f), 1.2f);
 	}
 
-	if ((this.getName() == "sgrenade" || this.getName() == "sagrenade") && !this.isAttached()) // sticky grenade sticks to blocks
+	if (this.get_u16("follow_id") == 0 && (this.getName() == "sgrenade" || this.getName() == "sagrenade")
+		&& !this.isAttached() && !this.getShape().isStatic())
 	{
 		CMap@ map = getMap();
 		if (map !is null)
 		{
-			Vec2f v = this.getOldVelocity();
-			//f32 rot = (v.y < 0.0f && Maths::Abs(v.y) > Maths::Abs(v.x) ? 90.0f : v.x > 0.1f ? 0.0f : v.x < -0.1f ? 180.0f : 0);
-			bool stop = false;
-			for (u8 i = 0; i < 12; i++)
-			{
-				if (stop) break;
-				for (u8 j = 0; j < 4; j++)
-				{
-					Vec2f offset = Vec2f(i, 0).RotateBy(-(this.getPosition()-this.getOldPosition()).Angle()).RotateBy(Maths::Min(0.0f, j*90.0f)); // j*90.0f - rot
-					
-					if (map.isTileSolid(map.getTile(this.getPosition()+offset)))
-					{
-						this.setPosition(this.getPosition()+offset-(offset*0.25f));
-						this.getShape().SetStatic(true);
-						this.getShape().getConsts().mapCollisions = false;
-						stop = true;
-						break;
-					}
-				}
-			}
+			this.getShape().SetStatic(true);
+			this.getShape().getConsts().mapCollisions = false;
+			this.setVelocity(Vec2f(0,0));
 		}
-
-		this.setVelocity(Vec2f(0,0));
 	}
 }
 

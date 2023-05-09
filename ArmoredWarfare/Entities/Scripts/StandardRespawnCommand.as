@@ -434,7 +434,7 @@ void CycleClass(CBlob@ this, CBlob@ blob)
 		for (uint i = 0; i < classes.length; i++)
 		{
 			PlayerClass @pclass = classes[i];
-			if (pclass.name.toLower() == blob.getName())
+			if (pclass.name == blob.getName())
 			{
 				//cycle to next class
 				@newclass = classes[(i + 1) % classes.length];

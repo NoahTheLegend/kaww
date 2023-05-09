@@ -1,4 +1,5 @@
 // TDM Ruins logic
+// Legacy script
 
 #include "ClassSelectMenu.as"
 #include "StandardRespawnCommand.as"

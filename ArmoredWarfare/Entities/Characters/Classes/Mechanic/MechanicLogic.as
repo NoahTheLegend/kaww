@@ -576,10 +576,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
         {
             // chat message
             if (player.isMyPlayer()) {
-                client_AddToChat("You've been promoted to " + rank.toLower() + "!", SColor(255, 50, 150, 20));
+                client_AddToChat("You've been promoted to " + rank + "!", SColor(255, 50, 150, 20));
             }
             else {
-                client_AddToChat(player.getCharacterName() + " has been promoted to " + rank.toLower() + "!", SColor(255, 50, 140, 20));
+                client_AddToChat(player.getCharacterName() + " has been promoted to " + rank + "!", SColor(255, 50, 140, 20));
             }
             
             if (this !is null)
