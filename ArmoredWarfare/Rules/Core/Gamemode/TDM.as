@@ -1095,12 +1095,6 @@ shared class TDMCore : RulesCore
 //pass stuff to the core from each of the hooks
 void Reset(CRules@ this)
 {
-	this.set_u8("siege", 255);
-
-	this.Sync("siege", true);
-	this.Untag("synced_time");
-	this.Untag("synced_siege");
-
 	this.set_u16("blue_kills", 0);
 	this.set_u16("red_kills", 0);
 	this.Sync("blue_kills", true);
@@ -1298,13 +1292,6 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 	else if (getPlayersCount() == 8 || getPlayersCount() == 9)
 	{
 		LoadMapCycle("MAPS/mapcyclelarger.cfg");
-	}
-
-	this.SyncToPlayer("siege", player);
-	CBlob@ blob = player.getBlob();
-	if (blob !is null)
-	{
-		blob.Sync("siege", true);
 	}
 
     player.server_setCoins(40);
@@ -1575,19 +1562,7 @@ void onTick(CRules@ this)
 			}
 		}
 	}
-	//if (!this.hasTag("synced_siege"))
-	//{
-	//	CBlob@[] vehbuilders;
-    //	getBlobsByName("vehiclebuilder", @vehbuilders);
-	//	if (vehbuilders.length > 0 && vehbuilders[0] !is null)
-    //	{
-    //	    this.set_u8("siege", vehbuilders[0].getTeamNum()); // mark the sieging team
-    //	    this.Sync("siege", true);
-    //	    this.Tag("synced_siege");
-    //	}
-	//	else this.Tag("synced_siege");
-	//}
-
+	
 	if (getGameTime() >= 1 && !this.hasTag("synced_time"))
 	{
 		TDMSpawns spawns();
