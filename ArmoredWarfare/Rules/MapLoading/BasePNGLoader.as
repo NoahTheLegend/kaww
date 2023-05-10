@@ -41,6 +41,8 @@ class PNGLoader
 
 	void SetTeams()
 	{
+		if (!isServer()) return;
+
 		u8 prevteamleft = getRules().get_u8("teamleft");
 		u8 prevteamright = getRules().get_u8("teamright");
 		if (!getRules().hasTag("first init teams")) // first match always sets same teams (6 and 1)
@@ -56,10 +58,18 @@ class PNGLoader
 			{
 				teamright = (Time_Local()%(XORRandom(8)+1));
 			}
-			getRules().set_u8("oldteamleft", teamleft);
-			getRules().set_u8("oldteamright", teamright);
-			getRules().set_u8("teamleft", teamleft);
-			getRules().set_u8("teamright", teamright);
+
+			CRules@ rules = getRules();
+
+			rules.set_u8("oldteamleft", teamleft);
+			rules.set_u8("oldteamright", teamright);
+			rules.set_u8("teamleft", teamleft);
+			rules.set_u8("teamright", teamright);
+
+			rules.Sync("oldteamleft", true);
+			rules.Sync("oldteamright", true);
+			rules.Sync("teamleft", true);
+			rules.Sync("teamright", true);
 
 			printf("SET TEAMS INIT "+teamleft+" : "+teamright);
 
@@ -78,10 +88,19 @@ class PNGLoader
 			{
 				teamright = XORRandom(7);
 			}
-			getRules().set_u8("oldteamleft", getRules().get_u8("teamleft"));
-			getRules().set_u8("oldteamright", getRules().get_u8("teamright"));
-			getRules().set_u8("teamleft", teamleft);
-			getRules().set_u8("teamright", teamright);
+
+			CRules@ rules = getRules();
+
+			rules.set_u8("oldteamleft", getRules().get_u8("teamleft"));
+			rules.set_u8("oldteamright", getRules().get_u8("teamright"));
+			rules.set_u8("teamleft", teamleft);
+			rules.set_u8("teamright", teamright);
+
+			rules.Sync("oldteamleft", true);
+			rules.Sync("oldteamright", true);
+			rules.Sync("teamleft", true);
+			rules.Sync("teamright", true);
+
 			printf("SET TEAMS "+teamleft+" : "+teamright);
 
     		_teamleft = teamleft;

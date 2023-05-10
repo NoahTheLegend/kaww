@@ -117,7 +117,13 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					f32 time = parseFloat(sub[1]);
 					this.add_u32("game_end_time", time);
 				}
-				else if (sub.length > 2)
+				else if (sub[0] == "!teamwon")
+				{
+					this.SetTeamWon(parseInt(sub[1]));
+					this.SetCurrentState(GAME_OVER);
+				}
+
+				if (sub.length > 2)
 				{
 					if (sub[0] == "!spawn")
 					{
@@ -126,13 +132,15 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					}
 					else if (sub[0] == "!tickets")
 					{
-						bool blue = sub[1] == "blue";
-						if (blue)
+						u8 teamleft = this.get_u8("teamleft");
+						u8 teamright = this.get_u8("teamright");
+
+						if (sub[1] == "left")
 						{
 							this.set_s16("teamLeftTickets", parseInt(sub[2]));
 							this.Sync("teamLeftTickets", true);
 						}
-						else
+						else if (sub[1] == "right")
 						{
 							this.set_s16("teamRightTickets", parseInt(sub[2]));
 							this.Sync("teamRightTickets", true);
@@ -153,16 +161,6 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 		else if (text_in == "!restartrules")
 		{
 			this.RestartRules();
-		}
-		else if (text_in == "!teamwon blue")
-		{
-			this.SetTeamWon(0);
-			this.SetCurrentState(GAME_OVER);
-		}
-		else if (text_in == "!teamwon red")
-		{
-			this.SetTeamWon(1);
-			this.SetCurrentState(GAME_OVER);
 		}
 		else if (text_in == "!debug")
 		{

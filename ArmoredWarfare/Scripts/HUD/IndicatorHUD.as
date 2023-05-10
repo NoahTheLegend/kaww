@@ -68,7 +68,9 @@ void onRender( CRules@ this )
 	//draw line	
 	if (this.hasTag("animateGameOver"))
     {
-        GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(28, 24), this.getTeamWon() == 0 ? SColor(0xff10abe7) : SColor(0xffd23921));
+		CPlayer@ local = getLocalPlayer();
+
+        GUI::DrawRectangle(timelineLPos + Vec2f(10, 22), timelineRPos + Vec2f(28, 24), this.getTeamWon() == local.getTeamNum() ? SColor(0xff33ee33) : SColor(0xffd23921));
     }
     else
     {
@@ -362,14 +364,14 @@ void RenderHPBar(CRules@ this, CBlob@ vehicle, Vec2f position)
 
 	SColor color_team;
 
-	if (vehicle.getTeamNum() == teamleft && returncount > 0 || vehicle.getTeamNum() == teamleft && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == 0)
+	if (vehicle.getTeamNum() == teamleft && returncount > 0 || vehicle.getTeamNum() == teamleft && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == teamleft)
 	{
 		color_light = getNeonColor(teamleft, 0);
 		color_mid	= getNeonColor(teamleft, 1);
 		color_dark	= getNeonColor(teamleft, 2);
 	}
 	
-	if (vehicle.getTeamNum() == teamright && returncount > 0 || vehicle.getTeamNum() == teamright && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == 1)
+	if (vehicle.getTeamNum() == teamright && returncount > 0 || vehicle.getTeamNum() == teamright && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == teamright)
 	{
 		getNeonColor(teamright, 0);
 		getNeonColor(teamright, 1);
@@ -449,14 +451,14 @@ void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
 
-	if (flag.getTeamNum() == teamright && returncount > 0 || flag.getTeamNum() == teamleft && returncount == 0 || flag.getTeamNum() == 255 && flag.get_s8("teamcapping") == 0)
+	if (flag.getTeamNum() == teamright && returncount > 0 || flag.getTeamNum() == teamleft && returncount == 0 || flag.getTeamNum() == 255 && flag.get_s8("teamcapping") == teamleft)
 	{
 		color_light = getNeonColor(teamleft, 0);
 		color_mid	= getNeonColor(teamleft, 1);
 		color_dark	= getNeonColor(teamleft, 2);
 	}
 	
-	if (flag.getTeamNum() == teamleft && returncount > 0 || flag.getTeamNum() == teamright && returncount == 0 || flag.getTeamNum() == 255 && flag.get_s8("teamcapping") == 1)
+	if (flag.getTeamNum() == teamleft && returncount > 0 || flag.getTeamNum() == teamright && returncount == 0 || flag.getTeamNum() == 255 && flag.get_s8("teamcapping") == teamright)
 	{
 		color_light = getNeonColor(teamright, 0);
 		color_mid	= getNeonColor(teamright, 1);

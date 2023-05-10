@@ -1286,6 +1286,11 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 		getRules().set_u32(player.getUsername() + "_exp", 2500+XORRandom(1250));
 	}
 
+	this.Sync("oldteamleft", true);
+	this.Sync("oldteamright", true);
+	this.Sync("teamleft", true);
+	this.Sync("teamright", true);
+
 	if (getPlayersCount() == 5 || getPlayersCount() == 4)
 	{
 		LoadMapCycle("MAPS/mapcycle.cfg");
