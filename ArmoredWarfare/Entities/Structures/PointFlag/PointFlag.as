@@ -80,7 +80,6 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 		getRules().SetCurrentState(GAME_OVER);
 		CTeam@ teamis = getRules().getTeam(team);
 		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
-		}
 	}
 }
 
