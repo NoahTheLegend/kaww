@@ -34,9 +34,12 @@ f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hit
 
 void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f collisionPos )
 {
-	if (blob !is null && blob.hasTag("flesh"))
+	if (isServer() && blob !is null)
 	{
-		this.server_Hit(this, this.getPosition(), Vec2f(0,0), 0.175f, Hitters::builder);
+		if (blob.hasTag("vehicle"))
+			this.server_Die();
+		else if (blob.hasTag("flesh"))
+			this.server_Hit(this, this.getPosition(), Vec2f(0,0), 0.175f, Hitters::builder);
 	}
 }
 
