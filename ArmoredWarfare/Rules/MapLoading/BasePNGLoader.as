@@ -43,24 +43,52 @@ class PNGLoader
 	{
 		u8 prevteamleft = getRules().get_u8("teamleft");
 		u8 prevteamright = getRules().get_u8("teamright");
-
-		u8 teamleft = XORRandom(7);
-		while (teamleft == prevteamleft)
+		if (!getRules().hasTag("first init teams")) // first match always sets same teams (6 and 1)
 		{
-			teamleft = XORRandom(7);
+			getRules().Tag("first init teams");
+			u8 teamleft = (Time_Local()%(XORRandom(8)+1));
+			while (teamleft == prevteamleft)
+			{
+				teamleft = (Time_Local()%(XORRandom(8)+1));
+			}
+			u8 teamright = (Time_Local()%(XORRandom(8)+1));
+			while (teamright == teamleft || teamright == prevteamright)
+			{
+				teamright = (Time_Local()%(XORRandom(8)+1));
+			}
+			getRules().set_u8("oldteamleft", teamleft);
+			getRules().set_u8("oldteamright", teamright);
+			getRules().set_u8("teamleft", teamleft);
+			getRules().set_u8("teamright", teamright);
+
+			printf("SET TEAMS INIT "+teamleft+" : "+teamright);
+
+    		_teamleft = teamleft;
+    		_teamright = teamright;
 		}
-		u8 teamright = XORRandom(7);
-		while (teamright == teamleft || teamright == prevteamright)
+		else
 		{
-			teamright = XORRandom(7);
+			u8 teamleft = XORRandom(7);
+			while (teamleft == prevteamleft)
+			{
+				teamleft = XORRandom(7);
+			}
+			u8 teamright = XORRandom(7);
+			while (teamright == teamleft || teamright == prevteamright)
+			{
+				teamright = XORRandom(7);
+			}
+			getRules().set_u8("oldteamleft", getRules().get_u8("teamleft"));
+			getRules().set_u8("oldteamright", getRules().get_u8("teamright"));
+			getRules().set_u8("teamleft", teamleft);
+			getRules().set_u8("teamright", teamright);
+			printf("SET TEAMS "+teamleft+" : "+teamright);
+
+    		_teamleft = teamleft;
+    		_teamright = teamright;
 		}
-		getRules().set_u8("teamleft", teamleft);
-		getRules().set_u8("teamright", teamright);
 
-		printf("SET TEAMS "+teamleft+" : "+teamright);
-
-    	_teamleft = teamleft;
-    	_teamright = teamright;
+		
 
 		//printf("setting teams: "+teamleft+" | "+teamright);
 	}

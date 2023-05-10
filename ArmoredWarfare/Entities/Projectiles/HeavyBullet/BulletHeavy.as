@@ -434,7 +434,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	}
 
-	if ((!is_young || (!same_team && this.getTeamNum() < 2)) && blob.isAttached())
+	if ((!is_young || (!same_team && this.getTeamNum() < 7)) && blob.isAttached())
 	{
 		if (blob.hasTag("collidewithbullets")) return XORRandom(2)==0;
 		if (XORRandom(6) == 0)

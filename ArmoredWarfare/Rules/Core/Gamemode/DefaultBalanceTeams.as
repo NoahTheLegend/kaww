@@ -254,7 +254,7 @@ void BalanceAll(CRules@ this, RulesCore@ core, BalanceInfo[]@ infos, int type = 
 		if (p.getTeamNum() != this.getSpectatorTeamNum())
 		{
 			b.lastBalancedTime = getGameTime();
-			int tempteam = XORRandom(100)<50?this.get_u8("teamleft"):this.get_u8("teamright");
+			int tempteam = getSmallestTeam(core.teams);
 			//printf("moving to temp "+tempteam);
 			core.ChangePlayerTeam(p, tempteam);
 		}

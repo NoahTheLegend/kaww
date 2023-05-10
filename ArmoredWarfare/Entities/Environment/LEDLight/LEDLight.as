@@ -6,7 +6,7 @@
 
 	this.set_TileType("background tile", CMap::tile_wood_back);
 
-	this.SetFacingLeft(XORRandom(100) < 50 ? true : false);
+	this.SetFacingLeft(XORRandom(100) < 50 );
 
 	if (isServer()) this.set_bool("light", true);
 

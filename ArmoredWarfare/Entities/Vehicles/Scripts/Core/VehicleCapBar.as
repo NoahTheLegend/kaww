@@ -1,3 +1,5 @@
+#include "TeamColorCOllections.as"
+
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 const u16 capture_time = 350;
@@ -14,49 +16,54 @@ void onTick(CBlob@ this)
 	if (this.isAttached()) return;
     float capture_distance = 38.0f; //Distance from this blob that it can be cpaped
 
-    u8 num_blue = 0;
-    u8 num_red = 0;
+    u8 num_teamleft = 0;
+    u8 num_teamright = 0;
 
     array<CBlob@> blobs; //Blob array full of blobs
     CMap@ map = getMap();
     map.getBlobsInRadius(this.getPosition() + Vec2f(4.0f,0.0f), capture_distance, blobs);
 
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+
     for (u16 i = 0; i < blobs.size(); i++)
     {
         if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead")) // Only players
         {
-        	if (blobs[i].getTeamNum() == 0)
+        	if (blobs[i].getTeamNum() == teamleft)
         	{
-        		num_blue++;
+        		num_teamleft++;
         	}
-        	if (blobs[i].getTeamNum() == 1)
+        	if (blobs[i].getTeamNum() == teamright)
         	{
-        		num_red++;
+        		num_teamright++;
         	}
         }
     }
 
     this.set_u8("numcapping", 0);
 
-    if (num_red > 0 || num_blue > 0)
+    if (num_teamright > 0 || num_teamleft > 0)
     {
-    	if (num_red > 0 && num_blue == 0 && this.get_s8(teamcapping) != 0 && (this.getTeamNum() == 0 || this.getTeamNum() == 255)) // red capping
+    	if (num_teamright > 0 && num_teamleft == 0 && this.get_s8(teamcapping) != 0 && (this.getTeamNum() == teamleft || this.getTeamNum() == 255)) // red capping
     	{
-    		this.set_u8("numcapping", num_red);
-    		this.set_s8(teamcapping, 1);
+    		this.set_u8("numcapping", num_teamright);
+    		this.set_s8(teamcapping, teamright);
 
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_red);
+    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_teamright);
     	}
-    	else if (num_blue > 0 && num_red == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == 1 || this.getTeamNum() == 255)) // blue capping
+    	else if (num_teamleft > 0 && num_teamright == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == teamright || this.getTeamNum() == 255)) // blue capping
     	{
-    		this.set_u8("numcapping", num_blue);
-    		this.set_s8(teamcapping, 0);
+    		this.set_u8("numcapping", num_teamleft);
+    		this.set_s8(teamcapping, teamleft);
 
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_blue);
+    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_teamleft);
     	}
     }
     
-    if ((this.get_u16(capture_prop) > 0 && getGameTime() % 2 == 0) && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0) || (num_red == 0 && this.get_s8(teamcapping) == 1 && this.getTeamNum() == 255) || (num_blue == 0 && this.get_s8(teamcapping) == 0 && this.getTeamNum() == 255)))
+    if ((this.get_u16(capture_prop) > 0 && getGameTime() % 2 == 0) && ((num_teamleft == 0 && this.getTeamNum() == teamright) 
+		|| (num_teamright == 0 && this.getTeamNum() == teamleft) || (num_teamright == 0 && this.get_s8(teamcapping) == teamright
+		&& this.getTeamNum() == 255) || (num_teamleft == 0 && this.get_s8(teamcapping) == teamleft&& this.getTeamNum() == 255)))
     {
     	this.set_u16(capture_prop, this.get_u16(capture_prop) - 1);
     }
@@ -103,29 +110,32 @@ void onRender(CSprite@ this)
 	SColor color_mid;
 	SColor color_dark;
 
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+
 	SColor color_team;
 
-	if (blob.getTeamNum() == 1 && returncount > 0 || blob.getTeamNum() == 0 && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == 0)
+	if (blob.getTeamNum() == teamright && returncount > 0 || blob.getTeamNum() == teamleft && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == teamleft)
 	{
-		color_light = 0xff2cafde;
-		color_mid	= 0xff1d85ab; //  0xff1d85ab
-		color_dark	= 0xff1a4e83;
+		color_light = getNeonColor(teamleft, 0);
+		color_mid	=  getNeonColor(teamleft, 1);
+		color_dark	=  getNeonColor(teamleft, 2);
 	}
 	
-	if (blob.getTeamNum() == 0 && returncount > 0 || blob.getTeamNum() == 1 && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == 1)
+	if (blob.getTeamNum() == teamleft && returncount > 0 || blob.getTeamNum() == teamright && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == teamright)
 	{
-		color_light = 0xffd5543f;
-		color_mid	= 0xffb73333; // 0xffb73333
-		color_dark	= 0xff941b1b;
+		color_light = getNeonColor(teamright, 0);
+		color_mid	= getNeonColor(teamright, 1);
+		color_dark	= getNeonColor(teamright, 2);
 	}
 
-	if (blob.getTeamNum() == 0)
+	if (blob.getTeamNum() == teamleft)
 	{
-		color_team = 0xff2cafde;
+		color_team = getNeonColor(teamleft, 0);
 	}
-	if (blob.getTeamNum() == 1)
+	if (blob.getTeamNum() == teamright)
 	{
-		color_team = 0xffd5543f;
+		color_team = getNeonColor(teamright, 0);
 	}
 	if (blob.getTeamNum() == 255)
 	{

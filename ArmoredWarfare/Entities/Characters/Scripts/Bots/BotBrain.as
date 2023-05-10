@@ -1101,7 +1101,7 @@ void onTick(CBrain@ this)
 				}
 				else
 				{
-					if (blob.getTeamNum() == 0)
+					if (blob.getTeamNum() == getRules().get_u8("teamleft"))
 					{
 						blob.setKeyPressed(key_right, true);
 					}

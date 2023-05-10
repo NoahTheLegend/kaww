@@ -21,10 +21,13 @@ s16 numTeamRightTicketsPerPlayerInGame;
 
 const u8 FONT_SIZE = 27;
 
+const u32 MIN_TICKETS = 40;
+const u32 TICKETS_PER_PLAYER = 15;
+
 void reset(CRules@ this){
-
 	if(getNet().isServer()){
-
+		u8 teamleft = getRules().get_u8("oldteamleft");
+		u8 teamright = getRules().get_u8("oldteamright");
 		//string configstr = "../Mods/tickets/Rules/CommonScripts/tickets/tickets.cfg";
 		string configstr = "../Mods/ArmoredWarfare/tickets/settings/tickets.cfg";
 		if (this.exists("ticketsconfig")){
@@ -32,43 +35,41 @@ void reset(CRules@ this){
 		}
 		ConfigFile cfg = ConfigFile( configstr );
 		
-		ticketsPerTeam = cfg.read_s16("ticketsPerTeam",40);
-		ticketsPerPlayer = cfg.read_s16("ticketsPerPlayer",0);
-		ticketsPerPlayerInTeam0 = cfg.read_s16("ticketsPerPlayerInTeam0",0);
+		ticketsPerTeam = MIN_TICKETS;
+		ticketsPerPlayerInTeam0 = TICKETS_PER_PLAYER;
 		
 		numTeamLeftTickets = cfg.read_s16("numTeamLeftTickets",0);
 		numTeamRightTickets = cfg.read_s16("numTeamRightTickets",0);
-
-		numTeamLeftTicketsPerPlayerInTeam = cfg.read_s16("numTeamLeftTicketsPerPlayerInTeam",0);
-		numTeamRightTicketsPerPlayerInTeam = cfg.read_s16("numTeamRightTicketsPerPlayerInTeam",0);
-		numTeamLeftTicketsPerPlayerInGame = cfg.read_s16("numTeamLeftTicketsPerPlayerInGame",0);
-		numTeamRightTicketsPerPlayerInGame = cfg.read_s16("numTeamRightTicketsPerPlayerInGame",0);
 
 		
 		RulesCore@ core;
 		this.get("core", @core);
 		if (core is null) print("core is null!!!");
 		
+		u8 templeft = 0;
+		u8 tempright = 0;
+		for (u8 i = 0; i < getPlayersCount(); i++)
+		{
+			if (getPlayer(i) is null) continue;
+			if (getPlayer(i).getTeamNum() == teamleft)
+				templeft++;
+			else if (getPlayer(i).getTeamNum() == teamright)
+				tempright++;
+		}
+		u8 players_count = templeft+tempright;
+		u8 players_in_team_count = Maths::Min(templeft, tempright);
 
 		s16 teamRightTickets=ticketsPerTeam;
 		s16 teamLeftTickets=ticketsPerTeam;
 
 		int playersInGame=getPlayersCount();
+		
+		teamLeftTickets+=(ticketsPerPlayerInTeam0*players_in_team_count);
+		teamRightTickets+=(ticketsPerPlayerInTeam0*players_in_team_count);	
 
-		teamLeftTickets+=(ticketsPerPlayer*playersInGame);
-		teamRightTickets+=(ticketsPerPlayer*playersInGame);
-		teamLeftTickets+=(ticketsPerPlayerInTeam0*(core.getTeam(0).players_count));
-		teamRightTickets+=(ticketsPerPlayerInTeam0*(core.getTeam(0).players_count));
-
-		teamLeftTickets+=numTeamLeftTickets;
-		teamRightTickets+=numTeamRightTickets;
-		teamLeftTickets+=(numTeamLeftTicketsPerPlayerInTeam*core.getTeam(0).players_count);
-		teamRightTickets+=(numTeamRightTicketsPerPlayerInTeam*core.getTeam(1).players_count);
-		teamLeftTickets+=(numTeamLeftTicketsPerPlayerInGame*playersInGame);
-		teamRightTickets+=(numTeamRightTicketsPerPlayerInGame*playersInGame);
 
 		this.set_s16("teamRightTickets", teamRightTickets);
-		this.set_s16("teamLeftTickets", teamLeftTickets);
+		this.set_s16("teamLeftTickets", teamLeftTickets);;
 		this.Sync("teamRightTickets", true);
 		this.Sync("teamLeftTickets", true);
 

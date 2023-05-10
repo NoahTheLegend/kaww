@@ -55,19 +55,21 @@ void onTick(CRules@ this)
 
 		if (teamRightTickets == 0 && teamLeftTickets == 0)
 		{
-			u8 players_blue;
-			u8 players_red;
+			u8 players_teamleft;
+			u8 players_teamright;
 			for (u8 i = 0; i < getPlayersCount(); i++)
 			{
 				if (getPlayer(i) !is null && getPlayer(i).getBlob() !is null)
 				{
-					if (getPlayer(i).getBlob().getTeamNum() == 0) players_blue++;
-					else if (getPlayer(i).getBlob().getTeamNum() == 1) players_red++;
+					u8 teamleft = getRules().get_u8("teamleft");
+					u8 teamright = getRules().get_u8("teamright");
+					if (getPlayer(i).getBlob().getTeamNum() == teamleft) players_teamleft++;
+					else if (getPlayer(i).getBlob().getTeamNum() == teamright) players_teamright++;
 				}
 			}
 
-			if (players_blue > players_red) teamWonNumber = 0;
-			else if (players_red > players_blue) teamWonNumber = 1;
+			if (players_teamleft > players_teamright) teamWonNumber = 0;
+			else if (players_teamright > players_teamleft) teamWonNumber = 1;
 			else
 			{
 				teamWonNumber = -1;

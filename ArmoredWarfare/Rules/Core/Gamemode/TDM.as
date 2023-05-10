@@ -75,14 +75,15 @@ shared bool isPlayersLeft(CRules@ this, int team){			//checks if spawning player
 }
 
 shared bool checkGameOver(CRules@ this, int teamNum){
-
+		u8 teamleft = getRules().get_u8("teamleft");
+		u8 teamright = getRules().get_u8("teamright");
 		if(teamNum==this.get_u8("teamleft")){					//if one team is dead, other wins (no consideration for more teams)
 			if(this.get_s16("teamRightTickets")>0) return false;
 			if(isPlayersLeft(this, teamNum)) return false;
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 0 ); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage( this.getTeam(0).getName() + " wins the game!\n\nWell done. Loading next map..." );
+			this.SetGlobalMessage( this.getTeam(teamleft).getName() + " wins the game!\n\nWell done. Loading next map..." );
 			return true;
 		}else if(teamNum==this.get_u8("teamright")){
 			if(this.get_s16("teamLeftTickets")>0) return false;
@@ -90,7 +91,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 1 ); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage( this.getTeam(1).getName() + " wins the game!\n\nWell done. Loading next map..." );
+			this.SetGlobalMessage( this.getTeam(teamright).getName() + " wins the game!\n\nWell done. Loading next map..." );
 			return true;
 		}
 	
@@ -892,6 +893,8 @@ shared class TDMCore : RulesCore
 		{
 			if (rules.getCurrentState() != GAME_OVER)
 			{
+				u8 teamleft = getRules().get_u8("teamleft");
+				u8 teamright = getRules().get_u8("teamright");
 				//u16 teamleft_kills = getRules().get_u16("teamleft_kills");
 				//u16 teamright_kills = getRules().get_u16("teamright_kills");
 //
@@ -910,7 +913,7 @@ shared class TDMCore : RulesCore
 				if (teamleft_tickets > teamright_tickets)
 				{
 					team_wins_on_end = 0;
-					CTeam@ teamis = rules.getTeam(0);
+					CTeam@ teamis = rules.getTeam(teamleft);
 					rules.SetTeamWon(0);   //game over!
 					rules.SetCurrentState(GAME_OVER);
 					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );		
@@ -918,7 +921,7 @@ shared class TDMCore : RulesCore
 				else if (teamleft_tickets < teamright_tickets)
 				{
 					team_wins_on_end = 1;
-					CTeam@ teamis = rules.getTeam(1);
+					CTeam@ teamis = rules.getTeam(teamright);
 					rules.SetTeamWon(1);   //game over!
 					rules.SetCurrentState(GAME_OVER);
 					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );		

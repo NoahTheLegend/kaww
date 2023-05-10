@@ -13,6 +13,7 @@
 #include "HoverMessage.as";
 #include "PlayerRankInfo.as";
 #include "ProgressBar.as";
+#include "TeamColorCollections.as";
 
 //can't be <2 - needs one frame less for gathering infos
 const s32 hit_frame = 2;
@@ -225,7 +226,7 @@ void onTick(CBlob@ this)
 		{
 			if (!hasBar(bars, "sentry_build"))
 			{
-				SColor team_front = this.getTeamNum() == 0 ? SColor(255, 115, 115, 255) : SColor(255, 255, 75, 75);
+				SColor team_front = getNeonColor(this.getTeamNum(), 0);
 				ProgressBar setbar;
 				setbar.Set(this, "sentry_build", Vec2f(64.0f, 16.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, team_front,
 					"turret_load", 90/*sentry buildtime*/, 1.0f, 5, 5, false, "");
@@ -258,9 +259,11 @@ void onTick(CBlob@ this)
 		else if (!this.hasScript("ClimbTree.as")) this.AddScript("ClimbTree.as");
 	}
 	
-	if ((this.getTeamNum() == 0 && getRules().get_s16("teamLeftTickets") == 0)
-	|| (this.getTeamNum() == 1 && getRules().get_s16("teamRightTickets") == 0))
+	if (!this.hasTag("set light")
+	&& ((this.getTeamNum() == getRules().get_u8("teamleft") && getRules().get_s16("teamLeftTickets") == 0)
+	|| (this.getTeamNum() == getRules().get_u8("teamright") && getRules().get_s16("teamRightTickets") == 0)))
 	{
+		this.Tag("set light");
 		this.SetLightRadius(8.0f);
 		this.SetLightColor(SColor(255, 255, 255, 255));
 		this.SetLight(true);

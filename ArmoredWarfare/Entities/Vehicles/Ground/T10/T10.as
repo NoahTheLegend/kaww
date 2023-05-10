@@ -38,7 +38,9 @@ void onInit(CBlob@ this)
 
 	this.getShape().SetOffset(Vec2f(0, 2));
 
-	bool facing_left = this.getTeamNum() == 1 ? true : false;
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+	bool facing_left = this.getTeamNum() == teamright;
 	this.SetFacingLeft(facing_left);
 
 	CSprite@ sprite = this.getSprite();

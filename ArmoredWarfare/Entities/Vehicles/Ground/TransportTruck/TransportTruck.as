@@ -59,11 +59,15 @@ void onInit(CBlob@ this)
 	{
 		if (this.getTeamNum() != 2)
 		{
-			CBlob@ loot = server_CreateBlob("armory",this.getTeamNum(),this.getPosition() - Vec2f((this.getTeamNum() == 0 ? 64.0f : -64.0f),0.0f));
+			u8 teamleft = getRules().get_u8("teamleft");
+			u8 teamright = getRules().get_u8("teamright");
+			CBlob@ loot = server_CreateBlob("armory",this.getTeamNum(),this.getPosition() - Vec2f((this.getTeamNum() == teamleft ? 64.0f : -64.0f),0.0f));
 		}
 	}
 
-	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+	this.SetFacingLeft(this.getTeamNum() == teamright);
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)

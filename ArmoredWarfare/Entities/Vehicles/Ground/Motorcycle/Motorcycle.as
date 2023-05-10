@@ -45,7 +45,9 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
 
-	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+	this.SetFacingLeft(this.getTeamNum() == teamright);
 
 	AttachmentPoint@[] aps;
 	if (this.getAttachmentPoints(@aps))

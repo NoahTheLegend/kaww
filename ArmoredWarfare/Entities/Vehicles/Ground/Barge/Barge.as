@@ -11,7 +11,9 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("no_upper_collision");
 
-	this.SetFacingLeft(this.getTeamNum()==1);
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+	this.SetFacingLeft(this.getTeamNum()==teamright);
 
 	AddIconToken("$store_inventory$", "InteractionIcons.png", Vec2f(32, 32), 28);
 
@@ -31,12 +33,12 @@ void onInit(CBlob@ this)
 	                        1.33f // movement sound pitch modifier     0.0f = no manipulation
 	                       );
 
-	this.getShape().SetOffset(Vec2f(this.getTeamNum()==0?-3:3, 9));
+	this.getShape().SetOffset(Vec2f(this.getTeamNum()==teamleft?-3:2, 9));
 	this.getShape().getConsts().transports = true;
 	this.getSprite().SetZ(50);
 
 	f32 corellate = 0;
-	if (this.getTeamNum() == 1) corellate = 8;
+	if (this.getTeamNum() == teamright) corellate = 4;
 
 	Vec2f[] backbackShape;
 	backbackShape.push_back(Vec2f(4.0f, -2.0f));

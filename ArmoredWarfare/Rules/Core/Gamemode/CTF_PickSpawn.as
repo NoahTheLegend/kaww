@@ -20,8 +20,10 @@ void BuildRespawnMenu(CRules@ this, CPlayer@ player)
 	const int teamNum = player.getTeamNum();
 	const u16 localID = getLocalPlayer().getNetworkID();
 
-	if ((teamNum == 0 && this.get_s16("teamLeftTickets") == 0)
-	|| (teamNum == 1 && this.get_s16("teamRightTickets") == 0)) return;
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+	if ((teamNum == teamleft && this.get_s16("teamLeftTickets") == 0)
+	|| (teamNum == teamright && this.get_s16("teamRightTickets") == 0)) return;
 
     CBlob@ oldrespawn = getBlobByNetworkID(LAST_PICK);
     if(oldrespawn !is null ) //don't use last pick if it's under raid
@@ -206,6 +208,8 @@ void onCommand(CRules@ this, u8 cmd, CBitStream @params)
 
 void SortByPosition(CBlob@[]@ spawns, const int teamNum)
 {
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
 	// Selection Sort
 	uint N = spawns.length;
 	for (uint i = 0; i < N; i++)
@@ -216,9 +220,9 @@ void SortByPosition(CBlob@[]@ spawns, const int teamNum)
 		for (uint j = i + 1; j < N; j++)
 		{
 			if (
-			    (teamNum == 0 && spawns[j].getPosition().x < spawns[minIndex].getPosition().x)
+			    (teamNum == teamleft && spawns[j].getPosition().x < spawns[minIndex].getPosition().x)
 			    ||
-			    (teamNum == 1 && spawns[j].getPosition().x < spawns[minIndex].getPosition().x)
+			    (teamNum == teamright && spawns[j].getPosition().x < spawns[minIndex].getPosition().x)
 			)
 			{
 				minIndex = j;

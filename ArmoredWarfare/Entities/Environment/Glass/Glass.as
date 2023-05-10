@@ -2,7 +2,7 @@
 
 void onInit(CBlob@ this)
 {
-	this.SetFacingLeft(XORRandom(100) < 30 ? true : false);
+	this.SetFacingLeft(XORRandom(100) < 30);
 
 	this.getSprite().SetZ(5);
 
