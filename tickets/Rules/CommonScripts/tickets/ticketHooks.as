@@ -3,21 +3,21 @@
 
 #include "tickets.as";
 
-int redTicketsLeft;
-int blueTicketsLeft;
+int teamRightTicketsLeft;
+int teamLeftTicketsLeft;
 
 s16 ticketsPerTeam;
 s16 ticketsPerPlayer;
 s16 ticketsPerPlayerInTeam0;
 
 bool unevenTickets;
-s16 numBlueTickets;
-s16 numRedTickets;
+s16 numTeamLeftTickets;
+s16 numTeamRightTickets;
 
-s16 numBlueTicketsPerPlayerInTeam;
-s16 numRedTicketsPerPlayerInTeam;
-s16 numBlueTicketsPerPlayerInGame;
-s16 numRedTicketsPerPlayerInGame;
+s16 numTeamLeftTicketsPerPlayerInTeam;
+s16 numTeamRightTicketsPerPlayerInTeam;
+s16 numTeamLeftTicketsPerPlayerInGame;
+s16 numTeamRightTicketsPerPlayerInGame;
 
 const u8 FONT_SIZE = 27;
 
@@ -36,13 +36,13 @@ void reset(CRules@ this){
 		ticketsPerPlayer = cfg.read_s16("ticketsPerPlayer",0);
 		ticketsPerPlayerInTeam0 = cfg.read_s16("ticketsPerPlayerInTeam0",0);
 		
-		numBlueTickets = cfg.read_s16("numBlueTickets",0);
-		numRedTickets = cfg.read_s16("numRedTickets",0);
+		numTeamLeftTickets = cfg.read_s16("numTeamLeftTickets",0);
+		numTeamRightTickets = cfg.read_s16("numTeamRightTickets",0);
 
-		numBlueTicketsPerPlayerInTeam = cfg.read_s16("numBlueTicketsPerPlayerInTeam",0);
-		numRedTicketsPerPlayerInTeam = cfg.read_s16("numRedTicketsPerPlayerInTeam",0);
-		numBlueTicketsPerPlayerInGame = cfg.read_s16("numBlueTicketsPerPlayerInGame",0);
-		numRedTicketsPerPlayerInGame = cfg.read_s16("numRedTicketsPerPlayerInGame",0);
+		numTeamLeftTicketsPerPlayerInTeam = cfg.read_s16("numTeamLeftTicketsPerPlayerInTeam",0);
+		numTeamRightTicketsPerPlayerInTeam = cfg.read_s16("numTeamRightTicketsPerPlayerInTeam",0);
+		numTeamLeftTicketsPerPlayerInGame = cfg.read_s16("numTeamLeftTicketsPerPlayerInGame",0);
+		numTeamRightTicketsPerPlayerInGame = cfg.read_s16("numTeamRightTicketsPerPlayerInGame",0);
 
 		
 		RulesCore@ core;
@@ -50,27 +50,27 @@ void reset(CRules@ this){
 		if (core is null) print("core is null!!!");
 		
 
-		s16 redTickets=ticketsPerTeam;
-		s16 blueTickets=ticketsPerTeam;
+		s16 teamRightTickets=ticketsPerTeam;
+		s16 teamLeftTickets=ticketsPerTeam;
 
 		int playersInGame=getPlayersCount();
 
-		blueTickets+=(ticketsPerPlayer*playersInGame);
-		redTickets+=(ticketsPerPlayer*playersInGame);
-		blueTickets+=(ticketsPerPlayerInTeam0*(core.getTeam(0).players_count));
-		redTickets+=(ticketsPerPlayerInTeam0*(core.getTeam(0).players_count));
+		teamLeftTickets+=(ticketsPerPlayer*playersInGame);
+		teamRightTickets+=(ticketsPerPlayer*playersInGame);
+		teamLeftTickets+=(ticketsPerPlayerInTeam0*(core.getTeam(0).players_count));
+		teamRightTickets+=(ticketsPerPlayerInTeam0*(core.getTeam(0).players_count));
 
-		blueTickets+=numBlueTickets;
-		redTickets+=numRedTickets;
-		blueTickets+=(numBlueTicketsPerPlayerInTeam*core.getTeam(0).players_count);
-		redTickets+=(numRedTicketsPerPlayerInTeam*core.getTeam(1).players_count);
-		blueTickets+=(numBlueTicketsPerPlayerInGame*playersInGame);
-		redTickets+=(numRedTicketsPerPlayerInGame*playersInGame);
+		teamLeftTickets+=numTeamLeftTickets;
+		teamRightTickets+=numTeamRightTickets;
+		teamLeftTickets+=(numTeamLeftTicketsPerPlayerInTeam*core.getTeam(0).players_count);
+		teamRightTickets+=(numTeamRightTicketsPerPlayerInTeam*core.getTeam(1).players_count);
+		teamLeftTickets+=(numTeamLeftTicketsPerPlayerInGame*playersInGame);
+		teamRightTickets+=(numTeamRightTicketsPerPlayerInGame*playersInGame);
 
-		this.set_s16("redTickets", redTickets);
-		this.set_s16("blueTickets", blueTickets);
-		this.Sync("redTickets", true);
-		this.Sync("blueTickets", true);
+		this.set_s16("teamRightTickets", teamRightTickets);
+		this.set_s16("teamLeftTickets", teamLeftTickets);
+		this.Sync("teamRightTickets", true);
+		this.Sync("teamLeftTickets", true);
 
 	}
 }
@@ -105,9 +105,9 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData){
 		int numTickets=0;
 
 		if(teamNum==0){
-			numTickets=this.get_s16("blueTickets");
+			numTickets=this.get_s16("teamLeftTickets");
 		}else{
-			numTickets=this.get_s16("redTickets");
+			numTickets=this.get_s16("teamRightTickets");
 		}
 		if(numTickets<=0){          //play sound if running/run out of tickets
 			Sound::Play("/depleted.ogg");

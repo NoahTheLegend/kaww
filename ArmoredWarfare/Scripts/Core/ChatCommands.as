@@ -129,13 +129,13 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 						bool blue = sub[1] == "blue";
 						if (blue)
 						{
-							this.set_s16("blueTickets", parseInt(sub[2]));
-							this.Sync("blueTickets", true);
+							this.set_s16("teamLeftTickets", parseInt(sub[2]));
+							this.Sync("teamLeftTickets", true);
 						}
 						else
 						{
-							this.set_s16("redTickets", parseInt(sub[2]));
-							this.Sync("redTickets", true);
+							this.set_s16("teamRightTickets", parseInt(sub[2]));
+							this.Sync("teamRightTickets", true);
 						}
 					}
 				}

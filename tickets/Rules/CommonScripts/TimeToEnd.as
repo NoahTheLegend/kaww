@@ -37,14 +37,14 @@ void onTick(CRules@ this)
 		}*/
 
 		//who has the most tickets left?
-		int redTickets = this.get_s16("redTickets");
-		int blueTickets = this.get_s16("blueTickets");
+		int teamRightTickets = this.get_s16("teamRightTickets");
+		int teamLeftTickets = this.get_s16("teamLeftTickets");
 
 		bool tie = false;
 		{
-			if(redTickets>blueTickets)
+			if(teamRightTickets>teamLeftTickets)
 				teamWonNumber = 1;
-			else if(blueTickets>redTickets)
+			else if(teamLeftTickets>teamRightTickets)
 				teamWonNumber = 0;
 			else
 			{
@@ -53,7 +53,7 @@ void onTick(CRules@ this)
 			}
 		}
 
-		if (redTickets == 0 && blueTickets == 0)
+		if (teamRightTickets == 0 && teamLeftTickets == 0)
 		{
 			u8 players_blue;
 			u8 players_red;

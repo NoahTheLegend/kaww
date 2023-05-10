@@ -1139,8 +1139,8 @@ void onTick(CBlob@ this)
 		if (!(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
 		if (this.hasTag("invincible") && !this.isAttached()) this.Untag("invincible");
 	}
-	if ((this.getTeamNum() == 0 && getRules().get_s16("blueTickets") == 0)
-	|| (this.getTeamNum() == 1 && getRules().get_s16("redTickets") == 0))
+	if ((this.getTeamNum() == 0 && getRules().get_s16("teamLeftTickets") == 0)
+	|| (this.getTeamNum() == 1 && getRules().get_s16("teamRightTickets") == 0))
 	{
 		this.SetLightRadius(8.0f);
 		this.SetLightColor(SColor(255, 255, 255, 255));

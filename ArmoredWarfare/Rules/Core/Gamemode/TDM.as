@@ -12,9 +12,9 @@ ConfigFile cfg_playerexp;
 
 shared int ticketsRemaining(CRules@ this, int team){
 	if(team==0){
-		return this.get_s16("blueTickets");
+		return this.get_s16("teamLeftTickets");
 	}else if(team==1){
-		return this.get_s16("redTickets");
+		return this.get_s16("teamRightTickets");
 	}
 	return 1;
 }
@@ -28,32 +28,32 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 	if (b !is null || t is null) return 0;
 	
 	if(team==0){
-		numTickets=this.get_s16("blueTickets");
+		numTickets=this.get_s16("teamLeftTickets");
 		if(numTickets<=0)return 1;
 		numTickets--;
 
 		if (numTickets==0)
 		{
-			this.set_s16("redTickets", this.get_s16("redTickets") / 2);
-			this.Sync("redTickets", true);
+			this.set_s16("teamRightTickets", this.get_s16("teamRightTickets") / 2);
+			this.Sync("teamRightTickets", true);
 		} 
 
-		this.set_s16("blueTickets", numTickets);
-		this.Sync("blueTickets", true);
+		this.set_s16("teamLeftTickets", numTickets);
+		this.Sync("teamLeftTickets", true);
 		return 0;
 	}else if(team==1){
-		numTickets=this.get_s16("redTickets");
+		numTickets=this.get_s16("teamRightTickets");
 		if(numTickets<=0)return 1;
 		numTickets--;
 
 		if (numTickets==0)
 		{
-			this.set_s16("blueTickets", this.get_s16("blueTickets") / 2);
-			this.Sync("redTickets", true);
+			this.set_s16("teamLeftTickets", this.get_s16("teamLeftTickets") / 2);
+			this.Sync("teamRightTickets", true);
 		} 
 
-		this.set_s16("redTickets", numTickets);
-		this.Sync("redTickets", true);
+		this.set_s16("teamRightTickets", numTickets);
+		this.Sync("teamRightTickets", true);
 		return 0;
 	}
 	return 1;
@@ -76,16 +76,16 @@ shared bool isPlayersLeft(CRules@ this, int team){			//checks if spawning player
 
 shared bool checkGameOver(CRules@ this, int teamNum){
 
-		if(teamNum==1){					//if one team is dead, other wins (no consideration for more teams)
-			if(this.get_s16("redTickets")>0) return false;
+		if(teamNum==this.get_u8("teamleft")){					//if one team is dead, other wins (no consideration for more teams)
+			if(this.get_s16("teamRightTickets")>0) return false;
 			if(isPlayersLeft(this, teamNum)) return false;
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 0 ); //game over!
 			this.SetCurrentState(GAME_OVER);
 			this.SetGlobalMessage( this.getTeam(0).getName() + " wins the game!\n\nWell done. Loading next map..." );
 			return true;
-		}else if(teamNum==0){
-			if(this.get_s16("blueTickets")>0) return false;
+		}else if(teamNum==this.get_u8("teamright")){
+			if(this.get_s16("teamLeftTickets")>0) return false;
 			if(isPlayersLeft(this, teamNum)) return false;
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 1 ); //game over!
@@ -94,7 +94,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			return true;
 		}
 	
-	return false;			//team not red or blue (probably spectator so dont want to check game over)
+	return false;
 }
 
 int blobcount = 0;
@@ -202,6 +202,10 @@ shared class TDMSpawns : RespawnSystem
 	{
 		for (uint team_num = 0; team_num < TDM_core.teams.length; ++team_num)
 		{
+			if (team_num != getRules().get_u8("teamleft") && team_num != getRules().get_u8("teamright"))
+			{
+				continue;
+			}
 			TDMTeamInfo@ team = cast < TDMTeamInfo@ > (TDM_core.teams[team_num]);
 
 			for (uint i = 0; i < team.spawns.length; i++)
@@ -259,7 +263,8 @@ shared class TDMSpawns : RespawnSystem
 			}
 			if (player.getTeamNum() != int(p_info.team))
 			{
-				player.server_setTeamNum(p_info.team);
+				player.server_setTeamNum(int(p_info.team));
+				printf("New player team: "+int(p_info.team));
 			}
 
 			// remove previous players blob
@@ -680,15 +685,15 @@ shared class TDMCore : RulesCore
             if (killer !is null && killer.getTeamNum() != victim.getTeamNum())
             {
                 addKill(killer.getTeamNum()); 
-				if (victim.getTeamNum() == 1)
+				if (victim.getTeamNum() == getRules().get_u8("teamright"))
 				{
-					rules.add_u16("blue_kills", 1);
-					rules.Sync("blue_kills", true);
+					rules.add_u16("teamleft_kills", 1);
+					rules.Sync("teamleft_kills", true);
 				}
-				else if (victim.getTeamNum() == 0)
+				else if (victim.getTeamNum() == getRules().get_u8("teamleft"))
 				{
-					rules.add_u16("red_kills", 1);
-					rules.Sync("red_kills", true);
+					rules.add_u16("teamright_kills", 1);
+					rules.Sync("teamright_kills", true);
 				}
 			}
             else if (all_death_counts_as_kill)
@@ -802,14 +807,14 @@ shared class TDMCore : RulesCore
 			if (!getMap().getMarkers("blue main spawn", respawnPositions))
 			{
 				respawnPos = Vec2f(150.0f, map.getLandYAtX(150.0f / map.tilesize) * map.tilesize - 32.0f);
-				if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
+				if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, getRules().get_u8("teamleft"), respawnPos));
 			}
 			else
 			{
 				for (uint i = 0; i < respawnPositions.length; i++)
 				{
 					respawnPos = respawnPositions[i];
-					if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 0, respawnPos));
+					if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, getRules().get_u8("teamleft"), respawnPos));
 				}
 			}
 
@@ -819,14 +824,14 @@ shared class TDMCore : RulesCore
 			if (!getMap().getMarkers("red main spawn", respawnPositions))
 			{
 				respawnPos = Vec2f(map.tilemapwidth * map.tilesize - 150.0f, map.getLandYAtX(map.tilemapwidth - (150.0f / map.tilesize)) * map.tilesize - 32.0f);
-				if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, 1, respawnPos));
+				if (spawn_prop != "importantarmory")  SetupBase(server_CreateBlob(base_name, getRules().get_u8("teamright"), respawnPos));
 			}
 			else
 			{
 				for (uint i = 0; i < respawnPositions.length; i++)
 				{
 					respawnPos = respawnPositions[i];
-					if (spawn_prop != "importantarmory") SetupBase(server_CreateBlob(base_name, 1, respawnPos));
+					if (spawn_prop != "importantarmory") SetupBase(server_CreateBlob(base_name, getRules().get_u8("teamright"), respawnPos));
 				}
 			}
 
@@ -856,19 +861,19 @@ shared class TDMCore : RulesCore
 				CBlob@[] flags;
 				getBlobsByName("pointflag", @flags);
 	
-				u8 red_flags = 0;
-				u8 blue_flags = 0;
+				u8 teamright_flags = 0;
+				u8 teamleft_flags = 0;
 	
 				for (u8 i = 0; i < flags.length; i++)
 				{
 					CBlob@ flag = flags[i];
 					if (flag is null) continue;
-					if (flag.getTeamNum() > 1) continue;
-					flag.getTeamNum() == 0 ? blue_flags++ : red_flags++;
+					if (flag.getTeamNum() > 6) continue;
+					flag.getTeamNum() == rules.get_u8("teamleft") ? teamleft_flags++ : teamright_flags++;
 				}
-				if (red_flags != blue_flags)
+				if (teamright_flags != teamleft_flags)
 				{
-					u8 team_won = (red_flags > blue_flags ? 1 : 0);
+					u8 team_won = (teamright_flags > teamleft_flags ? 1 : 0);
 					CTeam@ teamis = rules.getTeam(team_won);
 					rules.SetTeamWon(team_won);   //game over!
 					rules.SetCurrentState(GAME_OVER);
@@ -887,12 +892,12 @@ shared class TDMCore : RulesCore
 		{
 			if (rules.getCurrentState() != GAME_OVER)
 			{
-				//u16 blue_kills = getRules().get_u16("blue_kills");
-				//u16 red_kills = getRules().get_u16("red_kills");
+				//u16 teamleft_kills = getRules().get_u16("teamleft_kills");
+				//u16 teamright_kills = getRules().get_u16("teamright_kills");
 //
-				//if (red_kills != blue_kills)
+				//if (teamright_kills != teamleft_kills)
 				//{
-				//	u8 team_won = (red_kills > blue_kills ? 1 : 0);
+				//	u8 team_won = (teamright_kills > teamleft_kills ? 1 : 0);
 				//	team_wins_on_end = team_won;
 				//	CTeam@ teamis = rules.getTeam(team_won);
 				//	rules.SetTeamWon(team_won);   //game over!
@@ -900,9 +905,9 @@ shared class TDMCore : RulesCore
 				//	if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );
 				//}
 
-				u16 blue_tickets = getRules().get_s16("blueTickets");
-				u16 red_tickets = getRules().get_s16("redTickets");
-				if (blue_tickets > red_tickets)
+				u16 teamleft_tickets = getRules().get_s16("teamLeftTickets");
+				u16 teamright_tickets = getRules().get_s16("teamRightTickets");
+				if (teamleft_tickets > teamright_tickets)
 				{
 					team_wins_on_end = 0;
 					CTeam@ teamis = rules.getTeam(0);
@@ -910,7 +915,7 @@ shared class TDMCore : RulesCore
 					rules.SetCurrentState(GAME_OVER);
 					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );		
 				}
-				else if (blue_tickets < red_tickets)
+				else if (teamleft_tickets < teamright_tickets)
 				{
 					team_wins_on_end = 1;
 					CTeam@ teamis = rules.getTeam(1);
@@ -1095,17 +1100,10 @@ shared class TDMCore : RulesCore
 //pass stuff to the core from each of the hooks
 void Reset(CRules@ this)
 {
-	this.set_u16("blue_kills", 0);
-	this.set_u16("red_kills", 0);
-	this.Sync("blue_kills", true);
-	this.Sync("red_kills", true);
-
-	//string configstr = "Rules/CTF/ctf_vars.cfg";
-	//ConfigFile cfg = ConfigFile(configstr);
-	//if (cfg.read_s32("game_time") != -2)
-	//{
-	//	Reset(this);
-	//}
+	this.set_u16("teamleft_kills", 0);
+	this.set_u16("teamright_kills", 0);
+	this.Sync("teamleft_kills", true);
+	this.Sync("teamright_kills", true);
 	
 	if (this.get_string("map_name") == "Abacus") {
 		for (u16 i = 0; i < getPlayerCount(); i++)
@@ -1414,20 +1412,20 @@ void onTick(CRules@ this)
 		}
 
 		u16 count = 10 + getPlayersCount();
-		if (this.get_s16("blueTickets") == 0 && this.get_s16("redTickets") == 0)
+		if (this.get_s16("teamLeftTickets") == 0 && this.get_s16("teamRightTickets") == 0)
 		{
-			this.set_s16("blueTickets", 10);
-			this.set_s16("redTickets", 10);
-			this.Sync("blueTickets", true);
-			this.Sync("redTickets", true);
+			this.set_s16("teamLeftTickets", 10);
+			this.set_s16("teamRightTickets", 10);
+			this.Sync("teamLeftTickets", true);
+			this.Sync("teamRightTickets", true);
 		}
-		else if (this.get_s16("blueTickets") > count && this.get_s16("redTickets") > count
+		else if (this.get_s16("teamLeftTickets") > count && this.get_s16("teamRightTickets") > count
 		&& getMap() !is null && getMap().tilemapwidth <= 300)
 		{
-			this.set_s16("blueTickets", count);
-			this.set_s16("redTickets", count);
-			this.Sync("blueTickets", true);
-			this.Sync("redTickets", true);
+			this.set_s16("teamLeftTickets", count);
+			this.set_s16("teamRightTickets", count);
+			this.Sync("teamLeftTickets", true);
+			this.Sync("teamRightTickets", true);
 		}
 	}
 //
@@ -1465,27 +1463,27 @@ void onTick(CRules@ this)
 			
 			if (shouldkick > 0)
 			{
-				int blueteamcount = 0;
-				int redteamcount = 0;
+				int teamleftcount = 0;
+				int teamrightcount = 0;
 				for (u16 i = 0; i < getPlayerCount(); i++)
 				{
-					if (getPlayer(i).getTeamNum() == 0)
+					if (getPlayer(i).getTeamNum() == this.get_u8("teamleft"))
 					{
-						blueteamcount ++;
+						teamleftcount ++;
 					}
-					if (getPlayer(i).getTeamNum() == 1)
+					if (getPlayer(i).getTeamNum() == this.get_u8("teamright"))
 					{
-						redteamcount ++;
+						teamrightcount ++;
 					}
 				}
 
 				u8 kickteamflip = 0;
-				if 		(blueteamcount > redteamcount) { kickteamflip = 0; } // blue has more
-				else if (blueteamcount < redteamcount) { kickteamflip = 1; } // red has more
+				if 		(teamleftcount > teamrightcount) { kickteamflip = this.get_u8("teamleft"); } // blue has more
+				else if (teamleftcount < teamrightcount) { kickteamflip = this.get_u8("teamright"); } // red has more
 				else 	{ kickteamflip = XORRandom(1); } // pick randomly
 				
-				//print("blueteamcount: " + blueteamcount);
-				//print("redteamcount: " + redteamcount);
+				//print("teamleftcount: " + teamleftcount);
+				//print("teamrightcount: " + teamrightcount);
 
 				// still a small issue with this in some cases
 				
@@ -1551,18 +1549,18 @@ void onTick(CRules@ this)
 		CBlob@[] flags;
 		getBlobsByName("pointflag", @flags);
 
-		u8 blue_flags = 0;
-		u8 red_flags = 0;
+		u8 teamleft_flags = 0;
+		u8 teamright_flags = 0;
 		for (u8 i = 0; i < flags.length; i++)
 		{
 			if (flags[i] !is null)
 			{
-				if (flags[i].getTeamNum() == 0) blue_flags++;
-				else if (flags[i].getTeamNum() == 1) red_flags++;
+				if (flags[i].getTeamNum() == this.get_u8("teamleft")) teamleft_flags++;
+				else if (flags[i].getTeamNum() == this.get_u8("teamright")) teamright_flags++;
 			}
 		}
 	}
-	
+
 	if (getGameTime() >= 1 && !this.hasTag("synced_time"))
 	{
 		TDMSpawns spawns();
@@ -1572,15 +1570,15 @@ void onTick(CRules@ this)
 	}
 	if (getGameTime()%150==0) //every 150 ticks give a coin
 	{
-		if (this.get_s16("blueTickets") > 200) 
+		if (this.get_s16("teamLeftTickets") > 200) 
 		{
-			this.set_s16("blueTickets", 200);
-			this.Sync("blueTickets", true);
+			this.set_s16("teamLeftTickets", 200);
+			this.Sync("teamLeftTickets", true);
 		}
-		if (this.get_s16("redTickets") > 200)
+		if (this.get_s16("teamRightTickets") > 200)
 		{
-			this.set_s16("redTickets", 200);
-			this.Sync("redTickets", true);
+			this.set_s16("teamRightTickets", 200);
+			this.Sync("teamRightTickets", true);
 		}
 		if (this.get_string("map_name") != "Abacus")
 		{
