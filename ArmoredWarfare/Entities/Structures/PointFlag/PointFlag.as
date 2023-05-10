@@ -76,25 +76,10 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 	//printf(""+team);
 	if (getRules() !is null && team < 2)
 	{
-		if (getRules().get_u8("siege") == 255)
-		{
-			getRules().SetTeamWon(team);
-			getRules().SetCurrentState(GAME_OVER);
-			CTeam@ teamis = getRules().getTeam(team);
-			if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
-		}
-		else
-		{
-			if (getRules().get_u8("siege") == 0)
-			{
-				getRules().set_s16("redTickets", 0);
-				getRules().Sync("redTickets", true);
-			}
-			else
-			{
-				getRules().set_s16("blueTickets", 0);
-				getRules().Sync("blueTickets", true);
-			}
+		getRules().SetTeamWon(team);
+		getRules().SetCurrentState(GAME_OVER);
+		CTeam@ teamis = getRules().getTeam(team);
+		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
 		}
 	}
 }
@@ -109,19 +94,11 @@ void onTick(CBlob@ this)
     array<CBlob@> blobs; //Blob array full of blobs
     CMap@ map = getMap();
     map.getBlobsInRadius(this.getPosition() + Vec2f(4.0f,20.0f), capture_distance, blobs);
-	
-	u8 sieging_team = getRules().get_u8("siege");
-	bool is_siege =  false; //sieging_team != 255;
-	//printf("steam "+sieging_team);
 
     for (u16 i = 0; i < blobs.size(); i++)
     {
         if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead") && !blobs[i].isAttached()) // Only players and builders    && blobs[i].getName() != "mechanic"
         {
-			if (is_siege && blobs[i].getTeamNum() != sieging_team)
-			{
-				continue;
-			}
         	if (blobs[i].getTeamNum() == 0)
         	{
         		num_blue++;

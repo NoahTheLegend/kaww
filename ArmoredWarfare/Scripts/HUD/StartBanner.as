@@ -56,18 +56,6 @@ void onTick(CRules@ this)
                     // break the truck
                     this.set_string("bannertext", "Destroy the enemy truck!");
                 }
-                else if (this.get_s8("flagcount") > 1)
-                {
-                    // siege
-                    CBlob@[] vehbuilders;
-                    getBlobsByName("vehiclebuilder", @vehbuilders);
-                    if (vehbuilders.length == 1) 
-                    {
-                        this.set_string("bannertext", "Siege enemy team or defend flags until time passes!");
-                    }
-                    else // capture the flags
-                        this.set_string("bannertext", "Control all flags to win!");
-                }
                 else if (this.get_s8("flagcount") == 1)
                 {
                     // capture the flag
