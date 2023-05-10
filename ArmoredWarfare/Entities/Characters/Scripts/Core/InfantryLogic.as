@@ -1140,6 +1140,9 @@ void onTick(CBlob@ this)
 		if (!(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
 		if (this.hasTag("invincible") && !this.isAttached()) this.Untag("invincible");
 	}
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+	if (isClient()) printf(""+teamleft+" "+teamright);
 	
 	if (!this.hasTag("set light")
 	&& ((this.getTeamNum() == getRules().get_u8("teamleft") && getRules().get_s16("teamLeftTickets") == 0)
