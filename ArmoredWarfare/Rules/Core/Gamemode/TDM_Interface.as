@@ -108,12 +108,15 @@ void onRender(CRules@ this)
 
 	if (getBlobByName("importantarmory") !is null)
 	{
-		if (p.getTeamNum() == 0 && this.get_u32("iarmory_warn0") > getGameTime())
+		u8 teamleft = getRules().get_u8("teamleft");
+		u8 teamright = getRules().get_u8("teamright");
+
+		if (p.getTeamNum() == teamleft && this.get_u32("iarmory_warn"+teamleft) > getGameTime())
 		{
 			f32 wave = Maths::Sin(getGameTime() / 3.0f) * 5.0f - 25.0f;
 			GUI::DrawTextCentered("Your truck is under attack!", Vec2f(getDriver().getScreenWidth()/2, 220+wave), SColor(255,255,255,0));
 		}
-		else if (p.getTeamNum() == 1 && this.get_u32("iarmory_warn1") > getGameTime())
+		else if (p.getTeamNum() == teamright && this.get_u32("iarmory_warn"+teamright) > getGameTime())
 		{
 			f32 wave = Maths::Sin(getGameTime() / 3.0f) * 5.0f - 25.0f;
 			GUI::DrawTextCentered("Your truck is under attack!", Vec2f(getDriver().getScreenWidth()/2, 220+wave), SColor(255,255,255,0));
@@ -194,8 +197,10 @@ void onRender(CRules@ this)
 		{
 			if (spawn == 254)
 			{
-				if ((p.getTeamNum() == 0 && this.get_s16("teamLeftTickets") == 0)
-				|| (p.getTeamNum() == 1 && this.get_s16("teamRightTickets") == 0))
+				u8 teamleft = getRules().get_u8("teamleft");
+				u8 teamright = getRules().get_u8("teamright");
+				if ((p.getTeamNum() == teamleft && this.get_s16("teamLeftTickets") == 0)
+				|| (p.getTeamNum() == teamright && this.get_s16("teamRightTickets") == 0))
 				{
 					GUI::DrawText(getTranslatedString("Your team ran out of respawns! Please, be patient and wait until game ends.") , Vec2f(getScreenWidth() / 2 - 265, getScreenHeight() / 4 + Maths::Sin(getGameTime() / 3.0f) * 5.0f), SColor(255, 255, 255, 55));
 				}

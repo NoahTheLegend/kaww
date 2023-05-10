@@ -19,6 +19,9 @@ void onRender( CRules@ this )
 	s16 teamLeftTickets=0;
 	s16 teamRightTickets=0;
 
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+
 	CPlayer@ p = getLocalPlayer();
 	if (p is null || !p.isMyPlayer()) return;
 
@@ -143,7 +146,7 @@ void onRender( CRules@ this )
 
 		u8 icon_idx;
         u8 team_num = point.getTeamNum();
-        u8 team_state = team_num; // team index | 255 neutral | 2 capping
+        u8 team_state = -1; // team index | 255 neutral | 2 capping
 
         if (point.get_s8("teamcapping") != -1
         && point.get_s8("teamcapping") != team_num)
@@ -341,6 +344,9 @@ void RenderHPBar(CRules@ this, CBlob@ vehicle, Vec2f position)
 	// adjust vertical offset depending on zoom
 	Vec2f pos2d = position;
 
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+
 	Vec2f pos = pos2d + Vec2f(15.0f, 58.0f);
 	Vec2f dimension = Vec2f(28.0, 12.0f);
 	const f32 y = 0.0f;
@@ -356,27 +362,28 @@ void RenderHPBar(CRules@ this, CBlob@ vehicle, Vec2f position)
 
 	SColor color_team;
 
-	if (vehicle.getTeamNum() == 0 && returncount > 0 || vehicle.getTeamNum() == 0 && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == 0)
+	if (vehicle.getTeamNum() == teamleft && returncount > 0 || vehicle.getTeamNum() == teamleft && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == 0)
 	{
-		color_light = 0xff2cafde;
-		color_mid	= 0xff1d85ab; //  0xff1d85ab
-		color_dark	= 0xff1a4e83;
+		color_light = getNeonColor(teamleft, 0);
+		color_mid	= getNeonColor(teamleft, 1);
+		color_dark	= getNeonColor(teamleft, 2);
 	}
 	
-	if (vehicle.getTeamNum() == 1 && returncount > 0 || vehicle.getTeamNum() == 1 && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == 1)
+	if (vehicle.getTeamNum() == teamright && returncount > 0 || vehicle.getTeamNum() == teamright && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == 1)
 	{
-		color_light = 0xffd5543f;
-		color_mid	= 0xffb73333; // 0xffb73333
-		color_dark	= 0xff941b1b;
+		getNeonColor(teamright, 0);
+		getNeonColor(teamright, 1);
+		getNeonColor(teamright, 2);
 	}
 
-	if (vehicle.getTeamNum() == 0)
+	if (vehicle.getTeamNum() == teamleft)
 	{
-		color_team = 0xff505050;
+		color_team = getNeonColor(teamleft, 0);
 	}
-	if (vehicle.getTeamNum() == 1)
+
+	if (vehicle.getTeamNum() == teamright)
 	{
-		color_team = 0xff505050;
+		color_team = getNeonColor(teamright, 0);
 	}
 	if (vehicle.getTeamNum() == 255)
 	{
@@ -438,28 +445,31 @@ void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 	SColor color_dark;
 
 	SColor color_team;
+	
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
 
-	if (flag.getTeamNum() == 1 && returncount > 0 || flag.getTeamNum() == 0 && returncount == 0 || flag.getTeamNum() == 255 && flag.get_s8("teamcapping") == 0)
+	if (flag.getTeamNum() == teamright && returncount > 0 || flag.getTeamNum() == teamleft && returncount == 0 || flag.getTeamNum() == 255 && flag.get_s8("teamcapping") == 0)
 	{
-		color_light = 0xff2cafde;
-		color_mid	= 0xff1d85ab; //  0xff1d85ab
-		color_dark	= 0xff1a4e83;
+		color_light = getNeonColor(teamleft, 0);
+		color_mid	= getNeonColor(teamleft, 1);
+		color_dark	= getNeonColor(teamleft, 2);
 	}
 	
-	if (flag.getTeamNum() == 0 && returncount > 0 || flag.getTeamNum() == 1 && returncount == 0 || flag.getTeamNum() == 255 && flag.get_s8("teamcapping") == 1)
+	if (flag.getTeamNum() == teamleft && returncount > 0 || flag.getTeamNum() == teamright && returncount == 0 || flag.getTeamNum() == 255 && flag.get_s8("teamcapping") == 1)
 	{
-		color_light = 0xffd5543f;
-		color_mid	= 0xffb73333; // 0xffb73333
-		color_dark	= 0xff941b1b;
+		color_light = getNeonColor(teamright, 0);
+		color_mid	= getNeonColor(teamright, 1);
+		color_dark	= getNeonColor(teamright, 2);
 	}
 
-	if (flag.getTeamNum() == 0)
+	if (flag.getTeamNum() == teamleft)
 	{
-		color_team = 0xff2cafde;
+		color_team = getNeonColor(teamleft, 0);
 	}
-	if (flag.getTeamNum() == 1)
+	if (flag.getTeamNum() == teamright)
 	{
-		color_team = 0xffd5543f;
+		color_team = getNeonColor(teamright, 0);
 	}
 	if (flag.getTeamNum() == 255)
 	{

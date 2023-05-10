@@ -52,14 +52,15 @@ shared bool isPlayersLeft(CRules@ this, int team){			//checks if spawning player
 }
 
 shared bool checkGameOver(CRules@ this, int teamNum){
-
+		u8 teamleft = getRules().get_u8("teamleft");
+		u8 teamright = getRules().get_u8("teamright");
 		if(teamNum==1){					//if one team is dead, other wins (no consideration for more teams)
 			if(this.get_s16("teamRightTickets")>0) return false;
 			if(isPlayersLeft(this, teamNum)) return false;
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 0 ); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage( this.getTeam(0).getName() + " wins the game!\nWell done. Loading next map..." );
+			this.SetGlobalMessage( this.getTeam(teamleft).getName() + " wins the game!\nWell done. Loading next map..." );
 			return true;
 		}else if(teamNum==0){
 			if(this.get_s16("teamLeftTickets")>0) return false;
@@ -67,7 +68,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 1 ); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage( this.getTeam(1).getName() + " wins the game!\nWell done. Loading next map..." );
+			this.SetGlobalMessage( this.getTeam(teamright).getName() + " wins the game!\nWell done. Loading next map..." );
 			return true;
 		}
 	

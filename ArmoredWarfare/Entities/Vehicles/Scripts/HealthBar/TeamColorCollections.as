@@ -22,9 +22,9 @@ SColor getNeonColor(u8 team, u8 darkness)
 		}
 		case 2: // green
 		{
-			color_light = 0xff52c125;
-			color_mid	= 0xff399720;
-			color_dark	= 0xff235d14;
+			color_light = 0xff5dc125;
+			color_mid	= 0xff429720;
+			color_dark	= 0xff295d14;
 			break;
 		}
 		case 3: // purple

@@ -11,8 +11,6 @@ void onInit(CBlob@ this)
 
 	this.setPosition(this.getPosition()+Vec2f(0,8));
 
-	//this.SetFacingLeft(this.getTeamNum() == 1);
-
 	CSprite@ sprite = this.getSprite();
 	sprite.SetRelativeZ(-100.0f);
 	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", "Sandbags.png", 32, 32);

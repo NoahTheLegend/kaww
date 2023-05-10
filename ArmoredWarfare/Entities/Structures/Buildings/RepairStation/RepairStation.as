@@ -47,7 +47,7 @@ void onTick(CBlob@ this)
     {
 		CBlob@ blob = blobs[i];
 
-        if (blob.hasTag("vehicle") && (blob.getTeamNum() == this.getTeamNum() || blob.getTeamNum() >= 2))
+        if (blob.hasTag("vehicle") && (blob.getTeamNum() == this.getTeamNum() || blob.getTeamNum() >= 7))
         {
 			//printf(blob.getName()+" "+(blob.getHealth()/blob.getInitialHealth()));
 			if (blob.getHealth()/blob.getInitialHealth() >= weakest) continue;

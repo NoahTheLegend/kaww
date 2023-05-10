@@ -271,7 +271,9 @@ void onInit(CBlob@ this)
 		}
 	}
 
-	this.SetFacingLeft(this.getTeamNum() == 1 ? true : false);
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+	this.SetFacingLeft(this.getTeamNum() == teamright);
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
@@ -398,7 +400,9 @@ void onDie(CBlob@ this)
 
 	if (tents.length == 0)
 	{
-		u8 team = (this.getTeamNum() == 0 ? 1 : 0);
+		u8 teamleft = getRules().get_u8("teamleft");
+		u8 teamright = getRules().get_u8("teamright");
+		u8 team = (this.getTeamNum() == teamleft ? teamright : teamleft);
 		getRules().SetTeamWon(team);
 		getRules().SetCurrentState(GAME_OVER);
 		CTeam@ teamis = getRules().getTeam(team);

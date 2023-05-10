@@ -49,11 +49,13 @@ void onTick(CBlob@ this)
 		}
 
 		CBlob@ target = getBlobByNetworkID(id);
+		u8 teamleft = getRules().get_u8("teamleft");
+		u8 teamright = getRules().get_u8("teamright");
 		if (target !is null)
 		{
 			this.SetFacingLeft(target.getPosition().x <= this.getPosition().x);
 		}
-		else this.SetFacingLeft(this.getTeamNum() == 1);
+		else this.SetFacingLeft(this.getTeamNum() == teamright);
 	}
 }
 

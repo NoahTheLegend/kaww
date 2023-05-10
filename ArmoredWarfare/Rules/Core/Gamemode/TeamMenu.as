@@ -23,7 +23,7 @@ void ShowTeamMenu(CRules@ this)
 
 	getHUD().ClearMenus(true);
 
-	CGridMenu@ menu = CreateGridMenu(getDriver().getScreenCenterPos(), null, Vec2f((this.getTeamsCount() + 0.5f) * BUTTON_SIZE, BUTTON_SIZE), "Change team");
+	CGridMenu@ menu = CreateGridMenu(getDriver().getScreenCenterPos(), null, Vec2f((2 + 0.5f) * BUTTON_SIZE, BUTTON_SIZE), "Change team");
 
 	if (menu !is null)
 	{
@@ -58,8 +58,7 @@ void ShowTeamMenu(CRules@ this)
 			}
 			else
 			{
-				icon = "$TEAMGENERIC$";
-				name = "Generic";
+				continue;
 			}
 
 			CGridButton@ button =  menu.AddButton(icon, getTranslatedString(name), this.getCommandID("pick teams"), Vec2f(BUTTON_SIZE, BUTTON_SIZE), params);
@@ -76,6 +75,12 @@ void ReadChangeTeam(CRules@ this, CBitStream @params)
 
 	if (player is getLocalPlayer())
 	{
+		u8 teamleft = getRules().get_u8("teamleft");
+		u8 teamright = getRules().get_u8("teamright");
+
+		if (team == 0) team = teamleft;
+		else if (team == 1) team = teamright;
+
 		if (CanSwitchFromSpec(this, player, team))
 		{
 			ChangeTeam(player, team);

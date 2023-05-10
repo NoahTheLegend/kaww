@@ -1,3 +1,5 @@
+#include "TeamColorCollections.as"
+
 const string metal = "mat_scrap";
 const string metal_prop = "metal_level";
 const string working_prop = "working";
@@ -486,7 +488,9 @@ void onRender(CSprite@ this)
 	Vec2f dim = Vec2f(24, 5); //95
 	Vec2f percdim = Vec2f(Maths::Min(24-24*percent, 24), 5); //95
 
-	SColor color = blob.getTeamNum() == 1 ? SColor(255, 255, 55, 55) : SColor(200, 55, 55, 255);
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+	SColor color = getNeonColor(blob.getTeamNum(), 0);
 	// Border
 	GUI::DrawRectangle(Vec2f(pos2d.x - dim.x - 2,                        pos2d.y + y - 4),
 						Vec2f(pos2d.x + dim.x + 2,                        pos2d.y + y + dim.y + 4));

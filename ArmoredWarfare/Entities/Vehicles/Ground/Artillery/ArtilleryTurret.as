@@ -97,7 +97,9 @@ void onInit(CBlob@ this)
 		}
 	}
 
-	this.set_f32("gunelevation", (this.getTeamNum() == 1 ? 270 : 90) - init_gunoffset_angle);
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+	this.set_f32("gunelevation", (this.getTeamNum() == teamright ? 270 : 90) - init_gunoffset_angle);
 }
 
 f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)

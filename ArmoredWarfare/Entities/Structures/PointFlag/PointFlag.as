@@ -1,4 +1,5 @@
 #include "PlayerRankInfo.as"
+#include "TeamColorCOllections.as"
 
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
@@ -18,8 +19,8 @@ void onInit(CBlob@ this)
 	this.getShape().getConsts().mapCollisions = false;
 
 	this.set_u16(capture_prop, 0);
-	this.set_s8(teamcapping, -1); //1 is red, 0 is blue, this is also a commentary on the nature of team colors and the effect it has on team performance. The color red, associated with blood will positively impact a team's competitive gameplay. For opposing teams, a red colored enemy player will subconsiously instill fear.
-	//this.set_bool(isbluecapture, false); //false is red, true is blue, this is also a commentary on the nature of good and evil, and colors.
+	this.set_s8(teamcapping, -1); //1 is teamright, 0 is teamleft, this is also a commentary on the nature of team colors and the effect it has on team performance. The color teamright, associated with blood will positively impact a team's competitive gameplay. For opposing teams, a teamright coloteamright enemy player will subconsiously instill fear.
+	//this.set_bool(isteamleftcapture, false); //false is teamright, true is teamleft, this is also a commentary on the nature of good and evil, and colors.
 	this.set_u8("numcapping", 0);
 	this.set_f32("offsety", -51.0f);
 
@@ -33,18 +34,25 @@ void onInit(CBlob@ this)
 		flag.SetRelativeZ(10.0f);
 		flag.SetOffset(Vec2f(9.0f, -51.0f));
 
-		Animation@ anim_blue = flag.addAnimation("flag_wave_blue", XORRandom(3)+3, true);
-		int[] frames_blue = {0,2,4,6};
+		u8 teamleft = getRules().get_u8("teamleft");
+		u8 teamright = getRules().get_u8("teamright");
 
-		Animation@ anim_red = flag.addAnimation("flag_wave_red", XORRandom(3)+3, true);
-		int[] frames_red = {1,3,5,7};
+		Animation@ anim_teamleft = flag.addAnimation("flag_wave_teamleft", XORRandom(3)+3, true);
+		Animation@ anim_teamright = flag.addAnimation("flag_wave_teamright", XORRandom(3)+3, true);
 
-		if (anim_blue !is null && anim_red !is null)
+		if (anim_teamleft !is null && anim_teamright !is null)
 		{
-			anim_blue.AddFrames(frames_blue);
-			anim_red.AddFrames(frames_red);
+			for (u8 i = 0; i < 4; i++)
+			{
+				u8 frameleft = 4*teamleft+i;
+				u8 frameright = 4*teamright+i;
+
+				anim_teamleft.AddFrame(frameleft);
+				anim_teamright.AddFrame(frameright);
+			}
+
 			u8 team = this.getTeamNum();
-			if (team < 2) flag.SetAnimation((team == 0 ? anim_blue : anim_red));
+			if (team < 7) flag.SetAnimation((team == getRules().get_u8("teamleft") ? anim_teamleft : anim_teamright));
 		}
 	}
 }
@@ -58,8 +66,8 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 	
 	CBlob@[] blobs;
 	bool won = false;
-	u8 blue = 0;
-	u8 red = 0;
+	u8 teamleft = 0;
+	u8 teamright = 0;
 	getBlobsByName("pointflag", @blobs);
 	{
 		for (u8 i = 0; i < blobs.length; i++)
@@ -67,14 +75,14 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 			CBlob@ b = blobs[i];
 			if (b is null) continue;
 			if (b.getTeamNum() != 0 && b.getTeamNum() != 1) return;
-			b.getTeamNum() == 0 ? blue++ : red++;
+			b.getTeamNum() == getRules().get_u8("teamleft") ? teamleft++ : teamright++;
 		}
 	}
 	u8 team = 255;
-	if (red == 0) team = 0;
-	else if (blue == 0) team = 1;
+	if (teamright == 0) team = 0;
+	else if (teamleft == 0) team = 1;
 	//printf(""+team);
-	if (getRules() !is null && team < 2)
+	if (getRules() !is null && team < 7)
 	{
 		getRules().SetTeamWon(team);
 		getRules().SetCurrentState(GAME_OVER);
@@ -87,8 +95,8 @@ void onTick(CBlob@ this)
 {
     float capture_distance = 76.0f; //Distance from this blob that it can be cpaped
 
-    u8 num_blue = 0;
-    u8 num_red = 0;
+    u8 num_teamleft = 0;
+    u8 num_teamright = 0;
 
     array<CBlob@> blobs; //Blob array full of blobs
     CMap@ map = getMap();
@@ -98,20 +106,22 @@ void onTick(CBlob@ this)
     {
         if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead") && !blobs[i].isAttached()) // Only players and builders    && blobs[i].getName() != "mechanic"
         {
-        	if (blobs[i].getTeamNum() == 0)
+        	if (blobs[i].getTeamNum() == getRules().get_u8("teamleft"))
         	{
-        		num_blue++;
+        		num_teamleft++;
         	}
-        	if (blobs[i].getTeamNum() == 1)
+        	if (blobs[i].getTeamNum() == getRules().get_u8("teamright"))
         	{
-        		num_red++;
+        		num_teamright++;
         	}
         }
     }
 
 	bool isTDM = (getMap().tilemapwidth < 200);
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
 
-	if (!isTDM && getGameTime() % 30 == 0 && ((num_blue == 0 && this.getTeamNum() == 1) || (num_red == 0 && this.getTeamNum() == 0)) && this.getTeamNum() < 2)
+	if (!isTDM && getGameTime() % 30 == 0 && ((num_teamleft == 0 && this.getTeamNum() == teamright) || (num_teamright == 0 && this.getTeamNum() == teamleft)) && this.getTeamNum() < 7)
 	{
 		u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
 		this.set_u32("crate_timer", Maths::Min(this.get_u32("crate_timer")+1, num));
@@ -130,25 +140,25 @@ void onTick(CBlob@ this)
 
     this.set_u8("numcapping", 0);
 
-    if (num_red > 0 || num_blue > 0)
+    if (num_teamright > 0 || num_teamleft > 0)
     {
-    	if (num_red > 0 && num_blue == 0 && this.get_s8(teamcapping) != 0 && (this.getTeamNum() == 0 || this.getTeamNum() == 255)) // red capping
+    	if (num_teamright > 0 && num_teamleft == 0 && this.get_s8(teamcapping) != teamleft && (this.getTeamNum() == teamleft || this.getTeamNum() == 255)) // teamright capping
     	{
-    		this.set_u8("numcapping", num_red);
-    		this.set_s8(teamcapping, 1);
+    		this.set_u8("numcapping", num_teamright);
+    		this.set_s8(teamcapping, teamright);
 
-    		num_red = Maths::Min(num_red, 2);
-    		u16 time = this.get_u16(capture_prop) + num_red * (getMap() !is null && isTDM ? 1 : 2);
+    		num_teamright = Maths::Min(num_teamright, 2);
+    		u16 time = this.get_u16(capture_prop) + num_teamright * (getMap() !is null && isTDM ? 1 : 2);
 			if (time > capture_time*4) time = 0;
     		this.set_u16(capture_prop, time);
 		}
-    	else if (num_blue > 0 && num_red == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == 1 || this.getTeamNum() == 255)) // blue capping
+    	else if (num_teamleft > 0 && num_teamright == 0 && this.get_s8(teamcapping) != teamright && (this.getTeamNum() == teamright || this.getTeamNum() == 255)) // teamleft capping
     	{
-    		this.set_u8("numcapping", num_blue);
-    		this.set_s8(teamcapping, 0);
+    		this.set_u8("numcapping", num_teamleft);
+    		this.set_s8(teamcapping, teamleft);
 
-    		num_blue = Maths::Min(num_blue, 2);
-			u16 time = this.get_u16(capture_prop) + num_blue * (getMap() !is null && isTDM ? 1 : 2);
+    		num_teamleft = Maths::Min(num_teamleft, 2);
+			u16 time = this.get_u16(capture_prop) + num_teamleft * (getMap() !is null && isTDM ? 1 : 2);
 			if (time > capture_time*4) time = 0;
     		this.set_u16(capture_prop, time);
 		}
@@ -156,21 +166,21 @@ void onTick(CBlob@ this)
 	else if (this.get_u16(capture_prop) > 0
 	&& (this.get_u16(capture_prop) < (capture_time / 4) - 5
 	|| this.get_u16(capture_prop) > (capture_time / 4) + 5)) this.add_u16(capture_prop, -1); // printf("prop "+this.get_u16(capture_prop));
-    
+
     if ((this.get_u16(capture_prop) > 0
 	&& getGameTime() % 2 == 0)
-	&& ((num_blue == 0 && this.getTeamNum() == 1)
-	|| (num_red == 0 && this.getTeamNum() == 0)
-	|| (num_red == 0 && this.get_s8(teamcapping) == 1 && this.getTeamNum() == 255)
-	|| (num_blue == 0 && this.get_s8(teamcapping) == 0 && this.getTeamNum() == 255)))
+	&& ((num_teamleft == 0 && this.getTeamNum() == teamright)
+	|| (num_teamright == 0 && this.getTeamNum() == teamleft)
+	|| (num_teamright == 0 && this.get_s8(teamcapping) == teamright&& this.getTeamNum() == 255)
+	|| (num_teamleft  == 0 && this.get_s8(teamcapping) == teamleft && this.getTeamNum() == 255)))
     {
 		u8 mod = 0;
 		if (this.get_u16(capture_prop) > 50+getPlayersCount())
-			mod = num_blue+num_red;
+			mod = num_teamleft+num_teamright;
 		else
 		{
-			if (this.getTeamNum() == 0) this.set_s8(teamcapping, (num_blue > num_red ? 0 : 1));
-			else if (this.getTeamNum() == 1) this.set_s8(teamcapping, (num_red > num_blue ? 0 : 1));
+			if (this.getTeamNum() == teamleft) this.set_s8(teamcapping, (num_teamleft > num_teamright ? teamleft : teamright));
+			else if (this.getTeamNum() == teamright) this.set_s8(teamcapping, (num_teamright > num_teamleft ? teamleft : teamright));
 		}
 		if (getMap() !is null && getMap().tilemapwidth < 200) mod *= 2; // twice faster on small maps
 
@@ -203,9 +213,9 @@ void onTick(CBlob@ this)
 		bool down = false;
 		u8 team = this.getTeamNum();
 		if (this.get_u16(capture_prop) < (capture_time / 2)) down = true;
-		if (down && !(team < 2)) flag.SetVisible(false);
+		if (down && !(team < 7)) flag.SetVisible(false);
 
-		if (team < 2)
+		if (team < 7)
 		{
 			f32 max = capture_time / 4;
 			f32 curr = this.get_u16(capture_prop);
@@ -218,7 +228,7 @@ void onTick(CBlob@ this)
 					sparks(this.getPosition()+Vec2f(0, 56.0f),
 					this.getAngleDegrees(),
 					3.5f + (XORRandom(10) / 10.0f),
-					(team == 0 ? SColor(255, 55, 75, 255) : SColor(255, 255, 75, 55)));
+					getNeonColor(team, XORRandom(2)));
 				}
 			}
 		}
@@ -229,14 +239,14 @@ void onTick(CBlob@ this)
 			f32 mod = (curr/(max/2)) * 1.0f;
 			offsety = 17.5f * (3.0f - mod*1.5);
 
-			if (num_blue == 0 && num_red == 0 && this.get_u16(capture_prop) == 1)
+			if (num_teamleft == 0 && num_teamright == 0 && this.get_u16(capture_prop) == 1)
 			{
 				for (u8 i = 0; i < 15; i++)
 				{
 					sparks(this.getPosition()+Vec2f(0, 56.0f),
 					this.getAngleDegrees(),
 					3.5f + (XORRandom(10) / 10.0f),
-					SColor(255, (this.hasTag("last_cap_red") ? 255 : 55), 75, (this.hasTag("last_cap_blue") ? 255 : 55)));
+					SColor(255, (this.hasTag("last_cap_teamright") ? 255 : 55), 75, (this.hasTag("last_cap_teamleft") ? 255 : 55)));
 				}
 			}
 		}
@@ -246,46 +256,46 @@ void onTick(CBlob@ this)
 		//printf(""+offsety);
 
 		flag.SetOffset(Vec2f(9.0f, offsety));
-		Animation@ anim_blue = flag.getAnimation("flag_wave_blue");
-		Animation@ anim_red = flag.getAnimation("flag_wave_red");
-		if (anim_blue !is null && anim_red !is null)
+		Animation@ anim_teamleft = flag.getAnimation("flag_wave_teamleft");
+		Animation@ anim_teamright = flag.getAnimation("flag_wave_teamright");
+		if (anim_teamleft !is null && anim_teamright !is null)
 		{
-			if (team < 2)
+			if (team < 7)
 			{
 				flag.SetVisible(true);
-				if (this.get_s8(teamcapping) == 0)
+				if (this.get_s8(teamcapping) == teamleft)
 				{
-					flag.SetAnimation(!down ? anim_blue : anim_red);
+					flag.SetAnimation(!down ? anim_teamleft : anim_teamright);
 				}
-				else if (this.get_s8(teamcapping) == 1 )
+				else if (this.get_s8(teamcapping) == teamright)
 				{
-					flag.SetAnimation(!down ? anim_red : anim_blue);
+					flag.SetAnimation(!down ? anim_teamright : anim_teamleft);
 				}
 				else if (this.get_s8(teamcapping) == -1)
 				{
-					flag.SetAnimation(this.getTeamNum() == 0 ? anim_blue : anim_red);
+					flag.SetAnimation(this.getTeamNum() == teamleft ? anim_teamleft : anim_teamright);
 				}
 			}
-			else if (this.get_u16(capture_prop) > 0 || (num_blue > 0 || num_red > 0))
+			else if (this.get_u16(capture_prop) > 0 || (num_teamleft > 0 || num_teamright > 0))
 			{
 				flag.SetVisible(true);
-				if (this.get_s8(teamcapping) == 0)
+				if (this.get_s8(teamcapping) == teamleft)
 				{
-					flag.SetAnimation(anim_blue);
-					this.Tag("last_cap_blue");
-					this.Untag("last_cap_red");
+					flag.SetAnimation(anim_teamleft);
+					this.Tag("last_cap_teamleft");
+					this.Untag("last_cap_teamright");
 				}
-				else if (this.get_s8(teamcapping) == 1)
+				else if (this.get_s8(teamcapping) == teamright)
 				{
-					flag.SetAnimation(anim_red);
-					this.Tag("last_cap_red");
-					this.Untag("last_cap_blue");
+					flag.SetAnimation(anim_teamright);
+					this.Tag("last_cap_teamright");
+					this.Untag("last_cap_teamleft");
 				}
 				else flag.SetVisible(false);
 			}
 		}
 	} 
-	if (this !is null) // danger zone, trying to fix smth
+	if (isServer())
 	{
 		this.Sync(capture_prop, true);
 		this.Sync(teamcapping, true);
@@ -334,29 +344,32 @@ void onRender(CSprite@ this)
 
 	SColor color_team;
 
-	if (blob.getTeamNum() == 1 && returncount > 0 || blob.getTeamNum() == 0 && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == 0)
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+
+	if (blob.getTeamNum() == teamright && returncount > 0 || blob.getTeamNum() == teamleft && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == teamleft)
 	{
-		color_light = 0xff2cafde;
-		color_mid	= 0xff1d85ab; //  0xff1d85ab
-		color_dark	= 0xff1a4e83;
-		color_darker= 0xff092751;
+		color_light = getNeonColor(teamleft, 0);
+		color_mid	=  getNeonColor(teamleft, 1);
+		color_dark	=  getNeonColor(teamleft, 2);
+		color_darker= 0xff222222;
 	}
 	
-	if (blob.getTeamNum() == 0 && returncount > 0 || blob.getTeamNum() == 1 && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == 1)
+	if (blob.getTeamNum() == teamleft && returncount > 0 || blob.getTeamNum() == teamright && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == teamright)
 	{
-		color_light = 0xffd5543f;
-		color_mid	= 0xffb73333; // 0xffb73333
-		color_dark	= 0xff941b1b;
-		color_darker= 0xff520909;
+		color_light = getNeonColor(teamright, 0);
+		color_mid	= getNeonColor(teamright, 1);
+		color_dark	= getNeonColor(teamright, 2);
+		color_darker= 0xff222222;
 	}
 
-	if (blob.getTeamNum() == 0)
+	if (blob.getTeamNum() == teamleft)
 	{
-		color_team = 0xff2cafde;
+		color_team = getNeonColor(teamleft, 0);
 	}
-	if (blob.getTeamNum() == 1)
+	if (blob.getTeamNum() == teamright)
 	{
-		color_team = 0xffd5543f;
+		color_team = getNeonColor(teamright, 0);
 	}
 	if (blob.getTeamNum() == 255)
 	{
@@ -396,7 +409,7 @@ void onRender(CSprite@ this)
 		}
 	}
 
-	if (blob.getTeamNum() >= 2 || blob.get_u8("numcapping") > 0) return;
+	if (blob.getTeamNum() >= 7 || blob.get_u8("numcapping") > 0) return;
 
 	bool isTDM = (getMap().tilemapwidth < 200);
 	if (isTDM) return;
@@ -408,8 +421,8 @@ void onRender(CSprite@ this)
 	perc = float(blob.get_u32("crate_timer")) / float(num);
 
 	// Border
-	GUI::DrawRectangle(Vec2f(pos.x - dimension.x - 1,                        pos.y + y - 1),
-						 Vec2f(pos.x + dimension.x + 2,                        pos.y + y + dimension.y - 1), color_darker);
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x,                        pos.y + y - 1),
+						 Vec2f(pos.x + dimension.x,                        pos.y + y + dimension.y - 1), color_darker);
 
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 3,                        pos.y + y + 1),
 					    Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 2, pos.y + y + dimension.y - 3), color_mid);

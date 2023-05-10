@@ -70,7 +70,7 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 					if (hi.blob is null || hi.blob.hasTag("dead")) continue;
 					if (!hi.blob.isCollidable() || !hi.blob.getShape().getConsts().collidable
 					|| !this.doesCollideWithBlob(hi.blob)) continue;
-					if (hi.blob.getTeamNum() >= 2) continue;
+					if (hi.blob.getTeamNum() >= 7) continue;
 
 					if (hi.blob.getTeamNum() != this.getTeamNum()) return false;
 				}
