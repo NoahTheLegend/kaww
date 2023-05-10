@@ -30,7 +30,7 @@ SColor getNeonColor(u8 team, u8 darkness)
 		case 3: // purple
 		{
 			color_light = 0xff9152f7;
-			color_mid	= 0xff7641cd;
+			color_mid	= 0xff6f3bc5;
 			color_dark	= 0xff462480;
 			break;
 		}
@@ -50,9 +50,9 @@ SColor getNeonColor(u8 team, u8 darkness)
 		}
 		case 6: // violet
 		{
-			color_light = 0xffd89f3d;
-			color_mid	= 0xff6a3eb2;
-			color_dark	= 0xff522d8f;
+			color_light = 0xff4d40ff;
+			color_mid	= 0xff392ecd;
+			color_dark	= 0xff251d8f;
 			break;
 		}
 	}
@@ -70,10 +70,6 @@ SColor getNeonColor(u8 team, u8 darkness)
         case 2:
         {
             return color_dark;
-        }
-        default:
-        {
-            return color_mid;
         }
     }
     return color_mid;
