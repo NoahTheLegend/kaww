@@ -258,8 +258,8 @@ void onTick(CBlob@ this)
 		else if (!this.hasScript("ClimbTree.as")) this.AddScript("ClimbTree.as");
 	}
 	
-	if ((this.getTeamNum() == 0 && getRules().get_s16("blueTickets") == 0)
-	|| (this.getTeamNum() == 1 && getRules().get_s16("redTickets") == 0))
+	if ((this.getTeamNum() == 0 && getRules().get_s16("teamLeftTickets") == 0)
+	|| (this.getTeamNum() == 1 && getRules().get_s16("teamRightTickets") == 0))
 	{
 		this.SetLightRadius(8.0f);
 		this.SetLightColor(SColor(255, 255, 255, 255));

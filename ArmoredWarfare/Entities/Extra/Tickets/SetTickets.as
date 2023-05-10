@@ -14,8 +14,8 @@ void onTick(CBlob@ this)
         if (tickets.length > 1)
         {
             printf(tickets[1]);
-            getRules().set_s16("blueTickets", parseInt(tickets[1]));
-            getRules().set_s16("redTickets", parseInt(tickets[1]));
+            getRules().set_s16("teamLeftTickets", parseInt(tickets[1]));
+            getRules().set_s16("teamRightTickets", parseInt(tickets[1]));
             if (isServer()) this.server_Die();
         }
     }

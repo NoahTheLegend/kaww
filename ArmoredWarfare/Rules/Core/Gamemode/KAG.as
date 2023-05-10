@@ -36,8 +36,6 @@ void onInit(CRules@ this)
 bool need_sky_check = true;
 void onRestart(CRules@ this)
 {
-	//if (this.get_s16("redTickets") == 0) this.set_s16("redTickets", 2); this.Sync("redTickets", true);
-	//if (this.get_s16("blueTickets") == 0) this.set_s16("blueTickets", 2); this.Sync("blueTickets", true);
 	this.set_f32("immunity sec", Maths::Min(4+getPlayersCount()/5, 10));
 	//map borders
 	CMap@ map = getMap();

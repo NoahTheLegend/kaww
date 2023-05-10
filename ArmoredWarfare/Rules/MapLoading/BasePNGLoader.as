@@ -7,6 +7,7 @@
 #include "LoaderUtilities.as";
 #include "CustomBlocks.as";
 #include "MakeCrate.as";
+#include "LoadPNGMap.as";
 
 enum WAROffset
 {
@@ -35,6 +36,34 @@ class PNGLoader
 	int[][] offsets;
 
 	int current_offset_count;
+	int _teamleft;
+	int _teamright;
+
+	void SetTeams()
+	{
+		u8 prevteamleft = getRules().get_u8("teamleft");
+		u8 prevteamright = getRules().get_u8("teamright");
+
+		u8 teamleft = XORRandom(7);
+		while (teamleft == prevteamleft)
+		{
+			teamleft = XORRandom(7);
+		}
+		u8 teamright = XORRandom(7);
+		while (teamright == teamleft || teamright == prevteamright)
+		{
+			teamright = XORRandom(7);
+		}
+		getRules().set_u8("teamleft", teamleft);
+		getRules().set_u8("teamright", teamright);
+
+		printf("SET TEAMS "+teamleft+" : "+teamright);
+
+    	_teamleft = teamleft;
+    	_teamright = teamright;
+
+		//printf("setting teams: "+teamleft+" | "+teamright);
+	}
 
 	bool loadMap(CMap@ _map, const string& in filename)
 	{
@@ -102,6 +131,8 @@ class PNGLoader
 
 	void handlePixel(const SColor &in pixel, int offset)
 	{
+		int teamleft = _teamleft;
+		int teamright = _teamright;
 		u8 alpha = pixel.getAlpha();
 
 		if(alpha < 255)
@@ -266,8 +297,8 @@ class PNGLoader
 			case map_colors::storage_noteam:  autotile(offset); spawnBlob(map, "storage",     offset); break;
 			case map_colors::barracks_noteam: autotile(offset); spawnBlob(map, "barracks",    offset); break;
 			case map_colors::factory_noteam:  autotile(offset); spawnBlob(map, "factory",     offset); break;
-			case map_colors::tunnel_blue:     autotile(offset); spawnBlob(map, "tunnel",      offset, 0); break;
-			case map_colors::tunnel_red:      autotile(offset); spawnBlob(map, "tunnel",      offset, 1); break;
+			case map_colors::tunnel_blue:     autotile(offset); spawnBlob(map, "tunnel",      offset, teamleft); break;
+			case map_colors::tunnel_red:      autotile(offset); spawnBlob(map, "tunnel",      offset, teamright); break;
 			case map_colors::tunnel_noteam:   autotile(offset); spawnBlob(map, "tunnel",      offset); break;
 			case map_colors::kitchen:         autotile(offset); spawnBlob(map, "kitchen",     offset); break;
 			case map_colors::nursery:         autotile(offset); spawnBlob(map, "nursery",     offset); break;
@@ -390,7 +421,7 @@ class PNGLoader
 			case map_colors::npc_bootcamp:  autotile(offset); spawnBlob(map, "ranger", offset, 2); break;
 
 			// Ground siege
-			case map_colors::catapult:    autotile(offset); spawnVehicle(map, "catapult", offset, 0); break; // HACK: team for Challenge
+			case map_colors::catapult:    autotile(offset); spawnVehicle(map, "catapult", offset, teamleft); break; // HACK: team for Challenge
 			case map_colors::ballista:    autotile(offset); spawnVehicle(map, "m60", offset); break;
 			case map_colors::mountedbow:  autotile(offset); spawnBlob(map, "mounted_bow", offset, 255, true, Vec2f(0.0f, 4.0f)); break;
 
@@ -405,49 +436,49 @@ class PNGLoader
 			// KAWW
 			case map_colors::refinery:    autotile(offset); spawnBlob(map, "refinery", offset, -1); break;
 
-			case map_colors::red_turret:       autotile(offset); spawnVehicle(map, "defenseturret",   offset, 1); break;
-			case map_colors::blue_turret:      autotile(offset); spawnVehicle(map, "defenseturret",   offset, 0); break;
+			case map_colors::red_turret:       autotile(offset); spawnVehicle(map, "defenseturret",   offset, teamright); break;
+			case map_colors::blue_turret:      autotile(offset); spawnVehicle(map, "defenseturret",   offset, teamleft); break;
 
-			case map_colors::blue_motorcycle:   autotile(offset); spawnVehicle(map, "motorcycle",   offset, 0); break;
-			case map_colors::red_motorcycle:   autotile(offset); spawnVehicle(map, "motorcycle",   offset, 1); break;
+			case map_colors::blue_motorcycle:   autotile(offset); spawnVehicle(map, "motorcycle",   offset, teamleft); break;
+			case map_colors::red_motorcycle:   autotile(offset); spawnVehicle(map, "motorcycle",   offset, teamright); break;
 
-			case map_colors::blue_barge:   autotile(offset); spawnVehicle(map, "barge",   offset, 0); break;
-			case map_colors::red_barge:   autotile(offset); spawnVehicle(map, "barge",   offset, 1); break;
+			case map_colors::blue_barge:   autotile(offset); spawnVehicle(map, "barge",   offset, teamleft); break;
+			case map_colors::red_barge:   autotile(offset); spawnVehicle(map, "barge",   offset, teamright); break;
 
-			case map_colors::blue_techtruck:   autotile(offset); spawnVehicle(map, "techtruck",   offset, 0); break;
-			case map_colors::blue_btr82a:      autotile(offset); spawnVehicle(map, "btr82a",   offset, 0); break;
-			case map_colors::blue_t10:       autotile(offset); spawnVehicle(map, "t10",   offset, 0); break;
-			case map_colors::blue_m60:         autotile(offset); spawnVehicle(map, "m60",   offset, 0); break;
-			case map_colors::blue_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, 0); break;
-			case map_colors::blue_bf109:         autotile(offset); spawnVehicle(map, "bf109",   offset, 0); break;
-			case map_colors::blue_bomberplane:         autotile(offset); spawnVehicle(map, "bomberplane",   offset, 0); break;
-			case map_colors::blue_uh1:       autotile(offset); spawnVehicle(map, "uh1",   offset, 0); break;
-			case map_colors::blue_tanktrap:    autotile(offset); spawnVehicle(map, "tanktrap",   offset, 0); break;
-			case map_colors::blue_cruiser:     autotile(offset); spawnVehicle(map, "cruiser",   offset, 0); break;
-			case map_colors::blue_scoutboat:     autotile(offset); spawnVehicle(map, "scoutboat",   offset, 0); break;
-			case map_colors::blue_mortar:     autotile(offset); spawnVehicle(map, "mortar",   offset, 0); break;
-			case map_colors::red_techtruck:    autotile(offset); spawnVehicle(map, "techtruck",   offset, 1); break;
-			case map_colors::red_btr82a:       autotile(offset); spawnVehicle(map, "btr82a",   offset, 1); break;
-			case map_colors::red_t10:        autotile(offset); spawnVehicle(map, "t10",   offset, 1); break;
-			case map_colors::red_m60:          autotile(offset); spawnVehicle(map, "m60",   offset, 1); break;
-			case map_colors::red_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, 1); break;
-			case map_colors::red_bf109:        autotile(offset); spawnVehicle(map, "bf109",   offset, 1); break;
-			case map_colors::red_bomberplane:        autotile(offset); spawnVehicle(map, "bomberplane",   offset, 1); break;
-			case map_colors::red_uh1:          autotile(offset); spawnVehicle(map, "uh1",   offset, 1); break;
-			case map_colors::blue_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, 0); break;
-			case map_colors::red_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, 1); break;
-			case map_colors::blue_armory:          autotile(offset); spawnVehicle(map, "armory",   offset, 0); break;
-			case map_colors::red_armory:          autotile(offset); spawnVehicle(map, "armory",   offset, 1); break;
-			case map_colors::blue_iarmory:          autotile(offset); spawnVehicle(map, "importantarmory",   offset, 0); break;
-			case map_colors::red_iarmory:          autotile(offset); spawnVehicle(map, "importantarmory",   offset, 1); break;
-			case map_colors::red_tanktrap:     autotile(offset); spawnVehicle(map, "tanktrap",   offset, 1); break;
-			case map_colors::red_cruiser:     autotile(offset); spawnVehicle(map, "cruiser",   offset, 1); break;
-			case map_colors::red_scoutboat:     autotile(offset); spawnVehicle(map, "scoutboat",   offset, 1); break;
-			case map_colors::red_mortar:     autotile(offset); spawnVehicle(map, "mortar",   offset, 1);	break;
-			case map_colors::sign:     autotile(offset); spawnBlob(map, "sign",   offset, 1);	break;
-			case map_colors::sign2:    autotile(offset); spawnBlob(map, "sign2",   offset, 1);	break;
-			case map_colors::sign3:    autotile(offset); spawnBlob(map, "sign3",   offset, 1);	break;
-			case map_colors::sign4:    autotile(offset); spawnBlob(map, "sign4",   offset, 1);	break;
+			case map_colors::blue_techtruck:   autotile(offset); spawnVehicle(map, "techtruck",   offset, teamleft); break;
+			case map_colors::blue_btr82a:      autotile(offset); spawnVehicle(map, "btr82a",   offset, teamleft); break;
+			case map_colors::blue_t10:       autotile(offset); spawnVehicle(map, "t10",   offset, teamleft); break;
+			case map_colors::blue_m60:         autotile(offset); spawnVehicle(map, "m60",   offset, teamleft); break;
+			case map_colors::blue_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, teamleft); break;
+			case map_colors::blue_bf109:         autotile(offset); spawnVehicle(map, "bf109",   offset, teamleft); break;
+			case map_colors::blue_bomberplane:         autotile(offset); spawnVehicle(map, "bomberplane",   offset, teamleft); break;
+			case map_colors::blue_uh1:       autotile(offset); spawnVehicle(map, "uh1",   offset, teamleft); break;
+			case map_colors::blue_tanktrap:    autotile(offset); spawnVehicle(map, "tanktrap",   offset, teamleft); break;
+			case map_colors::blue_cruiser:     autotile(offset); spawnVehicle(map, "cruiser",   offset, teamleft); break;
+			case map_colors::blue_scoutboat:     autotile(offset); spawnVehicle(map, "scoutboat",   offset, teamleft); break;
+			case map_colors::blue_mortar:     autotile(offset); spawnVehicle(map, "mortar",   offset, teamleft); break;
+			case map_colors::red_techtruck:    autotile(offset); spawnVehicle(map, "techtruck",   offset, teamright); break;
+			case map_colors::red_btr82a:       autotile(offset); spawnVehicle(map, "btr82a",   offset, teamright); break;
+			case map_colors::red_t10:        autotile(offset); spawnVehicle(map, "t10",   offset, teamright); break;
+			case map_colors::red_m60:          autotile(offset); spawnVehicle(map, "m60",   offset, teamright); break;
+			case map_colors::red_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, teamright); break;
+			case map_colors::red_bf109:        autotile(offset); spawnVehicle(map, "bf109",   offset, teamright); break;
+			case map_colors::red_bomberplane:        autotile(offset); spawnVehicle(map, "bomberplane",   offset, teamright); break;
+			case map_colors::red_uh1:          autotile(offset); spawnVehicle(map, "uh1",   offset, teamright); break;
+			case map_colors::blue_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, teamleft); break;
+			case map_colors::red_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, teamright); break;
+			case map_colors::blue_armory:          autotile(offset); spawnVehicle(map, "armory",   offset, teamleft); break;
+			case map_colors::red_armory:          autotile(offset); spawnVehicle(map, "armory",   offset, teamright); break;
+			case map_colors::blue_iarmory:          autotile(offset); spawnVehicle(map, "importantarmory",   offset, teamleft); break;
+			case map_colors::red_iarmory:          autotile(offset); spawnVehicle(map, "importantarmory",   offset, teamright); break;
+			case map_colors::red_tanktrap:     autotile(offset); spawnVehicle(map, "tanktrap",   offset, teamright); break;
+			case map_colors::red_cruiser:     autotile(offset); spawnVehicle(map, "cruiser",   offset, teamright); break;
+			case map_colors::red_scoutboat:     autotile(offset); spawnVehicle(map, "scoutboat",   offset, teamright); break;
+			case map_colors::red_mortar:     autotile(offset); spawnVehicle(map, "mortar",   offset, teamright);	break;
+			case map_colors::sign:     autotile(offset); spawnBlob(map, "sign",   offset, teamright);	break;
+			case map_colors::sign2:    autotile(offset); spawnBlob(map, "sign2",   offset, teamright);	break;
+			case map_colors::sign3:    autotile(offset); spawnBlob(map, "sign3",   offset, teamright);	break;
+			case map_colors::sign4:    autotile(offset); spawnBlob(map, "sign4",   offset, teamright);	break;
 
 			case map_colors::civcar:           autotile(offset); spawnVehicle(map, "civcar", offset, 100); break;
 			case map_colors::lada:           autotile(offset); spawnVehicle(map, "lada", offset, 5); break;
@@ -458,12 +489,12 @@ class PNGLoader
 			case map_colors::camp:         autotile(offset); spawnBlob(map, "camp", offset, 5); break;
 
 			//zambis
-			case map_colors::gate0:         autotile(offset); spawnBlob(map, "gate", offset, 0); break;
-			case map_colors::gate1:         autotile(offset); spawnBlob(map, "gate", offset, 1); break;
+			case map_colors::gate0:         autotile(offset); spawnBlob(map, "gate", offset, teamleft); break;
+			case map_colors::gate1:         autotile(offset); spawnBlob(map, "gate", offset, teamright); break;
 			case map_colors::gate2:         autotile(offset); spawnBlob(map, "gate", offset, 2); break;
 			case map_colors::gate3:         autotile(offset); spawnBlob(map, "gate", offset, 3); break;
 			case map_colors::gate4:         autotile(offset); spawnBlob(map, "gate", offset, 4); break;
-			case map_colors::zspawn:         autotile(offset); spawnBlob(map, "zspawn", offset, 0); break;
+			case map_colors::zspawn:         autotile(offset); spawnBlob(map, "zspawn", offset, teamleft); break;
 
 			case map_colors::sandbags:    autotile(offset); spawnBlob(map, "sandbags", offset-map.tilemapwidth); break;
 			case map_colors::redbarrel:    autotile(offset); spawnBlob(map, "redbarrel", offset-map.tilemapwidth); break;
@@ -476,13 +507,13 @@ class PNGLoader
 			case map_colors::bonepile:    autotile(offset); spawnBlob(map, "bonepile", offset); break;
 			case map_colors::crashedheli:    autotile(offset); spawnBlob(map, "crashedheli", offset); break;
 
-			case map_colors::blue_munitionsshop:        autotile(offset); spawnBlob(map, "munitionsshop", offset, 0); break;
-			case map_colors::red_munitionsshop:         autotile(offset); spawnBlob(map, "munitionsshop", offset, 1); break;
-			case map_colors::blue_munitionsyard:        autotile(offset); spawnBlob(map, "munitionsyard", offset, 0); break;
-			case map_colors::red_munitionsyard:         autotile(offset); spawnBlob(map, "munitionsyard", offset, 1); break;
+			case map_colors::blue_munitionsshop:        autotile(offset); spawnBlob(map, "munitionsshop", offset, teamleft); break;
+			case map_colors::red_munitionsshop:         autotile(offset); spawnBlob(map, "munitionsshop", offset, teamright); break;
+			case map_colors::blue_munitionsyard:        autotile(offset); spawnBlob(map, "munitionsyard", offset, teamleft); break;
+			case map_colors::red_munitionsyard:         autotile(offset); spawnBlob(map, "munitionsyard", offset, teamright); break;
 
-			case map_colors::blue_russianshop:        autotile(offset); spawnBlob(map, "russianshop", offset, 0); break;
-			case map_colors::red_russianshop:         autotile(offset); spawnBlob(map, "russianshop", offset, 1); break;
+			case map_colors::blue_russianshop:        autotile(offset); spawnBlob(map, "russianshop", offset, teamleft); break;
+			case map_colors::red_russianshop:         autotile(offset); spawnBlob(map, "russianshop", offset, teamright); break;
 
 			case map_colors::heavygun:         autotile(offset); spawnVehicle(map, "heavygun", offset); break;
 			case map_colors::crateheavygun:    autotile(offset); server_MakeCrate("heavygun", "Crate with Heavy machinegun.", 0, -1, getSpawnPosition(map, offset)); break;
@@ -490,10 +521,10 @@ class PNGLoader
 			
 			case map_colors::ammocrate:        autotile(offset); spawnBlob(map, "ammocrate", offset); break;
 			case map_colors::repairstation:        autotile(offset); spawnBlob(map, "repairstation", offset); break;
-			case map_colors::blue_bunker:        autotile(offset); spawnBlob(map, "bunker", offset, 0); break;
-			case map_colors::red_bunker:        autotile(offset); spawnBlob(map, "bunker", offset, 1); break;
-			case map_colors::blue_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, 0); break;
-			case map_colors::red_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, 1); break;
+			case map_colors::blue_bunker:        autotile(offset); spawnBlob(map, "bunker", offset, teamleft); break;
+			case map_colors::red_bunker:        autotile(offset); spawnBlob(map, "bunker", offset, teamright); break;
+			case map_colors::blue_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, teamleft); break;
+			case map_colors::red_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, teamright); break;
 			case map_colors::stairs:        autotile(offset); spawnBlob(map, "stairs", offset); break;
 			case map_colors::minesign:        autotile(offset); spawnBlob(map, "minesign", offset); break;
 
@@ -508,49 +539,49 @@ class PNGLoader
 			case map_colors::tickets150:       autotile(offset); spawnBlob(map, "ticket_150", offset); break;
 			
 			case map_colors::barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, -1); break;
-			case map_colors::blue_barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, 0); break;
-			case map_colors::red_barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, 1); break;
+			case map_colors::blue_barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, teamleft); break;
+			case map_colors::red_barbedwire:        autotile(offset); spawnBlob(map, "barbedwire", offset, teamright); break;
 
 			case map_colors::constructionyard:     autotile(offset); spawnBlob(map, "constructionyard", offset); break;
 			case map_colors::baseconstructionyard:     autotile(offset); spawnBlob(map, "baseconstructionyard", offset); break;
 
-			case map_colors::b_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, 0); break;
-			case map_colors::r_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, 1); break;
-			case map_colors::b_vehiclebuildert2:    autotile(offset); spawnBlob(map, "vehiclebuildert2", offset, 0); break;
-			case map_colors::r_vehiclebuildert2:    autotile(offset); spawnBlob(map, "vehiclebuildert2", offset, 1); break;
-			case map_colors::b_vehiclebuildert3:    autotile(offset); spawnBlob(map, "vehiclebuildert3", offset, 0); break;
-			case map_colors::r_vehiclebuildert3:    autotile(offset); spawnBlob(map, "vehiclebuildert3", offset, 1); break;
+			case map_colors::b_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, teamleft); break;
+			case map_colors::r_vehiclebuilder:     autotile(offset); spawnBlob(map, "vehiclebuilder", offset, teamright); break;
+			case map_colors::b_vehiclebuildert2:    autotile(offset); spawnBlob(map, "vehiclebuildert2", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert2:    autotile(offset); spawnBlob(map, "vehiclebuildert2", offset, teamright); break;
+			case map_colors::b_vehiclebuildert3:    autotile(offset); spawnBlob(map, "vehiclebuildert3", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert3:    autotile(offset); spawnBlob(map, "vehiclebuildert3", offset, teamright); break;
 
-			case map_colors::b_vehiclebuilderconst:     autotile(offset); spawnBlob(map, "vehiclebuilderconst", offset, 0); break;
-			case map_colors::r_vehiclebuilderconst:     autotile(offset); spawnBlob(map, "vehiclebuilderconst", offset, 1); break;
-			case map_colors::b_vehiclebuildert2const:    autotile(offset); spawnBlob(map, "vehiclebuildert2const", offset, 0); break;
-			case map_colors::r_vehiclebuildert2const:    autotile(offset); spawnBlob(map, "vehiclebuildert2const", offset, 1); break;
-			case map_colors::b_vehiclebuildert3const:    autotile(offset); spawnBlob(map, "vehiclebuildert3const", offset, 0); break;
-			case map_colors::r_vehiclebuildert3const:    autotile(offset); spawnBlob(map, "vehiclebuildert3const", offset, 1); break;
+			case map_colors::b_vehiclebuilderconst:     autotile(offset); spawnBlob(map, "vehiclebuilderconst", offset, teamleft); break;
+			case map_colors::r_vehiclebuilderconst:     autotile(offset); spawnBlob(map, "vehiclebuilderconst", offset, teamright); break;
+			case map_colors::b_vehiclebuildert2const:    autotile(offset); spawnBlob(map, "vehiclebuildert2const", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert2const:    autotile(offset); spawnBlob(map, "vehiclebuildert2const", offset, teamright); break;
+			case map_colors::b_vehiclebuildert3const:    autotile(offset); spawnBlob(map, "vehiclebuildert3const", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert3const:    autotile(offset); spawnBlob(map, "vehiclebuildert3const", offset, teamright); break;
 
-			case map_colors::b_vehiclebuilderground:     autotile(offset); spawnBlob(map, "vehiclebuilderground", offset, 0); break;
-			case map_colors::r_vehiclebuilderground:     autotile(offset); spawnBlob(map, "vehiclebuilderground", offset, 1); break;
-			case map_colors::b_vehiclebuildert2ground:    autotile(offset); spawnBlob(map, "vehiclebuildert2ground", offset, 0); break;
-			case map_colors::r_vehiclebuildert2ground:    autotile(offset); spawnBlob(map, "vehiclebuildert2ground", offset, 1); break;
-			case map_colors::b_vehiclebuildert3ground:    autotile(offset); spawnBlob(map, "vehiclebuildert3ground", offset, 0); break;
-			case map_colors::r_vehiclebuildert3ground:    autotile(offset); spawnBlob(map, "vehiclebuildert3ground", offset, 1); break;
+			case map_colors::b_vehiclebuilderground:     autotile(offset); spawnBlob(map, "vehiclebuilderground", offset, teamleft); break;
+			case map_colors::r_vehiclebuilderground:     autotile(offset); spawnBlob(map, "vehiclebuilderground", offset, teamright); break;
+			case map_colors::b_vehiclebuildert2ground:    autotile(offset); spawnBlob(map, "vehiclebuildert2ground", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert2ground:    autotile(offset); spawnBlob(map, "vehiclebuildert2ground", offset, teamright); break;
+			case map_colors::b_vehiclebuildert3ground:    autotile(offset); spawnBlob(map, "vehiclebuildert3ground", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert3ground:    autotile(offset); spawnBlob(map, "vehiclebuildert3ground", offset, teamright); break;
 
-			case map_colors::b_vehiclebuildergroundconst:     autotile(offset); spawnBlob(map, "vehiclebuildergroundconst", offset, 0); break;
-			case map_colors::r_vehiclebuildergroundconst:     autotile(offset); spawnBlob(map, "vehiclebuildergroundconst", offset, 1); break;
-			case map_colors::b_vehiclebuildert2groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2groundconst", offset, 0); break;
-			case map_colors::r_vehiclebuildert2groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2groundconst", offset, 1); break;
-			case map_colors::b_vehiclebuildert3groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert3groundconst", offset, 0); break;
-			case map_colors::r_vehiclebuildert3groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert3groundconst", offset, 1); break;
+			case map_colors::b_vehiclebuildergroundconst:     autotile(offset); spawnBlob(map, "vehiclebuildergroundconst", offset, teamleft); break;
+			case map_colors::r_vehiclebuildergroundconst:     autotile(offset); spawnBlob(map, "vehiclebuildergroundconst", offset, teamright); break;
+			case map_colors::b_vehiclebuildert2groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2groundconst", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert2groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2groundconst", offset, teamright); break;
+			case map_colors::b_vehiclebuildert3groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert3groundconst", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert3groundconst:    autotile(offset); spawnBlob(map, "vehiclebuildert3groundconst", offset, teamright); break;
 
-			case map_colors::b_vehiclebuilderair:     autotile(offset); spawnBlob(map, "vehiclebuilderair", offset, 0); break;
-			case map_colors::r_vehiclebuilderair:     autotile(offset); spawnBlob(map, "vehiclebuilderair", offset, 1); break;
-			case map_colors::b_vehiclebuildert2air:    autotile(offset); spawnBlob(map, "vehiclebuildert2air", offset, 0); break;
-			case map_colors::r_vehiclebuildert2air:    autotile(offset); spawnBlob(map, "vehiclebuildert2air", offset, 1); break;
+			case map_colors::b_vehiclebuilderair:     autotile(offset); spawnBlob(map, "vehiclebuilderair", offset, teamleft); break;
+			case map_colors::r_vehiclebuilderair:     autotile(offset); spawnBlob(map, "vehiclebuilderair", offset, teamright); break;
+			case map_colors::b_vehiclebuildert2air:    autotile(offset); spawnBlob(map, "vehiclebuildert2air", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert2air:    autotile(offset); spawnBlob(map, "vehiclebuildert2air", offset, teamright); break;
 
-			case map_colors::b_vehiclebuilderairconst:     autotile(offset); spawnBlob(map, "vehiclebuilderairconst", offset, 0); break;
-			case map_colors::r_vehiclebuilderairconst:     autotile(offset); spawnBlob(map, "vehiclebuilderairconst", offset, 1); break;
-			case map_colors::b_vehiclebuildert2airconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2airconst", offset, 0); break;
-			case map_colors::r_vehiclebuildert2airconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2airconst", offset, 1); break;
+			case map_colors::b_vehiclebuilderairconst:     autotile(offset); spawnBlob(map, "vehiclebuilderairconst", offset, teamleft); break;
+			case map_colors::r_vehiclebuilderairconst:     autotile(offset); spawnBlob(map, "vehiclebuilderairconst", offset, teamright); break;
+			case map_colors::b_vehiclebuildert2airconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2airconst", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert2airconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2airconst", offset, teamright); break;
 
 			case map_colors::jourcop: 			   autotile(offset); spawnBlob(map, "jourcop", offset, 100); break;
 
@@ -564,8 +595,8 @@ class PNGLoader
 			case map_colors::bolts:       autotile(offset); spawnBlob(map, "mat_bolts",       offset); break;
 
 			// Mines, explosives
-			case map_colors::blue_mine:   autotile(offset); spawnBlob(map, "mine", offset, 0); break;
-			case map_colors::red_mine:    autotile(offset); spawnBlob(map, "mine", offset, 1); break;
+			case map_colors::blue_mine:   autotile(offset); spawnBlob(map, "mine", offset, teamleft); break;
+			case map_colors::red_mine:    autotile(offset); spawnBlob(map, "mine", offset, teamright); break;
 			case map_colors::mine_noteam: autotile(offset); spawnBlob(map, "mine", offset); break;
 			case map_colors::boulder:     autotile(offset); spawnBlob(map, "boulder", offset, -1, false, Vec2f(8.0f, -8.0f)); break;
 			case map_colors::satchel:     autotile(offset); spawnBlob(map, "satchel", offset); break;

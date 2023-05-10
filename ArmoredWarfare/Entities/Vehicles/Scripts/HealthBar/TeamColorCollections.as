@@ -4,7 +4,6 @@ SColor getNeonColor(u8 team, u8 darkness)
     SColor color_light;
     SColor color_mid;
     SColor color_dark;
-    
     switch (team)
 	{
 		case 0: // blue
@@ -54,13 +53,6 @@ SColor getNeonColor(u8 team, u8 darkness)
 			color_light = 0xffd89f3d;
 			color_mid	= 0xff6a3eb2;
 			color_dark	= 0xff522d8f;
-			break;
-		}
-		default:
-		{
-			color_light = 0xff2cafde;
-			color_mid	= 0xff1d85ab;
-			color_dark	= 0xff1a4e83;
 			break;
 		}
 	}

@@ -3,9 +3,9 @@
 
 shared int ticketsRemaining(CRules@ this, int team){
 	if(team==0){
-		return this.get_s16("blueTickets");
+		return this.get_s16("teamLeftTickets");
 	}else if(team==1){
-		return this.get_s16("redTickets");
+		return this.get_s16("teamRightTickets");
 	}
 	return 1;
 }
@@ -15,20 +15,20 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 	s16 numTickets;
 
 	if(team==0){
-		numTickets=this.get_s16("blueTickets");
+		numTickets=this.get_s16("teamLeftTickets");
 		if(numTickets<=0)return 1;
 		numTickets--;
 
-		this.set_s16("blueTickets", numTickets);
-		this.Sync("blueTickets", true);
+		this.set_s16("teamLeftTickets", numTickets);
+		this.Sync("teamLeftTickets", true);
 		return 0;
 	}else if(team==1){
-		numTickets=this.get_s16("redTickets");
+		numTickets=this.get_s16("teamRightTickets");
 		if(numTickets<=0)return 1;
 		numTickets--;
 
-		this.set_s16("redTickets", numTickets);
-		this.Sync("redTickets", true);
+		this.set_s16("teamRightTickets", numTickets);
+		this.Sync("teamRightTickets", true);
 		return 0;
 	}
 	return 1;
@@ -54,7 +54,7 @@ shared bool isPlayersLeft(CRules@ this, int team){			//checks if spawning player
 shared bool checkGameOver(CRules@ this, int teamNum){
 
 		if(teamNum==1){					//if one team is dead, other wins (no consideration for more teams)
-			if(this.get_s16("redTickets")>0) return false;
+			if(this.get_s16("teamRightTickets")>0) return false;
 			if(isPlayersLeft(this, teamNum)) return false;
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 0 ); //game over!
@@ -62,7 +62,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			this.SetGlobalMessage( this.getTeam(0).getName() + " wins the game!\nWell done. Loading next map..." );
 			return true;
 		}else if(teamNum==0){
-			if(this.get_s16("blueTickets")>0) return false;
+			if(this.get_s16("teamLeftTickets")>0) return false;
 			if(isPlayersLeft(this, teamNum)) return false;
 			if(this.getCurrentState()==GAME_OVER) return true;
 			this.SetTeamWon( 1 ); //game over!

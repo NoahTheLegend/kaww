@@ -1,4 +1,4 @@
- #include "ScoreboardCommon.as";
+#include "ScoreboardCommon.as";
 #include "Accolades.as";
 #include "ColoredNameToggleCommon.as";
 #include "PlayerRankInfo.as";
@@ -420,8 +420,8 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 void onRenderScoreboard(CRules@ this)
 {
 	//sort players by exp (rank)
-	CPlayer@[] blueplayers;
-	CPlayer@[] redplayers;
+	CPlayer@[] teamleftplayers;
+	CPlayer@[] teamrightplayers;
 	CPlayer@[] spectators;
 	for (u32 i = 0; i < getPlayersCount(); i++)
 	{
@@ -438,35 +438,35 @@ void onRenderScoreboard(CRules@ this)
 		}
 
 		int teamNum = p.getTeamNum();
-		if (teamNum == 0) //blue team
+		if (teamNum == this.get_u8("teamleft")) //blue team
 		{
-			for (u32 j = 0; j < blueplayers.length; j++)
+			for (u32 j = 0; j < teamleftplayers.length; j++)
 			{
-				if (this.get_u32(blueplayers[j].getUsername() + "_exp") < exp)
+				if (this.get_u32(teamleftplayers[j].getUsername() + "_exp") < exp)
 				{
-					blueplayers.insert(j, p);
+					teamleftplayers.insert(j, p);
 					inserted = true;
 					break;
 				}
 			}
 
 			if (!inserted)
-				blueplayers.push_back(p);
+				teamleftplayers.push_back(p);
 		}
-		else
+		else if (teamNum == this.get_u8("teamright"))
 		{
-			for (u32 j = 0; j < redplayers.length; j++)
+			for (u32 j = 0; j < teamrightplayers.length; j++)
 			{
-				if (this.get_u32(redplayers[j].getUsername() + "_exp") < exp)
+				if (this.get_u32(teamrightplayers[j].getUsername() + "_exp") < exp)
 				{
-					redplayers.insert(j, p);
+					teamrightplayers.insert(j, p);
 					inserted = true;
 					break;
 				}
 			}
 
 			if (!inserted)
-				redplayers.push_back(p);
+				teamrightplayers.push_back(p);
 		}
 	}
 
@@ -476,8 +476,6 @@ void onRenderScoreboard(CRules@ this)
 	if (localPlayer is null)
 		return;
 	int localTeam = localPlayer.getTeamNum();
-	if (localTeam != 0 && localTeam != 1)
-		localTeam = 0;
 
 	@hoveredPlayer = null;
 
@@ -493,17 +491,17 @@ void onRenderScoreboard(CRules@ this)
 
 	//draw the scoreboards
 	
-	if (localTeam == 0)
-		topleft.y = drawScoreboard(localPlayer, blueplayers, topleft, this.getTeam(0), Vec2f(0, 0));
+	if (localTeam == this.get_u8("teamleft"))
+		topleft.y = drawScoreboard(localPlayer, teamleftplayers, topleft, this.getTeam(this.get_u8("teamleft")), Vec2f(0, 0));
 	else
-		topleft.y = drawScoreboard(localPlayer, redplayers, topleft, this.getTeam(1), Vec2f(32, 0));
+		topleft.y = drawScoreboard(localPlayer, teamrightplayers, topleft, this.getTeam(this.get_u8("teamright")), Vec2f(32, 0));
 
 	topleft.y += 52;
 
-	if (localTeam == 1)
-		topleft.y = drawScoreboard(localPlayer, blueplayers, topleft, this.getTeam(0), Vec2f(0, 0));
+	if (localTeam == this.get_u8("teamright"))
+		topleft.y = drawScoreboard(localPlayer, teamleftplayers, topleft, this.getTeam(this.get_u8("teamleft")), Vec2f(0, 0));
 	else
-		topleft.y = drawScoreboard(localPlayer, redplayers, topleft, this.getTeam(1), Vec2f(32, 0));
+		topleft.y = drawScoreboard(localPlayer, teamrightplayers, topleft, this.getTeam(this.get_u8("teamright")), Vec2f(32, 0));
 
 	topleft.y += 52;
 

@@ -1,5 +1,6 @@
 #include "AllHashCodes.as"
 #include "TeamColour.as";
+#include "TeamColorCollections.as";
 
 const float timelineHeight = 22.0f;
 const float timelineLeftEnd = 0.34f;
@@ -15,8 +16,8 @@ void onRender( CRules@ this )
 {
 	if (g_videorecording) return;
 
-	s16 blueTickets=0;
-	s16 redTickets=0;
+	s16 teamLeftTickets=0;
+	s16 teamRightTickets=0;
 
 	CPlayer@ p = getLocalPlayer();
 	if (p is null || !p.isMyPlayer()) return;
@@ -43,14 +44,18 @@ void onRender( CRules@ this )
 	&& getBlobByName("importantarmory") is null
 	&& getBlobByName("importantarmoryt2") is null)
 	{
-		blueTickets=this.get_s16("blueTickets");
-		redTickets=this.get_s16("redTickets");
+		teamLeftTickets=this.get_s16("teamLeftTickets");
+		teamRightTickets=this.get_s16("teamRightTickets");
 
     	GUI::SetFont("big score font");
-		if (blueTickets > 0) GUI::DrawText(""+blueTickets, timelineLPos+Vec2f(-48.0f, 0), getTeamColor(0));
-		else GUI::DrawText("--", timelineLPos+Vec2f(-48.0f, 0), getTeamColor(0));
-		if (redTickets > 0) GUI::DrawText(""+redTickets, timelineRPos+Vec2f(48.0f, 0), getTeamColor(1));
-		else GUI::DrawText("--", timelineRPos+Vec2f(48.0f, 0), getTeamColor(1));
+		u8 teamleft = this.get_u8("teamleft");
+		u8 teamright = this.get_u8("teamright");
+		//if (getGameTime()%30==0)  printf("GETTING TEAMS: "+teamleft+" ||| "+teamright);
+		//if (getGameTime()%30==0) printf(""+(getNeonColor(teamleft, 0).getRed())+" "+(getNeonColor(teamleft, 0).getGreen())+" "+(getNeonColor(teamleft, 0).getBlue()));
+		if (teamLeftTickets > 0) GUI::DrawText(""+teamLeftTickets, timelineLPos+Vec2f(-48.0f, 0), getNeonColor(teamleft, 0));
+		else GUI::DrawText("--", timelineLPos+Vec2f(-48.0f, 0), getNeonColor(teamleft, 0));
+		if (teamRightTickets > 0) GUI::DrawText(""+teamRightTickets, timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
+		else GUI::DrawText("--", timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
 	}
 
 	//draw tents
