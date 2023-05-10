@@ -37,7 +37,7 @@ void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f coll
 	if (isServer() && blob !is null)
 	{
 		if (blob.hasTag("vehicle"))
-			this.server_Die();
+			this.server_Hit(this, this.getPosition(), Vec2f(0,0), 99.0f, Hitters::builder);
 		else if (blob.hasTag("flesh"))
 			this.server_Hit(this, this.getPosition(), Vec2f(0,0), 0.175f, Hitters::builder);
 	}
