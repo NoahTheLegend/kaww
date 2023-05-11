@@ -178,33 +178,36 @@ void onTick(CBlob@ this)
 	f32 angle = getAimAngle(this, v);
 
 	this.set_f32("timer", Maths::Max(0, this.get_f32("timer")-1));
-	bool not_null;
+	bool not_null = false;
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
 	if (ap !is null)
 	{
-		if (ap.getOccupied() !is null
-		&& this.get_f32("timer") == 0 && v.getCurrentAmmo() !is null)
+		if (ap.getOccupied() !is null && v.getCurrentAmmo() !is null)
 		{
-			this.set_f32("timer", v.getCurrentAmmo().fire_delay);
 			not_null = true;
 			CBlob@ gunner = ap.getOccupied();
 
 			if (ap.isKeyPressed(key_action1)) // && hasammo
 			{
-				if (isClient())
+				
+				if (this.get_f32("timer") == 0)
 				{
-					this.SetLight(true);
+					this.set_f32("timer", v.getCurrentAmmo().fire_delay);
+					if (isClient())
+					{
+						this.SetLight(true);
 
-					sprite.SetEmitSoundSpeed(1.0f);
-					sprite.SetEmitSoundVolume(0.75f);
-					sprite.SetEmitSoundPaused(false);
-				}
-				if (isServer())
-				{
-					CBitStream params;
-					params.write_f32(this.isFacingLeft()?-angle-90:angle+90);
-					this.SendCommand(this.getCommandID("throw fire"), params);
+						sprite.SetEmitSoundSpeed(1.0f);
+						sprite.SetEmitSoundVolume(0.75f);
+						sprite.SetEmitSoundPaused(false);
+					}
+					if (isServer())
+					{
+						CBitStream params;
+						params.write_f32(this.isFacingLeft()?-angle-90:angle+90);
+						this.SendCommand(this.getCommandID("throw fire"), params);
+					}
 				}
 			}
 			else if (isClient())
@@ -444,22 +447,51 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	return damage;
 }
 
-const f32 fire_length = 32.0f;
-const f32 fire_angle = 22.5f;
+const f32 fire_length = 80.0f; // YOU WILL HAVE TO REWRITE FireParticles()'s MULTIPLIERS. THINK TWICE
+const f32 fire_angle = 10.0f;
 const f32 fire_damage = 0.25f;
 
 void FireParticles(CBlob@ this, Vec2f pos, f32 angle)
 {
+	if (getMap() is null) return;
 	Vec2f vel = Vec2f_zero;
-	Vec2f extra = Vec2f(0,-1.0f).RotateBy(angle);
-	f32 rot = XORRandom(fire_angle)-fire_angle/2;
-	printf(""+rot);
+	f32 rot = float(XORRandom(fire_angle))-fire_angle*0.5f;
 
-	ParticleAnimated("FireDust"+XORRandom(4)+".png", pos+(extra*32), vel, angle, 0.75f+XORRandom(51)*0.01f, 3, 0, true);
+	ParticleAnimated("FireDust"+(XORRandom(3)+1)+".png", pos+Vec2f(0, -20).RotateBy(angle), vel, angle, 0.75f+XORRandom(51)*0.01f, 2+XORRandom(3), 0, true);
 
 	for (u8 i = 0; i < 3; i++)
 	{
-		ParticleAnimated("SmallFire", pos+(extra*16), extra.RotateBy(rot), 0, 1.0f, 3, 0, false);
+		ParticleAnimated("SmallFire", pos+Vec2f(0, -16).RotateBy(angle), Vec2f(0, -1).RotateBy(rot), 0, 1.0f, 3, 0, false);
+	}
+
+	int mapsize = getMap().tilemapwidth * getMap().tilemapheight;
+	f32 current_angle = fire_angle*0.5f;
+
+	for (u8 i = 1; i <= current_angle; i++)
+	{
+		f32 initpoint = fire_length/8;
+		f32 endpoint = initpoint;
+		HitInfo@[] infos;
+		getMap().getHitInfosFromRay(pos, angle-90-fire_angle+i*4, fire_length*2.75f, this, @infos); // this code is so bad XD
+
+		for (u16 j = 0; j < infos.length; j++)
+		{
+			HitInfo@ info = infos[j];
+			if (info is null) continue;
+			if (info.tileOffset < mapsize && info.distance < endpoint*8*2.75f)
+			{
+				endpoint = info.distance/(8*2.5f);
+			}
+		}
+		for (u8 j = 0; j < endpoint; j++)
+		{
+			CParticle@ p = ParticleAnimated("SmallFire"+(1+XORRandom(2)), pos-Vec2f(0,1)+Vec2f(0, -16 + -j*(20*(endpoint/initpoint))).RotateBy(angle-fire_angle+i*4), Vec2f(0,-2).RotateBy(angle-fire_angle/2+i+XORRandom(100)-50), 0, 2.0f, 3, 0, false);
+			if (p !is null)
+			{
+				p.growth = -0.075f;
+				p.deadeffect = -1;
+			}
+		}
 	}
 }
 
