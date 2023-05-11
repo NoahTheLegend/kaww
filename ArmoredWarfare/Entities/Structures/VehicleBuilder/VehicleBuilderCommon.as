@@ -215,7 +215,7 @@ void buildT3ShopCombined(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 3;
 		s.buttonheight = 2;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Barge", "$barge$", "barge", "An armored boat for transporting vehicles across the water.", false, true);
@@ -429,7 +429,7 @@ void buildT3ShopGround(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 3;
 		s.buttonheight = 2;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60); // more expensive because no aircraft
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70); // more expensive because no aircraft
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Barge", "$barge$", "barge", "An armored boat for transporting vehicles across the water.", false, true);

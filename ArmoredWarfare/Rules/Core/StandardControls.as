@@ -393,6 +393,10 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 	}
 
 	zoom_target = (zoomLevel == 0 && this.hasTag("increase_max_zoom") ? 0.5f : zoom_target);
+	if (this.getName() == "ballista_bolt")
+	{
+		zoom_target = 0.66f;
+	}
 
 	if (zoom > zoom_target)
 	{
@@ -402,6 +406,8 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 	{
 		zoom = Maths::Min(zoom_target, zoom + zoomSpeed);
 	}
+
+	
 
 	camera.targetDistance = zoom;
 }
@@ -460,6 +466,11 @@ void ManageCamera(CBlob@ this)
 		{
 			camera.mousecamstyle = 2; // soldatstyle
 		}
+	}
+
+	if (this.getName() == "ballista_bolt")
+	{
+		camera.mousecamstyle = 1;
 	}
 
 

@@ -527,13 +527,13 @@ class PNGLoader
 			case map_colors::sign3:    autotile(offset); spawnBlob(map, "sign3",   offset, teamright);	break;
 			case map_colors::sign4:    autotile(offset); spawnBlob(map, "sign4",   offset, teamright);	break;
 
-			case map_colors::civcar:           autotile(offset); spawnVehicle(map, "civcar", offset, 100); break;
-			case map_colors::lada:           autotile(offset); spawnVehicle(map, "lada", offset, 5); break;
+			case map_colors::civcar:           autotile(offset); spawnVehicle(map, "civcar", offset, 7); break;
+			case map_colors::lada:           autotile(offset); spawnVehicle(map, "lada", offset, 7); break;
 			case map_colors::arabicspeaker:    autotile(offset); spawnVehicle(map, "arabicspeaker", offset); break;
 			case map_colors::russianspeaker:    autotile(offset); spawnVehicle(map, "russianspeaker", offset); break;
 
-			case map_colors::chair:         autotile(offset); spawnBlob(map, "chair", offset, 2); break;
-			case map_colors::camp:         autotile(offset); spawnBlob(map, "camp", offset, 5); break;
+			case map_colors::chair:         autotile(offset); spawnBlob(map, "chair", offset, 7); break;
+			case map_colors::camp:         autotile(offset); spawnBlob(map, "camp", offset, 7); break;
 
 			//zambis
 			case map_colors::gate0:         autotile(offset); spawnBlob(map, "gate", offset, teamleft); break;

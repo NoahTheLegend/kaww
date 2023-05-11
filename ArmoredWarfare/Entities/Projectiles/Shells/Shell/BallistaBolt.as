@@ -47,6 +47,15 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	//if (isServer() && this.hasTag("artillery"))
+	//{
+	//	if (this.isKeyPressed(key_action1) || this.getHealth() <= 0.0f)
+	//	{
+	//		ResetPlayer(this);
+	//		this.server_Die();
+	//		return;
+	//	}
+	//}
 	//this.setPosition(Vec2f(this.getPosition().x, this.getOldPosition().y)); // useful for debugging
 	f32 angle = 0;
 
@@ -122,7 +131,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return true;
 	}
 
-	if ((blob.hasTag("vehicle") && this.getTeamNum() == blob.getTeamNum()) || (blob.hasTag("aerial") && this.hasTag("artillery_shell")))
+	if ((blob.hasTag("vehicle") && this.getTeamNum() == blob.getTeamNum()))
 	{
 		return false;
 	}
@@ -185,12 +194,10 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 			}
 			else
 			{
-				{
-					this.Tag("weaken");
-					DoExplosion(this, this.getVelocity());
-					this.Tag("dead");
-					this.server_Die();
-				}
+				this.Tag("weaken");
+				DoExplosion(this, this.getVelocity());
+				this.Tag("dead");
+				this.server_Die();
 			}
 		}
 	}
@@ -220,9 +227,33 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 	}
 }
 
+void ResetPlayer(CBlob@ this)
+{
+	if (isServer())
+	{
+		CPlayer@ ply = getPlayerByNetworkId(this.get_u16("ownerplayer_id"));
+		CBlob@ blob = getBlobByNetworkID(this.get_u16("ownerblob_id"));
+		if (blob !is null && ply !is null && !blob.hasTag("dead"))
+		{
+			blob.Untag("camera_offset");
+			blob.server_SetPlayer(ply);
+		}
+
+		this.server_Die();
+	}
+}
+
+void onDie(CBlob@ this)
+{
+	if (this.getPlayer() !is null)
+	{
+		ResetPlayer(this);
+	}
+}
+
 bool DoExplosion(CBlob@ this, Vec2f velocity)
 {
-	
+	ResetPlayer(this);
 	if (this.hasTag("dead")) return true;
 
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
@@ -297,6 +328,7 @@ void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f vel
 		this.getSprite().PlayRandomSound("/ShellExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
 		this.Tag("soundplayed");
 	}
+
 	if (DoExplosion(this, velocity)) return;
 
 	CMap@ map = getMap();
@@ -329,18 +361,10 @@ void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f vel
 	}
 }
 
-void onDie(CBlob@ this)
-{/*
-	if (!isServer()) return;
-	if (this.hasTag("artillery"))
-	{
-		CBlob@ ensureEffects = server_CreateBlob("ensureeffects", this.getTeamNum(), this.getPosition());
-		if (ensureEffects !is null)
-		{
-			
-		}
-	}
-	*/
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (this.getPlayer() !is null && customData == 11) return 0;
+	return damage;
 }
 
 void Boom(CBlob@ this)
@@ -371,8 +395,6 @@ void Boom(CBlob@ this)
 			}
 
 			mod *= this.get_f32(projExplosionDamageString) / 10;
-
-			
 
 			pos -= this.getPosition();
 			f32 dist = pos.Length();

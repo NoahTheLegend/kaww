@@ -24,7 +24,7 @@ void onDie(CBlob@ this)
         if (this.exists("shrapnel_angle_deviation")) angle_deviation = this.get_f32("shrapnel_angle_deviation");
         if (this.exists("shrapnel_angle_max")) angle_max = this.get_f32("shrapnel_angle_max");
         
-        for (u8 i = 0; i <= count; i++)
+        for (u8 i = 0; i <= count * this.getQuantity(); i++)
         {
             Vec2f dir = Vec2f(0, -1); //center dir, angle max is +-(angle_max/2) from that point
             if (this.exists("shrapnel_dir")) dir = this.get_Vec2f("shrapnel_dir");

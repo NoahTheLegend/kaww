@@ -17,6 +17,13 @@ void onInit(CBlob@ this)
 	this.set_u8("stack size", 1);
 	this.set_f32("bomb angle", 90);
 
+	this.set_u8("shrapnel_count", 2+XORRandom(3));
+	this.set_f32("shrapnel_vel", 8.0f+XORRandom(5)*0.1f);
+	this.set_f32("shrapnel_vel_random", 0.5f+XORRandom(6)*0.1f);
+	this.set_Vec2f("shrapnel_offset", Vec2f(0,-1));
+	this.set_f32("shrapnel_angle_deviation", 15.0f);
+	this.set_f32("shrapnel_angle_max", 45.0f+XORRandom(21));
+
 	// this.Tag("map_damage_dirt");
 
 	this.Tag("explosive");

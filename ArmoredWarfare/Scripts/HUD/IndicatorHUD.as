@@ -364,18 +364,18 @@ void RenderHPBar(CRules@ this, CBlob@ vehicle, Vec2f position)
 
 	SColor color_team;
 
-	if (vehicle.getTeamNum() == teamleft && returncount > 0 || vehicle.getTeamNum() == teamleft && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == teamleft)
+	if (vehicle.getTeamNum() == teamleft && returncount >= 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == teamleft)
 	{
 		color_light = getNeonColor(teamleft, 0);
 		color_mid	= getNeonColor(teamleft, 1);
 		color_dark	= getNeonColor(teamleft, 2);
 	}
 	
-	if (vehicle.getTeamNum() == teamright && returncount > 0 || vehicle.getTeamNum() == teamright && returncount == 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == teamright)
+	if (vehicle.getTeamNum() == teamright && returncount >= 0 || vehicle.getTeamNum() == 255 && vehicle.get_s8("teamcapping") == teamright)
 	{
-		getNeonColor(teamright, 0);
-		getNeonColor(teamright, 1);
-		getNeonColor(teamright, 2);
+		color_light = getNeonColor(teamright, 0);
+		color_mid	= getNeonColor(teamright, 1);
+		color_dark	= getNeonColor(teamright, 2);
 	}
 
 	if (vehicle.getTeamNum() == teamleft)

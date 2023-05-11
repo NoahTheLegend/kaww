@@ -628,6 +628,10 @@ shared class TDMCore : RulesCore
 	{
 		for (uint i = 0; i < teams.length; i++)
 		{
+			u8 teamleft = getRules().get_u8("teamleft");
+			u8 teamright = getRules().get_u8("teamright");
+
+			if (teams[i].index != teamleft && teams[i].index != teamright) continue;
 			if (teams[i].players_count < minimum_players_in_team)
 			{
 				return false;
