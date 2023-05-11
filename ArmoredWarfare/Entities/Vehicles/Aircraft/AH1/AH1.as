@@ -2,6 +2,8 @@
 #include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "Explosion.as";
+#include "ProgressBar.as";
+#include "TeamColorCollections.as";
 
 const Vec2f upVelo = Vec2f(0.00f, -0.05f);
 const Vec2f downVelo = Vec2f(0.00f, 0.01f);
@@ -24,6 +26,9 @@ const Vec2f gun_clampAngle = Vec2f(-180, 180);
 const Vec2f miniGun_offset = Vec2f(-43,7);
 const u8 shootDelay = 2;
 
+const int trap_cooldown = 30*30; // 30 seconds
+const u8 traps_amount = 5;
+
 void onInit(CBlob@ this)
 {
 	this.set_bool("map_damage_raycast", true);
@@ -38,6 +43,10 @@ void onInit(CBlob@ this)
 	
 	this.set_bool("lastTurn", false);
 	this.addCommandID("shoot bullet");
+	this.addCommandID("release traps");
+
+	this.set_u32("traps_endtime", trap_cooldown);
+	this.set_f32("traps_time", trap_cooldown); // load immediately
 
 	if (this !is null)
 	{
@@ -160,14 +169,22 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 
 void onTick(CBlob@ this)
 {
+	barTick(this);
+
 	if (this !is null)
 	{
 		Vehicle_ensureFallingCollision(this);
+
+		this.add_f32("traps_time", 1);
 
 		if (getGameTime() >= this.get_u32("next_shoot"))
 		{
 			this.Untag("no_more_shooting");
 			this.Untag("no_more_proj");
+		}
+		if (this.get_f32("traps_time") > this.get_u32("traps_endtime")+15)
+		{
+			this.Untag("no_more_traps");
 		}
 		if (this.getVelocity().x > 6.25f || this.getVelocity().x < -6.25f) this.setVelocity(Vec2f(this.getOldVelocity().x, this.getVelocity().y));
 
@@ -234,6 +251,21 @@ void onTick(CBlob@ this)
 								if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
 								this.Tag("no_more_shooting");
 							}
+						}
+
+						// javelin traps
+
+						if (!this.isOnGround() && !this.hasTag("no_more_traps") && ap.isKeyPressed(key_action1) && this.get_f32("traps_time") > this.get_u32("traps_endtime"))
+						{
+							if (hooman.isMyPlayer())
+							{
+								f32 rot = 1.0f;
+								if (this.isFacingLeft()) rot = -1.0f;
+								ReleaseTraps(this);
+							}
+
+							if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.0f, 0.5f + XORRandom(15) * 0.01f);
+							this.Tag("no_more_traps");
 						}
 						
 						const f32 mass = this.getMass();
@@ -435,6 +467,32 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 	this.SendCommand(this.getCommandID("shoot bullet"), params);
 }
 
+void ReleaseTraps(CBlob@ this)
+{
+	Bar@ bars;
+	if (!this.get("Bar", @bars))
+	{
+		Bar setbars;
+    	setbars.gap = 20.0f;
+    	this.set("Bar", setbars);
+	}
+	if (this.get("Bar", @bars))
+	{
+		if (!hasBar(bars, "traps"))
+		{
+			SColor team_front = getNeonColor(this.getTeamNum(), 0);
+			ProgressBar setbar;
+			setbar.Set(this, "traps", Vec2f(80.0f, 16.0f), false, Vec2f(0, 56), Vec2f(2, 2), back, team_front,
+				"traps_time", this.get_u32("traps_endtime"), 0.33f, 5, 5, false, "");
+
+    		bars.AddBar(this, setbar, true);
+		}
+	}
+
+	CBitStream params;
+	this.SendCommand(this.getCommandID("release traps"), params);
+}
+
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (isServer() && solid && this.hasTag("falling"))
@@ -535,6 +593,28 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			if (inv !is null && inv.getItem(0) !is null && inv.getItem(0).getName() == "mat_bolts")
 			{
 				inv.getItem(0).server_SetQuantity(inv.getItem(0).getQuantity()-1);
+			}
+		} 
+	}
+	else if (cmd == this.getCommandID("release traps"))
+	{
+		if (this.get_f32("traps_time") <= this.get_u32("traps_endtime")) return;
+		this.set_f32("traps_time", 0);
+		
+		if (getNet().isServer())
+		{
+			for (u8 i = 0; i < traps_amount; i++)
+			{
+				CBlob@ proj = server_CreateBlob("missiletrap", this.getTeamNum(), this.getPosition());
+				if (proj is null) return;
+
+				proj.set_u16("heli_id", this.getNetworkID());
+				Vec2f vel = Vec2f(0, -8).RotateBy(((195+XORRandom(166))/traps_amount) * i - 90);
+				vel.y = -0.25f * XORRandom(8);
+				vel.x *= 0.25f;
+				proj.setVelocity(vel);
+				proj.getShape().SetGravityScale(0.15f+XORRandom(11)*0.01f);
+				proj.server_SetTimeToDie(7.5f);
 			}
 		} 
 	}
@@ -771,6 +851,8 @@ void onRender(CSprite@ this)
 		{
 			u8 mode = blob.get_u8("mode");
 			if (mode == 0) return; // disabled
+
+			barRender(this);
 
 			f32 screenWidth = getScreenWidth();
 			f32 screenHeight = getScreenHeight();

@@ -34,9 +34,6 @@ void UpdateAngle(CBlob@ this)
 	if(!holder.isFacingLeft()) mouseAngle += 180;
 
 	this.setAngleDegrees(-mouseAngle);
-
-	point.offset.x=0 +(aim_vec.x*2*(holder.isFacingLeft() ? 1.0f : -1.0f));
-	point.offset.y=-(aim_vec.y);
 }
 
 void onTick(CBlob@ this)
@@ -54,29 +51,13 @@ void onTick(CBlob@ this)
 		CSprite@ sprite = this.getSprite();
 		if (sprite !is null && this.get_u32("next repair") > getGameTime())
 		{
-			f32 l = this.isFacingLeft() ? -1.0f : 1.0f;
-			if (this.get_u32("next repair") == getGameTime() + 19)
-				sprite.RotateBy(24.0f*l, Vec2f(0, 2));
-			else if (this.get_u32("next repair") == getGameTime() + 18)
-				sprite.RotateBy(24.0f*l, Vec2f(0, 2));
-			else if (this.get_u32("next repair") == getGameTime() + 17)
-				sprite.RotateBy(16.0f*l, Vec2f(0, 2));
-			else if (this.get_u32("next repair") == getGameTime() + 14)  //bruh what is this like actually
-				sprite.RotateBy(-16.0f*l, Vec2f(0, 2));
-			else if (this.get_u32("next repair") == getGameTime() + 11)
-				sprite.RotateBy(16.0f*l, Vec2f(0, 2));
-			else if (this.get_u32("next repair") == getGameTime() + 8)
-				sprite.RotateBy(-16.0f*l, Vec2f(0, 2));
-			else if (this.get_u32("next repair") == getGameTime() + 7)
-				sprite.RotateBy(-24.0f*l, Vec2f(0, 2));
-			else if (this.get_u32("next repair") == getGameTime() + 6)
-			{
-				sprite.RotateBy(-24.0f*l, Vec2f(0, 2));
-				sprite.ResetTransform();
-			}
+			f32 rot = Maths::Sin(this.get_u32("next repair")-getGameTime())*15;
+			sprite.RotateBy(rot, Vec2f(0, 2));
 			
 			return;
 		}
+		else sprite.ResetTransform();
+
 		u32 repair_cd = 30;
 		if (getKnocked(holder) <= 0)
 		{		

@@ -34,9 +34,9 @@ void onInit(CBlob@ this)
 		return;
 	}
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(10.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(10.0f, 7.0f)); if (w !is null) {w.ScaleBy(Vec2f(0.9f, 0.9f)); w.SetRelativeZ(-10.0f);} }
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-14.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-14.5f, 7.0f)); if (w !is null) {w.ScaleBy(Vec2f(0.9f, 0.9f)); w.SetRelativeZ(-10.0f);} }
 	
 
 

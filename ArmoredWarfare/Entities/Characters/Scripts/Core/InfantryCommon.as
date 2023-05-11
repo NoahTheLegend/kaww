@@ -595,7 +595,7 @@ void getWeaponStats( int blobNameHash,
 
 			reload_time = RangerParams::RELOAD_TIME;
 			mag_size = RangerParams::MAG_SIZE;
-			delayafterfire = RangerParams::DELAYAFTERFIRE - (isServer() ? 1 : 0); // test
+			delayafterfire = RangerParams::DELAYAFTERFIRE - (isServer() ? 1 : 0);
 			randdelay = RangerParams::RANDDELAY;
 
 			bullet_velocity = RangerParams::BULLET_VELOCITY;
@@ -619,7 +619,7 @@ void getWeaponStats( int blobNameHash,
 
 			reload_time = Mp5Params::RELOAD_TIME;
 			mag_size = Mp5Params::MAG_SIZE;
-			delayafterfire = Mp5Params::DELAYAFTERFIRE;
+			delayafterfire = Mp5Params::DELAYAFTERFIRE - (isServer() ? 1 : 0);
 			randdelay = Mp5Params::RANDDELAY;
 
 			bullet_velocity = Mp5Params::BULLET_VELOCITY;
@@ -641,7 +641,7 @@ void getWeaponStats( int blobNameHash,
 
 			reload_time = RevolverParams::RELOAD_TIME;
 			mag_size = RevolverParams::MAG_SIZE;
-			delayafterfire = RevolverParams::DELAYAFTERFIRE;
+			delayafterfire = RevolverParams::DELAYAFTERFIRE - (isServer() ? 1 : 0);
 			randdelay = RevolverParams::RANDDELAY;
 
 			bullet_velocity = RevolverParams::BULLET_VELOCITY;
@@ -663,7 +663,7 @@ void getWeaponStats( int blobNameHash,
 
 			reload_time = SniperParams::RELOAD_TIME;
 			mag_size = SniperParams::MAG_SIZE;
-			delayafterfire = SniperParams::DELAYAFTERFIRE;
+			delayafterfire = SniperParams::DELAYAFTERFIRE - (isServer() ? 1 : 0);
 			randdelay = SniperParams::RANDDELAY;
 
 			bullet_velocity = SniperParams::BULLET_VELOCITY;
@@ -685,7 +685,7 @@ void getWeaponStats( int blobNameHash,
 
 			reload_time = RPGParams::RELOAD_TIME;
 			mag_size = RPGParams::MAG_SIZE;
-			delayafterfire = RPGParams::DELAYAFTERFIRE;
+			delayafterfire = RPGParams::DELAYAFTERFIRE - (isServer() ? 1 : 0);
 			randdelay = RPGParams::RANDDELAY;
 
 			bullet_velocity = RPGParams::BULLET_VELOCITY;
@@ -707,7 +707,7 @@ void getWeaponStats( int blobNameHash,
 
 			reload_time = ShotgunParams::RELOAD_TIME;
 			mag_size = ShotgunParams::MAG_SIZE;
-			delayafterfire = ShotgunParams::DELAYAFTERFIRE;
+			delayafterfire = ShotgunParams::DELAYAFTERFIRE - (isServer() ? 1 : 0);
 			randdelay = ShotgunParams::RANDDELAY;
 
 			bullet_velocity = ShotgunParams::BULLET_VELOCITY;
@@ -716,6 +716,8 @@ void getWeaponStats( int blobNameHash,
 		}
 		break;
 	}
+	
+	if (isServer() && isClient()) delayafterfire += 1;
 }
 
 void getMovementStats( int blobNameHash, bool isSprinting,
