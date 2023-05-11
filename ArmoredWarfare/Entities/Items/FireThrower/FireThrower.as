@@ -1,7 +1,7 @@
 #include "VehicleCommon.as"
 #include "Hitters.as"
 
-const Vec2f arm_offset = Vec2f(-2, 0);
+const Vec2f arm_offset = Vec2f(4, 1);
 const f32 MAX_OVERHEAT = 2.0f;
 const f32 OVERHEAT_PER_SHOT = 0.07475f;
 const f32 COOLDOWN_RATE = 0.065f;
@@ -30,8 +30,8 @@ void onInit(CBlob@ this)
 	                    1, // fire cost
 	                    "ammo", // bullet ammo config name
 	                    "Ammo", // name for ammo selection
-	                    "bulletheavy", // bullet config name
-	                    "M60fire", // fire sound  
+	                    "", // bullet config name
+	                    "", // fire sound  
 	                    "EmptyFire", // empty fire sound
 	                    Vehicle_Fire_Style::custom,
 	                    Vec2f(-6.0f, 2.0f), // fire position offset
@@ -67,8 +67,6 @@ void onInit(CBlob@ this)
 	this.getShape().SetRotationsAllowed(false);
 	this.set_string("autograb blob", "ammo");
 
-	this.addCommandID("set detaching");
-	this.addCommandID("set attaching");
 	sprite.SetZ(20.0f);
 
 	this.set_f32("overheat", 0);
@@ -155,13 +153,28 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
-	//if (isServer() && this.getPosition().x <= 8.0f && this.getPosition().y <= 64.0f) this.server_Die();
-	
 	bool is_attached = this.isAttached();
 	if (this.isAttachedToPoint("PICKUP") && this.hasAttached())
 	{
 		if (isServer()) this.server_DetachFromAll();
 		return;
+	}
+
+	if (this.getTickSinceCreated() == 1 && !is_attached)
+	{
+		if (isServer() && this.getPosition().x <= 8.0f && this.getPosition().y <= 64.0f) this.server_Die();
+		CBlob@[] turrets;
+    	getMap().getBlobsInRadius(this.getPosition(), 64.0f, @turrets);
+    	for (u16 i = 0; i < turrets.length; i++)
+    	{
+    	    CBlob@ tur = turrets[i];
+    	    if (tur is null || !tur.hasTag("has machinegun") || tur.getTeamNum() != this.getTeamNum() || tur.getDistanceTo(this) > 64.0f) continue;
+    	    AttachmentPoint@ ap = tur.getAttachments().getAttachmentPointByName("BOW");
+    	    if (ap !is null && ap.getOccupied() is null)
+    	    {
+				tur.server_AttachTo(this, ap);
+			}
+    	}
 	}
 
 	VehicleInfo@ v;
@@ -273,7 +286,7 @@ void onTick(CBlob@ this)
 			arm.ResetTransform();
 			arm.SetFacingLeft((rotation > -90 && rotation < 90) ? facing_left : !facing_left);
 			arm.SetOffset(arm_offset);
-			arm.RotateBy(rotation + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -4.0f : 4.0f, 0.0f));
+			arm.RotateBy(rotation + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -1.0f : 1.0f, 0.0f));
 			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
 			if (this.hasAttached()) arm.RotateBy(-this.getAngleDegrees(), Vec2f(0,0));
 		}
@@ -295,53 +308,6 @@ void MakeParticle(CBlob@ this, const Vec2f vel, VehicleInfo@ v, const string fil
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	Vehicle_AddLoadAmmoButton(this, caller);
-
-	if (this.isAttached())
-	{
-		if (caller is null || caller.getTeamNum() != this.getTeamNum()
-			|| caller.getDistanceTo(this) > 48.0f || caller.getName() != "mechanic") return;
-
-		CBlob@ carried  = caller.getCarriedBlob();
-
-		bool disable = false;
-		if (carried is null || carried.getName() != "pipewrench")
-			disable = true;
-
-		CBitStream params;
-		params.write_u16(caller.getNetworkID());
-		CButton@ button = caller.CreateGenericButton(15, Vec2f(-9, 0), this, this.getCommandID("set detaching"), "\nDetach this weapon."+(disable?"Requires a pipewrench.":""), params);
-		if (button !is null && disable)
-		{
-			button.SetEnabled(false);
-		}
-	}
-	else if (caller !is null && caller.getTeamNum() == this.getTeamNum()
-		&& caller.getDistanceTo(this) <= 64.0f)
-	{
-		CBlob@[] nearby;
-		if (getMap() is null) return;
-		getMap().getBlobsInRadius(this.getPosition(), 32.0f, @nearby);
-
-		bool try_to_attach = false;
-		u16 id;
-		for (u16 i = 0; i < nearby.length; i++)
-		{
-			if (nearby[i] !is null && nearby[i].getTeamNum() == this.getTeamNum()
-				&& nearby[i].hasTag("has machinegun"))
-			{
-				try_to_attach = true;
-				id = nearby[i].getNetworkID();
-				break;
-			}
-		}
-
-		if (try_to_attach)
-		{
-			CBitStream params;
-			params.write_u16(id);
-			CButton@ button = caller.CreateGenericButton(15, Vec2f(-9, 0), this, this.getCommandID("set attaching"), "\nAttach this weapon to nearby mount.", params);
-		}
-	}
 }
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
@@ -423,97 +389,11 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 		float _angle = this.isFacingLeft() ? -anglereal+180 : anglereal; // on turret spawn it works wrong otherwise
 		_angle += -0.099f + (XORRandom(4) * 0.01f);
 
-		bool no_muzzle = false;
-
-		#ifdef STAGING
-			no_muzzle = true;
-		#endif
-
-		if (!no_muzzle)
-		{
-			if (this.isFacingLeft())
-			{
-				ParticleAnimated("Muzzleflash", pos + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), _angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-			}
-			else
-			{
-				ParticleAnimated("Muzzleflashflip", pos + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), _angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-			}
-		}
-
 		CPlayer@ p = getLocalPlayer();
-		if (p !is null && !v_fastrender)
+		if (p !is null)
 		{
-			CBlob@ local = p.getBlob();
-			if (local !is null)
-			{
-				CPlayer@ ply = local.getPlayer();
-
-				if (ply !is null && ply.isMyPlayer())
-				{
-					const float recoilx = 15;
-					const float recoily = 50;
-					const float recoillength = 40; // how long to recoil (?)
-	
-					if (local.isAttachedTo(this)) ShakeScreen(28, 5, pos);
-
-					makeGibParticle(
-					"EmptyShellSmall",               // file name
-					pos,                 // position
-					(this.isFacingLeft() ? -offset : offset) + Vec2f((-20 + XORRandom(40))/18,-1.1f),                           // velocity
-					0,                                  // column
-					0,                                  // row
-					Vec2f(16, 16),                      // frame size
-					0.2f,                               // scale?
-					0,                                  // ?
-					"ShellCasing",                      // sound
-					this.get_u8("team_color"));         // team number
-
-					this.getSprite().PlaySound("M60fire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
-				}		
-			}
+			// effects
 		}
-	}
-}
-
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
-	if (cmd == this.getCommandID("fire blob"))
-	{
-		CBlob@ blob = getBlobByNetworkID(params.read_netid());
-		const u8 charge = params.read_u8();
-		VehicleInfo@ v;
-		if (!this.get("VehicleInfo", @v))
-		{
-			return;
-		}
-		Vehicle_onFire(this, v, blob, charge);
-	}
-	else if (cmd == this.getCommandID("set detaching"))
-	{
-		u16 caller_id;
-		if (!params.saferead_u16(caller_id)) return;
-		CBlob@ caller = getBlobByNetworkID(caller_id);
-		if (caller is null) return;
-
-		caller.set_bool("detaching", true);
-		caller.set_u16("detaching_id", this.getNetworkID());
-		caller.Tag("init_detaching");
-	}
-	else if (cmd == this.getCommandID("set attaching"))
-	{
-		u16 turret_id;
-		if (!params.saferead_u16(turret_id)) return;
-
-		CBlob@ turret = getBlobByNetworkID(turret_id);
-		if (turret is null) return;
-
-    	AttachmentPoint@ ap = turret.getAttachments().getAttachmentPointByName("BOW");
-    	if (ap !is null && ap.getOccupied() is null)
-    	{
-			turret.server_AttachTo(this, ap);
-		}
-    	
 	}
 }
 

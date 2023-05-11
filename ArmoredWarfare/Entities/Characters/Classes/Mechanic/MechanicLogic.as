@@ -26,6 +26,9 @@ void onInit(CBlob@ this)
 	this.set_f32("pickaxe_distance", 10.0f);
 	this.set_f32("gib health", -1.5f);
 
+	this.set_bool("detaching", false);
+	this.set_f32("detach_time", 0);
+
 	this.set_s8(penRatingString, 3);
 
 	this.Tag("player");
@@ -44,6 +47,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("bootout");
 	this.addCommandID("addxp_universal");
 	this.addCommandID("attach_parachute");
+	this.addCommandID("detach turret");
 
 	this.set_u32("turret_delay", 0);
 
@@ -219,7 +223,7 @@ void onTick(CBlob@ this)
 	}
 	else if (this.get_f32("turret_load") > 0) this.set_f32("turret_load", 0);
 
-	if (this.get_f32("turret_load") > 0)
+	if (this.get_f32("turret_load") > 0) // build a sentry
 	{
 		Bar@ bars;
 		if (this.get("Bar", @bars))
@@ -242,6 +246,44 @@ void onTick(CBlob@ this)
 		{
 			bars.RemoveBar("sentry_build", false);
 		}
+	}
+
+	if (this.get_bool("detaching"))
+	{
+		this.add_f32("detach_time", 1);
+
+		CBlob@ turret = getBlobByNetworkID(this.get_u16("detaching_id"));
+		if (turret is null || this.getDistanceTo(turret) > 48.0f)
+		{
+			this.set_bool("detaching", false);
+			this.set_u16("detaching_id", 0);
+			this.set_f32("detach_time", 0);
+			this.Untag("init_detaching");
+			
+			Bar@ bars;
+			if (this.get("Bar", @bars))
+			{
+				bars.RemoveBar("detach", false);
+			}
+		}
+	}
+	// detach secondary weapon from the vehicle
+	if (this.hasTag("init_detaching"))
+	{
+		this.Untag("init_detaching");
+		Bar@ bars;
+		if (this.get("Bar", @bars))
+		{
+			if (!hasBar(bars, "detach"))
+			{
+				SColor team_front = SColor(255, 133, 133, 160);
+				ProgressBar setbar;
+				setbar.Set(this, "detach", Vec2f(64.0f, 16.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, team_front,
+					"detach_time", 150, 1.0f, 5, 5, false, "detach turret");
+
+    			bars.AddBar(this, setbar, true);
+			}
+		}	
 	}
 
 	if (ismyplayer && getHUD().hasMenus())
@@ -612,6 +654,22 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		if (isClient()) this.getSprite().PlaySound("bridge_open", 1.0f, 1.25f);
 		if (isServer()) this.server_DetachFromAll();
+	}
+	else if (cmd == this.getCommandID("detach turret"))
+	{
+		CBlob@ turret = getBlobByNetworkID(this.get_u16("detaching_id"));
+		if (turret is null) return;
+		if (this.getDistanceTo(turret) > 48.0f) return;
+
+		if (isServer())
+		{
+			turret.server_DetachFromAll();
+		}
+
+		this.set_bool("detaching", false);
+		this.set_u16("detaching_id", 0);
+		this.set_f32("detach_time", 0);
+		this.Untag("init_detaching");
 	}
 }
 
@@ -1179,4 +1237,9 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 	{
 		this.Untag("parachute");
 	}
+}
+
+void onRender(CSprite@ this)
+{
+	barRender(this);
 }

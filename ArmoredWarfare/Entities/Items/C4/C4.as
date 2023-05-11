@@ -290,7 +290,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				{
 					SColor team_front = SColor(255, 255, 255, 55);
 					ProgressBar setbar;
-					setbar.Set(this, "defuse", Vec2f(48.0f, 12.0f), true, Vec2f(0, 16), Vec2f(2, 2), back, team_front,
+					setbar.Set(this, "defuse", Vec2f(48.0f, 12.0f), true, Vec2f(0, 24), Vec2f(2, 2), back, team_front,
 						"defuse_time", this.get_f32("defuse_endtime"), 0.33f, 5, 5, false, "deactivate");
 
     				bars.AddBar(this, setbar, true);
@@ -347,3 +347,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	}
 }
 
+void onRender(CSprite@ this)
+{
+	barRender(this);
+}

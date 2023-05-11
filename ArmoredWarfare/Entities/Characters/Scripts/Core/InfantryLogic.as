@@ -1642,3 +1642,8 @@ bool canHit(CBlob@ this, CBlob@ b)
 
 	return b.getTeamNum() != this.getTeamNum();
 }
+
+void onRender(CSprite@ this)
+{
+	barRender(this);
+}

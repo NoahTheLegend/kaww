@@ -29,7 +29,7 @@ void barTick(CBlob@ this)
     if (bars.hasBars()) bars.update();
 }
 
-void onRender(CSprite@ sprite)
+void barRender(CSprite@ sprite)
 {
     if (g_videorecording) return;
 
@@ -91,6 +91,7 @@ class ProgressBar : Bar {
         this.dim = _dim;
         this.reoffset = _reoffset;
         this.offset = _offset;
+        this.initial_offset = _offset;
         this.inherit = _inherit;
         this.color_back = _color_back;
         this.color_front = _color_front;
@@ -140,7 +141,7 @@ class ProgressBar : Bar {
 }
 
 class Bar : BarHandler{
-    Vec2f dim; Vec2f pos2d; Vec2f offset; Vec2f target_offset; Vec2f drawpos; Vec2f inherit; // positions, offsets
+    Vec2f dim; Vec2f pos2d; Vec2f offset; Vec2f target_offset; Vec2f initial_offset; Vec2f drawpos; Vec2f inherit; // positions, offsets
     SColor color_back; SColor color_front; // colors
     f32 current; f32 max; f32 percent; f32 lerp; f32 target; // logic
     bool fadeout; u32 fadeout_start; u32 fadeout_end; u32 fadeout_time; u32 fadeout_delay; // fadeout
@@ -196,7 +197,7 @@ class Bar : BarHandler{
         if (camera !is null)
         {
             this.camera_factor = Maths::Max(0.75f, camera.targetDistance);
-            this.mod_gap = gap / this.camera_factor;
+            this.mod_gap = this.gap / this.camera_factor;
         }
         
         for (int i = 0; i < this.active_bars.length; i++)
@@ -205,7 +206,10 @@ class Bar : BarHandler{
             if (this.tempblob !is null) active.pos2d = this.tempblob.get_Vec2f("renderbar_lastpos");
     
             active.camera_factor = this.camera_factor;
-            active.target_offset = Vec2f(0, 40 / active.camera_factor + this.mod_gap*i);
+            //active.target_offset = Vec2f(0, active.offset.y / active.camera_factor + this.mod_gap*i); // todo: fix this shittery
+
+            active.target_offset = Vec2f(0, active.initial_offset.y + this.mod_gap*i);
+            //active.offset = active.target_offset; // "hard" placement
             active.offset = Vec2f(Maths::Lerp(active.offset.x, active.target_offset.x, 0.33f), Maths::Lerp(active.offset.y, active.target_offset.y, 0.33f));
 
             active.renderbar();
@@ -238,14 +242,21 @@ class BarHandler {
             {
                 if (force_removal)
                 {
+                    if (isServer() && active.percent > 0.95f)
+                    {
+                        this.SendCommand(active);
+                    }
+
                     this.active_bars.erase(i);
-                    @active = null;
-                    if (isServer()) this.SendCommand(active);
+                    @active = null;                    
                 }
                 else if (!active.fadeout)
                 {
+                    if (isServer() && active.percent > 0.95f)
+                    {
+                        this.SendCommand(active);
+                    }
                     this.onBarRemoved(active, active.fadeout_time);
-                    if (isServer()) this.SendCommand(active);
                 }
             }
         }

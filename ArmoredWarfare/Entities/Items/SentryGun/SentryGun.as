@@ -100,6 +100,12 @@ void onTick(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
 
+	if (this.get_u16(target_player_id) == 0)
+	{
+		this.getCurrentScript().tickFrequency = 1;
+		angle += Maths::Round(Maths::Sin(getGameTime()*0.066f)*7.5f);
+	}
+
 	if (arm !is null)
 	{
 		bool facing_left = sprite.isFacingLeft();
