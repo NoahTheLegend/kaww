@@ -25,7 +25,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("turret");
 	this.Tag("tank");
-	this.Tag("has machinegun");
+	this.Tag("has mount");
 	this.Tag("blocks bullet");
 
 	this.set_f32("damage_modifier", damage_modifier);

@@ -29,7 +29,7 @@ void onInit(CBlob@ this)
 
 	this.Tag("vehicle");
 	this.Tag("aerial");
-	this.Tag("has machinegun");
+	this.Tag("has mount");
 	this.Tag("helicopter");
 	this.set_u8("mode", 1);
 	

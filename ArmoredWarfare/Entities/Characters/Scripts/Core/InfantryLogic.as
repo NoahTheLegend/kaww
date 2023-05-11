@@ -1001,7 +1001,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 				if (sprint)
 				{
-					if (!this.hasTag("sprinting"))
+					CBlob@ carried = this.getCarriedBlob();
+					if (!this.hasTag("sprinting") && (carried is null || !carried.hasTag("very heavy weight")))
 					{
 						if (isClient())
 						{
