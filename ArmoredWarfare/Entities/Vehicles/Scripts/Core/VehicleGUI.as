@@ -57,7 +57,7 @@ void onRender(CSprite@ this)
 		Vec2f oldpos = blob.getOldPosition();
 		Vec2f pos = blob.getPosition();
 		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
-		if (blob.getName() == "heavygun")
+		if (blob.hasTag("machinegun"))
 		{
 			f32 overheat = blob.get_f32("overheat");
 			f32 max_overheat = blob.get_f32("max_overheat");
@@ -78,10 +78,10 @@ void onRender(CSprite@ this)
 			if (blob.isAttached())
 			{
 				GUI::SetFont("menu");
-				GUI::DrawTextCentered("Hold RMB to hide", pos2d+Vec2f(0, y+24), SColor(100, 255,255,255));
+				if (blob.getHealth() == blob.getInitialHealth()) GUI::DrawTextCentered("Hold RMB to hide", pos2d+Vec2f(0, y+24), SColor(75, 255,255,255));
 			}
 		}
-		else
+		else if (!blob.hasTag("machinegun"))
 		{
 			f32 angleWithNormal = blob.get_f32("gunelevation");
 			

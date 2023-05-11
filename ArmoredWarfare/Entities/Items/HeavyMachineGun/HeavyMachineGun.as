@@ -10,6 +10,7 @@ const u8 COOLDOWN_TICKRATE = 5;
 void onInit(CBlob@ this)
 {
 	this.Tag("gun");
+	this.Tag("machinegun");
 	this.Tag("very heavy weight");
 	
 	Vehicle_Setup(this,
@@ -95,7 +96,7 @@ void onInit(CBlob@ this)
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
 	attached.Tag("mgunner");
-	if (!attached.hasTag("has machinegun")) return;
+	if (!attached.hasTag("has mount")) return;
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
 	if (cage !is null)
 	{
@@ -272,7 +273,7 @@ void onTick(CBlob@ this)
 
 			arm.ResetTransform();
 			arm.SetFacingLeft((rotation > -90 && rotation < 90) ? facing_left : !facing_left);
-			arm.SetOffset(arm_offset);
+			arm.SetOffset(Vec2f(this.isAttached() && (angle > 90 || angle <= -90) ?-2:0,0)+arm_offset);
 			arm.RotateBy(rotation + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -4.0f : 4.0f, 0.0f));
 			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
 			if (this.hasAttached()) arm.RotateBy(-this.getAngleDegrees(), Vec2f(0,0));
@@ -327,7 +328,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 		for (u16 i = 0; i < nearby.length; i++)
 		{
 			if (nearby[i] !is null && nearby[i].getTeamNum() == this.getTeamNum()
-				&& nearby[i].hasTag("has machinegun"))
+				&& nearby[i].hasTag("has mount"))
 			{
 				try_to_attach = true;
 				id = nearby[i].getNetworkID();

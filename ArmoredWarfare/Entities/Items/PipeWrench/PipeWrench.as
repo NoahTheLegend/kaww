@@ -99,7 +99,7 @@ void onTick(CBlob@ this)
 									{
 										repair_amount *= 20;
 									}
-									else if (blob.getName() == "heavygun")
+									else if (blob.hasTag("machinegun"))
 									{
 										repair_amount *= 7.5f;
 									}

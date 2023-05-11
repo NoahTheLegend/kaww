@@ -8,7 +8,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("shootseat");
 	this.Tag("weak vehicle");
-	this.Tag("has machinegun");
+	this.Tag("has mount");
 	this.Tag("friendly_bullet_pass");
 	this.Tag("truck");
 

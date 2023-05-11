@@ -270,6 +270,12 @@ void onTick(CBlob@ this)
 	// detach secondary weapon from the vehicle
 	if (this.hasTag("init_detaching"))
 	{
+		u16 time = 150;
+		if (this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+		{	
+			time = 75;
+		}
+
 		this.Untag("init_detaching");
 		Bar@ bars;
 		if (this.get("Bar", @bars))
@@ -279,7 +285,7 @@ void onTick(CBlob@ this)
 				SColor team_front = SColor(255, 133, 133, 160);
 				ProgressBar setbar;
 				setbar.Set(this, "detach", Vec2f(64.0f, 16.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, team_front,
-					"detach_time", 150, 1.0f, 5, 5, false, "detach turret");
+					"detach_time", time, 1.0f, 5, 5, false, "detach turret");
 
     			bars.AddBar(this, setbar, true);
 			}
