@@ -42,7 +42,6 @@ void onInit(CBlob@ this)
 
 	consts.net_threshold_multiplier = 10.0f;
 }
-	
 
 void onTick(CBlob@ this)
 {

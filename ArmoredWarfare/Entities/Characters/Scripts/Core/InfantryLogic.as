@@ -1131,18 +1131,19 @@ void TakeAmmo(CBlob@ this, u32 magSize)
 	}
 }
 
+void HandleSpecific(CBlob@ this)
+{
+	if (isServer()&&getGameTime()%30==0)
+	{
+		if (!this.hasTag("camera_offset") && !(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
+		if (this.hasTag("invincible") && !this.isAttached()) this.Untag("invincible");
+	}
+}
+
 void onTick(CBlob@ this)
 {
 	barTick(this);
-
-	if (isServer()&&getGameTime()%30==0)
-	{
-		if (!(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
-		if (this.hasTag("invincible") && !this.isAttached()) this.Untag("invincible");
-	}
-	u8 teamleft = getRules().get_u8("teamleft");
-	u8 teamright = getRules().get_u8("teamright");
-	if (isClient()) printf(""+teamleft+" "+teamright);
+	HandleSpecific(this);
 	
 	if (!this.hasTag("set light")
 	&& ((this.getTeamNum() == getRules().get_u8("teamleft") && getRules().get_s16("teamLeftTickets") == 0)
