@@ -12,7 +12,7 @@ void buildT1ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
@@ -36,11 +36,11 @@ void buildT1ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -74,7 +74,7 @@ void buildT2ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
 	}
 	{
@@ -103,11 +103,11 @@ void buildT2ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 7);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
@@ -117,7 +117,7 @@ void buildT2ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 18);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
 	}
 	{
@@ -156,7 +156,7 @@ void buildT3ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
@@ -188,7 +188,7 @@ void buildT3ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
 	}
 	{
@@ -204,7 +204,7 @@ void buildT3ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Large Technical Truck", "$techbigtruck$", "techbigtruck", "A modernized truck. Commonly used for gang battles.\n\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a Large Technical Truck", "$techbigtruck$", "techbigtruck", "A modernized truck. Commonly used for gang battles.\n\nUses Ammunition.");
 		s.customButton = true;
 		s.buttonwidth = 3;
 		s.buttonheight = 2;
@@ -225,11 +225,18 @@ void buildT3ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", "Fire thrower.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 16);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
@@ -258,7 +265,7 @@ void buildT1ShopGround(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
@@ -282,7 +289,7 @@ void buildT1ShopGround(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -316,7 +323,7 @@ void buildT2ShopGround(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
 	}
 	{
@@ -352,11 +359,11 @@ void buildT2ShopGround(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 7);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
@@ -386,7 +393,7 @@ void buildT3ShopGround(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
@@ -418,7 +425,7 @@ void buildT3ShopGround(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Large Technical Truck", "$techbigtruck$", "techbigtruck", "A modernized truck. Commonly used for gang battles.\n\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a Large Technical Truck", "$techbigtruck$", "techbigtruck", "A modernized truck. Commonly used for gang battles.\n\nUses Ammunition.");
 		s.customButton = true;
 		s.buttonwidth = 3;
 		s.buttonheight = 2;
@@ -434,23 +441,23 @@ void buildT3ShopGround(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, "Barge", "$barge$", "barge", "An armored boat for transporting vehicles across the water.", false, true);
 		s.customButton = true;
-		s.buttonwidth = 4;
+		s.buttonwidth = 3;
 		s.buttonheight = 2;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
+		ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", "Fire thrower.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 16);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "C-4 Explosive", "$c4$", "c4", "C-4\nA strong explosive, very effective against blocks and doors.\n\nTakes 10 seconds after activation to explode.\nYou can deactivate it as well.", false, false);
@@ -459,6 +466,13 @@ void buildT3ShopGround(CBlob@ this)
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 		//AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
     {
 		ShopItem@ s = addShopItem(this, "Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for artillery.", false);
@@ -475,7 +489,7 @@ void buildT1ShopAir(CBlob@ this)
 {
     this.set_Vec2f("shop menu size", Vec2f(10, 2));
     {
-		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
 	}
 	{
@@ -497,7 +511,7 @@ void buildT2ShopAir(CBlob@ this)
 {
     this.set_Vec2f("shop menu size", Vec2f(9, 4));
     {
-		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
 	}
 	{

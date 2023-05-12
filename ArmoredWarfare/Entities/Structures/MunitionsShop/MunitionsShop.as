@@ -23,15 +23,22 @@ void onInit(CBlob@ this)
 	this.set_u8("shop icon", 25);
 	if (map is null) return;
 
+	this.Tag("structure");
+	this.Tag("trap");
+
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
 
 	if (map.tilemapwidth > 200) // normal maps
 	{
-		this.set_Vec2f("shop menu size", Vec2f(4, 3));
+		this.set_Vec2f("shop menu size", Vec2f(5, 3));
 		{
-			ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
+			ShopItem@ s = addShopItem(this, "Ammuniton", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 3);
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Special Ammunition", "$specammo$", "specammo", "Special ammo for advanced weapons.", false);
+			AddRequirement(s.requirements, "coin", "", "Coins", 15);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC.", false);
@@ -63,6 +70,14 @@ void onInit(CBlob@ this)
 			AddRequirement(s.requirements, "coin", "", "Coins", 55);
 		}
 		{
+			ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "A must-have on the battlefield!", false);
+			AddRequirement(s.requirements, "coin", "", "Coins", 30);
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Mechanics can detach machineguns from vehicles using this. Limited uses.", false);
+			AddRequirement(s.requirements, "coin", "", "Coins", 40);
+		}
+		{
 			ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total. Bonus: allows medics to perform healing faster.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 15);
 		}
@@ -83,7 +98,7 @@ void onInit(CBlob@ this)
 	{
 		this.set_Vec2f("shop menu size", Vec2f(4, 1));
 		{
-			ShopItem@ s = addShopItem(this, "7.62mm Bullets", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
+			ShopItem@ s = addShopItem(this, "Ammuniton", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 3);
 		}
 		{

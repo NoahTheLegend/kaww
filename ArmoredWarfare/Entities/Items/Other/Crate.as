@@ -48,8 +48,15 @@ void onInit(CBlob@ this)
 	if (packed == "launcher_javelin") frame = 1;
 	else if (packed == "heavygun") frame = 2;
 	else if (packed == "barge") frame = 3;
+	else if (packed == "firethrower") frame = 4;
 
-	this.SetInventoryIcon("AWCrate.png", frame+4, Vec2f(32,16));
+	this.SetInventoryIcon("AWCrate.png", frame, Vec2f(32,16));
+
+	if (this.getName() == "paracrate")
+	{
+		this.getSprite().SetFrameIndex(0);
+		this.SetInventoryIcon("AWCrate.png", 0, Vec2f(32,16));
+	}
 
 	this.getSprite().SetFrameIndex(frame);
 

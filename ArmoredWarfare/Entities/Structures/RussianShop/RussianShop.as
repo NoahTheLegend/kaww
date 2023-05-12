@@ -20,6 +20,8 @@ void onInit(CBlob@ this)
 	this.set_string("shop description", "Buy");
 	this.set_u8("shop icon", 25);
 
+	this.Tag("structure");
+
 	{
 		ShopItem@ s = addShopItem(this, "Standard Ammo", "$ammo$", "ammo", "Used by all small arms guns, and vehicle machineguns.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 10);

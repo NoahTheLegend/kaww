@@ -31,7 +31,7 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
@@ -55,11 +55,11 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy MachineGun", "$icon_mg$", "heavygun", "Heavy machinegun.\nOpen nearby a tank to attach on its turret.\n\nUses 7.62mm.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;

@@ -25,6 +25,8 @@ void onInit(CBlob@ this)
 		}
 	}
 
+	this.Tag("wooden");
+
 	this.server_setTeamNum(-1);
 	TreeVars vars;
 	vars.r.Reset(seed);
