@@ -6,6 +6,7 @@
 #include "Costs.as"
 #include "CheckSpam.as"
 #include "GenericButtonCommon.as"
+#include "ProgressBar.as";
 
 void onInit(CBlob@ this)
 {
@@ -30,14 +31,14 @@ void onInit(CBlob@ this)
 	this.Tag(SHOP_AUTOCLOSE);
 
 	{
-		ShopItem@ s = addShopItem(this, "Quarters", "$quarters$", "quarters", "Two beds for rest and healing.");
+		ShopItem@ s = addShopItem(this, "Quarters", "$quarters$", "quarters", "Two beds for rest and healing.", false, false, false);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 150);
 		s.customButton = true;
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Outpost", "$outpost$", "outpost", "An outpost that llows your team to respawn here, but with shorter spawn immunity time.\nHas limited uses.");
+		ShopItem@ s = addShopItem(this, "Outpost", "$outpost$", "outpost", "An outpost that llows your team to respawn here, but with shorter spawn immunity time.\nHas limited uses.", false, false, false);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 200);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 250);
 		s.customButton = true;
@@ -45,14 +46,14 @@ void onInit(CBlob@ this)
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Bunker", "$bunker$", "bunker", "A tough encampment, great for holding important areas.");
+		ShopItem@ s = addShopItem(this, "Bunker", "$bunker$", "bunker", "A tough encampment, great for holding important areas.", false, false, false);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 300);
 		s.customButton = true;
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy Bunker", "$heavybunker$", "heavybunker", "A terrifying reinforcement, ideal for holding landmarks.");
+		ShopItem@ s = addShopItem(this, "Heavy Bunker", "$heavybunker$", "heavybunker", "A terrifying reinforcement, ideal for holding landmarks.", false, false, false);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 300);
 		AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 25);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
@@ -61,7 +62,7 @@ void onInit(CBlob@ this)
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Quarry", "$quarry$", "quarry", "A quarry to generate stone in exchange of wood.");
+		ShopItem@ s = addShopItem(this, "Quarry", "$quarry$", "quarry", "A quarry to generate stone in exchange of wood.", false, false, false);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 350);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 350);
 		AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 50);
@@ -71,7 +72,7 @@ void onInit(CBlob@ this)
 		s.buttonheight = 4;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Repair Station", "$repairstation$", "repairstation", "Build in an open area, it will repair friendly vehicles nearby it.");
+		ShopItem@ s = addShopItem(this, "Repair Station", "$repairstation$", "repairstation", "Build in an open area, it will repair friendly vehicles nearby it.", false, false, false);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 150);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 200);
 		s.customButton = true;
@@ -79,14 +80,14 @@ void onInit(CBlob@ this)
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Refinery", "$refinery$", "refinery", "Supply it with stone to produce scrap, which is used to build vehicles at the vehicle builder.");
+		ShopItem@ s = addShopItem(this, "Refinery", "$refinery$", "refinery", "Supply it with stone to produce scrap, which is used to build vehicles at the vehicle builder.", false, false, false);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 200);
 		s.customButton = true;
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Advanced Refinery", "$advancedrefinery$", "advancedrefinery", "An improved refinery for increased output.");
+		ShopItem@ s = addShopItem(this, "Advanced Refinery", "$advancedrefinery$", "advancedrefinery", "An improved refinery for increased output.", false, false, false);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 200);
 		AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 50);
 		s.customButton = true;
@@ -94,7 +95,7 @@ void onInit(CBlob@ this)
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Ammo Factory", "$ammofactory$", "ammofactory", "Produce all types of ammunition with metals.");
+		ShopItem@ s = addShopItem(this, "Ammo Factory", "$ammofactory$", "ammofactory", "Produce all types of ammunition with metals.", false, false, false);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 100);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 100);
 		s.customButton = true;
@@ -105,6 +106,7 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	barTick(this);
 	if (getGameTime() % 90 == 0)
 	{
 		if (getMap() !is null
@@ -144,4 +146,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			caller.ClearMenus();
 		}
 	}
+}
+
+void onRender(CSprite@ this)
+{
+	barRender(this);
 }
