@@ -113,6 +113,7 @@ class ProgressBar : Bar {
             else
             {
                 this.target = this.blob.get_f32(this.prop);
+                if (!this.fadeout && this.percent <= 0.975f) this.current = this.target;
             }
         }
         this.percent = Maths::Min(this.current/this.max, 1.0f);
@@ -242,7 +243,7 @@ class BarHandler {
             {
                 if (force_removal)
                 {
-                    if (isServer() && active.percent > 0.95f)
+                    if (isServer() && active.percent > 0.975f)
                     {
                         this.SendCommand(active);
                     }
@@ -252,7 +253,7 @@ class BarHandler {
                 }
                 else if (!active.fadeout)
                 {
-                    if (isServer() && active.percent > 0.95f)
+                    if (isServer() && active.percent > 0.975f)
                     {
                         this.SendCommand(active);
                     }

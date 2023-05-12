@@ -22,7 +22,7 @@ const f32 hit_damage = 0.5f;
 void onInit(CBlob@ this)
 {
 	barInit(this);
-
+	
 	this.set_f32("pickaxe_distance", 10.0f);
 	this.set_f32("gib health", -1.5f);
 
