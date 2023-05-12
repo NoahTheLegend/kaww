@@ -9,8 +9,9 @@
 #include "CheckSpam.as"
 #include "GenericButtonCommon.as"
 #include "ProgressBar.as";
+#include "TeamColorCollections.as";
 
-const u32 construct_endtime = 5*30;
+const u32 construct_endtime = 3*30;
 
 void onInit(CBlob@ this)
 {
@@ -19,6 +20,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("construct");
 	this.addCommandID("constructed");
 
+	this.set_f32("construct_time", 0);
 	this.set_u32("construct_endtime", construct_endtime);
 
 	if (!this.exists("shop available"))
@@ -235,7 +237,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				}
 				else
 				{
-
 					//inv.server_TakeRequirements(s.requirements);
 					Vec2f spawn_offset = Vec2f();
 
@@ -345,6 +346,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("construct"))
 	{
+		this.set_u16("builder_id", 0);
+		this.set_f32("construct_time", 0);
+		this.set_string("constructing_name", "");
+		this.set_s8("constructing_index", 0);
+		this.set_bool("constructing", false);
+		//printf("construct");
+
 		u16 callerID;
 		if (!params.saferead_u16(callerID))
 			return;
@@ -372,10 +380,27 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			if (s_index >= shop_items.length) { return; }
 			ShopItem@ s = shop_items[s_index];
 
+			this.set_u16("builder_id", caller.getNetworkID());
+			this.set_f32("construct_time", 1); // gets stuck if caller is too far already and this is set to 0
 			this.set_string("constructing_name", s.blobName);
 			this.set_s8("constructing_index", s_index);
 			this.set_bool("constructing", true);
-		
+
+			u32 endtime = this.get_u32("construct_endtime");
+			if (s.blobName == "bunker")
+				endtime = 7.5f*30;
+			else if (s.blobName == "heavybunker")
+				endtime = 10.0f*30;
+			else if (s.blobName == "quarters")
+			{
+				endtime = 1.0f*30;
+			}
+			else
+			{
+				endtime = construct_endtime;
+			}
+			this.set_u32("construct_endtime", endtime);
+
 			Bar@ bars;
 			if (!this.get("Bar", @bars))
 			{
@@ -387,7 +412,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				if (!hasBar(bars, "construct"))
 				{
-					SColor team_front = SColor(255, 155, 175, 25);
+					SColor team_front = getNeonColor(caller.getTeamNum(), 0);
 					ProgressBar setbar;
 					setbar.Set(this, "construct", Vec2f(64.0f, 16.0f), true, Vec2f(0, 48), Vec2f(2, 2), back, team_front,
 						"construct_time", this.get_u32("construct_endtime"), 0.25f, 5, 5, false, "constructed");
@@ -399,21 +424,24 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("constructed"))
 	{
-		printf("Constructred");
+		if (this.get_f32("construct_time") == 0) return;
+		//printf("constructed");
 		if (getNet().isServer())
 		{
 			CBitStream stream;
-			stream.write_u16(this.getNetworkID());
+			stream.write_u16(this.get_u16("builder_id"));
 			stream.write_bool(false);
 			stream.write_bool(false);
 			stream.write_bool(true);
 			stream.write_bool(false);
 			stream.write_s8(this.get_s8("constructing_index"));
 			stream.write_bool(false);
-
+			//printf("sent");
 			this.SendCommand(this.getCommandID("shop buy"), stream);
 		}
 
+		this.set_u16("builder_id", 0);
+		this.set_f32("construct_time", 0);
 		this.set_string("constructing_name", "");
 		this.set_s8("constructing_index", 0);
 		this.set_bool("constructing", false);

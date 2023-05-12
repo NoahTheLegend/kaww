@@ -7,6 +7,7 @@
 #include "CheckSpam.as"
 #include "GenericButtonCommon.as"
 #include "ProgressBar.as";
+#include "MakeDustParticle.as";
 
 void onInit(CBlob@ this)
 {
@@ -29,6 +30,8 @@ void onInit(CBlob@ this)
 	this.Tag("builder always hit");
 	this.Tag("structure");
 	this.Tag(SHOP_AUTOCLOSE);
+
+	this.set_u32("step", XORRandom(4));
 
 	{
 		ShopItem@ s = addShopItem(this, "Quarters", "$quarters$", "quarters", "Two beds for rest and healing.", false, false, false);
@@ -107,6 +110,64 @@ void onInit(CBlob@ this)
 void onTick(CBlob@ this)
 {
 	barTick(this);
+	if (this.get_bool("constructing") && getMap() !is null)
+	{
+		CBlob@[] overlapping;
+		getMap().getBlobsInRadius(this.getPosition(), 4.0f, @overlapping);
+
+		bool has_caller = false;
+		for (u16 i = 0; i < overlapping.length; i++)
+		{
+			CBlob@ blob = overlapping[i];
+			if (blob is null || blob.isAttached() || blob.hasTag("dead"))
+					continue;
+
+			if (blob.getNetworkID() == this.get_u16("builder_id"))
+				has_caller = true;
+		}
+
+		if (has_caller)
+		{
+			if (isClient() && getGameTime()%25==0)
+			{
+				this.add_u32("step", 1);
+				if (this.get_u32("step") > 3) this.set_u32("step", 0);
+
+				if (XORRandom(4)==0) this.set_u32("step", XORRandom(4));
+
+				//this.getSprite().Gib();
+
+				u8 rand = XORRandom(5);
+				for (u8 i = 0; i < rand; i++)
+				{
+					MakeDustParticle(this.getPosition()+Vec2f(XORRandom(24)-12, XORRandom(16)), XORRandom(5)<2?"Smoke.png":"dust2.png");
+					
+					CParticle@ p = makeGibParticle("WoodenGibs.png", this.getPosition()+Vec2f(XORRandom(24)-12, XORRandom(16)), Vec2f(0, (-1-XORRandom(3))).RotateBy(XORRandom(61)-30.0f), XORRandom(16), 0, Vec2f(8, 8), 1.0f, 0, "", 7);
+				}
+
+				this.getSprite().PlaySound("Construct"+this.get_u32("step"), 0.6f+XORRandom(11)*0.01f, 0.95f+XORRandom(6)*0.01f);
+			}
+		}
+		this.add_f32("construct_time", has_caller || this.get_f32("construct_time") / this.get_u32("construct_endtime") > 0.975f ? 1 : -1);
+		
+		if (this.get_f32("construct_time") <= 0)
+		{
+			this.set_f32("construct_time", 0);
+			this.set_string("constructing_name", "");
+			this.set_s8("constructing_index", 0);
+			this.set_bool("constructing", false);
+
+			Bar@ bars;
+			if (this.get("Bar", @bars))
+			{
+				if (hasBar(bars, "construct"))
+				{
+					bars.RemoveBar("construct", false);
+				}
+			}
+		}
+	}
+
 	if (getGameTime() % 90 == 0)
 	{
 		if (getMap() !is null
