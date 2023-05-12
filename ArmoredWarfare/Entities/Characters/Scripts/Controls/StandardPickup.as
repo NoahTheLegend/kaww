@@ -42,7 +42,8 @@ void onInit(CBlob@ this)
 		menu.add_entry(PickupWheelMenuEntry("Molotov", "$mat_molotov$", molotovs, Vec2f(0, -8.0f)));
 		menu.add_entry(PickupWheelMenuEntry("Medkit", "$medkit$", "medkit"));
 		//ammo
-		menu.add_entry(PickupWheelMenuEntry("7.62mm Ammo", "$ammo$", "ammo", Vec2f(0, 2.0f)));
+		menu.add_entry(PickupWheelMenuEntry("Ammo", "$ammo$", "ammo", Vec2f(0, 2.0f)));
+		menu.add_entry(PickupWheelMenuEntry("Special Ammo", "$specammo$", "specammo", Vec2f(0, 2.0f)));
 		menu.add_entry(PickupWheelMenuEntry("14.5mm", "$mat_14mmround$", "mat_14mmround", Vec2f(0, -6.0f)));
 		menu.add_entry(PickupWheelMenuEntry("105mm Ammo", "$mat_105mmround$", "mat_bolts"));
 		menu.add_entry(PickupWheelMenuEntry("HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", Vec2f(8.0f, 8.0f)));
@@ -392,7 +393,7 @@ f32 getPriorityPickupScale(CBlob@ this, CBlob@ b)
 	if(name == "mat_molotov" || name == "agrenade" || name == "sgrenade" || name == "grenade" || name == "medkit"){
 		return factor_very_important;
 	}
-	if(name == "ammo" || name == "mat_14mmround" || name == "mat_bolts" || name == "tanktrap" || name == "mine"){
+	if(name == "ammo" || name == "specammo" || name == "mat_14mmround" || name == "mat_bolts" || name == "tanktrap" || name == "mine"){
 		return factor_boring;
 	}
 

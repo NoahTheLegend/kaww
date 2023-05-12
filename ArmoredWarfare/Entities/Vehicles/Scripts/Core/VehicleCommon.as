@@ -489,35 +489,32 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 			{
 				shot = true;
 
-				if (v.getCurrentAmmo().bullet_name != "")
+				const int team = caller.getTeamNum();
+				const bool isServer = getNet().isServer();
+				for (u8 i = 0; i < loadedAmmo; i += v.getCurrentAmmo().fire_cost_per_amount)
 				{
-					const int team = caller.getTeamNum();
-					const bool isServer = getNet().isServer();
-					for (u8 i = 0; i < loadedAmmo; i += v.getCurrentAmmo().fire_cost_per_amount)
+					CBlob@ bullet = isServer && v.getCurrentAmmo().bullet_name != "" ? server_CreateBlobNoInit(v.getCurrentAmmo().bullet_name) : null;
+					if (bullet !is null)
 					{
-						CBlob@ bullet = isServer ? server_CreateBlobNoInit(v.getCurrentAmmo().bullet_name) : null;
-						if (bullet !is null)
-						{
-							bullet.set_s8(penRatingString, this.get_s8(weaponRatingString));
+						bullet.set_s8(penRatingString, this.get_s8(weaponRatingString));
 
-							bullet.setPosition(bulletPos);
-							bullet.server_setTeamNum(team);
-							bullet.set_f32("damage_modifier", this.get_f32("damage_modifier"));
-							bullet.set_f32("linear_length", this.get_f32("linear_length"));
-							bullet.set_f32("explosion_damage_scale", this.get_f32("explosion_damage_scale"));
-							if (this.hasTag("apc")) bullet.Tag("small_bolt");
-							if (this.hasTag("fireshe")) bullet.Tag("HE_shell");
-							bullet.SetDamageOwnerPlayer(caller.getPlayer());
-							bullet.Init();
-						}
-
-						server_FireBlob(this, bullet, charge);
+						bullet.setPosition(bulletPos);
+						bullet.server_setTeamNum(team);
+						bullet.set_f32("damage_modifier", this.get_f32("damage_modifier"));
+						bullet.set_f32("linear_length", this.get_f32("linear_length"));
+						bullet.set_f32("explosion_damage_scale", this.get_f32("explosion_damage_scale"));
+						if (this.hasTag("apc")) bullet.Tag("small_bolt");
+						if (this.hasTag("fireshe")) bullet.Tag("HE_shell");
+						bullet.SetDamageOwnerPlayer(caller.getPlayer());
+						bullet.Init();
 					}
 
-					v.getCurrentAmmo().loaded_ammo = 0;
-					SetOccupied(mag, 0);
+					server_FireBlob(this, bullet, charge);
 				}
-				
+
+				v.getCurrentAmmo().loaded_ammo = 0;
+				SetOccupied(mag, 0);
+			
 				v.last_fired_index = v.current_ammo_index;
 				CBitStream params;
 				params.write_u8(v.last_fired_index);

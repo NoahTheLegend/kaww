@@ -119,14 +119,15 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 
 f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 {
-	f32 angle = Vehicle_getWeaponAngle(this, v);
+	f32 first_angle = Vehicle_getWeaponAngle(this, v);
+	f32 angle = first_angle;
 	bool facing_left = this.isFacingLeft();
 	AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
 	bool failed = true;
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos()+Vec2f(0,4);
 		//aim_vec.RotateBy(-this.getAngleDegrees());
 
 		if (this.isAttached())
@@ -310,7 +311,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 		CBitStream params;
 		params.write_u16(caller.getNetworkID());
-		CButton@ button = caller.CreateGenericButton(15, Vec2f(-9, 0), this, this.getCommandID("set detaching"), "\nDetach this weapon."+(disable?"Requires a pipewrench.":""), params);
+		CButton@ button = caller.CreateGenericButton(15, Vec2f(-9, 0), this, this.getCommandID("set detaching"), "\nDetach this weapon. "+(disable?"Requires a pipewrench.":""), params);
 		if (button !is null && disable)
 		{
 			button.SetEnabled(false);

@@ -29,8 +29,8 @@ void onInit(CBlob@ this)
 	                    5, // fire delay (ticks), +1 tick on server due to onCommand delay
 	                    1, // fire bullets amount
 	                    1, // fire cost
-	                    "ammo", // bullet ammo config name
-	                    "Ammo", // name for ammo selection
+	                    "specammo", // bullet ammo config name
+	                    "Special Ammo", // name for ammo selection
 	                    "", // bullet config name
 	                    "", // fire sound  
 	                    "EmptyFire", // empty fire sound
@@ -66,7 +66,7 @@ void onInit(CBlob@ this)
 	}
 
 	this.getShape().SetRotationsAllowed(false);
-	this.set_string("autograb blob", "ammo");
+	this.set_string("autograb blob", "specammo");
 
 	this.addCommandID("throw fire");
 	this.addCommandID("set detaching");
@@ -79,8 +79,8 @@ void onInit(CBlob@ this)
 	this.SetLight(false);
 
 	sprite.SetEmitSound("FlamethrowerFire.ogg");
-	sprite.SetEmitSoundSpeed(1.0f);
-	sprite.SetEmitSoundVolume(0.75f);
+	sprite.SetEmitSoundSpeed(1.15f);
+	sprite.SetEmitSoundVolume(0.66f);
 	sprite.SetEmitSoundPaused(true);
 
 	this.set_f32("overheat", 0);
@@ -92,9 +92,9 @@ void onInit(CBlob@ this)
 	// auto-load some ammo initially
 	if (getNet().isServer())
 	{
-		for (u8 i = 0; i < 3; i++)
+		for (u8 i = 0; i < 1; i++)
 		{
-			CBlob@ ammo = server_CreateBlob("ammo");
+			CBlob@ ammo = server_CreateBlob("specammo");
 			if (ammo !is null)
 			{
 				if (!this.server_PutInInventory(ammo))
@@ -130,14 +130,15 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 
 f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 {
-	f32 angle = Vehicle_getWeaponAngle(this, v);
+	f32 first_angle = Vehicle_getWeaponAngle(this, v);
+	f32 angle = first_angle;
 	bool facing_left = this.isFacingLeft();
 	AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
 	bool failed = true;
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos()+Vec2f(0,4);
 		//aim_vec.RotateBy(-this.getAngleDegrees());
 
 		if (this.isAttached())
@@ -165,6 +166,9 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 	return angle;
 }
 
+const f32 max_scale = 750.0f;
+const u8 aftershot_delay = 20;
+
 void onTick(CBlob@ this)
 {
 	bool is_attached = this.isAttached();
@@ -175,6 +179,7 @@ void onTick(CBlob@ this)
 	}
 	CSprite@ sprite = this.getSprite();
 
+	float overheat_mod = 1.0f;
 	f32 angle = getAimAngle(this, v);
 
 	this.set_f32("timer", Maths::Max(0, this.get_f32("timer")-1));
@@ -188,33 +193,67 @@ void onTick(CBlob@ this)
 			not_null = true;
 			CBlob@ gunner = ap.getOccupied();
 
-			if (ap.isKeyPressed(key_action1)) // && hasammo
+			CPlayer@ p = gunner.getPlayer();
+			if (p !is null)
 			{
-				
-				if (this.get_f32("timer") == 0)
+				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
 				{
-					this.set_f32("timer", v.getCurrentAmmo().fire_delay);
-					if (isClient())
-					{
-						this.SetLight(true);
+					overheat_mod = 0.5f;
+				}
+			}
 
-						sprite.SetEmitSoundSpeed(1.0f);
-						sprite.SetEmitSoundVolume(0.75f);
-						sprite.SetEmitSoundPaused(false);
-					}
-					if (isServer())
+			if (ap.isKeyPressed(key_action1) && gunner.get_u32("mg_invincible") < getGameTime()
+				&& !this.get_bool("overheated"))
+			{
+				if (v.getCurrentAmmo().loaded_ammo != 0)
+				{
+					this.add_f32("scale", 1.0f*Maths::Sqrt(this.get_f32("scale")+max_scale));
+					this.set_f32("scale", Maths::Min(max_scale-XORRandom(max_scale/5), this.get_f32("scale")));
+					if (this.get_f32("timer") == 0)
 					{
-						CBitStream params;
-						params.write_f32(this.isFacingLeft()?-angle-90:angle+90);
-						this.SendCommand(this.getCommandID("throw fire"), params);
+						this.set_f32("timer", v.getCurrentAmmo().fire_delay);
+						if (isClient())
+						{
+							this.set_u32("endtime", getGameTime()+aftershot_delay);
+							this.SetLight(true);
+
+							sprite.SetEmitSoundSpeed(1.0f+XORRandom(21)*0.01f);
+							sprite.SetEmitSoundVolume(0.66f);
+							sprite.SetEmitSoundPaused(false);
+						}
+						if (isServer())
+						{
+							CBitStream params;
+							params.write_f32(this.isFacingLeft()?-angle-90:angle+90);
+							this.SendCommand(this.getCommandID("throw fire"), params);
+						}
 					}
 				}
 			}
-			else if (isClient())
+			else
 			{
-				this.SetLight(false);
-				sprite.SetEmitSoundPaused(true);
+				this.set_f32("scale", 0);
+				if (isClient())
+				{
+					if (this.get_u32("endtime") < getGameTime())
+					{
+						this.SetLight(false);
+						sprite.SetEmitSoundPaused(true);
+					}
+					else
+					{
+						sprite.SetEmitSoundPaused(false);
+						
+						u32 diff = this.get_u32("endtime") - getGameTime();
+						sprite.SetEmitSoundSpeed(1.0f+XORRandom(21)*0.01f - (0.5f-0.5f*(float(diff)/float(aftershot_delay))));
+						sprite.SetEmitSoundVolume(0.5f - (0.4f-0.4f*(float(diff)/float(aftershot_delay))));
+					}
+				}
 			}
+		}
+		else
+		{
+			this.set_f32("scale", Maths::Max(0, this.get_f32("scale") - 1.0f*Maths::Sqrt(this.get_f32("scale"))));
 		}
 	}
 
@@ -354,7 +393,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 		CBitStream params;
 		params.write_u16(caller.getNetworkID());
-		CButton@ button = caller.CreateGenericButton(15, Vec2f(-9, 0), this, this.getCommandID("set detaching"), "\nDetach this weapon."+(disable?"Requires a pipewrench.":""), params);
+		CButton@ button = caller.CreateGenericButton(15, Vec2f(-9, 0), this, this.getCommandID("set detaching"), "\nDetach this weapon. "+(disable?"Requires a pipewrench.":""), params);
 		if (button !is null && disable)
 		{
 			button.SetEnabled(false);
@@ -447,25 +486,35 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	return damage;
 }
 
-const f32 fire_length = 80.0f; // YOU WILL HAVE TO REWRITE FireParticles()'s MULTIPLIERS. THINK TWICE
+const f32 fire_length_raw = 80.0f; // YOU WILL HAVE TO REWRITE FireParticles()'s MULTIPLIERS. THINK TWICE
 const f32 fire_angle = 10.0f;
-const f32 fire_damage = 0.25f;
+const f32 fire_damage = 0.4f;
+const u32 firehit_delay = 1;
 
-void FireParticles(CBlob@ this, Vec2f pos, f32 angle)
+void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 {
 	if (getMap() is null) return;
 	Vec2f vel = Vec2f_zero;
+	
+	f32 fire_length = fire_length_raw * (this.get_f32("scale")/max_scale);
 	f32 rot = float(XORRandom(fire_angle))-fire_angle*0.5f;
+	bool client = isClient();
 
-	ParticleAnimated("FireDust"+(XORRandom(3)+1)+".png", pos+Vec2f(0, -20).RotateBy(angle), vel, angle, 0.75f+XORRandom(51)*0.01f, 2+XORRandom(3), 0, true);
-
-	for (u8 i = 0; i < 3; i++)
+	if (client)
 	{
-		ParticleAnimated("SmallFire", pos+Vec2f(0, -16).RotateBy(angle), Vec2f(0, -1).RotateBy(rot), 0, 1.0f, 3, 0, false);
+		ParticleAnimated("FireDust"+(XORRandom(3)+1)+".png", pos+Vec2f(0, -20).RotateBy(angle), vel, angle, 0.75f+XORRandom(51)*0.01f, 2+XORRandom(3), 0, true);
+
+		for (u8 i = 0; i < 3; i++)
+		{
+			ParticleAnimated("SmallFire", pos+Vec2f(0, -16).RotateBy(angle), Vec2f(0, -1).RotateBy(rot), 0, 1.0f, 3, 0, false);
+		}
 	}
 
 	int mapsize = getMap().tilemapwidth * getMap().tilemapheight;
 	f32 current_angle = fire_angle*0.5f;
+
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+	if (ap is null) return;
 
 	for (u8 i = 1; i <= current_angle; i++)
 	{
@@ -480,24 +529,34 @@ void FireParticles(CBlob@ this, Vec2f pos, f32 angle)
 			if (info is null) continue;
 			if (info.tileOffset < mapsize && info.distance < endpoint*8*2.75f)
 			{
+				if (XORRandom(10) == 0) getMap().server_setFireWorldspace(info.hitpos, true); // 10% chance to ignite
 				endpoint = info.distance/(8*2.5f);
 			}
-		}
-		for (u8 j = 0; j < endpoint; j++)
-		{
-			CParticle@ p = ParticleAnimated("SmallFire"+(1+XORRandom(2)), pos-Vec2f(0,1)+Vec2f(0, -16 + -j*(20*(endpoint/initpoint))).RotateBy(angle-fire_angle+i*4), Vec2f(0,-2).RotateBy(angle-fire_angle/2+i+XORRandom(100)-50), 0, 2.0f, 3, 0, false);
-			if (p !is null)
+			if (isServer() && info.blob !is null && info.blob.get_u32("firehit_delay") < getGameTime()
+				&& !info.blob.isAttached() && info.blob.getTeamNum() != this.getTeamNum() && (info.blob.hasTag("wooden")
+					|| info.blob.hasTag("flesh") || info.blob.hasTag("apc") || info.blob.hasTag("weak vehicle")
+						|| info.blob.hasTag("truck")))
 			{
-				p.growth = -0.075f;
-				p.deadeffect = -1;
+				if (ap.getOccupied() !is null)
+					ap.getOccupied().server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.33f), fire_damage, Hitters::fire, true);
+				else
+					this.server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.33f), fire_damage, Hitters::fire, true);
+				info.blob.set_u32("firehit_delay", getGameTime()+firehit_delay);
+			}
+		}
+		if (client)
+		{
+			for (u8 j = 0; j < endpoint; j++)
+			{
+				CParticle@ p = ParticleAnimated("SmallFire"+(1+XORRandom(2)), pos-Vec2f(0,1)+Vec2f(0, -16 + -j*(20*(endpoint/initpoint))).RotateBy(angle-fire_angle+i*4), Vec2f(0,-2).RotateBy(angle-fire_angle/2+i+XORRandom(100)-50), 0, 2.0f, 3, 0, false);
+				if (p !is null)
+				{
+					p.growth = -0.075f;
+					p.deadeffect = -1;
+				}
 			}
 		}
 	}
-}
-
-void ThrowFire(CBlob@ this, f32 angle)
-{
-	
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
@@ -505,14 +564,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	if (cmd == this.getCommandID("throw fire"))
 	{
 		f32 angle = params.read_f32();
-		if (isClient())
-		{
-			FireParticles(this, this.getPosition(), angle);
-		}
-		if (isServer())
-		{
-			ThrowFire(this, angle);
-		}
+		ThrowFire(this, this.getPosition(), angle);
 	}
 	else if (cmd == this.getCommandID("set detaching"))
 	{
