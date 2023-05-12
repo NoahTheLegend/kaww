@@ -50,7 +50,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void onThisAddToInventory(CBlob@ this, CBlob@ inventoryBlob)
 {
-	this.SetInventoryIcon("Material_SmallBomb.png", 0, Vec2f(16,16));
+	this.SetInventoryIcon("Material_SmallBomb.png", 34+((this.getQuantity()-1)*8), Vec2f(16,16));
 }
 
 void onTick(CBlob@ this)

@@ -253,7 +253,10 @@ void onTick(CBlob@ this)
 		this.add_f32("detach_time", 1);
 
 		CBlob@ turret = getBlobByNetworkID(this.get_u16("detaching_id"));
-		if (turret is null || this.getDistanceTo(turret) > 48.0f)
+		CBlob@ carry = this.getCarriedBlob();
+
+		if (turret is null || this.getDistanceTo(turret) > 48.0f
+			|| carry is null || carry.getName() != "pipewrench")
 		{
 			this.set_bool("detaching", false);
 			this.set_u16("detaching_id", 0);
