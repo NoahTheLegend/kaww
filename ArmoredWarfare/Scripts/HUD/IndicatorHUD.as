@@ -175,6 +175,11 @@ void onRender( CRules@ this )
 		GUI::DrawIcon("KAWWGui.png", 0, Vec2f(16,32), indicatorPos + Vec2f(-4, flag_height), 1.0f, team_num);
 
 		RenderBar(this, point, indicatorPos + Vec2f(-4, flag_height));
+
+		if (point.getTeamNum() < 7 && team_state != 2)
+		{
+			RenderTimer(this, point, indicatorPos + Vec2f(-4, flag_height) + Vec2f(0, -16));
+		}
 	}
 
 	//if (!v_fastrender)
@@ -418,7 +423,6 @@ void RenderHPBar(CRules@ this, CBlob@ vehicle, Vec2f position)
 
 }
 
-
 void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 {
 	if (flag is null) return;
@@ -501,5 +505,70 @@ void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 	// Health meter inside
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
 					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
+}
 
+void RenderTimer(CRules@ this, CBlob@ flag, Vec2f position)
+{
+	bool isTDM = (getMap().tilemapwidth < 200);
+	if (flag is null || isTDM) return;
+
+	GUI::SetFont("menu");
+
+	u32 crate_timer = flag.get_u32("crate_timer");
+	u32 crate_timer_end = flag.get_u32("crate_timer_end");
+
+	// adjust vertical offset depending on zoom
+	Vec2f pos2d = position;
+	
+	f32 wave = Maths::Sin(getGameTime() / 5.0f) * 5.0f - 25.0f;
+
+	Vec2f pos = pos2d + Vec2f(18.0f, 80.0f);
+	Vec2f dimension = Vec2f(20.0f, 10.0f);
+	const f32 y = 0.0f;
+	
+	f32 percentage = 1.0f - float(crate_timer) / float(crate_timer_end);
+	Vec2f bar = Vec2f(pos.x + (dimension.x * percentage), pos.y + dimension.y);
+
+	const f32 perc  = float(crate_timer) / float(crate_timer_end);
+
+	SColor color_light;
+	SColor color_mid;
+	SColor color_dark;
+
+	SColor color_team;
+	
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+
+	int team = flag.getTeamNum() == teamleft ? teamleft : teamright;
+
+	color_light = getNeonColor(team, 0);
+	color_mid	= getNeonColor(team, 1);
+	color_dark	= getNeonColor(team, 2);
+
+	color_team = 0xff424242;
+
+	// Border
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 1,                        pos.y + y - 1),
+					   Vec2f(pos.x + dimension.x + 0,                        pos.y + y + dimension.y - 1), SColor(0xb0313131));
+
+	
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
+					   Vec2f(pos.x + dimension.x - 1,                        pos.y + y + dimension.y - 2), color_team);
+
+
+	// whiteness
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 1,                        pos.y + y + 0),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x + 0, pos.y + y + dimension.y - 2), SColor(0xffffffff));
+	// growing outline
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 1,                        pos.y + y - 1),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x + 0, pos.y + y + dimension.y - 1), SColor(perc*255, 255, 255, 255));
+
+	// Health meter trim
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 1, pos.y + y + dimension.y - 2), color_mid);
+
+	// Health meter inside
+	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
+					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
 }

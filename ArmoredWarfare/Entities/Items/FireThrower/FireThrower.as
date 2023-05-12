@@ -1,10 +1,11 @@
 #include "VehicleCommon.as"
 #include "Hitters.as"
+#include "Explosion.as";
 
 const Vec2f arm_offset = Vec2f(4, 0);
-const f32 MAX_OVERHEAT = 2.0f;
-const f32 OVERHEAT_PER_SHOT = 0.07475f;
-const f32 COOLDOWN_RATE = 0.065f;
+const f32 MAX_OVERHEAT = 25.0f;
+const f32 OVERHEAT_PER_SHOT = 0.175f;
+const f32 COOLDOWN_RATE = 0.5f;
 const u8 COOLDOWN_TICKRATE = 5;
 
 void onInit(CBlob@ this)
@@ -198,13 +199,15 @@ void onTick(CBlob@ this)
 			{
 				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
 				{
-					overheat_mod = 0.5f;
+					overheat_mod = 0.75f;
 				}
 			}
 
 			if (ap.isKeyPressed(key_action1) && gunner.get_u32("mg_invincible") < getGameTime()
 				&& !this.get_bool("overheated"))
 			{
+				this.add_f32("overheat", this.get_f32("overheat_per_shot") * overheat_mod);
+
 				if (v.getCurrentAmmo().loaded_ammo != 0)
 				{
 					this.add_f32("scale", 1.0f*Maths::Sqrt(this.get_f32("scale")+max_scale));
@@ -459,7 +462,8 @@ bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool was
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (blob.getName() == "barge") return true;
-	return (!blob.hasTag("flesh") && !blob.hasTag("trap") && !blob.hasTag("food") && !blob.hasTag("material") && !blob.hasTag("dead") && !blob.hasTag("vehicle") && blob.isCollidable()) || (blob.hasTag("door") && blob.getShape().getConsts().collidable);
+	return (!blob.hasTag("flesh") && !blob.hasTag("trap") && !blob.hasTag("food")
+		&& !blob.hasTag("material") && !blob.hasTag("dead") && !blob.hasTag("vehicle") && blob.isCollidable()) || (blob.hasTag("door") && blob.getShape().getConsts().collidable);
 }
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
@@ -483,22 +487,52 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (customData == Hitters::explosion || customData == Hitters::keg) damage *= 2.5f;
 		damage *= 1.5f;
 	}
+
+	if (damage >= this.getHealth())
+	{
+		CInventory@ inv = this.getInventory();
+		if (inv is null) return damage;
+
+		int quantity = 0;
+		for (u8 i = 0; i < inv.getItemsCount(); i++)
+		{
+			CBlob@ item = inv.getItem(i);
+			if (item is null || item.getName() != "specammo") continue;
+			quantity += item.getQuantity();
+		}
+
+		if (isServer())
+		{
+			for (int i = 0; i < quantity/25; i++)
+			{
+				CBlob@ blob = server_CreateBlob("flame", -1, this.getPosition());
+				blob.setVelocity(Vec2f(XORRandom(5) - 2, -XORRandom(5)));
+				blob.server_SetTimeToDie(10 + XORRandom(5));
+			}
+		}
+
+		DoExplosion(this);
+		this.server_Die();
+	}
+
 	return damage;
 }
 
 const f32 fire_length_raw = 80.0f; // YOU WILL HAVE TO REWRITE FireParticles()'s MULTIPLIERS. THINK TWICE
 const f32 fire_angle = 10.0f;
-const f32 fire_damage = 0.4f;
+const f32 fire_damage = 0.5f;
 const u32 firehit_delay = 1;
 
 void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 {
+	bool client = isClient();
+	if (client && !this.isOnScreen()) return;
+	
 	if (getMap() is null) return;
 	Vec2f vel = Vec2f_zero;
 	
 	f32 fire_length = fire_length_raw * (this.get_f32("scale")/max_scale);
 	f32 rot = float(XORRandom(fire_angle))-fire_angle*0.5f;
-	bool client = isClient();
 
 	if (client)
 	{
@@ -510,6 +544,7 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 		}
 	}
 
+	const f32 shorten = 8*2.5f;
 	int mapsize = getMap().tilemapwidth * getMap().tilemapheight;
 	f32 current_angle = fire_angle*0.5f;
 
@@ -523,25 +558,39 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 		HitInfo@[] infos;
 		getMap().getHitInfosFromRay(pos, angle-90-fire_angle+i*4, fire_length*2.75f, this, @infos); // this code is so bad XD
 
+		bool doContinue = false;
 		for (u16 j = 0; j < infos.length; j++)
 		{
+			if (doContinue) continue;
 			HitInfo@ info = infos[j];
 			if (info is null) continue;
-			if (info.tileOffset < mapsize && info.distance < endpoint*8*2.75f)
+
+			if (info.blob is null && info.tileOffset < mapsize && info.distance < endpoint*8*2.75f)
 			{
 				if (XORRandom(10) == 0) getMap().server_setFireWorldspace(info.hitpos, true); // 10% chance to ignite
-				endpoint = info.distance/(8*2.5f);
+				endpoint = info.distance/shorten;
 			}
-			if (isServer() && info.blob !is null && info.blob.get_u32("firehit_delay") < getGameTime()
-				&& !info.blob.isAttached() && info.blob.getTeamNum() != this.getTeamNum() && (info.blob.hasTag("wooden")
-					|| info.blob.hasTag("flesh") || info.blob.hasTag("apc") || info.blob.hasTag("weak vehicle")
-						|| info.blob.hasTag("truck")))
+			if (info.blob !is null)
 			{
-				if (ap.getOccupied() !is null)
-					ap.getOccupied().server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.33f), fire_damage, Hitters::fire, true);
-				else
-					this.server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.33f), fire_damage, Hitters::fire, true);
-				info.blob.set_u32("firehit_delay", getGameTime()+firehit_delay);
+				if (info.blob.hasTag("structure") || info.blob.hasTag("trap")) continue;
+
+				if (!info.blob.isAttached() && !info.blob.hasTag("machinegun") && (info.blob.hasTag("wooden")
+						|| info.blob.hasTag("door") || info.blob.hasTag("flesh") || info.blob.hasTag("vehicle")))
+				{
+					endpoint = info.distance/shorten;
+					if (isServer() && info.blob.get_u32("firehit_delay") < getGameTime()
+						&& info.blob.getTeamNum() != this.getTeamNum() && (info.blob.hasTag("apc")
+							|| info.blob.hasTag("weak vehicle") || info.blob.hasTag("truck")
+								|| info.blob.hasTag("wooden") || info.blob.hasTag("door") || info.blob.hasTag("flesh")))
+					{
+						if (ap.getOccupied() !is null)
+							ap.getOccupied().server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.35f), fire_damage, Hitters::fire, true);
+						else
+							this.server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.35f), fire_damage, Hitters::fire, true);
+						info.blob.set_u32("firehit_delay", getGameTime()+firehit_delay);
+					}
+					doContinue = true;
+				}
 			}
 		}
 		if (client)
@@ -595,3 +644,51 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 }
 
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused) {}
+
+void DoExplosion(CBlob@ this)
+{
+	if (this.hasTag("exploded")) return;
+
+	f32 random = XORRandom(40);
+	f32 modifier = 1 + Maths::Log(this.getQuantity());
+	f32 angle = -this.get_f32("bomb angle");
+	// print("Modifier: " + modifier + "; Quantity: " + this.getQuantity());
+
+	this.set_f32("map_damage_radius", (30.0f + random) * modifier);
+	this.set_f32("map_damage_ratio", 0.50f);
+	
+	Explode(this, 30.0f + random, 32.0f);
+	
+	for (int i = 0; i < 10 * modifier; i++) 
+	{
+		Vec2f dir = getRandomVelocity(angle, 1, 120);
+		dir.x *= 2;
+		dir.Normalize();
+		
+		LinearExplosion(this, dir, 16.0f + XORRandom(16) + (modifier * 8), 16 + XORRandom(24), 3, 2.00f, Hitters::explosion);
+	}
+	
+	Vec2f pos = this.getPosition();
+	CMap@ map = getMap();
+
+	for (int i = 0; i < (v_fastrender ? 10 : 35); i++)
+	{
+		MakeParticle(this, Vec2f( XORRandom(64) - 32, XORRandom(80) - 60), getRandomVelocity(-angle, XORRandom(220) * 0.01f, 90), particles[XORRandom(particles.length)]);
+	}
+	
+	this.Tag("exploded");
+	if (!v_fastrender) this.getSprite().Gib();
+}
+
+string[] particles = 
+{
+	"LargeSmoke",
+	"Explosion.png"
+};
+
+void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string filename = "SmallSteam")
+{
+	if (!getNet().isClient()) return;
+
+	ParticleAnimated(CFileMatcher(filename).getFirst(), this.getPosition() + pos, vel, float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 1 + XORRandom(4), XORRandom(100) * -0.00005f, true);
+}

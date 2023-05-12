@@ -26,6 +26,9 @@ void onInit(CBlob@ this)
 
 	this.set_u32("crate_timer", 0);
 
+	u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
+	this.set_u32("crate_timer_end", num);
+
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 	CSpriteLayer@ flag = sprite.addSpriteLayer("flag", "CTF_Flag.png", 32, 16);
@@ -124,17 +127,25 @@ void onTick(CBlob@ this)
 	if (!isTDM && getGameTime() % 30 == 0 && ((num_teamleft == 0 && this.getTeamNum() == teamright) || (num_teamright == 0 && this.getTeamNum() == teamleft)) && this.getTeamNum() < 7)
 	{
 		u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
+		this.set_u32("crate_timer_end", num);
 		this.set_u32("crate_timer", Maths::Min(this.get_u32("crate_timer")+1, num));
 		//printf('n '+num+" t "+this.get_u32("crate_timer"));
 
 		if (this.get_u32("crate_timer") >= num)
 		{
-			CBlob@ crate = getBlobByNetworkID(this.get_u16("last_crateid"));
-			if (crate is null)
+			if (this.get_u16("last_crateid") != 0)
 			{
-				this.set_u32("crate_timer", 0);
-				if (isServer()) SpawnLootCrate(this);
+				if (isServer())
+				{
+					CBlob@ crate = getBlobByNetworkID(this.get_u16("last_crateid"));
+					if (crate is null)
+					{
+						this.set_u32("crate_timer", 0);
+						if (isServer()) SpawnLootCrate(this);
+					}
+				}
 			}
+			else this.set_u32("crate_timer", num);
 		}
 	}
 
@@ -300,6 +311,8 @@ void onTick(CBlob@ this)
 		this.Sync(capture_prop, true);
 		this.Sync(teamcapping, true);
 		this.Sync("offsety", true);
+		this.Sync("crate_timer", true);
+		this.Sync("crate_timer_end", true);
 	}
 }
 
@@ -418,6 +431,7 @@ void onRender(CSprite@ this)
 	dimension = Vec2f(50, 15);
 	y = 32.0f;
 	u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
+	blob.set_u32("crate_timer_end", num);
 	perc = float(blob.get_u32("crate_timer")) / float(num);
 
 	// Border
@@ -441,7 +455,7 @@ const array<string> _items_res =
 };
 const array<float> _amounts_res =
 {
-	2+XORRandom(5),
+	5+XORRandom(16),
 	250+XORRandom(201),
 	100+XORRandom(101),
 	20+XORRandom(41),

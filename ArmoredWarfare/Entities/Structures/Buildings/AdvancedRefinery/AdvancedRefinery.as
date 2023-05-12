@@ -144,7 +144,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (caller is null) return;
 
 		//amount we'd _like_ to insert
-		int requestedAmount = Maths::Min(250, 500 - this.get_s16(stone_prop));
+		int requestedAmount = Maths::Min(25, 500 - this.get_s16(stone_prop));
 		//(possible with laggy commands from 2 players, faster to early out here if we can)
 		if (requestedAmount <= 0) return;
 
