@@ -8,11 +8,18 @@
 #include "MakeCrate.as"
 #include "CheckSpam.as"
 #include "GenericButtonCommon.as"
+#include "ProgressBar.as";
+
+const u32 construct_endtime = 5*30;
 
 void onInit(CBlob@ this)
 {
 	this.addCommandID("shop buy");
 	this.addCommandID("shop made item");
+	this.addCommandID("construct");
+	this.addCommandID("constructed");
+
+	this.set_u32("construct_endtime", construct_endtime);
 
 	if (!this.exists("shop available"))
 		this.set_bool("shop available", true);
@@ -137,6 +144,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			return;
 		bool spawnToInventory = params.read_bool();
 		bool spawnInCrate = params.read_bool();
+		bool instant = params.read_bool();
 		bool producing = params.read_bool();
 		u8 s_index = params.read_u8();
 		bool hotkey = params.read_bool();
@@ -335,6 +343,81 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			}
 		}
 	}
+	else if (cmd == this.getCommandID("construct"))
+	{
+		u16 callerID;
+		if (!params.saferead_u16(callerID))
+			return;
+		bool spawnToInventory = params.read_bool();
+		bool spawnInCrate = params.read_bool();
+		bool instant = params.read_bool();
+		bool producing = params.read_bool();
+		u8 s_index = params.read_u8();
+		bool hotkey = params.read_bool();
+
+		CBlob@ caller = getBlobByNetworkID(callerID);
+		if (caller is null) { return; }
+		CInventory@ inv = caller.getInventory();
+
+		if (this.getHealth() <= 0)
+		{
+			caller.ClearMenus();
+			return;
+		}
+
+		if (inv !is null && isInRadius(this, caller))
+		{
+			ShopItem[]@ shop_items;
+			if (!this.get(SHOP_ARRAY, @shop_items)) { return; }
+			if (s_index >= shop_items.length) { return; }
+			ShopItem@ s = shop_items[s_index];
+
+			this.set_string("constructing_name", s.blobName);
+			this.set_s8("constructing_index", s_index);
+			this.set_bool("constructing", true);
+		
+			Bar@ bars;
+			if (!this.get("Bar", @bars))
+			{
+				Bar setbars;
+        		setbars.gap = 20.0f;
+        		this.set("Bar", setbars);
+			}
+			if (this.get("Bar", @bars))
+			{
+				if (!hasBar(bars, "construct"))
+				{
+					SColor team_front = SColor(255, 155, 175, 25);
+					ProgressBar setbar;
+					setbar.Set(this, "construct", Vec2f(64.0f, 16.0f), true, Vec2f(0, 48), Vec2f(2, 2), back, team_front,
+						"construct_time", this.get_u32("construct_endtime"), 0.25f, 5, 5, false, "constructed");
+
+    				bars.AddBar(this, setbar, true);
+				}
+			}
+		}
+	}
+	else if (cmd == this.getCommandID("constructed"))
+	{
+		printf("Constructred");
+		if (getNet().isServer())
+		{
+			CBitStream stream;
+			stream.write_u16(this.getNetworkID());
+			stream.write_bool(false);
+			stream.write_bool(false);
+			stream.write_bool(true);
+			stream.write_bool(false);
+			stream.write_s8(this.get_s8("constructing_index"));
+			stream.write_bool(false);
+
+			this.SendCommand(this.getCommandID("shop buy"), stream);
+		}
+
+		this.set_string("constructing_name", "");
+		this.set_s8("constructing_index", 0);
+		this.set_bool("constructing", false);
+	}
 }
 
 void applyButtonProperties(CBlob@ shop, CBlob@ caller, CGridButton@ button, ShopItem@ s_item)
@@ -409,16 +492,24 @@ void addShopItemsToMenu(CBlob@ this, CGridMenu@ menu, CBlob@ caller)
 			params.write_u16(caller.getNetworkID());
 			params.write_bool(s_item.spawnToInventory);
 			params.write_bool(s_item.spawnInCrate);
+			params.write_bool(s_item.instant);
 			params.write_bool(s_item.producing);
 			params.write_u8(u8(i));
 			params.write_bool(false); //used hotkey?
 
 			CGridButton@ button;
 
-			if (s_item.customButton)
-				@button = menu.AddButton(s_item.iconName, getTranslatedString(s_item.name), this.getCommandID("shop buy"), Vec2f(s_item.buttonwidth, s_item.buttonheight), params);
+			if (s_item.instant)
+			{
+				if (s_item.customButton)
+					@button = menu.AddButton(s_item.iconName, getTranslatedString(s_item.name), this.getCommandID("shop buy"), Vec2f(s_item.buttonwidth, s_item.buttonheight), params);
+				else
+					@button = menu.AddButton(s_item.iconName, getTranslatedString(s_item.name), this.getCommandID("shop buy"), params);
+			}
 			else
-				@button = menu.AddButton(s_item.iconName, getTranslatedString(s_item.name), this.getCommandID("shop buy"), params);
+			{
+				@button = menu.AddButton(s_item.iconName, getTranslatedString(s_item.name), this.getCommandID("construct"), Vec2f(s_item.buttonwidth, s_item.buttonheight), params);
+			}
 			
 			if (button !is null)
 			{
