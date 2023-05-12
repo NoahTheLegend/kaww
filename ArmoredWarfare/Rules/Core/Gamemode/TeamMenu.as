@@ -42,7 +42,7 @@ void ShowTeamMenu(CRules@ this)
 			if (i == 0)
 			{
 				icon = "$BLUE_TEAM$";
-				name = "Blue Team";
+				name = "Left Team";
 			}
 			else if (i == 1)
 			{
@@ -54,7 +54,7 @@ void ShowTeamMenu(CRules@ this)
 					CGridButton@ button2 = menu.AddButton("$SPECTATOR$", getTranslatedString("Spectator"), this.getCommandID("pick teams"), Vec2f(BUTTON_SIZE / 2, BUTTON_SIZE), params);
 				}
 				icon = "$RED_TEAM$";
-				name = "Red Team";
+				name = "Right Team";
 			}
 			else
 			{
