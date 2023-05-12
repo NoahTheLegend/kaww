@@ -123,6 +123,11 @@ void onTick(CBlob@ this)
 		AttachmentPoint@ driver = this.getAttachments().getAttachmentPointByName("DRIVER");
 		if (driver !is null)
 		{
+			if (this.isOnWall() && (driver.isKeyPressed(key_left) || driver.isKeyPressed(key_right)))
+			{
+				this.AddForce(Vec2f(0, -400.0f));
+			}
+
 			if (driver.isKeyPressed(key_down) && !this.isOnGround())
 			{
 				this.AddTorque(this.isFacingLeft() ? 300.0f : -300.0f);
