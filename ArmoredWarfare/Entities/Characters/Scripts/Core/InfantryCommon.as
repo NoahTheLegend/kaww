@@ -98,7 +98,7 @@ class InfantryInfo
 	u8 delayafterfire; // time between shots 4
 	u8 randdelay; // + randomness
 	f32 bullet_velocity; // speed that bullets fly 1.6
-	f32 bullet_lifetime; // in seconds, time for bullet to die
+	u32 bullet_lifetime; // in ticks, time for bullet to die
 	s8 bullet_pen; // penRating for bullet
 	bool emptyshellonfire; // should an empty shell be released when shooting
 	// SOUND
@@ -139,8 +139,8 @@ class InfantryInfo
 		mag_size 				= 4; // max bullets in mag
 		delayafterfire 			= 15; // time between shots 4
 		randdelay 				= 0; // + randomness
-		bullet_velocity 		= 1.42f; // speed that bullets fly 1.6
-		bullet_lifetime 		= 0.5f; // in seconds, time for bullet to die
+		bullet_velocity 		= 20.0f; // speed that bullets fly 1.6
+		bullet_lifetime 		= 45; // in ticks, time for bullet to die
 		bullet_pen 				= -1; // penRating for bullet
 		emptyshellonfire 		= false; // should an empty shell be released when shooting
 		// SOUND
@@ -175,9 +175,9 @@ namespace ShotgunParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 150; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 125; // aim inaccuracy  (+3 per shot)
-	const ::u8 INACCURACY_MIDAIR        = 10;
+	const ::u8 INACCURACY_CAP 			= 100; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 50; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_MIDAIR        = 8;
 	const ::u8 INACCURACY_HIT  		    = 20;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
@@ -189,8 +189,8 @@ namespace ShotgunParams
 	const ::u32 MAG_SIZE 				= 4; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 15; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 18.0f; // speed that bullets fly
-	const ::f32 BULLET_LIFETIME 		= 0.5f; // in seconds, time for bullet to die
+	const ::f32 BULLET_VELOCITY 		= 15.0f; // speed that bullets fly
+	const ::u32 BULLET_LIFETIME 		= 15; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= -1; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= false; // should an empty shell be released when shooting
 }
@@ -235,8 +235,8 @@ namespace RangerParams
 	const ::u32 MAG_SIZE 				= 30; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 4; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 30.0f; // speed that bullets fly
-	const ::f32 BULLET_LIFETIME 		= 2.75f; // in seconds, time for bullet to die
+	const ::f32 BULLET_VELOCITY 		= 22.5f; // speed that bullets fly
+	const ::u32 BULLET_LIFETIME 		= 60; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 1; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }
@@ -281,8 +281,8 @@ namespace Mp5Params
 	const ::u32 MAG_SIZE 				= 30; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 3; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 25.0f; // speed that bullets fly
-	const ::f32 BULLET_LIFETIME 		= 2.75f; // in seconds, time for bullet to die
+	const ::f32 BULLET_VELOCITY 		= 20.0f; // speed that bullets fly
+	const ::u32 BULLET_LIFETIME 		= 60; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 0; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }
@@ -327,8 +327,8 @@ namespace RevolverParams
 	const ::u32 MAG_SIZE 				= 7; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 28.0f; // speed that bullets fly
-	const ::f32 BULLET_LIFETIME 		= 1.5f; // in seconds, time for bullet to die
+	const ::f32 BULLET_VELOCITY 		= 18.5f; // speed that bullets fly
+	const ::u32 BULLET_LIFETIME 		= 60; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 0; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= false; // should an empty shell be released when shooting
 }
@@ -373,8 +373,8 @@ namespace SniperParams
 	const ::u32 MAG_SIZE 				= 5; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 35; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 37.0f; // speed that bullets fly
-	const ::f32 BULLET_LIFETIME 		= 3.0f; // in seconds, time for bullet to die
+	const ::f32 BULLET_VELOCITY 		= 30.0f; // speed that bullets fly
+	const ::u32 BULLET_LIFETIME 		= 75; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 2; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }
@@ -420,7 +420,7 @@ namespace RPGParams
 	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 3.35f; // speed that bullets fly
-	const ::f32 BULLET_LIFETIME 		= 10.0f; // in seconds, time for bullet to die
+	const ::u32 BULLET_LIFETIME 		= 10.0f; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 5; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= false; // should an empty shell be released when shooting
 }

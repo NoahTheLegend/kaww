@@ -14,11 +14,10 @@
 #include "HoverMessage.as";
 #include "ProgressBar.as";
 #include "TeamColorCollections.as";
+#include "StandardFire.as";
 
 void onInit(CBlob@ this)
 {
-	barInit(this);
-
 	const string thisBlobName = this.getName();
 	const int thisBlobHash = thisBlobName.getHash();
 
@@ -55,7 +54,7 @@ void onInit(CBlob@ this)
 	u8 delayafterfire; // time between shots 4
 	u8 randdelay; // + randomness
 	f32 bullet_velocity; // speed that bullets fly 1.6
-	f32 bullet_lifetime; // in seconds, time for bullet to die
+	u32 bullet_lifetime; // in ticks, time for bullet to die
 	s8 bullet_pen; // penRating for bullet
 	bool emptyshellonfire; // should an empty shell be released when shooting
 	// SOUND
@@ -147,50 +146,62 @@ void onInit(CBlob@ this)
 
 	this.getShape().SetRotationsAllowed(false);
 	this.addCommandID("shoot rpg");
-	this.addCommandID("shoot bullet");
 	this.getShape().getConsts().net_threshold_multiplier = 0.5f;
 
-	this.set_f32("stab damage", 1.25f);
-	
+
 	this.set_u32("can_spot", 0);
 
-	this.set_string("ammo_prop", "ammo");
+	this.set_f32("stab damage", 1.25f);
 	this.set_u8("ammo_pershot", 1);
+	this.set_string("ammo_prop", "ammo");
+	this.set_s8("bullet_type", 0);
 
 	// todo: move this to infantrycommon.as
-	if (this.getName() == "revolver")
-	{
-		this.set_u8("stab time", 19);
-		this.set_u8("stab timing", 13);
-		this.Tag("no bulletgib on shot");
-		this.set_f32("stab damage", 1.25f);
-		//this.set_u8("ammo_pershot", 2);
-	}
-	else if (this.getName() == "ranger")
-	{
-		this.set_u8("stab time", 33);
-		this.set_u8("stab timing", 14);
-		this.set_f32("stab damage", 1.5f);
-	}
-	else if (this.getName() == "shotgun")
-	{
-		this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
-		this.set_f32("stab damage", 1.5f);
-		this.set_u8("ammo_pershot", 4);
-	}
-	else if (this.getName() == "sniper")
-	{
-		this.set_u8("ammo_pershot", 3);
-	}
-	else if (this.getName() == "rpg")
-	{
-		this.set_bool("is_rpg", true);
-		this.set_u32("mag_bullets", 0);
-		this.set_string("ammo_prop", "mat_heatwarhead");
-	}
 
+	switch (this.getName().getHash())
+	{
+		case _revolver:
+		{
+			this.set_u8("stab time", 19);
+			this.set_u8("stab timing", 13);
+			this.Tag("no bulletgib on shot");
+			this.set_f32("stab damage", 1.25f);
+			break;
+		}
+		case _ranger:
+		{
+			this.set_u8("stab time", 33);
+			this.set_u8("stab timing", 14);
+			break;
+		}
+		case _shotgun:
+		{
+			this.set_s8("bullet_type", -1);
+			this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
+			this.set_f32("stab damage", 1.5f);
+			this.set_u8("ammo_pershot", 4);
+			break;
+		}
+		case _sniper:
+		{
+			this.set_s8("bullet_type", 1);
+			this.set_u8("ammo_pershot", 3);
+			break;
+		}
+		case _rpg:
+		{
+			this.set_bool("is_rpg", true);
+			this.set_u32("mag_bullets", 0);
+			this.set_string("ammo_prop", "mat_heatwarhead");
+			break;
+		}
+	}
+	
 	this.set_u8("noreload_custom", 15);
 	if (this.getName() == "sniper") this.set_u8("noreload_custom", 30);
+
+	gunInit(this);
+	barInit(this);
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
@@ -921,7 +932,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					this.Untag("armangle_lock");
 
 					ClientFire(this, charge_time, infantry);
-					this.Tag("client_shoot_lock");
 
 					charge_time = infantry.delayafterfire + XORRandom(infantry.randdelay);
 					charge_state = ArcherParams::fired;
@@ -1286,7 +1296,8 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	}
 	else
 	{
-		ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity, bulletSpread*targetFactor, infantry.burst_size );
+		ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity,
+			bulletSpread*targetFactor, infantry.burst_size, this.get_s8("bullet_type"));
 	}
 
 	//if (this.get_u32("mag_size") > 0)
@@ -1333,11 +1344,11 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	}
 }
 
-void ShootRPG(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
+void ShootRPG(CBlob @this, Vec2f arrowPos, Vec2f aimPos, f32 arrowspeed)
 {
 	if (canSend(this))
 	{
-		Vec2f arrowVel = (aimpos - arrowPos);
+		Vec2f arrowVel = (aimPos - arrowPos);
 		arrowVel.Normalize();
 		arrowVel *= arrowspeed;
 		CBitStream params;
@@ -1350,36 +1361,17 @@ void ShootRPG(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
 }
 
-void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, float bulletSpread, u8 burstSize )
+void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, float bulletSpread, u8 burstSize, s8 type)
 {
 	if (canSend(this) || (isServer() && this.isBot()))
 	{
-		// passes between shots sometimes
-		//if (this.get_s8("charge_time") == 0 && this.hasTag("no_more_shoot") && this.getSprite() !is null)
-		//{
-		//	this.getSprite().PlaySound("EmptyGun.ogg", 0.33f); // gun jam sound if server cancels command
-		//}
-		CBitStream params;
-		params.write_Vec2f(arrowPos); // only once, only one place to fire from
-
-		for (uint i = 0; i < burstSize; i++)
-		{
-			Vec2f spreadAimpos = aimpos;
-			if (bulletSpread > 0.0f) spreadAimpos += Vec2f(bulletSpread * (0.5f - _infantry_r.NextFloat()), bulletSpread * (0.5f - _infantry_r.NextFloat()));
-			Vec2f arrowVel = (spreadAimpos - arrowPos);
-			arrowVel.Normalize();
-			arrowVel *= arrowspeed;
-			params.write_Vec2f(arrowVel);
-		}
-		
-		this.SendCommand(this.getCommandID("shoot bullet"), params);
+		shootGun(this.getNetworkID(), -(aimPos-arrowPos).Angle(), arrowPos, aimPos, bulletSpread, burstSize, type);
 
 		InfantryInfo@ infantry;
 		if (!this.get( "infantryInfo", @infantry )) return;
 		if (this.get_s32("my_chargetime") == 0)
 		{
 			this.set_s32("my_chargetime", infantry.delayafterfire);
-			this.Tag("no_more_shoot");
 		}
 	}
 
@@ -1388,93 +1380,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimpos, float arrowspeed, f
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-	if (cmd == this.getCommandID("shoot bullet"))
-	{
-		if (this is null || this.hasTag("dead")) return;
-		InfantryInfo@ infantry;
-		if (!this.get( "infantryInfo", @infantry )) return;
-		ArcherInfo@ archer;
-		if (!this.get("archerInfo", @archer)) return;
-
-		Vec2f arrowPos;
-		if (!params.saferead_Vec2f(arrowPos)) return;
-
-		this.Untag("client_shoot_lock");
-
-		if (isServer())
-		{
-			if (this.hasTag("created"))
-			{
-				this.Untag("created");
-				return;
-			}
-		}
-
-		if (this.get_u32("next_bullet") > getGameTime()) return;
-		this.set_u32("next_bullet", getGameTime()+2);
-
-		float damageBody = infantry.damage_body;
-		float damageHead = infantry.damage_head;
-
-		if (this.getPlayer() !is null)
-		{
-			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
-			{
-				damageBody *= 1.33f; // 150%
-				damageHead *= 1.33f;
-			}
-		}
-
-		s8 bulletPen = infantry.bullet_pen;
-
-		bool shotOnce = false;
-		Vec2f arrowVel;
-		//if (!params.saferead_Vec2f(arrowVel)) return;
-		if (this.getName() == "shotgun")
-		{
-			for (u8 i = 0; i < 16; i++)
-			{
-				shotOnce = true;
-				if (isServer() && params.saferead_Vec2f(arrowVel))
-				{
-					if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
-					CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
-					proj.Tag("shrapnel");
-					proj.server_SetTimeToDie(infantry.bullet_lifetime);
-				}
-				else break;
-			}
-		}
-		else
-		{
-			if (params.saferead_Vec2f(arrowVel))
-			{
-				if (isServer())
-				{
-					if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
-					CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
-					if (this.getName() == "sniper") proj.Tag("strong");
-					proj.server_SetTimeToDie(infantry.bullet_lifetime);
-				}
-				shotOnce = true;
-			}
-		}
-
-		if (!shotOnce) return;
-		
-		if (isServer())
-		{
-			if (this.get_u32("mag_bullets") > 0) this.set_u32("mag_bullets", this.get_u32("mag_bullets") - 1);
-			this.Sync("mag_bullets", true);
-		}
-
-		const u32 magSize = infantry.mag_size;
-		if (this.get_u32("mag_bullets") > magSize) this.set_u32("mag_bullets", magSize);
-		if (isClient()) this.getSprite().PlaySound(infantry.shoot_sfx, 0.9f, 0.90f + XORRandom(40) * 0.01f);
-
-		this.Untag("no_more_shoot");
-	}
-	else if (cmd == this.getCommandID("shoot rpg"))
+	if (cmd == this.getCommandID("shoot rpg"))
 	{
 		if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
 		Vec2f arrowPos;
