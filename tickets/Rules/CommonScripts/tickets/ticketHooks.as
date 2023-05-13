@@ -29,17 +29,17 @@ void reset(CRules@ this){
 		u8 teamleft = getRules().get_u8("oldteamleft");
 		u8 teamright = getRules().get_u8("oldteamright");
 		//string configstr = "../Mods/tickets/Rules/CommonScripts/tickets/tickets.cfg";
-		string configstr = "../Mods/ArmoredWarfare/tickets/settings/tickets.cfg";
-		if (this.exists("ticketsconfig")){
-			configstr = this.get_string("ticketsconfig");
-		}
-		ConfigFile cfg = ConfigFile( configstr );
+		//string configstr = "../Mods/ArmoredWarfare/tickets/settings/tickets.cfg";
+		//if (this.exists("ticketsconfig")){
+		//	configstr = this.get_string("ticketsconfig");
+		//}
+		//ConfigFile cfg = ConfigFile( configstr );
 		
 		ticketsPerTeam = MIN_TICKETS;
 		ticketsPerPlayerInTeam0 = TICKETS_PER_PLAYER;
 		
-		numTeamLeftTickets = cfg.read_s16("numTeamLeftTickets",0);
-		numTeamRightTickets = cfg.read_s16("numTeamRightTickets",0);
+		//numTeamLeftTickets = cfg.read_s16("numTeamLeftTickets",0);
+		//numTeamRightTickets = cfg.read_s16("numTeamRightTickets",0);
 
 		
 		RulesCore@ core;

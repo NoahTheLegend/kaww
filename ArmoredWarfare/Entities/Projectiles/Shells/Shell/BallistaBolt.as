@@ -229,7 +229,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 
 void ResetPlayer(CBlob@ this)
 {
-	if (isServer())
+	if (isServer() && this.get_u16("ownerblob_id") != 0)
 	{
 		CPlayer@ ply = getPlayerByNetworkId(this.get_u16("ownerplayer_id"));
 		CBlob@ blob = getBlobByNetworkID(this.get_u16("ownerblob_id"));
