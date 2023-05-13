@@ -268,6 +268,11 @@ shared class TDMSpawns : RespawnSystem
 				printf("New player team: "+int(p_info.team));
 			}
 
+			if (player.exists("last_class"))
+			{
+				p_info.blob_name = player.get_string("last_class");
+			}
+
 			// remove previous players blob
 			if (player.getBlob() !is null)
 			{
