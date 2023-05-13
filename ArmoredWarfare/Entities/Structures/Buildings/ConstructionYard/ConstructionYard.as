@@ -116,6 +116,8 @@ void onTick(CBlob@ this)
 		getMap().getBlobsInRadius(this.getPosition(), 4.0f, @overlapping);
 
 		bool has_caller = false;
+		s8 caller_team = -1;
+		s8 count = -1;
 		for (u16 i = 0; i < overlapping.length; i++)
 		{
 			CBlob@ blob = overlapping[i];
@@ -123,7 +125,22 @@ void onTick(CBlob@ this)
 					continue;
 
 			if (blob.getNetworkID() == this.get_u16("builder_id"))
+			{
 				has_caller = true;
+				caller_team = blob.getTeamNum();
+			}
+		}
+
+		for (u16 i = 0; i < overlapping.length; i++)
+		{
+			CBlob@ blob = overlapping[i];
+			if (blob is null || blob.isAttached() || blob.hasTag("dead"))
+					continue;
+
+			if (caller_team == blob.getTeamNum() && blob.getName() == "mechanic")
+			{
+				count++;
+			}
 		}
 
 		if (has_caller)
@@ -151,7 +168,7 @@ void onTick(CBlob@ this)
 				this.getSprite().PlaySound("Construct"+this.get_u32("step"), 0.6f+XORRandom(11)*0.01f, 0.95f+XORRandom(6)*0.01f);
 			}
 		}
-		this.add_f32("construct_time", has_caller || this.get_f32("construct_time") / this.get_u32("construct_endtime") > 0.975f ? 1 : -1);
+		this.add_f32("construct_time", has_caller || this.get_f32("construct_time") / this.get_u32("construct_endtime") > 0.975f ? 1 + count : -1);
 		
 		if (this.get_f32("construct_time") <= 0)
 		{
