@@ -336,9 +336,9 @@ class BulletObj
 
 						if (!can_pierce)
 						{
+							HadRico = true;
 							if (isClient())
 							{
-								HadRico = true;
 								Sound::Play("/BulletRico" + (XORRandom(4) + 4), CurrentPos, 1.4f, 0.85f + XORRandom(45) * 0.01f);
 
 								if (!v_fastrender)
@@ -467,7 +467,7 @@ class BulletObj
 						Vec2f side = Vec2f(x,y);
 
 						// in this case it may pass the walls, so check if it hits the corner
-						f32 threshold = 2.75f;
+						f32 threshold = 2.0f;
 						if ((y <= -threshold && x <= -threshold) || (y <= -threshold && x >= threshold)
 							|| (y >= threshold && x >= threshold) || (y >= threshold && x <= -threshold))
 								try_rico = false;
@@ -574,8 +574,9 @@ class BulletObj
 								}
 							}
 							
-							if (has_rico && _rand_r.NextRanged(100) < 100-angle_diff*(right_floor ? 1 : 4))
+							if (has_rico && _rand_r.NextRanged(100) < 100-angle_diff*(right_floor ? 2 : 4))
 							{
+								HadRico = true;
 								if (!v_fastrender)
 								{
 									for (uint i = 0; i < 3+XORRandom(6); i++) {

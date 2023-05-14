@@ -56,7 +56,12 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 	if (buildTile != CMap::tile_wood_back && buildTile != CMap::tile_castle_back
 	&& (blob is null || blob.hasTag("door") || blob.hasTag("platform")))
 	{
-		f32 checkdist = 24.0f;
+		bool liberals_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 2; // team 2 buff
+        f32 extra_amount = 0.0f;
+        if (liberals_power) extra_amount = 8.0f;
+
+		f32 checkdist = 24.0f - extra_amount;
+
 		u8 step = 18;
 		for (u8 i = 0; i < step; i++)
 		{

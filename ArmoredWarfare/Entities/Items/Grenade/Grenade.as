@@ -15,8 +15,18 @@ enum State
 void onInit(CBlob@ this)
 {
 	this.set_s8(penRatingString, 4);
-	this.set_f32(projExplosionRadiusString, 76.0f);
-	this.set_f32(projExplosionDamageString, 12.0f);
+
+	bool separatists_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 4; // team 4 buff
+   	f32 extra_amount = 0;
+	f32 extra_damage = 0;
+    if (separatists_power)
+	{
+		extra_amount = 12.0f;
+		extra_damage = 2.0f;
+	}
+
+	this.set_f32(projExplosionRadiusString, 76.0f+extra_amount);
+	this.set_f32(projExplosionDamageString, 12.0f+extra_damage);
 
 	this.set_bool("map_damage_raycast", true);
 	this.set_bool("explosive_teamkill", true);

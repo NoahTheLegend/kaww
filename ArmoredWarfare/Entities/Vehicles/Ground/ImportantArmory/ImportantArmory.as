@@ -131,8 +131,12 @@ void onInit(CBlob@ this)
 		//AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
 	}
 	{
+		bool rebels_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 3; // team 3 buff
+        u8 extra_amount = 0;
+        if (rebels_power) extra_amount = 5;
+		
 		ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 20);
+		AddRequirement(s.requirements, "coin", "", "Coins", 20-extra_amount);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas a small explosion radius.", false);

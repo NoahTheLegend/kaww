@@ -19,8 +19,18 @@ float screenMidX = getScreenWidth()/2;
 
 bool mouseWasPressed2 = false;
 
+const string[] descriptions = {
+	"A chance to receive extra ore (+20%, +2)",
+	"Shorter respawn time, longer spawn protection (-1s, +1.5s)",
+	"Faster constructing, less constraining building (+20%, -50% lock radius)",
+	"Cheaper and stronger molotovs (-25%-33%, more liquid)",
+	"Faster vehicle capture, faster C-4 activation, better grenades (+50%, -2.5s, +10% radius)",
+	"A chance to receive more coins in an income (33%, +1)",
+	"Increased damage resist for infantry, mines activate faster (+12.5%, -1.5s)"
+};
+
 //returns the bottom
-float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CTeam@ team, Vec2f emblem)
+float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CTeam@ team, Vec2f emblem, int teamnum)
 {
 	if (players.size() <= 0 || team is null)
 		return topleft.y;
@@ -33,7 +43,9 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	f32 stepheight = lineheight + padheight;
 	Vec2f bottomright(Maths::Min(getScreenWidth() - 100, screenMidX+maxMenuWidth), topleft.y + (players.length + 5.5) * stepheight);
 	GUI::DrawPane(topleft, bottomright, team.color);
-	
+
+	CControls@ controls = getControls();
+	Vec2f mousePos = controls.getMouseScreenPos();
 
 	//offset border
 	topleft.x += stepheight;
@@ -43,7 +55,15 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::SetFont("menu");
 
 	//draw team info
-	GUI::DrawText(getTranslatedString(team.getName()), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(team.getName(), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
+	Vec2f dim;
+	GUI::GetTextDimensions(team.getName(), dim);
+	GUI::DrawIcon("FractionIcons.png", teamnum, Vec2f(64,64), Vec2f(topleft.x + 20 + dim.x, topleft.y - 8), 0.5f, teamnum);
+	if (mousePos.x >= topleft.x && mousePos.y >= topleft.y
+		&& mousePos.x <= bottomright.x && mousePos.y <= bottomright.y)
+	{
+		GUI::DrawText(descriptions[teamnum], Vec2f(topleft.x + 100 + dim.x, topleft.y), SColor(0xffffffff));
+	}
 	GUI::DrawText(getTranslatedString("Players: {PLAYERCOUNT}").replace("{PLAYERCOUNT}", "" + players.length), Vec2f(bottomright.x - 400, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 1.5;
@@ -63,9 +83,6 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(getTranslatedString("Perk"), Vec2f(bottomright.x - accolades_start - 140, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 0.5f;
-
-	CControls@ controls = getControls();
-	Vec2f mousePos = controls.getMouseScreenPos();
 
 	//draw players
 	for (u32 i = 0; i < players.length; i++)
@@ -492,16 +509,16 @@ void onRenderScoreboard(CRules@ this)
 	//draw the scoreboards
 	
 	if (localTeam == this.get_u8("teamleft"))
-		topleft.y = drawScoreboard(localPlayer, teamleftplayers, topleft, this.getTeam(this.get_u8("teamleft")), Vec2f(0, 0));
+		topleft.y = drawScoreboard(localPlayer, teamleftplayers, topleft, this.getTeam(this.get_u8("teamleft")), Vec2f(0, 0), this.get_u8("teamleft"));
 	else
-		topleft.y = drawScoreboard(localPlayer, teamrightplayers, topleft, this.getTeam(this.get_u8("teamright")), Vec2f(32, 0));
+		topleft.y = drawScoreboard(localPlayer, teamrightplayers, topleft, this.getTeam(this.get_u8("teamright")), Vec2f(32, 0), this.get_u8("teamright"));
 
 	topleft.y += 52;
 
 	if (localTeam == this.get_u8("teamright"))
-		topleft.y = drawScoreboard(localPlayer, teamleftplayers, topleft, this.getTeam(this.get_u8("teamleft")), Vec2f(0, 0));
+		topleft.y = drawScoreboard(localPlayer, teamleftplayers, topleft, this.getTeam(this.get_u8("teamleft")), Vec2f(0, 0), this.get_u8("teamleft"));
 	else
-		topleft.y = drawScoreboard(localPlayer, teamrightplayers, topleft, this.getTeam(this.get_u8("teamright")), Vec2f(32, 0));
+		topleft.y = drawScoreboard(localPlayer, teamrightplayers, topleft, this.getTeam(this.get_u8("teamright")), Vec2f(32, 0), this.get_u8("teamright"));
 
 	topleft.y += 52;
 

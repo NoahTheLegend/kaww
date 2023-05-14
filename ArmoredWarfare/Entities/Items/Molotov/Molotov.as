@@ -73,15 +73,19 @@ void DoExplosion(CBlob@ this)
 		
 		if (isServer())
 		{
+			bool rebels_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 3; // team 3 buff
+        	u8 extra_amount = 0;
+        	if (rebels_power) extra_amount = 3;
+
 			Vec2f vel = this.getOldVelocity();
-			for (int i = 0; i < 6 + XORRandom(2) ; i++)
+			for (int i = 0; i < 6 + XORRandom(2) +extra_amount; i++)
 			{
 				CBlob@ blob = server_CreateBlob("flame", -1, this.getPosition() + Vec2f(0, -8));
 				if (blob !is null) blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
 				Vec2f nv = Vec2f((XORRandom(100) * 0.01f * vel.x * 1.30f), -(XORRandom(100) * 0.01f * 3.00f));
 				
 				blob.setVelocity(nv);
-				blob.server_SetTimeToDie(5 + XORRandom(6));
+				blob.server_SetTimeToDie(5 + XORRandom(6) + extra_amount);
 			}
 		}
 		
