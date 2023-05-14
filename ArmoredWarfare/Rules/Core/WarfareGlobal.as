@@ -51,3 +51,33 @@ s8 getFinalRating(CBlob@ this, s8 armorRating, s8 penRating, bool hardShelled, C
 
 	return finalRating;
 }
+
+s8 getFinalRatingBullet(s8 hitter, s8 armorRating, s8 penRating, bool hardShelled, CBlob@ blob = null, Vec2f hitPos = Vec2f_zero, bool &out isHitUnderside = false, bool &out isHitBackside = false )
+{
+	s8 finalRating = armorRating;
+
+	if (blob != null)
+	{
+		Vec2f blobPos = blob.getPosition();
+		f32 bd = blob.getAngleDegrees();
+		float backsideOffset = blob.get_f32(backsideOffsetString);
+		if (backsideOffset > 0)
+		{
+			blobPos = blobPos.RotateBy(bd);
+			hitPos = hitPos.RotateBy(bd);
+			isHitUnderside = hitPos.y > (blobPos + Vec2f(0, 4.0f).RotateBy(bd)).y;
+			isHitBackside = blob.isFacingLeft() ? hitPos.x > (blobPos.x + backsideOffset) : hitPos.x < (blobPos.x - backsideOffset);
+		}
+		
+		if (isHitUnderside && isHitBackside) finalRating -= 1;
+	}
+
+	if (hardShelled && penRating > 0)
+	{
+		penRating--;
+	}
+	
+	finalRating = Maths::Clamp(finalRating-penRating, minArmor, maxArmor);
+
+	return finalRating;
+}

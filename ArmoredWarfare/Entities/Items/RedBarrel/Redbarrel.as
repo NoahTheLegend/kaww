@@ -20,7 +20,7 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return blob.hasTag("bullet");
+	return false;
 }
 
 void DoExplosion(CBlob@ this)

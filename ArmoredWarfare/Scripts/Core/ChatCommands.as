@@ -93,6 +93,13 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 
 	if (isMod)
 	{
+		if (text_in == "!c" && blob.getPlayer() !is null)
+		{
+			u8 teamleft = this.get_u8("teamleft");
+			u8 teamright = this.get_u8("teamright");	
+			u8 newteam = blob.getTeamNum() == teamleft ? teamright : teamleft;
+			blob.server_setTeamNum(newteam);
+		}
 		{
 			string[] sub = text_in.split(" ");
 			if (sub.length > 0 && sub[0] == "!loadmapcycle")

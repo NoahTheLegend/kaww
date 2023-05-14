@@ -291,7 +291,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	int thisTeamNum = this.getTeamNum();
 	int blobTeamNum = blob.getTeamNum();
 
-	if (blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("bullet") || blob.get_bool("state")))
+	if (blob.getTeamNum() != this.getTeamNum() && blob.get_bool("state"))
 	{
 		return true;
 	}

@@ -6,6 +6,7 @@
 #include "BulletParticle.as";
 #include "Hitters.as";
 #include "CustomBlocks.as";
+#include "WarfareGlobal.as";
 
 const SColor trueWhite = SColor(255,255,255,255);
 Driver@ PDriver = getDriver();
@@ -19,6 +20,7 @@ class BulletObj
 	BulletFade@ Fade;
 
 	s8 CurrentType;
+	s32 CurrentHitter;
 
 	Vec2f TrueVelocity;
 	Vec2f CurrentPos;
@@ -33,6 +35,9 @@ class BulletObj
 	f32 DamageBody;
 	f32 DamageHead;
 	s8 CurrentPen;
+	f32 MaxAngleRicochet;
+	bool HadRico;
+	u32 CreateTime;
 
 	u8 TeamNum;
 	u8 Speed;
@@ -40,9 +45,9 @@ class BulletObj
 	s8 TimeLeft;
 
 	bool FacingLeft;
-
 	
-	BulletObj(CBlob@ humanBlob, f32 angle, Vec2f pos, s8 type, f32 damage_body, f32 damage_head, s8 penetration)
+	BulletObj(CBlob@ humanBlob, f32 angle, Vec2f pos, s8 type, f32 damage_body,
+		f32 damage_head, s8 penetration, u32 creation_time, s32 hitter)
 	{
 		CurrentType = type;
 		CurrentPos = pos;
@@ -60,6 +65,11 @@ class BulletObj
 		OldPos     = CurrentPos;
 		LastPos    = CurrentPos;
 		RenderPos  = CurrentPos;
+		MaxAngleRicochet = 25;
+		HadRico = false;
+		CreateTime = creation_time;
+		CurrentHitter = hitter;
+		
 
 		lastDelta = 0;
 		//@Fade = BulletGrouped.addFade(CurrentPos);
@@ -99,8 +109,116 @@ class BulletObj
 	    }
 	}
 
+	bool doesCollideWithBlob(CBlob@ blob, CBlob@ hoomanBlob)
+	{
+		Random _rand_r(getGameTime());
+		const bool is_young = getGameTime() - CreateTime <= 1;
+		const bool same_team = TeamNum == blob.getTeamNum();
+
+		if (blob.hasTag("always bullet collide"))
+		{
+			if (blob.hasTag("trap")) return true;
+			if (!same_team) return false;
+			return true;
+		}
+
+		if (blob.hasTag("respawn") || blob.hasTag("invincible") || blob.hasTag("dead") || blob.hasTag("projectile") || blob.hasTag("trap") || blob.hasTag("material")) {
+			return false;
+	    }
+
+		CShape@ shape = blob.getShape();
+		if (shape is null) return false;
+
+		if (blob.hasTag("door") && shape.getConsts().collidable) return true; // blocked by closed doors
+
+		if (blob.hasTag("missile") && !same_team) return true;
+
+		if (same_team && blob.hasTag("friendly_bullet_pass")) return false;
+
+		if (is_young && (blob.hasTag("vehicle") || blob.getName() == "sandbags")) return false;
+
+		if (blob.hasTag("player") && blob.exists("mg_invincible") && blob.get_u32("mg_invincible") > getGameTime())
+			return false;
+
+		if (blob.hasTag("vehicle"))
+		{
+			if (same_team)
+			{
+				if (blob.hasTag("apc") || blob.hasTag("turret")) return (_rand_r.NextRanged(100) > 70);
+				else if (blob.hasTag("tank")) return (_rand_r.NextRanged(100) > 50);
+				else if (blob.hasTag("gun")) return false;
+				else return true;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if (blob.hasTag("turret") && !same_team)
+			return true;
+
+		if (blob.hasTag("destructable_nosoak"))
+		{
+			hoomanBlob.server_Hit(blob, blob.getPosition(), blob.getVelocity(), 0.5f, Hitters::builder);
+			return false;
+		}
+
+		if (blob.isAttached() && !blob.hasTag("player"))
+			return false;
+
+		if ((!is_young || !same_team) && blob.isAttached() && !blob.hasTag("covered"))
+		{
+			if (blob.hasTag("collidewithbullets")) return _rand_r.NextRanged(2)==0;
+			if (_rand_r.NextRanged(8) == 0)
+				return true;
+
+			AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
+			if (point !is null && point.getOccupied() !is null && (point.getOccupied().hasTag("machinegun") || point.getOccupied().getName() == "gun") && !same_team)
+				return true;
+		}
+
+		if (blob.getName() == "trap_block")
+			return shape.getConsts().collidable;
+
+		if (blob.isAttached()) return blob.hasTag("collidewithbullets");
+
+		if (blob.hasTag("bunker") && !same_team) return true;
+
+		if (blob.getName() == "wooden_platform") // get blocked by directional platforms
+		{
+			Vec2f thisVel = TrueVelocity;
+			float thisVelAngle = thisVel.getAngleDegrees();
+			float blobAngle = blob.getAngleDegrees()-90.0f;
+
+			float angleDiff = (-thisVelAngle+360.0f) - blobAngle;
+			angleDiff += angleDiff > 180 ? -360 : angleDiff < -180 ? 360 : 0;
+
+			return Maths::Abs(angleDiff) > 100.0f;
+		}
+
+		// old bullet is stopped by sandbags
+		if (!is_young && blob.getName() == "sandbags") return true;
+
+		if (blob.hasTag("destructable"))
+			return true;
+
+		if (shape.isStatic()) // trees, ladders, etc
+			return false;
+
+		if (!same_team && blob.hasTag("flesh")) // hit an enemy
+			return true;
+
+		if (blob.hasTag("blocks bullet"))
+			return true;
+
+		return false; // if all else fails, do not collide
+	}
+
 	bool onFakeTick(CMap@ map)
 	{
+		Random _rand_r(getGameTime());
+
 		//Time to live check
 		TimeLeft--;
 
@@ -125,35 +243,206 @@ class BulletObj
 			for (int a = 0; a < list.length(); a++)
 			{
 				breakLoop = false;
+
 				HitInfo@ hit = list[a];
 				Vec2f hitpos = hit.hitpos;
 				CBlob@ blob = @hit.blob;
 				TileType tile = map.getTile(hitpos).type;
 
-				if (blob !is null) // blob
-				{   
-					//int hash = blob.getName().getHash();
-					//switch (hash)
-					//{
-					//	
-					//}
+				if (blob !is null && !doesCollideWithBlob(blob, hoomanShooter))
+				{
+					continue;
+				}
 
-					if (breakLoop)//So we can break while inside the switch
+				if (blob !is null)
+				{
+					f32 dmg = DamageBody;
+					s8 finalRating = getFinalRatingBullet(CurrentHitter, blob.get_s8(armorRatingString), CurrentHitter == Hitters::bullet?1:2, blob.get_bool(hardShelledString), blob, hitpos);
+					const bool can_pierce = finalRating < 2;
+
+					CSprite@ sprite = blob.getSprite();
+					if (sprite is null) return false;
+
+					int BlobTeamNum = blob.getTeamNum();
+					string BlobName = blob.getName();
+
+					if (blob.hasTag("vehicle"))
+					{
+						if (isServer())
+						{
+							hoomanShooter.server_Hit(blob, blob.getPosition(), Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
+						}
+					}
+					else
+					{
+						// play sound
+						if (blob.hasTag("flesh"))
+						{
+							if (!blob.hasTag("dead") && hoomanShooter.getDamageOwnerPlayer() !is null)
+							{
+								CPlayer@ p = hoomanShooter.getDamageOwnerPlayer();
+
+								if (getRules().get_string(p.getUsername() + "_perk") == "Bloodthirsty")
+								{
+									CBlob@ pblob = p.getBlob();
+									if (pblob !is null)
+									{
+										f32 mod = 0.35f+_rand_r.NextRanged(6)*0.01f;
+										f32 amount = DamageBody * mod;
+									}
+								}
+							}
+							if (isClient() && XORRandom(100) < 60)
+							{
+								sprite.PlaySound("Splat.ogg");
+							}
+						}
+						else if (v_fastrender)
+						{
+							CParticle@ p = ParticleAnimated("SparkParticle.png", hitpos, Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(5), 0.0f, false);
+							if (p !is null) {
+								p.diesoncollide = true;
+								p.fastcollision = true;
+								p.lighting = false;
+								p.Z = 200.0f;
+							}
+						}
+					}
+
+					if (TeamNum != BlobTeamNum && (BlobName == "wooden_platform" || blob.hasTag("door")))
+					{
+						if (BlobName != "stone_door")
+						{
+							if (isServer()) hoomanShooter.server_Hit(blob, blob.getPosition(), blob.getOldVelocity(), CurrentType == 1 ? 1.25f : 0.15f, Hitters::builder);
+							endBullet = true;
+							//break;
+						}
+					}
+
+					if (blob.hasTag("vehicle") && !HadRico)
+					{
+						if (isClient() && _rand_r.NextRanged(101) < (can_pierce ? 20 : 35))
+						{
+							Vec2f velr = TrueVelocity/(XORRandom(4)+2.5f);
+							velr += Vec2f(0.0f, -3.0f);
+							velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+
+							ParticlePixel(CurrentPos, velr, SColor(255, 255, 255, 0), true);
+						}
+						if (isServer() && _rand_r.NextRanged(101) < (can_pierce ? 20 : 35))
+						{
+							// skip seed's value i guess?
+						}
+
+						if (!can_pierce)
+						{
+							if (isClient())
+							{
+								HadRico = true;
+								Sound::Play("/BulletRico" + (XORRandom(4) + 4), CurrentPos, 1.4f, 0.85f + XORRandom(45) * 0.01f);
+
+								if (!v_fastrender)
+								{
+									CParticle@ p = ParticleAnimated("PingParticle.png", hitpos, Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(5), 0.0f, false);
+									if (p !is null) {
+										p.diesoncollide = true;
+										p.fastcollision = true;
+										p.lighting = false;
+										p.Z = 200.0f;
+									}
+								}
+							}
+						}
+						else
+						{ 
+							if (!v_fastrender)
+							{
+								CParticle@ p = ParticleAnimated("PingParticle.png", OldPos+TrueVelocity, Vec2f(0,0), XORRandom(360), 0.75f + XORRandom(4) * 0.10f, 3, 0.0f, false);
+								if (p !is null) {
+									p.diesoncollide = true;
+									p.fastcollision = true;
+									p.lighting = false;
+									p.Z = 200.0f;
+								}
+							}
+
+							sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
+
+							TimeLeft = 15;
+						}
+					}
+
+					if (blob.hasTag("flesh") && hitpos.y < blob.getPosition().y - 3.2f)
+					{
+						if (!blob.hasTag("nohead")) dmg = DamageHead;
+
+						// hit helmet
+						if (blob.get_string("equipment_head") == "helmet")
+						{
+							dmg *= 0.5;
+
+							if (_rand_r.NextRanged(100) < 25)
+							{
+								HadRico = true;
+
+								Sound::Play("/BulletRico" + XORRandom(4), CurrentPos, 1.2f, 0.7f + XORRandom(60) * 0.01f);
+
+								Vec2f velr = getRandomVelocity(!FacingLeft ? 70 : 110, 4.3f, 40.0f);
+								velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+
+								ParticlePixel(CurrentPos, velr, SColor(255, 255, 255, 0), true);
+								TimeLeft = 10;
+
+								dmg = 0;
+							}
+						}
+					}
+
+					if (blob.hasTag("nolegs")) dmg = DamageHead;
+
+					if (CurrentType < 1) {
+						// do less dmg offscreen
+						int creationTicks = getGameTime()-CreateTime;
+						if (creationTicks > 20) 		dmg *= 0.75f;
+						else if  (creationTicks > 14) 	dmg *= 0.5f;
+					}
+
+					if (!blob.hasTag("weakprop"))
 					{
 						endBullet = true;
-						break;
+						//break;
+					}
+
+					if (blob.hasTag("flesh"))
+					{
+						if (blob.getPlayer() !is null)
+						{
+							// player is using bloodthirsty
+							if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+							{
+								dmg *= 1.1f; // take extra damage
+							}
+						}
+					}
+
+					if (dmg > 0.0f)
+					{
+						hoomanShooter.server_Hit(blob, hitpos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
+						return true;
 					}
 				}
 				else
 				{
 					bool stop = true;
+					bool try_rico = true;
+					bool do_hit_map = true;
 
-					if (map.isTileWood(tile) && XORRandom(3)==0)
+					if (map.isTileWood(tile) && _rand_r.NextRanged(2)==0)
 					{ // hit wood
 						map.server_DestroyTile(hitpos, 0.1f);
 					}
 					else if (!isTileCompactedDirt(tile) && (((tile == CMap::tile_ground || isTileScrap(tile)) 
-					&& XORRandom(100) <= 1) || (tile != CMap::tile_ground && tile <= 255 && XORRandom(100) < 3)))
+					&& _rand_r.NextRanged(100) <= 1) || (!map.isTileGround(tile) && tile <= 255 && _rand_r.NextRanged(100) < 3)))
 					{ // hit resistant tile
 						if (map.getSectorAtPosition(hitpos, "no build") is null)
 						{
@@ -161,52 +450,154 @@ class BulletObj
 						}
 					}
 
-					// ricochet, not done yet
-					
-					bool has_rico = false;
-					// change the direction, if the angle is small
-					bool doContinue = false;
-					u16 raw_angle = 0;
-					for (u8 i = 0; i < 4; i++)
-					{ // check collision tile clock-wise, starting from top
-						if (doContinue) continue;
-
-						f32 x = hitpos.x%8.0f; // check if the hitpos is left\right\down\top from 0.0 to 8.0
-						f32 y = hitpos.y%8.0f;
-						Vec2f side = Vec2f(x, y);
-
-						has_rico = false;
-						doContinue = true;
+					if(isTileCompactedDirt(tile) || map.isTileGround(tile))
+					{
+						try_rico = false;
 					}
 
-					f32 angle_diff = 0;
-					f32 current_angle = angle+270;
-
-					// the angle is a bit weird if !faceleft, so we have to evaluate sides
-					if (current_angle >= -180.0f && current_angle < -270.0f)
-						current_angle += 270;
-					if (!FacingLeft)
-						current_angle = -current_angle;
-					
-					//printf("raw "+raw_angle+" | angle "+current_angle);
-
-					if (has_rico || XORRandom(100) > 100-angle_diff)
+					// ricochet - https://www.youtube.com/watch?v=MOuMZWarmxg
+					if (try_rico)
 					{
-						if (!v_fastrender)
-						{
-							for (uint i = 0; i < 3+XORRandom(6); i++) {
-								Vec2f velr = TrueVelocity/(XORRandom(5)+3.0f);
-								velr += Vec2f(0.0f, -6.5f);
-								velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+						bool has_rico = false;
+						// change the direction, if the angle is small
+						u16 raw_angle = 0;
 
-								ParticlePixel(hitpos, velr, SColor(255, 255, 255, 0), true);
+						f32 x = (hitpos.x%8.0f)-4.0f; // check if the hitpos is left\right\down\top from -4.0 to 4.0
+						f32 y = (hitpos.y%8.0f)-4.0f;
+						Vec2f side = Vec2f(x,y);
+
+						// in this case it may pass the walls, so check if it hits the corner
+						f32 threshold = 2.75f;
+						if ((y <= -threshold && x <= -threshold) || (y <= -threshold && x >= threshold)
+							|| (y >= threshold && x >= threshold) || (y >= threshold && x <= -threshold))
+								try_rico = false;
+
+						//printf(""+side);
+								
+						if (try_rico)
+						{
+							f32 angle_diff = 0;
+							f32 current_angle = angle+270;
+
+							// the angle is a bit weird if !FacingLeft, so we have to evaluate sides
+							if (!FacingLeft)
+								current_angle -= 180;
+							if (current_angle <= -180) 
+								current_angle = 360 + current_angle;
+
+							f32 saved_angle = current_angle;
+							current_angle += 45;
+
+							current_angle = Maths::Min(4, Maths::Round(current_angle / 90));
+							if (current_angle == 1 || current_angle == 3)
+							{
+								hitpos.x = Maths::Round(hitpos.x / 8) * 8;
+							}
+							else
+							{
+								hitpos.y = Maths::Round(hitpos.y / 8) * 8;
+							}
+
+							//printf("y "+y+" angle "+saved_angle+" "+current_angle);
+
+							bool right_floor = false; // hack
+
+							if (y > 3.0f && (current_angle == 1 || current_angle == 4)) // ceiling
+							{
+								bool e = current_angle == 1;
+								f32 mod = e ? 1 : -1;
+
+								if ((saved_angle > 90 - MaxAngleRicochet && saved_angle < 90)
+									|| (saved_angle < 270 + MaxAngleRicochet && saved_angle > 270)) 
+								{
+									angle_diff = (e ? 90 : 270) - saved_angle;
+									angle = -angle;
+
+									OldPos = CurrentPos;
+									dir = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
+									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos+(dir*mod), FacingLeft);
+									TrueVelocity = CurrentPos - OldPos;
+									has_rico = true;
+								}
+							}
+							else if (y < -3.0f && (current_angle == 2 || current_angle == 3)) // floor
+							{
+								bool e = current_angle == 2;
+								f32 mod = e ? 1 : -1;
+
+								if ((saved_angle < 90 + MaxAngleRicochet && saved_angle > 90)
+									|| (saved_angle > 270 - MaxAngleRicochet && saved_angle < 270))
+								{
+									angle_diff = (e ? 90 + MaxAngleRicochet : 270) - saved_angle;
+									angle = -angle;
+									if (e) right_floor = true; // hack
+
+									OldPos = CurrentPos;
+									dir = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
+									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos+(dir*mod), FacingLeft);
+									TrueVelocity = CurrentPos - OldPos;
+									has_rico = true;
+								}
+							}
+							if (x < -3.0f && (current_angle == 1 || current_angle == 2)) // right wall
+							{
+								if ((saved_angle < MaxAngleRicochet && saved_angle > 0)
+									|| (saved_angle < 180 && saved_angle > 180 - MaxAngleRicochet))
+								{
+									angle_diff = (current_angle == 1 ? MaxAngleRicochet : 180 - MaxAngleRicochet) - saved_angle;
+									angle = -angle;
+
+									OldPos = CurrentPos;
+									dir = Vec2f((FacingLeft ? 1 : -1), 0.0f).RotateBy(angle);
+									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos+dir, FacingLeft);
+									TrueVelocity = CurrentPos - OldPos;
+									has_rico = true;
+								}
+							}
+							else if (x > 3.0f && (current_angle == 3 || current_angle == 4)) // left wall
+							{
+								if ((saved_angle < 180 + MaxAngleRicochet && saved_angle > 180)
+									|| (saved_angle < 360 && saved_angle > 360 - MaxAngleRicochet))
+								{
+									angle_diff = (current_angle == 3 ? 180 + MaxAngleRicochet : 360 - MaxAngleRicochet) - saved_angle;
+									angle = -angle;
+
+									OldPos = CurrentPos;
+									dir = Vec2f((FacingLeft ? 1 : -1), 0.0f).RotateBy(angle);
+									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos-dir, FacingLeft);
+									TrueVelocity = CurrentPos - OldPos;
+									has_rico = true;
+								}
+							}
+							
+							if (has_rico && _rand_r.NextRanged(100) < 100-angle_diff*(right_floor ? 1 : 4))
+							{
+								if (!v_fastrender)
+								{
+									for (uint i = 0; i < 3+XORRandom(6); i++) {
+										Vec2f velr = TrueVelocity/(XORRandom(5)+3.0f);
+										velr += Vec2f(0.0f, -6.5f);
+										velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+
+										ParticlePixel(hitpos, velr, SColor(255, 255, 255, 0), true);
+									}
+								}
+								Sound::Play("/BulletMetal" + XORRandom(4), CurrentPos, 1.2f, 0.8f + XORRandom(40) * 0.01f);
+
+								TimeLeft /= 2;
+
+								stop = false;
+								do_hit_map = false;
 							}
 						}
-						Sound::Play("/BulletMetal" + XORRandom(4), CurrentPos, 1.2f, 0.8f + XORRandom(40) * 0.01f);
-
-						stop = false;
 					}
-					else // hit map
+					
+					// hit map
+					if (do_hit_map)
 					{
 						ParticleAnimated("Smoke", hitpos, Vec2f(0.0f, -0.1f), 0.0f, 1.0f, 5, XORRandom(70) * -0.00005f, true);
 
@@ -214,7 +605,7 @@ class BulletObj
 
 						if (!v_fastrender)
 						{
-							CParticle@ p = ParticleAnimated("SparkParticle.png", CurrentPos, Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(2), 0.0f, false);
+							CParticle@ p = ParticleAnimated("SparkParticle.png", OldPos, Vec2f(0,0), XORRandom(360), 1.0f, 1+XORRandom(2), 0.0f, false);
 							if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
 
 							{ CParticle@ p = ParticleAnimated("BulletChunkParticle.png", hitpos, Vec2f(0.5f - XORRandom(100)*0.01f,-0.5), XORRandom(360), 0.55f + XORRandom(50)*0.01f, 22+XORRandom(3), 0.2f, true);

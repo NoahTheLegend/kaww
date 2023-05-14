@@ -1102,6 +1102,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	float damageNegation = 0.0f;
 	//print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(this, armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
+	if (customData == Hitters::bullet || customData == Hitters::heavybullet
+		|| customData == Hitters::aircraftbullet || customData == Hitters::machinegunbullet)
+	{
+		if (this.hasTag("tank")) damage *= 0.5f;
+		finalRating = getFinalRatingBullet(customData, armorRating, penRating, hardShelled, this, this.getPosition(), isHitUnderside, isHitBackside);
+	}
 	//print("finalRating: "+finalRating);
 	// add more damage if hit from below or hit backside of the tank (only hull)
 	if (isHitUnderside || isHitBackside)
@@ -1258,9 +1264,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 		const f32 base = 5.0f;
 		const f32 ramp = 1.2f;
 
-		bool pass_bullet = this.hasTag("pass_bullet") && blob !is null && blob.hasTag("bullet");
-
-		if (getNet().isServer() && vellen > base && !pass_bullet) // server only
+		if (getNet().isServer() && vellen > base) // server only
 		{
 			if (vellen > base * ramp)
 			{
