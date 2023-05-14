@@ -172,6 +172,7 @@ void onInit(CBlob@ this)
 		}
 		case _ranger:
 		{
+			this.set_f32("shoot_pitch", 0.9f);
 			this.set_u8("stab time", 33);
 			this.set_u8("stab timing", 14);
 			break;
@@ -208,6 +209,13 @@ void onInit(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	bool coalition_power = this.getTeamNum() == 6 && getRules().get_bool("enable_powers"); // team 6 buff
+	f32 extra_amount = 0.875f;
+	if (coalition_power)
+	{
+		damage *= extra_amount;
+	}
+	
 	{
 		InfantryInfo@ infantry;
 		if (this.get("infantryInfo", @infantry))
@@ -1371,13 +1379,12 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, f
 		{
 			shootGun(this.getNetworkID(), -(aimPos-arrowPos).Angle(), arrowPos, aimPos, bulletSpread, burstSize, type);
 			this.set_u32("no_more_proj", getGameTime()+2);
-		}
-
-		InfantryInfo@ infantry;
-		if (!this.get("infantryInfo", @infantry)) return;
-		if (this.get_s32("my_chargetime") == 0)
-		{
-			this.set_s32("my_chargetime", infantry.delayafterfire);
+			InfantryInfo@ infantry;
+			if (!this.get("infantryInfo", @infantry)) return;
+			if (this.get_s32("my_chargetime") == 0)
+			{
+				this.set_s32("my_chargetime", infantry.delayafterfire);
+			}
 		}
 	}
 

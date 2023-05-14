@@ -399,6 +399,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				endtime = construct_endtime;
 			}
+
+			bool liberals_power = getRules().get_bool("enable_powers") && caller.getTeamNum() == 2; // team 2 buff
+        	f32 extra_amount = 0.0f;
+        	if (liberals_power)
+			{
+				extra_amount = 0.8f;
+				endtime *= extra_amount;
+			}
+
 			this.set_u32("construct_endtime", endtime);
 
 			Bar@ bars;

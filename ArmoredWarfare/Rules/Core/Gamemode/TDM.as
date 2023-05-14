@@ -377,14 +377,17 @@ shared class TDMSpawns : RespawnSystem
 		u32 tickspawndelay = (Maths::Max(4, 8-(getPlayersCount()/3)))*30;
 
 		TDMPlayerInfo@ info = cast < TDMPlayerInfo@ > (core.getInfoFromPlayer(player));
-
 		if (info is null) {return;}
+
+		bool federation_power = getRules().get_bool("enable_powers") && player.getTeamNum() == 1; // team 1 buff
+    	u32 extra_amount = 0;
+    	if (federation_power) extra_amount = 30;
 
 		if (info.team < TDM_core.teams.length)
 		{
 			TDMTeamInfo@ team = cast < TDMTeamInfo@ > (TDM_core.teams[info.team]);
 
-			info.can_spawn_time = tickspawndelay;
+			info.can_spawn_time = tickspawndelay-extra_amount;
 			team.spawns.push_back(info);
 		}
 	}
@@ -1098,6 +1101,9 @@ void Reset(CRules@ this)
 	this.set_u16("teamright_kills", 0);
 	this.Sync("teamleft_kills", true);
 	this.Sync("teamright_kills", true);
+
+	this.set_bool("enable_powers", true);
+	this.Sync("enable_powers", true);
 	
 	if (this.get_string("map_name") == "Abacus") {
 		for (u16 i = 0; i < getPlayerCount(); i++)
@@ -1587,13 +1593,20 @@ void onTick(CRules@ this)
 				if (player is null || player.getBlob() is null) continue;
 				if (isServer())
 				{
+					bool imperialists_power = getRules().get_bool("enable_powers") && player.getTeamNum() == 5; // team 5 buff
+   					u8 extra_amount = 0;
+   					if (imperialists_power && XORRandom(3)==0)
+					{
+						extra_amount = 1;
+					}
+					
 					if (this.get_string(player.getUsername() + "_perk") == "Wealthy")
 					{
-						player.server_setCoins(player.getCoins()+2); // double
+						player.server_setCoins(player.getCoins()+2+extra_amount); // double
 					}
 					else
 					{
-						player.server_setCoins(player.getCoins()+1);
+						player.server_setCoins(player.getCoins()+1+extra_amount);
 					}
 				}
 			}

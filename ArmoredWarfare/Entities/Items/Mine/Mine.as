@@ -71,7 +71,14 @@ void onTick(CBlob@ this)
 			timer++;
 			this.set_u8(MINE_TIMER, timer);
 
-			if (timer >= MINE_PRIMING_TIME)
+			bool coalition_power = this.getTeamNum() == 6 && getRules().get_bool("enable_powers"); // team 6 buff
+			u32 extra_amount = 0;
+			if (coalition_power)
+			{
+				extra_amount = 45;
+			}
+
+			if (timer >= MINE_PRIMING_TIME-extra_amount)
 			{
 				this.Untag(MINE_PRIMING);
 				this.SendCommand(this.getCommandID(MINE_PRIMED));

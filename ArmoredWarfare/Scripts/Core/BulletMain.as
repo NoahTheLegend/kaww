@@ -191,7 +191,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 			const u32 magSize = infantry.mag_size;
 			if (this.get_u32("mag_bullets") > magSize) this.set_u32("mag_bullets", magSize);
-			if (isClient()) this.getSprite().PlaySound(infantry.shoot_sfx, 0.9f, 0.90f + XORRandom(40) * 0.01f);
+			if (isClient()) this.getSprite().PlaySound(infantry.shoot_sfx, 0.9f, (this.exists("shoot_pitch") ? this.get_f32("shoot_pitch") : 0.90f) + XORRandom(31) * 0.01f);
 			
 			for (u8 i = 0; i < burstSize; i++)
 			{
@@ -201,11 +201,14 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 				
 				BulletObj@ bullet = BulletObj(this, angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(), this.get_s32("custom_hitter"));
 
-				CMap@ map = getMap(); 
-				for (; timeSpawnedAt < getGameTime(); timeSpawnedAt++) // Catch up to everybody else
+				CMap@ map = getMap();
+				u32 time = timeSpawnedAt;
+
+				for (; time < getGameTime(); time++) // Catch up to everybody else
 				{
 					bullet.onFakeTick(map);
 				}
+
 
 				BulletGrouped.AddNewObj(bullet);
 			}

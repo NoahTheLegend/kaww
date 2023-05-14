@@ -71,6 +71,13 @@ void onSetPlayer(CBlob@ this, CPlayer@ player)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	bool coalition_power = this.getTeamNum() == 6 && getRules().get_bool("enable_powers"); // team 6 buff
+	f32 extra_amount = 0.9f;
+	if (coalition_power)
+	{
+		damage *= extra_amount;
+	}
+
 	CPlayer@ p = this.getPlayer();
 	if (p !is null)
 	{

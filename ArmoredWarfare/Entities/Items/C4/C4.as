@@ -2,7 +2,7 @@
 #include "Explosion.as"
 #include "ProgressBar.as"
 
-const f32 EXPLODE_TIME = 10.0f;
+const f32 EXPLODE_TIME = 12.5f;
 const f32 DEFUSE_REQ_TIME = 75;
 
 void onInit(CBlob@ this)
@@ -18,8 +18,9 @@ void onInit(CBlob@ this)
 	this.set_u16("exploding", 0);
 	this.set_bool("explode", false);
 	this.set_bool("deactivating", false);
+
 	this.set_f32("defuse_endtime", DEFUSE_REQ_TIME);
-	this.set_f32("defuse_time", 15);
+	this.set_f32("defuse_time", 10);
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)
@@ -151,7 +152,7 @@ void onTick(CBlob@ this)
 		}
 		else
 		{
-			this.set_f32("defuse_time", 15);
+			this.set_f32("defuse_time", 10);
 			this.set_bool("deactivating", false);
 
 			Bar@ bars;
@@ -176,7 +177,14 @@ void onTick(CBlob@ this)
 	}
 
 	if (this.getShape() is null) return;
-	u8 scale = Maths::Min(27, (EXPLODE_TIME - this.get_u16("exploding")/30) * 3.0f);
+	bool separatists_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 4; // team 4 buff
+   	f32 extra_amount = 0;
+    if (separatists_power)
+	{
+		extra_amount = 2.5f;
+	}
+	f32 explode_time = EXPLODE_TIME - extra_amount;
+	u8 scale = Maths::Min(27, (explode_time - this.get_u16("exploding")/30) * 3.0f);
 	if (this.get_bool("explode") && this.get_u16("exploding") > 0)
 	{
 		if (this.get_u8("timer") >= 30-scale && this.get_u16("exploding") > 20)
@@ -263,7 +271,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.set_bool("explode", false);
 			this.set_u16("exploding", 0);
 
-			this.set_f32("defuse_time", 15);
+			this.set_f32("defuse_time", 10);
 			this.set_u16("caller_id", 0);
 		}
 		this.set_bool("deactivating", false);
@@ -307,7 +315,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				Sound::Play("C4Plant.ogg", this.getPosition(), 0.75f, 1.075f);
 			}
 			this.set_u32("delay", getGameTime()+15);
-			this.set_f32("defuse_time", 15);
+			this.set_f32("defuse_time", 10);
 
 			this.set_bool("active", true);
 			this.set_bool("explode", true);
