@@ -174,8 +174,9 @@ class KillFeed
 
 				case Hitters::mine:             hitterIcon = "$killfeed_mine$"; break;
 				case Hitters::mine_special:     hitterIcon = "$killfeed_mine$"; break;
-
-				case Hitters::arrow:    		hitterIcon = "$killfeed_arrow$"; break;
+				
+				case Hitters::bullet:
+				case Hitters::heavybullet: hitterIcon = "$killfeed_arrow$"; break;
 
 				case Hitters::ballista: 		hitterIcon = "$killfeed_ballista$"; break;
 

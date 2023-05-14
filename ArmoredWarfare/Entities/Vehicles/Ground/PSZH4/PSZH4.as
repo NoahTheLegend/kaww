@@ -218,10 +218,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 0.75f;
 	}
-	else if (hitterBlob.hasTag("bullet"))
-	{
-		if (hitterBlob.getName() == "bulletheavy") return damage * 1.75f;
-		return damage * (hitterBlob.hasTag("strong") ? 0.25f : 0.15f);
-	}
+	if (customData == Hitters::bullet)
+		return damage*0.2f;
+	if (customData == Hitters::heavybullet || customData == Hitters::aircraftbullet)
+		return damage * 1.33f;
+
 	return damage;
 }

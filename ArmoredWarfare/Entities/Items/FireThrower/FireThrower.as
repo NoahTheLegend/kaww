@@ -515,6 +515,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		this.server_Die();
 	}
 
+	if (this.isAttached()) return damage;
+	if (customData == Hitters::bullet || customData == Hitters::heavybullet
+		|| customData == Hitters::aircraftbullet || customData == Hitters::machinegunbullet)
+	{
+		damage *= 0.5f;
+		damage += 0.1f;
+	}
+
 	return damage;
 }
 

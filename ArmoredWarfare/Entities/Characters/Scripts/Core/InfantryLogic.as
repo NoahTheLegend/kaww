@@ -134,6 +134,8 @@ void onInit(CBlob@ this)
 	this.set_s32("my_reloadtime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
 
+	this.set_s32("custom_hitter", Hitters::bullet);
+
 	this.set_s8("recoil_direction", 0);
 	this.set_u8("inaccuracy", 0);
 	this.set_u32("bull_boost", 0);
@@ -228,7 +230,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
 		}
-		if (this.isBot() && hitterBlob.getDamageOwnerPlayer() !is null && hitterBlob.hasTag("bullet"))
+		if (this.isBot() && hitterBlob.getDamageOwnerPlayer() !is null && (customData == Hitters::bullet || customData == Hitters::heavybullet))
 		{
 			this.set_string("last_attacker", hitterBlob.getDamageOwnerPlayer().getUsername());
 		}
@@ -241,7 +243,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (customData == Hitters::explosion)
 			return damage*0.04f;
-		else if (customData == Hitters::arrow)
+		else if (customData == Hitters::bullet || customData == Hitters::heavybullet)
 			return damage*0.5f;
 		else return (customData == Hitters::sword ? this.hasTag("mgunner") ? damage : 0 : 0);
 	}
@@ -700,7 +702,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					CBlob@ turret_exists = getBlobByNetworkID(this.getPlayer().get_u16("turret_netid"));
 					if (turret_exists !is null && turret_exists.getName() == "sentrygun")
 					{
-						this.server_Hit(turret_exists, turret_exists.getPosition(), Vec2f(0,0), 150.0f, Hitters::arrow, true); 
+						this.server_Hit(turret_exists, turret_exists.getPosition(), Vec2f(0,0), 150.0f, Hitters::bullet, true); 
 						//turret_exists.server_Die();
 					}
 					CBlob@ turret = server_CreateBlob("sentrygun", this.getTeamNum(), this.getPosition());
@@ -1365,10 +1367,14 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, f
 {
 	if (canSend(this) || (isServer() && this.isBot()))
 	{
-		shootGun(this.getNetworkID(), -(aimPos-arrowPos).Angle(), arrowPos, aimPos, bulletSpread, burstSize, type);
+		if (this.get_u32("no_more_proj") <= getGameTime())
+		{
+			shootGun(this.getNetworkID(), -(aimPos-arrowPos).Angle(), arrowPos, aimPos, bulletSpread, burstSize, type);
+			this.set_u32("no_more_proj", getGameTime()+2);
+		}
 
 		InfantryInfo@ infantry;
-		if (!this.get( "infantryInfo", @infantry )) return;
+		if (!this.get("infantryInfo", @infantry)) return;
 		if (this.get_s32("my_chargetime") == 0)
 		{
 			this.set_s32("my_chargetime", infantry.delayafterfire);

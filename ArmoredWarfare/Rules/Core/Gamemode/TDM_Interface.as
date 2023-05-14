@@ -138,7 +138,12 @@ void onRender(CRules@ this)
 			while (!serialised_team_hud.isBufferEnd())
 			{
 				TDM_HUD hud(serialised_team_hud);
-				Vec2f topLeft = Vec2f(-40, 64 + 48 * hud.team_num);
+				u8 teamleft = getRules().get_u8("teamleft");
+				u8 teamright = getRules().get_u8("teamright");
+
+				u8 team = hud.team_num;
+
+				Vec2f topLeft = Vec2f(-40, 64 + 48 * (team == teamleft && team < teamright ? 0 : team == teamright && team < teamleft ? 0 : 1));
 
 				/*
 				FlagsInfo flags_info;

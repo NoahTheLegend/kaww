@@ -231,10 +231,17 @@ bool isOverlapping(CBlob@ this, CBlob@ blob)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (hitterBlob.hasTag("bullet"))
+	if (customData == Hitters::bullet)
 	{
 		damage += 0.25f;
-		return damage *= 0.55f;
+		return damage * 0.8f;
 	}
+	if (customData == Hitters::heavybullet || customData == Hitters::aircraftbullet
+		|| customData == Hitters::machinegunbullet)
+	{
+		damage += 0.25f;
+		return damage * 0.9f;
+	}
+	
 	return damage;
 }

@@ -91,7 +91,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (customData == Hitters::explosion)
 			return damage*0.04f;
-		else if (customData == Hitters::arrow)
+		else if (customData == Hitters::bullet || customData == Hitters::heavybullet)
 			return damage*0.5f;
 		else return (customData == Hitters::sword ? this.hasTag("mgunner") ? damage : 0 : 0);
 	}
@@ -208,7 +208,7 @@ void onTick(CBlob@ this)
 					CBlob@ turret_exists = getBlobByNetworkID(this.getPlayer().get_u16("turret_netid"));
 					if (turret_exists !is null && turret_exists.getName() == "sentrygun")
 					{
-						this.server_Hit(turret_exists, turret_exists.getPosition(), Vec2f(0,0), 150.0f, Hitters::arrow, true); 
+						this.server_Hit(turret_exists, turret_exists.getPosition(), Vec2f(0,0), 150.0f, Hitters::bullet, true); 
 						//turret_exists.server_Die();
 					}
 					CBlob@ turret = server_CreateBlob("sentrygun", this.getTeamNum(), this.getPosition());

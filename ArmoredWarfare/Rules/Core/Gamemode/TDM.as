@@ -103,24 +103,6 @@ string[] lastblobs = {
 
 };
 
-//void onBlobCreated( CRules@ this, CBlob@ blob )
-//{
-	//if (isServer() && getGameTime() > 15 && blob !is null && !blob.hasTag("bullet"))
-	//{
-	//	lastblobs.push_back(blob.getName());
-	//}
-	//if (isServer())
-	//{
-	//	if (getGameTime()%90==0 && blob !is null && blob.getNetworkID() > 55000)
-	//	{
-	//		//warn("BLOB: "+blob.getName()+" NETID: "+blob.getNetworkID());
-	//		blobcount = blob.getNetworkID();
-	//		CBitStream params;
-	//		this.SendCommand(222, params);
-	//	}
-	//}
-//}
-
 string cost_config_file = "tdm_vars.cfg";
 
 void Config(TDMCore@ this)

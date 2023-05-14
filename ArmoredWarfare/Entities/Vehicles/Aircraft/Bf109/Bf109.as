@@ -469,7 +469,7 @@ void Shoot(CBlob@ this)
 					if ((blob.isCollidable() || blob.hasTag("flesh")) && blob.getTeamNum() != this.getTeamNum())
 					{
 						// print("Hit " + blob.getName() + " for " + damage * falloff);
-						this.server_Hit(blob, blob.getPosition(), Vec2f(0, 0), projDamage * Maths::Max(0.1, falloff), Hitters::arrow);
+						this.server_Hit(blob, blob.getPosition(), Vec2f(0, 0), projDamage * Maths::Max(0.1, falloff), Hitters::bullet);
 						falloff = falloff * 0.5f;			
 					}
 				}
@@ -552,7 +552,6 @@ bool canBePutInInventory(CBlob@ inventoryBlob)
 bool doesCollideWithBlob( CBlob@ this, CBlob@ blob )
 {
 	if (blob.getName() == "bf109" || blob.getName() == "bomberplane") return false;
-	if (blob.hasTag("bullet")) return true;
 	if (!blob.isCollidable() || blob.isAttached()){
 		return false;
 	} // no colliding against people inside vehicles
@@ -668,12 +667,22 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 1.0f;
 	}
-	else if (hitterBlob.hasTag("bullet"))
+
+	if (customData == Hitters::aircraftbullet) 	 
 	{
 		damage += 0.05f;
-		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.33f;
-		return damage * (hitterBlob.hasTag("strong") ? 0.75f : 0.6f);
+		return damage * 0.33f;
 	}
+	else if (customData == Hitters::heavybullet) 
+	{
+		damage += 0.05f;
+		return damage * 0.75f;
+	}
+	else if (customData == Hitters::bullet)
+	{
+		return damage * 0.65f;
+	}
+
 	return damage;
 }
 

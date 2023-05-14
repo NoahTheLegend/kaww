@@ -93,7 +93,7 @@ void DoExplosion(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return ((blob.isCollidable() && !blob.hasTag("bullet") && (blob.getTeamNum() != this.getTeamNum() || blob.hasTag("friendly_collide"))) || (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())) && ((blob.getName() == "wooden_platform" || blob.hasTag("door")) || (blob.getTeamNum() == this.getTeamNum() && !blob.getShape().isStatic())); 
+	return ((blob.isCollidable() && (blob.getTeamNum() != this.getTeamNum() || blob.hasTag("friendly_collide"))) || (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())) && ((blob.getName() == "wooden_platform" || blob.hasTag("door")) || (blob.getTeamNum() == this.getTeamNum() && !blob.getShape().isStatic())); 
 }
 
 bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)

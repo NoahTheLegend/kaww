@@ -404,7 +404,6 @@ bool canBePutInInventory(CBlob@ inventoryBlob)
 bool doesCollideWithBlob( CBlob@ this, CBlob@ blob )
 {
 	if (blob.getName() == "bf109" || blob.getName() == "bomberplane") return false;
-	if (blob.hasTag("bullet")) return true;
 	if (!blob.isCollidable() || blob.isAttached()){
 		return false;
 	} // no colliding against people inside vehicles
@@ -520,12 +519,22 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 0.75f;
 	}
-	else if (hitterBlob.hasTag("bullet"))
+
+	if (customData == Hitters::aircraftbullet) 	 
 	{
 		damage += 0.05f;
-		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.325f;
-		return damage * (hitterBlob.hasTag("strong") ? 0.75f : 0.6f);
+		return damage * 0.325f;
 	}
+	else if (customData == Hitters::heavybullet) 
+	{
+		damage += 0.05f;
+		return damage * 0.75f;
+	}
+	else if (customData == Hitters::bullet)
+	{
+		return damage * 0.65f;
+	}
+
 	return damage;
 }
 

@@ -150,6 +150,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 		if (this !is null)
 		{
+			this.set_u32("no_more_proj", 0);
 			if (this.hasTag("dead")) return;
 			f32 angle = params.read_f32();
 			const Vec2f pos = params.read_Vec2f();
@@ -161,15 +162,6 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 			InfantryInfo@ infantry;
 			if (!this.get("infantryInfo", @infantry )) return;
-
-			if (isServer())
-			{
-				if (this.hasTag("created"))
-				{
-					this.Untag("created");
-					return;
-				}
-			}
 
 			if (this.get_u32("next_bullet") > getGameTime()) return;
 			this.set_u32("next_bullet", getGameTime()+2);
@@ -207,7 +199,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 				if (bulletSpread > 0.0f) spreadAimpos += Vec2f(bulletSpread * (0.5f - _infantry_r.NextFloat()), bulletSpread * (0.5f - _infantry_r.NextFloat()));
 				angle = -(spreadAimpos - pos).Angle();
 				
-				BulletObj@ bullet = BulletObj(this, angle, pos, type, damageBody, damageHead, bulletPen);
+				BulletObj@ bullet = BulletObj(this, angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(), this.get_s32("custom_hitter"));
 
 				CMap@ map = getMap(); 
 				for (; timeSpawnedAt < getGameTime(); timeSpawnedAt++) // Catch up to everybody else

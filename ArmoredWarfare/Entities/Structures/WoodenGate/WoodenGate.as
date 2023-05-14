@@ -312,13 +312,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * Maths::Max(0.0f, damage*10 / (hitterBlob.getPosition() - this.getPosition()).Length()*0.25f);
 	}
-	if (hitterBlob.hasTag("bullet"))
-	{
-		if (hitterBlob.hasTag("aircraft_bullet")) return damage * 0.25f;
-		else if (hitterBlob.hasTag("heavy") || hitterBlob.getName() == "bulletheavy") return damage * 0.33f;
-		else if (hitterBlob.hasTag("shrapnel")) return damage * 2.0f;
-	}
 
+	if (customData == Hitters::aircraftbullet) return damage * 0.25f;
+	else if (hitterBlob.hasTag("heavy") || customData == Hitters::bullet) return damage * 0.33f;
+	else if (hitterBlob.hasTag("shrapnel")) return damage * 2.0f;
 
 	return damage;
 }
