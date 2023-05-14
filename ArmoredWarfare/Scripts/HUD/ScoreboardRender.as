@@ -58,7 +58,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(team.getName(), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
 	Vec2f dim;
 	GUI::GetTextDimensions(team.getName(), dim);
-	GUI::DrawIcon("FractionIcons.png", teamnum, Vec2f(64,64), Vec2f(topleft.x + 20 + dim.x, topleft.y - 8), 0.5f, teamnum);
+	GUI::DrawIcon("FractionIcons.png", teamnum, Vec2f(64,64), Vec2f(topleft.x + 20 + dim.x, topleft.y - 10), 0.5f, teamnum);
 	if (mousePos.x >= topleft.x && mousePos.y >= topleft.y
 		&& mousePos.x <= bottomright.x && mousePos.y <= bottomright.y)
 	{
