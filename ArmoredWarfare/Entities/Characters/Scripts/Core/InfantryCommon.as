@@ -333,6 +333,52 @@ namespace RevolverParams
 	const ::bool EMPTYSHELLONFIRE 		= false; // should an empty shell be released when shooting
 }
 
+namespace ShielderParams
+{
+	const ::string CLASSNAME 			= "Shielder"; // case sensitive
+	// DAMAGE
+	const ::f32 DAMAGE_BODY 			= 0.25f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.5f; // damage dealt on headshot
+	// MOVEMENT
+	const ::f32 WALK_STAT 				= 0.8f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
+	const ::f32 JUMP_STAT 				= 0.85f; // jump
+	const ::f32 WALK_STAT_SPRINT 		= 0.9f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 3.2f; // airwalk (sprint)
+	const ::f32 JUMP_STAT_SPRINT 		= 1.0f; // jump (sprint)
+	// SHAKE
+	const ::f32 RECOIL_X 				= 3.0f; // x shake (20)
+	const ::f32 RECOIL_Y 				= 60.0f; // y shake (45)
+	const ::f32 RECOIL_LENGTH 			= 200.0f; // how long to recoil (?)
+	// RECOIL
+	const ::f32 RECOIL_FORCE 			= 0.5f; // amount to push player
+	const ::u8 RECOIL_CURSOR 			= 13; // amount to raise mouse pos
+	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
+	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
+	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// spray pattern in logic
+	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
+	// ACCURACY
+	const ::u8 INACCURACY_CAP 			= 60; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 10; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_MIDAIR        = 5;
+	const ::u8 INACCURACY_HIT  		    = 6;
+	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
+	// GUN
+	const ::bool SEMIAUTO 				= false;
+	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
+	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
+	const ::s16 RELOAD_TIME 			= 45; // time to reload
+	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
+	const ::u32 MAG_SIZE 				= 12; // max bullets in mag
+	const ::u8 DELAYAFTERFIRE 			= 4; // time between shots
+	const ::u8 RANDDELAY 				= 1; // + randomness
+	const ::f32 BULLET_VELOCITY 		= 18.5f; // speed that bullets fly
+	const ::u32 BULLET_LIFETIME 		= 60; // in ticks, time for bullet to die
+	const ::s8 BULLET_PEN 				= 0; // penRating for bullet
+	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
+}
+
 namespace SniperParams
 {
 	const ::string CLASSNAME 			= "Sniper"; // case sensitive
@@ -377,6 +423,52 @@ namespace SniperParams
 	const ::u32 BULLET_LIFETIME 		= 75; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 2; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
+}
+
+namespace FirebringerParams
+{
+	const ::string CLASSNAME 			= "Firebringer"; // case sensitive
+	// DAMAGE
+	const ::f32 DAMAGE_BODY 			= 0.5f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.5f; // damage dealt on headshot
+	// MOVEMENT
+	const ::f32 WALK_STAT 				= 0.75f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.55f; // airwalk
+	const ::f32 JUMP_STAT 				= 1.05f; // jump
+	const ::f32 WALK_STAT_SPRINT 		= 1.05f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 3.15f; // airwalk (sprint)
+	const ::f32 JUMP_STAT_SPRINT 		= 1.05f; // jump (sprint)
+	// SHAKE
+	const ::f32 RECOIL_X 				= 10.0f; // x shake (20)
+	const ::f32 RECOIL_Y 				= 1.0f; // y shake (45)
+	const ::f32 RECOIL_LENGTH 			= 10.0f; // how long to recoil (?)
+	// RECOIL
+	const ::f32 RECOIL_FORCE 			= 0.0f; // amount to push player
+	const ::u8 RECOIL_CURSOR 			= 1; // amount to raise mouse pos
+	const ::u8 SIDEWAYS_RECOIL 			= 1; // sideways recoil amount
+	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 1; // higher number means less sideways recoil
+	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// spray pattern in logic
+	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
+	// ACCURACY
+	const ::u8 INACCURACY_CAP 			= 50; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 1; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_MIDAIR        = 30;
+	const ::u8 INACCURACY_HIT 		    = 50;
+	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
+	// GUN
+	const ::bool SEMIAUTO 				= false;
+	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
+	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
+	const ::s16 RELOAD_TIME 			= 75; // time to reload
+	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
+	const ::u32 MAG_SIZE 				= 50; // max bullets in mag
+	const ::u8 DELAYAFTERFIRE 			= 8; // time between shots
+	const ::u8 RANDDELAY 				= 0; // + randomness
+	const ::f32 BULLET_VELOCITY 		= 3.35f; // speed that bullets fly
+	const ::u32 BULLET_LIFETIME 		= 10.0f; // in ticks, time for bullet to die
+	const ::s8 BULLET_PEN 				= 5; // penRating for bullet
+	const ::bool EMPTYSHELLONFIRE 		= false; // should an empty shell be released when shooting
 }
 
 namespace RPGParams
@@ -453,6 +545,22 @@ void getBasicStats( int blobNameHash, string &out classname, string &out reload_
 		}
 		break;
 
+		case _shielder:
+		{
+			classname = ShielderParams::CLASSNAME;
+			damage_body = ShielderParams::DAMAGE_BODY;
+			damage_head = ShielderParams::DAMAGE_HEAD;
+		}
+		break;
+
+		case _firebringer:
+		{
+			classname = FirebringerParams::CLASSNAME;
+			damage_body = FirebringerParams::DAMAGE_BODY;
+			damage_head = FirebringerParams::DAMAGE_HEAD;
+		}
+		break;
+
 		case _sniper:
 		{
 			classname = SniperParams::CLASSNAME;
@@ -525,6 +633,34 @@ void getRecoilStats( int blobNameHash, float &out recoil_x, float &out recoil_y,
 			sideways_recoil_damp = RevolverParams::SIDEWAYS_RECOIL_DAMP;
 			ads_cushion_amount = RevolverParams::RECOIL_CURSOR;
 			length_of_recoil_arc = RevolverParams::LENGTH_OF_RECOIL_ARC;
+		}
+		break;
+
+		case _shielder:
+		{
+			recoil_x = ShielderParams::RECOIL_X;
+			recoil_y = ShielderParams::RECOIL_Y;
+			recoil_length = ShielderParams::RECOIL_LENGTH;
+			recoil_force = ShielderParams::RECOIL_FORCE;
+			recoil_cursor = ShielderParams::RECOIL_CURSOR;
+			sideways_recoil = ShielderParams::SIDEWAYS_RECOIL;
+			sideways_recoil_damp = ShielderParams::SIDEWAYS_RECOIL_DAMP;
+			ads_cushion_amount = ShielderParams::RECOIL_CURSOR;
+			length_of_recoil_arc = ShielderParams::LENGTH_OF_RECOIL_ARC;
+		}
+		break;
+
+		case _firebringer:
+		{
+			recoil_x = FirebringerParams::RECOIL_X;
+			recoil_y = FirebringerParams::RECOIL_Y;
+			recoil_length = FirebringerParams::RECOIL_LENGTH;
+			recoil_force = FirebringerParams::RECOIL_FORCE;
+			recoil_cursor = FirebringerParams::RECOIL_CURSOR;
+			sideways_recoil = FirebringerParams::SIDEWAYS_RECOIL;
+			sideways_recoil_damp = FirebringerParams::SIDEWAYS_RECOIL_DAMP;
+			ads_cushion_amount = FirebringerParams::RECOIL_CURSOR;
+			length_of_recoil_arc = FirebringerParams::LENGTH_OF_RECOIL_ARC;
 		}
 		break;
 
@@ -625,6 +761,8 @@ void getWeaponStats( int blobNameHash,
 			bullet_velocity = Mp5Params::BULLET_VELOCITY;
 			bullet_lifetime = Mp5Params::BULLET_LIFETIME;
 			bullet_pen = Mp5Params::BULLET_PEN;
+
+			emptyshellonfire = Mp5Params::EMPTYSHELLONFIRE;
 		}
 		break;
 
@@ -647,6 +785,56 @@ void getWeaponStats( int blobNameHash,
 			bullet_velocity = RevolverParams::BULLET_VELOCITY;
 			bullet_lifetime = RevolverParams::BULLET_LIFETIME;
 			bullet_pen = RevolverParams::BULLET_PEN;
+
+			emptyshellonfire = RevolverParams::EMPTYSHELLONFIRE;
+		}
+		break;
+
+		case _shielder:
+		{
+			inaccuracy_cap = ShielderParams::INACCURACY_CAP;
+			inaccuracy_pershot = ShielderParams::INACCURACY_PER_SHOT;
+			inaccuracy_midair = ShielderParams::INACCURACY_MIDAIR;
+			inaccuracy_hit = ShielderParams::INACCURACY_HIT;
+
+			semiauto = ShielderParams::SEMIAUTO;
+			burst_size = ShielderParams::BURST_SIZE;
+			burst_rate = ShielderParams::BURST_RATE;
+
+			reload_time = ShielderParams::RELOAD_TIME;
+			mag_size = ShielderParams::MAG_SIZE;
+			delayafterfire = ShielderParams::DELAYAFTERFIRE;
+			randdelay = ShielderParams::RANDDELAY;
+
+			bullet_velocity = ShielderParams::BULLET_VELOCITY;
+			bullet_lifetime = ShielderParams::BULLET_LIFETIME;
+			bullet_pen = ShielderParams::BULLET_PEN;
+
+			emptyshellonfire = ShielderParams::EMPTYSHELLONFIRE;
+		}
+		break;
+
+		case _firebringer:
+		{
+			inaccuracy_cap = FirebringerParams::INACCURACY_CAP;
+			inaccuracy_pershot = FirebringerParams::INACCURACY_PER_SHOT;
+			inaccuracy_midair = FirebringerParams::INACCURACY_MIDAIR;
+			inaccuracy_hit = FirebringerParams::INACCURACY_HIT;
+
+			semiauto = FirebringerParams::SEMIAUTO;
+			burst_size = FirebringerParams::BURST_SIZE;
+			burst_rate = FirebringerParams::BURST_RATE;
+
+			reload_time = FirebringerParams::RELOAD_TIME;
+			mag_size = FirebringerParams::MAG_SIZE;
+			delayafterfire = FirebringerParams::DELAYAFTERFIRE;
+			randdelay = FirebringerParams::RANDDELAY;
+
+			bullet_velocity = FirebringerParams::BULLET_VELOCITY;
+			bullet_lifetime = FirebringerParams::BULLET_LIFETIME;
+			bullet_pen = FirebringerParams::BULLET_PEN;
+
+			emptyshellonfire = FirebringerParams::EMPTYSHELLONFIRE;
 		}
 		break;
 
@@ -669,6 +857,8 @@ void getWeaponStats( int blobNameHash,
 			bullet_velocity = SniperParams::BULLET_VELOCITY;
 			bullet_lifetime = SniperParams::BULLET_LIFETIME;
 			bullet_pen = SniperParams::BULLET_PEN;
+
+			emptyshellonfire = SniperParams::EMPTYSHELLONFIRE;
 		}
 		break;
 
@@ -691,6 +881,8 @@ void getWeaponStats( int blobNameHash,
 			bullet_velocity = RPGParams::BULLET_VELOCITY;
 			bullet_lifetime = RPGParams::BULLET_LIFETIME;
 			bullet_pen = RPGParams::BULLET_PEN;
+
+			emptyshellonfire = RPGParams::EMPTYSHELLONFIRE;
 		}
 		break;
 
@@ -713,6 +905,8 @@ void getWeaponStats( int blobNameHash,
 			bullet_velocity = ShotgunParams::BULLET_VELOCITY;
 			bullet_lifetime = ShotgunParams::BULLET_LIFETIME;
 			bullet_pen = ShotgunParams::BULLET_PEN;
+
+			emptyshellonfire = ShotgunParams::EMPTYSHELLONFIRE;
 		}
 		break;
 	}
@@ -770,6 +964,40 @@ void getMovementStats( int blobNameHash, bool isSprinting,
 				walkStat 		= RevolverParams::WALK_STAT;
 				airwalkStat 	= RevolverParams::AIRWALK_STAT;
 				jumpStat 		= RevolverParams::JUMP_STAT;
+			}
+		}
+		break;
+
+		case _shielder:
+		{
+			if (isSprinting)
+			{
+				walkStat 		= ShielderParams::WALK_STAT_SPRINT;
+				airwalkStat 	= ShielderParams::AIRWALK_STAT_SPRINT;
+				jumpStat 		= ShielderParams::JUMP_STAT_SPRINT;
+			}
+			else
+			{
+				walkStat 		= ShielderParams::WALK_STAT;
+				airwalkStat 	= ShielderParams::AIRWALK_STAT;
+				jumpStat 		= ShielderParams::JUMP_STAT;
+			}
+		}
+		break;
+
+		case _firebringer:
+		{
+			if (isSprinting)
+			{
+				walkStat 		= FirebringerParams::WALK_STAT_SPRINT;
+				airwalkStat 	= FirebringerParams::AIRWALK_STAT_SPRINT;
+				jumpStat 		= FirebringerParams::JUMP_STAT_SPRINT;
+			}
+			else
+			{
+				walkStat 		= FirebringerParams::WALK_STAT;
+				airwalkStat 	= FirebringerParams::AIRWALK_STAT;
+				jumpStat 		= FirebringerParams::JUMP_STAT;
 			}
 		}
 		break;
@@ -913,6 +1141,12 @@ float getBulletSpread( int blobNameHash )
 		case _revolver:
 		bulletSpread = 1.0f; break;
 
+		case _shielder:
+		bulletSpread = 1.0f; break;
+		
+		case _firebringer:
+		bulletSpread = 0.0f; break;
+
 		case _sniper:
 		bulletSpread = 0.0f; break;
 
@@ -940,6 +1174,40 @@ void onRevolverReload(CBlob@ this)
 		"ShellCasing",                      // sound
 		0);         // team number
 	}
+}
+
+void onShielderReload(CBlob@ this)
+{
+	this.getSprite().PlaySound("Shielder_reload.ogg", 0.8);
+
+	makeGibParticle(
+	"EmptyMag",               // file name
+	this.getPosition() + Vec2f(this.isFacingLeft() ? -6.0f : 6.0f, 2.0f),      // position
+	Vec2f(this.isFacingLeft() ? -1.5f : 1.5f, -0.5f),                          // velocity
+	0,                                  // column
+	0,                                  // row
+	Vec2f(16, 16),                      // frame size
+	1.0f,                               // scale?
+	0,                                  // ?
+	"EmptyMagSound",                    // sound
+	0);         // team number
+}
+
+void onFirebringerReload(CBlob@ this)
+{
+	this.getSprite().PlaySound("Firebringer_reload.ogg", 0.8);
+
+	//makeGibParticle(
+	//"EmptyMag",               // file name
+	//this.getPosition() + Vec2f(this.isFacingLeft() ? -6.0f : 6.0f, 2.0f),      // position
+	//Vec2f(this.isFacingLeft() ? -1.5f : 1.5f, -0.5f),                          // velocity
+	//0,                                  // column
+	//0,                                  // row
+	//Vec2f(16, 16),                      // frame size
+	//1.0f,                               // scale?
+	//0,                                  // ?
+	//"EmptyMagSound",                    // sound
+	//0);         // team number
 }
 
 void onRangerReload(CBlob@ this)

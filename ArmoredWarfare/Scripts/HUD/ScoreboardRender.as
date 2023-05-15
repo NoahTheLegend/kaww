@@ -2,6 +2,7 @@
 #include "Accolades.as";
 #include "ColoredNameToggleCommon.as";
 #include "PlayerRankInfo.as";
+#include "AllHashCodes.as";
 
 CPlayer@ hoveredPlayer;
 Vec2f hoveredPos;
@@ -64,7 +65,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	{
 		GUI::DrawText(descriptions[teamnum], Vec2f(topleft.x + 100 + dim.x, topleft.y), SColor(0xffffffff));
 	}
-	GUI::DrawText(getTranslatedString("Players: {PLAYERCOUNT}").replace("{PLAYERCOUNT}", "" + players.length), Vec2f(bottomright.x - 400, topleft.y), SColor(0xffffffff));
+	//GUI::DrawText(getTranslatedString("Players: {PLAYERCOUNT}").replace("{PLAYERCOUNT}", "" + players.length), Vec2f(bottomright.x - 400, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 1.5;
 
@@ -147,14 +148,55 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			tex = "ClassIcons.png";
             if (p.getBlob() !is null)
             {
-                if (p.getBlob().getName() == "mechanic") frame = 6;
-                if (p.getBlob().getName() == "revolver") frame = 0;
-                if (p.getBlob().getName() == "ranger") frame = 1;
-                if (p.getBlob().getName() == "rpg") frame = 2;
-                if (p.getBlob().getName() == "shotgun") frame = 3;
-                if (p.getBlob().getName() == "sniper") frame = 4;
-                if (p.getBlob().getName() == "mp5") frame = 5;
-				//if (p.getBlob().getName() == "gl") frame = 7;
+				int blobHash = p.getBlob().getName().getHash();
+				switch (blobHash)
+				{
+					case _revolver:
+					{
+						frame = 0;
+						break;
+					}
+					case _ranger:
+					{
+						frame = 1;
+						break;
+					}
+					case _rpg:
+					{
+						frame = 2;
+						break;
+					}
+					case _shotgun:
+					{
+						frame = 3;
+						break;
+					}
+					case _sniper:
+					{
+						frame = 4;
+						break;
+					}
+					case _mp5:
+					{
+						frame = 5;
+						break;
+					}
+					case _mechanic:
+					{
+						frame = 6;
+						break;
+					}
+					case _shielder:
+					{
+						frame = 7;
+						break;
+					}
+					case _firebringer:
+					{
+						frame = 8;
+						break;
+					}
+				}
             }
 			framesize.Set(16, 16);
 		}

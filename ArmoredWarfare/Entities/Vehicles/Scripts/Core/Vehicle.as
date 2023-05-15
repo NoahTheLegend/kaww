@@ -36,13 +36,31 @@ void onInit(CBlob@ this)
 	this.addCommandID("sync_flipping");
 	this.addCommandID("flip_vehicle");
 
+	string blobName = this.getName();
+	int blobHash = blobName.getHash();
+
+	this.set_string("engine_start", "EngineStart_tank");
+
+	switch(blobHash)
+	{
+		case _maus:
+		case _t10:
+		{
+			this.set_string("engine_start", "HeavyEngineStart_tank");
+			break;
+		}
+		case _motorcycle:
+		{
+			this.set_string("engine_start", "LightEngineStart_tank");
+			break;
+		}
+	}
+
 	s8 armorRating = 0;
 	bool hardShelled = false;
 
 	s8 weaponRating = 0;
 
-	string blobName = this.getName();
-	int blobHash = blobName.getHash();
 	switch(blobHash)
 	{
 		case _mausturret: // MAUS Shell cannon
@@ -75,6 +93,7 @@ void onInit(CBlob@ this)
 		case _pszh4: // smol APC
 		case _pszh4turret: // smol APC cannon
 		case _heavygun: // MG
+		case _firethrower: // MG
 		case _barge:
 		armorRating = 2; break;
 
@@ -389,7 +408,7 @@ void onTick(CBlob@ this)
 		}
 		if (this.get_bool("engine_stuck") && this.get_u32("engine_stuck_time") <= getGameTime())
 		{
-			this.getSprite().PlaySound("EngineStart_tank", 2.5f, 1.0f + XORRandom(11)*0.01f);
+			this.getSprite().PlaySound(this.get_string("engine_start"), 2.5f, 1.0f + XORRandom(11)*0.01f);
 			this.set_bool("engine_stuck", false);
 		}
 	}
@@ -842,7 +861,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			if (!params.saferead_u32(time)) return;
 			this.set_bool("engine_stuck", true);
 			this.set_u32("engine_stuck_time", time);
-			this.getSprite().PlaySound("EngineStart_tank", 1.5f, 0.725f + XORRandom(11)*0.01f);
+			this.getSprite().PlaySound(this.get_string("engine_start"), 1.5f, 0.725f + XORRandom(11)*0.01f);
 		}
 	}
 }

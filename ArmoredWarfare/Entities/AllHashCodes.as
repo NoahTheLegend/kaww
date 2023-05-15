@@ -3,8 +3,10 @@ enum EntityHash
 	//characters
 	_mechanic = 2084092111,
 	_revolver = -474550122,
+	_shielder = -1459552761,
 	_ranger = -2006458400,
 	_shotgun = 234279893,
+	_firebringer = 1711571180,
 	_sniper = 1983016758,
 	_rpg = 1406715976,
 	_mp5 = -1636222121,
@@ -45,6 +47,7 @@ enum EntityHash
 	_mausturret = 56012293, // MAUS Shell cannon
 	_gun = 1043670821, // light MG
 	_heavygun = -153292038, // MG
+	_firethrower = -468829632,
 	_bunker = -1830468768, // bunker
 	_heavybunker = -246580451
 

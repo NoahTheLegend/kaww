@@ -1,5 +1,6 @@
 #include "ActorHUDCON.as";
 #include "PlayerRankInfo.as";
+#include "AllHashCodes.as";
 
 const int slotsSize = 6;
 
@@ -282,30 +283,52 @@ void onRender(CSprite@ this)
 	renderEXPBar(blob, Vec2f(147,30));
 
 	// draw class icon
+
+	int blobHash = blob.getName().getHash();
 	int icon_num = 0;
-	if (blob.getName() == "revolver")
+
+	switch (blobHash)
 	{
-		icon_num = 1;
-	}
-	else if (blob.getName() == "ranger")
-	{
-		icon_num = 2;
-	}
-	else if (blob.getName() == "shotgun")
-	{
-		icon_num = 3;
-	}
-	else if (blob.getName() == "sniper")
-	{
-		icon_num = 4;
-	}
-	else if (blob.getName() == "rpg")
-	{
-		icon_num = 5;
-	}
-	else if (blob.getName() == "mp5")
-	{
-		icon_num = 6;
+		case _revolver:
+		{
+			icon_num = 1;
+			break;
+		}
+		case _ranger:
+		{
+			icon_num = 2;
+			break;
+		}
+		case _shotgun:
+		{
+			icon_num = 3;
+			break;
+		}
+		case _sniper:
+		{
+			icon_num = 4;
+			break;
+		}
+		case _rpg:
+		{
+			icon_num = 5;
+			break;
+		}
+		case _mp5:
+		{
+			icon_num = 6;
+			break;
+		}
+		case _shielder:
+		{
+			icon_num = 7;
+			break;
+		}
+		case _firebringer:
+		{
+			icon_num = 8;
+			break;
+		}
 	}
 
 	GUI::DrawIcon("ClassIconSimple.png", icon_num, Vec2f(48, 48), Vec2f(icon_num == 0 ? -14 : 46, getScreenHeight()-166), 2);

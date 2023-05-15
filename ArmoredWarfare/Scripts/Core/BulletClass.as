@@ -160,7 +160,7 @@ class BulletObj
 
 		if (blob.hasTag("destructable_nosoak"))
 		{
-			hoomanBlob.server_Hit(blob, blob.getPosition(), blob.getVelocity(), 0.5f, Hitters::builder);
+			hoomanBlob.server_Hit(blob, CurrentPos, blob.getVelocity(), 0.5f, Hitters::builder);
 			return false;
 		}
 
@@ -270,7 +270,7 @@ class BulletObj
 					{
 						if (isServer())
 						{
-							hoomanShooter.server_Hit(blob, blob.getPosition(), Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
+							hoomanShooter.server_Hit(blob, CurrentPos, Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
 						}
 					}
 					else
@@ -313,7 +313,7 @@ class BulletObj
 					{
 						if (BlobName != "stone_door")
 						{
-							if (isServer()) hoomanShooter.server_Hit(blob, blob.getPosition(), blob.getOldVelocity(), CurrentType == 1 ? 1.25f : 0.15f, Hitters::builder);
+							if (isServer()) hoomanShooter.server_Hit(blob, CurrentPos, blob.getOldVelocity(), CurrentType == 1 ? 1.25f : 0.15f, Hitters::builder);
 							endBullet = true;
 							//break;
 						}
@@ -427,7 +427,7 @@ class BulletObj
 
 					if (dmg > 0.0f)
 					{
-						hoomanShooter.server_Hit(blob, hitpos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
+						hoomanShooter.server_Hit(blob, CurrentPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 						return true;
 					}
 				}
