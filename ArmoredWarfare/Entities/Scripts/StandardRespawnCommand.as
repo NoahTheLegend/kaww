@@ -23,12 +23,13 @@ bool canChangeClass(CBlob@ this, CBlob@ blob)
 void InitClasses(CBlob@ this)
 {
 	AddIconToken("$crewman_class_icon$", "ClassIcon.png", Vec2f(48, 48), 1);
+	AddIconToken("$shielder_class_icon$", "ClassIcon.png", Vec2f(48, 48), 7);
+	AddIconToken("$firebringer_class_icon$", "ClassIcon.png", Vec2f(48, 48), 8);
 	AddIconToken("$ranger_class_icon$", "ClassIcon.png", Vec2f(48, 48), 2);
 	AddIconToken("$shotgun_class_icon$", "ClassIcon.png", Vec2f(48, 48), 3);
 	AddIconToken("$sniper_class_icon$", "ClassIcon.png", Vec2f(48, 48), 4);
 	AddIconToken("$rpg_class_icon$", "ClassIcon.png", Vec2f(48, 48), 5);
 	AddIconToken("$medic_class_icon$", "ClassIcon.png", Vec2f(48, 48), 6);
-	AddIconToken("$lmg_class_icon$", "ClassIcon.png", Vec2f(48, 48), 7);
 	AddIconToken("$mechanic_class_icon$", "ClassIcon.png", Vec2f(48, 48), 0);
 	AddIconToken("$change_class$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 12, 2);
 	AddIconToken("$change_perk$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 11);
@@ -54,8 +55,12 @@ void InitClasses(CBlob@ this)
 	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5",
 						"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half of food healing\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
 
-	//addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg", "---- LMG ----\n\nExtreme firepower.\nLMB: LMG\nRMB: ADS");
+	addPlayerClass(this, "---- Shielder ----", "$shielder_class_icon$", "shielder",
+						"---- Shielder ----\n\nRapid fire pistol and a shield.\n\nHP: 300\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
 	
+	addPlayerClass(this, "---- Firebringer ----", "$firebringer_class_icon$", "firebringer",
+						"---- Firebringer ----\n\nHas a portative flamethrower.\n\nHP: 250\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
+
 	AddIconToken("$0_class_icon$", "PerkIcon.png", Vec2f(36, 36), 0);
 	AddIconToken("$1_class_icon$", "PerkIcon.png", Vec2f(36, 36), 1);
 	AddIconToken("$2_class_icon$", "PerkIcon.png", Vec2f(36, 36), 2);
@@ -187,7 +192,11 @@ void BuildRespawnMenuFor(CBlob@ this, CBlob @caller)
 
 	if (caller !is null && caller.isMyPlayer() && classes !is null)
 	{
-		CGridMenu@ menu = CreateGridMenu(caller.getScreenPos() + Vec2f(0.0f, caller.getRadius() * 1.0f + 48.0f), this, Vec2f(classes.length * CLASS_BUTTON_SIZE, CLASS_BUTTON_SIZE), getTranslatedString("CHANGE CLASS"));
+		u8 cols = 5;
+		u8 rows = 2;
+		Vec2f size = Vec2f(classes.length * CLASS_BUTTON_SIZE, CLASS_BUTTON_SIZE);
+		size = Vec2f(cols * CLASS_BUTTON_SIZE, rows * CLASS_BUTTON_SIZE); // disable this if needed
+		CGridMenu@ menu = CreateGridMenu(caller.getScreenPos() + Vec2f(0.0f, caller.getRadius() * 1.0f + 48.0f), this, size, getTranslatedString("CHANGE CLASS"));
 		if (menu !is null)
 		{
 			addClassesToMenu(this, menu, caller.getNetworkID());

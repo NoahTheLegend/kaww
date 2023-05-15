@@ -120,6 +120,23 @@ void LoadSprites(CSprite@ this)
 		aos.SetRelativeZ(-5.0f);
 		aos.SetVisible(false);
 	}
+
+	if (blob.getName() == "shielder")
+	{
+		CSpriteLayer@ riotshield = this.addSpriteLayer("riotshield", "Shielder.png", 16, 16, 4, 0);
+		if (riotshield !is null)
+		{
+			Animation@ def = riotshield.addAnimation("default", 0, false);
+			def.AddFrame(4);
+			def.AddFrame(5);
+			if (def !is null)
+			{
+				riotshield.SetAnimation(def);
+				riotshield.SetFrameIndex(0);
+			}
+			riotshield.SetVisible(false);
+		}
+	}
 }
 
 void setArmValues(CSpriteLayer@ arm, bool visible, f32 angle, f32 relativeZ, string anim, Vec2f around, Vec2f offset)
@@ -418,7 +435,7 @@ void onTick(CSprite@ this)
 	}
 	else if (showgun)
 	{
-		if ((blob.isKeyJustPressed(key_action3) && blob.getName() != "mp5") || blob.get_u32("end_stabbing") > getGameTime())
+		if ((blob.isKeyJustPressed(key_action3) && !blob.hasTag("no_knife")) || blob.get_u32("end_stabbing") > getGameTime())
 		{
 			this.SetAnimation("stab");
 		}
@@ -553,6 +570,57 @@ void onTick(CSprite@ this)
 		this.SetVisible(false);
 	}
 
+	CSpriteLayer@ shield = this.getSpriteLayer("riotshield");
+	if (shield !is null)
+	{
+		if (blob.hasTag("dead"))
+		{
+			if (!shield.isVisible()) shield.SetVisible(false);
+		}
+		else
+		{
+			if (!shield.isVisible()) shield.SetVisible(true);
+			
+			if (blob.isKeyPressed(key_action3) && !isReloading)
+			{			
+				Vec2f mpos = blob.getAimPos();
+				f32 angle = (blob.isFacingLeft()?-(mpos-blob.getPosition()).Angle()+180:(mpos-blob.getPosition()).Angle());
+				
+				shield.ResetTransform();
+				shield.RotateBy(blob.isFacingLeft()? angle : -angle, Vec2f_zero);
+				
+				blob.setVelocity(Vec2f(blob.getVelocity().x*0.5f, blob.getVelocity().y));
+
+				shield.SetFacingLeft(blob.isFacingLeft());
+				shield.SetOffset(Vec2f(-6.0f, 0).RotateBy(angle));
+				shield.SetRelativeZ(1.0f);
+				shield.SetFrameIndex(0); // front
+			}
+			else
+			{
+				shield.ResetTransform();
+				shield.SetFacingLeft(blob.isFacingLeft());
+				//shield.SetOffset(Vec2f(2.0f, 0));
+				shield.SetRelativeZ(-5.0f);
+				shield.SetFrameIndex(1); // back
+
+				if (blob.isOnGround() &&
+					(blob.isKeyPressed(key_left) || blob.isKeyPressed(key_right)))
+				{
+					if (getGameTime()%6==0)
+					{
+						shield.SetOffset(Vec2f(2.0f, 0));
+					}
+					else if (getGameTime()%3==0)
+					{
+						shield.SetOffset(Vec2f(2.0f, 1));
+					}
+				}
+				else shield.SetOffset(Vec2f(2.5f, blob.isKeyPressed(key_down) ? 2 : 0));
+			}
+		}
+	}
+
 	//arm anims
 	Vec2f armOffset = Vec2f(-1.0f, 4.0f + config_offset);
 	f32 armangle = -angle;
@@ -565,7 +633,7 @@ void onTick(CSprite@ this)
 			armangle = 180.0f - angle;
 		}
 
-		if (!blob.hasTag("armangle_lock"))
+		if (!blob.hasTag("armangle_lock") && !blob.get_bool("is_firebringer"))
 		{
 			if (blob.getName() == "sniper")
 			{

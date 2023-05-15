@@ -92,5 +92,5 @@ void onRender(CSprite@ this)
 
 	// draw coins
 	const int coins = player !is null ? player.getCoins() : 0;
-	DrawCoinsOnHUD(blob, coins, Vec2f(195, getHUDY()-120), slotsSize - 1);
+	DrawCoinsOnHUD(blob, coins, Vec2f(195, getHUDY()-150), slotsSize - 1);
 }

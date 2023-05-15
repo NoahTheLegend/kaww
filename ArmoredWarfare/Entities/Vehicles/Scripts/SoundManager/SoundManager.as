@@ -10,7 +10,11 @@ void onInit(CBlob@ this)
 
     const bool type = this.get_bool("manager_Type");
 
-    sprite.SetEmitSound(type ? "EngineRun_mid.ogg" : "EngineRun_low.ogg");
+    if (!this.exists("engine_high")) this.set_string("engine_high", "EngineRun_high.ogg");
+    if (!this.exists("engine_mid")) this.set_string("engine_mid", "EngineRun_mid.ogg");
+    if (!this.exists("engine_low")) this.set_string("engine_low", "EngineRun_low.ogg");
+
+    sprite.SetEmitSound(type ? this.get_string("engine_mid") : this.get_string("engine_low"));
 
 	sprite.SetEmitSoundSpeed(1.0f);
     sprite.SetEmitSoundVolume(0.1f);
@@ -41,7 +45,7 @@ void onTick(CBlob@ this)
     {
         if (rpm < 5000) // switch to idle
         {
-            sprite.SetEmitSound("EngineRun_low.ogg");
+            sprite.SetEmitSound(this.get_string("engine_low"));
 
             f32 pitchMod = this.get_f32("custom_pitch");
             if (this.get_bool("engine_stuck")) pitchMod = 0.65f;
@@ -52,7 +56,7 @@ void onTick(CBlob@ this)
         }
         else // high rpm
         {
-            sprite.SetEmitSound("EngineRun_high.ogg");
+            sprite.SetEmitSound(this.get_string("engine_high"));
 
             f32 pitchMod = this.get_f32("custom_pitch");
             if (!this.get_bool("isThisOnGround")) pitchMod *= 0.85f;

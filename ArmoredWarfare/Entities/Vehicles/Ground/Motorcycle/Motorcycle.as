@@ -67,7 +67,10 @@ void onInit(CBlob@ this)
 			if (soundmanager !is null)
 			{
 				soundmanager.set_bool("manager_Type", false);
-				soundmanager.set_f32("custom_pitch", 1.15f);
+				soundmanager.set_string("engine_high", "LightEngineRun_high.ogg");
+				soundmanager.set_string("engine_mid", "LightEngineRun_mid.ogg");
+				soundmanager.set_string("engine_low", "LightEngineRun_low.ogg");
+				soundmanager.set_f32("custom_pitch", 0.9f);
 				soundmanager.Init();
 				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
 
@@ -80,7 +83,10 @@ void onInit(CBlob@ this)
 			if (soundmanager !is null)
 			{
 				soundmanager.set_bool("manager_Type", true);
-				soundmanager.set_f32("custom_pitch", 1.15f);
+				soundmanager.set_string("engine_high", "LightEngineRun_high.ogg");
+				soundmanager.set_string("engine_mid", "LightEngineRun_mid.ogg");
+				soundmanager.set_string("engine_low", "LightEngineRun_low.ogg");
+				soundmanager.set_f32("custom_pitch", 0.9f);
 				soundmanager.Init();
 				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
 				

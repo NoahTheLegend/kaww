@@ -70,7 +70,7 @@ void addClassesToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 
 	if (this.get("playerclasses", @classes))
 	{
-		AddIconToken("$locked_class_icon$", "ClassIcon.png", Vec2f(48, 48), 8);
+		AddIconToken("$locked_class_icon$", "ClassIcon.png", Vec2f(48, 48), 10);
 
 		for (uint i = 0 ; i < classes.length; i++)
 		{

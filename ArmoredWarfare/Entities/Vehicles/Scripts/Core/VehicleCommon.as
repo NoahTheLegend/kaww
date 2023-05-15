@@ -1313,7 +1313,7 @@ void Vehicle_onAttach(CBlob@ this, VehicleInfo@ v, CBlob@ attached, AttachmentPo
 		attachedPoint.name == "DRIVER" && // in driver seat 
 		this.get_f32("engine_RPM") < 1000) // rpm is low
 	{
-		this.getSprite().PlaySound("EngineStart_tank", 1.0f, 0.95f + XORRandom(11)*0.01f);
+		this.getSprite().PlaySound(this.get_string("engine_start"), 1.0f, 0.95f + XORRandom(11)*0.01f);
 
 		ShakeScreen(32.0f, 64, this.getPosition());
 

@@ -271,6 +271,7 @@ u8 getIndicatorFrame( int hash )
 		frame = 1; break;
 
 		case _revolver:
+		case _shielder:
 		case _techtruck:
 		case _civcar:
 		frame = 2; break;
@@ -281,6 +282,7 @@ u8 getIndicatorFrame( int hash )
 		frame = 3; break;
 
 		case _shotgun:
+		case _firebringer:
 		case _maus:
 		frame = 4; break;
 
