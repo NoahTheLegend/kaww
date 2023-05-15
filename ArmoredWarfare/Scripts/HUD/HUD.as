@@ -66,19 +66,19 @@ void onRender(CSprite@ this)
 
 				getHUD().SetCursorOffset(Vec2f(-38, -38)); // -38 is perfect alignment but messes up esc cursor
 
-				CControls@ controls = blob.getControls();
-				if (controls !is null)
-				{
-					CInventory@ inv = blob.getInventory();
-
-					if (inv !is null && (
-						blob.getName() != "rpg" && inv.getItem("ammo") is null) || // is any normal class
-						blob.getName() == "rpg" && inv.getItem("mat_heatwarhead") is null) // is rpg
-					{
-						GUI::SetFont("menu");
-						GUI::DrawTextCentered("No Ammo", controls.getInterpMouseScreenPos() + Vec2f(-2,35), controls.isKeyPressed(KEY_KEY_R) ? SColor(0xfff20101) : SColor(0xffffffff));
-					}
-				}
+				//CControls@ controls = blob.getControls();
+				//if (controls !is null)
+				//{
+				//	CInventory@ inv = blob.getInventory();
+//
+				//	if (inv !is null && (
+				//		blob.getName() != "rpg" && inv.getItem("ammo") is null) || // is any normal class
+				//		blob.getName() == "rpg" && inv.getItem("mat_heatwarhead") is null) // is rpg
+				//	{
+				//		GUI::SetFont("menu");
+				//		GUI::DrawTextCentered("No Ammo", controls.getInterpMouseScreenPos() + Vec2f(-2,35), controls.isKeyPressed(KEY_KEY_R) ? SColor(0xfff20101) : SColor(0xffffffff));
+				//	}
+				//}
 			}
 		}
 		else{

@@ -15,14 +15,13 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	}
 
 	string blobName = blob.getName();
-
-	if (this.getName() == "rpg" && blobName == "mat_heatwarhead")
+	if (blobName == this.get_string("ammo_prop"))
 	{
+		if (blobName == "ammo")
+		{
+			if (!this.hasBlob("ammo", 50)) this.server_PutInInventory(blob);
+			return;
+		}
 		this.server_PutInInventory(blob);
-	}
-	if (this.getName() != "rpg" && blobName == "ammo")
-	{
-		if (!this.hasBlob("ammo", 50)) this.server_PutInInventory(blob);
-		
 	}
 }

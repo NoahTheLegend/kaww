@@ -17,11 +17,13 @@
 #include "StandardFire.as";
 
 // firebringer's stats
-const f32 max_scale = 750.0f;
-const u8 aftershot_delay = 15;
+const f32 firebringer_max_scale = 750.0f;
+const u8 firebringer_aftershot = 30;
 
 void onInit(CBlob@ this)
 {
+	CSprite@ sprite = this.getSprite();
+
 	const string thisBlobName = this.getName();
 	const int thisBlobHash = thisBlobName.getHash();
 
@@ -221,7 +223,13 @@ void onInit(CBlob@ this)
 		case _firebringer:
 		{
 			this.set_bool("is_firebringer", true);
-			this.set_u32("mag_bullets", 0);
+			
+			sprite.SetEmitSound("FlamethrowerFire.ogg");
+			sprite.SetEmitSoundSpeed(1.1f);
+			sprite.SetEmitSoundVolume(0.66f);
+			sprite.SetEmitSoundPaused(true);
+
+			//this.set_u32("mag_bullets", 0);
 			this.set_string("ammo_prop", "specammo");
 			break;
 		}
@@ -1004,8 +1012,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					if (do_effects) ClientFire(this, charge_time, infantry);
 					else if (this.isMyPlayer())
 					{
-						this.add_f32("scale", 1.0f*Maths::Sqrt(this.get_f32("scale")+max_scale));
-						this.set_f32("scale", Maths::Min(max_scale-XORRandom(max_scale/5), this.get_f32("scale")));
+						this.add_f32("scale", 2.0f*Maths::Sqrt(this.get_f32("scale")+firebringer_max_scale));
+						this.set_f32("scale", Maths::Min(firebringer_max_scale-XORRandom(firebringer_max_scale/5), this.get_f32("scale")));
 
 						CBitStream params;
 						params.write_f32(this.get_f32("scale"));
@@ -1234,6 +1242,9 @@ void onTick(CBlob@ this)
 {
 	barTick(this);
 	HandleSpecific(this);
+
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
 	
 	if (!this.hasTag("set light")
 	&& ((this.getTeamNum() == getRules().get_u8("teamleft") && getRules().get_s16("teamLeftTickets") == 0)
@@ -1256,6 +1267,7 @@ void onTick(CBlob@ this)
 	ArcherInfo@ archer;
 	if (!this.get("archerInfo", @archer)) return;
 
+	ManageFirebringerLogic(this);
 	ManageParachute(this);
 
 	if (this.isBot() && this.getTickSinceCreated() == 1 && isClient()) 
@@ -1306,6 +1318,31 @@ void onTick(CBlob@ this)
 	
 	this.set_bool("is_a1", false);
 	this.set_bool("just_a1", false);
+}
+
+void ManageFirebringerLogic(CBlob@ this)
+{
+	CSprite@ sprite = this.getSprite();
+	if (this.get_bool("is_firebringer"))
+	{
+		if (isClient())
+		{
+			if (this.get_u32("endtime") < getGameTime())
+			{
+				sprite.SetEmitSoundPaused(true);
+			}
+			else if (this.get_u32("endtime") >= getGameTime())
+			{
+				sprite.SetEmitSoundPaused(false);
+				
+				u32 diff = this.get_u32("endtime") - getGameTime();
+				sprite.SetEmitSoundSpeed(1.1f+XORRandom(21)*0.01f - (0.5f-0.5f*(float(diff)/float(firebringer_aftershot))));
+				sprite.SetEmitSoundVolume(0.5f - (0.4f-0.4f*(float(diff)/float(firebringer_aftershot))));
+			}
+		}
+		if (this.get_u32("endtime") - firebringer_aftershot/5 < getGameTime())
+			this.set_f32("scale", Maths::Max(0, this.get_f32("scale") - 10.0f*Maths::Sqrt(this.get_f32("scale"))));
+	}
 }
 
 bool canSend( CBlob@ this )
@@ -1463,10 +1500,11 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, f
 	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
 }
 
-const f32 _fire_length_raw = 80.0f; // YOU WILL HAVE TO REWRITE FireParticles()'s MULTIPLIERS. THINK TWICE
-const f32 _fire_angle = 10.0f;
+const f32 _fire_length_raw = 64.0f;
+const f32 _fire_angle = 7.5f;
 const f32 inaccuracy_mod = 0.1f; // increases fire angle but decreases fire length per 1 inaccuracy
-const f32 inaccuracy_length_decrease_mod = 3;
+const f32 inaccuracy_length_decrease_mod = 1.75f;
+const f32 inaccuracy_angle_increase_mod = 0.75f;
 const u32 firehit_delay = 1;
 
 void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
@@ -1474,7 +1512,13 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 	if (this.get_u32("mag_bullets") == 0) return;
 	if (isServer())
 	{
-		this.add_u32("mag_bullets", -1);
+		if (this.hasTag("takefireammo"))
+		{
+			this.Untag("takefireammo");
+			this.add_u32("mag_bullets", -1);
+		}
+		else this.Tag("takefireammo");
+		
 		CBitStream params;
 		params.write_u32(this.get_u32("mag_bullets"));
 		this.SendCommand(this.getCommandID("sync_mag"), params);
@@ -1483,21 +1527,26 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 	bool client = isClient();
 	if (client && !this.isOnScreen()) return;
 
+	if (client)
+	{
+		this.set_u32("endtime", getGameTime()+firebringer_aftershot);
+	}
+
 	InfantryInfo@ infantry;
 	if (!this.get( "infantryInfo", @infantry )) return;
 	
 	u8 inaccuracy = this.get_u8("inaccuracy");
-	f32 deviation = inaccuracy_mod * inaccuracy;
+	f32 deviation = inaccuracy_mod * inaccuracy * inaccuracy_angle_increase_mod;
 	f32 fire_damage = infantry.damage_body;
 
-	f32 fire_length_raw = _fire_length_raw - inaccuracy * inaccuracy_length_decrease_mod;
-	f32 fire_angle = _fire_angle + inaccuracy;
+	f32 fire_length_raw = _fire_length_raw - deviation * inaccuracy_length_decrease_mod;
+	f32 fire_angle = _fire_angle + deviation;
 	this.set_u8("inaccuracy", Maths::Min(infantry.inaccuracy_cap, this.get_u8("inaccuracy") + infantry.inaccuracy_pershot));
 	
 	if (getMap() is null) return;
 	Vec2f vel = Vec2f_zero;
 	
-	f32 fire_length = fire_length_raw * (this.get_f32("scale")/max_scale);
+	f32 fire_length = fire_length_raw * (this.get_f32("scale")/firebringer_max_scale);
 	f32 rot = float(XORRandom(fire_angle))-fire_angle*0.5f;
 
 	if (client)
