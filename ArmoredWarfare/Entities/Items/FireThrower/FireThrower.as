@@ -526,7 +526,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	return damage;
 }
 
-const f32 fire_length_raw = 80.0f; // YOU WILL HAVE TO REWRITE FireParticles()'s MULTIPLIERS. THINK TWICE
+const f32 fire_length_raw = 80.0f;
 const f32 fire_angle = 10.0f;
 const f32 fire_damage = 0.5f;
 const u32 firehit_delay = 1;
