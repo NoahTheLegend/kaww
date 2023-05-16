@@ -209,6 +209,7 @@ void onTick(CSprite@ this)
 					{
 						this.RemoveSpriteLayer("bush");
 						blob.Untag("bushy");
+						this.SetVisible(true);
 					}
 				}
 				else
