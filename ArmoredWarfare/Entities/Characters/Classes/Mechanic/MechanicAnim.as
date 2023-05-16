@@ -224,6 +224,7 @@ void onTick(CSprite@ this)
 			}
 			else
 			{
+				this.SetVisible(true);
 				this.RemoveSpriteLayer("bush");
 				camo.SetVisible(false);
 			}

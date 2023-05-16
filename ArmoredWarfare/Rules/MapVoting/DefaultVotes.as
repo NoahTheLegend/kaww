@@ -308,6 +308,7 @@ class VoteNextmapFunctor : VoteFunctor
 		{
 			if (isServer())
 			{
+				printf(""+maptype);
 				switch (MapType)
 				{
 					case 0:

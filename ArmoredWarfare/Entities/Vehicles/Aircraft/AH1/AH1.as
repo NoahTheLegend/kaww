@@ -26,7 +26,7 @@ const Vec2f gun_clampAngle = Vec2f(-180, 180);
 const Vec2f miniGun_offset = Vec2f(-43,7);
 const u8 shootDelay = 2;
 
-const int trap_cooldown = 30*30; // 30 seconds
+const int trap_cooldown = 15*30;
 const u8 traps_amount = 5;
 
 void onInit(CBlob@ this)
