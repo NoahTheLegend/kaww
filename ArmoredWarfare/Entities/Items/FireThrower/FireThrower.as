@@ -125,7 +125,7 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos()+Vec2f(0,4);
+		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos()+Vec2f(0,8);
 		//aim_vec.RotateBy(-this.getAngleDegrees());
 
 		if (this.isAttached())
@@ -163,6 +163,12 @@ void onTick(CBlob@ this)
 	if (!this.get("VehicleInfo", @v))
 	{
 		return;
+	}
+
+	if (!(isClient() && isServer()) && getGameTime() < 60*30)
+	{
+		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
+		return; // turn engines off!
 	}
 
 	if (this.getTickSinceCreated() == 1)
@@ -395,6 +401,10 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	if (this.isAttached())
 	{
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
+		if (ap is null) return;
+		if (ap.getOccupied() !is null && ap.getOccupied().hasTag("no_remount")) return;
+
 		if (caller is null || caller.getTeamNum() != this.getTeamNum()
 			|| caller.getDistanceTo(this) > 48.0f || caller.getName() != "mechanic") return;
 

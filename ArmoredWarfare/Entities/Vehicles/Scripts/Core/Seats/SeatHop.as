@@ -33,7 +33,7 @@ void onTick(CBlob@ this)
 			if ((blob !is this) &&
 			        blob.hasTag("seats") &&
 			        blob !is carried &&
-			        (blob.getTeamNum() > 8 || blob.getTeamNum() == this.getTeamNum()) &&
+			        (blob.getTeamNum() > 6 || blob.getTeamNum() == this.getTeamNum()) &&
 					!this.getMap().rayCastSolid(this.getPosition(), blob.getPosition()))
 			{
 				if (this.getPlayer() !is null)

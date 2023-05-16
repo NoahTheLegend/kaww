@@ -110,8 +110,10 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 {
+	this.Untag("setstatic");
 	this.getShape().SetStatic(false);
 	this.getShape().getConsts().mapCollisions = true;
+		
     if (attached !is null) this.SetDamageOwnerPlayer(attached.getPlayer());
 	this.server_setTeamNum(attached.getTeamNum());
 }
@@ -119,13 +121,6 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 void onTick(CBlob@ this)
 {
 	barTick(this);
-
-	if (this.isAttached())
-	{
-		this.Untag("setstatic");
-		this.getShape().SetStatic(false);
-		this.getShape().getConsts().mapCollisions = true;
-	}
 
 	if (this.hasTag("setstatic"))
 	{
@@ -343,13 +338,15 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	const f32 vellen = this.getOldVelocity().Length();
 	const u8 hitter = this.get_u8("custom_hitter");
 
+	if (blob !is null) return;
+
 	if (isServer() && solid && vellen > 8.0f && this.get_bool("explode")) // avoid abuse while paratrooping
 	{
 		CBitStream params;
 		this.SendCommand(this.getCommandID("switch"), params);
 	}
 
-	if (solid && !this.isAttached() && blob is null)
+	if (solid && !this.isAttached())
 	{
 		this.Tag("setstatic");
 	}

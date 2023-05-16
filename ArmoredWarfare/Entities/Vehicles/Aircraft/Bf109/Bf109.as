@@ -2,6 +2,8 @@
 #include "WarfareGlobal.as"
 #include "Hitters.as";
 #include "Explosion.as";
+#include "GunStandard.as";
+
 // const u32 fuel_timer_max = 30 * 600;
 const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
@@ -338,14 +340,14 @@ void onTick(CBlob@ this)
 
 void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 {
-	Vec2f arrowVel = (aimpos - arrowPos);
-	arrowVel.Normalize();
-	arrowVel *= arrowspeed;
-	CBitStream params;
-	params.write_Vec2f(arrowPos);
-	params.write_Vec2f(arrowVel);
-
-	this.SendCommand(this.getCommandID("shoot bullet"), params);
+	//Vec2f arrowVel = (aimpos - arrowPos);
+	//arrowVel.Normalize();
+	//arrowVel *= arrowspeed;
+	//CBitStream params;
+	//params.write_Vec2f(arrowPos);
+	//params.write_Vec2f(arrowVel);
+//
+	//this.SendCommand(this.getCommandID("shoot bullet"), params);
 }
 
 CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)

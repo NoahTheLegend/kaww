@@ -18,6 +18,7 @@ Vertex[] v_r_fade;
 SColor white = SColor(255,255,255,255);
 SColor eatUrGreens = SColor(255,0,255,0);
 int FireGunID;
+int FireVehicleID;
 int FireShotgunID;
 
 f32 FRAME_TIME = 0;
@@ -44,6 +45,7 @@ void Reset(CRules@ this)
 {
 	r.Reset(12345);
 	FireGunID     = this.addCommandID("fireGun");
+	FireVehicleID = this.addCommandID("fireVehicleGun");
 	FireShotgunID = this.addCommandID("fireShotgun");
 	v_r_bullet.clear();
 	v_r_fade.clear();
@@ -152,6 +154,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 		{
 			this.set_u32("no_more_proj", 0);
 			if (this.hasTag("dead")) return;
+
 			f32 angle = params.read_f32();
 			const Vec2f pos = params.read_Vec2f();
 			Vec2f aimpos = params.read_Vec2f();
@@ -211,6 +214,70 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 
 				BulletGrouped.AddNewObj(bullet);
+			}
+		}
+	}
+	if (cmd == FireVehicleID)
+	{
+		CBlob@ this = getBlobByNetworkID(params.read_netid());
+
+		if (this !is null)
+		{
+			this.set_u32("no_more_proj", 0);
+			if (this.hasTag("dead")) return;
+
+			f32 angle = params.read_f32();
+			const Vec2f pos = params.read_Vec2f();
+			Vec2f aimpos = params.read_Vec2f();
+			f32 bulletSpread = params.read_f32();
+			u8 burstSize = params.read_u8();
+			s8 type = params.read_s8(); // 0 normal, -1 shrapnel, 1 strong
+			f32 damageBody = params.read_f32();
+			f32 damageHead = params.read_f32();
+			s8 bulletPen = params.read_s8();
+			u32 timeSpawnedAt = params.read_u32();
+
+			if (this.get_u32("next_bullet") > getGameTime()) return;
+			this.set_u32("next_bullet", getGameTime()+2);
+			
+			for (u8 i = 0; i < burstSize; i++)
+			{
+				BulletObj@ bullet = BulletObj(this, angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(), this.get_s32("custom_hitter"));
+
+				CMap@ map = getMap();
+				u32 time = timeSpawnedAt;
+
+				for (; time < getGameTime(); time++) // Catch up to everybody else
+				{
+					bullet.onFakeTick(map);
+				}
+
+
+				BulletGrouped.AddNewObj(bullet);
+			}
+
+			if (this.hasTag("machinegun"))
+			{
+				float overheat_mod = 1.0f;
+		
+				CBlob@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER").getOccupied();
+				if (gunner !is null)
+				{
+					CPlayer@ p = gunner.getPlayer();
+					if (p !is null)
+					{
+						if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+						{
+							overheat_mod = 0.5f;
+						}
+					}
+				}
+				else
+				{
+					return;
+				}
+
+				this.add_f32("overheat", this.get_f32("overheat_per_shot") * overheat_mod);
 			}
 		}
 	}

@@ -2,6 +2,7 @@
 #include "SeatsCommon.as"
 #include "VehicleAttachmentCommon.as"
 #include "KnockedCommon.as"
+#include "GunStandard.as"
 
 // HOOKS THAT YOU MUST IMPLEMENT WHEN INCLUDING THIS FILE
 // void Vehicle_onFire( CBlob@ this, CBlob@ bullet, const u8 charge )
@@ -491,26 +492,26 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 
 				const int team = caller.getTeamNum();
 				const bool isServer = getNet().isServer();
-				for (u8 i = 0; i < loadedAmmo; i += v.getCurrentAmmo().fire_cost_per_amount)
-				{
-					CBlob@ bullet = isServer && v.getCurrentAmmo().bullet_name != "" ? server_CreateBlobNoInit(v.getCurrentAmmo().bullet_name) : null;
-					if (bullet !is null)
-					{
-						bullet.set_s8(penRatingString, this.get_s8(weaponRatingString));
-
-						bullet.setPosition(bulletPos);
-						bullet.server_setTeamNum(team);
-						bullet.set_f32("damage_modifier", this.get_f32("damage_modifier"));
-						bullet.set_f32("linear_length", this.get_f32("linear_length"));
-						bullet.set_f32("explosion_damage_scale", this.get_f32("explosion_damage_scale"));
-						if (this.hasTag("apc")) bullet.Tag("small_bolt");
-						if (this.hasTag("fireshe")) bullet.Tag("HE_shell");
-						bullet.SetDamageOwnerPlayer(caller.getPlayer());
-						bullet.Init();
-					}
-
-					server_FireBlob(this, bullet, charge);
-				}
+				//for (u8 i = 0; i < loadedAmmo; i += v.getCurrentAmmo().fire_cost_per_amount)
+				//{
+				//	CBlob@ bullet = isServer && v.getCurrentAmmo().bullet_name != "" ? server_CreateBlobNoInit(v.getCurrentAmmo().bullet_name) : null;
+				//	if (bullet !is null)
+				//	{
+				//		bullet.set_s8(penRatingString, this.get_s8(weaponRatingString));
+//
+				//		bullet.setPosition(bulletPos);
+				//		bullet.server_setTeamNum(team);
+				//		bullet.set_f32("damage_modifier", this.get_f32("damage_modifier"));
+				//		bullet.set_f32("linear_length", this.get_f32("linear_length"));
+				//		bullet.set_f32("explosion_damage_scale", this.get_f32("explosion_damage_scale"));
+				//		if (this.hasTag("apc")) bullet.Tag("small_bolt");
+				//		if (this.hasTag("fireshe")) bullet.Tag("HE_shell");
+				//		bullet.SetDamageOwnerPlayer(caller.getPlayer());
+				//		bullet.Init();
+				//	}
+//
+				//	server_FireBlob(this, bullet, charge);
+				//}
 
 				v.getCurrentAmmo().loaded_ammo = 0;
 				SetOccupied(mag, 0);
@@ -988,6 +989,18 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && (blob.isMyPlayer() || blob.isBot()))
 							{
+								Vec2f aimPos = ap.getAimPos();
+
+								f32 bulletSpread = 50.0f;
+								f32 angle;
+								angle = getWeaponAngle(this, v);
+
+								angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
+								f32 true_angle = this.isFacingLeft() ? -angle + 180 : angle;
+								shootVehicleGun(this.getNetworkID(), true_angle,
+									this.getPosition()+Vec2f(16,0).RotateBy(true_angle),
+										aimPos, bulletSpread, 1, 0, 0.35f, 0.5f, 2);
+
 								CBitStream fireParams;
 								fireParams.write_u16(blob.getNetworkID());
 								fireParams.write_u8(charge);
@@ -1361,6 +1374,44 @@ bool isFlipped(CBlob@ this)
 	f32 angle = this.getAngleDegrees();
 	return (angle > 80 && angle < 290);
 }
+
+f32 getWeaponAngle(CBlob@ this, VehicleInfo@ v)
+{
+	f32 first_angle = Vehicle_getWeaponAngle(this, v);
+	f32 angle = first_angle;
+	bool facing_left = this.isFacingLeft();
+	AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
+	bool failed = true;
+
+	if (gunner !is null && gunner.getOccupied() !is null)
+	{
+		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos()+Vec2f(0,4);
+		//aim_vec.RotateBy(-this.getAngleDegrees());
+
+		if (this.isAttached())
+		{
+			if (facing_left) { aim_vec.x = -aim_vec.x; }
+			angle = (-(aim_vec).getAngle() + 180.0f);
+		}
+		else
+		{
+			if ((!facing_left && aim_vec.x < 0) ||
+			        (facing_left && aim_vec.x > 0))
+			{
+				if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
+
+				angle = (-(aim_vec).getAngle() + 180.0f);
+				angle = Maths::Max(-75.0f , Maths::Min(angle , 75.0f));
+			}
+			else
+			{
+				this.SetFacingLeft(!facing_left);
+			}
+		}
+	}
+
+	return angle;
+}
 /*
 void UpdateWheels(CBlob@ this)
 {
@@ -1389,3 +1440,4 @@ void UpdateWheels(CBlob@ this)
 		}
 	}
 }
+*/
