@@ -291,7 +291,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			{
 				if (customData == Hitters::explosion || customData == Hitters::keg ? hitterBlob.getDistanceTo(this) < 32.0f+XORRandom(81)*0.1f : damage >= 1.5f)
 				{
-					setKnocked(this, 30);
+					setKnocked(this, 15);
 				}
 				else if (isServer())
 				{

@@ -80,6 +80,8 @@ void onInit(CBlob@ this)
 	this.addCommandID("set attaching");
 	sprite.SetZ(20.0f);
 
+	this.addCommandID("sync overheat");
+
 	this.set_f32("overheat", 0);
 	this.set_f32("max_overheat", MAX_OVERHEAT);
 	this.set_f32("overheat_per_shot", OVERHEAT_PER_SHOT);
@@ -432,6 +434,13 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 
 		this.add_f32("overheat", this.get_f32("overheat_per_shot") * overheat_mod);
 
+		if (isServer())
+		{
+			CBitStream params;
+			params.write_f32(this.get_f32("overheat"));
+			this.SendCommand(this.getCommandID("sync overheat"), params);
+		}
+
 		bullet.IgnoreCollisionWhileOverlapped(this);
 		bullet.server_setTeamNum(this.getTeamNum());
 
@@ -508,6 +517,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			return;
 		}
 		Vehicle_onFire(this, v, blob, charge);
+	}
+	else if (cmd == this.getCommandID("sync overheat"))
+	{
+		if (isClient())
+		{
+			f32 heat;
+			if (!params.saferead_f32(heat)) return;
+			this.set_f32("overheat", heat);
+		}
 	}
 	else if (cmd == this.getCommandID("set detaching"))
 	{

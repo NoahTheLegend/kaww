@@ -73,6 +73,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("throw fire");
 	this.addCommandID("set detaching");
 	this.addCommandID("set attaching");
+	this.addCommandID("sync overheat");
 
 	sprite.SetZ(20.0f);
 
@@ -155,7 +156,7 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 }
 
 const f32 max_scale = 750.0f;
-const u8 aftershot_delay = 20;
+const u8 aftershot_delay = 30;
 
 void onTick(CBlob@ this)
 {
@@ -226,6 +227,13 @@ void onTick(CBlob@ this)
 					}
 
 					this.add_f32("overheat", this.get_f32("overheat_per_shot") * overheat_mod);
+
+					if (isServer())
+					{
+						CBitStream params;
+						params.write_f32(this.get_f32("overheat"));
+						this.SendCommand(this.getCommandID("sync overheat"), params);
+					}
 
 					this.add_f32("scale", 1.0f*Maths::Sqrt(this.get_f32("scale")+max_scale));
 					this.set_f32("scale", Maths::Min(max_scale-XORRandom(max_scale/5), this.get_f32("scale")));
@@ -647,6 +655,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		f32 angle = params.read_f32();
 		ThrowFire(this, this.getPosition(), angle);
+	}
+	else if (cmd == this.getCommandID("sync overheat"))
+	{
+		if (isClient())
+		{
+			f32 heat;
+			if (!params.saferead_f32(heat)) return;
+			this.set_f32("overheat", heat);
+		}
 	}
 	else if (cmd == this.getCommandID("set detaching"))
 	{
