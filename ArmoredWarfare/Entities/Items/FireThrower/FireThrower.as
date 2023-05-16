@@ -4,7 +4,7 @@
 
 const Vec2f arm_offset = Vec2f(4, 0);
 const f32 MAX_OVERHEAT = 25.0f;
-const f32 OVERHEAT_PER_SHOT = 0.33f;
+const f32 OVERHEAT_PER_SHOT = 0.35f;
 const f32 COOLDOWN_RATE = 0.5f;
 const u8 COOLDOWN_TICKRATE = 5;
 

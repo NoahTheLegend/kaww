@@ -343,7 +343,7 @@ void onTick(CBlob@ this)
 		}
 
 		this.getSprite().SetEmitSoundPaused(this.get_f32("soundspeed") <= 0.1f);
-		this.getSprite().SetEmitSoundVolume(Maths::Sqrt(this.get_f32("soundspeed"))*1.5f);
+		this.getSprite().SetEmitSoundVolume(Maths::Sqrt(this.get_f32("soundspeed"))*1.25f);
 		this.getSprite().SetEmitSoundSpeed(this.get_f32("soundspeed"));
 		
 		

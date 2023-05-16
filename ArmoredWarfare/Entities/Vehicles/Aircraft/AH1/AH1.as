@@ -35,6 +35,11 @@ void onInit(CBlob@ this)
 	this.set_bool("map_damage_raycast", true);
 	this.set_u32("duration", 0);
 	this.set_u8("mode", 1);
+	
+	this.set_u8("TTL", 60);
+	this.set_Vec2f("KB", Vec2f(0,0));
+	this.set_u8("speed", 20);
+	this.set_s32("custom_hitter", Hitters::aircraftbullet);
 
 	this.getShape().SetOffset(Vec2f(0,0));
 
@@ -345,8 +350,7 @@ void onTick(CBlob@ this)
 								return;
 							}
 
-							Vec2f aimvector = GunAimPos - hooman.getPosition()+Vec2f(0,-16);
-							//aimvector.RotateBy(-this.getAngleDegrees());
+							Vec2f aimvector = GunAimPos - this.getPosition()+Vec2f(this.isFacingLeft() ? 42 : -42, -10).RotateBy(this.getAngleDegrees());
 
 							const f32 angle = constrainAngle(-aimvector.Angle() + (flip ? 180 : 0)) * flip_factor;
 							const f32 clampedAngle = (Maths::Clamp(angle, gun_clampAngle.x, gun_clampAngle.y) * flip_factor);
@@ -363,18 +367,18 @@ void onTick(CBlob@ this)
 								{
 									this.getSprite().PlaySound("AssaultFire.ogg", 1.33f, 1.15f + XORRandom(35) * 0.01f);
 								}
-								if (getGameTime() > this.get_u32("fireDelayGun") && realPlayer !is null && realPlayer is hooman)
+								if (getGameTime() > this.get_u32("fireDelayGun") && hooman.isMyPlayer())
 								{
 									CBlob@ ammocarry = getBlobByNetworkID(this.get_u16("ammocarryid"));
 									if (ammocarry !is null && ammocarry.hasBlob("ammo", 1))
 									{
 										f32 bulletSpread = 20.0f;
 
-										f32 true_angle = angle;
+										f32 true_angle = this.isFacingLeft()?-angle+180:angle;
 										true_angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
 
-										shootVehicleGun(hooman.getNetworkID(), true_angle,
-											this.getPosition()+Vec2f(39, 9),
+										shootVehicleGun(hooman.getNetworkID(), this.getNetworkID(),
+											true_angle, this.getPosition()+Vec2f(this.isFacingLeft()?-39:39, 9).RotateBy(this.getAngleDegrees()),
 											ap.getAimPos(), bulletSpread, 1, 0, 0.4f, 0.65f, 2,
 												this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 

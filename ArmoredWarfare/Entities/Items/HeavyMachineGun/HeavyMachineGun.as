@@ -3,7 +3,7 @@
 
 const Vec2f arm_offset = Vec2f(-2, 0);
 const f32 MAX_OVERHEAT = 2.0f;
-const f32 OVERHEAT_PER_SHOT = 0.07475f;
+const f32 OVERHEAT_PER_SHOT = 0.089f;
 const f32 COOLDOWN_RATE = 0.065f;
 const u8 COOLDOWN_TICKRATE = 5;
 
@@ -197,7 +197,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	if (!(isClient() && isServer()) && getGameTime() < 60*30)
+	if (!(isClient() && isServer()) && (getGameTime() == 0 || getGameTime() < 60*30))
 	{
 		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
 		return; // turn engines off!

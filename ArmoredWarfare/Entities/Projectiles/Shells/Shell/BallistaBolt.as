@@ -338,7 +338,6 @@ void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f vel
 	if (type == CMap::tile_bedrock || isTileCompactedDirt(type) || isTileScrap(type))
 	{
 		this.Tag("weaken");
-		this.Tag("dead");
 		this.server_Die();
 		this.getSprite().Gib();
 	}
