@@ -11,6 +11,7 @@ void onInit(CBlob@ this)
 	this.Tag("has mount");
 	this.Tag("friendly_bullet_pass");
 	this.Tag("truck");
+	this.Tag("no_remount");
 
 	this.set_f32("max_angle_diff", 0.5f);
 

@@ -554,7 +554,7 @@ void onRenderScoreboard(CRules@ this)
 
 	//draw the scoreboards
 	
-	if (localTeam == this.get_u8("teamleft"))
+	if (localTeam == this.get_u8("teamleft") || localTeam == getRules().getSpectatorTeamNum())
 		topleft.y = drawScoreboard(localPlayer, teamleftplayers, topleft, this.getTeam(this.get_u8("teamleft")), Vec2f(0, 0), this.get_u8("teamleft"));
 	else
 		topleft.y = drawScoreboard(localPlayer, teamrightplayers, topleft, this.getTeam(this.get_u8("teamright")), Vec2f(32, 0), this.get_u8("teamright"));

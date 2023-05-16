@@ -32,7 +32,7 @@ void onRender(CSprite@ this)
 		return;
 	}
 	//not same team
-	if ((blob.getTeamNum() <= 8 && blob.getTeamNum() != localBlob.getTeamNum()))
+	if ((blob.getTeamNum() <= 6 && blob.getTeamNum() != localBlob.getTeamNum()))
 	{
 		return;
 	}

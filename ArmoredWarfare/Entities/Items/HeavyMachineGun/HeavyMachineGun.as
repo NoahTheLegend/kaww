@@ -12,6 +12,10 @@ void onInit(CBlob@ this)
 	this.Tag("gun");
 	this.Tag("machinegun");
 	this.Tag("very heavy weight");
+
+	this.set_u8("TTL", 60);
+	this.set_Vec2f("KB", Vec2f(0,0));
+	this.set_u8("speed", 20);
 	
 	Vehicle_Setup(this,
 	              0.0f, // move speed
@@ -43,6 +47,8 @@ void onInit(CBlob@ this)
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 48, 16);
 	this.Tag("builder always hit");
 	this.Tag("destructable_nosoak");
+
+	this.set_s32("custom_hitter", Hitters::machinegunbullet);
 
 	if (arm !is null)
 	{
@@ -158,7 +164,7 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 void onTick(CBlob@ this)
 {
 	//if (isServer() && this.getPosition().x <= 8.0f && this.getPosition().y <= 64.0f) this.server_Die();
-	
+
 	bool is_attached = this.isAttached();
 	if (this.isAttachedToPoint("PICKUP") && this.hasAttached())
 	{
@@ -300,6 +306,10 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	if (this.isAttached())
 	{
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
+		if (ap is null) return;
+		if (ap.getOccupied() !is null && ap.getOccupied().hasTag("no_remount")) return;
+		
 		if (caller is null || caller.getTeamNum() != this.getTeamNum()
 			|| caller.getDistanceTo(this) > 48.0f || caller.getName() != "mechanic") return;
 
