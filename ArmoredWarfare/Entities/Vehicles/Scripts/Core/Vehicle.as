@@ -1088,6 +1088,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			damage *= 2;
 		}
+		else damage *= 1.0f+(XORRandom(26)*0.01f);
 		
 		if (this.hasTag("aerial")) return damage*4.5f;
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*1.5f;
