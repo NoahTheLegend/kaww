@@ -301,7 +301,7 @@ void onTick(CSprite@ this)
 			}
 			else
 			{
-				sprite.RemoveSpriteLayer("bush");
+				this.RemoveSpriteLayer("bush");
 				camo.SetVisible(false);
 				frontarm.SetAnimation("fired");
 				{
