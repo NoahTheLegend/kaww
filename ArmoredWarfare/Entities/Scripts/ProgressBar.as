@@ -106,6 +106,8 @@ class ProgressBar : Bar {
     
     void updatebar()
     {
+        if (this.max == 0) this.max = 0.1f;
+
         if (this.blob !is null)
         {
             if (this.current < this.target)
