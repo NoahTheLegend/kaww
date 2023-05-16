@@ -260,8 +260,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		damage *= extra_amount;
 	}
 
-	if (isServer() && this.getName() == "shielder"
-		&& (customData == Hitters::bullet || customData == Hitters::explosion))
+	if (this.getName() == "shielder"
+		&& (customData == Hitters::bullet || customData == Hitters::explosion || customData == Hitters::keg))
 	{
 		Vec2f mpos = this.getAimPos();
 		f32 angle = (this.isFacingLeft()?-(mpos-this.getPosition()).Angle()+180:(mpos-this.getPosition()).Angle());
@@ -274,11 +274,18 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		//printf("angle "+angle+" hit angle "+hit_angle+" diff "+diff);
 		if (block)
 		{
-			CBitStream params;
-			params.write_bool(customData == Hitters::bullet);
-			this.SendCommand(this.getCommandID("shield_effects"), params);
+			if (customData == Hitters::explosion || customData == Hitters::keg ? hitterBlob.getDistanceTo(this) < 32.0f+XORRandom(81)*0.1f : damage >= 1.5f)
+			{
+				setKnocked(this, 30);
+			}
+			else if (isServer())
+			{
+				CBitStream params;
+				params.write_bool(customData == Hitters::bullet);
+				this.SendCommand(this.getCommandID("shield_effects"), params);
 
-			return damage/10;
+				damage /= 10;
+			}
 		}
 	}
 	
@@ -1589,7 +1596,11 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 				if (!info.blob.isAttached() && !info.blob.hasTag("machinegun") && (info.blob.hasTag("wooden")
 						|| info.blob.hasTag("door") || info.blob.hasTag("flesh") || info.blob.hasTag("vehicle")))
 				{
-					endpoint = info.distance/shorten;
+					if (!info.blob.hasTag("flesh"))
+					{
+						endpoint = info.distance/shorten;
+						doContinue = true;
+					}
 					if (isServer() && info.blob.get_u32("firehit_delay") < getGameTime()
 						&& info.blob.getTeamNum() != this.getTeamNum() && (info.blob.hasTag("apc")
 							|| info.blob.hasTag("weak vehicle") || info.blob.hasTag("truck")
@@ -1598,7 +1609,6 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 						this.server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.35f), fire_damage, Hitters::fire, true);
 						info.blob.set_u32("firehit_delay", getGameTime()+firehit_delay);
 					}
-					doContinue = true;
 				}
 			}
 		}
@@ -1626,7 +1636,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			f32 scale = params.read_f32();
 			this.set_f32("scale", scale);
 		}
-		ThrowFire(this, this.getPosition(), 90 + -(this.getAimPos()-this.getPosition()).Angle());
+		ThrowFire(this, this.getPosition()+Vec2f(0,1), 90 + -(this.getAimPos()-this.getPosition()).Angle());
 	}
 	else if (cmd == this.getCommandID("sync_mag"))
 	{

@@ -337,15 +337,15 @@ namespace ShielderParams
 {
 	const ::string CLASSNAME 			= "Shielder"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.25f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.5f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.2f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.4f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.8f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
+	const ::f32 WALK_STAT 				= 0.95f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.6f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.85f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 0.9f; // walk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.15f; // walk (sprint)
 	const ::f32 AIRWALK_STAT_SPRINT 	= 3.2f; // airwalk (sprint)
-	const ::f32 JUMP_STAT_SPRINT 		= 1.0f; // jump (sprint)
+	const ::f32 JUMP_STAT_SPRINT 		= 1.1f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 3.0f; // x shake (20)
 	const ::f32 RECOIL_Y 				= 60.0f; // y shake (45)
@@ -429,13 +429,13 @@ namespace FirebringerParams
 {
 	const ::string CLASSNAME 			= "Firebringer"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.25f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.25f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.2f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.2f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.75f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.55f; // airwalk
-	const ::f32 JUMP_STAT 				= 1.05f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.05f; // walk (sprint)
+	const ::f32 JUMP_STAT 				= 0.9f; // jump
+	const ::f32 WALK_STAT_SPRINT 		= 0.9f; // walk (sprint)
 	const ::f32 AIRWALK_STAT_SPRINT 	= 3.15f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.05f; // jump (sprint)
 	// SHAKE
@@ -454,13 +454,13 @@ namespace FirebringerParams
 	const ::u8 INACCURACY_CAP 			= 100; // max amount of inaccuracy
 	const ::u8 INACCURACY_PER_SHOT 		= 25; // aim inaccuracy  (+3 per shot)
 	const ::u8 INACCURACY_MIDAIR        = 7;
-	const ::u8 INACCURACY_HIT 		    = 0;
+	const ::u8 INACCURACY_HIT 		    = 15;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 			= 75; // time to reload
+	const ::s16 RELOAD_TIME 			= 90; // time to reload
 	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 50; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
