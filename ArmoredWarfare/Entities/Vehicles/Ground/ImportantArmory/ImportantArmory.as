@@ -97,7 +97,7 @@ void onInit(CBlob@ this)
 	}
 	if (t2)
 	{
-		ShopItem@ s = addShopItem(this, "Special Ammuniton", "$specammo$", "specammo", "Special Ammo for advanced weapons.", false);
+		ShopItem@ s = addShopItem(this, "Special Ammuniton", "$specammo$", "specammo", "Special ammunition for advanced weapons.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 15);
 	}
 	{

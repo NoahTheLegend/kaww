@@ -56,10 +56,10 @@ void InitClasses(CBlob@ this)
 						"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half of food healing\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
 
 	addPlayerClass(this, "---- Shielder ----", "$shielder_class_icon$", "shielder",
-						"---- Shielder ----\n\nCarries a shield that can block small damage.\n\nHP: 275\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
+						"---- Shielder ----\n\nCarries a shield that is able to block insignificant damage.\n\nHP: 275\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
 	
 	addPlayerClass(this, "---- Firebringer ----", "$firebringer_class_icon$", "firebringer",
-						"---- Firebringer ----\n\nHas a portative but heavy flamethrower.\n\nHP: 300\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
+						"---- Firebringer ----\n\nOwns a portative yet heavy flamethrower.\n\nHP: 300\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
 
 	AddIconToken("$0_class_icon$", "PerkIcon.png", Vec2f(36, 36), 0);
 	AddIconToken("$1_class_icon$", "PerkIcon.png", Vec2f(36, 36), 1);

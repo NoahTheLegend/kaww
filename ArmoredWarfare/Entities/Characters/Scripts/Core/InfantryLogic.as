@@ -1526,12 +1526,15 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 	if (this.get_u32("mag_bullets") == 0) return;
 	if (isServer())
 	{
-		if (this.hasTag("takefireammo"))
+		if (this.get_s8("firebringer_takeammo") != 1)
 		{
-			this.Untag("takefireammo");
+			this.add_s8("firebringer_takeammo", 1);
 			this.add_u32("mag_bullets", -1);
 		}
-		else this.Tag("takefireammo");
+		else
+		{
+			this.set_s8("firebringer_takeammo", 0);
+		}
 		
 		CBitStream params;
 		params.write_u32(this.get_u32("mag_bullets"));

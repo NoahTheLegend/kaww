@@ -85,7 +85,6 @@ void onThisAddToInventory(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	this.SetFacingLeft(false);
 	if (this.isAttached()) Land(this);
 
 	// parachute
@@ -143,6 +142,9 @@ void onTick(CBlob@ this)
 			return;
 		}
 	}
+	
+	this.SetFacingLeft(false);
+	this.getSprite().SetFacingLeft(false);
 }
 
 void Land(CBlob@ this)
@@ -717,6 +719,9 @@ void onRender(CSprite@ this)
 	Vec2f pos2d = blob.getScreenPos();
 	u32 gameTime = getGameTime();
 	u32 unpackTime = blob.get_u32("unpack time");
+
+	blob.SetFacingLeft(false);
+	this.SetFacingLeft(false);
 
 	if (unpackTime > gameTime)
 	{
