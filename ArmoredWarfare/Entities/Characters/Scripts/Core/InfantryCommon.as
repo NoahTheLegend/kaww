@@ -235,8 +235,8 @@ namespace RangerParams
 	const ::u32 MAG_SIZE 				= 30; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 4; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 22.5f; // speed that bullets fly
-	const ::u32 BULLET_LIFETIME 		= 60; // in ticks, time for bullet to die
+	const ::f32 BULLET_VELOCITY 		= 21.5f; // speed that bullets fly
+	const ::u32 BULLET_LIFETIME 		= 70; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 1; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }
@@ -373,7 +373,7 @@ namespace ShielderParams
 	const ::u32 MAG_SIZE 				= 12; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 4; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 18.5f; // speed that bullets fly
+	const ::f32 BULLET_VELOCITY 		= 19.0f; // speed that bullets fly
 	const ::u32 BULLET_LIFETIME 		= 60; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 0; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
@@ -383,8 +383,8 @@ namespace SniperParams
 {
 	const ::string CLASSNAME 			= "Sniper"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 1.5f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 2.45f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 1.25f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 2.15f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
@@ -419,8 +419,8 @@ namespace SniperParams
 	const ::u32 MAG_SIZE 				= 5; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 35; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 26.5f; // speed that bullets fly
-	const ::u32 BULLET_LIFETIME 		= 90; // in ticks, time for bullet to die
+	const ::f32 BULLET_VELOCITY 		= 23.5f; // speed that bullets fly
+	const ::u32 BULLET_LIFETIME 		= 75; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 2; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }

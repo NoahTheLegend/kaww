@@ -240,7 +240,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		|| customData == Hitters::machinegunbullet)
 	{
 		damage += 0.25f;
-		return damage * 0.9f;
+		return damage * 1.1f;
 	}
 	
 	return damage;
