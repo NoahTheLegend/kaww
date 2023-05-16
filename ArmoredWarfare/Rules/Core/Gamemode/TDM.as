@@ -1035,7 +1035,7 @@ shared class TDMCore : RulesCore
 
 	void GiveSpawnResources(CBlob@ blob, CPlayer@ player)
 	{
-		if (!(blob.getName() == "rpg" || blob.getName() == "mechanic") && blob.getName() == "revolver" || blob.getName() == "medic" || blob.getName() == "mp5" || blob.getName() == "sniper" || blob.getName() == "ranger" || blob.getName() == "shotgun")
+		if (!(blob.getName() == "rpg" || blob.getName() == "firebringer"))
 		{
 			// first check if its in surroundings
 			CBlob@[] blobsInRadius;

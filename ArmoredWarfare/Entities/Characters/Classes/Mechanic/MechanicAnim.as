@@ -205,10 +205,15 @@ void onTick(CSprite@ this)
 							}
 						}
 					}
-					else blob.Untag("bushy");
+					else
+					{
+						this.RemoveSpriteLayer("bush");
+						blob.Untag("bushy");
+					}
 				}
 				else
 				{
+					this.RemoveSpriteLayer("bush");
 					blob.Untag("bushy");
 					blob.set_u32("become_a_bush", 0);
 					this.SetVisible(true);
@@ -218,6 +223,7 @@ void onTick(CSprite@ this)
 			}
 			else
 			{
+				this.RemoveSpriteLayer("bush");
 				camo.SetVisible(false);
 			}
 
