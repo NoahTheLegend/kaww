@@ -258,6 +258,75 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 			if (this.hasTag("machinegun"))
 			{
+				f32 anglereal = this.isFacingLeft()? -angle + 180 : angle;
+				Vec2f posreal = pos;
+				Vec2f offset = Vec2f(-2, 0);
+				Vec2f vel = Vec2f(500.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
+
+				if (this.getSprite() !is null)
+				{
+					this.getSprite().PlaySound(this.get_string("shoot sound"));
+				}
+
+				if (isClient())
+				{
+					ParticleAnimated("SmallExplosion3", (posreal + Vec2f(20, 0).RotateBy(this.isFacingLeft()?-anglereal+180:anglereal)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+				}
+
+				float _angle = this.isFacingLeft() ? -anglereal+180 : anglereal;
+				_angle += -0.099f + (XORRandom(4) * 0.01f);
+
+				bool no_muzzle = false;
+
+				#ifdef STAGING
+					no_muzzle = true;
+				#endif
+
+				if (!no_muzzle)
+				{
+					if (this.isFacingLeft())
+					{
+						ParticleAnimated("Muzzleflash", posreal + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), _angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+					}
+					else
+					{
+						ParticleAnimated("Muzzleflashflip", posreal + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), _angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
+					}
+				}
+
+				CPlayer@ p = getLocalPlayer();
+				if (p !is null && !v_fastrender)
+				{
+					CBlob@ local = p.getBlob();
+					if (local !is null)
+					{
+						CPlayer@ ply = local.getPlayer();
+
+						if (ply !is null && ply.isMyPlayer())
+						{
+							const float recoilx = 15;
+							const float recoily = 50;
+							const float recoillength = 40; // how long to recoil (?)
+	
+							if (local.isAttachedTo(this)) ShakeScreen(28, 5, pos);
+	
+							makeGibParticle(
+							"EmptyShellSmall",               // file name
+							posreal,                 // position
+							(this.isFacingLeft() ? -offset : offset) + Vec2f((-20 + XORRandom(40))/18,-1.1f),                           // velocity
+							0,                                  // column
+							0,                                  // row
+							Vec2f(16, 16),                      // frame size
+							0.2f,                               // scale?
+							0,                                  // ?
+							"ShellCasing",                      // sound
+							this.get_u8("team_color"));         // team number
+	
+							this.getSprite().PlaySound("M60fire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
+						}		
+					}
+				}
+				
 				float overheat_mod = 1.0f;
 		
 				CBlob@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER").getOccupied();

@@ -29,6 +29,8 @@ void onInit(CBlob@ this)
 		return;
 	}
 
+	this.set_string("shoot sound", "M60fire.ogg");
+
 	Vehicle_AddAmmo(this, v,
 	                    2, // fire delay (ticks), +1 tick on server due to onCommand delay
 	                    1, // fire bullets amount
@@ -193,6 +195,12 @@ void onTick(CBlob@ this)
 		}
 	}
 
+	if (!(isClient() && isServer()) && getGameTime() < 60*30)
+	{
+		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
+		return; // turn engines off!
+	}
+
 	if (isClient() && is_attached)
 	{
 		CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
@@ -306,7 +314,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	if (this.isAttached())
 	{
-		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("VEHICLE");
 		if (ap is null) return;
 		if (ap.getOccupied() !is null && ap.getOccupied().hasTag("no_remount")) return;
 		
