@@ -59,7 +59,7 @@ void InitClasses(CBlob@ this)
 						"---- Shielder ----\n\nCarries a shield that can block small damage.\n\nHP: 275\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
 	
 	addPlayerClass(this, "---- Firebringer ----", "$firebringer_class_icon$", "firebringer",
-						"---- Firebringer ----\n\nHas a portative flamethrower.\n\nHP: 250\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
+						"---- Firebringer ----\n\nHas a portative but heavy flamethrower.\n\nHP: 300\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
 
 	AddIconToken("$0_class_icon$", "PerkIcon.png", Vec2f(36, 36), 0);
 	AddIconToken("$1_class_icon$", "PerkIcon.png", Vec2f(36, 36), 1);

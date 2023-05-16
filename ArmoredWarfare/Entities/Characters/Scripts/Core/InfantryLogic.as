@@ -259,35 +259,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		damage *= extra_amount;
 	}
-
-	if (this.getName() == "shielder"
-		&& (customData == Hitters::bullet || customData == Hitters::explosion || customData == Hitters::keg))
-	{
-		Vec2f mpos = this.getAimPos();
-		f32 angle = (this.isFacingLeft()?-(mpos-this.getPosition()).Angle()+180:(mpos-this.getPosition()).Angle());
-		f32 hit_angle = (this.isFacingLeft()?-(worldPoint-this.getPosition()).Angle()+180:(worldPoint-this.getPosition()).Angle());
-		
-		f32 diff = angle - hit_angle;
-		diff += diff > 180 ? -360 : diff < -180 ? 360 : 0;
-
-		bool block = Maths::Abs(diff) < shield_angle;
-		//printf("angle "+angle+" hit angle "+hit_angle+" diff "+diff);
-		if (block)
-		{
-			if (customData == Hitters::explosion || customData == Hitters::keg ? hitterBlob.getDistanceTo(this) < 32.0f+XORRandom(81)*0.1f : damage >= 1.5f)
-			{
-				setKnocked(this, 30);
-			}
-			else if (isServer())
-			{
-				CBitStream params;
-				params.write_bool(customData == Hitters::bullet);
-				this.SendCommand(this.getCommandID("shield_effects"), params);
-
-				damage /= 10;
-			}
-		}
-	}
 	
 	{
 		InfantryInfo@ infantry;
@@ -297,6 +268,40 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			f32 cap = this.get_u8("inaccuracy")+infantry.inaccuracy_hit;
 			if (cap < infantry.inaccuracy_cap) this.add_u8("inaccuracy", infantry.inaccuracy_hit);
 			else this.set_u8("inaccuracy", infantry.inaccuracy_cap);
+		}
+	}
+
+	if (this.getName() == "shielder"
+		&& (customData == Hitters::bullet || customData == Hitters::explosion || customData == Hitters::keg))
+	{
+		bool isReloading = this.get_bool("isReloading") || this.get_s32("my_reloadtime") > 0;
+
+		if (!isReloading && this.isKeyPressed(key_action3))
+		{
+			Vec2f mpos = this.getAimPos();
+			f32 angle = (this.isFacingLeft()?-(mpos-this.getPosition()).Angle()+180:(mpos-this.getPosition()).Angle());
+			f32 hit_angle = (this.isFacingLeft()?-(worldPoint-this.getPosition()).Angle()+180:(worldPoint-this.getPosition()).Angle());
+
+			f32 diff = angle - hit_angle;
+			diff += diff > 180 ? -360 : diff < -180 ? 360 : 0;
+
+			bool block = Maths::Abs(diff) < shield_angle;
+			//printf("angle "+angle+" hit angle "+hit_angle+" diff "+diff);
+			if (block)
+			{
+				if (customData == Hitters::explosion || customData == Hitters::keg ? hitterBlob.getDistanceTo(this) < 32.0f+XORRandom(81)*0.1f : damage >= 1.5f)
+				{
+					setKnocked(this, 30);
+				}
+				else if (isServer())
+				{
+					CBitStream params;
+					params.write_bool(customData == Hitters::bullet);
+					this.SendCommand(this.getCommandID("shield_effects"), params);
+
+					damage /= (1.5f + XORRandom(16)*0.1f);
+				}
+			}
 		}
 	}
 
@@ -1591,7 +1596,8 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 			}
 			if (info.blob !is null)
 			{
-				if (info.blob.hasTag("structure") || info.blob.hasTag("trap")) continue;
+				if (info.blob.hasTag("structure") || info.blob.hasTag("trap")
+					|| info.blob.isLadder()) continue;
 
 				if (!info.blob.isAttached() && !info.blob.hasTag("machinegun") && (info.blob.hasTag("wooden")
 						|| info.blob.hasTag("door") || info.blob.hasTag("flesh") || info.blob.hasTag("vehicle")))

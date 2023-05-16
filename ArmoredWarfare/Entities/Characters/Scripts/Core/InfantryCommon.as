@@ -153,8 +153,8 @@ namespace ShotgunParams
 {
 	const ::string CLASSNAME 			= "Shotgun"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.375f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.525f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.35f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.5f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
@@ -292,7 +292,7 @@ namespace RevolverParams
 	const ::string CLASSNAME 			= "Revolver"; // case sensitive
 	// DAMAGE
 	const ::f32 DAMAGE_BODY 			= 0.4f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 1.15f; // damage dealt on headshot
+	const ::f32 DAMAGE_HEAD 			= 1.0f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.6f; // airwalk
@@ -429,8 +429,8 @@ namespace FirebringerParams
 {
 	const ::string CLASSNAME 			= "Firebringer"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.2f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.2f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.175f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.175f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.75f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.55f; // airwalk
@@ -1151,7 +1151,7 @@ float getBulletSpread( int blobNameHash )
 		bulletSpread = 0.0f; break;
 
 		default: // _shotgun, but it'll be default stats
-		bulletSpread = 105.0f; break;
+		bulletSpread = 90.0f; break;
 	}
 
 	return bulletSpread;

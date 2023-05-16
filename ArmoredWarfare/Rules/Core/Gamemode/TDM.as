@@ -11,9 +11,11 @@ const u8 MAX_BOTS = 8; // fills while server's pop is lesser than value
 ConfigFile cfg_playerexp;
 
 shared int ticketsRemaining(CRules@ this, int team){
-	if(team==0){
+	u8 teamleft = this.get_u8("teamleft");
+	u8 teamright = this.get_u8("teamright");
+	if(team==teamleft){
 		return this.get_s16("teamLeftTickets");
-	}else if(team==1){
+	}else if(team==teamright){
 		return this.get_s16("teamRightTickets");
 	}
 	return 1;
@@ -26,8 +28,11 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 	CBlob@ b = getBlobByName("pointflag");
 	CBlob@ t = getBlobByName("tent");
 	if (b !is null || t is null) return 0;
-	
-	if(team==0){
+
+	u8 teamleft = this.get_u8("teamleft");
+	u8 teamright = this.get_u8("teamright");
+
+	if(team==teamleft){
 		numTickets=this.get_s16("teamLeftTickets");
 		if(numTickets<=0)return 1;
 		numTickets--;
@@ -41,7 +46,7 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 		this.set_s16("teamLeftTickets", numTickets);
 		this.Sync("teamLeftTickets", true);
 		return 0;
-	}else if(team==1){
+	}else if(team==teamright){
 		numTickets=this.get_s16("teamRightTickets");
 		if(numTickets<=0)return 1;
 		numTickets--;
@@ -97,11 +102,6 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 	
 	return false;
 }
-
-int blobcount = 0;
-string[] lastblobs = {
-
-};
 
 string cost_config_file = "tdm_vars.cfg";
 
@@ -1102,8 +1102,17 @@ void Reset(CRules@ this)
 	this.Sync("teamleft_kills", true);
 	this.Sync("teamright_kills", true);
 
-	this.set_bool("enable_powers", true);
-	this.Sync("enable_powers", true);
+	if (getMap() !is null)
+	{
+		bool isTDM = (getMap().tilemapwidth < 200);
+		this.set_bool("enable_powers", !isTDM);
+		this.Sync("enable_powers", true);
+	}
+	else
+	{
+		this.set_bool("enable_powers", true);
+		this.Sync("enable_powers", true);
+	}
 	
 	if (this.get_string("map_name") == "Abacus") {
 		for (u16 i = 0; i < getPlayerCount(); i++)

@@ -10,6 +10,7 @@ void onInit(CBlob@ this)
 	this.Tag("weakprop");
 	this.Tag("builder always hit");
 	this.Tag("passable");
+	this.Tag("bulletpassable");
 }
 
 f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData )

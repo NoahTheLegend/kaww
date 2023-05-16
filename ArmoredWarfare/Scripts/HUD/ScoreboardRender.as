@@ -58,12 +58,16 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	//draw team info
 	GUI::DrawText(team.getName(), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
 	Vec2f dim;
-	GUI::GetTextDimensions(team.getName(), dim);
-	GUI::DrawIcon("FractionIcons.png", teamnum, Vec2f(64,64), Vec2f(topleft.x + 20 + dim.x, topleft.y - 10), 0.5f, teamnum);
-	if (mousePos.x >= topleft.x && mousePos.y >= topleft.y
-		&& mousePos.x <= bottomright.x && mousePos.y <= bottomright.y)
+	if (rules.get_bool("enable_powers"))
 	{
-		GUI::DrawText(descriptions[teamnum], Vec2f(topleft.x + 100 + dim.x, topleft.y), SColor(0xffffffff));
+		GUI::GetTextDimensions(team.getName(), dim);
+		GUI::DrawIcon("FractionIcons.png", teamnum, Vec2f(64,64), Vec2f(topleft.x + 20 + dim.x, topleft.y - 10), 0.5f, teamnum);
+		
+		if (mousePos.x >= topleft.x && mousePos.y >= topleft.y
+			&& mousePos.x <= bottomright.x && mousePos.y <= bottomright.y)
+		{
+			GUI::DrawText(descriptions[teamnum], Vec2f(topleft.x + 100 + dim.x, topleft.y), SColor(0xffffffff));
+		}
 	}
 	//GUI::DrawText(getTranslatedString("Players: {PLAYERCOUNT}").replace("{PLAYERCOUNT}", "" + players.length), Vec2f(bottomright.x - 400, topleft.y), SColor(0xffffffff));
 
