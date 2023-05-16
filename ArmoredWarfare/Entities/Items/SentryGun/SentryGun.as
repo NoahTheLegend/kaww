@@ -100,7 +100,8 @@ void onTick(CBlob@ this)
 							
 						shootVehicleGun(has_owner ? p.getBlob().getNetworkID() : this.getNetworkID(), true_angle,
 							this.getPosition()+Vec2f(0,this.isFacingLeft()?8:-8).RotateBy(true_angle),
-								targetblob.getPosition(), bulletSpread, 1, 0, 0.25f, 0.33f, 2);	
+							targetblob.getPosition(), bulletSpread, 1, 0, 0.25f, 0.33f, 2,
+								this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));		
 					}
 
 					this.set_u32("next shot", getGameTime() + 10);			

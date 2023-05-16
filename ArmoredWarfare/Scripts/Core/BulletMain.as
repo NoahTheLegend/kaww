@@ -202,7 +202,8 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 				if (bulletSpread > 0.0f) spreadAimpos += Vec2f(bulletSpread * (0.5f - _infantry_r.NextFloat()), bulletSpread * (0.5f - _infantry_r.NextFloat()));
 				angle = -(spreadAimpos - pos).Angle();
 				
-				BulletObj@ bullet = BulletObj(this, angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(), this.get_s32("custom_hitter"));
+				BulletObj@ bullet = BulletObj(this, angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(),
+					this.get_s32("custom_hitter"), this.get_u8("TTL"), this.get_u8("speed"));
 
 				CMap@ map = getMap();
 				u32 time = timeSpawnedAt;
@@ -235,6 +236,9 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 			f32 damageBody = params.read_f32();
 			f32 damageHead = params.read_f32();
 			s8 bulletPen = params.read_s8();
+			u8 timetolive = params.read_u8();
+			u8 speed = params.read_u8();
+			s32 custom_hitter = params.read_s32();
 			u32 timeSpawnedAt = params.read_u32();
 
 			if (this.get_u32("next_bullet") > getGameTime()) return;
@@ -242,7 +246,8 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 			
 			for (u8 i = 0; i < burstSize; i++)
 			{
-				BulletObj@ bullet = BulletObj(this, angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(), this.get_s32("custom_hitter"));
+				BulletObj@ bullet = BulletObj(this, angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(),
+					custom_hitter, timetolive, speed);
 
 				CMap@ map = getMap();
 				u32 time = timeSpawnedAt;

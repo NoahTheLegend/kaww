@@ -354,7 +354,7 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 	angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
 	f32 true_angle = -angle;
 
-	true_angle += (this.isFacingLeft()?-2:2);
+	true_angle += (this.isFacingLeft()?-2.0f:2.0f);
 	
 	bool has_owner = false;
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PILOT");
@@ -363,7 +363,8 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 
 	shootVehicleGun(has_owner ? ap.getOccupied().getNetworkID() : this.getNetworkID(), true_angle,
 		this.getPosition()+Vec2f(0, 8),
-			aimpos, bulletSpread, 1, 0, 0.5f, 0.75f, 1);	
+		aimpos, bulletSpread, 1, 0, 0.5f, 0.75f, 1,
+			this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 }
 
 CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)

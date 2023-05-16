@@ -663,7 +663,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (hitterBlob.getName() == "mat_smallbomb" && hitterBlob.getQuantity() > 0)
 	{
-		return damage / hitterBlob.getQuantity();
+		return damage / hitterBlob.getQuantity() / 1.5f;
 	}
 	if (hitterBlob.getName() == "missile_javelin")
 	{
@@ -683,8 +683,16 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		return damage * 0.25f;
 	}
 
-	if (customData == Hitters::aircraftbullet) return damage * 0.3f;
-	if (customData == Hitters::bullet) return damage *= 1.5f;
+	if (customData == Hitters::aircraftbullet)
+	{
+		damage += 0.1f;
+		return damage * 2.5f;
+	}
+	if (customData == Hitters::bullet)
+	{
+		damage += 0.05f;
+		return damage *= 5.0f;
+	}
 
 	return damage;
 }
