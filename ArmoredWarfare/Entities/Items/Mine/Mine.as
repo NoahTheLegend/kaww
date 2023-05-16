@@ -75,7 +75,7 @@ void onTick(CBlob@ this)
 			u32 extra_amount = 0;
 			if (coalition_power)
 			{
-				extra_amount = 45;
+				extra_amount = 60;
 			}
 
 			if (timer >= MINE_PRIMING_TIME-extra_amount)
