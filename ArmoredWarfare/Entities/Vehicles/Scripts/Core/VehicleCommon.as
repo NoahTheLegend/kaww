@@ -492,26 +492,30 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 
 				const int team = caller.getTeamNum();
 				const bool isServer = getNet().isServer();
-				//for (u8 i = 0; i < loadedAmmo; i += v.getCurrentAmmo().fire_cost_per_amount)
-				//{
-				//	CBlob@ bullet = isServer && v.getCurrentAmmo().bullet_name != "" ? server_CreateBlobNoInit(v.getCurrentAmmo().bullet_name) : null;
-				//	if (bullet !is null)
-				//	{
-				//		bullet.set_s8(penRatingString, this.get_s8(weaponRatingString));
-//
-				//		bullet.setPosition(bulletPos);
-				//		bullet.server_setTeamNum(team);
-				//		bullet.set_f32("damage_modifier", this.get_f32("damage_modifier"));
-				//		bullet.set_f32("linear_length", this.get_f32("linear_length"));
-				//		bullet.set_f32("explosion_damage_scale", this.get_f32("explosion_damage_scale"));
-				//		if (this.hasTag("apc")) bullet.Tag("small_bolt");
-				//		if (this.hasTag("fireshe")) bullet.Tag("HE_shell");
-				//		bullet.SetDamageOwnerPlayer(caller.getPlayer());
-				//		bullet.Init();
-				//	}
-//
-				//	server_FireBlob(this, bullet, charge);
-				//}
+				
+				if (!this.hasTag("machinegun"))
+				{
+					for (u8 i = 0; i < loadedAmmo; i += v.getCurrentAmmo().fire_cost_per_amount)
+					{
+						CBlob@ bullet = isServer && v.getCurrentAmmo().bullet_name != "" ? server_CreateBlobNoInit(v.getCurrentAmmo().bullet_name) : null;
+						if (bullet !is null)
+						{
+							bullet.set_s8(penRatingString, this.get_s8(weaponRatingString));
+
+							bullet.setPosition(bulletPos);
+							bullet.server_setTeamNum(team);
+							bullet.set_f32("damage_modifier", this.get_f32("damage_modifier"));
+							bullet.set_f32("linear_length", this.get_f32("linear_length"));
+							bullet.set_f32("explosion_damage_scale", this.get_f32("explosion_damage_scale"));
+							if (this.hasTag("apc")) bullet.Tag("small_bolt");
+							if (this.hasTag("fireshe")) bullet.Tag("HE_shell");
+							bullet.SetDamageOwnerPlayer(caller.getPlayer());
+							bullet.Init();
+						}
+
+						server_FireBlob(this, bullet, charge);
+					}
+				}
 
 				v.getCurrentAmmo().loaded_ammo = 0;
 				SetOccupied(mag, 0);
@@ -995,11 +999,14 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								f32 angle;
 								angle = getWeaponAngle(this, v);
 
-								angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
-								f32 true_angle = this.isFacingLeft() ? -angle + 180 : angle;
-								shootVehicleGun(this.getNetworkID(), true_angle,
-									this.getPosition()+Vec2f(16,0).RotateBy(true_angle),
-										aimPos, bulletSpread, 1, 0, 0.35f, 0.5f, 2);
+								if (this.hasTag("machinegun") && !this.hasTag("firethrower"))
+								{
+									angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
+									f32 true_angle = this.isFacingLeft() ? -angle + 180 : angle;
+									shootVehicleGun(this.getNetworkID(), true_angle,
+										this.getPosition()+Vec2f(0,0).RotateBy(true_angle),
+											aimPos, bulletSpread, 1, 0, 0.35f, 0.5f, 2);
+								}
 
 								CBitStream fireParams;
 								fireParams.write_u16(blob.getNetworkID());

@@ -16,8 +16,6 @@ void onInit(CBlob@ this)
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "DefenseTurret_gun", 48, 32);
 	this.Tag("builder always hit");
 
-
-	this.Tag("structure");
 	this.Tag("vehicle");
 	this.Tag("turret");
 

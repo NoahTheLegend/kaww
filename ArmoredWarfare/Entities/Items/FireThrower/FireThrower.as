@@ -4,7 +4,7 @@
 
 const Vec2f arm_offset = Vec2f(4, 0);
 const f32 MAX_OVERHEAT = 25.0f;
-const f32 OVERHEAT_PER_SHOT = 0.175f;
+const f32 OVERHEAT_PER_SHOT = 0.33f;
 const f32 COOLDOWN_RATE = 0.5f;
 const u8 COOLDOWN_TICKRATE = 5;
 
@@ -12,6 +12,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("gun");
 	this.Tag("machinegun");
+	this.Tag("firethrower");
 	this.Tag("very heavy weight");
 	
 	Vehicle_Setup(this,
@@ -601,7 +602,7 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 			if (info.blob !is null)
 			{
 				if (info.blob.hasTag("structure") || info.blob.hasTag("trap")
-					|| info.blob.isLadder()) continue;
+					|| info.blob.isLadder() || info.blob.isOverlapping(this)) continue;
 
 				if (!info.blob.isAttached() && !info.blob.hasTag("machinegun") && (info.blob.hasTag("wooden")
 						|| info.blob.hasTag("door") || info.blob.hasTag("flesh") || info.blob.hasTag("vehicle")))

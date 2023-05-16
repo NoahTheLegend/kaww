@@ -482,7 +482,7 @@ void onTick(CBlob@ this)
 
 			if (volMod > 0.0f)
 			{
-				sprite.SetEmitSoundVolume(Maths::Min(velx * 0.565f * volMod, 1.0f));
+				sprite.SetEmitSoundVolume(Maths::Min(velx * 0.61f * volMod, 1.0f));
 			}
 
 			if (pitchMod > 0.0f)
