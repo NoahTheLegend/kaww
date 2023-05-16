@@ -308,10 +308,10 @@ class VoteNextmapFunctor : VoteFunctor
 		{
 			if (isServer())
 			{
-				printf(""+MapType);
+				//printf(""+MapType);
 				switch (MapType)
 				{
-					case 0:
+					case 1:
 					{
 						string[]@ ClassicMaps;
 						getRules().get("maptypes-classic", @ClassicMaps);
@@ -320,7 +320,7 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
-					case 1:
+					case 2:
 					{
 						string[]@ LargeMaps;
 						getRules().get("maptypes-large", @LargeMaps);
@@ -329,7 +329,7 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
-					case 2:
+					case 3:
 					{
 						string[]@ AverageMaps;
 						getRules().get("maptypes-average", @AverageMaps);
@@ -338,7 +338,7 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
-					case 3:
+					case 4:
 					{
 						string[]@ FlagMaps;
 						getRules().get("maptypes-flag", @FlagMaps);
@@ -347,7 +347,7 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
-					case 4:
+					case 5:
 					{
 						string[]@ TruckMaps;
 						getRules().get("maptypes-truck", @TruckMaps);
@@ -356,7 +356,7 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
-					case 5:
+					case 6:
 					{
 						string[]@ TdmMaps;
 						getRules().get("maptypes-tdm", @TdmMaps);

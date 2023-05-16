@@ -16,6 +16,7 @@ const int ScreenY = getDriver().getScreenWidth();
 class BulletObj
 {
 	CBlob@ hoomanShooter;
+	CBlob@ LastHitBlob;
 
 	BulletFade@ Fade;
 
@@ -114,6 +115,8 @@ class BulletObj
 		Random _rand_r(getGameTime());
 		const bool is_young = getGameTime() - CreateTime <= 1;
 		const bool same_team = TeamNum == blob.getTeamNum();
+
+		if (LastHitBlob is blob) return false;
 
 		if (blob.hasTag("always bullet collide"))
 		{
@@ -437,6 +440,7 @@ class BulletObj
 					if (dmg > 0.0f)
 					{
 						hoomanShooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
+						@LastHitBlob = @blob;
 						return true;
 					}
 				}

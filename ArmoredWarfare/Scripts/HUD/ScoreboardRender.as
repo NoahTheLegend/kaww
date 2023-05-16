@@ -192,12 +192,12 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 					}
 					case _shielder:
 					{
-						frame = 7;
+						frame = 8;
 						break;
 					}
 					case _firebringer:
 					{
-						frame = 8;
+						frame = 9;
 						break;
 					}
 				}

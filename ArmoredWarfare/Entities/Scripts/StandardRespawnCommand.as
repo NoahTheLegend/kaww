@@ -269,6 +269,7 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 				if (caller !is null)// && canChangeClass(this, caller))
 				{
+					if (this.getDistanceTo(caller) > 64.0f) return;
 					string classconfig = params.read_string();
 					CBlob @newBlob = server_CreateBlob(classconfig, caller.getTeamNum(), this.getRespawnPosition());
 

@@ -429,12 +429,12 @@ namespace FirebringerParams
 {
 	const ::string CLASSNAME 			= "Firebringer"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.225f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.225f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.25f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.25f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.75f; // walk
+	const ::f32 WALK_STAT 				= 0.825f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.55f; // airwalk
-	const ::f32 JUMP_STAT 				= 0.9f; // jump
+	const ::f32 JUMP_STAT 				= 1.0f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 0.9f; // walk (sprint)
 	const ::f32 AIRWALK_STAT_SPRINT 	= 3.15f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.05f; // jump (sprint)

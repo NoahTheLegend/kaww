@@ -194,6 +194,8 @@ void onRender( CRules@ this )
 			if (!isSpectator && curTeamNum != teamNum) continue; // do not show enemy players unless spectator
 
 			CBlob@ curBlob = curPlayer.getBlob();
+			if (curBlob !is null && !curBlob.hasTag("player")) continue;
+
 			if (curBlob == null)
 			{
 				if (timeout > 0) timeout--; // otherwise crashes on map compiling

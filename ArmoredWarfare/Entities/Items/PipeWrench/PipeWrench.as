@@ -129,26 +129,30 @@ void onTick(CBlob@ this)
 										velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 
 										ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
+
+										this.set_u32("next repair", getGameTime() + repair_cd);
+
+										if (isClient())
+										{
+											this.getSprite().PlaySound("throw.ogg", 1.5f, 1.0f);
+										}
 										break;
 						            }
 						            else //Repair amount would go above the inital health (max health). 
 						            {
+										this.set_u32("next repair", getGameTime() + repair_cd);
+										if (isClient())
+										{
+											this.getSprite().PlaySound("throw.ogg", 1.5f, 1.0f);
+										}
+										
 						                blob.server_SetHealth(blob.getInitialHealth());//Set health to the inital health (max health)
 						            }
 					        	}
 					        }
-
 						}
 					}
-				}
-
-				// Woosh
-				if (isClient())
-				{
-					this.getSprite().PlaySound("throw.ogg", 1.5f, 1.0f);
-				}
-
-				this.set_u32("next repair", getGameTime() + repair_cd);
+				}	
 			}
 		}
 	}

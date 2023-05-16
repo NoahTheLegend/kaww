@@ -4,6 +4,7 @@
 #include "Explosion.as";
 #include "ProgressBar.as";
 #include "TeamColorCollections.as";
+#include "GunStandard.as"
 
 const Vec2f upVelo = Vec2f(0.00f, -0.05f);
 const Vec2f downVelo = Vec2f(0.00f, 0.01f);
@@ -26,7 +27,7 @@ const Vec2f gun_clampAngle = Vec2f(-180, 180);
 const Vec2f miniGun_offset = Vec2f(-43,7);
 const u8 shootDelay = 2;
 
-const int trap_cooldown = 15*30;
+const int trap_cooldown = 20*30;
 const u8 traps_amount = 5;
 
 void onInit(CBlob@ this)
@@ -364,11 +365,24 @@ void onTick(CBlob@ this)
 								}
 								if (getGameTime() > this.get_u32("fireDelayGun") && realPlayer !is null && realPlayer is hooman)
 								{
-									CBitStream params;
-									params.write_s32(this.get_f32("gunAngle"));
-									params.write_Vec2f(this.getPosition()+Vec2f(32.0f,8).RotateBy(this.getAngleDegrees()));
-									this.SendCommand(this.getCommandID("shoot"), params);
-									this.set_u32("fireDelayGun", getGameTime() + (shootDelay));
+									CBlob@ ammocarry = getBlobByNetworkID(this.get_u16("ammocarryid"));
+									if (ammocarry !is null && ammocarry.hasBlob("ammo", 1))
+									{
+										f32 bulletSpread = 20.0f;
+
+										f32 true_angle = angle;
+										true_angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
+
+										shootVehicleGun(hooman.getNetworkID(), true_angle,
+											this.getPosition()+Vec2f(39, 9),
+												ap.getAimPos(), bulletSpread, 1, 0, 0.4f, 0.65f, 2);
+
+										CBitStream params;
+										//params.write_s32(this.get_f32("gunAngle"));
+										//params.write_Vec2f(this.getPosition()+Vec2f(32.0f,8).RotateBy(this.getAngleDegrees()));
+										this.SendCommand(this.getCommandID("shoot"), params);
+										this.set_u32("fireDelayGun", getGameTime() + (shootDelay));
+									}
 								}
 							}
 						}
@@ -463,8 +477,6 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 	CBitStream params;
 	params.write_Vec2f(arrowPos);
 	params.write_Vec2f(arrowVel);
-
-	this.SendCommand(this.getCommandID("shoot bullet"), params);
 }
 
 void ReleaseTraps(CBlob@ this)
@@ -480,7 +492,8 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 }
 
 void ShootGun(CBlob@ this, f32 angle, Vec2f gunPos)
-{
+{	
+	/*
 	if (isServer())
 	{
 		f32 sign = (this.isFacingLeft() ? -1 : 1);
@@ -502,6 +515,7 @@ void ShootGun(CBlob@ this, f32 angle, Vec2f gunPos)
 			}
 		}
 	}
+	*/
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
@@ -509,15 +523,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	if (cmd == this.getCommandID("shoot"))
 	{
 		this.set_u32("next_shoot", getGameTime()+shootDelay);
-		s32 arrowAngle;
-		if (!params.saferead_s32(arrowAngle)) return;
-		Vec2f arrowPos;
-		if (!params.saferead_Vec2f(arrowPos)) return;
+		//s32 arrowAngle;
+		//if (!params.saferead_s32(arrowAngle)) return;
+		//Vec2f arrowPos;
+		//if (!params.saferead_Vec2f(arrowPos)) return;
 
-		Vec2f vel = Vec2f(500.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(arrowAngle);
+		//Vec2f vel = Vec2f(500.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(arrowAngle);
 
-		arrowPos = arrowPos+(Vec2f(24 * (this.isFacingLeft()?1:-1), -8));
-		Vec2f arrowVel = Vec2f(27.5f, 0).RotateBy((this.isFacingLeft()?180:0)+arrowAngle);
+		//arrowPos = arrowPos+(Vec2f(24 * (this.isFacingLeft()?1:-1), -8));
+		//Vec2f arrowVel = Vec2f(27.5f, 0).RotateBy((this.isFacingLeft()?180:0)+arrowAngle);
 
 		CBlob@ ammocarry = getBlobByNetworkID(this.get_u16("ammocarryid"));
 		if (ammocarry !is null && ammocarry.hasBlob("ammo", 1))
@@ -525,12 +539,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			ammocarry.TakeBlob("ammo", 1);
 			if (getNet().isServer())
 			{
-				CBlob@ proj = CreateBullet(this, arrowPos, arrowVel);
-				if (proj !is null)
-				{
-					proj.server_SetTimeToDie(5.0);
-					proj.Tag("aircraft_bullet");
-				}
+				//CBlob@ proj = CreateBullet(this, arrowPos, arrowVel);
+				//if (proj !is null)
+				//{
+				//	proj.server_SetTimeToDie(5.0);
+				//	proj.Tag("aircraft_bullet");
+				//}
 			}
 			//ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 		}
