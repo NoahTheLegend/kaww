@@ -655,6 +655,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		}
 		else if (cmd == this.getCommandID("init_flipping"))
 		{
+			printf("initting flip");
 			f32 endtime = this.get_u32("flipping_endtime");
 			if (endtime == 0)
 				this.set_u32("flipping_endtime", 30*Maths::Round(this.getMass()/750));
@@ -667,6 +668,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	if (cmd == this.getCommandID("sync_flipping"))
 	{
+		printf("syncing flip");
 		if (!isFlipped(this))
 		{
 			this.set_u32("flipping_endtime", 0);
@@ -716,6 +718,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("flip_vehicle"))
 	{
+		printf("flipping");
 		Bar@ bars;
 		if (this.get("Bar", @bars))
 		{
