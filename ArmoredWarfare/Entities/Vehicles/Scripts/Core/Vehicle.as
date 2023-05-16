@@ -716,7 +716,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("flip_vehicle"))
 	{
-		if (isFlipped(this))
+		if (isFlipped(this) && this.get_u32("flipping_endtime") != 0)
 		{
 			Bar@ bars;
 			if (this.get("Bar", @bars))
