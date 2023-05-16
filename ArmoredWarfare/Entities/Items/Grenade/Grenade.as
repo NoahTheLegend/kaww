@@ -1,5 +1,6 @@
 #include "WarfareGlobal.as"
 #include "Explosion.as";
+#include "Hitters.as";
 
 const string GRENADE_STATE = "grenade_state";
 const string GRENADE_TIMER = "grenade_timer";
@@ -265,7 +266,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	const f32 vellen = this.getOldVelocity().Length();
-	const u8 hitter = this.get_u8("custom_hitter");
+	const u8 hitter = Hitters::explosion;
 
 	if (!solid || (blob !is null && blob.hasTag("bunker")))
 	{

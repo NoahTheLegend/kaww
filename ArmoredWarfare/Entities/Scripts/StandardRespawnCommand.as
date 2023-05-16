@@ -56,7 +56,7 @@ void InitClasses(CBlob@ this)
 						"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half of food healing\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
 
 	addPlayerClass(this, "---- Shielder ----", "$shielder_class_icon$", "shielder",
-						"---- Shielder ----\n\nRapid fire pistol and a shield.\n\nHP: 300\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
+						"---- Shielder ----\n\nCarries a shield that can block small damage.\n\nHP: 275\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
 	
 	addPlayerClass(this, "---- Firebringer ----", "$firebringer_class_icon$", "firebringer",
 						"---- Firebringer ----\n\nHas a portative flamethrower.\n\nHP: 250\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");

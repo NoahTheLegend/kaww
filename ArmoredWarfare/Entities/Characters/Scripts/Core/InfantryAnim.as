@@ -604,8 +604,8 @@ void onTick(CSprite@ this)
 				shield.SetRelativeZ(-5.0f);
 				shield.SetFrameIndex(1); // back
 
-				if (blob.isOnGround() &&
-					(blob.isKeyPressed(key_left) || blob.isKeyPressed(key_right)))
+				if (blob.isOnGround() && !isReloading
+					&& (blob.isKeyPressed(key_left) || blob.isKeyPressed(key_right)))
 				{
 					if (getGameTime()%6==0)
 					{
