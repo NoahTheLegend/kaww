@@ -149,7 +149,7 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 		blocks[0].push_back(b);
 	}
 	{
-		AddIconToken("$wooden_gate$", "WoodenGate.png", Vec2f(22, 16), 0, this.getTeamNum());
+		AddIconToken("$wooden_gate$", "WoodenGate.png", Vec2f(22, 16), 0, 0);
 		BuildBlock b(0, "woodengate", "$wooden_gate$", "Wooden Gate\nGate for vehicles. Face the direction you want to rotate it.\n");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 250);
 		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
