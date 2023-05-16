@@ -86,16 +86,22 @@ void onTick(CBlob@ this)
 					//this.SendCommand(this.getCommandID("shoot"));
 					//this.set_bool("spawned", false);
 
-					f32 angle = (targetblob.getPosition()-this.getPosition()+Vec2f(0, 8)).Angle();
-					//this.SendCommand(this.getCommandID("shoot"));
-					//this.set_bool("spawned", false);
-					f32 bulletSpread = 5.0f;
-					angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
-					f32 true_angle = this.isFacingLeft() ? -angle:-angle;
+					if (isServer())
+					{
+						f32 angle = (targetblob.getPosition()-this.getPosition()+Vec2f(0, 8)).Angle();
+						f32 bulletSpread = 5.0f;
+						angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
+						f32 true_angle = -angle;
 
-					shootVehicleGun(this.getNetworkID(), true_angle,
-						this.getPosition()+Vec2f(0,this.isFacingLeft()?8:-8).RotateBy(true_angle),
-							targetblob.getPosition(), bulletSpread, 1, 0, 0.25f, 0.33f, 2);	
+						bool has_owner = false;
+						CPlayer@ p = this.getDamageOwnerPlayer();
+						if (p !is null && p.getBlob() !is null)
+							has_owner = true;
+							
+						shootVehicleGun(has_owner ? p.getBlob().getNetworkID() : this.getNetworkID(), true_angle,
+							this.getPosition()+Vec2f(0,this.isFacingLeft()?8:-8).RotateBy(true_angle),
+								targetblob.getPosition(), bulletSpread, 1, 0, 0.25f, 0.33f, 2);	
+					}
 
 					this.set_u32("next shot", getGameTime() + 10);			
 				}
@@ -243,7 +249,7 @@ CBlob@ getNewTarget(CBlob @blob, const bool seeThroughWalls = false, const bool 
 bool isVisible(CBlob@ blob, CBlob@ targetblob, f32 &out distance)
 {
 	Vec2f col;
-	bool visible = !getMap().rayCastSolid(blob.getPosition(), targetblob.getPosition() + targetblob.getVelocity() * 2.0f, col);
+	bool visible = !getMap().rayCastSolidNoBlobs(blob.getPosition(), targetblob.getPosition() + targetblob.getVelocity() * 2.0f, col);
 	distance = (blob.getPosition() - col).getLength();
 	return visible;
 }

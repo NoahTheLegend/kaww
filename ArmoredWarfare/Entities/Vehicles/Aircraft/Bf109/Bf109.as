@@ -43,6 +43,11 @@ void onInit(CBlob@ this)
 	this.addCommandID("reload");
 
 	this.set_f32("velocity", 0.0f);
+
+	this.set_u8("TTL", 40);
+	this.set_Vec2f("KB", Vec2f(0,0));
+	this.set_u8("speed", 25);
+	this.set_s32("custom_hitter", Hitters::aircraftbullet);
 	
 	this.set_bool("map_damage_raycast", true);
 	this.Tag("map_damage_dirt");
@@ -85,19 +90,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
 		this.set_u32("next_shoot", getGameTime()+shootDelay);
-		Vec2f arrowPos;
-		if (!params.saferead_Vec2f(arrowPos)) return;
-		Vec2f arrowVel;
-		if (!params.saferead_Vec2f(arrowVel)) return;
 
-		if (getNet().isServer() && !this.hasTag("no_more_proj"))
+		if (getNet().isServer() && this.get_u32("no_more_proj") <= getGameTime())
 		{
-			CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
-			if (proj !is null)
-			{
-				proj.server_SetTimeToDie(5.5);
-				proj.Tag("aircraft_bullet");
-			}
+			//CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
+			//if (proj !is null)
+			//{
+			//	proj.server_SetTimeToDie(5.5);
+			//	proj.Tag("aircraft_bullet");
+			//}
 
 			CInventory@ inv = this.getInventory();
 			if (inv !is null)
@@ -105,7 +106,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				for (u8 i = 0; i < inv.getItemsCount(); i++)
 				{
 					if (inv.getItem(i) is null || inv.getItem(i).getName() != "ammo") continue;
-					if (XORRandom(4) != 0) continue;
+					if (XORRandom(3) != 0) continue;
 					inv.getItem(i).server_SetQuantity(inv.getItem(0).getQuantity()-1);
 					break;
 				}
@@ -124,7 +125,7 @@ void onTick(CBlob@ this)
 	if (getGameTime() >= this.get_u32("next_shoot"))
 	{
 		this.Untag("no_more_shooting");
-		this.Untag("no_more_proj");
+		this.set_u32("no_more_proj", 0);
 	}
 	if (this.hasTag("aerial") && getGameTime()%10==0)
 	{
@@ -343,16 +344,31 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 	//Vec2f arrowVel = (aimpos - arrowPos);
 	//arrowVel.Normalize();
 	//arrowVel *= arrowspeed;
-	//CBitStream params;
+	CBitStream params;
 	//params.write_Vec2f(arrowPos);
 	//params.write_Vec2f(arrowVel);
-//
-	//this.SendCommand(this.getCommandID("shoot bullet"), params);
+	this.SendCommand(this.getCommandID("shoot bullet"), params);
+
+	f32 angle = (aimpos-this.getPosition()).Angle();
+	f32 bulletSpread = 20.0f;
+	angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
+	f32 true_angle = -angle;
+
+	true_angle += (this.isFacingLeft()?-2:2);
+	
+	bool has_owner = false;
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PILOT");
+	if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
+		has_owner = true;
+
+	shootVehicleGun(has_owner ? ap.getOccupied().getNetworkID() : this.getNetworkID(), true_angle,
+		this.getPosition()+Vec2f(0, 8),
+			aimpos, bulletSpread, 1, 0, 0.5f, 0.75f, 1);	
 }
 
 CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 {
-	if (!this.hasTag("no_more_proj"))
+	if (this.get_u32("no_more_proj") <= getGameTime())
 	{
 		CBlob@ proj = server_CreateBlobNoInit("bulletheavy");
 		if (proj !is null)
@@ -378,7 +394,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 			//proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
 			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -16.0f : 16.0f), 8.0f).RotateBy(this.getAngleDegrees()));
 		}
-		this.Tag("no_more_proj");
+		//this.set_u32("no_more_proj", getGameTime()+1);
 		return proj;
 	}
 	else

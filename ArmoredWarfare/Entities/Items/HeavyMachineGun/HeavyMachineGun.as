@@ -316,10 +316,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	if (this.isAttached())
 	{
-		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("VEHICLE");
-		if (ap is null) return;
-		if (ap.getOccupied() !is null && ap.getOccupied().hasTag("no_remount")) return;
-		
 		if (caller is null || caller.getTeamNum() != this.getTeamNum()
 			|| caller.getDistanceTo(this) > 48.0f || caller.getName() != "mechanic") return;
 
@@ -546,12 +542,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		CBlob@ turret = getBlobByNetworkID(turret_id);
 		if (turret is null) return;
 
-    	AttachmentPoint@ ap = turret.getAttachments().getAttachmentPointByName("BOW");
-    	if (ap !is null && ap.getOccupied() is null)
-    	{
-			turret.server_AttachTo(this, ap);
+		for (u8 i = 0; i < 5; i++)
+		{
+    		AttachmentPoint@ ap = turret.getAttachments().getAttachmentPointByName(i==0?"BOW":"BOW"+(i-1));
+    		if (ap !is null && ap.getOccupied() is null)
+    		{
+				turret.server_AttachTo(this, ap);
+				break;
+			}
 		}
-    	
 	}
 }
 

@@ -44,8 +44,8 @@ void onInit(CBlob@ this)
 
 	this.Tag("dont deactivate");
 
-	u8 frame = 0;
-	if (packed == "launcher_javelin") frame = 1;
+	u8 frame = 1;
+	if (packed == "launcher_javelin") frame = 0;
 	else if (packed == "heavygun") frame = 2;
 	else if (packed == "barge") frame = 3;
 	else if (packed == "firethrower") frame = 4;

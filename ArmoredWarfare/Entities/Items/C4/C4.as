@@ -33,12 +33,16 @@ void onInit(CBlob@ this)
 	this.Tag("medium weight");
 	this.addCommandID("switch");
 	this.addCommandID("deactivate");
+	this.addCommandID("sync timer");
 
 	CSprite@ sprite = this.getSprite();
 	sprite.ScaleBy(0.75f, 0.75f);
 
 	ShapeConsts@ consts = this.getShape().getConsts();
 	consts.net_threshold_multiplier = 16.0f;
+
+	this.getShape().SetStatic(false);
+	consts.mapCollisions = true;
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -99,7 +103,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (this.exists("delay") && this.get_u32("delay") > getGameTime()) return;
  	if (caller is null || !caller.isMyPlayer()) return;
-	if (!this.isOverlapping(caller) || this.get_bool("deactivating")) return;
+	if (this.getDistanceTo(caller) > 10.0f || this.get_bool("deactivating")) return;
 	if (this.isAttachedTo(caller) || !this.isAttached())
 	{
 		CBitStream params;
@@ -110,9 +114,9 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 {
-	this.Untag("setstatic");
-	this.getShape().SetStatic(false);
-	this.getShape().getConsts().mapCollisions = true;
+	//this.Untag("setstatic");
+	//this.getShape().SetStatic(false);
+	//this.getShape().getConsts().mapCollisions = true;
 		
     if (attached !is null) this.SetDamageOwnerPlayer(attached.getPlayer());
 	this.server_setTeamNum(attached.getTeamNum());
@@ -122,13 +126,18 @@ void onTick(CBlob@ this)
 {
 	barTick(this);
 
-	if (isServer() && this.hasTag("setstatic"))
+	if (isServer() && getGameTime()%15==0)
 	{
-		this.Untag("setstatic");
-		this.getShape().SetStatic(true);
-		this.getShape().getConsts().mapCollisions = false;
-		this.setVelocity(Vec2f(0,0));
+		this.server_DetachFromAll();
 	}
+
+	//if (isServer() && this.hasTag("setstatic"))
+	//{
+	//	this.Untag("setstatic");
+	//	this.getShape().SetStatic(true);
+	//	this.getShape().getConsts().mapCollisions = false;
+	//	this.setVelocity(Vec2f(0,0));
+	//}
 
 	if (this.get_bool("deactivating"))
 	{
@@ -166,8 +175,10 @@ void onTick(CBlob@ this)
 	{
 		if (getGameTime()%15==0)
 		{
-			this.Sync("explode", true);
-			this.Sync("exploding", true);
+			CBitStream params;
+			params.write_bool(this.get_bool("explode"));
+			params.write_u16(this.get_u16("exploding"));
+			this.SendCommand(this.getCommandID("sync timer"), params);
 		}
 	}
 
@@ -253,7 +264,17 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-	if (cmd == this.getCommandID("deactivate"))
+	if (cmd == this.getCommandID("sync timer"))
+	{
+		if (isClient())
+		{
+			bool explode = params.read_bool();
+			u16 exploding = params.read_u16();
+			this.set_bool("explode", explode);
+			this.set_u16("exploding", exploding);
+		}
+	}
+	else if (cmd == this.getCommandID("deactivate"))
 	{
 		if (this.get_bool("explode"))
 		{
@@ -346,10 +367,10 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		this.SendCommand(this.getCommandID("switch"), params);
 	}
 
-	if (solid && !this.isAttached())
-	{
-		this.Tag("setstatic");
-	}
+	//if (solid && !this.isAttached())
+	//{
+	//	this.Tag("setstatic");
+	//}
 }
 
 void onRender(CSprite@ this)

@@ -579,7 +579,7 @@ void onTick(CSprite@ this)
 	CSpriteLayer@ shield = this.getSpriteLayer("riotshield");
 	if (shield !is null)
 	{
-		if (blob.hasTag("dead"))
+		if (blob.hasTag("dead") || blob.isAttached())
 		{
 			if (!shield.isVisible()) shield.SetVisible(false);
 		}

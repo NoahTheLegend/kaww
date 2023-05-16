@@ -272,7 +272,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 
 	if (this.getName() == "shielder"
-		&& (customData == Hitters::bullet || customData == Hitters::explosion || customData == Hitters::keg))
+		&& (customData == Hitters::bullet || customData == Hitters::explosion
+			|| customData == Hitters::keg || customData == Hitters::sword))
 	{
 		bool isReloading = this.get_bool("isReloading") || this.get_s32("my_reloadtime") > 0;
 
@@ -297,7 +298,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				else if (isServer())
 				{
 					CBitStream params;
-					params.write_bool(customData == Hitters::bullet);
+					params.write_bool((customData == Hitters::bullet || customData == Hitters::sword));
 					this.SendCommand(this.getCommandID("shield_effects"), params);
 
 					damage /= (1.5f + XORRandom(16)*0.1f);

@@ -1003,7 +1003,13 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								{
 									angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
 									f32 true_angle = this.isFacingLeft() ? -angle + 180 : angle;
-									shootVehicleGun(this.getNetworkID(), true_angle,
+
+									bool has_owner = false;
+									AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+									if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
+										has_owner = true;
+
+									shootVehicleGun(has_owner ? ap.getOccupied().getNetworkID() : this.getNetworkID(), true_angle,
 										this.getPosition()+Vec2f(0,0).RotateBy(true_angle),
 											aimPos, bulletSpread, 1, 0, 0.35f, 0.5f, 2);
 								}
