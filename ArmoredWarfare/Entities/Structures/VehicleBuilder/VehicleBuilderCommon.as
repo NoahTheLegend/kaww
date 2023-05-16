@@ -200,7 +200,7 @@ void buildT3ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build AH1 Cobra Helicopter", "$ah1$", "ah1", "A fighter-helicopter with a co-pilot seat operating machinegun.\nPress SPACEBAR to launch 105mm Rockets");
+		ShopItem@ s = addShopItem(this, "Build AH1 Cobra Helicopter", "$ah1$", "ah1", "A fighter-helicopter with a co-pilot seat operating machinegun.\nPress SPACEBAR to launch 105mm Rockets.\nPress LMB to release missile traps.");
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
 	}
 	{

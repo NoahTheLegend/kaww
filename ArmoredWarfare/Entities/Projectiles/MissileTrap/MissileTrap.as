@@ -12,7 +12,8 @@ void onInit(CBlob@ this)
 	this.Tag("aerial");
 
 	this.getShape().getConsts().collideWhenAttached = false;
-	//this.getShape().SetGravityScale(0.15f+XORRandom(11)*0.01f);
+	this.getShape().SetGravityScale(0);
+	this.getShape().getConsts().bullet = true;
 
 	this.addCommandID("switch target");
 	this.getSprite().SetRelativeZ(2.5f);
@@ -24,10 +25,9 @@ void onTick(CBlob@ this)
 	{
 		this.setVelocity(Vec2f(this.getVelocity().x*0.975f, this.getVelocity().y));
 	}
-
-	if (this.getTickSinceCreated() < 75)
+	if (this.getTickSinceCreated() > (15 + (Maths::Sqrt(this.getNetworkID())%15)))
 	{
-		this.setVelocity(Vec2f(this.getVelocity().x, this.getVelocity().y*0.95f));
+		this.setVelocity(Vec2f(this.getVelocity().x, 1.0f));
 	}
 
 	if (isClient())

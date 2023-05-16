@@ -37,7 +37,7 @@ void onInit(CBlob@ this)
 			AddRequirement(s.requirements, "coin", "", "Coins", 3);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Special Ammunition", "$specammo$", "specammo", "Special ammo for advanced weapons.", false);
+			ShopItem@ s = addShopItem(this, "Special Ammunition", "$specammo$", "specammo", "Special ammunition for advanced weapons.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 15);
 		}
 		{
@@ -118,8 +118,8 @@ void onInit(CBlob@ this)
 			AddRequirement(s.requirements, "coin", "", "Coins", 25);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Special Ammunition", "$specammo$", "specammo", "Special ammo for advanced weapons.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 15);
+			ShopItem@ s = addShopItem(this, "Special Ammunition", "$specammo$", "specammo", "Special ammunition for advanced weapons.", false);
+			AddRequirement(s.requirements, "coin", "", "Coins", 20);
 		}
 	}
 }

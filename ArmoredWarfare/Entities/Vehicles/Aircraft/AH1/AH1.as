@@ -469,26 +469,6 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 
 void ReleaseTraps(CBlob@ this)
 {
-	Bar@ bars;
-	if (!this.get("Bar", @bars))
-	{
-		Bar setbars;
-    	setbars.gap = 20.0f;
-    	this.set("Bar", setbars);
-	}
-	if (this.get("Bar", @bars))
-	{
-		if (!hasBar(bars, "traps"))
-		{
-			SColor team_front = getNeonColor(this.getTeamNum(), 0);
-			ProgressBar setbar;
-			setbar.Set(this, "traps", Vec2f(80.0f, 16.0f), false, Vec2f(0, 56), Vec2f(2, 2), back, team_front,
-				"traps_time", this.get_u32("traps_endtime"), 0.33f, 5, 5, false, "");
-
-    		bars.AddBar(this, setbar, true);
-		}
-	}
-
 	CBitStream params;
 	this.SendCommand(this.getCommandID("release traps"), params);
 }
@@ -600,21 +580,41 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		if (this.get_f32("traps_time") <= this.get_u32("traps_endtime")) return;
 		this.set_f32("traps_time", 0);
+
+		Bar@ bars;
+		if (!this.get("Bar", @bars))
+		{
+			Bar setbars;
+    		setbars.gap = 20.0f;
+    		this.set("Bar", setbars);
+		}
+		if (this.get("Bar", @bars))
+		{
+			if (!hasBar(bars, "traps"))
+			{
+				SColor team_front = getNeonColor(this.getTeamNum(), 0);
+				ProgressBar setbar;
+				setbar.Set(this, "traps", Vec2f(80.0f, 16.0f), false, Vec2f(0, 56), Vec2f(2, 2), back, team_front,
+					"traps_time", this.get_u32("traps_endtime"), 0.33f, 5, 5, false, "");
+
+    			bars.AddBar(this, setbar, true);
+			}
+		}
 		
 		if (getNet().isServer())
 		{
 			for (u8 i = 0; i < traps_amount; i++)
 			{
-				CBlob@ proj = server_CreateBlob("missiletrap", this.getTeamNum(), this.getPosition());
+				CBlob@ proj = server_CreateBlob("missiletrap", this.getTeamNum(), this.getPosition()+Vec2f(XORRandom(8)-4, XORRandom(8)-4));
 				if (proj is null) return;
 
 				proj.set_u16("heli_id", this.getNetworkID());
 				Vec2f vel = Vec2f(0, -8).RotateBy(((195+XORRandom(166))/traps_amount) * i - 90);
-				vel.y = -0.25f * XORRandom(8);
+				vel.y = -0.5f * XORRandom(6);
 				vel.x *= 0.25f;
 				proj.setVelocity(vel);
-				proj.getShape().SetGravityScale(0.15f+XORRandom(11)*0.01f);
-				proj.server_SetTimeToDie(7.5f);
+				proj.getShape().SetGravityScale(0);
+				proj.server_SetTimeToDie(5.0f);
 			}
 		} 
 	}

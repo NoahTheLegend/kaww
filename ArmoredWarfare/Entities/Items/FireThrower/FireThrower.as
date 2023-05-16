@@ -31,7 +31,7 @@ void onInit(CBlob@ this)
 	                    1, // fire bullets amount
 	                    1, // fire cost
 	                    "specammo", // bullet ammo config name
-	                    "Special Ammo", // name for ammo selection
+	                    "Special Ammunition", // name for ammo selection
 	                    "", // bullet config name
 	                    "", // fire sound  
 	                    "EmptyFire", // empty fire sound
@@ -89,20 +89,6 @@ void onInit(CBlob@ this)
 	this.set_f32("overheat_per_shot", OVERHEAT_PER_SHOT);
 	this.set_f32("cooldown_rate", COOLDOWN_RATE);
 	this.set_bool("overheated", false);
-
-	// auto-load some ammo initially
-	if (getNet().isServer())
-	{
-		for (u8 i = 0; i < 1; i++)
-		{
-			CBlob@ ammo = server_CreateBlob("specammo");
-			if (ammo !is null)
-			{
-				if (!this.server_PutInInventory(ammo))
-					ammo.server_Die();
-			}
-		}
-	}
 }
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
@@ -178,6 +164,25 @@ void onTick(CBlob@ this)
 	{
 		return;
 	}
+
+	if (this.getTickSinceCreated() == 1)
+	{
+		if (isServer())
+		{
+			for (u8 i = 0; i < 1; i++)
+			{
+				CBlob@ ammo = server_CreateBlob("specammo");
+				if (ammo !is null)
+				{
+					if (!this.server_PutInInventory(ammo))
+						ammo.server_Die();
+				}
+			}
+		}
+		v.getCurrentAmmo().loaded_ammo = 1;
+		v.getCurrentAmmo().ammo_stocked = 50;
+	}
+
 	CSprite@ sprite = this.getSprite();
 
 	float overheat_mod = 1.0f;
@@ -206,10 +211,15 @@ void onTick(CBlob@ this)
 			if (ap.isKeyPressed(key_action1) && gunner.get_u32("mg_invincible") < getGameTime()
 				&& !this.get_bool("overheated"))
 			{
-				this.add_f32("overheat", this.get_f32("overheat_per_shot") * overheat_mod);
-
 				if (v.getCurrentAmmo().loaded_ammo != 0)
 				{
+					if (this.getInventory() !is null)
+					{
+						v.getCurrentAmmo().ammo_stocked = this.getInventory().getCount("specammo");
+					}
+
+					this.add_f32("overheat", this.get_f32("overheat_per_shot") * overheat_mod);
+
 					this.add_f32("scale", 1.0f*Maths::Sqrt(this.get_f32("scale")+max_scale));
 					this.set_f32("scale", Maths::Min(max_scale-XORRandom(max_scale/5), this.get_f32("scale")));
 					if (this.get_f32("timer") == 0)

@@ -531,7 +531,7 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 		else
 		{
 			// empty shot
-			this.getSprite().PlayRandomSound(v.getCurrentAmmo().empty_sound);
+			this.getSprite().PlayRandomSound(v.getCurrentAmmo().empty_sound, 0.75f);
 			Vehicle_onFire(this, v, null, 0);
 		}
 

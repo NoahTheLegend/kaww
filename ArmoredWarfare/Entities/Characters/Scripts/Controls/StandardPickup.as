@@ -43,7 +43,7 @@ void onInit(CBlob@ this)
 		menu.add_entry(PickupWheelMenuEntry("Medkit", "$medkit$", "medkit"));
 		//ammo
 		menu.add_entry(PickupWheelMenuEntry("Ammo", "$ammo$", "ammo", Vec2f(0, 2.0f)));
-		menu.add_entry(PickupWheelMenuEntry("Special Ammo", "$specammo$", "specammo", Vec2f(0, 2.0f)));
+		menu.add_entry(PickupWheelMenuEntry("Special Ammunition", "$specammo$", "specammo", Vec2f(0, 2.0f)));
 		menu.add_entry(PickupWheelMenuEntry("14.5mm", "$mat_14mmround$", "mat_14mmround", Vec2f(0, -6.0f)));
 		menu.add_entry(PickupWheelMenuEntry("105mm Ammo", "$mat_105mmround$", "mat_bolts"));
 		menu.add_entry(PickupWheelMenuEntry("HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", Vec2f(8.0f, 8.0f)));
