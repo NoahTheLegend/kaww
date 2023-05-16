@@ -462,7 +462,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 }
 
-
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (hitterBlob.getName() == "missile_javelin" || hitterBlob.getName() == "ballista_bolt")
@@ -476,7 +475,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (customData == Hitters::bullet || customData == Hitters::heavybullet
 		|| customData == Hitters::aircraftbullet || customData == Hitters::machinegunbullet)
 	{
-		return damage *= 1.5f;
+		return damage *= 1.0f;
 	}
 	return damage;
 }
