@@ -101,10 +101,6 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 	const f32 vellen = this.getOldVelocity().Length();
 	const u8 hitter = this.get_u8("custom_hitter");
-	if (vellen > 1.7f)
-	{
-		Sound::Play("/BombBounce.ogg", this.getPosition(), Maths::Min(vellen / 9.0f, 1.0f), 1.2f);
-	}
 }
 
 void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string filename = "Explosion.png")
