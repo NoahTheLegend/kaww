@@ -48,7 +48,7 @@ class BulletObj
 	bool FacingLeft;
 	
 	BulletObj(CBlob@ humanBlob, f32 angle, Vec2f pos, s8 type, f32 damage_body,
-		f32 damage_head, s8 penetration, u32 creation_time, s32 hitter)
+		f32 damage_head, s8 penetration, u32 creation_time, s32 hitter, u8 time, u8 speedo)
 	{
 		CurrentType = type;
 		CurrentPos = pos;
@@ -58,9 +58,9 @@ class BulletObj
 		DamageHead = damage_head;
 		CurrentPen = penetration;
 		TeamNum  = humanBlob.getTeamNum();
-		TimeLeft = humanBlob.get_u8("TTL");
-		KB       = humanBlob.get_Vec2f("KB");
-		Speed    = humanBlob.get_u8("speed");
+		TimeLeft = time;
+		KB       = Vec2f(0,0);
+		Speed    = speedo;
 		@hoomanShooter = humanBlob;
 		StartingAimPos = angle;
 		OldPos     = CurrentPos;

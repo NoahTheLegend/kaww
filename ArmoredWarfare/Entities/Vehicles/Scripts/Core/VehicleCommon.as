@@ -1011,7 +1011,8 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 									shootVehicleGun(has_owner ? ap.getOccupied().getNetworkID() : this.getNetworkID(), true_angle,
 										this.getPosition()+Vec2f(0,0).RotateBy(true_angle),
-											aimPos, bulletSpread, 1, 0, 0.35f, 0.5f, 2);
+										aimPos, bulletSpread, 1, 0, 0.35f, 0.5f, 2,
+											this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 								}
 
 								CBitStream fireParams;

@@ -375,7 +375,8 @@ void onTick(CBlob@ this)
 
 										shootVehicleGun(hooman.getNetworkID(), true_angle,
 											this.getPosition()+Vec2f(39, 9),
-												ap.getAimPos(), bulletSpread, 1, 0, 0.4f, 0.65f, 2);
+											ap.getAimPos(), bulletSpread, 1, 0, 0.4f, 0.65f, 2,
+												this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 
 										CBitStream params;
 										//params.write_s32(this.get_f32("gunAngle"));
