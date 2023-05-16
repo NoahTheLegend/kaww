@@ -17,14 +17,15 @@ void shootGun(const u16 hoomanID, const f32 aimangle, const Vec2f pos, const Vec
 	rules.SendCommand(rules.getCommandID("fireGun"), params);
 }
 
-void shootVehicleGun(const u16 hoomanID, const f32 aimangle, const Vec2f pos, const Vec2f aimpos,
-	const f32 bulletSpread, const u8 burst_size, const s8 type, f32 damage, f32 head_damage, s8 pen,
-	u8 TTL, u8 speed, s32 hitter)
+void shootVehicleGun(const u16 hoomanID, const u16 gunID, const f32 aimangle, const Vec2f pos, const Vec2f aimpos,
+	const f32 bulletSpread, const u8 burst_size, const s8 type, const f32 damage, const f32 head_damage, const s8 pen,
+	const u8 TTL, const u8 speed, const s32 hitter)
 {
 	CRules@ rules = getRules();
 	CBitStream params;
 
 	params.write_netid(hoomanID);
+	params.write_netid(gunID);
 	params.write_f32(aimangle);
 	params.write_Vec2f(pos);
 	params.write_Vec2f(aimpos);

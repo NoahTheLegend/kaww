@@ -199,7 +199,7 @@ namespace RangerParams
 {
 	const ::string CLASSNAME 			= "Ranger"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.275f; // damage dealt to body
+	const ::f32 DAMAGE_BODY 			= 0.3f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.5f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.9f; // walk

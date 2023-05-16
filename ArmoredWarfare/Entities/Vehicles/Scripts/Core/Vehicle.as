@@ -1125,7 +1125,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (customData == Hitters::bullet || customData == Hitters::heavybullet
 		|| customData == Hitters::aircraftbullet || customData == Hitters::machinegunbullet)
 	{
-		if (this.hasTag("tank")) damage *= 0.5f;
+		if (this.hasTag("tank")) damage *= 0.75f;
 		finalRating = getFinalRatingBullet(customData, armorRating, penRating, hardShelled, this, this.getPosition(), isHitUnderside, isHitBackside);
 	}
 	//print("finalRating: "+finalRating);

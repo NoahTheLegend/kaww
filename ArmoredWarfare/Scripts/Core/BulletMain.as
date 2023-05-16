@@ -93,7 +93,9 @@ void renderScreenpls() // Bullet ammo gui
 	CBlob@ holder = getLocalPlayerBlob();           
 	if (holder !is null) 
 	{
-		CBlob@ b = holder.getAttachments().getAttachmentPointByName("PICKUP").getOccupied(); 
+		CAttachment@ aps =  holder.getAttachments();
+		if (aps is null) return;
+		CBlob@ b = aps.getAttachmentPointByName("PICKUP").getOccupied(); 
 		CPlayer@ p = holder.getPlayer(); // get player holding this
 
 		if (b !is null && p !is null) 
@@ -146,7 +148,7 @@ void renderScreenpls() // Bullet ammo gui
 
 void onCommand(CRules@ rules, u8 cmd, CBitStream @params) 
 {
-	if (cmd == FireGunID)
+	if (cmd == rules.getCommandID("fireGun"))
 	{
 		CBlob@ this = getBlobByNetworkID(params.read_netid());
 
@@ -218,14 +220,18 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 			}
 		}
 	}
-	if (cmd == FireVehicleID)
+	if (cmd == rules.getCommandID("fireVehicleGun"))
 	{
 		CBlob@ this = getBlobByNetworkID(params.read_netid());
+		CBlob@ gun = getBlobByNetworkID(params.read_netid());
 
-		if (this !is null)
+		if (this !is null && gun !is null)
 		{
 			this.set_u32("no_more_proj", 0);
 			if (this.hasTag("dead")) return;
+
+			if (gun.get_u32("next_projectile") > getGameTime()) return;
+			gun.set_u32("next_projectile", getGameTime()+1);
 
 			f32 angle = params.read_f32();
 			const Vec2f pos = params.read_Vec2f();
@@ -243,7 +249,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 			if (this.get_u32("next_bullet") > getGameTime()) return;
 			this.set_u32("next_bullet", getGameTime()+1);
-			
+
 			for (u8 i = 0; i < burstSize; i++)
 			{
 				BulletObj@ bullet = BulletObj(this, angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(),
@@ -261,24 +267,51 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 				BulletGrouped.AddNewObj(bullet);
 			}
 
-			if (this.hasTag("machinegun"))
+			if (gun.hasTag("machinegun"))
 			{
-				f32 anglereal = this.isFacingLeft()? -angle + 180 : angle;
+				float overheat_mod = 1.0f;
+		
+				CAttachment@ aps = gun.getAttachments();
+				if (aps !is null)
+				{
+					CBlob@ gunner = aps.getAttachmentPointByName("GUNNER").getOccupied();
+					if (gunner !is null)
+					{
+						CPlayer@ p = gunner.getPlayer();
+						if (p !is null)
+						{
+							if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+							{
+								overheat_mod = 0.5f;
+							}
+						}
+					}
+					else
+					{
+						return;
+					}
+
+					gun.add_f32("overheat", gun.get_f32("overheat_per_shot") * overheat_mod);
+				}
+
+				f32 anglereal = gun.isFacingLeft()? -angle + 180 : angle;
 				Vec2f posreal = pos;
 				Vec2f offset = Vec2f(-2, 0);
-				Vec2f vel = Vec2f(500.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
+				Vec2f vel = Vec2f(500.0f / 16.5f * (gun.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
 
-				if (this.getSprite() !is null)
+				if (gun.getSprite() !is null)
 				{
-					this.getSprite().PlaySound(this.get_string("shoot sound"));
+					gun.getSprite().PlaySound(gun.get_string("shoot sound"));
 				}
 
 				if (isClient())
 				{
-					ParticleAnimated("SmallExplosion3", (posreal + Vec2f(20, 0).RotateBy(this.isFacingLeft()?-anglereal+180:anglereal)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+					ParticleAnimated("SmallExplosion3", (posreal + Vec2f(20, 0).RotateBy(gun.isFacingLeft()?-anglereal+180:anglereal)),
+						getRandomVelocity(0.0f, XORRandom(40) * 0.01f, gun.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f),
+							float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 				}
 
-				float _angle = this.isFacingLeft() ? -anglereal+180 : anglereal;
+				float _angle = gun.isFacingLeft() ? -anglereal+180 : anglereal;
 				_angle += -0.099f + (XORRandom(4) * 0.01f);
 
 				bool no_muzzle = false;
@@ -289,7 +322,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 				if (!no_muzzle)
 				{
-					if (this.isFacingLeft())
+					if (gun.isFacingLeft())
 					{
 						ParticleAnimated("Muzzleflash", posreal + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), _angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
 					}
@@ -313,45 +346,24 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 							const float recoily = 50;
 							const float recoillength = 40; // how long to recoil (?)
 	
-							if (local.isAttachedTo(this)) ShakeScreen(28, 5, pos);
+							if (local.isAttachedTo(gun)) ShakeScreen(28, 5, pos);
 	
 							makeGibParticle(
 							"EmptyShellSmall",               // file name
 							posreal,                 // position
-							(this.isFacingLeft() ? -offset : offset) + Vec2f((-20 + XORRandom(40))/18,-1.1f),                           // velocity
+							(gun.isFacingLeft() ? -offset : offset) + Vec2f((-20 + XORRandom(40))/18,-1.1f),                           // velocity
 							0,                                  // column
 							0,                                  // row
 							Vec2f(16, 16),                      // frame size
 							0.2f,                               // scale?
 							0,                                  // ?
 							"ShellCasing",                      // sound
-							this.get_u8("team_color"));         // team number
+							gun.get_u8("team_color"));         // team number
 	
-							this.getSprite().PlaySound("M60fire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
+							gun.getSprite().PlaySound("M60fire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
 						}		
 					}
 				}
-				
-				float overheat_mod = 1.0f;
-		
-				CBlob@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER").getOccupied();
-				if (gunner !is null)
-				{
-					CPlayer@ p = gunner.getPlayer();
-					if (p !is null)
-					{
-						if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
-						{
-							overheat_mod = 0.5f;
-						}
-					}
-				}
-				else
-				{
-					return;
-				}
-
-				this.add_f32("overheat", this.get_f32("overheat_per_shot") * overheat_mod);
 			}
 		}
 	}

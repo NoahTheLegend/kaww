@@ -8,7 +8,7 @@
 const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
-const u32 shootDelay = 1; // Ticks
+const u32 shootDelay = 2; // Ticks
 const f32 projDamage = 0.7f;
 
 //ICONS
@@ -184,7 +184,7 @@ void onTick(CBlob@ this)
 			}
 			
 			
-			if (!this.hasTag("no_more_shooting") && pilot.isMyPlayer() && pressed_lm && this.get_u32("next_shoot") < getGameTime())
+			if (this.get_u32("no_more_proj") < getGameTime() && pilot.isMyPlayer() && pressed_lm)
 			{
 				bool can_attack = false;
 				CInventory@ inv = this.getInventory();
@@ -203,9 +203,9 @@ void onTick(CBlob@ this)
 				}
 				if (can_attack)
 				{
-					if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("AssaultFire.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
+					this.set_u32("no_more_proj", getGameTime()+shootDelay);
+					this.getSprite().PlaySound("AssaultFire.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
 					ShootBullet(this, (this.getPosition() - Vec2f(0,1)), this.getPosition()+Vec2f(this.isFacingLeft() ? -32.0f : 32.0f, 0).RotateBy(this.getAngleDegrees() + (this.isFacingLeft() ? -2.5f : 2.5f)), 17.59f * 1.75f);
-					this.Tag("no_more_shooting");
 				}
 			}
 			
@@ -328,7 +328,7 @@ void onTick(CBlob@ this)
 		}
 
 		this.getSprite().SetEmitSoundPaused(this.get_f32("soundspeed") <= 0.1f);
-		this.getSprite().SetEmitSoundVolume(Maths::Sqrt(this.get_f32("soundspeed"))*1.5f);
+		this.getSprite().SetEmitSoundVolume(Maths::Sqrt(this.get_f32("soundspeed"))*1.25f);
 		this.getSprite().SetEmitSoundSpeed(this.get_f32("soundspeed"));
 		
 		if (hmod < 0.7 && u32(getGameTime() % 20 * hmod) == 0) ParticleAnimated(CFileMatcher(smokes[XORRandom(smokes.length)]).getFirst(), this.getPosition(), Vec2f(0, 0), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 3 + XORRandom(4), XORRandom(100) * -0.001f, true);
@@ -361,9 +361,9 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 	if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
 		has_owner = true;
 
-	shootVehicleGun(has_owner ? ap.getOccupied().getNetworkID() : this.getNetworkID(), true_angle,
-		this.getPosition()+Vec2f(0, 8),
-		aimpos, bulletSpread, 1, 0, 0.5f, 0.75f, 1,
+	shootVehicleGun(has_owner ? ap.getOccupied().getNetworkID() : this.getNetworkID(), this.getNetworkID(),
+		true_angle, this.getPosition()+Vec2f(0, 8),
+		aimpos, bulletSpread, 1, 0, 0.6f, 0.85f, 1,
 			this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 }
 

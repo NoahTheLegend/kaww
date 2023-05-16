@@ -991,30 +991,32 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								CBlob@ b = ap.getOccupied();
 							}
 
-							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && (blob.isMyPlayer() || blob.isBot()))
+							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && blob.isMyPlayer())
 							{
 								Vec2f aimPos = ap.getAimPos();
 
-								f32 bulletSpread = 50.0f;
+								f32 bulletSpread = 35.0f;
 								f32 angle;
 								angle = getWeaponAngle(this, v);
 
-								if (this.hasTag("machinegun") && !this.hasTag("firethrower"))
+								bool has_owner = false;
+								AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+								if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
+									has_owner = true;
+
+								if (this.hasTag("machinegun") && !this.hasTag("firethrower") && this.get_u32("no_more_proj") < getGameTime())
 								{
+									this.set_u32("no_more_proj", getGameTime()+v.getCurrentAmmo().fire_delay);
+
 									angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
 									f32 true_angle = this.isFacingLeft() ? -angle + 180 : angle;
 
-									bool has_owner = false;
-									AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
-									if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
-										has_owner = true;
-
-									shootVehicleGun(has_owner ? ap.getOccupied().getNetworkID() : this.getNetworkID(), true_angle,
-										this.getPosition()+Vec2f(0,0).RotateBy(true_angle),
-										aimPos, bulletSpread, 1, 0, 0.35f, 0.5f, 2,
+									shootVehicleGun(has_owner ? ap.getOccupied().getNetworkID() : this.getNetworkID(), this.getNetworkID(),
+										true_angle, this.getPosition()+Vec2f(0,0).RotateBy(true_angle),
+										aimPos, bulletSpread, 1, 3, 0.35f, 0.5f, 2,
 											this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 								}
-
+								
 								CBitStream fireParams;
 								fireParams.write_u16(blob.getNetworkID());
 								fireParams.write_u8(charge);
