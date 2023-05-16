@@ -167,12 +167,6 @@ void onTick(CBlob@ this)
 		return;
 	}
 
-	if (!(isClient() && isServer()) && getGameTime() < 60*30)
-	{
-		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
-		return; // turn engines off!
-	}
-
 	if (this.getTickSinceCreated() == 1)
 	{
 		if (isServer())
@@ -189,6 +183,12 @@ void onTick(CBlob@ this)
 		}
 		v.getCurrentAmmo().loaded_ammo = 1;
 		v.getCurrentAmmo().ammo_stocked = 50;
+	}
+
+	if (!(isClient() && isServer()) && getGameTime() < 60*30)
+	{
+		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
+		return; // turn engines off!
 	}
 
 	CSprite@ sprite = this.getSprite();

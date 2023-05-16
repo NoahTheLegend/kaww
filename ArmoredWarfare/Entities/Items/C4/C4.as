@@ -122,7 +122,7 @@ void onTick(CBlob@ this)
 {
 	barTick(this);
 
-	if (this.hasTag("setstatic"))
+	if (isServer() && this.hasTag("setstatic"))
 	{
 		this.Untag("setstatic");
 		this.getShape().SetStatic(true);

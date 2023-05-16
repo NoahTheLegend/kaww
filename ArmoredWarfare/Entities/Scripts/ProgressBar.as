@@ -255,10 +255,10 @@ class BarHandler {
                 }
                 else if (!active.fadeout)
                 {
-                    if (isServer() && active.percent > 0.975f)
-                    {
-                        this.SendCommand(active);
-                    }
+                    //if (isServer() && active.percent > 0.975f)
+                    //{
+                    //    this.SendCommand(active);
+                    //}
                     this.onBarRemoved(active, active.fadeout_time);
                 }
             }

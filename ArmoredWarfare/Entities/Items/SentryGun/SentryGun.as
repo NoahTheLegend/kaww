@@ -1,6 +1,7 @@
 #include "WarfareGlobal.as"
 #include "Explosion.as"
 #include "Hitters.as"
+#include "GunStandard.as"
 
 const string target_player_id = "target_player_id";
 
@@ -19,6 +20,11 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "SentryGun_gun", 32, 16);
 	this.Tag("builder always hit");
+
+	this.set_u8("TTL", 45);
+	this.set_Vec2f("KB", Vec2f(0,0));
+	this.set_u8("speed", 18);
+	this.set_s32("custom_hitter", Hitters::machinegunbullet);
 
 	this.Tag("structure");
 	this.Tag("vehicle");
@@ -77,8 +83,19 @@ void onTick(CBlob@ this)
 				if (this.get_u32("next shot") < getGameTime())
 				{
 					ClientFire(this);
-					this.SendCommand(this.getCommandID("shoot"));
-					this.set_bool("spawned", false);		
+					//this.SendCommand(this.getCommandID("shoot"));
+					//this.set_bool("spawned", false);
+
+					f32 angle = (targetblob.getPosition()-this.getPosition()+Vec2f(0, 8)).Angle();
+					//this.SendCommand(this.getCommandID("shoot"));
+					//this.set_bool("spawned", false);
+					f32 bulletSpread = 5.0f;
+					angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
+					f32 true_angle = this.isFacingLeft() ? -angle:-angle;
+
+					shootVehicleGun(this.getNetworkID(), true_angle,
+						this.getPosition()+Vec2f(0,this.isFacingLeft()?8:-8).RotateBy(true_angle),
+							targetblob.getPosition(), bulletSpread, 1, 0, 0.25f, 0.33f, 2);	
 
 					this.set_u32("next shot", getGameTime() + 10);			
 				}
