@@ -20,7 +20,7 @@ void onInit(CBlob@ this)
 	this.Tag("builder always hit");
 	this.Tag("friendly_collide");
 	this.set_bool("state", true);
-	
+	printf(""+this.getTeamNum());
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ lever = sprite.addSpriteLayer("lever", "WoodenGate.png", 16, 16);
 	if (lever !is null)
