@@ -580,7 +580,8 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 			}
 			if (info.blob !is null)
 			{
-				if (info.blob.hasTag("structure") || info.blob.hasTag("trap")) continue;
+				if (info.blob.hasTag("structure") || info.blob.hasTag("trap")
+					|| info.blob.isLadder()) continue;
 
 				if (!info.blob.isAttached() && !info.blob.hasTag("machinegun") && (info.blob.hasTag("wooden")
 						|| info.blob.hasTag("door") || info.blob.hasTag("flesh") || info.blob.hasTag("vehicle")))

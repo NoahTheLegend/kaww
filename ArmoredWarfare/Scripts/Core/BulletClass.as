@@ -118,13 +118,22 @@ class BulletObj
 		if (blob.hasTag("always bullet collide"))
 		{
 			if (blob.hasTag("trap")) return true;
-			if (!same_team) return false;
+			else if (!same_team) return false;
 			return true;
 		}
 
 		if (blob.hasTag("respawn") || blob.hasTag("invincible") || blob.hasTag("dead") || blob.hasTag("projectile") || blob.hasTag("trap") || blob.hasTag("material")) {
 			return false;
 	    }
+
+		if (blob.hasTag("bulletpassable"))
+		{
+			if (isServer())
+			{
+				hoomanBlob.server_Hit(blob, OldPos, blob.getVelocity(), 0.1f+DamageBody/2, Hitters::builder);
+			}
+			return false;
+		}
 
 		CShape@ shape = blob.getShape();
 		if (shape is null) return false;
@@ -270,7 +279,7 @@ class BulletObj
 					{
 						if (isServer())
 						{
-							hoomanShooter.server_Hit(blob, CurrentPos, Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
+							hoomanShooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
 						}
 					}
 					else
@@ -427,7 +436,7 @@ class BulletObj
 
 					if (dmg > 0.0f)
 					{
-						hoomanShooter.server_Hit(blob, CurrentPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
+						hoomanShooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 						return true;
 					}
 				}
