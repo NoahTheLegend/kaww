@@ -1533,7 +1533,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, f
 		if (this.get_u32("no_more_proj") <= getGameTime())
 		{
 			shootGun(this.getNetworkID(), -(aimPos-arrowPos).Angle(), arrowPos+this.get_Vec2f("gun_offset"), aimPos, bulletSpread, burstSize, type);
-			this.set_u32("no_more_proj", getGameTime()+2);
+			this.set_u32("no_more_proj", getGameTime()+1);
 			InfantryInfo@ infantry;
 			if (!this.get("infantryInfo", @infantry)) return;
 			if (this.get_s32("my_chargetime") == 0)
