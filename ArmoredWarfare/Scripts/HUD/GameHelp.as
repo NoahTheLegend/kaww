@@ -103,19 +103,18 @@ void onRender(CRules@ this)
         GUI::SetFont("menu");
         GUI::DrawTextCentered("Mod is developed with big effort by Blav (Yeti5000707) and salty Snek (NoahTheLegend)", Vec2f(sMid, tlBox.y + 60), SColor(255, 255,255,0));
         GUI::DrawTextCentered("You may thank us or donate if you wish. Click the button in TAB menu.", Vec2f(sMid, tlBox.y + 75), SColor(255, 255,255,0));
-        GUI::DrawTextCentered("Special thanks to contributors: Nevrotik, Skemonde, PURPLExeno, Goldy, GoldenGuy (hoster), petey5 and ThinkAbout!", Vec2f(sMid, tlBox.y + 92.5f), SColor(255, 255,255,0));
+        GUI::DrawTextCentered("Special thanks to contributors: Nevrotik, Skemonde, PURPLExeno, Goldy, GoldenGuy (hoster),petey5 and ThinkAbout!", Vec2f(sMid, tlBox.y + 92.5f), SColor(255, 255,255,0));
         GUI::DrawTextCentered("F1 Disables this window", Vec2f(sMid+350, tlBox.y + 17.5f), SColor(255, 155,155,155));
     }
 
 	{
 		const string shiprektVersion = "Armored Warfare\n";
 		const string lastChangesInfo = "\nChanges:\n\n"
-        + "  * Artillery now deploys shrapnel on explosion\n"
-        + "  * Perks:\n"
-        + "  * Bloodthirsty - more heal on bullet damage, can't eat food; Lucky - bigger cooldown after activation\\heal\n"
-        + "  * Bull - can't use medkits, increased damage resistance to 25%, nerf killing spree movement buff\n"
-        + "  * Field Engineer - sentry costs 1 scrap now; Paratrooper - better parachute handling\n"
-        + "  * Reworked food heal, now its passive\n"
+        + "  * Team colors are now randomized and have different minor advantages\n"
+        + "  * Reworked bullets completely - now they should be optimized, but may desync sometimes\n"
+        + "  * Vehicles and infantry sound enhancements\n"
+        + "  * Building structures is not instant anymore\n"
+        + "  * Builders can not build nearby enemies and their structures\n"
         + "  * Balance changes & bug fixes & QOL enhancements\n";
 		
 		GUI::SetFont("menu");
