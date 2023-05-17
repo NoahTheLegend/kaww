@@ -1705,8 +1705,8 @@ const string[] LargeMaps = {
 	"WorldwarFlagless.png",
 	"ClassicFlagless.png",
 	"BridgeWater.png",
-	"SiegeBeachWater_v2.png",
-	"FrogsLudendorff.png"
+	"SiegeBeachWater_v2.png"
+	//"FrogsLudendorff.png"
 };
 
 const string[] AverageMaps = {
