@@ -82,8 +82,8 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 		}
 	}
 	u8 team = 255;
-	if (teamright == 0) team = 0;
-	else if (teamleft == 0) team = 1;
+	if (teamright == 0) team = teamleft;
+	else if (teamleft == 0) team = teamright;
 	//printf(""+team);
 	if (getRules() !is null && team < 7)
 	{

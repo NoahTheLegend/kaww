@@ -214,10 +214,10 @@ namespace RangerParams
 {
 	const ::string CLASSNAME 			= "Ranger"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.3f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.5f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.35f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.55f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.9f; // walk
+	const ::f32 WALK_STAT 				= 1.0f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.87f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 1.15f; // walk (sprint)
@@ -268,9 +268,9 @@ namespace LMGParams
 	const ::f32 DAMAGE_BODY 			= 0.25f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.4f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.725f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.4f; // airwalk
-	const ::f32 JUMP_STAT 				= 0.8f; // jump
+	const ::f32 WALK_STAT 				= 0.75f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
+	const ::f32 JUMP_STAT 				= 0.9f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 0.85f; // walk (sprint)
 	const ::f32 AIRWALK_STAT_SPRINT 	= 3.1f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 0.95f; // jump (sprint)
