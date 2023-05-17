@@ -685,7 +685,7 @@ class BulletObj
 		f32 angle = Vec2f(CurrentPos.x-newPos.x, CurrentPos.y-newPos.y).getAngleDegrees();//Sets the angle
 
 		// y increases length, x increases width
-		Vec2f scale = Vec2f(2.0f, 2.0f);
+		Vec2f scale = Vec2f(2.0f, 2.5f);
 		if (CurrentType == -1)
 			scale = Vec2f(1.75f, 1.25f);
 		else if (CurrentType == 1)
