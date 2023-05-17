@@ -26,6 +26,8 @@ void onInit(CBlob@ this)
 
 	this.set_u32("crate_timer", 0);
 
+	this.set_u8("oldteam", this.getTeamNum());
+
 	u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
 	this.set_u32("crate_timer_end", num);
 
@@ -66,6 +68,8 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 	{
 		this.set_u16(capture_prop, 0);
 	}
+
+	this.set_u8("oldteam", this.getTeamNum());
 	
 	CBlob@[] blobs;
 	bool won = false;
@@ -84,7 +88,6 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 	u8 team = 255;
 	if (teamright == 0) team = teamleft;
 	else if (teamleft == 0) team = teamright;
-	printf(""+team);
 	if (getRules() !is null && team != 255)
 	{
 		getRules().SetTeamWon(team);
@@ -96,6 +99,10 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 
 void onTick(CBlob@ this)
 {
+	if (this.getTickSinceCreated() > 30 && this.getTeamNum() != this.get_u8("oldteam"))
+	{
+		onChangeTeam(this, this.get_u8("oldteam"));
+	}
     float capture_distance = 76.0f; //Distance from this blob that it can be cpaped
 
     u8 num_teamleft = 0;
