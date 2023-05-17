@@ -26,6 +26,7 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$shielder_class_icon$", "ClassIcon.png", Vec2f(48, 48), 7);
 	AddIconToken("$firebringer_class_icon$", "ClassIcon.png", Vec2f(48, 48), 8);
 	AddIconToken("$ranger_class_icon$", "ClassIcon.png", Vec2f(48, 48), 2);
+	AddIconToken("$lmg_class_icon$", "ClassIcon.png", Vec2f(48, 48), 9);
 	AddIconToken("$shotgun_class_icon$", "ClassIcon.png", Vec2f(48, 48), 3);
 	AddIconToken("$sniper_class_icon$", "ClassIcon.png", Vec2f(48, 48), 4);
 	AddIconToken("$rpg_class_icon$", "ClassIcon.png", Vec2f(48, 48), 5);
@@ -60,6 +61,9 @@ void InitClasses(CBlob@ this)
 	
 	addPlayerClass(this, "---- Firebringer ----", "$firebringer_class_icon$", "firebringer",
 						"---- Firebringer ----\n\nOwns a portative yet heavy flamethrower.\n\nHP: 300\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
+
+	addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg",
+						"---- LMG ----\n\nExtended magazine capacity but slower reload.\n\nHP: 300\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
 
 	AddIconToken("$0_class_icon$", "PerkIcon.png", Vec2f(36, 36), 0);
 	AddIconToken("$1_class_icon$", "PerkIcon.png", Vec2f(36, 36), 1);

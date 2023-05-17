@@ -116,7 +116,11 @@ class BulletObj
 		const bool is_young = getGameTime() - CreateTime <= 1;
 		const bool same_team = TeamNum == blob.getTeamNum();
 
-		if (LastHitBlob is blob) return false;
+		if (LastHitBlob is blob)
+		{
+			TimeLeft = 0;
+			return false;
+		}
 
 		if (blob.hasTag("always bullet collide"))
 		{
@@ -441,8 +445,9 @@ class BulletObj
 					{
 						hoomanShooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 						@LastHitBlob = @blob;
-						return true;
 					}
+
+					return true;
 				}
 				else
 				{

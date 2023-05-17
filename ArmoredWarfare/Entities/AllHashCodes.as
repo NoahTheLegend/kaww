@@ -5,6 +5,7 @@ enum EntityHash
 	_revolver = -474550122,
 	_shielder = -1459552761,
 	_ranger = -2006458400,
+	_lmg = 1331133103,
 	_shotgun = 234279893,
 	_firebringer = 1711571180,
 	_sniper = 1983016758,

@@ -50,6 +50,11 @@ void onInit(CBlob@ this)
 	u8 inaccuracy_midair;
 	u8 inaccuracy_hit;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
+	// movement (extra)
+	f32 reload_walkspeed_factor;
+	f32 reload_jumpheight_factor;
+	f32 stab_walkspeed_factor;
+	f32 stab_jumpheight_factor;
 	// GUN
 	bool semiauto;
 	u8 burst_size; // bullets fired per click
@@ -74,6 +79,8 @@ void onInit(CBlob@ this)
 	semiauto, burst_size, burst_rate, 
 	reload_time, noreloadtimer, mag_size, delayafterfire, randdelay, 
 	bullet_velocity, bullet_lifetime, bullet_pen, emptyshellonfire);
+	getExtraMovementStats( thisBlobHash, reload_walkspeed_factor,
+	reload_jumpheight_factor, stab_walkspeed_factor, stab_jumpheight_factor);
 
 	InfantryInfo infantry;
 	infantry.classname 				= classname;
@@ -92,6 +99,11 @@ void onInit(CBlob@ this)
 	infantry.sideways_recoil_damp 	= sideways_recoil_damp;
 	infantry.ads_cushion_amount 	= ads_cushion_amount;
 	infantry.length_of_recoil_arc 	= length_of_recoil_arc;
+
+	infantry.reload_walkspeed_factor = reload_walkspeed_factor;
+	infantry.reload_jumpheight_factor= reload_jumpheight_factor;
+	infantry.stab_walkspeed_factor   = stab_walkspeed_factor;
+	infantry.stab_jumpheight_factor  = stab_jumpheight_factor;
 
 	infantry.inaccuracy_cap 		= inaccuracy_cap;
 	infantry.inaccuracy_pershot 	= inaccuracy_pershot;
@@ -178,7 +190,12 @@ void onInit(CBlob@ this)
 	this.set_string("ammo_prop", "ammo");
 	this.set_s8("bullet_type", 0);
 
+	this.set_bool("is_rpg", false);
 	this.set_bool("is_firebringer", false);
+	this.set_bool("is_lmg", false);
+	
+	this.set_bool("timed_particle", false);
+	this.set_Vec2f("gun_offset", Vec2f(0,0));
 
 	// todo: move this to infantrycommon.as
 	switch (thisBlobHash)
@@ -201,9 +218,21 @@ void onInit(CBlob@ this)
 		}
 		case _ranger:
 		{
-			this.set_f32("shoot_pitch", 0.9f);
-			this.set_u8("stab time", 33);
-			this.set_u8("stab timing", 14);
+			this.set_bool("is_lmg", true);
+			break;
+		}
+		case _lmg:
+		{
+			this.set_s32("custom_hitter", Hitters::machinegunbullet);
+			this.set_u8("stab time", 20);
+			this.set_u8("stab timing", 4);
+			this.set_bool("timed_particle", true);
+			this.set_Vec2f("gun_offset", Vec2f(0,2));
+			break;
+		}
+		case _mp5:
+		{
+			this.set_bool("timed_particle", true);
 			break;
 		}
 		case _shotgun:
@@ -1025,7 +1054,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					this.Untag("armangle_lock");
 
 					bool do_effects = !this.get_bool("is_firebringer");
-					if (do_effects) ClientFire(this, charge_time, infantry);
+					if (do_effects) ClientFire(this, charge_time, infantry, this.getPosition()+this.get_Vec2f("gun_offset"));
 					else if (this.isMyPlayer())
 					{
 						this.add_f32("scale", 2.0f*Maths::Sqrt(this.get_f32("scale")+firebringer_max_scale));
@@ -1142,12 +1171,13 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		if (isReloading)
 		{
 			this.set_u8("inaccuracy", 0);
-			moveVars.walkFactor *= 0.55f;
+			moveVars.walkFactor *= infantry.reload_walkspeed_factor; // 0.55f default
+			moveVars.jumpFactor *= infantry.reload_jumpheight_factor; // 1.0 default
 		}
 		if (isStabbing)
 		{
-			moveVars.walkFactor *= 0.2f;
-			moveVars.jumpFactor *= 0.8f;
+			moveVars.walkFactor *= infantry.stab_walkspeed_factor; // 0.2f default
+			moveVars.jumpFactor *= infantry.stab_jumpheight_factor; // 0.8 default
 		}
 	}
 
@@ -1367,12 +1397,12 @@ bool canSend( CBlob@ this )
 	return (this.isMyPlayer() || this.getPlayer() is null);
 }
 
-void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
+void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry, Vec2f pos )
 {
 	if (this.hasTag("had_menus") || this.getTickSinceCreated() <= 5) return;
 	Vec2f thisAimPos = this.getAimPos() - Vec2f(0,4);
 
-	float angle = Maths::ATan2(thisAimPos.y - this.getPosition().y, thisAimPos.x - this.getPosition().x) * 180 / 3.14159;
+	float angle = Maths::ATan2(thisAimPos.y - pos.y, thisAimPos.x - pos.x) * 180 / 3.14159;
 	angle += -0.099f + (XORRandom(2) * 0.01f);
 
 	bool no_muzzle = false;
@@ -1388,15 +1418,15 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry )
 	{
 		if (this.isFacingLeft())
 		{ 
-			ParticleAnimated("Muzzleflash", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle, 0.075f + XORRandom(2) * 0.01f, 3 + XORRandom(2), -0.15f, false);
+			ParticleAnimated("Muzzleflash", pos + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle, 0.075f + XORRandom(2) * 0.01f, 3 + XORRandom(2), -0.15f, false);
 		}
 		else
 		{
-			ParticleAnimated("Muzzleflashflip", this.getPosition() + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle + 180, 0.075f + XORRandom(2) * 0.01f, 3 + XORRandom(2), -0.15f, false);
+			ParticleAnimated("Muzzleflashflip", pos + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle + 180, 0.075f + XORRandom(2) * 0.01f, 3 + XORRandom(2), -0.15f, false);
 		}
 	}
 
-	Vec2f targetVector = thisAimPos - this.getPosition();
+	Vec2f targetVector = thisAimPos - pos;
 	f32 targetDistance = targetVector.Length();
 	f32 targetFactor = targetDistance / 367.0f;
 	
@@ -1502,7 +1532,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, f
 	{
 		if (this.get_u32("no_more_proj") <= getGameTime())
 		{
-			shootGun(this.getNetworkID(), -(aimPos-arrowPos).Angle(), arrowPos, aimPos, bulletSpread, burstSize, type);
+			shootGun(this.getNetworkID(), -(aimPos-arrowPos).Angle(), arrowPos+this.get_Vec2f("gun_offset"), aimPos, bulletSpread, burstSize, type);
 			this.set_u32("no_more_proj", getGameTime()+2);
 			InfantryInfo@ infantry;
 			if (!this.get("infantryInfo", @infantry)) return;
@@ -1711,6 +1741,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				case _ranger:
 				{
 					onRangerReload(this);
+					break;
+				}
+				case _lmg:
+				{
+					onLMGReload(this);
 					break;
 				}
 				case _shotgun:

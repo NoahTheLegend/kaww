@@ -87,6 +87,11 @@ class InfantryInfo
 	u8 inaccuracy_pershot; // aim inaccuracy
 	u8 inaccuracy_midair; // falling inaccuracy
 	u8 inaccuracy_hit; // onhit inaccuracy
+	// movement
+	f32 reload_walkspeed_factor;
+	f32 reload_jumpheight_factor;
+	f32 stab_walkspeed_factor;
+	f32 stab_jumpheight_factor;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	bool semiauto;
@@ -129,6 +134,11 @@ class InfantryInfo
 		inaccuracy_pershot 		= 50;
 		inaccuracy_midair 		= 15;
 		inaccuracy_hit  		= 0;
+		// movement
+		reload_walkspeed_factor = 0.55f;
+		reload_jumpheight_factor = 1.0f;
+		stab_walkspeed_factor = 0.25f;
+		stab_jumpheight_factor = 0.8f;
 		// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 		// GUN
 		semiauto 				= false;
@@ -172,6 +182,11 @@ namespace ShotgunParams
 	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// MOVEMENT (extra)
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.55f;
+	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 1.0f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.25f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.8f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -218,6 +233,11 @@ namespace RangerParams
 	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 10; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 0.7f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// MOVEMENT (extra)
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.5f;
+	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.9f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.5f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.75f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -241,12 +261,63 @@ namespace RangerParams
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }
 
+namespace LMGParams
+{
+	const ::string CLASSNAME 			= "LMG"; // case sensitive
+	// DAMAGE
+	const ::f32 DAMAGE_BODY 			= 0.35f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.55f; // damage dealt on headshot
+	// MOVEMENT
+	const ::f32 WALK_STAT 				= 0.725f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.4f; // airwalk
+	const ::f32 JUMP_STAT 				= 0.8f; // jump
+	const ::f32 WALK_STAT_SPRINT 		= 0.85f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 3.1f; // airwalk (sprint)
+	const ::f32 JUMP_STAT_SPRINT 		= 0.95f; // jump (sprint)
+	// SHAKE
+	const ::f32 RECOIL_X 				= 5.0f; // x shake (20)
+	const ::f32 RECOIL_Y 				= 50.0f; // y shake (45)
+	const ::f32 RECOIL_LENGTH 			= 150.0f; // how long to recoil (?)
+	// RECOIL
+	const ::f32 RECOIL_FORCE 			= 0.1f; // amount to push player
+	const ::u8 RECOIL_CURSOR 			= 5; // amount to raise mouse pos
+	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
+	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 10; // higher number means less sideways recoil
+	const ::f32 ADS_CUSHION_AMOUNT 		= 0.7f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// MOVEMENT (extra)
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.25f;
+	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.6f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.33f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.8f;
+	// spray pattern in logic
+	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
+	// ACCURACY
+	const ::u8 INACCURACY_CAP 			= 35; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 3;
+	const ::u8 INACCURACY_MIDAIR        = 6;
+	const ::u8 INACCURACY_HIT  		    = 7;
+	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
+	// GUN
+	const ::bool SEMIAUTO 				= false;
+	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
+	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
+	const ::s16 RELOAD_TIME 			= 95; // time to reload
+	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
+	const ::u32 MAG_SIZE 				= 80; // max bullets in mag
+	const ::u8 DELAYAFTERFIRE 			= 2; // time between shots
+	const ::u8 RANDDELAY 				= 0; // + randomness
+	const ::f32 BULLET_VELOCITY 		= 20.0f; // speed that bullets fly
+	const ::u32 BULLET_LIFETIME 		= 70; // in ticks, time for bullet to die
+	const ::s8 BULLET_PEN 				= 2; // penRating for bullet
+	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
+}
+
 namespace Mp5Params
 {
 	const ::string CLASSNAME 			= "Mp5"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.2f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.35f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.25f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.4f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.85f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
@@ -264,6 +335,11 @@ namespace Mp5Params
 	const ::u8 SIDEWAYS_RECOIL 			= 6; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 0.7f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// MOVEMENT (extra)
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.75f;
+	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.9f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.25f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.8f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.8f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -276,7 +352,7 @@ namespace Mp5Params
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 				= 65; // time to reload
+	const ::s16 RELOAD_TIME 			= 65; // time to reload
 	const ::u8 NORELOADTIMER 			= 0; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 30; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 3; // time between shots
@@ -310,6 +386,11 @@ namespace RevolverParams
 	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// MOVEMENT (extra)
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.75f;
+	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 1.0f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.5f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.9f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -356,6 +437,11 @@ namespace ShielderParams
 	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 2; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// MOVEMENT (extra)
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.75f;
+	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 1.0f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.33f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.5f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -402,6 +488,11 @@ namespace SniperParams
 	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// MOVEMENT (extra)
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.5f;
+	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.85f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.25f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.8f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -448,6 +539,11 @@ namespace FirebringerParams
 	const ::u8 SIDEWAYS_RECOIL 			= 1; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 1; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// MOVEMENT (extra)
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.4f;
+	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.75f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.2f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.75f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -494,6 +590,11 @@ namespace RPGParams
 	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
+	// MOVEMENT (extra)
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.4f;
+	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.65f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.25f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.8f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -526,6 +627,14 @@ void getBasicStats( int blobNameHash, string &out classname, string &out reload_
 			classname = RangerParams::CLASSNAME;
 			damage_body = RangerParams::DAMAGE_BODY;
 			damage_head = RangerParams::DAMAGE_HEAD;
+		}
+		break;
+
+		case _lmg:
+		{
+			classname = LMGParams::CLASSNAME;
+			damage_body = LMGParams::DAMAGE_BODY;
+			damage_head = LMGParams::DAMAGE_HEAD;
 		}
 		break;
 
@@ -605,6 +714,20 @@ void getRecoilStats( int blobNameHash, float &out recoil_x, float &out recoil_y,
 			sideways_recoil_damp = RangerParams::SIDEWAYS_RECOIL_DAMP;
 			ads_cushion_amount = RangerParams::RECOIL_CURSOR;
 			length_of_recoil_arc = RangerParams::LENGTH_OF_RECOIL_ARC;
+		}
+		break;
+
+		case _lmg:
+		{
+			recoil_x = LMGParams::RECOIL_X;
+			recoil_y = LMGParams::RECOIL_Y;
+			recoil_length = LMGParams::RECOIL_LENGTH;
+			recoil_force = LMGParams::RECOIL_FORCE;
+			recoil_cursor = LMGParams::RECOIL_CURSOR;
+			sideways_recoil = LMGParams::SIDEWAYS_RECOIL;
+			sideways_recoil_damp = LMGParams::SIDEWAYS_RECOIL_DAMP;
+			ads_cushion_amount = LMGParams::RECOIL_CURSOR;
+			length_of_recoil_arc = LMGParams::LENGTH_OF_RECOIL_ARC;
 		}
 		break;
 
@@ -739,6 +862,31 @@ void getWeaponStats( int blobNameHash,
 			bullet_pen = RangerParams::BULLET_PEN;
 
 			emptyshellonfire = RangerParams::EMPTYSHELLONFIRE;
+		}
+		break;
+
+		case _lmg:
+		{
+			inaccuracy_cap = LMGParams::INACCURACY_CAP;
+			inaccuracy_pershot = LMGParams::INACCURACY_PER_SHOT;
+			inaccuracy_midair = LMGParams::INACCURACY_MIDAIR;
+			
+			inaccuracy_hit = LMGParams::INACCURACY_HIT;
+
+			semiauto = LMGParams::SEMIAUTO;
+			burst_size = LMGParams::BURST_SIZE;
+			burst_rate = LMGParams::BURST_RATE;
+
+			reload_time = LMGParams::RELOAD_TIME;
+			mag_size = LMGParams::MAG_SIZE;
+			delayafterfire = LMGParams::DELAYAFTERFIRE;
+			randdelay = LMGParams::RANDDELAY;
+
+			bullet_velocity = LMGParams::BULLET_VELOCITY;
+			bullet_lifetime = LMGParams::BULLET_LIFETIME;
+			bullet_pen = LMGParams::BULLET_PEN;
+
+			emptyshellonfire = LMGParams::EMPTYSHELLONFIRE;
 		}
 		break;
 
@@ -912,8 +1060,96 @@ void getWeaponStats( int blobNameHash,
 	}
 }
 
+void getExtraMovementStats( int blobNameHash, float &out reloadWalkStat,
+	float &out reloadJumpStat, float &out stabWalkStat, float &out stabJumpStat )
+{
+	switch(blobNameHash)
+	{
+		case _ranger:
+		{
+			reloadWalkStat      = RangerParams::RELOAD_WALKSPEED_FACTOR;
+			reloadJumpStat      = RangerParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = RangerParams::RELOAD_WALKSPEED_FACTOR;
+			stabJumpStat        = RangerParams::RELOAD_JUMPHEIGHT_FACTOR;
+		}
+		break;
+
+		case _lmg:
+		{
+			reloadWalkStat      = LMGParams::RELOAD_WALKSPEED_FACTOR;
+			reloadJumpStat      = LMGParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = LMGParams::RELOAD_WALKSPEED_FACTOR;
+			stabJumpStat        = LMGParams::RELOAD_JUMPHEIGHT_FACTOR;
+		}
+		break;
+
+		case _mp5:
+		{
+			reloadWalkStat      = Mp5Params::RELOAD_WALKSPEED_FACTOR;
+			reloadJumpStat      = Mp5Params::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = Mp5Params::RELOAD_WALKSPEED_FACTOR;
+			stabJumpStat        = Mp5Params::RELOAD_JUMPHEIGHT_FACTOR;
+		}
+		break;
+
+		case _revolver:
+		{
+			reloadWalkStat      = RevolverParams::RELOAD_WALKSPEED_FACTOR;
+			reloadJumpStat      = RevolverParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = RevolverParams::RELOAD_WALKSPEED_FACTOR;
+			stabJumpStat        = RevolverParams::RELOAD_JUMPHEIGHT_FACTOR;
+		}
+		break;
+
+		case _shielder:
+		{
+			reloadWalkStat      = ShielderParams::RELOAD_WALKSPEED_FACTOR;
+			reloadJumpStat      = ShielderParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = ShielderParams::RELOAD_WALKSPEED_FACTOR;
+			stabJumpStat        = ShielderParams::RELOAD_JUMPHEIGHT_FACTOR;
+		}
+		break;
+
+		case _firebringer:
+		{
+			reloadWalkStat      = FirebringerParams::RELOAD_WALKSPEED_FACTOR;
+			reloadJumpStat      = FirebringerParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = FirebringerParams::RELOAD_WALKSPEED_FACTOR;
+			stabJumpStat        = FirebringerParams::RELOAD_JUMPHEIGHT_FACTOR;
+		}
+		break;
+
+		case _sniper:
+		{
+			reloadWalkStat      = SniperParams::RELOAD_WALKSPEED_FACTOR;
+			reloadJumpStat      = SniperParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = SniperParams::RELOAD_WALKSPEED_FACTOR;
+			stabJumpStat        = SniperParams::RELOAD_JUMPHEIGHT_FACTOR;
+		}
+		break;
+
+		case _rpg:
+		{
+			reloadWalkStat      = RPGParams::RELOAD_WALKSPEED_FACTOR;
+			reloadJumpStat      = RPGParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = RPGParams::RELOAD_WALKSPEED_FACTOR;
+			stabJumpStat        = RPGParams::RELOAD_JUMPHEIGHT_FACTOR;
+		}
+		break;
+
+		default: // _shotgun, but it'll be default stats
+		{
+			reloadWalkStat      = ShotgunParams::RELOAD_WALKSPEED_FACTOR;
+			reloadJumpStat      = ShotgunParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = ShotgunParams::RELOAD_WALKSPEED_FACTOR;
+			stabJumpStat        = ShotgunParams::RELOAD_JUMPHEIGHT_FACTOR;
+		}
+		break;
+	}
+}
+
 void getMovementStats( int blobNameHash, bool isSprinting,
-	 float &out walkStat, float &out airwalkStat, float &out jumpStat )
+	 float &out walkStat, float &out airwalkStat, float &out jumpStat)
 {
 	switch(blobNameHash)
 	{
@@ -930,6 +1166,23 @@ void getMovementStats( int blobNameHash, bool isSprinting,
 				walkStat 		= RangerParams::WALK_STAT;
 				airwalkStat 	= RangerParams::AIRWALK_STAT;
 				jumpStat 		= RangerParams::JUMP_STAT;
+			}
+		}
+		break;
+
+		case _lmg:
+		{
+			if (isSprinting)
+			{
+				walkStat 		= LMGParams::WALK_STAT_SPRINT;
+				airwalkStat 	= LMGParams::AIRWALK_STAT_SPRINT;
+				jumpStat 		= LMGParams::JUMP_STAT_SPRINT;
+			}
+			else
+			{
+				walkStat 		= LMGParams::WALK_STAT;
+				airwalkStat 	= LMGParams::AIRWALK_STAT;
+				jumpStat 		= LMGParams::JUMP_STAT;
 			}
 		}
 		break;
@@ -1135,6 +1388,9 @@ float getBulletSpread( int blobNameHash )
 		case _ranger:
 		bulletSpread = 1.0f; break;
 
+		case _lmg:
+		bulletSpread = 1.0f; break;
+
 		case _mp5:
 		bulletSpread = 5.0f; break;
 
@@ -1227,6 +1483,23 @@ void onRangerReload(CBlob@ this)
 	0);         // team number
 }
 
+void onLMGReload(CBlob@ this)
+{
+	this.getSprite().PlaySound("LMG_reload.ogg", 0.8);
+
+	makeGibParticle(
+	"EmptyMag",               // file name
+	this.getPosition() + Vec2f(this.isFacingLeft() ? -6.0f : 6.0f, 0.5f),      // position
+	Vec2f(this.isFacingLeft() ? -2.0f : 2.0f, -1.0f),                          // velocity
+	0,                                  // column
+	0,                                  // row
+	Vec2f(16, 16),                      // frame size
+	1.0f,                               // scale?
+	0,                                  // ?
+	"EmptyMagSound",                    // sound
+	0);         // team number
+}
+
 void onSniperReload(CBlob@ this)
 {
 	this.getSprite().PlaySound("Sniper_reload.ogg", 0.8);
@@ -1247,20 +1520,7 @@ void onSniperReload(CBlob@ this)
 void onMp5Reload(CBlob@ this)
 {
 	this.getSprite().PlaySound("Mp5_reload.ogg", 0.8); //if (this.get_s8("charge_time") >= 60) 
-	/*if (this.get_bool("isReloading") && (this.get_s8("charge_time") == 46 || this.get_s8("charge_time") == 45))
-	{
-		makeGibParticle(
-		"EmptyMag",               // file name
-		this.getPosition() + Vec2f(this.isFacingLeft() ? -3.0f : 3.0f, 2.0f),      // position
-		Vec2f(this.isFacingLeft() ? -1.5f : 1.5f, -0.75f),                          // velocity
-		0,                                  // column
-		0,                                  // row
-		Vec2f(16, 16),                      // frame size
-		1.0f,                               // scale?
-		0,                                  // ?
-		"EmptyMagSound",                    // sound
-		0);         // team number
-	}*/
+	// particle located at infantryanim.as
 }
 
 void onShotgunReload(CBlob@ this)

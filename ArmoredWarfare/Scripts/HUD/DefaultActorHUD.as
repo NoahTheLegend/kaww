@@ -329,6 +329,11 @@ void onRender(CSprite@ this)
 			icon_num = 8;
 			break;
 		}
+		case _lmg:
+		{
+			icon_num = 9;
+			break;
+		}
 	}
 
 	GUI::DrawIcon("ClassIconSimple.png", icon_num, Vec2f(48, 48), Vec2f(icon_num == 0 ? -14 : 46, getScreenHeight()-166), 2);
@@ -336,7 +341,6 @@ void onRender(CSprite@ this)
 	string ammo_amt = blob.get_u32("mag_bullets");
 	string ammo_amt_max = blob.get_u32("mag_bullets_max");
 	Vec2f pngsize = Vec2f(98, 159);
-	
 
 	if (icon_num != 0)
 	{
@@ -353,6 +357,7 @@ void onRender(CSprite@ this)
 		
 		GUI::DrawIcon("Separator.png", 0, Vec2f(400, 300), Vec2f(-110.0f, getHUDY() - dim.y - 153.0f), 0.45f);
 
+		
 		if (ammo_amt_max != "" && ammo_amt_max.size() > 1)
 		{	// MAX AMMO
 			GUI::DrawIcon("FontNum.png", ammo_amt_max[0]+2, pngsize, Vec2f(-14.0f, getHUDY() - dim.y - 26.0f), 0.35f);
