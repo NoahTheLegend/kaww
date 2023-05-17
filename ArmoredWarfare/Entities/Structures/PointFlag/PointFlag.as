@@ -88,6 +88,8 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 	u8 team = 255;
 	if (teamright == 0) team = teamleft;
 	else if (teamleft == 0) team = teamright;
+	printf("old "+oldteam);
+	printf("team "+team);
 	if (getRules() !is null && team != 255)
 	{
 		getRules().SetTeamWon(team);
