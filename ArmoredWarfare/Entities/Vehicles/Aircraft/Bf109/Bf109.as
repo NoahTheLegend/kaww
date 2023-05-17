@@ -363,7 +363,7 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 
 	shootVehicleGun(has_owner ? ap.getOccupied().getNetworkID() : this.getNetworkID(), this.getNetworkID(),
 		true_angle, this.getPosition()+Vec2f(0, 8),
-		aimpos, bulletSpread, 1, 0, 0.33f, 0.5f, 1,
+		aimpos, bulletSpread, 1, 0, 0.45f, 0.6f, 1,
 			this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 }
 
