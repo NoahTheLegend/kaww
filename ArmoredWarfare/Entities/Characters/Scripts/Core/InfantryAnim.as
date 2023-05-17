@@ -188,6 +188,55 @@ void onTick(CSprite@ this)
 		return;
 	}
 
+	if (blob is null) return;
+	Animation@ current_anim = this.getAnimation("reload");
+	if (blob.get_bool("timed_particle") && current_anim !is null
+		&& this.isAnimation("reload"))
+	{
+		if (!blob.hasTag("had_timed_particle"))
+		{
+			if (blob.getName() == "mp5")
+			{
+				if (current_anim.frame == 6)
+				{
+					makeGibParticle(
+					"EmptyMag",               // file name
+					blob.getPosition() + Vec2f(blob.isFacingLeft() ? -3.0f : 3.0f, 2.0f),      // position
+					Vec2f(blob.isFacingLeft() ? -1.5f : 1.5f, -0.75f),                          // velocity
+					0,                                  // column
+					0,                                  // row
+					Vec2f(16, 16),                      // frame size
+					1.0f,                               // scale?
+					0,                                  // ?
+					"EmptyMagSound",                    // sound
+					0);         // team number
+
+					blob.Tag("had_timed_particle");
+				}
+			}
+			else if (blob.getName() == "lmg")
+			{
+				if (current_anim.frame == 8)
+				{
+					makeGibParticle(
+					"EmptyMagBig",               // file name
+					blob.getPosition() + Vec2f(blob.isFacingLeft() ? -3.0f : 3.0f, 3.0f),      // position
+					Vec2f(blob.isFacingLeft() ? -1.25f : 1.25f, -0.65f),                          // velocity
+					0,                                  // column
+					0,                                  // row
+					Vec2f(16, 16),                      // frame size
+					1.0f,                               // scale?
+					0,                                  // ?
+					"EmptyMagSound",                    // sound
+					0);         // team number
+
+					blob.Tag("had_timed_particle");
+				}
+			}
+		}
+	}
+	else blob.Untag("had_timed_particle");
+
 	if (blob.getPlayer() !is null)
 	{
 		CSpriteLayer@ camo = this.getSpriteLayer("camo");

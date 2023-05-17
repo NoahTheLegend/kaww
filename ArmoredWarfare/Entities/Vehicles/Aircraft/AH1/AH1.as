@@ -254,8 +254,8 @@ void onTick(CBlob@ this)
 									if (this.isFacingLeft()) rot = -1.0f;
 									ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
 								}
-								if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
-								this.Tag("no_more_shooting");
+								this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
+								this.set_u32("next_shoot", getGameTime()+cooldown_time);
 							}
 						}
 
@@ -482,6 +482,7 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 	CBitStream params;
 	params.write_Vec2f(arrowPos);
 	params.write_Vec2f(arrowVel);
+	this.SendCommand(this.getCommandID("shoot bullet"), params);
 }
 
 void ReleaseTraps(CBlob@ this)
