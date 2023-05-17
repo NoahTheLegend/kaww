@@ -62,7 +62,7 @@ void onInit(CBlob@ this)
 
 void onChangeTeam(CBlob@ this, const int oldTeam)
 {
-	if (oldTeam > 1)
+	if (oldTeam > 6)
 	{
 		this.set_u16(capture_prop, 0);
 	}
@@ -84,8 +84,8 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 	u8 team = 255;
 	if (teamright == 0) team = teamleft;
 	else if (teamleft == 0) team = teamright;
-	//printf(""+team);
-	if (getRules() !is null && team < 7)
+	printf(""+team);
+	if (getRules() !is null && team != 255)
 	{
 		getRules().SetTeamWon(team);
 		getRules().SetCurrentState(GAME_OVER);
