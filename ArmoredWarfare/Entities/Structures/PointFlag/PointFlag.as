@@ -69,10 +69,13 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 		this.set_u16(capture_prop, 0);
 	}
 
-	this.set_u8("oldteam", this.getTeamNum());
+	//this.set_u8("oldteam", this.getTeamNum());
 	
 	CBlob@[] blobs;
 	bool won = false;
+	u8 numteamleft = getRules().get_u8("teamleft");
+	u8 numteamright = getRules().get_u8("teamright");
+
 	u8 teamleft = 0;
 	u8 teamright = 0;
 	getBlobsByName("pointflag", @blobs);
@@ -81,15 +84,15 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 		{
 			CBlob@ b = blobs[i];
 			if (b is null) continue;
-			if (b.getTeamNum() != 0 && b.getTeamNum() != 1) return;
-			b.getTeamNum() == getRules().get_u8("teamleft") ? teamleft++ : teamright++;
+			if (b.getTeamNum() != numteamleft && b.getTeamNum() != numteamright) return;
+			b.getTeamNum() == numteamleft ? teamleft++ : teamright++;
 		}
 	}
 	u8 team = 255;
-	if (teamright == 0) team = teamleft;
-	else if (teamleft == 0) team = teamright;
-	printf("old "+oldteam);
-	printf("team "+team);
+	if (teamright == 0) team = numteamleft;
+	else if (teamleft == 0) team = numteamright;
+	//printf("old "+oldteam);
+	//printf("team "+team);
 	if (getRules() !is null && team != 255)
 	{
 		getRules().SetTeamWon(team);
