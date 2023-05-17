@@ -169,7 +169,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 			if (!this.get("infantryInfo", @infantry )) return;
 
 			if (this.get_u32("next_bullet") > getGameTime()) return;
-			this.set_u32("next_bullet", getGameTime()+2);
+			this.set_u32("next_bullet", getGameTime()+1);
 
 			float damageBody = infantry.damage_body;
 			float damageHead = infantry.damage_head;
