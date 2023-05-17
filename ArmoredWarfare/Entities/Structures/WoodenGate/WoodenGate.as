@@ -198,6 +198,7 @@ void onTick(CBlob@ this)
 {
 	CBlob@[] overlapping;
 	this.getOverlapping(@overlapping);
+	if (this.getTickSinceCreated() > 90) this.server_setTeamNum(0);
 
 	bool has_overlapping = false;
 	for (u16 i = 0; i < overlapping.length; i++)
