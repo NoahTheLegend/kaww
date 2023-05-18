@@ -69,7 +69,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			GUI::DrawText(descriptions[teamnum], Vec2f(topleft.x + 100 + dim.x, topleft.y), SColor(0xffffffff));
 		}
 	}
-	//GUI::DrawText(getTranslatedString("Players: {PLAYERCOUNT}").replace("{PLAYERCOUNT}", "" + players.length), Vec2f(bottomright.x - 400, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(getTranslatedString("Players: {PLAYERCOUNT}").replace("{PLAYERCOUNT}", "" + players.length), Vec2f(bottomright.x - 92, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 1.5;
 
