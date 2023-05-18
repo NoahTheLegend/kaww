@@ -65,7 +65,7 @@ void onTick(CRules@ this)
 
 void GunRender(int id)
 {
-	FRAME_TIME += Render::getRenderDeltaTime() * getTicksASecond();  // We are using this because ApproximateCorrectionFactor is lerped
+	FRAME_TIME += getRenderDeltaTime() * getTicksASecond();  // We are using this because ApproximateCorrectionFactor is lerped
 	RenderingBullets();
 }
 
