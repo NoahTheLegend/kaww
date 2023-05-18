@@ -1289,7 +1289,7 @@ void HandleSpecific(CBlob@ this)
 {
 	if (isServer()&&getGameTime()%30==0)
 	{
-		//if (!this.hasTag("camera_offset") && !(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
+		if (!this.hasTag("camera_offset") && !(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
 		if (this.hasTag("invincible") && !this.isAttached()) this.Untag("invincible");
 	}
 }
