@@ -41,13 +41,13 @@ void onTick(CBlob@ this)
         }
     }
 
-	//bool separatists_power = getRules().get_bool("enable_powers"); // team 4 buff
-   	//u8 extra_amount = 0;
-    //if (separatists_power)
-	//{
-	//	if (teamleft == 4 && num_teamleft > 0) num_teamleft++;
-	//	if (teamright == 4 && num_teamright > 0) num_teamright++; 
-	//}
+	bool separatists_power = getRules().get_bool("enable_powers"); // team 4 buff
+   	u8 extra_amount = 0;
+    if (separatists_power)
+	{
+		if (teamleft == 4 && num_teamleft > 0) num_teamleft++;
+		if (teamright == 4 && num_teamright > 0) num_teamright++; 
+	}
 
     this.set_u8("numcapping", 0);
 
