@@ -325,7 +325,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				if ((customData == Hitters::explosion || customData == Hitters::keg) ? hitterBlob.getDistanceTo(this) < 32.0f+XORRandom(81)*0.1f : damage >= 1.5f)
 				{
 					setKnocked(this, 15);
-					damage /= (1.5f + XORRandom(16)*0.1f);
+					damage /= (1.75f + XORRandom(21)*0.1f);
 				}
 				else if (isServer())
 				{
@@ -334,7 +334,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 					params.write_bool(has_hit);
 					this.SendCommand(this.getCommandID("shield_effects"), params);
 
-					damage /= (1.5f + XORRandom(16)*0.1f);
+					damage /= (1.75f + XORRandom(21)*0.1f);
 				}
 			}
 		}
