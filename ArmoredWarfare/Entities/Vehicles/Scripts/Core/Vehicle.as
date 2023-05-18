@@ -585,7 +585,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!isFlipped(this)) return;
 	if (caller.getDistanceTo(this) > this.getRadius()) return;
-	if (this.hasTag("turret") || (!this.hasTag("tank") && !this.hasTag("truck"))) return;
+	if (this.hasTag("turret") || this.hasTag("machinegun") || this.hasTag("autoflip")) return;
 	
 	CBitStream params;
 	CButton@ button = caller.CreateGenericButton(12, Vec2f(0, -12), this, this.getCommandID("init_flipping"), "Flip this vehicle.", params);
