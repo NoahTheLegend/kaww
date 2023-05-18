@@ -598,10 +598,10 @@ namespace RPGParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 150; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 150; // aim inaccuracy  (+3 per shot)
-	const ::u8 INACCURACY_MIDAIR        = 30;
-	const ::u8 INACCURACY_HIT 		    = 50;
+	const ::u8 INACCURACY_CAP 			= 125; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 125; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_MIDAIR        = 10;
+	const ::u8 INACCURACY_HIT 		    = 25;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= true;
