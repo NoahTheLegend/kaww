@@ -30,36 +30,6 @@ void onInit(CBlob@ this)
 
 	u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
 	this.set_u32("crate_timer_end", num);
-
-	CSprite@ sprite = this.getSprite();
-	if (sprite is null) return;
-	CSpriteLayer@ flag = sprite.addSpriteLayer("flag", "CTF_Flag.png", 32, 16);
-	if (flag !is null)
-	{
-		flag.SetRelativeZ(10.0f);
-		flag.SetOffset(Vec2f(9.0f, -51.0f));
-
-		u8 teamleft = getRules().get_u8("teamleft");
-		u8 teamright = getRules().get_u8("teamright");
-
-		Animation@ anim_teamleft = flag.addAnimation("flag_wave_teamleft", XORRandom(3)+3, true);
-		Animation@ anim_teamright = flag.addAnimation("flag_wave_teamright", XORRandom(3)+3, true);
-
-		if (anim_teamleft !is null && anim_teamright !is null)
-		{
-			for (u8 i = 0; i < 4; i++)
-			{
-				u8 frameleft = 4*teamleft+i;
-				u8 frameright = 4*teamright+i;
-
-				anim_teamleft.AddFrame(frameleft);
-				anim_teamright.AddFrame(frameright);
-			}
-
-			u8 team = this.getTeamNum();
-			if (team < 7) flag.SetAnimation((team == getRules().get_u8("teamleft") ? anim_teamleft : anim_teamright));
-		}
-	}
 }
 
 void onChangeTeam(CBlob@ this, const int oldTeam)
@@ -104,9 +74,40 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 
 void onTick(CBlob@ this)
 {
-	if (this.getTickSinceCreated() > 30 && this.getTeamNum() != this.get_u8("oldteam"))
+	if (this.getTickSinceCreated() == 1)
 	{
-		onChangeTeam(this, this.get_u8("oldteam"));
+		CSprite@ sprite = this.getSprite();
+		if (sprite is null) return;
+		CSpriteLayer@ flag = sprite.addSpriteLayer("flag", "CTF_Flag.png", 32, 16);
+		if (flag !is null)
+		{
+			flag.SetRelativeZ(10.0f);
+			flag.SetOffset(Vec2f(9.0f, -51.0f));
+	
+			u8 teamleft = getRules().get_u8("teamleft");
+			u8 teamright = getRules().get_u8("teamright");
+	
+			Animation@ anim_teamleft = flag.addAnimation("flag_wave_teamleft", XORRandom(3)+3, true);
+			Animation@ anim_teamright = flag.addAnimation("flag_wave_teamright", XORRandom(3)+3, true);
+	
+			if (anim_teamleft !is null && anim_teamright !is null)
+			{
+				for (u8 i = 0; i < 4; i++)
+				{
+					u8 frameleft = 4*teamleft+i;
+					u8 frameright = 4*teamright+i;
+	
+					printf("adding frameleft "+frameleft);
+					printf("adding framerihgt "+frameright);
+	
+					anim_teamleft.AddFrame(frameleft);
+					anim_teamright.AddFrame(frameright);
+				}
+	
+				u8 team = this.getTeamNum();
+				if (team < 7) flag.SetAnimation((team == getRules().get_u8("teamleft") ? anim_teamleft : anim_teamright));
+			}
+		}
 	}
     float capture_distance = 76.0f; //Distance from this blob that it can be cpaped
 
