@@ -117,7 +117,7 @@ void Explode(CBlob@ this, f32 radius, f32 damage)
 
 	if (this.exists("custom_hitter"))
 	{
-		hitter = this.get_u8("custom_hitter");
+		hitter = this.get_s32("custom_hitter");
 	}
 
 	bool should_teamkill = this.exists("explosive_teamkill") && this.get_bool("explosive_teamkill");
@@ -349,7 +349,7 @@ void WarfareExplode(CBlob@ this, f32 radius, f32 damage)
 
 	if (this.exists("custom_hitter"))
 	{
-		hitter = this.get_u8("custom_hitter");
+		hitter = this.get_s32("custom_hitter");
 	}
 
 	bool should_teamkill = this.exists("explosive_teamkill") && this.get_bool("explosive_teamkill");

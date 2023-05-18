@@ -184,6 +184,12 @@ class Bar : BarHandler{
             ProgressBar@ active = @this.active_bars[i];
             if (active is null) continue;
 
+            if (active.tick_since_created > 30 && active.current <= 1)
+            {
+                BarHandler::RemoveBar(active.name, false);
+                continue;
+            }
+
             BarHandler::Fadeout(active);
             if (active.remove_on_fill && active.percent == 1.0f)
             {

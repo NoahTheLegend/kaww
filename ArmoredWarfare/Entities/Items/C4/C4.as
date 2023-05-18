@@ -357,7 +357,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	const f32 vellen = this.getOldVelocity().Length();
-	const u8 hitter = this.get_u8("custom_hitter");
+	const u8 hitter = this.get_s32("custom_hitter");
 
 	if (blob !is null) return;
 

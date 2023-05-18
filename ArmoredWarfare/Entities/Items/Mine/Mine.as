@@ -24,7 +24,7 @@ void onInit(CBlob@ this)
 	this.set_f32("map_damage_ratio", 0.5f);
 	this.set_bool("map_damage_raycast", true);
 	this.set_string("custom_explosion_sound", "MineExplosion.ogg");
-	this.set_u8("custom_hitter", Hitters::mine);
+	this.set_s32("custom_hitter", Hitters::mine);
 
 	this.Tag("trap");
 	this.getSprite().SetRelativeZ(-0.1f); //background
