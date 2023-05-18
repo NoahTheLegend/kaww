@@ -180,19 +180,19 @@ class BulletObj
 			return false;
 		}
 
-		if (blob.isAttached() && !blob.hasTag("player"))
-			return false;
-
 		if ((!is_young || !same_team) && blob.isAttached() && !blob.hasTag("covered"))
 		{
 			if (blob.hasTag("collidewithbullets")) return _rand_r.NextRanged(2)==0;
-			if (_rand_r.NextRanged(8) == 0)
+			if (_rand_r.NextRanged(4) == 0 || blob.hasTag("player"))
 				return true;
 
 			AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
-			if (point !is null && point.getOccupied() !is null && (point.getOccupied().hasTag("machinegun") || point.getOccupied().getName() == "gun") && !same_team)
+			if (point !is null && point.getOccupied() !is null && (point.getOccupied().hasTag("machinegun")) && !same_team)
 				return true;
 		}
+
+		if (blob.isAttached() && !blob.hasTag("player"))
+			return false;
 
 		if (blob.getName() == "trap_block")
 			return shape.getConsts().collidable;

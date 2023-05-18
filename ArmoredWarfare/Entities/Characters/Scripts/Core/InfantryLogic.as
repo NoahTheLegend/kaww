@@ -278,7 +278,7 @@ void onInit(CBlob@ this)
 	barInit(this);
 }
 
-const f32 shield_angle = 45;
+const f32 shield_angle = 60;
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
@@ -288,6 +288,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		damage *= extra_amount;
 	}
+
+	bool is_bullet = (customData == Hitters::bullet || customData == Hitters::heavybullet
+		|| customData == Hitters::machinegunbullet || customData == Hitters::aircraftbullet);
 	
 	{
 		InfantryInfo@ infantry;
@@ -301,7 +304,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 
 	if (this.getName() == "shielder"
-		&& (customData == Hitters::bullet || customData == Hitters::explosion
+		&& (is_bullet || customData == Hitters::explosion
 			|| customData == Hitters::keg || customData == Hitters::sword))
 	{
 		bool isReloading = this.get_bool("isReloading") || this.get_s32("my_reloadtime") > 0;
@@ -319,7 +322,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			//printf("angle "+angle+" hit angle "+hit_angle+" diff "+diff);
 			if (block)
 			{
-				if (customData == Hitters::explosion || customData == Hitters::keg ? hitterBlob.getDistanceTo(this) < 32.0f+XORRandom(81)*0.1f : damage >= 1.5f)
+				if ((customData == Hitters::explosion || customData == Hitters::keg) ? hitterBlob.getDistanceTo(this) < 32.0f+XORRandom(81)*0.1f : damage >= 1.5f)
 				{
 					setKnocked(this, 15);
 					damage /= (1.5f + XORRandom(16)*0.1f);
@@ -327,7 +330,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				else if (isServer())
 				{
 					CBitStream params;
-					params.write_bool((customData == Hitters::bullet || customData == Hitters::sword));
+					bool has_hit = (is_bullet || customData == Hitters::sword);
+					params.write_bool(has_hit);
 					this.SendCommand(this.getCommandID("shield_effects"), params);
 
 					damage /= (1.5f + XORRandom(16)*0.1f);
@@ -347,7 +351,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
 		}
-		if (this.isBot() && hitterBlob.getDamageOwnerPlayer() !is null && (customData == Hitters::bullet || customData == Hitters::heavybullet))
+		if (this.isBot() && hitterBlob.getDamageOwnerPlayer() !is null && (is_bullet))
 		{
 			this.set_string("last_attacker", hitterBlob.getDamageOwnerPlayer().getUsername());
 		}
@@ -360,7 +364,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (customData == Hitters::explosion)
 			return damage*0.04f;
-		else if (customData == Hitters::bullet || customData == Hitters::heavybullet)
+		else if (is_bullet)
 			return damage*0.5f;
 		else return (customData == Hitters::sword ? this.hasTag("mgunner") ? damage : 0 : 0);
 	}
@@ -755,8 +759,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 
 	CControls@ controls = this.getControls();
 	CSprite@ sprite = this.getSprite();
-	s8 charge_time = this.get_s32("my_chargetime");
-	s8 reload_time = this.get_s32("my_reloadtime");
+	s32 charge_time = this.get_s32("my_chargetime");
+	s32 reload_time = this.get_s32("my_reloadtime");
 	this.set_s8("charge_time", charge_time);
 	if (this.get_u32("end_stabbing") >= getGameTime())
 	{
@@ -989,6 +993,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					// actually reloading
 					reloadistrue = true;
 					charge_time = reloadTime;
+					this.set_s32("my_chargetime", charge_time);
 
 					isReloading = true;
 					this.set_bool("isReloading", true);
@@ -1087,7 +1092,9 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				{
 					charge_time = 0;
 					if (isReloading)
+					{
 						TakeAmmo(this, magSize);
+					}
 
 					archer.isStabbing = false;
 					archer.isReloading = false;
@@ -1104,7 +1111,9 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			{
 				charge_time = 0;
 				if (isReloading)
+				{
 					TakeAmmo(this, magSize);
+				}
 
 				archer.isStabbing = false;
 				archer.isReloading = false;
@@ -1279,7 +1288,7 @@ void HandleSpecific(CBlob@ this)
 {
 	if (isServer()&&getGameTime()%30==0)
 	{
-		if (!this.hasTag("camera_offset") && !(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
+		//if (!this.hasTag("camera_offset") && !(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
 		if (this.hasTag("invincible") && !this.isAttached()) this.Untag("invincible");
 	}
 }
