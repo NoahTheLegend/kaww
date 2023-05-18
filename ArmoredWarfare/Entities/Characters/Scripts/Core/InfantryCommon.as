@@ -510,7 +510,7 @@ namespace SniperParams
 	const ::u32 MAG_SIZE 				= 5; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 35; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 23.5f; // speed that bullets fly
+	const ::f32 BULLET_VELOCITY 		= 25.0f; // speed that bullets fly
 	const ::u32 BULLET_LIFETIME 		= 75; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 2; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
