@@ -126,7 +126,7 @@ void onTick(CBlob@ this)
 {
 	barTick(this);
 
-	if (isServer() && getGameTime()%15==0)
+	if (isServer() && this.get_bool("explode") && getGameTime()%15==0)
 	{
 		this.server_DetachFromAll();
 	}
