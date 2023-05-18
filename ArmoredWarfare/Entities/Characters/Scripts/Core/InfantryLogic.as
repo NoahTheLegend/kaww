@@ -66,7 +66,7 @@ void onInit(CBlob@ this)
 	u8 randdelay; // + randomness
 	f32 bullet_velocity; // speed that bullets fly 1.6
 	u32 bullet_lifetime; // in ticks, time for bullet to die
-	s8 bullet_pen; // penRating for bullet
+	s16 bullet_pen; // penRating for bullet
 	bool emptyshellonfire; // should an empty shell be released when shooting
 	// SOUND
 	string reload_sfx;
@@ -153,17 +153,17 @@ void onInit(CBlob@ this)
 		this.Tag(medicTagString);
 	}
 
-	this.set_s8("reloadtime", 0); // for server
+	this.set_s16("reloadtime", 0); // for server
 
 	// one of these two has to go
-	this.set_s8("charge_time", 0);
+	this.set_s16("charge_time", 0);
 	this.set_s32("my_chargetime", 0);
 	this.set_s32("my_reloadtime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
 
 	this.set_s32("custom_hitter", Hitters::bullet);
 
-	this.set_s8("recoil_direction", 0);
+	this.set_s16("recoil_direction", 0);
 	this.set_u8("inaccuracy", 0);
 	this.set_u32("bull_boost", 0);
 	this.set_u32("turret_delay", 0);
@@ -188,7 +188,7 @@ void onInit(CBlob@ this)
 	this.set_f32("stab damage", 1.25f);
 	this.set_u8("ammo_pershot", 1);
 	this.set_string("ammo_prop", "ammo");
-	this.set_s8("bullet_type", 0);
+	this.set_s16("bullet_type", 0);
 
 	this.set_bool("is_rpg", false);
 	this.set_bool("is_firebringer", false);
@@ -237,7 +237,7 @@ void onInit(CBlob@ this)
 		}
 		case _shotgun:
 		{
-			this.set_s8("bullet_type", -1);
+			this.set_s16("bullet_type", -1);
 			this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
 			this.set_f32("stab damage", 1.5f);
 			this.set_u8("ammo_pershot", 4);
@@ -245,7 +245,7 @@ void onInit(CBlob@ this)
 		}
 		case _sniper:
 		{
-			this.set_s8("bullet_type", 1);
+			this.set_s16("bullet_type", 1);
 			this.set_u8("ammo_pershot", 3);
 			break;
 		}
@@ -761,7 +761,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	CSprite@ sprite = this.getSprite();
 	s32 charge_time = this.get_s32("my_chargetime");
 	s32 reload_time = this.get_s32("my_reloadtime");
-	this.set_s8("charge_time", charge_time);
+	this.set_s16("charge_time", charge_time);
 	if (this.get_u32("end_stabbing") >= getGameTime())
 	{
 		archer.isStabbing = true;
@@ -937,7 +937,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		s16 reloadTime = infantry.reload_time;
 		CPlayer@ p = this.getPlayer();
 		
-		if (p !is null)
+		if (p !is null && p.getBlob() !is null)
 		{
 			Animation@ anim = p.getBlob().getSprite().getAnimation("reload");
 			if (anim !is null)
@@ -953,16 +953,17 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					reloadTime = infantry.reload_time * 0.75f;
 					time = 2;
 				}
-				if (p.getBlob() !is null && p.getBlob().getSprite() !is null)
+				else
 				{
 					anim.time = this.get_u8("initial_reloadanim_time");
 				}
+				anim.time = time;
 			}
 		}
 		
 		const u32 magSize = infantry.mag_size;
 	
-		bool done_shooting = this.get_s8("charge_time") <= 0 && this.get_s32("my_chargetime") <= 0;
+		bool done_shooting = this.get_s16("charge_time") <= 0 && this.get_s32("my_chargetime") <= 0;
 		bool not_full = this.get_u32("mag_bullets") < this.get_u32("mag_bullets_max");
 
 		if (done_shooting && this.get_u32("no_reload") < getGameTime())
@@ -979,6 +980,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				this.set_u32("no_reload", delay);
 				this.set_s32("my_reloadtime", infantry.reload_time);
 				this.set_u32("reset_reloadtime", infantry.reload_time+getGameTime());
+				this.set_s32("my_chargetime", charge_time);
 				
 				if (this.hasTag("forcereload"))
 				{
@@ -993,7 +995,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					// actually reloading
 					reloadistrue = true;
 					charge_time = reloadTime;
-					this.set_s32("my_chargetime", charge_time);
 
 					isReloading = true;
 					this.set_bool("isReloading", true);
@@ -1001,7 +1002,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					CBitStream params; // sync to server
 					if (ismyplayer && !this.isBot()) // isClient()
 					{
-						params.write_s8(charge_time);
+						params.write_s16(charge_time);
 						this.SendCommand(this.getCommandID("sync_reload_to_server"), params);
 					}
 				}
@@ -1014,7 +1015,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		
 		if (isServer() && this.hasTag("sync_reload"))
 		{
-			s8 reload = charge_time > 0 ? charge_time : this.get_s8("reloadtime");
+			s16 reload = charge_time > 0 ? charge_time : this.get_s16("reloadtime");
 			if (reload > 0)
 			{
 				reload_time = reload;
@@ -1406,7 +1407,7 @@ bool canSend( CBlob@ this )
 	return (this.isMyPlayer() || this.getPlayer() is null);
 }
 
-void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry, Vec2f pos )
+void ClientFire( CBlob@ this, const s16 charge_time, InfantryInfo@ infantry, Vec2f pos )
 {
 	if (this.hasTag("had_menus") || this.getTickSinceCreated() <= 5) return;
 	Vec2f thisAimPos = this.getAimPos() - Vec2f(0,4);
@@ -1471,7 +1472,7 @@ void ClientFire( CBlob@ this, const s8 charge_time, InfantryInfo@ infantry, Vec2
 	else
 	{	
 		ShootBullet(this, this.getPosition() - Vec2f(0,1), thisAimPos, infantry.bullet_velocity,
-			bulletSpread*targetFactor, infantry.burst_size, this.get_s8("bullet_type"));
+			bulletSpread*targetFactor, infantry.burst_size, this.get_s16("bullet_type"));
 	}
 
 	//if (this.get_u32("mag_size") > 0)
@@ -1535,7 +1536,7 @@ void ShootRPG(CBlob @this, Vec2f arrowPos, Vec2f aimPos, f32 arrowspeed)
 	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
 }
 
-void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, float bulletSpread, u8 burstSize, s8 type)
+void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, float bulletSpread, u8 burstSize, s16 type)
 {
 	if (canSend(this) || (isServer() && this.isBot()))
 	{
@@ -1567,14 +1568,14 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 	if (this.get_u32("mag_bullets") == 0) return;
 	if (isServer())
 	{
-		if (this.get_s8("firebringer_takeammo") != 1)
+		if (this.get_s16("firebringer_takeammo") != 1)
 		{
-			this.add_s8("firebringer_takeammo", 1);
+			this.add_s16("firebringer_takeammo", 1);
 			this.add_u32("mag_bullets", -1);
 		}
 		else
 		{
-			this.set_s8("firebringer_takeammo", 0);
+			this.set_s16("firebringer_takeammo", 0);
 		}
 		
 		CBitStream params;
@@ -1786,11 +1787,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		}
 		if (isServer())
 		{
-			s8 reload = params.read_s8();
-			this.set_s8("reloadtime", reload);
-
+			s16 reload = params.read_s16();
+			this.set_s16("reloadtime", reload);
 			this.set_s32("my_chargetime", reload);
-			//printf("Synced to server: "+this.get_s8("reloadtime"));
+			//printf("Synced to server: "+this.get_s16("reloadtime"));
 			this.Tag("sync_reload");
 			this.Sync("isReloading", true);
 		}
