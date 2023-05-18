@@ -1281,7 +1281,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 	// damage
 	if (!this.hasTag("ignore fall"))
 	{
-		const f32 base = 5.0f;
+		const f32 base = 8.0f;
 		const f32 ramp = 1.2f;
 
 		if (getNet().isServer() && vellen > base) // server only
@@ -1292,15 +1292,15 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 
 				if (vellen < base * Maths::Pow(ramp, 1))
 				{
-					damage = 0.5f;
+					damage = 0.33f;
 				}
 				else if (vellen < base * Maths::Pow(ramp, 2))
 				{
-					damage = 1.0f;
+					damage = 0.85f;
 				}
 				else if (vellen < base * Maths::Pow(ramp, 3))
 				{
-					damage = 2.0f;
+					damage = 1.5f;
 				}
 				else if (vellen < base * Maths::Pow(ramp, 3))
 				{
