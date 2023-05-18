@@ -162,11 +162,12 @@ class BulletObj
 			{
 				if (blob.hasTag("apc") || blob.hasTag("turret")) return (_rand_r.NextRanged(100) > 70);
 				else if (blob.hasTag("tank")) return (_rand_r.NextRanged(100) > 50);
-				else if (blob.hasTag("gun")) return false;
+				else if (blob.hasTag("machinegun")) return false;
 				else return true;
 			}
 			else
 			{
+				if (blob.hasTag("machinegun")) return (_rand_r.NextRanged(100) < 33);
 				return true;
 			}
 		}
@@ -188,7 +189,7 @@ class BulletObj
 
 			AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
 			if (point !is null && point.getOccupied() !is null && (point.getOccupied().hasTag("machinegun")) && !same_team)
-				return true;
+				return false;
 		}
 
 		if (blob.isAttached() && !blob.hasTag("player"))
