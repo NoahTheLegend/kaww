@@ -1004,7 +1004,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
 									has_owner = true;
 
-								if (this.hasTag("machinegun") && !this.hasTag("firethrower") && this.get_u32("no_more_proj") < getGameTime())
+								if (this.hasTag("machinegun") && !this.hasTag("firethrower") && this.get_u32("no_more_proj") < getGameTime() && this.hasBlob("ammo", 1))
 								{
 									this.set_u32("no_more_proj", getGameTime()+v.getCurrentAmmo().fire_delay);
 
