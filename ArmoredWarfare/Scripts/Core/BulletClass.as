@@ -417,7 +417,7 @@ class BulletObj
 
 					if (blob.hasTag("nolegs")) dmg = DamageHead;
 
-					if (CurrentType < 1) {
+					if (CurrentType < 1 && hoomanShooter.getName() != "sniper") {
 						// do less dmg offscreen
 						int creationTicks = getGameTime()-CreateTime;
 						if (creationTicks > 20) 		dmg *= 0.75f;
