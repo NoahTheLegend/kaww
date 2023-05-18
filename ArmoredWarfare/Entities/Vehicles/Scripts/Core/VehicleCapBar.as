@@ -53,14 +53,14 @@ void onTick(CBlob@ this)
 
     if (num_teamright > 0 || num_teamleft > 0)
     {
-    	if (num_teamright > 0 && num_teamleft == 0 && this.get_s8(teamcapping) != 0 && (this.getTeamNum() == teamleft || this.getTeamNum() == 255)) // red capping
+    	if (num_teamright > 0 && num_teamleft == 0 && this.get_s8(teamcapping) != teamleft && (this.getTeamNum() == teamleft || this.getTeamNum() == 255)) // red capping
     	{
     		this.set_u8("numcapping", num_teamright);
     		this.set_s8(teamcapping, teamright);
 
     		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_teamright);
     	}
-    	else if (num_teamleft > 0 && num_teamright == 0 && this.get_s8(teamcapping) != 1 && (this.getTeamNum() == teamright || this.getTeamNum() == 255)) // blue capping
+    	else if (num_teamleft > 0 && num_teamright == 0 && this.get_s8(teamcapping) != teamright && (this.getTeamNum() == teamright || this.getTeamNum() == 255)) // blue capping
     	{
     		this.set_u8("numcapping", num_teamleft);
     		this.set_s8(teamcapping, teamleft);
