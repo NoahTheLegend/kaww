@@ -97,8 +97,8 @@ void onTick(CBlob@ this)
 					u8 frameleft = 4*teamleft+i;
 					u8 frameright = 4*teamright+i;
 	
-					printf("adding frameleft "+frameleft);
-					printf("adding framerihgt "+frameright);
+					//printf("adding frameleft "+frameleft);
+					//printf("adding framerihgt "+frameright);
 	
 					anim_teamleft.AddFrame(frameleft);
 					anim_teamright.AddFrame(frameright);
