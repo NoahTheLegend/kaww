@@ -38,8 +38,7 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	sprite.ScaleBy(0.75f, 0.75f);
 
-	ShapeConsts@ consts = this.getShape().getConsts();
-	consts.net_threshold_multiplier = 16.0f;
+	ShapeConsts@ consts = this.getShape().getConsts();	
 
 	this.getShape().SetStatic(false);
 	consts.mapCollisions = true;
