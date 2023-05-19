@@ -9,7 +9,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u8 cooldown_time = 135;
+const u8 cooldown_time = 105;
 const u8 barrel_compression = 6; // max barrel movement
 const u16 recoil = 225;
 const f32 damage_modifier = 0.6f;
