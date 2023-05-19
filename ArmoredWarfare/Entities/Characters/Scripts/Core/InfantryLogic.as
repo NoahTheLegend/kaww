@@ -142,7 +142,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("attach_parachute");
 	this.addCommandID("shield_effects");
 	this.addCommandID("throw fire");
-	
+	this.addCommandID("basic_sync");
 	this.addCommandID("sync_mag");
 
 	this.Tag("3x2");
@@ -1022,7 +1022,13 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				reload_time = reload;
 				//archer.isReloading = true;
 				this.set_bool("isReloading", true);
-				this.Sync("isReloading", true);
+
+				CBitStream params;
+				params.write_bool(this.get_bool("isReloading"));
+				params.write_s32(this.get_s32("my_chargetime"));
+				this.SendCommand(this.getCommandID("basic_sync"), params);
+
+				//this.Sync("isReloading", true);
 				isReloading = true;
 				this.Untag("sync_reload");
 			}
@@ -1238,7 +1244,8 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	}
 
 	this.set_s32("my_chargetime", charge_time);
-	this.Sync("my_chargetime", true);
+	//this.Sync("my_chargetime", true);
+	//printf((isClient()?"CLIENT ":"SERVER ")+charge_time);
 	archer.charge_state = charge_state;
 }
 
@@ -1701,6 +1708,19 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		this.set_u32("mag_bullets", mag);
 	}
+	else if (cmd == this.getCommandID("basic_sync"))
+	{
+		if (isClient())
+		{
+			bool isReloading;
+			s32 my_chargetime;
+			if (!params.saferead_bool(isReloading)) return;
+			if (!params.saferead_s32(my_chargetime)) return;
+
+			this.set_bool("isReloading", isReloading);
+			this.set_s32("my_chargetime", my_chargetime);
+		}
+	}
 	else if (cmd == this.getCommandID("shoot rpg"))
 	{
 		if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
@@ -1793,7 +1813,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.set_s32("my_chargetime", reload);
 			//printf("Synced to server: "+this.get_s16("reloadtime"));
 			this.Tag("sync_reload");
-			this.Sync("isReloading", true);
+
+			CBitStream params;
+			params.write_bool(this.get_bool("isReloading"));
+			params.write_s32(this.get_s32("my_chargetime"));
+			this.SendCommand(this.getCommandID("basic_sync"), params);
+			//this.Sync("isReloading", true);
 		}
 	}
 	else if (cmd == this.getCommandID("attach_parachute"))

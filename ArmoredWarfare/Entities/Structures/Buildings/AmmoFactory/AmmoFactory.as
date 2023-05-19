@@ -123,7 +123,7 @@ void onTick(CBlob@ this)
 			
 				spawnMetal(this);
 				this.set_u32("last_prod", getGameTime());
-				this.Sync("last_prod", true);
+				//this.Sync("last_prod", true);
 
 				this.set_bool(working_prop, false);
 

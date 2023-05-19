@@ -6,6 +6,8 @@ void onInit(CBlob@ this)
 	}
 	this.Tag("invincible");
 
+	this.addCommandID("invincibility sync");
+
 	if (!this.exists("spawn immunity time"))
 		this.set_u32("spawn immunity time", getGameTime());
 }
@@ -39,9 +41,22 @@ void onTick(CBlob@ this)
 	{
 		this.Untag("invincible");
 		this.Tag("invincibility done");
-		this.Sync("invincibility done", true);
+		
+		CBitStream params;
+		this.SendCommand(this.getCommandID("invincibility sync"), params);
 
 		this.getCurrentScript().runFlags |= Script::remove_after_this;
 		this.getSprite().setRenderStyle(RenderStyle::normal);
+	}
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
+{
+	if (cmd == this.getCommandID("invincibility sync"))
+	{
+		if (isClient())
+		{
+			this.Tag("invincibility done");
+		}
 	}
 }
