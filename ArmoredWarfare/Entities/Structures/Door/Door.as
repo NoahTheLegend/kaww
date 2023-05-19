@@ -1,4 +1,5 @@
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "KnockedCommon.as";
 
 void onInit(CSprite@ this)

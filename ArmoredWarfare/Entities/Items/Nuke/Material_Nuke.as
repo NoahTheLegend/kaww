@@ -1,4 +1,5 @@
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "Explosion.as";
 
 const u8 boom_max = 16;

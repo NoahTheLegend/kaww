@@ -1,6 +1,7 @@
 #include "WarfareGlobal.as"
 #include "Explosion.as";
 #include "Hitters.as";
+#include "HittersAW.as";
 
 const string GRENADE_STATE = "grenade_state";
 const string GRENADE_TIMER = "grenade_timer";

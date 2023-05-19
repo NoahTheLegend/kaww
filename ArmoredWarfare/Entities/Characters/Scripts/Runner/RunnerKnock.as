@@ -1,5 +1,6 @@
 // stun
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "KnockedCommon.as";
 #include "ShieldCommon.as";
 #include "KnightCommon.as";

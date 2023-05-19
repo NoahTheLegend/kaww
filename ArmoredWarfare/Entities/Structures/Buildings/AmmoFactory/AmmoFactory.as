@@ -7,6 +7,7 @@ const string unique_prop = "unique";
 
 #include "GenericButtonCommon.as";
 #include "Hitters.as";
+#include "HittersAW.as";
 
 void onInit(CBlob@ this)
 {

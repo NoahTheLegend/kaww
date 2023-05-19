@@ -24,7 +24,7 @@ void onInit(CBlob@ this)
 	this.set_u8("TTL", 45);
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 18);
-	this.set_s32("custom_hitter", Hitters::machinegunbullet);
+	this.set_s32("custom_hitter", HittersAW::machinegunbullet);
 
 	this.Tag("structure");
 	this.Tag("vehicle");

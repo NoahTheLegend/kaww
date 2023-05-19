@@ -4,6 +4,7 @@
 #include "RulesCore.as";
 #include "RespawnSystem.as";
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "PlayerRankInfo.as";
 
 const u8 MAX_BOTS = 8; // fills while server's pop is lesser than value

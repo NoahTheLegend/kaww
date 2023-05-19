@@ -5,6 +5,7 @@
 #include "VehicleAttachmentCommon.as"
 #include "GenericButtonCommon.as"
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "Explosion.as";
 #include "ProgressBar.as";
 
@@ -1122,8 +1123,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	float damageNegation = 0.0f;
 	//print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(this, armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
-	if (customData == Hitters::bullet || customData == Hitters::heavybullet
-		|| customData == Hitters::aircraftbullet || customData == Hitters::machinegunbullet)
+	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet
+		|| customData == HittersAW::aircraftbullet || customData == HittersAW::machinegunbullet)
 	{
 		if (this.hasTag("tank")) damage *= 0.75f;
 		finalRating = getFinalRatingBullet(customData, armorRating, penRating, hardShelled, this, this.getPosition(), isHitUnderside, isHitBackside);

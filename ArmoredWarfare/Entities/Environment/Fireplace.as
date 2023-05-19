@@ -5,6 +5,7 @@
 #include "MakeFood.as";
 #include "FireParticle.as";
 #include "Hitters.as";
+#include "HittersAW.as";
 
 void onInit(CBlob@ this)
 {

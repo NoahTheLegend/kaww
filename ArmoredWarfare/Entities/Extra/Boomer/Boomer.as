@@ -1,4 +1,5 @@
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "ZombieCommon.as";
 
 const float target_radius = 2000;

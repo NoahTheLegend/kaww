@@ -17,7 +17,7 @@ void onInit(CBlob@ this)
 	this.set_u8("TTL", 60);
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 20);
-	this.set_s32("custom_hitter", Hitters::machinegunbullet);
+	this.set_s32("custom_hitter", HittersAW::machinegunbullet);
 
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();

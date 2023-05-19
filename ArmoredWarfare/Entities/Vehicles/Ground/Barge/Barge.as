@@ -1,6 +1,7 @@
 #include "VehicleCommon.as"
 #include "GenericButtonCommon.as"
 #include "Hitters.as";
+#include "HittersAW.as";
 
 // Boat logic
 

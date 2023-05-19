@@ -1,4 +1,5 @@
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "Knocked.as";
 
 void onInit(CBlob@ this)

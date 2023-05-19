@@ -1,6 +1,7 @@
 #include "VehicleCommon.as"
 #include "WarfareGlobal.as"
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "Explosion.as";
 #include "GunStandard.as";
 
@@ -47,7 +48,7 @@ void onInit(CBlob@ this)
 	this.set_u8("TTL", 40);
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 25);
-	this.set_s32("custom_hitter", Hitters::aircraftbullet);
+	this.set_s32("custom_hitter", HittersAW::aircraftbullet);
 	
 	this.set_bool("map_damage_raycast", true);
 	this.Tag("map_damage_dirt");
@@ -488,7 +489,7 @@ void Shoot(CBlob@ this)
 					if ((blob.isCollidable() || blob.hasTag("flesh")) && blob.getTeamNum() != this.getTeamNum())
 					{
 						// print("Hit " + blob.getName() + " for " + damage * falloff);
-						this.server_Hit(blob, blob.getPosition(), Vec2f(0, 0), projDamage * Maths::Max(0.1, falloff), Hitters::bullet);
+						this.server_Hit(blob, blob.getPosition(), Vec2f(0, 0), projDamage * Maths::Max(0.1, falloff), HittersAW::bullet);
 						falloff = falloff * 0.5f;			
 					}
 				}
@@ -687,17 +688,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		return damage * 1.0f;
 	}
 
-	if (customData == Hitters::aircraftbullet) 	 
+	if (customData == HittersAW::aircraftbullet) 	 
 	{
 		damage += 0.05f;
 		return damage * 0.33f;
 	}
-	else if (customData == Hitters::heavybullet) 
+	else if (customData == HittersAW::heavybullet) 
 	{
 		damage += 0.05f;
 		return damage * 0.75f;
 	}
-	else if (customData == Hitters::bullet)
+	else if (customData == HittersAW::bullet)
 	{
 		return damage * 0.65f;
 	}

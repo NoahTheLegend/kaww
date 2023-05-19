@@ -8,6 +8,7 @@ const int min_input = Maths::Ceil(input/output);
 
 #include "GenericButtonCommon.as";
 #include "Hitters.as";
+#include "HittersAW.as";
 
 void onInit(CSprite@ this)
 {

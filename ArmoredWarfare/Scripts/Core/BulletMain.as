@@ -3,6 +3,7 @@
 
 
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "BulletTrails.as";
 #include "BulletClass.as";
 #include "BulletCase.as";

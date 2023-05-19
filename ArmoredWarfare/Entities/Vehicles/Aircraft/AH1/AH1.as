@@ -1,6 +1,7 @@
 #include "VehicleCommon.as"
 #include "WarfareGlobal.as"
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "Explosion.as";
 #include "ProgressBar.as";
 #include "TeamColorCollections.as";
@@ -39,7 +40,7 @@ void onInit(CBlob@ this)
 	this.set_u8("TTL", 60);
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 20);
-	this.set_s32("custom_hitter", Hitters::aircraftbullet);
+	this.set_s32("custom_hitter", HittersAW::aircraftbullet);
 
 	this.getShape().SetOffset(Vec2f(0,0));
 
@@ -802,17 +803,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		return damage * 1.0f;
 	}
 
-	if (customData == Hitters::aircraftbullet) 	 
+	if (customData == HittersAW::aircraftbullet) 	 
 	{
 		damage += 0.1f;
 		return damage * 0.4f;
 	}
-	else if (customData == Hitters::heavybullet) 
+	else if (customData == HittersAW::heavybullet) 
 	{
 		damage += 0.1f;
 		return damage * 0.8f;
 	}
-	else if (customData == Hitters::bullet)
+	else if (customData == HittersAW::bullet)
 	{
 		return damage * 0.75f;
 	}

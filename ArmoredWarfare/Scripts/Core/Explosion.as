@@ -18,6 +18,7 @@
 
 
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "ShieldCommon.as";
 #include "SplashWater.as";
 #include "CustomBlocks.as";

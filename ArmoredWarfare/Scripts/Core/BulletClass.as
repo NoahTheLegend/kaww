@@ -5,6 +5,7 @@
 #include "BulletCase.as";
 #include "BulletParticle.as";
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "CustomBlocks.as";
 #include "WarfareGlobal.as";
 
@@ -274,7 +275,7 @@ class BulletObj
 				if (blob !is null)
 				{
 					f32 dmg = DamageBody;
-					s8 finalRating = getFinalRatingBullet(CurrentHitter, blob.get_s8(armorRatingString), CurrentHitter == Hitters::bullet?1:2, blob.get_bool(hardShelledString), blob, hitpos);
+					s8 finalRating = getFinalRatingBullet(CurrentHitter, blob.get_s8(armorRatingString), CurrentHitter == HittersAW::bullet?1:2, blob.get_bool(hardShelledString), blob, hitpos);
 					const bool can_pierce = finalRating < 2;
 
 					CSprite@ sprite = blob.getSprite();

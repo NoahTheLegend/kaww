@@ -1,4 +1,5 @@
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "Explosion.as";
 #include "ParticleSparks.as";
 #include "MakeDustParticle.as";

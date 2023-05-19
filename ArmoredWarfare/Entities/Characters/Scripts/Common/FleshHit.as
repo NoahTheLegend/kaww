@@ -1,5 +1,6 @@
 // Flesh hit
 #include "Hitters.as";
+#include "HittersAW.as";
 
 f32 getGibHealth(CBlob@ this)
 {
