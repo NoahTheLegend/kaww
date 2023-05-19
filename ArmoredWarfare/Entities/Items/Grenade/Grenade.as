@@ -34,6 +34,8 @@ void onInit(CBlob@ this)
 	this.set_bool("explosive_teamkill", true);
 	this.Tag("collideswithglass");
 
+	this.getShape().getConsts().collideWhenAttached = false;
+
 	this.set_u16("follow_id", 0);
 
 	this.set_u8("exploding_2", 0);

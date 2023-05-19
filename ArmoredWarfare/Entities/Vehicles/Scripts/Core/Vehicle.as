@@ -166,22 +166,22 @@ void onInit(CBlob@ this)
 		case _pszh4turret: // smol APC cannon
 		{
 			weaponRating = 1;
-			linear_length = 4.0f;
-			scale_damage = 0.85f;
+			linear_length = 2.0f;
+			scale_damage = 1.1f;
 			break;
 		}
 		case _btrturret: // big APC cannon
 		{
 			weaponRating = 1;
-			linear_length = 4.0f;
-			scale_damage = 0.85f;
+			linear_length = 2.0f;
+			scale_damage = 1.25f;
 			break;
 		}
 		case _bradleyturret:
 		{
 			weaponRating = -1;
 			linear_length = 8.0f;
-			scale_damage = 1.33f;
+			scale_damage = 1.4f;
 			break;
 		}
 	}

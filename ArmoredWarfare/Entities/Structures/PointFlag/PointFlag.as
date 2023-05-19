@@ -158,7 +158,11 @@ void onTick(CBlob@ this)
 					}
 				}
 			}
-			else this.set_u32("crate_timer", num);
+			else
+			{
+				this.set_u32("crate_timer", 0);
+				if (isServer()) SpawnLootCrate(this);
+			}
 		}
 	}
 
