@@ -672,11 +672,12 @@ void drawHoverExplanation(int hovered_accolade, int hovered_rank, Vec2f centre_t
 
 void onTick(CRules@ this)
 {
-	if(isServer() && this.getCurrentState() == GAME)
-	{
-		this.add_u32("match_time", 1);
-		this.Sync("match_time", true);
-	}
+	//if(isServer() && this.getCurrentState() == GAME)
+	//{
+		//this.add_u32("match_time", 1);
+		//this.Sync("match_time", true);
+	//}
+	this.set_u32("match_time", getGameTime());
 }
 
 void onInit(CRules@ this)
