@@ -1741,7 +1741,6 @@ const string[] FlagMaps = {
 	"Goldy_KAWW_Megalith.png",
 	"Mortar.png",
 	"PlainHills.png",
-	"Valley.png",
 	"Worldwar.png",
 	"TriPointTDM.png"
 };
