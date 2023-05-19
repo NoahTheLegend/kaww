@@ -1,4 +1,5 @@
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "TeamColour.as";
 #include "CrateCommon.as"
 #include "VehicleAttachmentCommon.as"

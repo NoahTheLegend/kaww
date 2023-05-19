@@ -2,6 +2,7 @@
 // apply Rules "fall vel modifier" property to change the damage velocity base
 
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "KnockedCommon.as";
 #include "FallDamageCommon.as";
 

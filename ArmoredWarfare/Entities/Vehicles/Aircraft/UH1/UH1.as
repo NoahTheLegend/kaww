@@ -1,6 +1,7 @@
 #include "VehicleCommon.as"
 #include "WarfareGlobal.as"
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "Explosion.as";
 
 const Vec2f upVelo = Vec2f(0.00f, -0.0175f);
@@ -608,17 +609,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		return damage * 1.0f;
 	}
 	
-	if (customData == Hitters::aircraftbullet) 	 
+	if (customData == HittersAW::aircraftbullet) 	 
 	{
 		damage += 0.1f;
 		return damage * 0.325f;
 	}
-	else if (customData == Hitters::heavybullet) 
+	else if (customData == HittersAW::heavybullet) 
 	{
 		damage += 0.1f;
 		return damage * 0.75f;
 	}
-	else if (customData == Hitters::bullet)
+	else if (customData == HittersAW::bullet)
 	{
 		return damage * 0.65f;
 	}

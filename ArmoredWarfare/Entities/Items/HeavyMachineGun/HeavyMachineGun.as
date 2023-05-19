@@ -1,5 +1,6 @@
 #include "VehicleCommon.as"
 #include "Hitters.as"
+#include "HittersAW.as"
 
 const Vec2f arm_offset = Vec2f(-2, 0);
 const f32 MAX_OVERHEAT = 2.0f;
@@ -50,7 +51,7 @@ void onInit(CBlob@ this)
 	this.Tag("builder always hit");
 	this.Tag("destructable_nosoak");
 
-	this.set_s32("custom_hitter", Hitters::machinegunbullet);
+	this.set_s32("custom_hitter", HittersAW::machinegunbullet);
 
 	if (arm !is null)
 	{
@@ -583,8 +584,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	
 	if (this.isAttached()) return damage;
-	if (customData == Hitters::bullet || customData == Hitters::heavybullet
-		|| customData == Hitters::aircraftbullet || customData == Hitters::machinegunbullet)
+	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet
+		|| customData == HittersAW::aircraftbullet || customData == HittersAW::machinegunbullet)
 	{
 		damage *= 0.5f;
 		damage += 0.1f;

@@ -1,5 +1,6 @@
 
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "MakeDustParticle.as";
 
 const f32 distance = 256.0f; // 32 tiles

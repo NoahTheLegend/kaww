@@ -1,4 +1,5 @@
 #include "Hitters.as";
+#include "HittersAW.as";
 
 const float hurt_distance = 48.0f;
 

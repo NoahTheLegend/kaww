@@ -1,4 +1,5 @@
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "WarfareGlobal.as";
 
 void onInit(CBlob@ this)
@@ -168,7 +169,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (!hitterBlob.hasTag("deal_bunker_dmg")) return 0;
 		return damage / 30;
 	}
-	if (customData == Hitters::bullet || customData == Hitters::heavybullet)
+	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet)
 	{
 		//this.server_Hit(hitterBlob, hitterBlob.getPosition(), this.getOldVelocity(), 3.5f, Hitters::flying, true);
 

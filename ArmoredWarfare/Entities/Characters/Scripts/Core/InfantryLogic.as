@@ -5,6 +5,7 @@
 #include "RunnerCommon.as";
 #include "BombCommon.as";
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "InfantryCommon.as";
 #include "MedicisCommon.as";
 #include "TeamColour.as";
@@ -161,7 +162,7 @@ void onInit(CBlob@ this)
 	this.set_s32("my_reloadtime", 0);
 	this.set_u8("charge_state", ArcherParams::not_aiming);
 
-	this.set_s32("custom_hitter", Hitters::bullet);
+	this.set_s32("custom_hitter", HittersAW::bullet);
 
 	this.set_s16("recoil_direction", 0);
 	this.set_u8("inaccuracy", 0);
@@ -223,7 +224,7 @@ void onInit(CBlob@ this)
 		}
 		case _lmg:
 		{
-			this.set_s32("custom_hitter", Hitters::machinegunbullet);
+			this.set_s32("custom_hitter", HittersAW::machinegunbullet);
 			this.set_u8("stab time", 20);
 			this.set_u8("stab timing", 4);
 			this.set_bool("timed_particle", true);
@@ -289,8 +290,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		damage *= extra_amount;
 	}
 
-	bool is_bullet = (customData == Hitters::bullet || customData == Hitters::heavybullet
-		|| customData == Hitters::machinegunbullet || customData == Hitters::aircraftbullet);
+	bool is_bullet = (customData == HittersAW::bullet || customData == HittersAW::heavybullet
+		|| customData == HittersAW::machinegunbullet || customData == HittersAW::aircraftbullet);
 	
 	{
 		InfantryInfo@ infantry;
@@ -825,7 +826,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					CBlob@ turret_exists = getBlobByNetworkID(this.getPlayer().get_u16("turret_netid"));
 					if (turret_exists !is null && turret_exists.getName() == "sentrygun")
 					{
-						this.server_Hit(turret_exists, turret_exists.getPosition(), Vec2f(0,0), 150.0f, Hitters::bullet, true); 
+						this.server_Hit(turret_exists, turret_exists.getPosition(), Vec2f(0,0), 150.0f, HittersAW::bullet, true); 
 						//turret_exists.server_Die();
 					}
 					CBlob@ turret = server_CreateBlob("sentrygun", this.getTeamNum(), this.getPosition());

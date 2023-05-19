@@ -1,6 +1,7 @@
 // Mine.as
 
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "Explosion.as";
 
 const u8 MINE_PRIMING_TIME = 105;

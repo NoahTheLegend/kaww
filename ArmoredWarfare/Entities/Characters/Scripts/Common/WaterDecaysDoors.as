@@ -1,6 +1,7 @@
 #define SERVER_ONLY
 
 #include "Hitters.as";
+#include "HittersAW.as";
 
 u16[] ids;
 u16 limit = 15; //ticks between hitting

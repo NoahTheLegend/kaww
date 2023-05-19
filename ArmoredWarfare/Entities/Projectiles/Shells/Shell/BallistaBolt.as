@@ -1,5 +1,6 @@
 #include "WarfareGlobal.as"
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "ShieldCommon.as";
 #include "LimitedAttacks.as";
 #include "Explosion.as";

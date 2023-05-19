@@ -1,4 +1,5 @@
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "Explosion.as";
 
 void onInit(CSprite@ this)
@@ -194,7 +195,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			if (damageownerblob.getSprite() !is null && !this.hasTag("dead") && this !is hitterBlob)
 			{
-				if (customData == Hitters::bullet)
+				if (customData == HittersAW::bullet)
 				{
 					if (this.hasTag("headshotable")) {
 						if (this.hasTag("nolegs") || (!this.hasTag("nohead") && hitterBlob.getPosition().y < this.getPosition().y - 3.2f && !hitterBlob.hasTag("flesh")))

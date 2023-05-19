@@ -1,6 +1,7 @@
 // SHOW KILL MESSAGES ON CLIENT
 
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "TeamColour.as";
 #include "HoverMessage.as";
 #include "AssistCommon.as";
@@ -175,8 +176,8 @@ class KillFeed
 				case Hitters::mine:             hitterIcon = "$killfeed_mine$"; break;
 				case Hitters::mine_special:     hitterIcon = "$killfeed_mine$"; break;
 				
-				case Hitters::bullet:
-				case Hitters::heavybullet: hitterIcon = "$killfeed_arrow$"; break;
+				case HittersAW::bullet:
+				case HittersAW::heavybullet: hitterIcon = "$killfeed_arrow$"; break;
 
 				case Hitters::ballista: 		hitterIcon = "$killfeed_ballista$"; break;
 

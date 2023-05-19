@@ -1,4 +1,5 @@
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "Explosion.as";
 
 const Vec2f upVelo = Vec2f(0.00f, -0.015f);

@@ -1,5 +1,6 @@
 // Knockback on hit - put before any damaging things but after any scalers
 #include "Hitters.as"
+#include "HittersAW.as"
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
@@ -37,10 +38,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		case Hitters::crush:
 		case Hitters::spikes:
         case Hitters::fire:
-        case Hitters::bullet:
-        case Hitters::heavybullet:
-        case Hitters::aircraftbullet:
-        case Hitters::machinegunbullet:
+        case HittersAW::bullet:
+        case HittersAW::heavybullet:
+        case HittersAW::aircraftbullet:
+        case HittersAW::machinegunbullet:
 			scale = 0.0f; break;
 
 		case Hitters::arrow:

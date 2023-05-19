@@ -1,4 +1,5 @@
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "MakeDustParticle.as";
 
 void onInit(CBlob@ this)
@@ -64,7 +65,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		ParticlePixel(this.getPosition(), velr, SColor(255, 200, 150, 40), true);
 	}
 
-	if (customData == Hitters::bullet || customData == Hitters::heavybullet)
+	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet)
 	{
 		Sound::Play("/BulletSandbag", this.getPosition(), 1.55f, 0.85f + XORRandom(40) * 0.01f);
 

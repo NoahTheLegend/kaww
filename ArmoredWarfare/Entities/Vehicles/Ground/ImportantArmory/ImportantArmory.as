@@ -683,12 +683,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		return damage * 0.25f;
 	}
 
-	if (customData == Hitters::aircraftbullet)
+	if (customData == HittersAW::aircraftbullet)
 	{
 		damage += 0.1f;
 		return damage * 2.5f;
 	}
-	if (customData == Hitters::bullet)
+	if (customData == HittersAW::bullet)
 	{
 		damage += 0.05f;
 		return damage *= 5.0f;

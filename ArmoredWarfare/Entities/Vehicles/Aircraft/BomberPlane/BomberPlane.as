@@ -1,6 +1,7 @@
 #include "VehicleCommon.as"
 #include "WarfareGlobal.as"
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "Explosion.as";
 // const u32 fuel_timer_max = 30 * 600;
 const f32 SPEED_MAX = 57.5;
@@ -520,17 +521,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		return damage * 0.75f;
 	}
 
-	if (customData == Hitters::aircraftbullet) 	 
+	if (customData == HittersAW::aircraftbullet) 	 
 	{
 		damage += 0.05f;
 		return damage * 0.325f;
 	}
-	else if (customData == Hitters::heavybullet) 
+	else if (customData == HittersAW::heavybullet) 
 	{
 		damage += 0.05f;
 		return damage * 0.75f;
 	}
-	else if (customData == Hitters::bullet)
+	else if (customData == HittersAW::bullet)
 	{
 		return damage * 0.65f;
 	}

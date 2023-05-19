@@ -1,6 +1,7 @@
 // TrapBlock.as
 
 #include "Hitters.as";
+#include "HittersAW.as";
 #include "MapFlags.as";
 
 int openRecursion = 0;
