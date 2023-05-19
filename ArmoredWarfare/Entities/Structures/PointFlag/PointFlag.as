@@ -5,7 +5,7 @@ const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
 const u16 capture_time = 3000;
-const u16 crate_frequency_min = 90; // 1.5 min
+const u16 crate_frequency_min = 120; // 2.0 min
 const u16 crate_frequency_seconds = 4.0f * 60; // 4 min by default
 const u16 increase_frequency_byplayer = 6; // 10 players decrease by 1 min
 const u16 min_items = 10;
@@ -567,7 +567,7 @@ void SpawnLootCrate(CBlob@ this)
 	{
 		crate.Tag("no_expiration");
 		this.set_u16("last_crateid", crate.getNetworkID());
-		crate.server_SetTimeToDie(3*60); // 3 min
+		crate.server_SetTimeToDie(5*60); // 3 min
 
 		string[] _items;
 		float[] _amounts;
