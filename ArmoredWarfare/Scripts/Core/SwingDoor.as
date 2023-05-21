@@ -1,6 +1,7 @@
 // Swing Door logic
 
 #include "Hitters.as"
+#include "HittersAW.as"
 #include "FireCommon.as"
 #include "MapFlags.as"
 #include "DoorCommon.as"
@@ -187,6 +188,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (customData == Hitters::fire)
 		{
 			return 0;
+		}
+		if (customData == HittersAW::bullet || customData == HittersAW::machinegunbullet)
+		{
+			return 0.1f;
 		}
 		if ((customData == Hitters::explosion && hitterBlob.getName() != "c4") || hitterBlob.hasTag("grenade"))
 		{

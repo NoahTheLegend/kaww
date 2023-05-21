@@ -329,12 +329,12 @@ class BulletObj
 
 					if (TeamNum != BlobTeamNum && (BlobName == "wooden_platform" || blob.hasTag("door")))
 					{
-						if (BlobName != "stone_door")
+						if (isServer()) 
 						{
-							if (isServer()) hoomanShooter.server_Hit(blob, CurrentPos, blob.getOldVelocity(), CurrentType == 1 ? 1.25f : 0.15f, Hitters::builder);
-							endBullet = true;
-							//break;
+							f32 door_dmg = BlobName != "stone_door" ? CurrentType == 1 ? 1.0f : 0.1f : 0.01f;
+							hoomanShooter.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
 						}
+						endBullet = true;
 					}
 
 					if (blob.hasTag("vehicle") && !HadRico)
@@ -449,10 +449,21 @@ class BulletObj
 						@LastHitBlob = @blob;
 					}
 
+					TimeLeft = 0;
 					return true;
 				}
 				else
 				{
+					if (isClient())
+					{
+						const Vec2f xNew = PDriver.getScreenPosFromWorldPos(CurrentPos);
+						if(!(xNew.x > 0 && xNew.x < ScreenX)) // Is our main position still on screen?
+						{
+							TimeLeft = 0;
+							return true;
+						}
+					}
+
 					bool stop = true;
 					bool try_rico = true;
 					bool do_hit_map = true;

@@ -200,6 +200,11 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 						frame = 9;
 						break;
 					}
+					case _lmg:
+					{
+						frame = 10;
+						break;
+					}
 				}
             }
 			framesize.Set(16, 16);

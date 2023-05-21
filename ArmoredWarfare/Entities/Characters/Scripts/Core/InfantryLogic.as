@@ -219,14 +219,16 @@ void onInit(CBlob@ this)
 		}
 		case _ranger:
 		{
-			this.set_bool("is_lmg", true);
+			this.set_u8("stab time", 33);
+			this.set_u8("stab timing", 15);
 			break;
 		}
 		case _lmg:
 		{
+			this.set_bool("is_lmg", true);
 			this.set_s32("custom_hitter", HittersAW::machinegunbullet);
 			this.set_u8("stab time", 20);
-			this.set_u8("stab timing", 4);
+			this.set_u8("stab timing", 8);
 			this.set_bool("timed_particle", true);
 			this.set_Vec2f("gun_offset", Vec2f(0,2));
 			break;
@@ -787,6 +789,12 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		is_action1 = false;
 	}
 
+	if (is_action1 && !isReloading && this.get_bool("is_lmg"))
+	{
+		moveVars.walkFactor *= 0.45f;
+		moveVars.jumpFactor *= 0.75f;
+	}
+
 	if (this.getCarriedBlob() !is null)
 	{
 		if (this.getCarriedBlob().getName() == "medkit")
@@ -899,7 +907,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		}
 	}
 	
-	const bool pressed_action2 = this.isKeyPressed(key_action2);
+	const bool pressed_action2 = this.isKeyPressed(key_action2) && this.isOnGround();
 	bool menuopen = getHUD().hasButtons();
 	Vec2f pos = this.getPosition();
 
@@ -1465,7 +1473,7 @@ void ClientFire( CBlob@ this, const s16 charge_time, InfantryInfo@ infantry, Vec
 		targetVector = this.getAimPos() - this.getPosition();
 		targetDistance = targetVector.Length();
 		targetFactor = targetDistance / 367.0f;
-		f32 mod = this.isKeyPressed(key_action2) ? 0.1f : 0.3f;
+		f32 mod = this.isKeyPressed(key_action2) && this.isOnGround() ? 0.1f : 0.3f;
 
 		ShootRPG(this, this.getPosition() - Vec2f(-24,0).RotateBy(angle), this.getAimPos() + Vec2f(-(1 + this.get_u8("inaccuracy")) + XORRandom((180 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, -(3 + this.get_u8("inaccuracy")) + XORRandom(180 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, 8.0f * infantry.bullet_velocity);
 	
@@ -1501,7 +1509,7 @@ void ClientFire( CBlob@ this, const s16 charge_time, InfantryInfo@ infantry, Vec
 			if (ply !is null && this.isMyPlayer())
 			{
 				f32 mod = 0.5; // make some smart stuff here?
-				if (this.isKeyPressed(key_action2)) mod *= 0.25;
+				if (this.isKeyPressed(key_action2) && this.isOnGround()) mod *= 0.25;
 
 				float recoilX = infantry.recoil_x;
 				float recoilY = infantry.recoil_y;
