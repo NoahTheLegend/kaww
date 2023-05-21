@@ -164,6 +164,8 @@ void onInit(CBlob@ this)
 
 	this.set_s32("custom_hitter", HittersAW::bullet);
 
+	this.set_u32("lmg_aftershot", 0);
+
 	this.set_s16("recoil_direction", 0);
 	this.set_u8("inaccuracy", 0);
 	this.set_u32("bull_boost", 0);
@@ -793,8 +795,6 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	{
 		moveVars.walkFactor *= 0.45f;
 		moveVars.jumpFactor *= 0.65f;
-
-		if (is_action1) this.set_u32("lmg_aftershot", getGameTime()+15);
 	}
 
 	if (this.getCarriedBlob() !is null)
