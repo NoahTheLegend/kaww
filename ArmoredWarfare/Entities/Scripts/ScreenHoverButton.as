@@ -165,6 +165,7 @@ class HoverButton
         if (getLocalPlayer() !is null) @this.local_blob = @getLocalPlayer().getBlob();
         if (this.draw_hover) this.EventHover();
         if (this.draw_overlap) this.EventOverlap();
+        if (this.local_blob is null) return;
 
         if (!this.active || (!this.draw_attached && this.local_blob.isAttached())) return;
         for (int i = 0; i < list.length(); i++)
