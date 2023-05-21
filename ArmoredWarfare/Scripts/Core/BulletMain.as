@@ -175,6 +175,11 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 			float damageBody = infantry.damage_body;
 			float damageHead = infantry.damage_head;
 
+			if (this.get_bool("is_lmg"))
+			{
+				this.set_u32("lmg_aftershot", getGameTime()+15);
+			}
+
 			if (this.getPlayer() !is null)
 			{
 				if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
