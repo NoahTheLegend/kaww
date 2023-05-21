@@ -106,13 +106,18 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				for (u8 i = 0; i < inv.getItemsCount(); i++)
 				{
-					if (inv.getItem(i) is null || inv.getItem(i).getName() != "ammo") continue;
-					if (XORRandom(4) != 0) continue;
-					if (inv.getItem(i).getQuantity() > 1) inv.getItem(i).server_SetQuantity(inv.getItem(i).getQuantity()-1);
-					else inv.getItem(i).server_Die();
+					if (XORRandom(2) != 0) continue;
+
+					CBlob@ ammo = inv.getItem(i);
+					if (ammo is null || ammo.getName() != "ammo") continue;
+
+					if (ammo.getQuantity() > 1) ammo.server_SetQuantity(ammo.getQuantity()-1);
+					else ammo.server_Die();
+
 					break;
 				}
 			}
+			this.set_u32("no_more_proj", getGameTime()+shootDelay);
 		}
 	}
 }
@@ -171,7 +176,7 @@ void onTick(CBlob@ this)
 		
 			bool pressed_w = ap_pilot.isKeyPressed(key_up);
 			bool pressed_s = ap_pilot.isKeyPressed(key_down);
-			bool pressed_lm = ap_pilot.isKeyPressed(key_action1) && !this.isOnGround() && this.getVelocity().Length() > 5.0f;
+			bool pressed_lm = ap_pilot.isKeyPressed(key_action1) && !this.isOnGround() && this.getVelocity().Length() > 4.0f;
 
 			//if (this.getTickSinceCreated() == 5*30)
 			//{
@@ -205,7 +210,6 @@ void onTick(CBlob@ this)
 				}
 				if (can_attack)
 				{
-					this.set_u32("no_more_proj", getGameTime()+shootDelay);
 					this.getSprite().PlaySound("AssaultFire.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
 					ShootBullet(this, (this.getPosition() - Vec2f(0,1)), this.getPosition()+Vec2f(this.isFacingLeft() ? -32.0f : 32.0f, 0).RotateBy(this.getAngleDegrees() + (this.isFacingLeft() ? -2.5f : 2.5f)), 17.59f * 1.75f);
 				}

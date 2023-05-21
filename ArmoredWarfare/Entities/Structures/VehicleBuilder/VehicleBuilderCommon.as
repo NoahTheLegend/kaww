@@ -37,7 +37,7 @@ void buildT1ShopCombined(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 35);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
@@ -118,7 +118,7 @@ void buildT2ShopCombined(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Bomber Plane", "$bomberplane$", "bomberplane", "A bomber plane.\nUses bomber bombs.");
@@ -189,7 +189,7 @@ void buildT3ShopCombined(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Bomber Plane", "$bomberplane$", "bomberplane", "A bomber plane.\nUses bomber bombs.");
@@ -490,7 +490,7 @@ void buildT1ShopAir(CBlob@ this)
     this.set_Vec2f("shop menu size", Vec2f(10, 2));
     {
 		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build UH1 Huey Helicopter", "$uh1$", "uh1", "A common helicopter with heavy machinegun and passenger seats.\nPress SPACEBAR to launch HEAT warheads.");
@@ -512,7 +512,7 @@ void buildT2ShopAir(CBlob@ this)
     this.set_Vec2f("shop menu size", Vec2f(9, 4));
     {
 		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build UH1 Huey Helicopter", "$uh1$", "uh1", "A common helicopter with heavy machinegun and passenger seats.\nPress SPACEBAR to launch HEAT warheads.");
