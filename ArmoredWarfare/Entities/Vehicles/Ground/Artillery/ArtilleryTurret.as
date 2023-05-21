@@ -395,10 +395,10 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 			CBlob@ b = gunner.getOccupied();
 			if (b.getPlayer() !is null)
 			{
-				bullet.set_u16("ownerplayer_id", b.getPlayer().getNetworkID());
-				bullet.set_u16("ownerblob_id", b.getNetworkID());
+				//bullet.set_u16("ownerplayer_id", b.getPlayer().getNetworkID());
+				//bullet.set_u16("ownerblob_id", b.getNetworkID());
 				b.Tag("camera_offset");
-				bullet.server_SetPlayer(b.getPlayer());
+				//bullet.server_SetPlayer(b.getPlayer());
 			}
 		}
 
