@@ -1301,7 +1301,8 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 		int loc_year = Time_Year(localtime);
 
 		string[] exclusive_players = {
-			"RazerZF"
+			"RazerZF",
+			"simon2005"
 		}; // Add exceptions here
 	
 		bool is_exclusive = false;
