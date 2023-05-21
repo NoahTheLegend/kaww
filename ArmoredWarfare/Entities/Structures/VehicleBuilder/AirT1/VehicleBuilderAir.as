@@ -56,7 +56,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 35);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
