@@ -260,8 +260,8 @@ void onInit(CBlob@ this)
 			sprite.SetEmitSoundSpeed(1.1f);
 			sprite.SetEmitSoundVolume(0.66f);
 			sprite.SetEmitSoundPaused(true);
-
-			//this.set_u32("mag_bullets", 0);
+			
+			this.set_u32("mag_bullets", 0);
 			this.set_string("ammo_prop", "specammo");
 			break;
 		}
@@ -789,10 +789,12 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		is_action1 = false;
 	}
 
-	if (is_action1 && !isReloading && this.get_bool("is_lmg"))
+	if ((is_action1 || this.get_u32("lmg_aftershot") > getGameTime()) && !isReloading && this.get_bool("is_lmg"))
 	{
 		moveVars.walkFactor *= 0.45f;
-		moveVars.jumpFactor *= 0.75f;
+		moveVars.jumpFactor *= 0.65f;
+
+		if (is_action1) this.set_u32("lmg_aftershot", getGameTime()+15);
 	}
 
 	if (this.getCarriedBlob() !is null)
@@ -1575,7 +1577,7 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, f
 const f32 _fire_length_raw = 64.0f;
 const f32 _fire_angle = 7.5f;
 const f32 inaccuracy_mod = 0.1f; // increases fire angle but decreases fire length per 1 inaccuracy
-const f32 inaccuracy_length_decrease_mod = 1.75f;
+const f32 inaccuracy_length_decrease_mod = 2.25f;
 const f32 inaccuracy_angle_increase_mod = 0.75f;
 const u32 firehit_delay = 1;
 
@@ -1584,7 +1586,7 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 	if (this.get_u32("mag_bullets") == 0) return;
 	if (isServer())
 	{
-		if (this.get_s16("firebringer_takeammo") != 1)
+		if (this.get_s16("firebringer_takeammo") != 2)
 		{
 			this.add_s16("firebringer_takeammo", 1);
 			this.add_u32("mag_bullets", -1);

@@ -1,5 +1,6 @@
 #include "Explosion.as";
 #include "WarfareGlobal.as";
+#include "HittersAW.as";
 
 void onInit(CBlob@ this)
 {
@@ -162,6 +163,15 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 0.4f;
 	}
+
+	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet
+		|| customData == HittersAW::machinegunbullet)
+	{
+		//this.server_Hit(hitterBlob, hitterBlob.getPosition(), this.getOldVelocity(), 3.5f, Hitters::flying, true);
+
+		return damage * 0.33f;
+	}
+
 	if (customData == Hitters::flying)
 	{
 		this.server_Hit(hitterBlob, hitterBlob.getPosition(), this.getOldVelocity(), 5.0f, Hitters::flying, true);
