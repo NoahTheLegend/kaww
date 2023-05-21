@@ -956,13 +956,13 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				u8 time = anim.time;
 				if (getRules().get_string(p.getUsername() + "_perk") == "Sharp Shooter")
 				{
-					reloadTime = infantry.reload_time * 1.5;
-					time = 4;
+					reloadTime = infantry.reload_time * 1.5f;
+					time = Maths::Round(time*1.5f);
 				}
 				else if (getRules().get_string(p.getUsername() + "_perk") == "Bull")
 				{
 					reloadTime = infantry.reload_time * 0.75f;
-					time = 2;
+					time = Maths::Round(time*0.75f);
 				}
 				else
 				{
