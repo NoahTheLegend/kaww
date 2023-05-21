@@ -169,11 +169,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (!hitterBlob.hasTag("deal_bunker_dmg")) return 0;
 		return damage / 30;
 	}
-	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet)
+	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet
+		|| customData == HittersAW::machinegunbullet)
 	{
 		//this.server_Hit(hitterBlob, hitterBlob.getPosition(), this.getOldVelocity(), 3.5f, Hitters::flying, true);
 
-		return damage * 1.5;
+		return damage * 0.33f;
 	}
 	if (customData == Hitters::explosion)
 	{
