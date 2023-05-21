@@ -472,9 +472,9 @@ const array<string> _items_res =
 };
 const array<float> _amounts_res =
 {
-	5+XORRandom(16),
-	250+XORRandom(201),
-	100+XORRandom(101),
+	3+XORRandom(11),
+	300+XORRandom(301),
+	150+XORRandom(151),
 	20+XORRandom(41),
 };
 const array<float> _chances_res =
