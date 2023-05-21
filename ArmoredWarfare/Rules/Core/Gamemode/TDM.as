@@ -1287,6 +1287,52 @@ string getRandomCharName()
 
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
+	int localtime = Time_Local();
+	int regtime = player.getRegistrationTime();
+
+	int reg_month = Time_Month(regtime);
+	int reg_day = Time_MonthDate(regtime);
+	int reg_year = Time_Year(regtime);
+
+	int loc_month = Time_Month(localtime);
+	int loc_day = Time_MonthDate(localtime);
+	int loc_year = Time_Year(localtime);
+
+	string[] exclusive_players = {
+
+	}; // Add exceptions here
+    
+	bool is_exclusive = false;
+	for (u16 i = 0; i < exclusive_players.length; i++)
+	{
+		if (exclusive_players[i] == player.getUsername())
+			is_exclusive = true;
+	}
+	
+	//time is sec(60) * min(60) * hours(24)* daysfrom 1970-jan-01
+	// 1 day = 86400  and  30 days = 2592000
+	if (!is_exclusive && (localtime - regtime)<=2592000) // Ban people registered last 30days
+	{
+		CSecurity@ security = getSecurity();
+		bool newban = security.checkAccess_Feature(player, "newban");
+		//in security folder inside normal.cfg add newban; to end of features=
+		// inside preium.cfg add newban; to end of features= if you want preium uses to also registered less than 2 months to be ban
+		
+		printf("new player Account age:"+ regtime + " regdate:" + reg_year + "-" + reg_month + "-" + reg_day + " checkAccess_Feature:" + newban);
+		if(newban)
+		{
+			printf("|");
+			printf("|");
+			printf("|");
+			printf("BANNING PLAYER WITH TOO YOUNG ACCOUNT AGE: "+player.getUsername());
+			printf("|");
+			printf("|");
+			printf("|");
+			BanPlayer(player, 60*100);
+		}
+		
+	}
+
 	if (isServer() && player !is null && player.isBot())
 	{
 		player.server_setCharacterName(getRandomCharName());
