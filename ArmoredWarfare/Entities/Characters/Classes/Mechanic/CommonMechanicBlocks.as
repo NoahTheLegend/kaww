@@ -75,7 +75,7 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	}
 	{
 		BuildBlock b(0, "stone_door", "$stone_door$", "Stone Door\nPlace next to walls\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 70);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 60);
 		blocks[0].push_back(b);
 	}
 	{

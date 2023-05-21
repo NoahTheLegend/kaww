@@ -279,9 +279,9 @@ namespace LMGParams
 	const ::f32 RECOIL_Y 				= 50.0f; // y shake (45)
 	const ::f32 RECOIL_LENGTH 			= 150.0f; // how long to recoil (?)
 	// RECOIL
-	const ::f32 RECOIL_FORCE 			= 0.1f; // amount to push player
-	const ::u8 RECOIL_CURSOR 			= 5; // amount to raise mouse pos
-	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
+	const ::f32 RECOIL_FORCE 			= 0.01f; // amount to push player
+	const ::u8 RECOIL_CURSOR 			= 9; // amount to raise mouse pos
+	const ::u8 SIDEWAYS_RECOIL 			= 3; // sideways recoil amount
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 10; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 0.7f; // lower means less recoil when aiming down sights. 1.0 is no change
 	// MOVEMENT (extra)
@@ -301,7 +301,7 @@ namespace LMGParams
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 			= 95; // time to reload
+	const ::s16 RELOAD_TIME 			= 135; // time to reload
 	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
 	const ::u32 MAG_SIZE 				= 80; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 2; // time between shots
