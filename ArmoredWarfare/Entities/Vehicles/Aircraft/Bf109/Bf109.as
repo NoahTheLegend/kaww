@@ -107,8 +107,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				for (u8 i = 0; i < inv.getItemsCount(); i++)
 				{
 					if (inv.getItem(i) is null || inv.getItem(i).getName() != "ammo") continue;
-					if (XORRandom(3) != 0) continue;
-					inv.getItem(i).server_SetQuantity(inv.getItem(0).getQuantity()-1);
+					if (XORRandom(4) != 0) continue;
+					if (inv.getItem(i).getQuantity() > 1) inv.getItem(i).server_SetQuantity(inv.getItem(i).getQuantity()-1);
+					else inv.getItem(i).server_Die();
 					break;
 				}
 			}
@@ -414,15 +415,15 @@ void Shoot(CBlob@ this)
 	{
 		for (u8 i = 0; i < inv.getItemsCount(); i++)
 		{
-			if (inv.getItem(i) !is null && inv.getItem(i).getName() == "ammo")
+			if (isServer() && inv.getItem(i) !is null && inv.getItem(i).getName() == "ammo")
 			{
 				CBlob@ ammo = inv.getItem(i);
-				if (ammo.getQuantity() > 0 && isServer())
+				if (ammo.getQuantity() > 1)
 				{
 					ammo.server_SetQuantity(ammo.getQuantity() - 1);
 					break;
 				}
-				if (ammo.getQuantity() == 0 && isServer())
+				else
 				{
 					ammo.server_Die();
 					break;
