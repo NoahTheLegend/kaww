@@ -248,13 +248,13 @@ void onDie(CBlob@ this)
 {
 	if (this.getPlayer() !is null)
 	{
-		ResetPlayer(this);
+		//ResetPlayer(this);
 	}
 }
 
 bool DoExplosion(CBlob@ this, Vec2f velocity)
 {
-	ResetPlayer(this);
+	//ResetPlayer(this);
 	if (this.hasTag("dead")) return true;
 
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
