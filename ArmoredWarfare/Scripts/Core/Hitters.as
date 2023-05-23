@@ -64,13 +64,7 @@ namespace Hitters
 		muscles,
 
 		// scrolls
-		suddengib,
-
-		// bullets
-		bullet,
-		heavybullet,
-		aircraftbullet,
-		machinegunbullet
+		suddengib
 	};
 }
 
