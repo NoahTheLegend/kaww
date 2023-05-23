@@ -117,12 +117,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 		bool defended = this.hasTag("shielded");
 
-		// If the class has a shield (check for ShieldVars) then check that the shield is pointing in the right direction
-	//if (getShieldVars(this) !is null && !blockAttack(this, velocity, damage))
-	//{
-	//	defended = false;
-	//}
-
 		// Don't allow the player to shield their own water explosives
 		if (hitterBlob.getDamageOwnerPlayer() is this.getPlayer())
 		{

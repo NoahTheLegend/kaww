@@ -210,7 +210,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 				if (bulletSpread > 0.0f) spreadAimpos += Vec2f(bulletSpread * (0.5f - _infantry_r.NextFloat()), bulletSpread * (0.5f - _infantry_r.NextFloat()));
 				angle = -(spreadAimpos - pos).Angle();
 				
-				BulletObj@ bullet = BulletObj(this, angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(),
+				BulletObj@ bullet = BulletObj(this.getNetworkID(), angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(),
 					this.get_s32("custom_hitter"), this.get_u8("TTL"), this.get_u8("speed"));
 
 				CMap@ map = getMap();
@@ -258,7 +258,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 			for (u8 i = 0; i < burstSize; i++)
 			{
-				BulletObj@ bullet = BulletObj(this, angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(),
+				BulletObj@ bullet = BulletObj(this.getNetworkID(), angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(),
 					custom_hitter, timetolive, speed);
 
 				CMap@ map = getMap();
