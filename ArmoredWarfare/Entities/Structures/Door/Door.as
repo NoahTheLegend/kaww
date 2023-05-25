@@ -18,7 +18,7 @@ void onTick(CSprite@ this)
 void onInit(CBlob@ this)
 {
 	this.Tag("door");
-
+	this.set_Vec2f("linkPos", Vec2f_zero);
 
 	this.getSprite().SetZ(-50); //background
 	this.getShape().getConsts().mapCollisions = false;
@@ -65,7 +65,7 @@ void onTick(CBlob@ this)
         	{
 	        	this.Tag("helptext");
 
-	        	if (blobs[i].isKeyJustPressed(key_down))
+	        	if (blobs[i].isKeyJustPressed(key_down) && isClient())
 	        	{
 	        		blobs[i].setPosition(this.get_Vec2f("linkPos"));
 

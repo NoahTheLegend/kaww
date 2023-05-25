@@ -81,7 +81,7 @@ void onTick(CBlob@ this)
 	ownerBlob.Tag("binoculars");
 	const bool draw_robotech = !heli_launcher && ownerBlob.isMyPlayer();
 
-	if (is_dead)
+	if (is_dead && ownerBlob.isMyPlayer())
 	{
 		if (controls !is null && controls.isKeyJustPressed(KEY_KEY_R))
 		{

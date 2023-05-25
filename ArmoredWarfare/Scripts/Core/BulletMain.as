@@ -269,7 +269,6 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 					bullet.onFakeTick(map);
 				}
 
-
 				BulletGrouped.AddNewObj(bullet);
 			}
 
