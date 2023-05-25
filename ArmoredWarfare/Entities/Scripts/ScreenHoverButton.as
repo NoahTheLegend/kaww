@@ -112,7 +112,7 @@ class SimpleHoverButton : HoverButton
 
     void EventPress(CBlob@ _local_blob)
     {
-        if (_local_blob is null) return;
+        if (_local_blob is null || !isClient()) return;
         if (!this.hover)
         {
             this.pressed = false;

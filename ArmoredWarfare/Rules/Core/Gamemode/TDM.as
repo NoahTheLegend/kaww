@@ -1080,15 +1080,15 @@ shared class TDMCore : RulesCore
 
 	void SetCorrectMapTypeShared()
 	{
-		if (getPlayersCount() <= 5)
-		{
-			LoadMapCycle("MAPS/mapcyclesmaller.cfg");
-		}
-		else if (getPlayersCount() < 11)
-		{
-			LoadMapCycle("MAPS/mapcycle.cfg");
-		}
-		else
+		//if (getPlayersCount() <= 5)
+		//{
+		//	LoadMapCycle("MAPS/mapcyclesmaller.cfg");
+		//}
+		//else if (getPlayersCount() < 11)
+		//{
+		//	LoadMapCycle("MAPS/mapcycle.cfg");
+		//}
+		//else
 		{
 			LoadMapCycle("MAPS/mapcyclelarger.cfg");
 		}
@@ -1287,6 +1287,7 @@ string getRandomCharName()
 
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
+	/*
 	if (isServer())
 	{
 		int localtime = Time_Local();
@@ -1336,6 +1337,7 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
 		}
 	}
+	*/
 
 	if (isServer() && player !is null && player.isBot())
 	{
@@ -1348,14 +1350,14 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 	this.Sync("teamleft", true);
 	this.Sync("teamright", true);
 
-	if (getPlayersCount() == 5 || getPlayersCount() == 4)
-	{
-		LoadMapCycle("MAPS/mapcycle.cfg");
-	}
-	else if (getPlayersCount() == 8 || getPlayersCount() == 9)
-	{
-		LoadMapCycle("MAPS/mapcyclelarger.cfg");
-	}
+	//if (getPlayersCount() == 5 || getPlayersCount() == 4)
+	//{
+	//	LoadMapCycle("MAPS/mapcycle.cfg");
+	//}
+	//else if (getPlayersCount() == 8 || getPlayersCount() == 9)
+	//{
+	//	LoadMapCycle("MAPS/mapcyclelarger.cfg");
+	//}
 
     player.server_setCoins(40);
 

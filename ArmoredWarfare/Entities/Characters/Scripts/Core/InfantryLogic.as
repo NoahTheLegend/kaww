@@ -175,6 +175,7 @@ void onInit(CBlob@ this)
 	this.set_f32("gib health", -1.5f);
 
 	this.set_Vec2f("inventory offset", Vec2f(0.0f, -80.0f));
+	this.set_f32("scale", 0);
 
 	this.getShape().SetRotationsAllowed(false);
 	this.addCommandID("shoot rpg");
@@ -982,7 +983,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			// reload
 			if (controls !is null // bots may break
 				&& !isReloading && this.get_u32("end_stabbing") < getGameTime()
-				&& ((((controls.isKeyJustPressed(KEY_KEY_R) && isClient()) || (this.get_u8("reloadqueue") > 0)) && not_full)
+				&& ((((isClient() && controls.isKeyJustPressed(KEY_KEY_R)) || (this.get_u8("reloadqueue") > 0)) && not_full)
 				|| (this.hasTag("forcereload"))))
 			{
 				bool forcereload = false;
@@ -1639,11 +1640,13 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 	const f32 shorten = 8*2.5f;
 	int mapsize = getMap().tilemapwidth * getMap().tilemapheight;
 	f32 current_angle = fire_angle*0.5f;
+	
+	const f32 max_endpoint = 512.0f;
 
 	for (u8 i = 1; i <= current_angle; i++)
 	{
 		f32 initpoint = fire_length/8;
-		f32 endpoint = initpoint;
+		f32 endpoint = Maths::Min(max_endpoint, initpoint);
 		HitInfo@[] infos;
 		getMap().getHitInfosFromRay(pos, angle-90-fire_angle+i*4, fire_length*2.75f, this, @infos);
 
@@ -1654,10 +1657,10 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 			HitInfo@ info = infos[j];
 			if (info is null) continue;
 
-			if (info.blob is null && info.tileOffset < mapsize && info.distance < endpoint*8*2.75f)
+			if (info.blob is null && info.tileOffset < mapsize && info.distance < Maths::Min(max_endpoint, endpoint*8*2.75f))
 			{
 				//if (XORRandom(10) == 0) getMap().server_setFireWorldspace(info.hitpos, true); // disabled ignition for balance
-				endpoint = info.distance/shorten;
+				endpoint = Maths::Min(max_endpoint, info.distance/shorten);
 			}
 			if (info.blob !is null)
 			{
@@ -1669,7 +1672,7 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 				{
 					if (!info.blob.hasTag("flesh"))
 					{
-						endpoint = info.distance/shorten;
+						endpoint = Maths::Min(max_endpoint, info.distance/shorten);
 						doContinue = true;
 					}
 					if (isServer() && info.blob.get_u32("firehit_delay") < getGameTime()

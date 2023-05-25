@@ -105,7 +105,6 @@ void Spectator(CRules@ this)
     if(controls.isKeyJustReleased(KEY_LBUTTON))
     {
         waitForRelease = false;
-
     }
 
 	//Click on players to track them or set camera to mousePos
