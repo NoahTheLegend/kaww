@@ -520,14 +520,14 @@ namespace FirebringerParams
 {
 	const ::string CLASSNAME 			= "Firebringer"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.33f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.33f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.3f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.3f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.9f; // walk
+	const ::f32 WALK_STAT 				= 0.825f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.55f; // airwalk
 	const ::f32 JUMP_STAT 				= 1.0f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.05f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 3.15f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 0.9f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.9f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.05f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 10.0f; // x shake (20)
@@ -598,8 +598,8 @@ namespace RPGParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 125; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 125; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_CAP 			= 100; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 100; // aim inaccuracy  (+3 per shot)
 	const ::u8 INACCURACY_MIDAIR        = 10;
 	const ::u8 INACCURACY_HIT 		    = 25;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
