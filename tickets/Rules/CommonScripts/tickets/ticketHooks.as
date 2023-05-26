@@ -21,8 +21,8 @@ s16 numTeamRightTicketsPerPlayerInGame;
 
 const u8 FONT_SIZE = 27;
 
-const u32 MIN_TICKETS = 40;
-const u32 TICKETS_PER_PLAYER = 15;
+const u32 MIN_TICKETS = 25;
+const u32 TICKETS_PER_PLAYER = 12;
 
 void reset(CRules@ this){
 	if(getNet().isServer()){
