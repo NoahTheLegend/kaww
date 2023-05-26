@@ -89,7 +89,7 @@ void onInit(CBlob@ this)
 		if (arm !is null)
 		{
 			arm.SetRelativeZ(2.5f);
-			arm.SetOffset(Vec2f(-90.0f, -6.0f));
+			arm.SetOffset(Vec2f(-90.0f, -5.0f));
 		}
 	}
 
@@ -167,6 +167,8 @@ void onTick(CBlob@ this)
 	{
 		return;
 	}
+
+	this.getShape().SetOffset(this.isFacingLeft()? Vec2f(-5.0f, -12): Vec2f(5, -12));
 	
 	s16 currentAngle = this.get_f32("gunelevation");
 
@@ -271,7 +273,7 @@ void onTick(CBlob@ this)
 	{
 		arm.ResetTransform();
 		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-		arm.SetOffset(Vec2f(this.isFacingLeft() ? -19.0f : -18.0f, this.isFacingLeft() ? -28.0f : -27.0f));
+		arm.SetOffset(Vec2f(this.isFacingLeft() ? -19.0f : -18.0f, this.isFacingLeft() ? -29.0f : -28.0f));
 		arm.SetOffset(arm.getOffset() - Vec2f(-barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
 		arm.SetRelativeZ(-50.0f);
 	}

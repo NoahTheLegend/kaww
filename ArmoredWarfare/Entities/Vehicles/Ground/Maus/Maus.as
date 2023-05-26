@@ -40,13 +40,15 @@ void onInit(CBlob@ this)
 	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
 	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(31.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(23.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(15.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(7.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-1.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-9.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addWoodenWheel(this, v, 0, Vec2f(-17.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(35.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(28.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(20.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(12.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(4.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-4.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-12.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-18.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-24.0f, 5.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
 
 	this.getShape().SetOffset(Vec2f(0, 1));
 
@@ -57,13 +59,6 @@ void onInit(CBlob@ this)
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetRelativeZ(-100.0f);
-	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", "MausFrontLayer.png", 64, 8);
-	if (front !is null)
-	{
-		front.SetRelativeZ(-20.8f);
-		front.SetOffset(Vec2f(6.0f, 5.0f));
-		front.ScaleBy(Vec2f(1.0f, 1.05f));
-	}
 	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", "MausHull.png", 96, 16);
 	if (tracks !is null)
 	{
@@ -80,8 +75,8 @@ void onInit(CBlob@ this)
 		Animation@ animstopped = tracks.addAnimation("stopped", 1, true);
 		animstopped.AddFrame(15);
 
-		tracks.SetRelativeZ(-111.0f);
-		tracks.SetOffset(Vec2f(9.0f, 4.0f));
+		tracks.SetRelativeZ(1.0f);
+		tracks.SetOffset(Vec2f(9.0f, 5.0f));
 	}
 
 	if (getNet().isServer())
@@ -169,6 +164,10 @@ void onTick(CBlob@ this)
 				this.server_AttachTo( turret, "TURRET" );
 				this.set_u16("turretid", turret.getNetworkID());
 				turret.set_u16("tankid", this.getNetworkID());
+				
+				CBitStream params;
+				params.write_bool(this.hasTag("pink"));
+				turret.SendCommand(turret.getCommandID("sync_color"), params);
 
 				turret.SetFacingLeft(this.isFacingLeft());
 				//turret.SetMass(this.getMass());
@@ -328,26 +327,19 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			this.setInventoryName("Panzerkampfwagen VIII Maus 'Minnie Mouse'");
 			this.Tag("pink");
+
 			CSprite@ sprite = this.getSprite();
 			if (sprite is null) return;
 
-			CSpriteLayer@ front = sprite.getSpriteLayer("front layer");
-			if (front !is null)
+			if (!this.hasTag("pink"))
 			{
-				if (!this.hasTag("pink"))
-				{
-					front.SetFrameIndex(0);
-					sprite.SetFrameIndex(0);
-					front.SetAnimation("default");
-					sprite.SetAnimation("default");
-				}
-				else
-				{
-					front.SetFrameIndex(1);
-					sprite.SetFrameIndex(1);
-					front.SetAnimation("default");
-					sprite.SetAnimation("default");
-				}
+				sprite.SetFrameIndex(0);
+				sprite.SetAnimation("default");
+			}
+			else
+			{
+				sprite.SetFrameIndex(1);
+				sprite.SetAnimation("default");
 			}
 		}
 	}

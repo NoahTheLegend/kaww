@@ -92,7 +92,7 @@ void onCommand( CBlob@ this, u8 cmd, CBitStream @params )
 
 		if (name == "maus")
 		{
-			if (blob.getPlayer() !is null && blob.getPlayer().getSex() == 1)
+			if (blob.getPlayer() !is null && (blob.getPlayer().getSex() == 1 || blob.getSexNum() == 1))
 			{
 				purchase.Tag("pink");
 				CBitStream params;

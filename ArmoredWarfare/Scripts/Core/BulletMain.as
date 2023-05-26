@@ -311,31 +311,13 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 				if (isClient())
 				{
-					ParticleAnimated("SmallExplosion3", (posreal + Vec2f(20, 0).RotateBy(gun.isFacingLeft()?-anglereal+180:anglereal)),
+					ParticleAnimated("SmallExplosion3", (posreal + Vec2f(24, 0).RotateBy(gun.isFacingLeft()?-anglereal+180:anglereal)),
 						getRandomVelocity(0.0f, XORRandom(40) * 0.01f, gun.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f),
 							float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 				}
 
 				float _angle = gun.isFacingLeft() ? -anglereal+180 : anglereal;
 				_angle += -0.099f + (XORRandom(4) * 0.01f);
-
-				bool no_muzzle = false;
-
-				#ifdef STAGING
-					no_muzzle = true;
-				#endif
-
-				if (!no_muzzle)
-				{
-					if (gun.isFacingLeft())
-					{
-						ParticleAnimated("Muzzleflash", posreal + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 90) + Vec2f(0.0f, -0.05f), _angle, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-					}
-					else
-					{
-						ParticleAnimated("Muzzleflashflip", posreal + Vec2f(0.0f, 1.0f), getRandomVelocity(0.0f, XORRandom(3) * 0.01f, 270) + Vec2f(0.0f, -0.05f), _angle + 180, 0.1f + XORRandom(3) * 0.01f, 2 + XORRandom(2), -0.15f, false);
-					}
-				}
 
 				CPlayer@ p = getLocalPlayer();
 				if (p !is null && !v_fastrender)

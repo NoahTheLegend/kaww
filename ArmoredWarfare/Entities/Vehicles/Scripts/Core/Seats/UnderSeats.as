@@ -58,12 +58,14 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 		{
 			attached.Tag("hide_head");
 		}
+		
 		Sound::Play("GetInVehicle.ogg", attached.getPosition());
 
 		if (this.getDamageOwnerPlayer() is null) {
 			this.SetDamageOwnerPlayer(attached.getPlayer());
 		}
 	}
+	if (this.hasTag("artillery")) attached.Tag("hide_head");
 }
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
@@ -90,6 +92,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 			this.SetDamageOwnerPlayer(null);
 		}
 	}
+	if (this.hasTag("artillery")) detached.Untag("hide_head");
 }
 
 void InitSeatAttachment(AttachmentPoint@ ap)

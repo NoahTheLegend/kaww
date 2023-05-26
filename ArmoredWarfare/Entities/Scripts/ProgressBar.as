@@ -187,7 +187,7 @@ class Bar : BarHandler{
             BarHandler::Fadeout(active);
             if (getGameTime()-active.tick_since_created > 90 && active.current <= 1)
             {
-                BarHandler::RemoveBar(active.name, false);
+                BarHandler::RemoveBar(active.name, true);
                 continue;
             }
 

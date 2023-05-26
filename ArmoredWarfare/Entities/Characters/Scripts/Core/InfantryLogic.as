@@ -1434,27 +1434,6 @@ void ClientFire( CBlob@ this, const s16 charge_time, InfantryInfo@ infantry, Vec
 	float angle = Maths::ATan2(thisAimPos.y - pos.y, thisAimPos.x - pos.x) * 180 / 3.14159;
 	angle += -0.099f + (XORRandom(2) * 0.01f);
 
-	bool no_muzzle = false;
-
-	#ifdef STAGING
-		no_muzzle = true;
-	#endif
-
-	if (v_fastrender && !this.isMyPlayer())
-		no_muzzle = true;
-	
-	if (!no_muzzle)
-	{
-		if (this.isFacingLeft())
-		{ 
-			ParticleAnimated("Muzzleflash", pos + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle, 0.075f + XORRandom(2) * 0.01f, 3 + XORRandom(2), -0.15f, false);
-		}
-		else
-		{
-			ParticleAnimated("Muzzleflashflip", pos + Vec2f(0.0f, 1.0f), this.getVelocity()/2, angle + 180, 0.075f + XORRandom(2) * 0.01f, 3 + XORRandom(2), -0.15f, false);
-		}
-	}
-
 	Vec2f targetVector = thisAimPos - pos;
 	f32 targetDistance = targetVector.Length();
 	f32 targetFactor = targetDistance / 367.0f;
