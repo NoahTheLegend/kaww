@@ -42,6 +42,7 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 		{
 			this.set_s16("teamRightTickets", this.get_s16("teamRightTickets") / 2);
 			this.Sync("teamRightTickets", true);
+			printf("decrease by 2");
 		} 
 
 		this.set_s16("teamLeftTickets", numTickets);
@@ -56,6 +57,7 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 		{
 			this.set_s16("teamLeftTickets", this.get_s16("teamLeftTickets") / 2);
 			this.Sync("teamRightTickets", true);
+			printf("decrease by 2");
 		} 
 
 		this.set_s16("teamRightTickets", numTickets);
@@ -87,7 +89,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			if(this.get_s16("teamRightTickets")>0) return false;
 			if(isPlayersLeft(this, teamNum)) return false;
 			if(this.getCurrentState()==GAME_OVER) return true;
-			this.SetTeamWon( 0 ); //game over!
+			this.SetTeamWon( teamleft ); //game over!
 			this.SetCurrentState(GAME_OVER);
 			this.SetGlobalMessage( this.getTeam(teamleft).getName() + " wins the game!\n\nWell done. Loading next map..." );
 			return true;
@@ -95,7 +97,7 @@ shared bool checkGameOver(CRules@ this, int teamNum){
 			if(this.get_s16("teamLeftTickets")>0) return false;
 			if(isPlayersLeft(this, teamNum)) return false;
 			if(this.getCurrentState()==GAME_OVER) return true;
-			this.SetTeamWon( 1 ); //game over!
+			this.SetTeamWon( teamright ); //game over!
 			this.SetCurrentState(GAME_OVER);
 			this.SetGlobalMessage( this.getTeam(teamright).getName() + " wins the game!\n\nWell done. Loading next map..." );
 			return true;
@@ -909,7 +911,7 @@ shared class TDMCore : RulesCore
 				{
 					team_wins_on_end = 0;
 					CTeam@ teamis = rules.getTeam(teamleft);
-					rules.SetTeamWon(0);   //game over!
+					rules.SetTeamWon(teamleft);   //game over!
 					rules.SetCurrentState(GAME_OVER);
 					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );		
 				}
@@ -917,7 +919,7 @@ shared class TDMCore : RulesCore
 				{
 					team_wins_on_end = 1;
 					CTeam@ teamis = rules.getTeam(teamright);
-					rules.SetTeamWon(1);   //game over!
+					rules.SetTeamWon(teamright);   //game over!
 					rules.SetCurrentState(GAME_OVER);
 					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );		
 				}
