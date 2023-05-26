@@ -23,13 +23,19 @@ SColor getNameColour(CPlayer@ p)
 		c = SColor(0xffffffff); //normal
 	}
 
-	string[] rainbow = {
+	string[] shadow = {
 		"NoahTheLegend", // dev
+		"LorderPlay" // spriter
+	};
+
+	string[] rainbow = {
+		//"NoahTheLegend", // dev
 		"Nevrotik", // helper
 		"Yeti5000707", // creator
 		"MasterOfCockFights", // patreon
 		"Froghead48" // patreon
 	};
+	
 	for (u16 i = 0; i < rainbow.length; i++)
 	{
 		if (p.getUsername() == rainbow[i])
@@ -37,6 +43,30 @@ SColor getNameColour(CPlayer@ p)
 			c = rgb(p.getNetworkID());
 		}
 	}
+
+	for (u16 i = 0; i < shadow.length; i++)
+	{
+		if (p.getUsername() == shadow[i])
+		{
+			if (i == 0) // kept it here for optimization
+			{
+				c = SColor(0xff66ff66);
+				continue;
+			}
+
+			f32 grayscale = Maths::Clamp(0, 255, Maths::Sin((getGameTime()+p.getNetworkID())*0.1f)*(Maths::Cos(getGameTime()*0.025f)*250.0f));
+			SColor temp = SColor(255, 255, 255, 255);
+			temp.setRed(grayscale);
+			temp.setGreen(grayscale);
+			temp.setBlue(grayscale);
+
+			//printf(""+grayscale);
+			//printf("("+temp.getRed()+","+temp.getGreen()+","+temp.getBlue()+")");
+
+			c = temp;
+		}
+	}
+	
 	if(p.getBlob() is null && p.getTeamNum() != getRules().getSpectatorTeamNum())
 	{
 		uint b = c.getBlue();
@@ -50,7 +80,7 @@ SColor getNameColour(CPlayer@ p)
 		b = Maths::Max(b, 25);
 		g = Maths::Max(g, 25);
 		r = Maths::Max(r, 25);
-
+		
 		c.setBlue(b);
 		c.setGreen(g);
 		c.setRed(r);
