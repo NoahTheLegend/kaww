@@ -134,7 +134,7 @@ class BulletObj
 			return true;
 		}
 
-		if (blob.hasTag("respawn") || blob.hasTag("invincible") || blob.hasTag("dead") || blob.hasTag("projectile") || blob.hasTag("trap") || blob.hasTag("material")) {
+		if ((blob.hasTag("respawn") && !blob.hasTag("vehicle")) || blob.hasTag("invincible") || blob.hasTag("dead") || blob.hasTag("projectile") || blob.hasTag("trap") || blob.hasTag("material")) {
 			return false;
 	    }
 
