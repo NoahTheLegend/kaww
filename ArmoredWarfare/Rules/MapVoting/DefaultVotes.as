@@ -401,7 +401,7 @@ VoteObject@ Create_VoteNextmap(CPlayer@ byplayer, string reason, u8 maptype)
 	@vote.canvote = VoteNextmapCheckFunctor();
 
 	vote.title = "Load new map";
-	vote.maptype = TypeToString[maptype % 6];
+	vote.maptype = TypeToString[maptype % 7];
 	vote.reason = reason;
 	vote.byuser = byplayer.getUsername();
 	vote.forcePassFeature = "nextmap";
@@ -447,7 +447,13 @@ class VoteSurrenderFunctor : VoteFunctor
 			if (getNet().isServer())
 			{
 				CRules@ rules = getRules();
-				s32 teamWonNum = (team + 1) % rules.getTeamsCount();
+				s32 teamWonNum;
+
+				u8 teamleft = getRules().get_u8("teamleft");
+				u8 teamright = getRules().get_u8("teamright");
+
+				team == teamleft ? teamWonNum = teamright : teamWonNum = teamleft;
+
 				CTeam@ teamLost = rules.getTeam(team);
 				CTeam@ teamWon = rules.getTeam(teamWonNum);
 
