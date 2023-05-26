@@ -125,6 +125,22 @@ CSpriteLayer@ LoadHead(CSprite@ this, int headIndex)
 	HeadsPack@ pack = getHeadsPackByIndex(headsPackIndex);
 	string texture_file = pack.filename;
 
+	if (blob.getPlayer() !is null)
+	{
+		int blobHash = blob.getPlayer().getUsername().getHash();
+		if (blobHash == 1738510347) // LorderPlay
+		{
+			if (blob.getPlayer().getSex() == 0)
+			{
+				texture_file = "LorderPlayMale.png";
+			}
+			else
+			{
+				texture_file = "LorderPlayFemale.png";
+			}
+		}
+	}
+
 	bool override_frame = false;
 
 	//get the head index relative to the pack index (without unique heads counting)
