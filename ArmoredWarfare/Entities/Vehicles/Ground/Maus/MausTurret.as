@@ -31,6 +31,8 @@ void onInit(CBlob@ this)
 
 	this.set_f32("damage_modifier", damage_modifier);
 
+	this.addCommandID("sync_color");
+
 	Vehicle_Setup(this,
 	    0.0f, // move speed
 	    0.3f,  // turn speed
@@ -55,8 +57,6 @@ void onInit(CBlob@ this)
 
 	Vehicle_SetWeaponAngle(this, low_angle, v);
 	this.set_string("autograb blob", "mat_bolts");
-
-	this.getShape().SetOffset(Vec2f(5, -12));
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
@@ -162,24 +162,29 @@ void onTick(CBlob@ this)
 		return;
 	}
 
+	
 	CSprite@ sprite = this.getSprite();
-	if (this.getTickSinceCreated() == 1 || this.hasTag("pink"))
+	if (this.getTickSinceCreated() == 5)
 	{
-		if (sprite !is null)
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("VEHICLE");
+		if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().hasTag("pink"))
 		{
-			CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
-			if (arm !is null)
+			if (sprite !is null)
 			{
-				arm.SetFrameIndex(this.hasTag("pink") ? 1 : 0);
-				arm.SetAnimation("default");
-			}
-			if (!this.hasTag("pink"))
-				sprite.SetFrameIndex(2);
-			else 
-			{
-				sprite.SetFrameIndex(1);
-				sprite.SetAnimation("default");
-				this.Untag("pink");
+				CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+				if (arm !is null)
+				{
+					arm.SetFrameIndex(this.hasTag("pink") ? 1 : 0);
+					arm.SetAnimation("default");
+				}
+				if (!this.hasTag("pink"))
+					sprite.SetFrameIndex(2);
+				else 
+				{
+					sprite.SetFrameIndex(1);
+					sprite.SetAnimation("default");
+					this.Untag("pink");
+				}
 			}
 		}
 	}
@@ -358,6 +363,21 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		}
 		
 		Vehicle_onFire(this, v, blob, charge);
+	}
+	else if (cmd == this.getCommandID("sync_color"))
+	{
+		bool pink = params.read_bool();
+		if (pink) this.Tag("pink");
+		CSprite@ sprite = this.getSprite();
+		if (sprite !is null)
+		{
+			CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+			if (arm !is null)
+			{
+				arm.SetFrameIndex(this.hasTag("pink") ? 1 : 0);
+				arm.SetAnimation("default");
+			}
+		}
 	}
 }
 

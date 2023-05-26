@@ -178,6 +178,8 @@ void onTick(CBlob@ this)
 	{
 		return;
 	}
+	
+	this.getShape().SetOffset(this.isFacingLeft()? Vec2f(-5.0f, -12): Vec2f(5, -12));
 
 	if (getGameTime() % 5 == 0)
 	{

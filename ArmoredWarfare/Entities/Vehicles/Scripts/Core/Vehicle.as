@@ -858,6 +858,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		if (isClient())
 		{
+			for (int i = 0; i < (v_fastrender ? 3 : 8); i++)
+			{
+				MakeParticle(this, Vec2f( (this.isFacingLeft()?1:-1)*(XORRandom(24)+8), XORRandom(16) - 8), getRandomVelocity(-this.getVelocity().Angle(), XORRandom(150) * 0.01f, 90), smokes[XORRandom(smokes.length)]);
+			}
+			
 			u32 time;
 			if (!params.saferead_u32(time)) return;
 			this.set_bool("engine_stuck", true);
@@ -1030,7 +1035,7 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 {
 	if (!getNet().isClient()) return;
 
-	ParticleAnimated(CFileMatcher(filename).getFirst(), this.getPosition() + pos, vel, float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 1 + XORRandom(4), XORRandom(100) * -0.00005f, true);
+	ParticleAnimated(CFileMatcher(filename).getFirst(), this.getPosition() + pos, vel, float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 3 + XORRandom(3), XORRandom(100) * -0.00005f, true);
 }
 
 void DoExplosion(CBlob@ this, f32 damage, f32 map_damage, f32 radius)

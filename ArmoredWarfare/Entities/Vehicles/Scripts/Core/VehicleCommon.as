@@ -1116,6 +1116,10 @@ CSpriteLayer@ Vehicle_addWheel(CBlob@ this, VehicleInfo@ v, const string& in tex
 	return wheel;
 }
 
+CSpriteLayer@ Vehicle_addRollerWheel(CBlob@ this, VehicleInfo@ v, int frame, Vec2f offset)
+{
+	return Vehicle_addWheel(this, v, "Rollers.png", 16, 16, frame, offset);
+}
 CSpriteLayer@ Vehicle_addWoodenWheel(CBlob@ this, VehicleInfo@ v, int frame, Vec2f offset)
 {
 	return Vehicle_addWheel(this, v, "WoodenWheels.png", 16, 16, frame, offset);

@@ -48,15 +48,16 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	//if (isServer() && this.hasTag("artillery"))
-	//{
-	//	if (this.isKeyPressed(key_action1) || this.getHealth() <= 0.0f)
-	//	{
-	//		ResetPlayer(this);
-	//		this.server_Die();
-	//		return;
-	//	}
-	//}
+	if (isServer() && this.hasTag("artillery"))
+	{
+		if (this.isKeyPressed(key_action1) || this.getHealth() <= 0.0f)
+		{
+			ResetPlayer(this);
+			this.server_Die();
+			return;
+		}
+	}
+	
 	//this.setPosition(Vec2f(this.getPosition().x, this.getOldPosition().y)); // useful for debugging
 	f32 angle = 0;
 
@@ -248,13 +249,13 @@ void onDie(CBlob@ this)
 {
 	if (this.getPlayer() !is null)
 	{
-		//ResetPlayer(this);
+		ResetPlayer(this);
 	}
 }
 
 bool DoExplosion(CBlob@ this, Vec2f velocity)
 {
-	//ResetPlayer(this);
+	ResetPlayer(this);
 	if (this.hasTag("dead")) return true;
 
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);

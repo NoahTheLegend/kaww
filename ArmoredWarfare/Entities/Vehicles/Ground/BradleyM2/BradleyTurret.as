@@ -9,14 +9,14 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u8 cooldown_time = 150;//210;
+const u8 cooldown_time = 105;
 const u8 barrel_compression = 6; // max barrel movement
 const u16 recoil = 180;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
-f32 high_angle = 71.0f; // upper depression limit
+f32 high_angle = 35.0f; // upper depression limit
 f32 low_angle = 101.0f; // lower depression limit
 
 void onInit(CBlob@ this)
@@ -38,20 +38,20 @@ void onInit(CBlob@ this)
 	    cooldown_time, // fire delay (ticks)
 	    1, // fire bullets amount
 	    1, // fire cost
-	    "mat_bolts", // bullet ammo config name
-	    "105mm Shells", // name for ammo selection
+	    "mat_14mmround", // bullet ammo config name
+	    "14mm Rounds", // name for ammo selection
 	    "ballista_bolt", // bullet config name
 	    //"sound_100mm", // fire sound
-		"sound_105mm",
+		"sound_14mm",
 	    "EmptyFire", // empty fire sound
 	    Vehicle_Fire_Style::custom,
 	    Vec2f(-6.0f, -8.0f), // fire position offset
 	    1); // charge time
 
 	Vehicle_SetWeaponAngle(this, low_angle, v);
-	this.set_string("autograb blob", "mat_bolts");
+	this.set_string("autograb blob", "mat_14mmround");
 
-	this.getShape().SetOffset(Vec2f(5, -12));
+	this.getShape().SetOffset(Vec2f(-1, -12));
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
@@ -60,7 +60,7 @@ void onInit(CBlob@ this)
 	// auto-load on creation
 	if (getNet().isServer())
 	{
-		CBlob@ ammo = server_CreateBlob("mat_bolts");
+		CBlob@ ammo = server_CreateBlob("mat_14mmround");
 		if (ammo !is null)
 		{
 			if (!this.server_PutInInventory(ammo))
@@ -192,12 +192,12 @@ void onTick(CBlob@ this)
 				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
 				{
 					isOperator = true;
-					high_angle = 68.0f; // upper depression limit
+					high_angle = 30.0f; // upper depression limit
 					low_angle = 104.0f; // lower depression limit
 				}
 				else 
 				{
-					high_angle = 71.0f; // upper depression limit
+					high_angle = 35.0f; // upper depression limit
 					low_angle = 101.0f; // lower depression limit
 				}
 			}
@@ -257,7 +257,7 @@ void onTick(CBlob@ this)
 	{
 		arm.ResetTransform();
 		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-		arm.SetOffset(Vec2f(-12.0f, -26.0f + (this.isFacingLeft() ? -1.0f : -0.0f)));
+		arm.SetOffset(Vec2f(-12.0f, -26.0f + (this.isFacingLeft() ? -2.0f : -1.0f)));
 		arm.SetOffset(arm.getOffset() - Vec2f(-barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
 		arm.SetRelativeZ(-50.0f);
 	}
@@ -368,7 +368,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
 		Vec2f vel = Vec2f(0.0f, -27.5f).RotateBy(angle);
 		bullet.setVelocity(vel);
-		Vec2f pos = this.getPosition() + (this.isFacingLeft()?Vec2f(-13.0f,0):Vec2f(13.0f,0)) + Vec2f((this.isFacingLeft() ? -1 : 1)*31.0f, -11.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
+		Vec2f pos = this.getPosition() + (this.isFacingLeft()?Vec2f(-13.0f,-1):Vec2f(13.0f,-1)) + Vec2f((this.isFacingLeft() ? -1 : 1)*31.0f, -11.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
 		bullet.setPosition(pos);
 
 		CBlob@ hull = getBlobByNetworkID(this.get_u16("tankid"));

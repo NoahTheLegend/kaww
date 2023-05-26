@@ -384,8 +384,9 @@ void onTick(CBlob@ this)
 												this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 
 										CBitStream params;
-										//params.write_s32(this.get_f32("gunAngle"));
-										//params.write_Vec2f(this.getPosition()+Vec2f(32.0f,8).RotateBy(this.getAngleDegrees()));
+										params.write_s32(this.get_f32("gunAngle"));
+										params.write_Vec2f(this.getPosition()+Vec2f(this.isFacingLeft()?-39:39, 9));
+
 										this.SendCommand(this.getCommandID("shoot"), params);
 										this.set_u32("fireDelayGun", getGameTime() + (shootDelay));
 									}
@@ -530,10 +531,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	if (cmd == this.getCommandID("shoot"))
 	{
 		this.set_u32("next_shoot", getGameTime()+shootDelay);
-		//s32 arrowAngle;
-		//if (!params.saferead_s32(arrowAngle)) return;
-		//Vec2f arrowPos;
-		//if (!params.saferead_Vec2f(arrowPos)) return;
+		s32 arrowAngle;
+		if (!params.saferead_s32(arrowAngle)) return;
+		Vec2f arrowPos;
+		if (!params.saferead_Vec2f(arrowPos)) return;
 
 		//Vec2f vel = Vec2f(500.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(arrowAngle);
 
@@ -553,7 +554,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				//	proj.Tag("aircraft_bullet");
 				//}
 			}
-			//ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+			ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(this.isFacingLeft()?arrowAngle+180:arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 		}
 	}
 	else if (cmd == this.getCommandID("shoot bullet"))
