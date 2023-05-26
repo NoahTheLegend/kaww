@@ -528,7 +528,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 		if (isServer())
 		{
-			for (int i = 0; i < quantity/25; i++)
+			for (int i = 0; i < quantity/50; i++)
 			{
 				CBlob@ blob = server_CreateBlob("flame", -1, this.getPosition());
 				blob.setVelocity(Vec2f(XORRandom(5) - 2, -XORRandom(5)));

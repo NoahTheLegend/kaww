@@ -154,14 +154,19 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		break;
 	}
 
+	if (hitterBlob.getName() == "javelin")
+	{
+		return damage * 0.33f;
+	}
+
 	if (hitterBlob.getName() == "sagrenade")
 	{
-		damage *= 0.85f;
+		return damage *= 0.33f;
 	}
 
 	if (hitterBlob.hasTag("grenade") || hitterBlob.getName() == "c4")
 	{
-		return damage * 0.3f;
+		return damage * 0.15f;
 	}
 	if (customData == Hitters::flying || customData == Hitters::flying)
 	{

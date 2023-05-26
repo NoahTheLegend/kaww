@@ -149,7 +149,7 @@ void onTick(CBlob@ this)
 		}
 	}
 	
-	if (this.getTickSinceCreated() == 5)
+	if (this.getTickSinceCreated() == 3)
 	{
 		// turret
 		if (getNet().isServer())

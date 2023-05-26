@@ -183,7 +183,6 @@ void onTick(CBlob@ this)
 				{
 					sprite.SetFrameIndex(1);
 					sprite.SetAnimation("default");
-					this.Untag("pink");
 				}
 			}
 		}
@@ -367,6 +366,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	else if (cmd == this.getCommandID("sync_color"))
 	{
 		bool pink = params.read_bool();
+
 		if (pink) this.Tag("pink");
 		CSprite@ sprite = this.getSprite();
 		if (sprite !is null)
@@ -374,8 +374,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
 			if (arm !is null)
 			{
-				arm.SetFrameIndex(this.hasTag("pink") ? 1 : 0);
 				arm.SetAnimation("default");
+				arm.SetFrameIndex(this.hasTag("pink") ? 1 : 0);
 			}
 		}
 	}
