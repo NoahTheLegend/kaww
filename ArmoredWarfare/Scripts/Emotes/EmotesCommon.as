@@ -64,6 +64,12 @@ namespace Emotes
 		molotov,
 		grenade,
 		heal,
+		madgenius,
+		strike,
+		yessir,
+		resupply,
+		artillery,
+		artilleryshoot,
 
 		emotes_total,
 		off
@@ -127,7 +133,13 @@ namespace Emotes
 		"heli",
 		"molotov",
 		"grenade",
-		"heal"
+		"heal",
+		"madgenius",
+		"strike",
+		"yessir",
+		"resupply",
+		"artillery",
+		"artilleryshoot"
 	};
 }
 
