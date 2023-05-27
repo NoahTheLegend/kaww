@@ -5,6 +5,7 @@
 void onInit(CBlob@ blob)
 {
 	blob.addCommandID("emote");
+	blob.addCommandID("sync_emote_common");
 
 	CSprite@ sprite = blob.getSprite();
 	blob.set_u8("emote", Emotes::off);
@@ -83,6 +84,17 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		u32 emotetime = params.read_u32();
 		this.set_u8("emote", emote);
 		this.set_u32("emotetime", emotetime);
+	}
+	else if (cmd == this.getCommandID("sync_emote_custom"))
+	{
+		bool isclient = params.read_bool();
+		u8 emote = params.read_u8();
+		u32 emotetime = params.read_u32();
+		if (!isclient)
+		{
+			this.set_u8("emote", emote);
+			this.set_u32("emotetime", emotetime);
+		}
 	}
 }
 
