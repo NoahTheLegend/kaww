@@ -145,8 +145,6 @@ void onInit(CBlob@ this)
 	this.addCommandID("basic_sync");
 	this.addCommandID("sync_mag");
 
-	this.addCommandID("sync_emote_custom");
-
 	this.Tag("3x2");
 	this.set_u32("set_nomenus", 0);
 
