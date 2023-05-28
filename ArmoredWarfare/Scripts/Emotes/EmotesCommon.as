@@ -170,7 +170,6 @@ void set_emote(CBlob@ this, u8 emote, int time)
 	params.write_u8(this.get_u8("emote"));
 	params.write_u32(this.get_u32("emotetime"));
 	this.SendCommand(this.getCommandID("sync_emote_custom"), params);
-	
 }
 
 void set_emote(CBlob@ this, u8 emote)
