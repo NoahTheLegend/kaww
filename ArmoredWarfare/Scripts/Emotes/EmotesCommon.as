@@ -165,6 +165,7 @@ void set_emote(CBlob@ this, u8 emote, int time)
 	this.set_u8("emote", emote);
 	this.set_u32("emotetime", getGameTime() + time);
 	bool client = this.getPlayer() !is null && this.isMyPlayer();
+	if (!this.hasCommandID("sync_emote_custom")) this.addCommandID("sync_emote_custom");
 	CBitStream params;
 	params.write_bool(!client);
 	params.write_u8(this.get_u8("emote"));

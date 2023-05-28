@@ -5,6 +5,7 @@
 void onInit(CBlob@ blob)
 {
 	blob.addCommandID("emote");
+	blob.addCommandID("sync_emote_custom");
 
 	CSprite@ sprite = blob.getSprite();
 	blob.set_u8("emote", Emotes::off);
