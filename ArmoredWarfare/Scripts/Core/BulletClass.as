@@ -140,9 +140,10 @@ class BulletObj
 
 		if (blob.hasTag("bulletpassable"))
 		{
-			if (isServer())
+			if (isServer() )
 			{
-				hoomanBlob.server_Hit(blob, OldPos, blob.getVelocity(), 0.1f+DamageBody/2, Hitters::builder);
+				if (hoomanBlob !is null) hoomanBlob.server_Hit(blob, OldPos, blob.getVelocity(), 0.1f+DamageBody/2, Hitters::builder);
+				else blob.server_Hit(blob, OldPos, blob.getVelocity(), 0.1f+DamageBody/2, Hitters::builder);
 			}
 			return false;
 		}
