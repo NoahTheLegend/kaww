@@ -70,6 +70,10 @@ namespace Emotes
 		resupply,
 		artillery,
 		artilleryshoot,
+		dig,
+		ironskull,
+		upgrade,
+		star,
 
 		emotes_total,
 		off
@@ -139,7 +143,11 @@ namespace Emotes
 		"yessir",
 		"resupply",
 		"artillery",
-		"artilleryshoot"
+		"artilleryshoot",
+		"dig",
+		"ironskull",
+		"upgrade",
+		"star"
 	};
 }
 
