@@ -28,10 +28,9 @@ void onInit(CBlob@ this)
 	this.Tag("blocks bullet");
 
 	this.Tag("fireshe");
-
 	this.set_f32("damage_modifier", damage_modifier);
 
-	this.addCommandID("sync_color");
+	this.set_u8("type", this.getName() == "mausturret" ? 0 : this.getName() == "pinkmausturret" ? 1 : 2);
 
 	Vehicle_Setup(this,
 	    0.0f, // move speed
@@ -75,7 +74,7 @@ void onInit(CBlob@ this)
 
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 16, 48);
+	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "Maus.png", 16, 48);
 
 	if (arm !is null)
 	{
@@ -84,8 +83,7 @@ void onInit(CBlob@ this)
 		Animation@ anim = arm.addAnimation("default", 0, false);
 		if (anim !is null)
 		{
-			anim.AddFrame(10);
-			anim.AddFrame(11);
+			anim.AddFrame(10 + this.get_u8("type"));
 		}
 		
 		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
@@ -115,7 +113,7 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 	if (gunner !is null && gunner.getOccupied() !is null && !gunner.isKeyPressed(key_action2) && !this.hasTag("broken"))
 	{
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos()+Vec2f(0,6);
 
 		if ((!facing_left && aim_vec.x < 0) ||
 		        (facing_left && aim_vec.x > 0))
@@ -160,32 +158,6 @@ void onTick(CBlob@ this)
 	if (!this.get("VehicleInfo", @v))
 	{
 		return;
-	}
-
-	
-	CSprite@ sprite = this.getSprite();
-	if (this.getTickSinceCreated() == 5)
-	{
-		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("VEHICLE");
-		if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().hasTag("pink"))
-		{
-			if (sprite !is null)
-			{
-				CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
-				if (arm !is null)
-				{
-					arm.SetFrameIndex(this.hasTag("pink") ? 1 : 0);
-					arm.SetAnimation("default");
-				}
-				if (!this.hasTag("pink"))
-					sprite.SetFrameIndex(2);
-				else 
-				{
-					sprite.SetFrameIndex(1);
-					sprite.SetAnimation("default");
-				}
-			}
-		}
 	}
 
 	if (getGameTime() % 5 == 0)
@@ -282,7 +254,8 @@ void onTick(CBlob@ this)
 
 	if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
 	else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
-
+	
+	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
 	if (arm !is null)
 	{
@@ -336,6 +309,7 @@ void DoExplosion(CBlob@ this)
 // Blow up
 void onDie(CBlob@ this)
 {
+	if (this.hasTag("dead")) return;
 	DoExplosion(this);
 	Explode(this, 64.0f, 1.0f);
 
@@ -362,22 +336,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		}
 		
 		Vehicle_onFire(this, v, blob, charge);
-	}
-	else if (cmd == this.getCommandID("sync_color"))
-	{
-		bool pink = params.read_bool();
-
-		if (pink) this.Tag("pink");
-		CSprite@ sprite = this.getSprite();
-		if (sprite !is null)
-		{
-			CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
-			if (arm !is null)
-			{
-				arm.SetAnimation("default");
-				arm.SetFrameIndex(this.hasTag("pink") ? 1 : 0);
-			}
-		}
 	}
 }
 
