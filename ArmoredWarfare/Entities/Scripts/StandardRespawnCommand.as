@@ -34,36 +34,63 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$mechanic_class_icon$", "ClassIcon.png", Vec2f(48, 48), 0);
 	AddIconToken("$change_class$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 12, 2);
 	AddIconToken("$change_perk$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 11);
-	
-	addPlayerClass(this, "---- Mechanic ----", "$mechanic_class_icon$", "mechanic",
-						"---- Mechanic ----\n\nBuild and break.\n\nHP: 200\nLMB: Build\nRMB: Mine");
 
-	addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver",
-						"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 350\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
+	bool isTDM = (getMap().tilemapwidth < 200);
+	if (!isTDM)
+	{
+		addPlayerClass(this, "---- Mechanic ----", "$mechanic_class_icon$", "mechanic",
+							"---- Mechanic ----\n\nBuild and break.\n\nHP: 200\nLMB: Build\nRMB: Mine");
 
-	addPlayerClass(this, "---- AK-47 ----", "$ranger_class_icon$", "ranger",
-						"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 225\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Buttstock");
+		addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver",
+							"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 350\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
 
-	addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun",
-						"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 275\nLMB: Shoot | 4 Ammo per shot\nRMB: Aim\nSPACEBAR: Dig");
+		addPlayerClass(this, "---- AK-47 ----", "$ranger_class_icon$", "ranger",
+							"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 225\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Buttstock");
 
-	addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper",
+		addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun",
+							"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 275\nLMB: Shoot | 4 Ammo per shot\nRMB: Aim\nSPACEBAR: Dig");
+
+		addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper",
 						"---- Sniper ----\n\nLong range sniper.\n\nHP: 200\nLMB: Shoot | 3 Ammo per shot\nRMB: Scope in\nSPACEBAR: Knife");
 
-	addPlayerClass(this, "---- RPG ----", "$rpg_class_icon$", "rpg",
-						"---- RPG ----\n\nArmed with a powerful RPG launcher.\n\nHP: 225.\nLMB: RPG | 1 HEAT rocket per shot\nRMB: Aim\nSPACEBAR: Knife");
+		addPlayerClass(this, "---- RPG ----", "$rpg_class_icon$", "rpg",
+							"---- RPG ----\n\nArmed with a powerful RPG launcher.\n\nHP: 225.\nLMB: RPG | 1 HEAT rocket per shot\nRMB: Aim\nSPACEBAR: Knife");
 
-	addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5",
-						"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half of food healing\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
+		addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5",
+							"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half of food healing\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
 
-	addPlayerClass(this, "---- Shielder ----", "$shielder_class_icon$", "shielder",
-						"---- Shielder ----\n\nCarries a shield that is able to block insignificant damage.\n\nHP: 275\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
-	
-	addPlayerClass(this, "---- Firebringer ----", "$firebringer_class_icon$", "firebringer",
-						"---- Firebringer ----\n\nOwns a portative yet heavy flamethrower.\n\nHP: 250\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
+		addPlayerClass(this, "---- Shielder ----", "$shielder_class_icon$", "shielder",
+							"---- Shielder ----\n\nCarries a shield that is able to block insignificant damage.\n\nHP: 275\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
 
-	addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg",
+		addPlayerClass(this, "---- Firebringer ----", "$firebringer_class_icon$", "firebringer",
+							"---- Firebringer ----\n\nOwns a portative yet heavy flamethrower.\n\nHP: 250\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
+
+		addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg",
 						"---- LMG ----\n\nExtended magazine capacity but slower reload.\n\nHP: 300\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
+	}
+	else
+	{
+		addPlayerClass(this, "---- Mechanic ----", "$mechanic_class_icon$", "mechanic",
+							"---- Mechanic ----\n\nBuild and break.\n\nHP: 200\nLMB: Build\nRMB: Mine");
+
+		addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver",
+							"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 350\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
+
+		addPlayerClass(this, "---- AK-47 ----", "$ranger_class_icon$", "ranger",
+							"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 225\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Buttstock");
+
+		addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun",
+							"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 275\nLMB: Shoot | 4 Ammo per shot\nRMB: Aim\nSPACEBAR: Dig");
+
+		addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper",
+						"---- Sniper ----\n\nLong range sniper.\n\nHP: 200\nLMB: Shoot | 3 Ammo per shot\nRMB: Scope in\nSPACEBAR: Knife");
+	
+		addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5",
+							"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half of food healing\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
+
+		addPlayerClass(this, "---- Shielder ----", "$shielder_class_icon$", "shielder",
+							"---- Shielder ----\n\nCarries a shield that is able to block insignificant damage.\n\nHP: 275\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
+	}
 
 	AddIconToken("$0_class_icon$", "PerkIcon.png", Vec2f(36, 36), 0);
 	AddIconToken("$1_class_icon$", "PerkIcon.png", Vec2f(36, 36), 1);
@@ -196,8 +223,14 @@ void BuildRespawnMenuFor(CBlob@ this, CBlob @caller)
 
 	if (caller !is null && caller.isMyPlayer() && classes !is null)
 	{
+		bool isTDM = (getMap().tilemapwidth < 200);
 		u8 cols = 5;
 		u8 rows = 2;
+		if (isTDM)
+		{
+			cols = 7;
+			rows = 1;
+		}
 		Vec2f size = Vec2f(classes.length * CLASS_BUTTON_SIZE, CLASS_BUTTON_SIZE);
 		size = Vec2f(cols * CLASS_BUTTON_SIZE, rows * CLASS_BUTTON_SIZE); // disable this if needed
 		CGridMenu@ menu = CreateGridMenu(caller.getScreenPos() + Vec2f(0.0f, caller.getRadius() * 1.0f + 48.0f), this, size, getTranslatedString("CHANGE CLASS"));
