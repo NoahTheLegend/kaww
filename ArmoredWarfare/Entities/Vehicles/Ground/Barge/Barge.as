@@ -63,7 +63,7 @@ void onInit(CBlob@ this)
 	frontShape.push_back(Vec2f(108.0f, 16.0f));
 	this.getShape().AddShape(frontShape);
 
-	getMap().server_AddMovingSector(Vec2f(-60.0f, 0.0f), Vec2f(-48.0f, 16.0f), "ladder", this.getNetworkID());
+	getMap().server_AddMovingSector(Vec2f(-64.0f, 0.0f), Vec2f(-54.0f, 16.0f), "ladder", this.getNetworkID());
 }
 
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
