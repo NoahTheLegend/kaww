@@ -408,7 +408,7 @@ void onTick(CBlob@ this)
 		f32 volume = (Maths::Log(4.5)*(resultForce.getLength()+0.2)+2)/4;
 		sprite.SetEmitSoundVolume(Maths::Min(volume*1.5, 1.5f));
 
-		sprite.SetEmitSoundSpeed(Maths::Min(0.005f + Maths::Abs(resultForce.getLength() * 3.75f), 1.25f) * volume);
+		sprite.SetEmitSoundSpeed(Maths::Min(0.005f + Maths::Abs(resultForce.getLength() * 3.75f), 1.25f) * volume + (this.getVelocity().Length() > 1.0f ? Maths::Max(resultForce.y + 0.25f, 0) : 0));
 		if (this.hasTag("falling")) sprite.SetEmitSoundSpeed(Maths::Min(0.000075f + Maths::Abs(this.get_Vec2f("result_force").getLength() * 1.00f), 0.85f) * 1.55);
 
 		this.set_Vec2f("target_force", clampedTargetForce);
