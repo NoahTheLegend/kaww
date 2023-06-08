@@ -25,6 +25,8 @@ int FireShotgunID;
 f32 FRAME_TIME = 0;
 //
 
+const u8 LMG_AFTERSHOT_DELAY = 10;
+
 // Set commands, add render:: (only do this once)
 void onInit(CRules@ this)
 {
@@ -177,7 +179,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 			if (this.get_bool("is_lmg"))
 			{
-				this.set_u32("lmg_aftershot", getGameTime()+15);
+				this.set_u32("lmg_aftershot", getGameTime()+LMG_AFTERSHOT_DELAY);
 			}
 
 			if (this.getPlayer() !is null)

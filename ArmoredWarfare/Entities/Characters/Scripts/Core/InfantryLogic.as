@@ -1198,15 +1198,14 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	{
 		if (isReloading)
 		{
-			this.set_u8("inaccuracy", 0);
 			moveVars.walkFactor *= infantry.reload_walkspeed_factor; // 0.55f default
 			moveVars.jumpFactor *= infantry.reload_jumpheight_factor; // 1.0 default
 		}
-		if (isStabbing)
-		{
-			moveVars.walkFactor *= infantry.stab_walkspeed_factor; // 0.2f default
-			moveVars.jumpFactor *= infantry.stab_jumpheight_factor; // 0.8 default
-		}
+	}
+	else if (isStabbing)
+	{
+		moveVars.walkFactor *= infantry.stab_walkspeed_factor; // 0.2f default
+		moveVars.jumpFactor *= infantry.stab_jumpheight_factor; // 0.8 default
 	}
 
 	if (this.get_u8("inaccuracy") > 0 && this.get_u32("accuracy_delay") < getGameTime())
