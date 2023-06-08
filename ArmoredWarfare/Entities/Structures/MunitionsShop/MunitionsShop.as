@@ -100,7 +100,7 @@ void onInit(CBlob@ this)
 	}
 	else // tdm maps
 	{
-		this.set_Vec2f("shop menu size", Vec2f(5, 1));
+		this.set_Vec2f("shop menu size", Vec2f(4, 1));
 		{
 			ShopItem@ s = addShopItem(this, "Ammuniton", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 3);
@@ -116,10 +116,6 @@ void onInit(CBlob@ this)
 		{
 			ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 25);
-		}
-		{
-			ShopItem@ s = addShopItem(this, "Special Ammunition", "$specammo$", "specammo", "Special ammunition for advanced weapons.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 20);
 		}
 	}
 }

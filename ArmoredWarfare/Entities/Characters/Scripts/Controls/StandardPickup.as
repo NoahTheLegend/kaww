@@ -41,6 +41,8 @@ void onInit(CBlob@ this)
 		const PickupWheelOption[] molotovs = {PickupWheelOption("molotov", 1), PickupWheelOption("mat_molotov", 0)};
 		menu.add_entry(PickupWheelMenuEntry("Molotov", "$mat_molotov$", molotovs, Vec2f(0, -8.0f)));
 		menu.add_entry(PickupWheelMenuEntry("Medkit", "$medkit$", "medkit"));
+		menu.add_entry(PickupWheelMenuEntry("Helmet", "$helmet$", "helmet", Vec2f(0, -4.0f)));
+		menu.add_entry(PickupWheelMenuEntry("Binoculars", "$binoculars$", "binoculars", Vec2f(1, -3.0f)));
 		//ammo
 		menu.add_entry(PickupWheelMenuEntry("Ammo", "$ammo$", "ammo", Vec2f(0, 2.0f)));
 		menu.add_entry(PickupWheelMenuEntry("Special Ammunition", "$specammo$", "specammo", Vec2f(0, 2.0f)));
@@ -53,7 +55,6 @@ void onInit(CBlob@ this)
 		menu.add_entry(PickupWheelMenuEntry("Gold", "$mat_gold$", "mat_gold", Vec2f(0, -6.0f)));
 		menu.add_entry(PickupWheelMenuEntry("Stone", "$mat_stone$", "mat_stone", Vec2f(0, -6.0f)));
 		menu.add_entry(PickupWheelMenuEntry("Wood", "$mat_wood$", "mat_wood", Vec2f(0, -6.0f)));
-
 
 		menu.add_entry(PickupWheelMenuEntry("Log", "$log$", "log"));
 		const PickupWheelOption[] food_options = {
