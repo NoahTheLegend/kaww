@@ -35,6 +35,7 @@ void onInit(CBlob@ this)
 	                       );
 
 	this.getShape().SetOffset(Vec2f(this.getTeamNum()==teamleft?-3:2, 9));
+	this.getShape().getConsts().bullet = true;
 	this.getShape().getConsts().transports = true;
 	this.getSprite().SetZ(50);
 
