@@ -295,6 +295,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		damage *= extra_amount;
 	}
 
+	s8 pen = hitterBlob.get_s8("pen_level");
+
 	bool is_bullet = (customData == HittersAW::bullet || customData == HittersAW::heavybullet
 		|| customData == HittersAW::machinegunbullet || customData == HittersAW::aircraftbullet);
 	
@@ -419,7 +421,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage *= 2.0f; // take double damage
 		}
 	}
-	if (customData != Hitters::explosion && hitterBlob.getName() == "ballista_bolt") return damage * 2;
+	if (customData != Hitters::explosion && hitterBlob.getName() == "ballista_bolt")
+	{
+		return (pen > 2 ? damage*2 : damage/4);
+	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.hasTag("grenade"))
 	{
 		if (hitterBlob.hasTag("grenade")) damage *= 1.75f+(XORRandom(51)*0.01f);
