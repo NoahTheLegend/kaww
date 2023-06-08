@@ -236,7 +236,7 @@ namespace RangerParams
 	// MOVEMENT (extra)
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.5f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.9f;
-	const ::f32 STAB_WALKSPEED_FACTOR   = 0.85f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.75f;
 	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.9f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
@@ -389,7 +389,7 @@ namespace RevolverParams
 	// MOVEMENT (extra)
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.75f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 1.0f;
-	const ::f32 STAB_WALKSPEED_FACTOR   = 0.65f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.75f;
 	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.9f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
