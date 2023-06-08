@@ -644,7 +644,9 @@ void onTick(CSprite@ this)
 				shield.ResetTransform();
 				shield.RotateBy(blob.isFacingLeft()? angle : -angle, Vec2f_zero);
 				
-				blob.setVelocity(Vec2f(blob.getVelocity().x*0.5f, blob.getVelocity().y));
+				// its better to keep it this way, until we rewrite shooting logic completely
+				// you may see what happens if you use archer.isStabbing for this
+				blob.setVelocity(Vec2f(blob.getVelocity().x*0.75f, blob.getVelocity().y));
 
 				shield.SetFacingLeft(blob.isFacingLeft());
 				shield.SetOffset(Vec2f(-6.0f, 0).RotateBy(angle));

@@ -163,8 +163,8 @@ namespace ShotgunParams
 {
 	const ::string CLASSNAME 			= "Shotgun"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.35f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.5f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.333f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.45f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
@@ -185,8 +185,8 @@ namespace ShotgunParams
 	// MOVEMENT (extra)
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.55f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 1.0f;
-	const ::f32 STAB_WALKSPEED_FACTOR   = 0.25f;
-	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.8f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.65f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.85f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -236,8 +236,8 @@ namespace RangerParams
 	// MOVEMENT (extra)
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.5f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.9f;
-	const ::f32 STAB_WALKSPEED_FACTOR   = 0.5f;
-	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.75f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.85f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.9f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -285,9 +285,9 @@ namespace LMGParams
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 10; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 0.7f; // lower means less recoil when aiming down sights. 1.0 is no change
 	// MOVEMENT (extra)
-	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.25f;
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.35f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.6f;
-	const ::f32 STAB_WALKSPEED_FACTOR   = 0.33f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.75f;
 	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.8f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
@@ -338,7 +338,7 @@ namespace Mp5Params
 	// MOVEMENT (extra)
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.75f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.9f;
-	const ::f32 STAB_WALKSPEED_FACTOR   = 0.25f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.8f;
 	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.8f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.8f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
@@ -389,7 +389,7 @@ namespace RevolverParams
 	// MOVEMENT (extra)
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.75f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 1.0f;
-	const ::f32 STAB_WALKSPEED_FACTOR   = 0.5f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.65f;
 	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.9f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
@@ -440,8 +440,8 @@ namespace ShielderParams
 	// MOVEMENT (extra)
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.75f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 1.0f;
-	const ::f32 STAB_WALKSPEED_FACTOR   = 0.33f;
-	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.5f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.1f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.25f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -491,8 +491,8 @@ namespace SniperParams
 	// MOVEMENT (extra)
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.5f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.85f;
-	const ::f32 STAB_WALKSPEED_FACTOR   = 0.25f;
-	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.8f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.65f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.85f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
@@ -542,7 +542,7 @@ namespace FirebringerParams
 	// MOVEMENT (extra)
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.4f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.75f;
-	const ::f32 STAB_WALKSPEED_FACTOR   = 0.2f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.45f;
 	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.75f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
@@ -593,15 +593,15 @@ namespace RPGParams
 	// MOVEMENT (extra)
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.4f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.65f;
-	const ::f32 STAB_WALKSPEED_FACTOR   = 0.25f;
+	const ::f32 STAB_WALKSPEED_FACTOR   = 0.75f;
 	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.8f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 100; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 100; // aim inaccuracy  (+3 per shot)
-	const ::u8 INACCURACY_MIDAIR        = 10;
-	const ::u8 INACCURACY_HIT 		    = 25;
+	const ::u8 INACCURACY_CAP 			= 85; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 85; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_MIDAIR        = 7;
+	const ::u8 INACCURACY_HIT 		    = 20;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= true;
@@ -1069,8 +1069,8 @@ void getExtraMovementStats( int blobNameHash, float &out reloadWalkStat,
 		{
 			reloadWalkStat      = RangerParams::RELOAD_WALKSPEED_FACTOR;
 			reloadJumpStat      = RangerParams::RELOAD_JUMPHEIGHT_FACTOR;
-			stabWalkStat        = RangerParams::RELOAD_WALKSPEED_FACTOR;
-			stabJumpStat        = RangerParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = RangerParams::STAB_WALKSPEED_FACTOR;
+			stabJumpStat        = RangerParams::STAB_JUMPHEIGHT_FACTOR;
 		}
 		break;
 
@@ -1078,8 +1078,8 @@ void getExtraMovementStats( int blobNameHash, float &out reloadWalkStat,
 		{
 			reloadWalkStat      = LMGParams::RELOAD_WALKSPEED_FACTOR;
 			reloadJumpStat      = LMGParams::RELOAD_JUMPHEIGHT_FACTOR;
-			stabWalkStat        = LMGParams::RELOAD_WALKSPEED_FACTOR;
-			stabJumpStat        = LMGParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = LMGParams::STAB_WALKSPEED_FACTOR;
+			stabJumpStat        = LMGParams::STAB_JUMPHEIGHT_FACTOR;
 		}
 		break;
 
@@ -1087,8 +1087,8 @@ void getExtraMovementStats( int blobNameHash, float &out reloadWalkStat,
 		{
 			reloadWalkStat      = Mp5Params::RELOAD_WALKSPEED_FACTOR;
 			reloadJumpStat      = Mp5Params::RELOAD_JUMPHEIGHT_FACTOR;
-			stabWalkStat        = Mp5Params::RELOAD_WALKSPEED_FACTOR;
-			stabJumpStat        = Mp5Params::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = Mp5Params::STAB_WALKSPEED_FACTOR;
+			stabJumpStat        = Mp5Params::STAB_JUMPHEIGHT_FACTOR;
 		}
 		break;
 
@@ -1096,8 +1096,8 @@ void getExtraMovementStats( int blobNameHash, float &out reloadWalkStat,
 		{
 			reloadWalkStat      = RevolverParams::RELOAD_WALKSPEED_FACTOR;
 			reloadJumpStat      = RevolverParams::RELOAD_JUMPHEIGHT_FACTOR;
-			stabWalkStat        = RevolverParams::RELOAD_WALKSPEED_FACTOR;
-			stabJumpStat        = RevolverParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = RevolverParams::STAB_WALKSPEED_FACTOR;
+			stabJumpStat        = RevolverParams::STAB_JUMPHEIGHT_FACTOR;
 		}
 		break;
 
@@ -1105,8 +1105,8 @@ void getExtraMovementStats( int blobNameHash, float &out reloadWalkStat,
 		{
 			reloadWalkStat      = ShielderParams::RELOAD_WALKSPEED_FACTOR;
 			reloadJumpStat      = ShielderParams::RELOAD_JUMPHEIGHT_FACTOR;
-			stabWalkStat        = ShielderParams::RELOAD_WALKSPEED_FACTOR;
-			stabJumpStat        = ShielderParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = ShielderParams::STAB_WALKSPEED_FACTOR;
+			stabJumpStat        = ShielderParams::STAB_JUMPHEIGHT_FACTOR;
 		}
 		break;
 
@@ -1114,8 +1114,8 @@ void getExtraMovementStats( int blobNameHash, float &out reloadWalkStat,
 		{
 			reloadWalkStat      = FirebringerParams::RELOAD_WALKSPEED_FACTOR;
 			reloadJumpStat      = FirebringerParams::RELOAD_JUMPHEIGHT_FACTOR;
-			stabWalkStat        = FirebringerParams::RELOAD_WALKSPEED_FACTOR;
-			stabJumpStat        = FirebringerParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = FirebringerParams::STAB_WALKSPEED_FACTOR;
+			stabJumpStat        = FirebringerParams::STAB_JUMPHEIGHT_FACTOR;
 		}
 		break;
 
@@ -1123,8 +1123,8 @@ void getExtraMovementStats( int blobNameHash, float &out reloadWalkStat,
 		{
 			reloadWalkStat      = SniperParams::RELOAD_WALKSPEED_FACTOR;
 			reloadJumpStat      = SniperParams::RELOAD_JUMPHEIGHT_FACTOR;
-			stabWalkStat        = SniperParams::RELOAD_WALKSPEED_FACTOR;
-			stabJumpStat        = SniperParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = SniperParams::STAB_WALKSPEED_FACTOR;
+			stabJumpStat        = SniperParams::STAB_JUMPHEIGHT_FACTOR;
 		}
 		break;
 
@@ -1132,8 +1132,8 @@ void getExtraMovementStats( int blobNameHash, float &out reloadWalkStat,
 		{
 			reloadWalkStat      = RPGParams::RELOAD_WALKSPEED_FACTOR;
 			reloadJumpStat      = RPGParams::RELOAD_JUMPHEIGHT_FACTOR;
-			stabWalkStat        = RPGParams::RELOAD_WALKSPEED_FACTOR;
-			stabJumpStat        = RPGParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = RPGParams::STAB_WALKSPEED_FACTOR;
+			stabJumpStat        = RPGParams::STAB_JUMPHEIGHT_FACTOR;
 		}
 		break;
 
@@ -1141,8 +1141,8 @@ void getExtraMovementStats( int blobNameHash, float &out reloadWalkStat,
 		{
 			reloadWalkStat      = ShotgunParams::RELOAD_WALKSPEED_FACTOR;
 			reloadJumpStat      = ShotgunParams::RELOAD_JUMPHEIGHT_FACTOR;
-			stabWalkStat        = ShotgunParams::RELOAD_WALKSPEED_FACTOR;
-			stabJumpStat        = ShotgunParams::RELOAD_JUMPHEIGHT_FACTOR;
+			stabWalkStat        = ShotgunParams::STAB_WALKSPEED_FACTOR;
+			stabJumpStat        = ShotgunParams::STAB_JUMPHEIGHT_FACTOR;
 		}
 		break;
 	}
