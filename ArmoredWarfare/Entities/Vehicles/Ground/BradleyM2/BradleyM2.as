@@ -20,7 +20,7 @@ void onInit(CBlob@ this)
 	this.inventoryButtonPos = Vec2f(-8.0f, -12.0f);
 
 	Vehicle_Setup(this,
-	    5000.0f, // move speed
+	    5500.0f, // move speed
 	    1.0f,  // turn speed
 	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    true);  // inventory access
@@ -31,16 +31,16 @@ void onInit(CBlob@ this)
 	    0.2f,   // movement sound volume modifier   0.0f = no manipulation
 	    0.25f); // movement sound pitch modifier     0.0f = no manipulation
 
-	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(30.0f, 7.0f)); if (w !is null) w.SetRelativeZ(20.0f);   w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(26.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(20.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(14.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(8.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(2.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);   w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-4.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f);  w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-10.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f); w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-16.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f); w.ScaleBy(Vec2f(0.75f, 0.75f));}
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-22.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f); w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(30.0f, 6.0f)); if (w !is null) w.SetRelativeZ(-20.0f);   w.ScaleBy(Vec2f(0.75f, 0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(26.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f);  w.ScaleBy(Vec2f(0.85f, 0.85f));}
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(20.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f);  w.ScaleBy(Vec2f(0.85f, 0.85f));}
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(14.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f);  w.ScaleBy(Vec2f(0.85f, 0.85f));}
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(8.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f);   w.ScaleBy(Vec2f(0.78f, 0.85f));}
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(2.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f);   w.ScaleBy(Vec2f(0.85f, 0.85f));}
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-4.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f);  w.ScaleBy(Vec2f(0.85f, 0.85f));}
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-10.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); w.ScaleBy(Vec2f(0.85f, 0.85f));}
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-16.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); w.ScaleBy(Vec2f(0.85f, 0.85f));}
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-22.0f, 6.0f)); if (w !is null) w.SetRelativeZ(-10.0f); w.ScaleBy(Vec2f(0.75f, 0.75f));}
 
 	this.getShape().SetOffset(Vec2f(0, 2));
 
@@ -52,15 +52,15 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
 
-	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
-	if (front !is null)
-	{
-		front.addAnimation("default", 0, false);
-		int[] frames = { 0, 1, 2 };
-		front.animation.AddFrames(frames);
-		front.SetRelativeZ(0.8f);
-		front.SetOffset(Vec2f(0.0f, 3.0f));
-	}
+	//CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
+	//if (front !is null)
+	//{
+	//	front.addAnimation("default", 0, false);
+	//	int[] frames = { 0, 1, 2 };
+	//	front.animation.AddFrames(frames);
+	//	front.SetRelativeZ(0.8f);
+	//	front.SetOffset(Vec2f(0.0f, 3.0f));
+	//}
 
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "BradleyM2_Launcher", 16, 16);
 
@@ -93,8 +93,8 @@ void onInit(CBlob@ this)
 		Animation@ animstopped = tracks.addAnimation("stopped", 1, true);
 		animstopped.AddFrame(15);
 
-		tracks.SetRelativeZ(50.8f);
-		tracks.SetOffset(Vec2f(5.0f, -4.0f));
+		tracks.SetRelativeZ(-5.0f);
+		tracks.SetOffset(Vec2f(5.0f, -3.0f));
 	}
 
 	// attach turret & machine gun

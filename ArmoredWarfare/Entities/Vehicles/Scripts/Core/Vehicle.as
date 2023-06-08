@@ -874,6 +874,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onDie(CBlob@ this)
 {
+	if (this.hasTag("dead")) return;
 	if (this.hasTag("upgrade")) return;
 	
 	if (isServer())

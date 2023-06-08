@@ -11,6 +11,8 @@ void onInit(CBlob@ this)
 	this.Tag("engine_can_get_stuck");
 	this.Tag("heavy");
 
+	this.set_u8("type", this.getName() == "maus" ? 0 : this.getName() == "pinkmaus" ? 1 : 2);
+
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;
@@ -59,12 +61,12 @@ void onInit(CBlob@ this)
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetRelativeZ(-100.0f);
-	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", "MausHull.png", 96, 16);
+	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", "MausTracks.png", 96, 16);
 	if (tracks !is null)
 	{
-		int[] frames = { 6, 7, 8 };
+		int[] frames = { 0, 1, 2 };
 
-		int[] frames2 = { 8, 7, 6 };
+		int[] frames2 = { 2, 1, 0 };
 
 		Animation@ animdefault = tracks.addAnimation("default", 1, true);
 		animdefault.AddFrames(frames);
@@ -114,24 +116,6 @@ void onInit(CBlob@ this)
 			}
 		}
 	}
-
-	this.addCommandID("sync_color");
-
-	//sync_Color(this);
-}
-
-void sync_Color(CBlob@ this)
-{
-	AttachmentPoint@ turret = this.getAttachments().getAttachmentPointByName("TURRET");
-	bool pink;
-	if (isServer())
-	{
-		pink = this.hasTag("pink");
-
-		CBitStream params;
-		params.write_bool(pink);
-		this.SendCommand(this.getCommandID("sync_color"), params);
-	}
 }
 
 void onTick(CBlob@ this)
@@ -154,21 +138,16 @@ void onTick(CBlob@ this)
 		// turret
 		if (getNet().isServer())
 		{
-			CBlob@ turret = server_CreateBlobNoInit("mausturret");	
+			CBlob@ turret = server_CreateBlobNoInit(this.get_u8("type") == 0 ? "mausturret" : this.get_u8("type") == 1 ? "pinkmausturret" : "desertmausturret");	
 
 			if (turret !is null)
 			{
-				if (this.hasTag("pink")) turret.Tag("pink");
 				turret.Init();
 				turret.server_setTeamNum(this.getTeamNum());
 				this.server_AttachTo( turret, "TURRET" );
 				this.set_u16("turretid", turret.getNetworkID());
 				turret.set_u16("tankid", this.getNetworkID());
 				
-				CBitStream params;
-				params.write_bool(this.hasTag("pink"));
-				turret.SendCommand(turret.getCommandID("sync_color"), params);
-
 				turret.SetFacingLeft(this.isFacingLeft());
 				//turret.SetMass(this.getMass());
 			}
@@ -318,36 +297,10 @@ void onTick(CBlob@ this)
 	}
 }
 
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
-	if (cmd == this.getCommandID("sync_color"))
-	{
-		bool pink = params.read_bool();
-		if (pink)
-		{
-			this.setInventoryName("Panzerkampfwagen VIII Maus 'Minnie Mouse'");
-			this.Tag("pink");
-
-			CSprite@ sprite = this.getSprite();
-			if (sprite is null) return;
-
-			if (!this.hasTag("pink"))
-			{
-				sprite.SetFrameIndex(0);
-				sprite.SetAnimation("default");
-			}
-			else
-			{
-				sprite.SetFrameIndex(1);
-				sprite.SetAnimation("default");
-			}
-		}
-	}
-}
-
 // Blow up
 void onDie(CBlob@ this)
 {
+	if (this.hasTag("dead")) return;
 	Explode(this, 64.0f, 1.0f);
 
 	this.getSprite().PlaySound("/vehicle_die");

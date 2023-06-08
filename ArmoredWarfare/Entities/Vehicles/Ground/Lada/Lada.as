@@ -34,15 +34,15 @@ void onInit(CBlob@ this)
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-25.0f);
-	CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
-	if (front !is null)
-	{
-		front.addAnimation("default", 0, false);
-		int[] frames = { 0, 1, 2 };
-		front.animation.AddFrames(frames);
-		front.SetRelativeZ(0.8f);
-		front.SetOffset(Vec2f(0.0f, 0.0f));
-	}
+	//CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
+	//if (front !is null)
+	//{
+	//	front.addAnimation("default", 0, false);
+	//	int[] frames = { 0, 1, 2 };
+	//	front.animation.AddFrames(frames);
+	//	front.SetRelativeZ(0.8f);
+	//	front.SetOffset(Vec2f(0.0f, 0.0f));
+	//}
 }
 
 void onTick(CBlob@ this)

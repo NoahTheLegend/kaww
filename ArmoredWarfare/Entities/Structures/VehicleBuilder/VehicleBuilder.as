@@ -90,14 +90,25 @@ void onCommand( CBlob@ this, u8 cmd, CBitStream @params )
 		
 		string name = params.read_string();
 
-		if (name == "maus")
+		if (isServer && name == "maus")
 		{
 			if (blob.getPlayer() !is null && (blob.getPlayer().getSex() == 1 || blob.getSexNum() == 1))
 			{
-				purchase.Tag("pink");
-				CBitStream params;
-				params.write_bool(true);
-				purchase.SendCommand(purchase.getCommandID("sync_color"), params);
+				CBlob@ newblob = server_CreateBlob("pinkmaus", purchase.getTeamNum(), this.getPosition());
+				if (newblob !is null)
+				{
+					purchase.Tag("dead");
+					purchase.server_Die();
+				}
+			}
+			else if (getBlobByName("info_desert") !is null)
+			{
+				CBlob@ newblob = server_CreateBlob("desertmaus", purchase.getTeamNum(), this.getPosition());
+				if (newblob !is null)
+				{
+					purchase.Tag("dead");
+					purchase.server_Die();
+				}
 			}
 		}
 		

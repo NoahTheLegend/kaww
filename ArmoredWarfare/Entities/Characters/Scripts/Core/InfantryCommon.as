@@ -98,7 +98,7 @@ class InfantryInfo
 	u8 burst_size; // bullets fired per click
 	u8 burst_rate; // ticks per bullet fired in a burst
 	s16 reload_time; // time to reload
-	u8 noreloadtimer; // time after each shot where you can't reload
+	u8 noreloadtimer; // time after each shot to prevent reloading
 	u32 mag_size; // max bullets in mag
 	u8 delayafterfire; // time between shots 4
 	u8 randdelay; // + randomness
@@ -145,7 +145,7 @@ class InfantryInfo
 		burst_size 				= 6; // bullets fired per click
 		burst_rate 				= 0; // ticks per bullet fired in a burst
 		reload_time 			= 60; // time to reload
-		noreloadtimer           = 0; // time after each shot where you can't reload
+		noreloadtimer           = 0; // time after each shot to prevent reloading
 		mag_size 				= 4; // max bullets in mag
 		delayafterfire 			= 15; // time between shots 4
 		randdelay 				= 0; // + randomness
@@ -200,7 +200,7 @@ namespace ShotgunParams
 	const ::u8 BURST_SIZE 				= 6; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 60; // time to reload
-	const ::u8 NORELOADTIMER 			= 15; // time after each shot where you can't reload
+	const ::u8 NORELOADTIMER 			= 15; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 4; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 15; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
@@ -251,7 +251,7 @@ namespace RangerParams
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 60; // time to reload
-	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
+	const ::u8 NORELOADTIMER 			= 5; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 30; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 4; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
@@ -302,7 +302,7 @@ namespace LMGParams
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 135; // time to reload
-	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
+	const ::u8 NORELOADTIMER 			= 5; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 90; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 2; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
@@ -353,7 +353,7 @@ namespace Mp5Params
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 65; // time to reload
-	const ::u8 NORELOADTIMER 			= 0; // time after each shot where you can't reload
+	const ::u8 NORELOADTIMER 			= 0; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 30; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 3; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
@@ -404,7 +404,7 @@ namespace RevolverParams
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 50; // time to reload
-	const ::u8 NORELOADTIMER 			= 3; // time after each shot where you can't reload
+	const ::u8 NORELOADTIMER 			= 3; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 7; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
@@ -455,7 +455,7 @@ namespace ShielderParams
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 45; // time to reload
-	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
+	const ::u8 NORELOADTIMER 			= 5; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 12; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 4; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
@@ -496,19 +496,19 @@ namespace SniperParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 50; // max amount of inaccuracy
+	const ::u8 INACCURACY_CAP 			= 35; // max amount of inaccuracy
 	const ::u8 INACCURACY_PER_SHOT 		= 25; // aim inaccuracy  (+3 per shot)
-	const ::u8 INACCURACY_MIDAIR        = 7;
-	const ::u8 INACCURACY_HIT  		    = 20;
+	const ::u8 INACCURACY_MIDAIR        = 6;
+	const ::u8 INACCURACY_HIT  		    = 15;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 50; // time to reload
-	const ::u8 NORELOADTIMER 			= 15; // time after each shot where you can't reload
+	const ::u8 NORELOADTIMER 			= 15; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 5; // max bullets in mag
-	const ::u8 DELAYAFTERFIRE 			= 35; // time between shots
+	const ::u8 DELAYAFTERFIRE 			= 30; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 25.0f; // speed that bullets fly
 	const ::u32 BULLET_LIFETIME 		= 75; // in ticks, time for bullet to die
@@ -557,7 +557,7 @@ namespace FirebringerParams
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 90; // time to reload
-	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
+	const ::u8 NORELOADTIMER 			= 5; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 50; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
@@ -608,7 +608,7 @@ namespace RPGParams
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 75; // time to reload
-	const ::u8 NORELOADTIMER 			= 5; // time after each shot where you can't reload
+	const ::u8 NORELOADTIMER 			= 5; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 1; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
