@@ -173,11 +173,14 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	CBitStream params;
 	params.write_u16(caller.getNetworkID());
 
-	CButton@ button = caller.CreateGenericButton("$mat_scrap$", Vec2f(0.0f, 10.0f), this, this.getCommandID("add metal"), getTranslatedString("Add scrap"), params);
-	if (button !is null)
+	if (caller.hasBlob("mat_scrap", 1))
 	{
-		button.deleteAfterClick = false;
-		button.SetEnabled(caller.hasBlob(metal, 1));
+		CButton@ button = caller.CreateGenericButton("$mat_scrap$", Vec2f(0.0f, 10.0f), this, this.getCommandID("add metal"), getTranslatedString("Add scrap"), params);
+		if (button !is null)
+		{
+			button.deleteAfterClick = false;
+			button.SetEnabled(caller.hasBlob(metal, 1));
+		}
 	}
 
 	caller.CreateGenericButton(16, Vec2f(0.0f, -10.0f), this, this.getCommandID("select"), "Select product", params);

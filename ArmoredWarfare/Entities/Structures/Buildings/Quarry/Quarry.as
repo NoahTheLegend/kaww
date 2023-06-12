@@ -148,6 +148,7 @@ void onTick(CBlob@ this)
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!canSeeButtons(this, caller)) return;
+	if (!caller.hasBlob("mat_wood", 1)) return;
 
 	CBitStream params;
 	params.write_u16(caller.getNetworkID());
