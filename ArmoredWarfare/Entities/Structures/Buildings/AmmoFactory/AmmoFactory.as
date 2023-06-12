@@ -229,7 +229,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		int callerQuantity = caller.getInventory().getCount(metal) + (carried !is null && carried.getName() == metal ? carried.getQuantity() : 0);
 
 		//amount we _can_ insert
-		int ammountToStore = Maths::Min(requestedAmount, callerQuantity);
+		int ammountToStore = Maths::Min(Maths::Max(2, this.get_u8("cost")), callerQuantity);
 		//can we even insert anything?
 		if (ammountToStore > 0)
 		{
