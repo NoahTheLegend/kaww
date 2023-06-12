@@ -147,6 +147,8 @@ void onTick(CBlob@ this)
 		case 0:
 		{
 			Vec2f risingPos = targetPos + Vec2f(0, -2000.0f);
+			if (risingPos.y <= 0) risingPos.y = 16.0f;
+			if (this.get_f32(robotechHeightString) <= 0) this.set_f32(robotechHeightString, 16);
 			turnAngle = (risingPos-thisPos).getAngleDegrees();
 			
 			if (thisPos.y < this.get_f32(robotechHeightString))
