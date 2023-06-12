@@ -301,7 +301,7 @@ class BulletObj
 					else
 					{
 						// play sound
-						if (blob.hasTag("flesh"))
+						if (blob.hasTag("flesh") && isServer())
 						{
 							if (hoomanShooter !is null && !blob.hasTag("dead") && hoomanShooter.getDamageOwnerPlayer() !is null)
 							{
@@ -314,6 +314,11 @@ class BulletObj
 									{
 										f32 mod = 0.35f+_rand_r.NextRanged(6)*0.01f;
 										f32 amount = DamageBody * mod;
+										if (hoomanShooter.getHealth() + amount >= hoomanShooter.getInitialHealth())
+										{
+											hoomanShooter.server_SetHealth(hoomanShooter.getInitialHealth());
+										}
+										else hoomanShooter.server_Heal(amount);
 									}
 								}
 							}
