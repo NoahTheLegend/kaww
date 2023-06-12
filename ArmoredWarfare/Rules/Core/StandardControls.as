@@ -476,6 +476,8 @@ void ManageCamera(CBlob@ this)
 
 	if (getLocalPlayer().getBlob() !is null)
 	{
+		f32 extra = 0;
+
 		bool lock_zoom = false;
 		CBlob@ localblob = getLocalPlayer().getBlob();
 		if (localblob.hasTag("binoculars"))
@@ -492,6 +494,12 @@ void ManageCamera(CBlob@ this)
 			camera.mouseFactor = 0.55f;
 		}
 
+		if (getRules().get_string(getLocalPlayer().getUsername() + "_perk") == "Sharp Shooter")
+		{
+			extra += 0.15f;
+			camera.mouseFactor += 0.15f;
+		}
+
 		// camera
 		if (localblob.get_u32("dont_change_zoom") < getGameTime() && !lock_zoom)
 		{
@@ -500,16 +508,16 @@ void ManageCamera(CBlob@ this)
 			{
 				if (localblob.getName() == "sniper")
 				{
-					camera.mouseFactor = 0.5f;
+					camera.mouseFactor = 0.5f + extra/2;
 					return;
 				}
 				if (localblob.isAttachedToPoint("GUNNER"))// && getLocalPlayer().getBlob().isKeyPressed(key_action2))
 				{
-					camera.mouseFactor = 0.5f;
+					camera.mouseFactor = 0.5f + extra/2;
 					return;
 				}
 			}
-			camera.mouseFactor = 0.3f; // doesn't affect fixed cam
+			camera.mouseFactor = 0.3f + extra; // doesn't affect fixed cam
 		}
 	}
 }

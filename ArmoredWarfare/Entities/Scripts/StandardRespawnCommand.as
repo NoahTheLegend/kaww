@@ -109,7 +109,7 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Camouflage", "$6_class_icon$", "Camouflage",
 						"Ghillie Suit:\n\n"+"$6_class_icon$"+"Ghillie suit"
-						+"\n                   - Turn into a mobile bush!     "
+						+"\n                   - Turn into a bush!     "
 						+"\n                   - Hold DOWN while standing     "
 						+"\n\n                   Climbing Gear"
 						+"\n                   - Allows you to climb trees     "
@@ -120,8 +120,9 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Sharp Shooter", "$1_class_icon$", "Sharp Shooter",
 						"Sharp Shooter:\n\n"+"$1_class_icon$"+"Marksman"
-						+"\n                   - Bullet deal 33% more damage       "
+						+"\n                   - Bullets deal 33% more damage       "
 						+"\n                   - Increased accuracy"
+						+"\n                   - Increased view range"
 						+"\n\n                  Long reload"
 						+"\n                   - 50% Slower reload     "
 						);
