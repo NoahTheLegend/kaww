@@ -71,11 +71,11 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Mine", "$mine$", "mine", "A dangerous trap for infantry.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 55);
+			AddRequirement(s.requirements, "coin", "", "Coins", 50);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "A must-have on the battlefield!", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 30);
+			AddRequirement(s.requirements, "coin", "", "Coins", 25);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Mechanics can detach machineguns from vehicles using this. Limited uses.", false);
@@ -91,11 +91,11 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Buy wood (250)", "$mat_wood$", "mat_wood", "Purchase 250 wood.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 15);
+			AddRequirement(s.requirements, "coin", "", "Coins", 12);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Buy stone (250)", "$mat_stone$", "mat_stone", "Purchase 250 stone.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 35);
+			AddRequirement(s.requirements, "coin", "", "Coins", 30);
 		}
 	}
 	else // tdm maps
