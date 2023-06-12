@@ -65,11 +65,30 @@ void reloadSprite(CBlob@ this)
 			}
 		}
 	}
+	else
+	{
+		spritefile = "BushyTree.png";
+		CSprite@ sprite = this.getSprite();
+		if (sprite !is null)
+		{
+			sprite.ReloadSprite("BushyTree.png", sprite.getFrameWidth(), sprite.getFrameHeight());
+			for (int j = 0; j < sprite.getSpriteLayerCount(); j++)
+			{
+				CSpriteLayer @layer = sprite.getSpriteLayer(j);
+				if (layer !is null)
+				{
+					layer.ReloadSprite("BushyTree.png", layer.getFrameWidth(), layer.getFrameHeight());
+				}
+			}
+		}
+	}
+
+	this.Tag("updated");
 }
 
 void onTick(CBlob@ this)
 {
-	if (this.getTickSinceCreated() == 3)
+	if (this.getTickSinceCreated() == 3 || !this.hasTag("updated"))
 	{
 		reloadSprite(this);
 	}
