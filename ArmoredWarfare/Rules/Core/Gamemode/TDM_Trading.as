@@ -22,7 +22,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 					// if killer is alive
 					if (killer.getBlob() !is null)
 					{
-						killer.getBlob().server_Heal(3.0f);
+						killer.getBlob().server_Heal(2.0f);
 						//killer.getBlob().server_SetHealth(killer.getBlob().getInitialHealth()); // heal to full hp
 					}
 				}
