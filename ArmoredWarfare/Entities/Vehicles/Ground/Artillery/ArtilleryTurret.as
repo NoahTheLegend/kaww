@@ -18,7 +18,7 @@ const u16 recoil = 180;
 
 // 0 == up, 90 == sideways
 f32 high_angle = 15.0f; // upper depression limit
-f32 low_angle = 60.0f; // lower depression limit
+f32 low_angle = 70.0f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
@@ -215,12 +215,12 @@ void onTick(CBlob@ this)
 				{
 					isOperator = true;
 					high_angle = 12.5f;
-					low_angle = 62.5f;
+					low_angle = 75.0f;
 				}
 				else
 				{
 					high_angle = 15.0f; // upper depression limit
-					low_angle = 60.0f; // lower depression limit
+					low_angle = 70.0f; // lower depression limit
 				}
 			}
 
