@@ -1130,6 +1130,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	//print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(this, armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
 	bool is_aircraft = customData == HittersAW::aircraftbullet;
+
+	if (!this.hasTag("aerial") && hitterBlob.getName() == "missile_javelin")
+	{
+		finalRating = Maths::Max(0, finalRating);
+	}
 	
 	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet
 		|| is_aircraft || customData == HittersAW::machinegunbullet)
