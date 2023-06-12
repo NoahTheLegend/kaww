@@ -152,11 +152,11 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nPROS: Very fast, medium firerate\nCONS: Very fragile armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nPROS: Fast, good firerate\nCONS: Weak armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nPROS: Good engine power, fast, good elevation angles\nCONS: Medium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.");

@@ -17,11 +17,11 @@ void buildT1ShopCombined(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nVery fast, medium firerate\nVery fragile armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nFast, good firerate\nWeak armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nGood engine power, fast, good elevation angles\nMedium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.");
@@ -79,11 +79,11 @@ void buildT2ShopCombined(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nVery fast, medium firerate\nVery fragile armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 12);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nFast, good firerate\nWeak armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 22);
 	}
 	
 	{
@@ -165,7 +165,7 @@ void buildT3ShopCombined(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nFast, good firerate\nWeak armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a Bradley M2", "$bradley$", "bradley", "Light but armed with medium cannon APC.\nAlso has a javelin on the turret.\n\nExcellent engine power, fast, good elevation angles\nWeak armor\n\nUses 105mm and optionally HEAT warheads.");
@@ -270,11 +270,11 @@ void buildT1ShopGround(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nVery fast, medium firerate\nVery fragile armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nFast, good firerate\nWeak armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nGood engine power, fast, good elevation angles\nMedium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.");
@@ -328,11 +328,11 @@ void buildT2ShopGround(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nVery fast, medium firerate\nVery fragile armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 12);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nFast, good firerate\nWeak armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 22);
 	}
 	
 	{
@@ -402,7 +402,7 @@ void buildT3ShopGround(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nFast, good firerate\nWeak armor, bad elevation angles\n\nUses 14.5mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a Bradley M2", "$bradley$", "bradley", "Light but armed with medium cannon APC.\nAlso has a javelin on the turret.\n\nExcellent engine power, fast, good elevation angles\nWeak armor\n\nUses 105mm and optionally HEAT warheads.");
