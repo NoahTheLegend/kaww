@@ -928,4 +928,24 @@ void onRender(CSprite@ this)
 				GUI::DrawTextCentered(""+blob.getInventory().getCount("mat_bolts"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
 		}
 	}
+
+	AttachmentPoint@ COPILOT = blob.getAttachments().getAttachmentPointByName("GUNNER");
+	if (COPILOT !is null && COPILOT.getOccupied() !is null)
+	{
+		CBlob@ driver_blob = COPILOT.getOccupied();
+		if (!driver_blob.isMyPlayer()) return;
+		CBlob@ ammocarry = getBlobByNetworkID(blob.get_u16("ammocarryid"));
+		if (ammocarry is null) return;
+
+		// draw ammo count
+		Vec2f oldpos = driver_blob.getOldPosition();
+		Vec2f pos = driver_blob.getPosition();
+		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
+
+		GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
+		GUI::DrawIcon("Materials.png", 31, Vec2f(16,16), pos2d+Vec2f(-40, 42.0f), 0.75f, 1.0f);
+		GUI::SetFont("menu");
+		if (ammocarry.getInventory() !is null)
+			GUI::DrawTextCentered(""+ammocarry.getInventory().getCount("ammo"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
+	}
 }
