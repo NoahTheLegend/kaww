@@ -603,7 +603,7 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 				if (XORRandom(10) == 0) getMap().server_setFireWorldspace(info.hitpos, true); // 10% chance to ignite
 				endpoint = info.distance/shorten;
 			}
-			if (info.blob !is null)
+			if (info.blob !is null && !info.blob.isInWater())
 			{
 				if (info.blob.hasTag("structure") || info.blob.hasTag("trap")
 					|| info.blob.isLadder() || info.blob.isOverlapping(this)) continue;
