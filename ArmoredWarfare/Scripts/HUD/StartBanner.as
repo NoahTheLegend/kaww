@@ -33,42 +33,35 @@ void onTick(CRules@ this)
 {
     if (getGameTime() < 370 && getGameTime() > 0)
     {
-        if (this.get_s8("flagcount") == -1)
+        CBlob@[] tents;
+        getBlobsByName("tent", @tents);
+        CBlob@[] iarmorys;
+        getBlobsByTag("importantarmory", @iarmorys);
+        CBlob@[] flags;
+        getBlobsByName("pointflag", @flags);
+
+        if (this.get_string("map_name") == "Abacus")
         {
-            CBlob@[] flags;
-            getBlobsByName("pointflag", @flags);
-
-            this.set_s8("flagcount", flags.length);
-
-            CBlob@[] tents;
-            getBlobsByName("tent", @tents);
-
-            CBlob@[] iarmorys;
-            getBlobsByTag("importantarmory", @iarmorys);
-
-            if (this.get_string("map_name") == "Abacus")
+            this.set_string("bannertext", "Zombie Mode");
+        }
+        else {
+            if (tents.length == 0 && iarmorys.length > 0)
             {
-                this.set_string("bannertext", "Zombie Mode");
+                // break the truck
+                this.set_string("bannertext", "Destroy the enemy truck!");
             }
-            else {
-                if (tents.length == 0 && iarmorys.length > 0)
-                {
-                    // break the truck
-                    this.set_string("bannertext", "Destroy the enemy truck!");
-                }
-                else if (this.get_s8("flagcount") == 1)
-                {
-                    // capture the flag
-                    this.set_string("bannertext", "Capture the flag to win!");
-                }
-                else
-                {
-                    // showdown
-                    this.set_string("bannertext", "Kill the enemy team until they run out of respawns!");
-                }
+            else if (flags.length > 0)
+            {
+                // capture the flag
+                this.set_string("bannertext", "Capture all the flags to win!");
+            }
+            else
+            {
+                // showdown
+                this.set_string("bannertext", "Kill the enemy team until they run out of respawns!");
             }
         }
-
+        
         Driver@ driver = getDriver();
         if (driver !is null)
         {
