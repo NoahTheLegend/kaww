@@ -1109,7 +1109,25 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 	//kick bots menu
 	if (getSecurity().checkAccess_Feature(me, "mark_player"))
 	{
-		if (duplicatePlayer)
+		bool has_bots = false;
+
+		for (u8 i = 0; i < getPlayersCount(); i++)
+		{
+			if (getPlayer(i) !is null && getPlayer(i).isBot()) has_bots = true;
+		}
+		if (!has_bots)
+		{
+			Menu::addInfoBox(
+				kickbotsmenu,
+				getTranslatedString("Can't Start Vote"),
+				getTranslatedString(
+					"Voting to kick bots\n" +
+					"is not allowed if there are\n" +
+					"no bots in-game."
+				)
+			);
+		}
+		else if (duplicatePlayer)
 		{
 			Menu::addInfoBox(
 				kickbotsmenu,
