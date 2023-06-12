@@ -31,6 +31,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		//this.getSprite().Gib();
 		this.server_Hit(this, this.getPosition(), Vec2f(0, 0), 25.0f, Hitters::builder, true);
 	}
+	blob.IgnoreCollisionWhileOverlapped(this, 10);
 }
 
 void onTick(CBlob@ this)
