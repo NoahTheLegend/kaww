@@ -1293,13 +1293,27 @@ void TakeAmmo(CBlob@ this, u32 magSize)
 				{
 					this.add_u32("mag_bullets", Maths::Max(1, quantity/multiplier));
 					mag.Tag("dead");
-					if (isServer()) mag.server_Die();
+					if (isServer())
+					{
+						CBitStream params;
+						params.write_u32(this.get_u32("mag_bullets"));
+						this.SendCommand(this.getCommandID("sync_mag"), params);
+
+						mag.server_Die();
+					}
 					continue;
 				}
 				else
 				{
 					this.set_u32("mag_bullets", magSize);
-					if (isServer()) mag.server_SetQuantity(quantity - miss);
+					if (isServer())
+					{
+						CBitStream params;
+						params.write_u32(this.get_u32("mag_bullets"));
+						this.SendCommand(this.getCommandID("sync_mag"), params);
+
+						mag.server_SetQuantity(quantity - miss);
+					}
 					break;
 				}
 			}
@@ -1701,7 +1715,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		u32 mag;
 		if (!params.saferead_u32(mag)) return;
-
+		
 		this.set_u32("mag_bullets", mag);
 	}
 	else if (cmd == this.getCommandID("basic_sync"))
