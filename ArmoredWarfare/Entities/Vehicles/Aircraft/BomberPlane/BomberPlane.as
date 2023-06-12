@@ -424,8 +424,8 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	
 	if (isServer() && blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck")))
 	{
-		f32 mod_self = 0.5f;
-		f32 mod_target = 8.75f;
+		f32 mod_self = 0.75f;
+		f32 mod_target = 8.0f;
 		blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
 		this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
 	}

@@ -1129,10 +1129,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	float damageNegation = 0.0f;
 	//print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(this, armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
+	bool is_aircraft = customData == HittersAW::aircraftbullet;
+	
 	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet
-		|| customData == HittersAW::aircraftbullet || customData == HittersAW::machinegunbullet)
+		|| is_aircraft || customData == HittersAW::machinegunbullet)
 	{
-		if (this.hasTag("tank")) damage *= 0.25f;
+		if (this.hasTag("tank") && !is_aircraft) damage *= 0.25f;
 		finalRating = getFinalRatingBullet(customData, armorRating, penRating, hardShelled, this, this.getPosition(), isHitUnderside, isHitBackside);
 	}
 	//print("finalRating: "+finalRating);
