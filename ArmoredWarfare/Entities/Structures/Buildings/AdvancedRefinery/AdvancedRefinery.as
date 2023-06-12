@@ -145,7 +145,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (caller is null) return;
 
 		//amount we'd _like_ to insert
-		int requestedAmount = Maths::Min(25, 500 - this.get_s16(stone_prop));
+		int requestedAmount = Maths::Min(25, 200 - this.get_s16(stone_prop));
 		//(possible with laggy commands from 2 players, faster to early out here if we can)
 		if (requestedAmount <= 0) return;
 
@@ -239,7 +239,7 @@ void onRender(CSprite@ this)
 		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 30);
 		Vec2f dim = Vec2f(24, 8);
 		const f32 y = blob.getHeight() * 2.4f;
-		const f32 perc = blob.get_s16(stone_prop) / 500.0f;
+		const f32 perc = blob.get_s16(stone_prop) / 200.0f;
 
 		if (perc >= 0.0f)
 		{
