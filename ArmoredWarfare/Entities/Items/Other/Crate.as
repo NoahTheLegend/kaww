@@ -26,6 +26,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("boobytrap");
 	this.Tag("trap");
 	this.Tag("special");
+	this.Tag("medium weight");
 
 	string packed = this.get_string("packed");
 

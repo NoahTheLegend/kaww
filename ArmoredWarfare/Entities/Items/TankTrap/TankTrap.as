@@ -25,9 +25,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 0.25f;
 	}
+	if (hitterBlob.getName() == "c4")
+	{
+		return damage * 2;
+	}
 	if (customData == Hitters::explosion)
 	{
-		return damage * 0.25f;
+		return damage * 0.75f;
 	}
 	return customData == Hitters::builder ? damage*4 : damage;
 }
@@ -57,7 +61,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	{
 		if (blob.hasTag("vehicle") && blob.getTeamNum() < 7 && this.getTeamNum() != blob.getTeamNum())
 		{
-			this.server_Hit(blob, blob.getPosition(), Vec2f_zero, 45.0f, Hitters::explosion);
+			this.server_Hit(blob, blob.getPosition(), Vec2f_zero, 60.0f, Hitters::explosion);
 
 			if (blob.isOnMap())
 			{
