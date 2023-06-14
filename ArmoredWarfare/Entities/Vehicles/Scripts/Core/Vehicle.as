@@ -317,7 +317,17 @@ void ManageDisguise(CBlob@ this)
 {
 	if (getGameTime() % 45 == 0 && !this.hasTag("gun"))
 	{
-		if ((this.getPosition()-this.getOldPosition()).Length() <= 0.1f)
+		const u8 map_luminance = getMap().getColorLight(this.getPosition()).getLuminance();
+		if (map_luminance < 100)
+		{
+			if (!this.hasTag("turret"))
+			{
+				this.setInventoryName("");
+			}
+			
+			this.set_u32("disguise", getGameTime() + 90);
+		}
+		else if ((this.getPosition()-this.getOldPosition()).Length() <= 0.1f)
 		{
 			CBlob@[] bushes;
 			this.getOverlapping(@bushes);
