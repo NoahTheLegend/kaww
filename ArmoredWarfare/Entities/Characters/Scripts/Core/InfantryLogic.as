@@ -222,8 +222,9 @@ void onInit(CBlob@ this)
 		}
 		case _ranger:
 		{
-			this.set_u8("stab time", 44);
+			this.set_u8("stab time", 36);
 			this.set_u8("stab timing", 22);
+			this.set_f32("stab damage", 1.1f);
 			break;
 		}
 		case _lmg:
