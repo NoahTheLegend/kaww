@@ -256,7 +256,7 @@ void onInit(CBlob@ this)
 		{
 			this.set_u8("stab time", 24);
 			this.set_s16("bullet_type", 1);
-			this.set_u8("ammo_pershot", 3);
+			this.set_u8("ammo_pershot", 2);
 			break;
 		}
 		case _firebringer:
