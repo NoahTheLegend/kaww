@@ -118,7 +118,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		&& !this.isInWater() && !this.isAttached()
 		&& getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
 		{
-			damage * 0.5f;
+			damage *= 0.5f;
 		}
 		else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
 		{
@@ -150,13 +150,16 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage *= 2.0f; // take double damage
 		}
 	}
-	if (hitterBlob.getName() == "ballista_bolt")
+	if (customData != Hitters::explosion && hitterBlob.getName() == "ballista_bolt")
 	{
-		return (pen > 2 ? damage : damage/4);
+		return (pen > 2 ? damage*2 : damage/6);
 	}
-	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") && hitterBlob.getName() != "grenade")
+	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.hasTag("grenade"))
 	{
+		if (hitterBlob.hasTag("grenade")) damage *= 1.75f+(XORRandom(51)*0.01f);
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*5.0f;
+		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
+		if (hitterBlob.exists("explosion_damage_scale")) damage *= hitterBlob.get_f32("explosion_damage_scale");
 		bool at_bunker = false;
 		Vec2f pos = this.getPosition();
 		Vec2f hit_pos = hitterBlob.getPosition();
@@ -175,6 +178,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				{
 					CBlob@ hi = infos[i].blob;
 					if (hi is null) continue;
+					if (hi.getTeamNum() != this.getTeamNum()) continue;
 					if (hi.hasTag("bunker") || hi.hasTag("tank")) 
 					{
 						at_bunker = true;
@@ -183,8 +187,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				}
 			}
 			if (at_bunker) return 0;
-			return damage * 0.1f;
 		}
+
+		u16 dist_blocks = Maths::Floor((pos-hitterBlob.get_Vec2f("from_pos")).Length()/8);
+		// printf(""+dist_blocks);
+		f32 mod = 0.5f;
+		damage = damage * Maths::Min(mod, Maths::Max(0.05f, mod - (0.025f * (dist_blocks))));
+		//printf(""+damage+" dist "+dist_blocks);
 	}
 
 	return damage;
