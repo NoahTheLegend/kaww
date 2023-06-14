@@ -206,7 +206,7 @@ void onInit(CBlob@ this)
 	{
 		case _revolver:
 		{
-			this.set_u8("stab time", 19);
+			this.set_u8("stab time", 30);
 			this.set_u8("stab timing", 13);
 			this.Tag("no bulletgib on shot");
 			this.set_f32("stab damage", 1.25f);
@@ -222,7 +222,7 @@ void onInit(CBlob@ this)
 		}
 		case _ranger:
 		{
-			this.set_u8("stab time", 33);
+			this.set_u8("stab time", 44);
 			this.set_u8("stab timing", 15);
 			break;
 		}
@@ -230,7 +230,7 @@ void onInit(CBlob@ this)
 		{
 			this.set_bool("is_lmg", true);
 			this.set_s32("custom_hitter", HittersAW::machinegunbullet);
-			this.set_u8("stab time", 20);
+			this.set_u8("stab time", 24);
 			this.set_u8("stab timing", 8);
 			this.set_bool("timed_particle", true);
 			this.set_Vec2f("gun_offset", Vec2f(0,2));
@@ -243,6 +243,7 @@ void onInit(CBlob@ this)
 		}
 		case _shotgun:
 		{
+			this.set_u8("stab time", 28);
 			this.set_s16("bullet_type", -1);
 			this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
 			this.set_f32("stab damage", 1.25f);
@@ -251,6 +252,7 @@ void onInit(CBlob@ this)
 		}
 		case _sniper:
 		{
+			this.set_u8("stab time", 24);
 			this.set_s16("bullet_type", 1);
 			this.set_u8("ammo_pershot", 3);
 			break;
@@ -264,6 +266,7 @@ void onInit(CBlob@ this)
 			sprite.SetEmitSoundVolume(0.66f);
 			sprite.SetEmitSoundPaused(true);
 			
+			this.set_u8("stab time", 28);
 			this.set_u32("mag_bullets", 0);
 			this.set_string("ammo_prop", "specammo");
 			this.set_f32("stab damage", 1.25f);
@@ -271,6 +274,7 @@ void onInit(CBlob@ this)
 		}
 		case _rpg:
 		{
+			this.set_u8("stab time", 24);
 			this.set_bool("is_rpg", true);
 			this.set_u32("mag_bullets", 0);
 			this.set_string("ammo_prop", "mat_heatwarhead");
@@ -893,12 +897,18 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		if (this.exists("stab time")) time = this.get_u8("stab time");
 		if (this.exists("stab timing")) timing = this.get_u8("stab timing");
 		if (this.exists("stab damage")) damage = this.get_f32("stab damage");
-		if (this.isKeyPressed(key_action3) && !this.hasTag("no_knife") && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime() && no_medkit)
+		if (this.isKeyPressed(key_action3) && !this.hasTag("no_knife") && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime()+6 && no_medkit)
 		{
 			if (this.getName() != "mp5" && !lock_stab)
 			{
 				this.set_u32("end_stabbing", getGameTime()+time);
 				this.Tag("attacking");
+
+				if (this.getSprite() !is null && this.getSprite().getAnimation("stab") !is null)
+				{
+					Animation@ anim = this.getSprite().getAnimation("stab");
+					anim.frame = 0;
+				}
 			}
 		}
 		if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-timing)
