@@ -377,6 +377,20 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 				}
 				else disable_line = false;
 			}
+			else if (acc.spriterMember)
+			{
+				float x = bottomright.x - accolades_start-40;
+				float extra = 32;
+				GUI::DrawIcon("BadgesSpriter", 0, Vec2f(16, 16), Vec2f(x, topleft.y-2), 0.5f, 0);
+				
+				if (playerHover && mousePos.x > x-8 && mousePos.x < x + 24)
+				{
+					disable_line = true;
+					GUI::DrawPane(mousePos+Vec2f(extra, extra-8), mousePos + Vec2f(398,55), SColor(0xffffffff));
+					GUI::DrawText("In gratitude for significant spriting contribution.", mousePos + Vec2f(44,32), SColor(0xffffffff));
+				}
+				else disable_line = false;
+			}
 
 			//(remove crazy amount of duplicate code)
 			int[] badges_encode = {
