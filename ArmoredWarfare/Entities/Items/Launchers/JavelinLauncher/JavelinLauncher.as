@@ -211,6 +211,7 @@ void onTick(CBlob@ this)
 	Vec2f robotechPos = Vec2f(0, -robotechHeight * 2.0f);
 	robotechPos.RotateByDegrees(ownerBlob.isFacingLeft() ? -45.0f : 45.0f); 
 	robotechPos += ownerPos; // join with thispos
+	if (robotechPos.y < 14.0f) robotechPos.y = 14.0f;
 
 	if (draw_robotech) makeTargetSquare(robotechPos, 0, Vec2f(3.0f, 3.0f), 3.0f, 1.0f, greenConsoleColor); // turnpoint
 	
