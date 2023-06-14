@@ -1008,7 +1008,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								{
 									this.set_u32("no_more_proj", getGameTime()+v.getCurrentAmmo().fire_delay);
 
-									angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
+									angle += XORRandom(bulletSpread+1)/10-bulletSpread/25;
 									f32 true_angle = this.isFacingLeft() ? -angle + 180 : angle;
 
 									shootVehicleGun(has_owner ? ap.getOccupied().getNetworkID() : this.getNetworkID(), this.getNetworkID(),
