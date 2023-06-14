@@ -143,12 +143,20 @@ void onDie(CBlob@ this)
     	for (int i = 0; i < 2; i++)
 		{
 	        u32 element = RandomWeightedPicker(_chances, XORRandom(1000));
-	        CBlob@ b = server_CreateBlob(_items[element],-1,this.getPosition());  
-	        b.AddForce(Vec2f((XORRandom(5)-2)/1.3, -5));  
-	        if (b.getMaxQuantity() > 1)
-	        {
-	            b.server_SetQuantity(_amount[element]);
-	        }
+            const Vec2f thisPos = this.getPosition();
+            if (getMap() !is null && thisPos.x/8 <= getMap().tilemapwidth
+                && thisPos.y/8 <= getMap().tilemapheight)
+            {
+	            CBlob@ b = server_CreateBlob(_items[Maths::Min(_items.length-1, element)],200,thisPos);  
+                if (b !is null)
+                {
+	                //b.AddForce(Vec2f((XORRandom(5)-2)/1.3, -5));
+	                if (b.getMaxQuantity() > 1)
+	                {
+	                    b.server_SetQuantity(_amount[element]);
+	                }
+                }
+            }
     	}
     }
 }
