@@ -629,7 +629,7 @@ void AttachParachute(CBlob@ this)
 
 void ManageParachute(CBlob@ this)
 {
-	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.hasTag("dead"))
+	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder() || this.hasTag("dead"))
 	{ // disable parachute
 		if (this.hasTag("parachute"))
 		{
@@ -705,7 +705,6 @@ void ManageParachute(CBlob@ this)
 			}
 		}
 
-		this.set_u32("no_climb", getGameTime()+2);
 		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
 		Vec2f vel = this.getVelocity();
 		if (aughhh)
