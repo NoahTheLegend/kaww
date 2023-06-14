@@ -408,7 +408,7 @@ void RenderHPBar(CRules@ this, CBlob@ vehicle, Vec2f position)
 
 	
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 2,                        pos.y + y + 0),
-					   Vec2f(pos.x + dimension.x - 1,                        pos.y + y + dimension.y - 2), color_team);
+					   Vec2f(pos.x + dimension.x - 1,                        pos.y + y + dimension.y - 2), color_dark);
 
 
 	// whiteness
