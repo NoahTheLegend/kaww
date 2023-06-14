@@ -1761,6 +1761,9 @@ const string[] LargeMaps = {
 	"ClassicFlagless.png",
 	"BridgeWater.png",
 	"SiegeBeachWater_v2.png"
+	"Taiga.png",
+	"Spaceport.png",
+	"SeaHalt.png"
 	//"FrogsLudendorff.png"
 };
 
