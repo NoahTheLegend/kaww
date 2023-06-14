@@ -38,7 +38,7 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Special Ammunition", "$specammo$", "specammo", "Special ammunition for advanced weapons.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 15);
+			AddRequirement(s.requirements, "coin", "", "Coins", 10);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC.", false);
