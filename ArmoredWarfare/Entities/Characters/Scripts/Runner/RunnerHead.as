@@ -128,15 +128,31 @@ CSpriteLayer@ LoadHead(CSprite@ this, int headIndex)
 	if (blob.getPlayer() !is null)
 	{
 		int blobHash = blob.getPlayer().getUsername().getHash();
-		if (blobHash == 1738510347) // LorderPlay
+		switch (blobHash)
 		{
-			if (blob.getPlayer().getSex() == 0)
+			case 1738510347:
 			{
-				texture_file = "LorderPlayMale.png";
+				if (blob.getPlayer().getSex() == 0)
+				{
+					texture_file = "LorderPlayMale.png";
+				}
+				else
+				{
+					texture_file = "LorderPlayFemale.png";
+				}
+				break;
 			}
-			else
+			case 1785258408:
 			{
-				texture_file = "LorderPlayFemale.png";
+				if (blob.getPlayer().getSex() == 0)
+				{
+					texture_file = "TheCustomerManMale.png";
+				}
+				else
+				{
+					texture_file = "TheCustomerManFemale.png";
+				}
+				break;
 			}
 		}
 	}
