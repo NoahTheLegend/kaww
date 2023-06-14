@@ -268,7 +268,7 @@ namespace LMGParams
 	const ::f32 DAMAGE_BODY 			= 0.25f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.4f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.75f; // walk
+	const ::f32 WALK_STAT 				= 0.775f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.9f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 0.85f; // walk (sprint)
@@ -285,8 +285,8 @@ namespace LMGParams
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 10; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 0.7f; // lower means less recoil when aiming down sights. 1.0 is no change
 	// MOVEMENT (extra)
-	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.35f;
-	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.6f;
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.4f;
+	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.7f;
 	const ::f32 STAB_WALKSPEED_FACTOR   = 0.75f;
 	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.8f;
 	// spray pattern in logic
