@@ -21,6 +21,7 @@ void onInit(CBlob@ this)
 
 	this.set_f32("defuse_endtime", DEFUSE_REQ_TIME);
 	this.set_f32("defuse_time", 10);
+	this.set_f32("caller_health", 999.0f);
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)
@@ -141,7 +142,9 @@ void onTick(CBlob@ this)
 	if (this.get_bool("deactivating"))
 	{
 		CBlob@ caller = getBlobByNetworkID(this.get_u16("caller_id"));
-		if (caller !is null && caller.isOverlapping(this))
+		if (caller !is null && caller.isOverlapping(this)
+			&& (!(caller.getHealth() < this.get_f32("caller_health")-0.1f)
+				|| this.get_f32("caller_health") > 500.0f))
 		{
 			if (this.get_f32("defuse_time") > DEFUSE_REQ_TIME)
 			{
@@ -152,6 +155,7 @@ void onTick(CBlob@ this)
 				}
 			}
 			this.add_f32("defuse_time", 1);
+			this.set_f32("caller_health", caller.getHealth());
 		}
 		else
 		{
@@ -167,6 +171,7 @@ void onTick(CBlob@ this)
 
 				bars.RemoveBar("defuse", false);
 			}
+			this.set_f32("caller_health", 999.0f);
 		}
 	}
 
