@@ -71,7 +71,7 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Mine", "$mine$", "mine", "A dangerous trap for infantry.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 50);
+			AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "A must-have on the battlefield!", false);

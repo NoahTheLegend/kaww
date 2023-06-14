@@ -336,7 +336,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_string("prod_blob", "mine");
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 20);
-		this.set_u8("cost", 2);
+		this.set_u8("cost", 3);
 
 		ResetTimer(this);
 	}

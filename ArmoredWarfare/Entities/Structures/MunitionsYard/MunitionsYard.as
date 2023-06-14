@@ -30,7 +30,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Tank Trap", "$tanktrap$", "tanktrap", "Czech hedgehog, will harm any enemy vehicle that collides with it.", false);
