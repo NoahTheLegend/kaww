@@ -67,6 +67,19 @@ void onInit(CBlob@ this)
 
 	this.getShape().SetRotationsAllowed(true);
 	this.set_Vec2f("direction", Vec2f(0, 0));
+
+	if (getNet().isServer())
+	{
+		for (u8 i = 0; i < 2; i++)
+		{
+			CBlob@ ammo = server_CreateBlob("ammo");
+			if (ammo !is null)
+			{
+				if (!this.server_PutInInventory(ammo))
+					ammo.server_Die();
+			}
+		}
+	}
 }
 
 void onInit(CSprite@ this)
