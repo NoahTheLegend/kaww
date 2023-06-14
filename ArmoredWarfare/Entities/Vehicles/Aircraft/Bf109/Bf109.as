@@ -170,7 +170,7 @@ void onTick(CBlob@ this)
 			dir.Normalize();
 			dir.RotateBy(this.isFacingLeft() ? 30 : -30); // make it fly directly to cursor, works weird vertically
 
-			f32 mod = 0.1f;
+			f32 mod = 0.125f;
 			CPlayer@ p = pilot.getPlayer();
 			if (p !is null)
 			{
