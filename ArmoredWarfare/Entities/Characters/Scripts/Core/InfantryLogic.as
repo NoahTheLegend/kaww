@@ -206,10 +206,10 @@ void onInit(CBlob@ this)
 	{
 		case _revolver:
 		{
-			this.set_u8("stab time", 30);
-			this.set_u8("stab timing", 13);
+			this.set_u8("stab time", 24);
+			this.set_u8("stab timing", 16);
 			this.Tag("no bulletgib on shot");
-			this.set_f32("stab damage", 1.25f);
+			this.set_f32("stab damage", 1.33f);
 			break;
 		}
 		case _shielder:
@@ -223,7 +223,7 @@ void onInit(CBlob@ this)
 		case _ranger:
 		{
 			this.set_u8("stab time", 44);
-			this.set_u8("stab timing", 15);
+			this.set_u8("stab timing", 22);
 			break;
 		}
 		case _lmg:
@@ -244,6 +244,7 @@ void onInit(CBlob@ this)
 		case _shotgun:
 		{
 			this.set_u8("stab time", 28);
+			this.set_u8("stab timing", 19);
 			this.set_s16("bullet_type", -1);
 			this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
 			this.set_f32("stab damage", 1.25f);
@@ -267,6 +268,7 @@ void onInit(CBlob@ this)
 			sprite.SetEmitSoundPaused(true);
 			
 			this.set_u8("stab time", 28);
+			this.set_u8("stab timing", 19);
 			this.set_u32("mag_bullets", 0);
 			this.set_string("ammo_prop", "specammo");
 			this.set_f32("stab damage", 1.25f);
