@@ -245,7 +245,7 @@ void onInit(CBlob@ this)
 		{
 			this.set_s16("bullet_type", -1);
 			this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
-			this.set_f32("stab damage", 1.5f);
+			this.set_f32("stab damage", 1.25f);
 			this.set_u8("ammo_pershot", 4);
 			break;
 		}
@@ -266,6 +266,7 @@ void onInit(CBlob@ this)
 			
 			this.set_u32("mag_bullets", 0);
 			this.set_string("ammo_prop", "specammo");
+			this.set_f32("stab damage", 1.25f);
 			break;
 		}
 		case _rpg:
