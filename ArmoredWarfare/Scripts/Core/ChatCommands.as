@@ -124,6 +124,11 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					f32 time = parseFloat(sub[1]);
 					this.add_u32("game_end_time", time);
 				}
+				else if (sub[0]=="!time")
+				{
+					getMap().SetDayTime(parseFloat(sub[1]));
+					return false;
+				}
 				else if (sub[0] == "!teamwon")
 				{
 					this.SetTeamWon(parseInt(sub[1]));
