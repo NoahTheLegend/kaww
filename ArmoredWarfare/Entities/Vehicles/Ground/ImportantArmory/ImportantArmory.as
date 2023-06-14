@@ -176,7 +176,7 @@ void onInit(CBlob@ this)
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 12);
 		}
 		
 	}
