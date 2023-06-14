@@ -429,9 +429,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage *= 2.0f; // take double damage
 		}
 	}
-	if (customData != Hitters::explosion && hitterBlob.getName() == "ballista_bolt")
+	if (hitterBlob.getName() == "ballista_bolt")
 	{
-		return (pen > 2 ? damage*2 : damage/4);
+		return (pen > 2 ? damage : damage/4);
 	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.hasTag("grenade"))
 	{
