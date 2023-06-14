@@ -17,6 +17,19 @@ shared string[] getPatreonMembers()
 	return patreonMembers;
 }
 
+shared string[] getSpriterMembers()
+{
+	string[] spriterMembers = {
+		"LorderPlay",
+		"PURPLExeno",
+		"TheCustomerMan",
+		"ThinkAbout",
+		"petey5",
+		"NoahTheLegend"
+	};
+	return spriterMembers;
+}
+
 //a container and parser for the specific accolades awarded to a player
 shared class Accolades
 {
@@ -45,6 +58,7 @@ shared class Accolades
 	bool map_contributor = false;           //official mapcycle (at any point)
 	bool moderation_contributor = false;    //official forum/discord/ingame admin, (at any point, not "dishonourably discharged")
 	bool patreonMember = false;
+	bool spriterMember = false;
 
 	Accolades(ConfigFile@ cfg, string _username)
 	{
@@ -55,6 +69,12 @@ shared class Accolades
 		for (u16 i = 0; i < patreonMembers.length; i++)
 		{
 			if (_username == patreonMembers[i]) patreonMember = true;
+		}
+
+		string[] spriterMembers = getSpriterMembers();
+		for (u16 i = 0; i < spriterMembers.length; i++)
+		{
+			if (_username == spriterMembers[i]) spriterMember = true;
 		}
 
 		array<string> slices;
