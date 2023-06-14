@@ -54,7 +54,7 @@ void InitClasses(CBlob@ this)
 						"---- Sniper ----\n\nLong range sniper.\n\nHP: 200\nLMB: Shoot | 3 Ammo per shot\nRMB: Scope in\nSPACEBAR: Knife");
 
 		addPlayerClass(this, "---- RPG ----", "$rpg_class_icon$", "rpg",
-							"---- RPG ----\n\nArmed with a powerful RPG launcher.\n\nHP: 225.\nLMB: RPG | 1 HEAT rocket per shot\nRMB: Aim\nSPACEBAR: Knife");
+							"---- RPG ----\n\nArmed with a powerful RPG launcher.\n\nHP: 250.\nLMB: RPG | 1 HEAT rocket per shot\nRMB: Aim\nSPACEBAR: Knife");
 
 		addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5",
 							"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half of food healing\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
@@ -63,7 +63,7 @@ void InitClasses(CBlob@ this)
 							"---- Shielder ----\n\nCarries a shield that is able to block insignificant damage.\n\nHP: 275\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
 
 		addPlayerClass(this, "---- Firebringer ----", "$firebringer_class_icon$", "firebringer",
-							"---- Firebringer ----\n\nOwns a portative yet heavy flamethrower.\n\nHP: 250\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
+							"---- Firebringer ----\n\nOwns a portative yet heavy flamethrower.\n\nHP: 275\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
 
 		addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg",
 						"---- LMG ----\n\nExtended magazine capacity but slower reload.\n\nHP: 300\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
