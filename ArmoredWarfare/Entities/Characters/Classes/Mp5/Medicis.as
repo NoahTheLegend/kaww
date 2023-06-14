@@ -26,7 +26,7 @@ void onTick( CBlob@ this )
 		float bucketAmount = this.get_f32(bucketAmountString); // MedicisCommon.as
 		float bucketCost = 1.0f / bucket_Max_Charges; // max bucket is always 1.0f, get cost out of max charges
 
-		if (this.isKeyJustPressed(key_action3)) // 1 frame, when space is pressed
+		if (this.isKeyJustPressed(key_action3) && !this.isAttached()) // 1 frame, when space is pressed
 		{
 			if (bucketAmount >= bucketCost) // must have enough bucket load
 			{
