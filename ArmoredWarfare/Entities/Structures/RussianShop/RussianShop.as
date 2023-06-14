@@ -24,19 +24,19 @@ void onInit(CBlob@ this)
 
 	{
 		ShopItem@ s = addShopItem(this, "Ammo", "$ammo$", "ammo", "Used by all small arms guns, and vehicle machineguns.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 10);
+		AddRequirement(s.requirements, "coin", "", "Coins", 5);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in closed rooms.\nPress [SPACEBAR] before throwing", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 35);
+		AddRequirement(s.requirements, "coin", "", "Coins", 30);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 25);
+		AddRequirement(s.requirements, "coin", "", "Coins", 20);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "Heal to full health instantly.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 30);
+		AddRequirement(s.requirements, "coin", "", "Coins", 20);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue millitary helmet, blocks a small amount of bullet damage, occasionally blocks bullets.", false);
@@ -44,7 +44,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Tank Trap", "$tanktrap$", "tanktrap", "Czech hedgehog, will harm any enemy vehicle that collides with it.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 75);
+		AddRequirement(s.requirements, "coin", "", "Coins", 45);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
