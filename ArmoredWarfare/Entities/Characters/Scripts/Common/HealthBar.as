@@ -10,7 +10,8 @@ void onRender(CSprite@ this)
 	Vec2f mouseWorld = getControls().getMouseWorldPos();
 	const f32 renderRadius = (blob.getRadius()) * 0.95f;
 	bool mouseOnBlob = (mouseWorld - center).getLength() < renderRadius;
-	if (mouseOnBlob)
+	if (mouseOnBlob
+		&& (getLocalPlayerBlob() !is null && (getLocalPlayerBlob().getPosition() - mouseWorld).Length() < 156.0f))
 	{
 		//VV right here VV
 		//Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 20);
