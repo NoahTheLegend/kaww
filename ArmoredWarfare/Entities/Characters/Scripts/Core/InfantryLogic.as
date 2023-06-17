@@ -165,6 +165,7 @@ void onInit(CBlob@ this)
 	this.set_s32("custom_hitter", HittersAW::bullet);
 
 	this.set_u32("lmg_aftershot", 0);
+	this.set_u32("firebringer_aftershot", 0);
 
 	this.set_s16("recoil_direction", 0);
 	this.set_u8("inaccuracy", 0);
@@ -803,9 +804,10 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		is_action1 = false;
 	}
 
-	if ((is_action1 || this.get_u32("lmg_aftershot") > getGameTime()) && !isReloading && this.get_bool("is_lmg"))
+	if ((is_action1 || this.get_u32("lmg_aftershot") > getGameTime() || this.get_u32("firebringer_aftershot") > getGameTime())
+		&& !isReloading && (this.get_bool("is_lmg") || this.get_bool("is_firebringer")))
 	{
-		moveVars.walkFactor *= 0.45f;
+		moveVars.walkFactor *= 0.65f;
 		moveVars.jumpFactor *= 0.65f;
 	}
 
@@ -1585,10 +1587,10 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, f
 }
 
 const f32 _fire_length_raw = 64.0f;
-const f32 _fire_angle = 7.5f;
-const f32 inaccuracy_mod = 0.1f; // increases fire angle but decreases fire length per 1 inaccuracy
-const f32 inaccuracy_length_decrease_mod = 2.25f;
-const f32 inaccuracy_angle_increase_mod = 0.75f;
+const f32 _fire_angle = 7.0f;
+const f32 inaccuracy_mod = 0.115f; // increases fire angle but decreases fire length per 1 inaccuracy
+const f32 inaccuracy_length_decrease_mod = 2.5f;
+const f32 inaccuracy_angle_increase_mod = 0.85f;
 const u32 firehit_delay = 1;
 
 void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
@@ -1610,6 +1612,8 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 		params.write_u32(this.get_u32("mag_bullets"));
 		this.SendCommand(this.getCommandID("sync_mag"), params);
 	}
+
+	this.set_u32("firebringer_aftershot", getGameTime()+10);
 	
 	bool client = isClient();
 	if (client && !this.isOnScreen()) return;
