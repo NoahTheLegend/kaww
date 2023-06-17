@@ -804,11 +804,19 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		is_action1 = false;
 	}
 
-	if ((is_action1 || this.get_u32("lmg_aftershot") > getGameTime() || this.get_u32("firebringer_aftershot") > getGameTime())
-		&& !isReloading && (this.get_bool("is_lmg") || this.get_bool("is_firebringer")))
+	if ((is_action1 || this.get_u32("lmg_aftershot") > getGameTime()
+		|| this.get_u32("firebringer_aftershot") > getGameTime()) && !isReloading )
 	{
-		moveVars.walkFactor *= 0.65f;
-		moveVars.jumpFactor *= 0.65f;
+		if (this.get_bool("is_lmg"))
+		{
+			moveVars.walkFactor *= 0.65f;
+			moveVars.jumpFactor *= 0.65f;
+		}
+		else if (this.get_bool("is_firebringer"))
+		{
+			moveVars.walkFactor *= 0.8f;
+			moveVars.jumpFactor *= 0.7f;
+		}
 	}
 
 	if (this.getCarriedBlob() !is null)
@@ -1100,7 +1108,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 					if (do_effects) ClientFire(this, charge_time, infantry, this.getPosition()+this.get_Vec2f("gun_offset"));
 					else if (this.isMyPlayer())
 					{
-						this.add_f32("scale", 2.0f*Maths::Sqrt(this.get_f32("scale")+firebringer_max_scale));
+						this.add_f32("scale", 3.0f*Maths::Sqrt(this.get_f32("scale")+firebringer_max_scale));
 						this.set_f32("scale", Maths::Min(firebringer_max_scale-XORRandom(firebringer_max_scale/5), this.get_f32("scale")));
 
 						CBitStream params;
