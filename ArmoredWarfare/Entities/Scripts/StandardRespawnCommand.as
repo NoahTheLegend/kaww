@@ -63,7 +63,7 @@ void InitClasses(CBlob@ this)
 							"---- Shielder ----\n\nCarries a shield that is able to block insignificant damage.\n\nHP: 275\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
 
 		addPlayerClass(this, "---- Firebringer ----", "$firebringer_class_icon$", "firebringer",
-							"---- Firebringer ----\n\nOwns a portative yet heavy flamethrower.\n\nHP: 275\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
+							"---- Firebringer ----\n\nOwns a portative yet heavy flamethrower.\n\nHP: 250\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
 
 		addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg",
 						"---- LMG ----\n\nExtended magazine capacity but slower reload.\n\nHP: 300\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
