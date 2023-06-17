@@ -6,6 +6,11 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 		return;
 	}
 
+    if (blob.hasTag("inserted"))
+    {
+        return;
+    }
+
     if (this.hasTag("refinery") && blob.hasTag("material"))
     {
         bool die = false;
@@ -51,6 +56,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
                 //if (this.get_s16(prop) == 0) this.getSprite().PlaySound("lightup.ogg"); // already activated in refinery script
                 this.getSprite().PlaySound("FireFwoosh.ogg");
             }
+            blob.Tag("inserted");
             this.set_u32("insert_sound", getGameTime());
 	    	this.add_s16(prop, requestedAmount);
         }
