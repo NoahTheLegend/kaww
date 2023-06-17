@@ -520,15 +520,15 @@ namespace FirebringerParams
 {
 	const ::string CLASSNAME 			= "Firebringer"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.325f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.325f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.3f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.3f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.8f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
+	const ::f32 WALK_STAT 				= 0.9f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.55f; // airwalk
 	const ::f32 JUMP_STAT 				= 1.0f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 0.85f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 2.8f; // airwalk (sprint)
-	const ::f32 JUMP_STAT_SPRINT 		= 1.05f; // jump (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.9f; // airwalk (sprint)
+	const ::f32 JUMP_STAT_SPRINT 		= 1.1f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 10.0f; // x shake (20)
 	const ::f32 RECOIL_Y 				= 1.0f; // y shake (45)
@@ -540,8 +540,8 @@ namespace FirebringerParams
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 1; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
 	// MOVEMENT (extra)
-	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.375f;
-	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.75f;
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.45f;
+	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 0.7f;
 	const ::f32 STAB_WALKSPEED_FACTOR   = 0.45f;
 	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.75f;
 	// spray pattern in logic
@@ -556,10 +556,10 @@ namespace FirebringerParams
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 			= 120; // time to reload
+	const ::s16 RELOAD_TIME 			= 105; // time to reload
 	const ::u8 NORELOADTIMER 			= 5; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 50; // max bullets in mag
-	const ::u8 DELAYAFTERFIRE 			= 6; // time between shots
+	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 3.35f; // speed that bullets fly
 	const ::u32 BULLET_LIFETIME 		= 10.0f; // in ticks, time for bullet to die
