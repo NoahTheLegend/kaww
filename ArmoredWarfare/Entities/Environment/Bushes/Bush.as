@@ -5,6 +5,7 @@
 void onInit(CBlob@ this)
 {
 	this.Tag("builder always hit");
+	this.Tag("builder urgent hit");
 	//this.Tag("scenary");
 }
 
