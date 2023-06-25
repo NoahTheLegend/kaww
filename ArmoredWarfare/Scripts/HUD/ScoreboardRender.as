@@ -27,7 +27,7 @@ const string[] descriptions = {
 	"Cheaper and stronger molotovs (-25%-33%, more liquid)",
 	"Faster vehicle capture, faster C-4 activation, better grenades (+50%, -2.5s, +10% radius)",
 	"A chance to receive more coins in an income (33%, +1)",
-	"Increased damage resist for infantry, mines activate faster (+12.5%, -2s)"
+	"Increased damage resist for infantry, mines activate faster (+5%, -2s)"
 };
 
 //returns the bottom

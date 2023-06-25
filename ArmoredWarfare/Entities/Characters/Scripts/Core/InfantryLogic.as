@@ -298,7 +298,7 @@ const f32 shield_angle = 60;
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	bool coalition_power = this.getTeamNum() == 6 && getRules().get_bool("enable_powers"); // team 6 buff
-	f32 extra_amount = 0.875f;
+	f32 extra_amount = 0.95f;
 	if (coalition_power)
 	{
 		damage *= extra_amount;
