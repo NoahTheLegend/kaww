@@ -11,6 +11,7 @@ void onInit(CBlob@ this)
 	// this.getCurrentScript().runFlags |= Script::tick_not_attached;
 	
 	this.Tag("builder always hit");
+	this.Tag("builder urgent hit");
 }
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
