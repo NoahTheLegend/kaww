@@ -1174,9 +1174,75 @@ void Reset(CRules@ this)
 
 void onRestart(CRules@ this)
 {
+	WriteMatchInfo(this);
 	Reset(this);
 	this.set_u32("warn_extended_time", 0);
 	this.set_bool("show_warn_extended_time", false);
+}
+
+u16 blobscreated = 0;
+u16 blobsdestroyed = 0;
+
+void onBlobCreated(CRules@ this, CBlob@ blob)
+{
+	if (!isServer()) return;
+	if (blob is null) return;
+
+	string name = blob.getName();
+	blobscreated++;
+}
+
+void onBlobDie(CRules@ this, CBlob@ blob)
+{
+	if (!isServer()) return;
+	if (blob is null) return;
+
+	string name = blob.getName();
+	blobsdestroyed++;
+}
+
+void WriteMatchInfo(CRules@ this)
+{
+	if (!isServer()) return;
+	if (getMap() is null) 
+	{
+		warn("Could not write match info: map is null");
+		return;
+	}
+	
+	this.add_u32("matches_passed", 1);
+	this.add_u8("match_info", 1);
+	if (this.get_u8("match_info") >= 5) this.set_u8("match_info", 0);
+
+	u8 current = this.get_u8("match_info");
+	error("SAVING FILE "+current);
+
+	ConfigFile matches = ConfigFile();
+
+	matches.add_string("map", getMap().getMapName());
+	matches.add_u32("matches passed", this.get_u32("matches_passed"));
+	int bots = 0;
+	string[] players;
+	for (u8 i = 0; i < getPlayersCount(); i++)
+	{
+		CPlayer@ p = getPlayer(i);
+		if (p is null) continue;
+		if (p.isBot()) bots++;
+		players.push_back(p.getCharacterName()+" | "+p.getUsername());
+	}
+	const u8 step = this.get_u8("match_info");
+	const u8 playercount = getPlayersCount();
+	matches.add_u32("playercount", playercount);
+	matches.add_u32("botscount", bots);
+	matches.addArray_string("players: ", players);
+	matches.add_u32("gametime", getGameTime());
+	matches.add_u32("step", step);
+	matches.add_string("blobs", "created: "+blobscreated+" destroyed: "+blobsdestroyed);
+	matches.saveFile("AWmatchinfo"+current+".cfg");
+	matches.saveFile("AWlastmatchinfo.cfg");
+
+	blobscreated = 0;
+	blobsdestroyed = 0;
 }
 
 const string[] names = {
@@ -1707,6 +1773,9 @@ void onInit(CRules@ this)
     {
         cfg_playerexp = ConfigFile("awexp.cfg");
     }
+
+	this.set_u32("matches_passed", 0);
+	this.set_u8("match_info", 0);
 
 	if (isClient() && isServer()) this.Tag("togglebots"); // disable them on local automatically
 	Reset(this);
