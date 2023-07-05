@@ -438,10 +438,11 @@ void AttachParachute(CBlob@ this)
 			if (para !is null)
 			{
 				CBlob@ carry = this.getCarriedBlob();
-				if (carry !is null)
+				if (carry !is null && this.get_u32("detach_delay") <= getGameTime())
 				{
 					carry.server_DetachFromAll();
 					this.server_PutInInventory(carry);
+					this.set_u32("detach_delay", 10);
 				}
 				this.server_AttachTo(para, att);
 			}
