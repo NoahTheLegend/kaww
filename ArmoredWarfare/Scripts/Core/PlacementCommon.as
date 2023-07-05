@@ -262,7 +262,8 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 		if (isSeed)
 		{
 			// from canGrow.as
-			return (map.isTileGround(map.getTile(p + Vec2f(0, 8)).type));
+			TileType tile = map.getTile(p + Vec2f(0, 8)).type;
+			return (map.isTileGround(tile) || isTileCompactedDirt(tile));
 
 		}
 	}
