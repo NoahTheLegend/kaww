@@ -630,7 +630,7 @@ void onTick(CSprite@ this)
 	{
 		if (blob.hasTag("dead") || blob.isAttached())
 		{
-			if (!shield.isVisible()) shield.SetVisible(false);
+			if (shield.isVisible()) shield.SetVisible(false);
 		}
 		else
 		{
