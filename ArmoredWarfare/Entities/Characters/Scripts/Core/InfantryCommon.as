@@ -423,7 +423,7 @@ namespace ShielderParams
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.6f; // airwalk
-	const ::f32 JUMP_STAT 				= 0.85f; // jump
+	const ::f32 JUMP_STAT 				= 0.9f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 1.15f; // walk (sprint)
 	const ::f32 AIRWALK_STAT_SPRINT 	= 3.2f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.1f; // jump (sprint)
@@ -441,7 +441,7 @@ namespace ShielderParams
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.75f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 1.0f;
 	const ::f32 STAB_WALKSPEED_FACTOR   = 0.1f;
-	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.25f;
+	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.33f;
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
