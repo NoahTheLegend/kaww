@@ -3,6 +3,7 @@
 void onInit(CBlob@ this)
 {
 	this.addCommandID("equip_head");
+	this.addCommandID("force_equip_head");
 }
 
 void onTick(CBlob@ this)
@@ -68,6 +69,22 @@ void onCreateInventoryMenu(CBlob@ this, CBlob@ forBlob, CGridMenu@ gridmenu)
 	}
 }
 
+void onCollision(CBlob@ this, CBlob@ blob, bool solid)
+{
+	if (blob is null || !isServer()) return;
+	if (this.get_u32("helmet_pick_delay") > getGameTime()) return;
+	if (blob.getName() == "helmet" && this.get_string("equipment_head") == ""
+		&& !blob.isAttached() && !blob.isInInventory())
+	{
+		CBitStream params;
+		params.write_u16(this.getNetworkID());
+		params.write_u16(blob.getNetworkID());
+		this.SendCommand(this.getCommandID("force_equip_head"), params);
+
+		this.set_u32("helmet_pick_delay", getGameTime()+45);
+	}
+}
+
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
 	if (cmd == this.getCommandID("equip_head"))
@@ -78,6 +95,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		CBlob@ caller = getBlobByNetworkID(callerID);
 		if (caller is null)
 			return;
+
+		caller.getSprite().PlaySound("Pickup.ogg");
 
 		bool holdingequipment = false;
 		CBlob@ item = caller.getCarriedBlob();
@@ -101,6 +120,46 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			}
 		}
 		caller.ClearMenus();
+	}
+	else if (cmd == this.getCommandID("force_equip_head"))
+	{
+		u16 callerID;
+		if (!params.saferead_u16(callerID))
+			return;
+		CBlob@ caller = getBlobByNetworkID(callerID);
+		if (caller is null)
+			return;
+
+		u16 itemID;
+		if (!params.saferead_u16(itemID))
+			return;
+		CBlob@ item = getBlobByNetworkID(itemID);
+		if (item is null || item.isAttached() || item.isInInventory())
+			return;
+
+		caller.getSprite().PlaySound("Pickup.ogg");
+
+		bool holdingequipment = false;
+		if(item !is null) {holdingequipment = true;}
+
+		if(caller.get_string("equipment_head") != "")
+		{
+			removeHead(caller, caller.get_string("equipment_head"));
+			if(holdingequipment && (item.getName() == "helmet" || item.getName() == "goldenhelmet"))
+			{
+				addHead(caller, item.getName());
+				item.server_Die();
+			}
+		}
+		else
+		{
+			if(holdingequipment && (item.getName() == "helmet" || item.getName() == "goldenhelmet"))
+			{
+				addHead(caller, item.getName());
+				item.server_Die();
+			}
+		}
+
 	}
 }
 
