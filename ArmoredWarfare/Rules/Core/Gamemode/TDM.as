@@ -283,6 +283,8 @@ shared class TDMSpawns : RespawnSystem
 						if (b is null && tents.length > 0)
 							decrementTickets(getRules(), playerBlob.getTeamNum());
 					}
+					else if (b is null && tents.length > 0)
+						decrementTickets(getRules(), playerBlob.getTeamNum());
 				}
 			}
 		}
