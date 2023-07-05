@@ -81,7 +81,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return damage*0.04f;
 		else if (is_bullet)
 			return damage*0.5f;
-		else return (customData == Hitters::sword ? damage*0.5f : this.hasTag("mgunner") ? damage : 0);
+		else return (customData == Hitters::sword && (this.hasTag("mgunner") || this.hasTag("collidewithbullets"))
+			? damage*0.5f : 0);
 	}
 	if (this.getPlayer() !is null)
 	{
