@@ -9,7 +9,7 @@
 
 const f32 beer_amount = 1.0f;
 const f32 heal_amount = 0.5f;
-const u8 heal_rate = 60;
+const u8 heal_rate = 45;
 
 void onInit(CSprite@ this)
 {
