@@ -193,7 +193,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			return 0.1f;
 		}
-		if ((customData == Hitters::explosion && hitterBlob.getName() != "c4") || hitterBlob.hasTag("grenade"))
+		if ((customData == Hitters::explosion && hitterBlob.getName() != "c4") || hitterBlob.hasTag("atgrenade"))
 		{
 			return damage * 4 * Maths::Max(0.0f, damage*1.5f / (hitterBlob.getPosition() - this.getPosition()).Length()/8);
 		}

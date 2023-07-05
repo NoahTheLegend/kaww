@@ -46,6 +46,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("helmet");
 	this.addCommandID("specammo");
 	this.addCommandID("medkit");
+	this.addCommandID("atgrenade");
 	this.addCommandID("playsound");
 	this.addCommandID("direct_pick");
 
@@ -53,7 +54,7 @@ void onInit(CBlob@ this)
 	CSpriteLayer@ icon = sprite.addSpriteLayer("icon", "AmmoFactoryIcons.png", 8, 8);
 	if (icon !is null)
 	{
-		int[] frames = {0,1,2,3,4,5,6,7,8,9};
+		int[] frames = {0,1,2,3,4,5,6,7,8,9,10};
 		icon.SetOffset(Vec2f(-0.5f,-8));
 		Animation@ anim = icon.addAnimation("default", 0, false);
 		if (anim !is null)
@@ -100,6 +101,8 @@ void onTick(CBlob@ this)
 					index = 8;
 				else if (b == "medkit")
 					index = 9;
+				else if (b == "mat_atgrenade")
+					index = 10;
 
 				icon.SetAnimation("default");
 				icon.SetFrameIndex(index);
@@ -326,8 +329,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "grenade");
 		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 12);
-		this.set_u8("cost", 3);
+		this.set_u8("prod_time", 10);
+		this.set_u8("cost", 2);
 
 		ResetTimer(this);
 	}
@@ -358,15 +361,24 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		ResetTimer(this);
 	}
-	else if (cmd == this.getCommandID("medkit"))
+	else if (cmd == this.getCommandID("atgrenade"))
 	{
-		this.set_string("prod_blob", "medkit");
-		this.set_u8("prod_amount", 2);
-		this.set_u8("prod_time", 10);
-		this.set_u8("cost", 2);
+		this.set_string("prod_blob", "mat_atgrenade");
+		this.set_u8("prod_amount", 1);
+		this.set_u8("prod_time", 15);
+		this.set_u8("cost", 4);
 
 		ResetTimer(this);
 	}
+	//else if (cmd == this.getCommandID("medkit"))
+	//{
+	//	this.set_string("prod_blob", "medkit");
+	//	this.set_u8("prod_amount", 2);
+	//	this.set_u8("prod_time", 10);
+	//	this.set_u8("cost", 2);
+//
+	//	ResetTimer(this);
+	//}
 	else if (cmd == this.getCommandID("playsound"))
 	{
 		this.getSprite().PlaySound("MakeAmmo.ogg");
@@ -394,7 +406,8 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 			CGridButton@ button5 = menu.AddButton("$grenade$", "Grenade", this.getCommandID("grenade"), Vec2f(1, 1), params);
 			CGridButton@ button6 = menu.AddButton("$mine$", "Mine", this.getCommandID("mine"), Vec2f(1, 1), params);
 			CGridButton@ button7 = menu.AddButton("$helmet$", "Helmet", this.getCommandID("helmet"), Vec2f(1, 1), params);
-			CGridButton@ button9 = menu.AddButton("$medkit$", "Medkit", this.getCommandID("medkit"), Vec2f(1, 1), params);
+			//CGridButton@ button9 = menu.AddButton("$medkit$", "Medkit", this.getCommandID("medkit"), Vec2f(1, 1), params);
+			CGridButton@ button9 = menu.AddButton("$atgrenade$", "Anti-Tank Grenade", this.getCommandID("atgrenade"), Vec2f(1, 1), params);
 
 			if (button0 !is null && button1 !is null && button2 !is null && button3 !is null && button4 !is null && button5 !is null && button6 !is null && button7 !is null)
 			{
@@ -418,7 +431,9 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 					button7.SetEnabled(false);
 				else if (prod_prop == "specammo")
 					button8.SetEnabled(false);
-				else if (prod_prop == "medkit")
+				//else if (prod_prop == "medkit")
+				//	button9.SetEnabled(false);
+				else if (prod_prop == "mat_atgrenade")
 					button9.SetEnabled(false);
 			}
 		}
@@ -433,7 +448,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage *= 2.00f;
 			break;
 	}
-	if (hitterBlob.getName() == "balista_bolt" || hitterBlob.hasTag("grenade") || hitterBlob.getName() == "c4")
+	if (hitterBlob.getName() == "balista_bolt" || hitterBlob.hasTag("atgrenade") || hitterBlob.getName() == "c4")
 	{
 		damage *= 5.0f;
 	} 

@@ -1099,22 +1099,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
 
-	if (hitterBlob.hasTag("grenade"))
-	{
-		if (this.hasTag("truck") && !this.hasTag("importantarmory"))
-		{
-			damage *= 2;
-		}
-		else damage *= 1.0f+(XORRandom(26)*0.01f);
-		
-		if (this.hasTag("aerial")) return damage*4.5f;
-		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*1.5f;
-
-		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/8.0f);
-		if (blocks_between > 5) damage /= 1.0f-(5.0f-blocks_between);
-		return (this.getName() == "maus" || armorRating > 4 ? damage*0.9f : damage * (1.5f+XORRandom(21)*0.01f));
-	}
-
 	if (hitterBlob.getName() == "c4")
 	{
 		damage *= 1.25f;
@@ -1140,6 +1124,25 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	//print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(this, armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
 	bool is_aircraft = customData == HittersAW::aircraftbullet;
+
+	if (hitterBlob.hasTag("grenade"))
+	{
+		if (!hitterBlob.hasTag("atgrenade")) damage *= Maths::Max(0.1f, (0.5f-0.2f*finalRating));
+
+		if (this.hasTag("truck") && !this.hasTag("importantarmory"))
+		{
+			damage *= 1.5f;
+		}
+		else damage *= 1.0f+(XORRandom(26)*0.01f);
+		
+		if (this.hasTag("aerial")) return damage*4.5f;
+		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*1.5f;
+
+		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/8.0f);
+		if (blocks_between > 5) damage /= 1.0f-(5.0f-blocks_between);
+		return (this.getName() == "maus" || armorRating > 4 ? damage*0.9f : damage * (1.5f+XORRandom(21)*0.01f));
+	}
+
 
 	if (!this.hasTag("aerial") && hitterBlob.getName() == "missile_javelin")
 	{

@@ -181,7 +181,7 @@ void SetBlockAbove(CBlob@ this, const bool open)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (customData == Hitters::explosion || hitterBlob.hasTag("grenade"))
+	if (customData == Hitters::explosion || hitterBlob.hasTag("atgrenade"))
 	{
 		return damage * Maths::Max(0.0f, damage*0.5f / (hitterBlob.getPosition() - this.getPosition()).Length());
 	}

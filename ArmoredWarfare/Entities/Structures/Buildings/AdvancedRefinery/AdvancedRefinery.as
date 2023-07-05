@@ -76,7 +76,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage *= 3.50f;
 			break;
 	}
-	if (hitterBlob.hasTag("grenade") || hitterBlob.getName() == "c4")
+	if (hitterBlob.hasTag("atgrenade") || hitterBlob.getName() == "c4")
 	{
 		return damage * 2.5f;
 	}
