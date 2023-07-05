@@ -286,7 +286,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "mat_14mmround");
 		this.set_u8("prod_amount", 15);
-		this.set_u8("prod_time", 10);
+		this.set_u8("prod_time", 5);
 		this.set_u8("cost", 1);
 
 		ResetTimer(this);
@@ -295,7 +295,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "mat_bolts");
 		this.set_u8("prod_amount", 4);
-		this.set_u8("prod_time", 15);
+		this.set_u8("prod_time", 7);
 		this.set_u8("cost", 1);
 
 		ResetTimer(this);
@@ -304,7 +304,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "mat_heatwarhead");
 		this.set_u8("prod_amount", 3);
-		this.set_u8("prod_time", 35);
+		this.set_u8("prod_time", 28);
 		this.set_u8("cost", 7);
 
 		ResetTimer(this);
@@ -313,11 +313,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		bool rebels_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 3; // team 3 buff
         u8 extra_amount = 0;
-        if (rebels_power) extra_amount = 4;
+        if (rebels_power) extra_amount = 3;
 
 		this.set_string("prod_blob", "mat_molotov");
 		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 12-extra_amount);
+		this.set_u8("prod_time", 10-extra_amount);
 		this.set_u8("cost", 2);
 
 		ResetTimer(this);
@@ -326,7 +326,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "grenade");
 		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 15);
+		this.set_u8("prod_time", 12);
 		this.set_u8("cost", 3);
 
 		ResetTimer(this);
