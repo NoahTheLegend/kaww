@@ -25,7 +25,8 @@ void onRender( CRules@ this )
 	CPlayer@ p = getLocalPlayer();
 	if (p is null || !p.isMyPlayer()) return;
 	CBlob@ local = p.getBlob();
-	if (!v_showminimap && !local.isKeyPressed(key_map)) return;
+
+	if (!v_showminimap && local !is null && !local.isKeyPressed(key_map)) return;
 
 	s8 teamNum = p.getTeamNum();
 	bool isSpectator = teamNum < 0;
