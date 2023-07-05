@@ -126,9 +126,9 @@ void onInit(CBlob@ this)
 	{
 		case _artilleryturret:
 		{
-			weaponRating = 3;
-			linear_length = 8.0f;
-			scale_damage = 1.0f;
+			weaponRating = 5;
+			linear_length = 12.0f;
+			scale_damage = 1.25f;
 			break;
 		}
 		case _mausturret: // MAUS Shell cannon
