@@ -5,10 +5,10 @@ const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
 const u16 capture_time = 3000;
-const u16 crate_frequency_min = 120; // 2.0 min
-const u16 crate_frequency_seconds = 4.0f * 60; // 4 min by default
+const u16 crate_frequency_min = 180; // 3.0 min
+const u16 crate_frequency_seconds = 5.0f * 60; // 5 min by default
 const u16 increase_frequency_byplayer = 6; // 10 players decrease by 1 min
-const u16 min_items = 10;
+const u16 min_items = 8;
 const u16 rand_items = 2;
 
 //flags HUD is in TDM_Interface
@@ -489,6 +489,7 @@ const array<float> _chances_res =
 const array<string> _items_off =
 {
 	"ammo",
+	"specammo",
     "mat_14mmround",
     "mat_bolts",
     "mat_smallbomb",
@@ -500,6 +501,7 @@ const array<string> _items_off =
 const array<float> _amounts_off =
 {
 	100,
+	50,
 	35,
 	12,
 	4,
@@ -511,6 +513,7 @@ const array<float> _amounts_off =
 const array<float> _chances_off =
 {
 	0.5,
+	0.15,
 	0.2,
 	0.4,
 	0.15,
