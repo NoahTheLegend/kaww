@@ -122,7 +122,7 @@ void buildT2ShopCombined(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Bomber Plane", "$bomberplane$", "bomberplane", "A bomber plane.\nUses bomber bombs.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 65);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build UH1 Helicopter", "$uh1$", "uh1", "A helicopter with heavy machinegun.\nPress SPACEBAR to launch HEAT warheads.");
@@ -193,7 +193,7 @@ void buildT3ShopCombined(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build Bomber Plane", "$bomberplane$", "bomberplane", "A bomber plane.\nUses bomber bombs.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 55);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build UH1 Huey Helicopter", "$uh1$", "uh1", "A common helicopter with heavy machinegun and passenger seats.\nPress SPACEBAR to launch HEAT warheads.");
@@ -520,7 +520,7 @@ void buildT2ShopAir(CBlob@ this)
 	}
     {
 		ShopItem@ s = addShopItem(this, "Build Bomber Plane", "$bomberplane$", "bomberplane", "A bomber plane.\nUses bomber bombs.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 55);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build AH1 Cobra Helicopter", "$ah1$", "ah1", "A fighter-helicopter with a co-pilot seat operating machinegun.\nPress SPACEBAR to launch 105mm Rockets.\nPress LMB to release missile traps.");

@@ -160,7 +160,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nPROS: Good engine power, fast, good elevation angles\nCONS: Medium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 45);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
 	if (t2)
 	{
@@ -182,7 +182,7 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nPROS: Thick armor, big cannon damage.\nCONS: Slow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses 105mm & 7.62mm.");
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 65);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
 	}
 	if (t1)
 	{
