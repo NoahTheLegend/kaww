@@ -72,15 +72,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (hitterBlob.getTeamNum() == this.getTeamNum()) damage *= 5;
 	switch (customData)
 	{
-	
      	case Hitters::builder:
 			damage *= 3.50f;
 			break;
-
 	}
 	if (hitterBlob.hasTag("grenade") || hitterBlob.getName() == "c4")
 	{
-		return damage * 7.5f;
+		return damage * 2.5f;
 	}
 	return damage;
 }
