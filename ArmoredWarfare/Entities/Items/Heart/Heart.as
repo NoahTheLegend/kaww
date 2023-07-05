@@ -5,4 +5,5 @@ void onInit(CBlob@ this)
 	this.server_SetTimeToDie(40);
 	this.Tag("ignore_arrow");
 	this.Tag("ignore_saw");
+	this.Tag("trap");
 }
