@@ -313,6 +313,7 @@ void MakeParticle(CBlob@ this, const Vec2f vel, VehicleInfo@ v, const string fil
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
+	if (caller.getTeamNum() != this.getTeamNum()) return;
 	Vehicle_AddLoadAmmoButton(this, caller);
 
 	if (this.isAttached())
