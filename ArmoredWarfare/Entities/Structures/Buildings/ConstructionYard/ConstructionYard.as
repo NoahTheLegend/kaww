@@ -204,7 +204,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!canSeeButtons(this, caller)) return;
 
-	if (this.isOverlapping(caller))
+	if (this.isOverlapping(caller) && caller.getName() == "mechanic")
 		this.set_bool("shop available", true);
 	else
 		this.set_bool("shop available", false);
