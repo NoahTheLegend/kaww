@@ -60,7 +60,7 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	blocks.push_back(page_0);
 	{
 		BuildBlock b(CMap::tile_castle, "stone_block", "$stone_block$", "Stone Block\nBasic building block\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 15);
 		blocks[0].push_back(b);
 	}
 	{
