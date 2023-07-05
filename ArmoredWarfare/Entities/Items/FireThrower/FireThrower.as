@@ -556,6 +556,21 @@ const f32 fire_angle = 10.0f;
 const f32 fire_damage = 0.5f;
 const u32 firehit_delay = 1;
 
+bool solidHit(CBlob@ this, CBlob@ blob)
+{
+	return (!blob.isAttached() || blob.hasTag("collidewithbullets") || blob.hasTag("mgunner"))
+			&& !blob.hasTag("machinegun") && (blob.hasTag("wooden")
+			|| blob.hasTag("door") || blob.hasTag("flesh") || blob.hasTag("vehicle"));
+}
+
+bool canDamage(CBlob@ this, CBlob@ blob)
+{
+	return blob.get_u32("firehit_delay") < getGameTime()
+			&& blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("apc")
+			|| blob.hasTag("weak vehicle") || blob.hasTag("truck")
+			|| blob.hasTag("wooden") || blob.hasTag("door") || blob.hasTag("flesh"));
+}
+
 void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 {
 	bool client = isClient();
@@ -608,23 +623,22 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 				if (info.blob.hasTag("structure") || info.blob.hasTag("trap")
 					|| info.blob.isLadder() || info.blob.isOverlapping(this)) continue;
 
-				if (!info.blob.isAttached() && !info.blob.hasTag("machinegun") && (info.blob.hasTag("wooden")
-						|| info.blob.hasTag("door") || info.blob.hasTag("flesh") || info.blob.hasTag("vehicle")))
+				if (solidHit(this, info.blob))
 				{
+					f32 damage = fire_damage;
+					if (info.blob.isAttached()) damage *= 0.5f;
+
 					if (!info.blob.hasTag("flesh"))
 					{
 						endpoint = info.distance/shorten;
 						doContinue = true;
 					}
-					if (isServer() && info.blob.get_u32("firehit_delay") < getGameTime()
-						&& info.blob.getTeamNum() != this.getTeamNum() && (info.blob.hasTag("apc")
-							|| info.blob.hasTag("weak vehicle") || info.blob.hasTag("truck")
-								|| info.blob.hasTag("wooden") || info.blob.hasTag("door") || info.blob.hasTag("flesh")))
+					if (isServer() && canDamage(this, info.blob))
 					{
 						if (ap.getOccupied() !is null)
 							ap.getOccupied().server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.35f), fire_damage, Hitters::fire, true);
 						else
-							this.server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.35f), fire_damage, Hitters::fire, true);
+							this.server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.35f), damage, Hitters::fire, true);
 						info.blob.set_u32("firehit_delay", getGameTime()+firehit_delay);
 					}
 				}
