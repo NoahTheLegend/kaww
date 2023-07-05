@@ -78,7 +78,7 @@ void onRender(CSprite@ this)
 			if (blob.isAttached())
 			{
 				GUI::SetFont("menu");
-				if (blob.getHealth() == blob.getInitialHealth()) GUI::DrawTextCentered("Hold RMB to hide", pos2d+Vec2f(0, y+24), SColor(75, 255,255,255));
+				if (blob.getHealth() == blob.getInitialHealth()) GUI::DrawTextCentered("Hold RMB to hide", pos2d+Vec2f(0, y+24), SColor(100, 255,255,255));
 			}
 		}
 		else if (!blob.hasTag("machinegun"))
