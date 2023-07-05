@@ -317,7 +317,7 @@ void onDie(CBlob@ this)
     };
     array<float> _chances =
     {
-        0.6,
+        0.3,
         0.25,
         0.25,
 
