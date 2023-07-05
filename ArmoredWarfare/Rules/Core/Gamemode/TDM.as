@@ -1082,15 +1082,15 @@ shared class TDMCore : RulesCore
 
 	void SetCorrectMapTypeShared()
 	{
-		//if (getPlayersCount() <= 5)
-		//{
-		//	LoadMapCycle("MAPS/mapcyclesmaller.cfg");
-		//}
-		//else if (getPlayersCount() < 11)
-		//{
-		//	LoadMapCycle("MAPS/mapcycle.cfg");
-		//}
-		//else
+		if (getPlayersCount() <= 8)
+		{
+			LoadMapCycle("MAPS/mapcyclesmaller.cfg");
+		}
+		else if (getPlayersCount() <= 14)
+		{
+			LoadMapCycle("MAPS/mapcycle.cfg");
+		}
+		else
 		{
 			LoadMapCycle("MAPS/mapcyclelarger.cfg");
 		}
