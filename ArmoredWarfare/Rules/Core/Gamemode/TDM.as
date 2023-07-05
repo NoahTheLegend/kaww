@@ -278,8 +278,11 @@ shared class TDMSpawns : RespawnSystem
 					CBlob@ b = getBlobByName("pointflag");
 					CBlob@[] tents;
 					getBlobsByName("tent", @tents);
-					if (b is null && tents.length > 0)
-						decrementTickets(getRules(), playerBlob.getTeamNum());
+					if (XORRandom(100) < 50 && getRules().get_string(player.getUsername()+"_perk") == "Death Incarnate")
+					{
+						if (b is null && tents.length > 0)
+							decrementTickets(getRules(), playerBlob.getTeamNum());
+					}
 				}
 			}
 		}
@@ -1238,8 +1241,8 @@ void WriteMatchInfo(CRules@ this)
 	matches.add_u32("gametime", getGameTime());
 	matches.add_u32("step", step);
 	matches.add_string("blobs", "created: "+blobscreated+" destroyed: "+blobsdestroyed);
-	matches.saveFile("AWmatchinfo"+current+".cfg");
-	matches.saveFile("AWlastmatchinfo.cfg");
+	matches.saveFile("AW/matchinfo"+current+".cfg");
+	matches.saveFile("AW/lastmatchinfo.cfg");
 
 	blobscreated = 0;
 	blobsdestroyed = 0;
@@ -1541,14 +1544,14 @@ void onTick(CRules@ this)
 		ConfigFile map_ratios;
 		if (isServer() && getMap() !is null && map_ratios !is null)
 		{
- 			if (!map_ratios.loadFile("../Cache/aw_map_ratios.cfg"))
+ 			if (!map_ratios.loadFile("../Cache/AW/mapratios.cfg"))
     		{
-    		    map_ratios = ConfigFile("aw_map_ratios.cfg");
+    		    map_ratios = ConfigFile("AW/mapratios.cfg");
     		}
 			string mapname = getMap().getMapName();
 			u16 current_amount = map_ratios.read_u16(mapname, 1);
 			map_ratios.add_u16(mapname, current_amount+1);
-			map_ratios.saveFile("aw_map_ratios.cfg");
+			map_ratios.saveFile("AW/mapratios.cfg");
 		}
 
 		u16 count = 10 + getPlayersCount();
@@ -1769,14 +1772,14 @@ void SaveEXP(CRules@ this)
 			}
 		}
     }
-	cfg_playerexp.saveFile("awexp.cfg");
+	cfg_playerexp.saveFile("AW/exp.cfg");
 }
 
 void onInit(CRules@ this)
 {
-    if ( !cfg_playerexp.loadFile("../Cache/awexp.cfg") )
+    if ( !cfg_playerexp.loadFile("../Cache/AW/exp.cfg") )
     {
-        cfg_playerexp = ConfigFile("awexp.cfg");
+        cfg_playerexp = ConfigFile("AW/exp.cfg");
     }
 
 	this.set_u32("matches_passed", 0);
