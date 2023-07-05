@@ -312,7 +312,7 @@ class BulletObj
 									CBlob@ pblob = p.getBlob();
 									if (pblob !is null)
 									{
-										f32 mod = 0.35f+_rand_r.NextRanged(6)*0.01f;
+										f32 mod = 0.4f+_rand_r.NextRanged(11)*0.01f;
 										f32 amount = DamageBody * mod;
 										if (hoomanShooter.getHealth() + amount >= hoomanShooter.getInitialHealth())
 										{
