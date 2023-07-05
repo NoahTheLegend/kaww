@@ -93,6 +93,10 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 
 	if (isMod)
 	{
+		if (text_in == "!test")
+		{
+			tcpr("[tcpr] amogus");
+		}
 		if (text_in == "!c" && blob.getPlayer() !is null)
 		{
 			u8 teamleft = this.get_u8("teamleft");
