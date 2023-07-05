@@ -13,9 +13,9 @@ void onTick(CBlob@ this)
         string[] tickets = this.getName().split("_");
         if (tickets.length > 1)
         {
-            printf(tickets[1]);
-            getRules().set_s16("teamLeftTickets", parseInt(tickets[1]));
-            getRules().set_s16("teamRightTickets", parseInt(tickets[1]));
+            printf("setting max tickets "+tickets[1]);
+            getRules().set_s16("teamLeftTickets", Maths::Min(getRules().get_s16("teamLeftTickets"), parseInt(tickets[1])));
+            getRules().set_s16("teamRightTickets", Maths::Min(getRules().get_s16("teamLeftTickets"), parseInt(tickets[1])));
             if (isServer()) this.server_Die();
         }
     }
