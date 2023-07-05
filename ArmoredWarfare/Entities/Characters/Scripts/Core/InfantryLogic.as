@@ -620,7 +620,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	}
 
 	if ((is_action1 || this.get_u32("lmg_aftershot") > getGameTime()
-		|| this.get_u32("firebringer_aftershot") > getGameTime()) && !isReloading )
+		|| this.get_u32("firebringer_aftershot") > getGameTime()) && !isReloading)
 	{
 		if (this.get_bool("is_lmg"))
 		{
@@ -1416,6 +1416,21 @@ const f32 inaccuracy_length_decrease_mod = 2.5f;
 const f32 inaccuracy_angle_increase_mod = 0.85f;
 const u32 firehit_delay = 1;
 
+bool solidHit(CBlob@ this, CBlob@ blob)
+{
+	return ((!blob.isAttached() || blob.hasTag("collidewithbullets") || blob.hasTag("mgunner"))
+			&& !blob.hasTag("machinegun") && (blob.hasTag("wooden")
+			|| blob.hasTag("door") || blob.hasTag("flesh") || blob.hasTag("vehicle")));
+}
+
+bool canDamage(CBlob@ this, CBlob@ blob)
+{
+	return blob.get_u32("firehit_delay") < getGameTime()
+			&& blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("apc")
+			|| blob.hasTag("weak vehicle") || blob.hasTag("truck")
+			|| blob.hasTag("wooden") || blob.hasTag("door") || blob.hasTag("flesh"));
+}
+
 void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 {
 	if (this.get_u32("mag_bullets") == 0) return;
@@ -1503,18 +1518,16 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 				if (info.blob.hasTag("structure") || info.blob.hasTag("trap")
 					|| info.blob.isLadder() || info.blob.isOverlapping(this)) continue;
 
-				if (!info.blob.isAttached() && !info.blob.hasTag("machinegun") && (info.blob.hasTag("wooden")
-						|| info.blob.hasTag("door") || info.blob.hasTag("flesh") || info.blob.hasTag("vehicle")))
+				if (solidHit(this, info.blob))
 				{
+					if (info.blob.isAttached()) fire_damage *= 0.5f;
+
 					if (!info.blob.hasTag("flesh"))
 					{
 						endpoint = Maths::Min(max_endpoint, info.distance/shorten);
 						doContinue = true;
 					}
-					if (isServer() && info.blob.get_u32("firehit_delay") < getGameTime()
-						&& info.blob.getTeamNum() != this.getTeamNum() && (info.blob.hasTag("apc")
-							|| info.blob.hasTag("weak vehicle") || info.blob.hasTag("truck")
-								|| info.blob.hasTag("wooden") || info.blob.hasTag("door") || info.blob.hasTag("flesh")))
+					if (isServer() && canDamage(this, info.blob))
 					{
 						this.server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.35f), fire_damage, Hitters::fire, true);
 						info.blob.set_u32("firehit_delay", getGameTime()+firehit_delay);
