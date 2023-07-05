@@ -90,11 +90,23 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	{
 		CBitStream params;
 		params.write_u16(caller.getNetworkID());
-
-		if (!caller.hasTag("lock_perkchange"))
-			caller.CreateGenericButton("$change_perk$", Vec2f(0, -10), this, buildPerkMenu, getTranslatedString("Switch Perk"));
-		if (!caller.hasTag("lock_classchange"))
-			caller.CreateGenericButton("$change_class$", Vec2f(9, 0), this, this.getCommandID("class menu"), getTranslatedString("Change class"), params);
+		
+		{
+			string description = caller.hasTag("lock_perkchange") ? "You've already switched perk here." : "Switch perk";
+			CButton@ btn = caller.CreateGenericButton("$change_perk$", Vec2f(0, -10), this, buildPerkMenu, description);
+			if (btn !is null && caller.hasTag("lock_perkchange"))
+			{
+				btn.SetEnabled(false);
+			}
+		}
+		{
+			string description = caller.hasTag("lock_classchange") ? "You've already switched class here." : "Switch class";
+			CButton@ btn = caller.CreateGenericButton("$change_class$", Vec2f(9, 0), this, this.getCommandID("class menu"), description, params);
+			if (btn !is null && caller.hasTag("lock_classchange"))
+			{
+				btn.SetEnabled(false);
+			}
+		}
 	}
 }
 
