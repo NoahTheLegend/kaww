@@ -278,13 +278,11 @@ shared class TDMSpawns : RespawnSystem
 					CBlob@ b = getBlobByName("pointflag");
 					CBlob@[] tents;
 					getBlobsByName("tent", @tents);
-					if (XORRandom(100) < 50 && getRules().get_string(player.getUsername()+"_perk") == "Death Incarnate")
+					if (!(XORRandom(100) < 50 && getRules().get_string(player.getUsername()+"_perk") == "Death Incarnate"))
 					{
 						if (b is null && tents.length > 0)
 							decrementTickets(getRules(), playerBlob.getTeamNum());
 					}
-					else if (b is null && tents.length > 0)
-						decrementTickets(getRules(), playerBlob.getTeamNum());
 				}
 			}
 		}
