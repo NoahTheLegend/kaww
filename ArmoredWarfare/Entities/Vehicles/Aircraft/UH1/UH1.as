@@ -134,7 +134,7 @@ void onInit(CSprite@ this)
 		int[] frames = {0, 1, 2, 3};
 		anim.AddFrames(frames);
 		
-		tailrotor.SetOffset(Vec2f(58.0, -11));
+		tailrotor.SetOffset(Vec2f(49.0, -11));
 		tailrotor.SetRelativeZ(20.0f);
 		tailrotor.SetVisible(true);
 	}
