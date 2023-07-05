@@ -9,6 +9,8 @@ void onInit(CBlob@ this)
 	
 	this.Tag("projectile");
 	this.Tag("map_damage_dirt");
+	this.Tag("collideswithglass");
+
 }
 
 void onTick(CSprite@ this)
@@ -97,7 +99,10 @@ void DoExplosion(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return ((blob.isCollidable() && (blob.getTeamNum() != this.getTeamNum() || blob.hasTag("friendly_collide"))) || (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())) && ((blob.getName() == "wooden_platform" || blob.hasTag("door")) || (blob.getTeamNum() == this.getTeamNum() && !blob.getShape().isStatic())); 
+	return ((blob.isCollidable() && (blob.getTeamNum() != this.getTeamNum() || blob.hasTag("friendly_collide")))
+			|| (blob.hasTag("bunker") && blob.getTeamNum() != this.getTeamNum())) && ((blob.getName() == "wooden_platform"
+			|| blob.hasTag("door"))
+			|| (blob.getTeamNum() == this.getTeamNum() && (!blob.getShape().isStatic() || blob.hasTag("friendly_collide")))); 
 }
 
 bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)
