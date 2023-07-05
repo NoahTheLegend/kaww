@@ -87,8 +87,8 @@ void onInit(CBlob@ this)
 		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
 		if (arm !is null)
 		{
-			arm.SetRelativeZ(0.5f);
-			arm.SetOffset(Vec2f(-32.0f, 8.0f));
+			arm.SetRelativeZ(-5.0f);
+			arm.SetOffset(Vec2f(-30.0f, 7.0f));
 		}
 	}
 
