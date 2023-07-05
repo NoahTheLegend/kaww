@@ -9,7 +9,7 @@ const string rare_ore = "mat_gold";
 
 //balance
 const int input = 75;					// input cost in fuel
-const int stone_amount = 30;
+const int stone_amount = 35;
 const int initial_output = 100;			// output amount in ore
 const int min_output = 50;				// minimal possible output in ore
 const int output_decrease = 0;			// by how much output decreases every time ore is dropped
