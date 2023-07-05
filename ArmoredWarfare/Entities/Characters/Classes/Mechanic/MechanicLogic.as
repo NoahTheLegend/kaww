@@ -86,13 +86,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (getRules().get_string(p.getUsername() + "_perk") == "Lucky" && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
 	}
-	if (isServer()) //update bots' logic
-	{
-		if (this.hasTag("disguised"))
-		{
-			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
-		}
-	}
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
 		damage *= 4;

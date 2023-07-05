@@ -94,31 +94,6 @@ void onTick(CBrain@ this)
 		LocateGeneralFriendDirection(blob); // gives the direction we can retreat to
 	}
 	
-	if (isServer() && target !is null) // process only on server, for only server-side bot brain
-	{
-		CBlob@[] bushes;
-		if (target.getPlayer() !is null
-		&& getRules().get_string(target.getPlayer().getUsername() + "_perk") == "Camouflage"
-		&& target.getOverlapping(@bushes))
-		{
-			for (u16 i = 0; i < bushes.length; i++)
-			{
-				CBlob@ bush = bushes[i];
-				if (bush is null || bush.getName() != "bush") continue;
-				if (target.get_u32("can_spot") > getGameTime())
-				{
-					target.Tag("disguised"); // add a tag so blobs that werent seen by bots have a pre-check for permormance
-					target.set_u32("can_spot", getGameTime()+30); // bot sees player and renews timer for revealing
-				}
-				else
-				{
-					target.Tag("disguised");
-					return;
-				}
-			}
-		}
-	}
-	
 	if (blob.isAttached()) // vehicle logic
 	{
 		CBlob@ vehicle = getBlobByNetworkID(blob.get_u16("secondarytarget"));
