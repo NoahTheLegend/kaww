@@ -353,7 +353,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "specammo");
 		this.set_u8("prod_amount", 50);
-		this.set_u8("prod_time", 15);
+		this.set_u8("prod_time", 10);
 		this.set_u8("cost", 2);
 
 		ResetTimer(this);
@@ -362,8 +362,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "medkit");
 		this.set_u8("prod_amount", 2);
-		this.set_u8("prod_time", 20);
-		this.set_u8("cost", 3);
+		this.set_u8("prod_time", 10);
+		this.set_u8("cost", 2);
 
 		ResetTimer(this);
 	}
