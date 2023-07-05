@@ -171,7 +171,7 @@ void onTick(CBlob@ this)
 	{
 		if (isServer())
 		{
-			for (u8 i = 0; i < 1; i++)
+			for (u8 i = 0; i < 3; i++)
 			{
 				CBlob@ ammo = server_CreateBlob("specammo");
 				if (ammo !is null)
