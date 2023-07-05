@@ -96,7 +96,7 @@ void onInit(CBlob@ this)
 		case _heavygun: // MG
 		case _firethrower: // MG
 		case _barge:
-		armorRating = 2; break;
+		armorRating = 5; break;
 
 		case _uh1: // heli
 		case _techtruck: // MG truck
