@@ -10,6 +10,7 @@
 shared string[] getPatreonMembers()
 {
 	string[] patreonMembers = {
+		"NoahTheLegend",
 		"nickkardash",
 		"MasterOfCockFights",
 		"Froghead48"
