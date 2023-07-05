@@ -58,6 +58,9 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 			{
 				SColor color;
 
+				bool regenerating = blob.isAttachedToPoint("BED") || blob.isAttachedToPoint("BED2")
+					|| (blob.exists("regen") && blob.get_u32("regen") > getGameTime());
+
 				if (blob.getHealth() <= blob.getInitialHealth() / 3.5f && getGameTime() % 30 == 0)
 				{
 					if (blob.getHealth() <= blob.getInitialHealth() / 4.5f)
@@ -73,7 +76,10 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 				}
 				else
 				{
-					color.set(255, 82, 210*Maths::Min((blob.getHealth() / blob.getInitialHealth())*1.5, 1.0), 10);
+					u8 set_color = 210*Maths::Min((blob.getHealth() / blob.getInitialHealth())*1.5, 1.0);
+					color.set(255, 82, set_color, 10);
+					if (regenerating)
+						color.set(255, set_color, set_color, 10);
 				}
 
 				SColor color_dark;
