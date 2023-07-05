@@ -11,6 +11,8 @@ void onInit(CBlob@ this)
 		ap.SetKeysToTake(key_action3);
 	}
 	this.Tag("change team on pickup");
+	this.Tag("collideswithglass");
+
 }
 
 bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)
