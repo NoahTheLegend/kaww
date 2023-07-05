@@ -2,7 +2,7 @@
 #include "Explosion.as"
 #include "ProgressBar.as"
 
-const f32 EXPLODE_TIME = 15.0f;
+const f32 EXPLODE_TIME = 12.5f;
 const f32 DEFUSE_REQ_TIME = 45;
 
 void onInit(CBlob@ this)
