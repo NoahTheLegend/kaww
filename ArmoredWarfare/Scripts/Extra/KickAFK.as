@@ -9,8 +9,8 @@ bool warned = false;
 int warnTime = 0;
 int lastMoveTime = 0;
 
-const uint checkInterval = 90;
-const uint totalToKickSeconds = 60 * 2 + 30;
+const uint checkInterval = 45;
+const uint totalToKickSeconds = 45 * 2 + 30;
 const uint warnToKickSeconds = 60;
 const uint idleToWarnSeconds = totalToKickSeconds - warnToKickSeconds;
 
@@ -34,6 +34,7 @@ void onTick(CRules@ this)
 	}
 
 	bool kickImmunity = getSecurity().checkAccess_Feature(p, "kick_immunity");
+	kickImmunity = true;
 
 	//not updated yet or numbers from last game?
 	if(controls.lastKeyPressTime == 0 || controls.lastKeyPressTime > getGameTime())
@@ -74,11 +75,8 @@ void onTick(CRules@ this)
 		//so long, sucker
 		client_AddToChat("You were " + (kickImmunity ? "moved to spectator" : "kicked") + " for being AFK too long.", SColor(255, 240, 50, 0));
 		warned = false;
-		if (!kickImmunity)
-		{
-			joinNewSpecTeam(this, getLocalPlayer()); //Force-swap to spec team.
-			client_AddToChat("You have just been swapped to spectator team, type !m to get back.", SColor(255,0,0,0));
-		}
+
+		joinNewSpecTeam(this, getLocalPlayer()); //Force-swap to spec team.
 	}
 }
 
