@@ -369,6 +369,7 @@ void onTick(CSprite@ this)
 
 	if (blob.hasTag("dead"))
 	{
+		this.RemoveSpriteLayer("riotshield");
 		if (this.animation.name != "dead")
 		{
 			this.SetAnimation("dead");
@@ -628,7 +629,7 @@ void onTick(CSprite@ this)
 	CSpriteLayer@ shield = this.getSpriteLayer("riotshield");
 	if (shield !is null)
 	{
-		if (blob.hasTag("dead") || blob.isAttached())
+		if (blob.isAttached())
 		{
 			if (shield.isVisible()) shield.SetVisible(false);
 		}
