@@ -543,14 +543,22 @@ void ManageParachute(CBlob@ this)
 
 void onDie(CBlob@ this)
 {
-	if (isServer() && this.getName() == "rpg")
+	if (isServer())
 	{
-		if (this.get_u32("mag_bullets") > 0)
+		if (this.getName() == "rpg")
 		{
 			CBlob@ b = server_CreateBlob("mat_heatwarhead", this.getTeamNum(), this.getPosition());
 			if (b !is null)
 			{
-				b.server_SetQuantity(1);
+				b.server_SetQuantity(this.get_u32("mag_bullets"));
+			}
+		}
+		if (this.getName() == "firebringer")
+		{
+			CBlob@ b = server_CreateBlob("specammo", this.getTeamNum(), this.getPosition());
+			if (b !is null)
+			{
+				b.server_SetQuantity(this.get_u32("mag_bullets"));
 			}
 		}
 	}
