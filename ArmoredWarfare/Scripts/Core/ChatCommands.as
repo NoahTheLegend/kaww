@@ -138,6 +138,20 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					this.SetTeamWon(parseInt(sub[1]));
 					this.SetCurrentState(GAME_OVER);
 				}
+				else if (sub[0]=="!leavebody")
+				{ 
+					CBlob@ newBlob = server_CreateBlob(sub[1], blob.getTeamNum(), blob.getPosition());
+					if (newBlob !is null)
+					{
+						CInventory@ inv = blob.getInventory();
+						if (inv !is null)
+						{
+							blob.MoveInventoryTo(newBlob);
+						}
+						newBlob.server_SetPlayer(player);
+						//blob.server_Die();
+					}
+				}
 
 				if (sub.length > 2)
 				{
