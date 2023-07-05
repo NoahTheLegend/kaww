@@ -417,6 +417,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
         		setbars.gap = 20.0f;
         		this.set("Bar", setbars);
 			}
+			else
+			{
+				bars.RemoveBar("construct", true);
+			}
+
 			if (this.get("Bar", @bars))
 			{
 				if (!hasBar(bars, "construct"))
