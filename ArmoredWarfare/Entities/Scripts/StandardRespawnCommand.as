@@ -1,4 +1,4 @@
-#include "ClassSelectMenu.as"
+	#include "ClassSelectMenu.as"
 #include "KnockedCommon.as"
 
 void InitRespawnCommand(CBlob@ this)
@@ -169,7 +169,8 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Death Incarnate", "$7_class_icon$", "Death Incarnate",
 						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
-						+"\n                   - Enemy kill XP gain: 500%  "
+						+"\n                   - 500% more XP for kills "
+						+"\n                   - 50% chance to save a ticket "
 						+"\n\n                 Hardcore Soldier     "
 						+"\n                   - Take twice as much damage     "
 						);
