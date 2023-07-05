@@ -31,6 +31,7 @@ void onInit(CBlob@ this)
 	this.Tag("medium weight");
 	this.Tag("always bullet collide");
 	this.Tag("no_armory_pickup");
+	this.Tag("trap");
 
 	this.maxQuantity = 4;
 	if (isServer()) this.server_SetQuantity(this.maxQuantity);
@@ -85,6 +86,13 @@ void onTick(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet
+		|| customData == HittersAW::aircraftbullet || customData == HittersAW::machinegunbullet)
+	{
+		damage += 0.5f - this.getQuantity() * 0.1f;
+		damage *= (3-this.getQuantity()/4);
+	}
+
 	if (damage >= this.getHealth() && !this.hasTag("dead"))
 	{
 		this.Tag("DoExplode");
