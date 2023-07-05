@@ -236,7 +236,6 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 
 		//head icon
 
-		//TODO: consider maybe the skull emoji for dead players?
 		int headIndex = 0;
 		string headTexture = "";
 		int teamIndex = p.getTeamNum();
@@ -341,7 +340,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			//draw perk
 			u8 icon = 0;
 			string perk = (getRules().get_string(username + "_perk")).substr(0,2);
-			
+			// TODO: change this to hashcodes (they are assumingly faster)
 			if (perk == "Ca") icon = 6;
 			else if (perk == "Sh") icon = 1;
 			else if (perk == "Bl") icon = 3;
@@ -362,36 +361,6 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		Accolades@ acc = getPlayerAccolades(username);
 		if (acc !is null)
 		{
-			if (acc.patreonMember)
-			{
-				//draw patreon accolades
-				float x = bottomright.x - accolades_start-40;
-				float extra = 32;
-				GUI::DrawIcon("BadgesPatreon", 0, Vec2f(16, 16), Vec2f(x, topleft.y-2), 0.5f, 0);
-				
-				if (playerHover && mousePos.x > x-8 && mousePos.x < x + 24)
-				{
-					disable_line = true;
-					GUI::DrawPane(mousePos+Vec2f(extra, extra-8), mousePos + Vec2f(192,55), SColor(0xffffffff));
-					GUI::DrawText("Patreon supporter", mousePos + Vec2f(44,32), SColor(0xffffffff));
-				}
-				else disable_line = false;
-			}
-			else if (acc.spriterMember)
-			{
-				float x = bottomright.x - accolades_start-40;
-				float extra = 32;
-				GUI::DrawIcon("BadgesSpriter", 0, Vec2f(16, 16), Vec2f(x, topleft.y-2), 0.5f, 0);
-				
-				if (playerHover && mousePos.x > x-8 && mousePos.x < x + 24)
-				{
-					disable_line = true;
-					GUI::DrawPane(mousePos+Vec2f(extra, extra-8), mousePos + Vec2f(398,55), SColor(0xffffffff));
-					GUI::DrawText("In gratitude for significant spriting contribution.", mousePos + Vec2f(44,32), SColor(0xffffffff));
-				}
-				else disable_line = false;
-			}
-
 			//(remove crazy amount of duplicate code)
 			int[] badges_encode = {
 				//count,                icon,  show_text, group
@@ -414,6 +383,10 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 					1 : 0),             7,     0,         0,
 				(p.getOldGold() ?
 					1 : 0),             8,     0,         0,
+				(acc.patreonMember ?
+					1 : 0),             9,     0,         0,
+				(acc.spriterMember ?
+					1 : 0),             10,     0,         0,
 
 				//tourney badges
 				acc.gold,               0,     1,         1,
