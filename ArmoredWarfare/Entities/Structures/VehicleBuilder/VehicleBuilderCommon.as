@@ -60,7 +60,11 @@ void buildT1ShopCombined(CBlob@ this)
 		s.buttonheight = 1;
 		
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
-		else AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
+		else
+		{
+			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 10*30 * 60);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
+		}
 	}
 }
 
@@ -142,7 +146,11 @@ void buildT2ShopCombined(CBlob@ this)
 		s.buttonheight = 2;
 		
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
-		else AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 225);
+		else
+		{
+			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 25*30 * 60);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 250);
+		}
 	}
 }
 
@@ -309,7 +317,11 @@ void buildT1ShopGround(CBlob@ this)
 		s.buttonheight = 1;
 		
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
-		else AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 100);
+		else
+		{
+			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 10*30 * 60);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 100);
+		}
 	}
 }
 
@@ -379,7 +391,11 @@ void buildT2ShopGround(CBlob@ this)
 		s.buttonheight = 2;
 		
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
-		else AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 175);
+		else
+		{
+			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 25*30 * 60);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 175);
+		}
 	}
 }
 
@@ -503,7 +519,11 @@ void buildT1ShopAir(CBlob@ this)
 		s.buttonheight = 2;
 		
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
-		else AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 150);
+		else
+		{
+			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 10*30 * 60);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
+		}
 	}
 }
 

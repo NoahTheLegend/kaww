@@ -80,6 +80,16 @@ void onInit(CBlob@ this)
 	AddIconToken("$icon_ft$", "IconFT.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_barge$","IconBarge.png", Vec2f(32, 32), 0, 2);
+	
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+	this.SetFacingLeft(this.getTeamNum() == teamright);
+}
+
+void InitShop(CBlob@ this)
+{
+	bool isCTF = getBlobByName("pointflag") !is null;
+	if (isCTF) this.set_Vec2f("shop menu size", Vec2f(11, 2));
 
 	{
 		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press SPACE while holding to arm, ~4 seconds until boom.", false);
@@ -128,6 +138,15 @@ void onInit(CBlob@ this)
 
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
+	}
+	if (isCTF)
+	{
+		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 300);
+		AddRequirement(s.requirements, "gametime", "", "Unlocks at", 30*30 * 60); // 45th min
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 2;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
@@ -183,19 +202,6 @@ void onInit(CBlob@ this)
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
-	//{
-	//	ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
-	//	AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 375);
-//
-	//	s.customButton = true;
-//
-	//	s.buttonwidth = 1;
-	//	s.buttonheight = 1;
-	//}
-	
-	u8 teamleft = getRules().get_u8("teamleft");
-	u8 teamright = getRules().get_u8("teamright");
-	this.SetFacingLeft(this.getTeamNum() == teamright);
 }
 
 void PackerMenu(CBlob@ this, CBlob@ caller)
@@ -264,6 +270,8 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 void onTick(CBlob@ this)
 {
+	if (this.getTickSinceCreated() == 1) InitShop(this);
+
 	if (this.getTickSinceCreated() == 60)
 	{
 		InitClasses(this);
