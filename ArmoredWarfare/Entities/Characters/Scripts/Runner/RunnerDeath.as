@@ -175,7 +175,7 @@ void onDie(CBlob@ this)
 {
 	if (this.getPlayer() !is null && this.hasTag("player")) this.getPlayer().set_string("last_class", this.getName());
 	
-	if (isServer() && XORRandom(4)==0 && this.get_string("equipment_head") != "" && !this.hasTag("switch class"))
+	if (isServer() && XORRandom(3)==0 && this.get_string("equipment_head") != "" && !this.hasTag("switch class"))
 	{
 		CBlob@ helmet = server_CreateBlob(this.get_string("equipment_head"), 2, this.getPosition());	
 	}
