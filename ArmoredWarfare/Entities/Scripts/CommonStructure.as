@@ -27,6 +27,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
         else if (this.getName() == "advancedrefinery")
         {
             mat = "mat_gold";
+            max = 200;
             if (blob.getName() != "mat_gold") return;
         }
         else // quarry
