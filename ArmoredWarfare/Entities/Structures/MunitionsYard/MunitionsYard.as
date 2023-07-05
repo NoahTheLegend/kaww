@@ -16,68 +16,21 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(10, 2));
+	this.set_Vec2f("shop menu size", Vec2f(7, 3));
 	this.set_string("shop description", "Craft Equipment");
 	this.set_u8("shop icon", 21);
 
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_ft$", "IconFT.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_barge$","IconBarge.png", Vec2f(32, 32), 0, 2);
+}
 
-	{
-		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press SPACE while holding to arm, ~4 seconds until boom.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Tank Trap", "$tanktrap$", "tanktrap", "Czech hedgehog, will harm any enemy vehicle that collides with it.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press E to heal. 6 uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 2);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "Heal to full health instantly.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue helmet, take 40% less bullet damage, and occasionally bounce bullets.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Lantern", "$lantern$", "lantern", "A source of light.", false);
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 20);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Sponge", "$sponge$", "sponge", "Commonly used for washing vehicles.", false);
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+void InitShop(CBlob@ this)
+{
+	bool isCTF = getBlobByName("pointflag") !is null;
+	if (isCTF) this.set_Vec2f("shop menu size", Vec2f(8, 3));
 
-		s.customButton = true;
-
-		s.buttonwidth = 1;
-		s.buttonheight = 2;
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
-		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
-		AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
-	}
 	{
 		ShopItem@ s = addShopItem(this, "Standard Ammo", "$ammo$", "ammo", "Used by all small arms guns, and vehicle machineguns.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
@@ -95,8 +48,75 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press SPACE while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nIneffective against armored vehicles.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+	}
+	if (isCTF)
+	{
+		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 300);
+		AddRequirement(s.requirements, "gametime", "", "Unlocks at", 30*30 * 60); // 45th min
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 3;
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "Heal to full health instantly.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press E to heal. 6 uses.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 2);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue helmet, take 40% less bullet damage, and occasionally bounce bullets.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Tank Trap", "$tanktrap$", "tanktrap", "Czech hedgehog, will harm any enemy vehicle that collides with it.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Lantern", "$lantern$", "lantern", "A source of light.", false);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 20);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Sponge", "$sponge$", "sponge", "Commonly used for washing vehicles.", false);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
+		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
+		AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
+	}
+	{
 		ShopItem@ s = addShopItem(this, "M22 Binoculars", "$binoculars$", "binoculars", "A pair of glasses with optical zooming.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+
+		s.customButton = true;
+
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
@@ -104,6 +124,13 @@ void onInit(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", "Fire thrower.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 12);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher. ", false, true);
@@ -117,9 +144,15 @@ void onInit(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
 }
+
+void onTick(CBlob@ this)
+{
+	if (this.getTickSinceCreated() == 1) InitShop(this);
+}
+
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {

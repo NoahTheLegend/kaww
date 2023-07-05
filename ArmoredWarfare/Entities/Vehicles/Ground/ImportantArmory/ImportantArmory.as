@@ -121,23 +121,28 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 35);
+		ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press SPACE while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
+		AddRequirement(s.requirements, "coin", "", "Coins", 30);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
-		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
-		AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
+		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
+		AddRequirement(s.requirements, "coin", "", "Coins", 20);
 	}
 	{
 		bool rebels_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 3; // team 3 buff
         u8 extra_amount = 0;
-        if (rebels_power) extra_amount = 5;
+        if (rebels_power) extra_amount = 4;
 		
 		ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 20-extra_amount);
+		AddRequirement(s.requirements, "coin", "", "Coins", 14-extra_amount);
 	}
+	//{
+	//	ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
+	//	AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
+	//	AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
+	//	AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
+	//}
+	
 	{
 		ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas a small explosion radius.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
@@ -674,7 +679,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (hitterBlob.hasTag("rpg")) return damage * 1.1f;
 		return damage * 1.5f;
 	}
-	if (hitterBlob.hasTag("grenade"))
+	if (hitterBlob.hasTag("atgrenade"))
 	{
 		return damage * 0.75f;
 	}

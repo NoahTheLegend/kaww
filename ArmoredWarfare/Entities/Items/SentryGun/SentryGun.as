@@ -295,7 +295,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 3.3f;
 	}
-	if (hitterBlob.hasTag("grenade"))
+	if (hitterBlob.hasTag("atgrenade"))
 	{
 		return damage * 10;
 	}
