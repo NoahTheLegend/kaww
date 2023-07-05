@@ -397,7 +397,7 @@ class BulletObj
 								}
 							}
 
-							sprite.PlaySound("/BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
+							sprite.PlaySound("BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
 
 							TimeLeft = 15;
 						}
@@ -406,10 +406,12 @@ class BulletObj
 					if (blob.hasTag("flesh") && hitpos.y < blob.getPosition().y - 3.2f)
 					{
 						if (!blob.hasTag("nohead")) dmg = DamageHead;
+						bool has_helmet;
 
 						// hit helmet
 						if (blob.get_string("equipment_head") == "helmet")
 						{
+							has_helmet = true;
 							dmg *= 0.5;
 
 							if (_rand_r.NextRanged(100) < 25)
@@ -425,6 +427,17 @@ class BulletObj
 								TimeLeft = 10;
 
 								dmg = 0;
+							}
+						}
+						if (hoomanShooter !is null && hoomanShooter.isMyPlayer())
+						{
+							CSprite@ hoomanSprite = hoomanShooter.getSprite();
+							if (hoomanSprite !is null)
+							{
+								if (!has_helmet)
+									hoomanSprite.PlaySound("HitmarkerHeadshot.ogg", 0.85f, 0.8f + XORRandom(31) * 0.01f);
+								else
+									hoomanSprite.PlaySound("Headshot.ogg", 1.5f, 0.75f + XORRandom(51) * 0.01f);
 							}
 						}
 					}
