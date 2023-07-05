@@ -3,7 +3,7 @@
 string getButtonRequirementsText(CBitStream& inout bs, bool missing)
 {
 	string text, requiredType, name, friendlyName;
-	u16 quantity = 0;
+	u32 quantity = 0;
 	bs.ResetBitIndex();
 
 	while (!bs.isBufferEnd())
@@ -74,6 +74,17 @@ string getButtonRequirementsText(CBitStream& inout bs, bool missing)
 			text += quantityColor;
 		}
 
+		if (requiredType == "gametime")
+		{
+			if (quantity > getGameTime())
+			{
+				text = "";
+				u32 seconds = (quantity-getGameTime())/30;
+				text += "$RED$";
+				text += "Unlocks in: "+Maths::Floor(seconds/60)+"m. "+Maths::Floor(seconds%60)+"s.\n\n";
+				text += "$RED$";
+			}
+		}
 	}
 
 	return text;
@@ -99,12 +110,12 @@ void SetItemDescription(CGridButton@ button, CBlob@ caller, CBitStream &in reqs,
 
 // read / write
 
-void AddRequirement(CBitStream &inout bs, const string &in req, const string &in blobName, const string &in friendlyName, u16 &in quantity = 1)
+void AddRequirement(CBitStream &inout bs, const string &in req, const string &in blobName, const string &in friendlyName, u32 &in quantity = 1)
 {
 	bs.write_string(req);
 	bs.write_string(blobName);
 	bs.write_string(friendlyName);
-	bs.write_u16(quantity);
+	bs.write_u32(quantity);
 }
 
 void AddHurtRequirement(CBitStream &inout bs)
@@ -112,7 +123,7 @@ void AddHurtRequirement(CBitStream &inout bs)
 	bs.write_string("hurt");
 }
 
-bool ReadRequirement(CBitStream &inout bs, string &out req, string &out blobName, string &out friendlyName, u16 &out quantity)
+bool ReadRequirement(CBitStream &inout bs, string &out req, string &out blobName, string &out friendlyName, u32 &out quantity)
 {
 	if (!bs.saferead_string(req))
 	{
@@ -134,7 +145,7 @@ bool ReadRequirement(CBitStream &inout bs, string &out req, string &out blobName
 		return false;
 	}
 
-	if (!bs.saferead_u16(quantity))
+	if (!bs.saferead_u32(quantity))
 	{
 		return false;
 	}
@@ -145,7 +156,7 @@ bool ReadRequirement(CBitStream &inout bs, string &out req, string &out blobName
 bool hasRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &inout bs, CBitStream &inout missingBs, bool &in inventoryOnly = false)
 {
 	string req, blobName, friendlyName;
-	u16 quantity = 0;
+	u32 quantity = 0;
 	missingBs.Clear();
 	bs.ResetBitIndex();
 	bool has = true;
@@ -195,6 +206,14 @@ bool hasRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &inout bs, C
 				has = false;
 			}
 		}
+		else if (req == "gametime")
+		{
+			if (getGameTime() < quantity)
+			{ 
+				AddRequirement(missingBs, req, blobName, friendlyName, quantity);
+				has = false;
+			}
+		}
 		else if ((req == "no more" || req == "no less") && inv1 !is null)
 		{
 			int teamNum = inv1.getBlob().getTeamNum();
@@ -238,7 +257,7 @@ void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &ino
 	}
 
 	string req, blobName, friendlyName;
-	u16 quantity;
+	u32 quantity;
 	bs.ResetBitIndex();
 	while (!bs.isBufferEnd())
 	{
