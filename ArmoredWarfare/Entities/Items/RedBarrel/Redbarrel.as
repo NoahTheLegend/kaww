@@ -13,6 +13,30 @@ void onInit(CBlob@ this)
 	this.getSprite().SetZ(-20.0f);
 }
 
+void onTick(CBlob@ this)
+{
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+
+	if (this.getHealth() < 1.0f)
+	{
+		if (isServer())
+		{
+			this.server_SetHealth(this.getHealth()-0.005f);
+			if (this.getHealth() < 0) this.server_Die();
+		}
+		if (isClient())
+		{
+			if (!this.exists("firepos")) this.set_Vec2f("firepos", Vec2f(XORRandom(100) < 50 ? -3.0f - XORRandom(21) * 0.1f : 3.0f + XORRandom(21) * 0.1f, XORRandom(12)-6));
+			if (!this.exists("firepos1")) this.set_Vec2f("firepos1", Vec2f(XORRandom(100) < 50 ? -3.0f - XORRandom(21) * 0.1f : 3.0f + XORRandom(21) * 0.1f, XORRandom(12)-6));
+
+			ParticleAnimated("SmallFire", this.getPosition() + this.get_Vec2f("firepos"), Vec2f(0, (-10 - XORRandom(20)) * 0.1f), 0, 1.0f, 2, 0.25f, false);
+			if (this.getHealth() < 0.5f)
+				ParticleAnimated("SmallFire", this.getPosition() + this.get_Vec2f("firepos1"), Vec2f(0, (-10 - XORRandom(20)) * 0.1f), 0, 1.0f, 2, 0.25f, false);
+		}
+	}
+}
+
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 {
 	return false;
