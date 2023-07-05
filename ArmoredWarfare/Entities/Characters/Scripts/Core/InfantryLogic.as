@@ -362,17 +362,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (getRules().get_string(p.getUsername() + "_perk") == "Lucky" && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
 	}
-	if (isServer()) //update bots' logic
-	{
-		if (this.hasTag("disguised"))
-		{
-			this.set_u32("can_spot", getGameTime()+150); // reveal us for some time
-		}
-		if (this.isBot() && hitterBlob.getDamageOwnerPlayer() !is null && (is_bullet))
-		{
-			this.set_string("last_attacker", hitterBlob.getDamageOwnerPlayer().getUsername());
-		}
-	}
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
 		damage *= 4;
@@ -1757,7 +1746,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("shoot rpg"))
 	{
-		if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30);
 		Vec2f arrowPos;
 		if (!params.saferead_Vec2f(arrowPos)) return;
 		Vec2f arrowVel;

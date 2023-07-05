@@ -194,8 +194,6 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 			s8 bulletPen = infantry.bullet_pen;
 			//CBlob@ proj = CreateBulletProj(this, arrowPos, arrowVel, damageBody, damageHead, bulletPen);
 
-			if (this.hasTag("disguised")) this.set_u32("can_spot", getGameTime()+30); // camo perk interaction
-
 			if (isServer())
 			{
 				if (this.get_u32("mag_bullets") > 0) this.set_u32("mag_bullets", this.get_u32("mag_bullets") - 1);
