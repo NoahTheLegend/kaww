@@ -367,7 +367,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 	Vec2f pos = blobPos - thinghy * 6.0f + vel + Vec2f(0, -2);
 	vel.Normalize();
 
-	f32 attack_distance = 16.0f;
+	f32 attack_distance = 18.0f;
 
 	f32 radius = this.getRadius();
 	CMap@ map = this.getMap();
@@ -378,12 +378,12 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 	f32 exact_aimangle = (this.getAimPos() - blobPos).Angle();
 
 	// this gathers HitInfo objects which contain blob or tile hit information
-	f32 angle = 45;
+	f32 angle = arcdegrees;
 	bool can_dig = false;
 	if (this.getName() == "shotgun" || this.getName() == "firebringer")
 	{
 		can_dig = true;
-		angle = 30;
+		angle *= 0.5f;
 	}
 	HitInfo@[] hitMapInfos;
 	if (map.getHitInfosFromArc(blobPos, -exact_aimangle, angle, radius + attack_distance, this, @hitMapInfos))
@@ -749,7 +749,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		}
 		if (this.hasTag("attacking") && getGameTime() == this.get_u32("end_stabbing")-timing)
 		{
-			f32 attackarc = 45.0f;
+			f32 attackarc = 60.0f;
 			DoAttack(this, damage, (this.isFacingLeft() ? 180.0f : 0.0f), attackarc, Hitters::sword);
 			this.Untag("attacking");
 		}
