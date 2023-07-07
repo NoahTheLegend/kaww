@@ -64,16 +64,17 @@ void onInit(CBlob@ this)
 
 	switch(blobHash)
 	{
+		case _barge:
 		case _mausturret: // MAUS Shell cannon
 		{
 			armorRating = 5;
 			hardShelled = true;
 		}
-		case _t10: // T10
+		case _maus: // maus
 		case _t10turret: // T10 Shell cannon
 		armorRating = 5; break;
-
-		case _maus: // maus
+		
+		case _t10: // T10
 		case _importantarmory:
 		case _importantarmoryt2:
 		armorRating = 4; break;
@@ -83,6 +84,8 @@ void onInit(CBlob@ this)
 		case _artillery:
 		case _artilleryturret:
 		case _ah1:
+		case _heavygun: // MG
+		case _firethrower: // MG
 		armorRating = 3; break;
 
 		case _transporttruck: // vanilla truck?
@@ -93,10 +96,7 @@ void onInit(CBlob@ this)
 		case _bradleyturret:
 		case _pszh4: // smol APC
 		case _pszh4turret: // smol APC cannon
-		case _heavygun: // MG
-		case _firethrower: // MG
-		case _barge:
-		armorRating = 5; break;
+		armorRating = 2; break;
 
 		case _uh1: // heli
 		case _techtruck: // MG truck
@@ -167,14 +167,14 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 1;
 			linear_length = 2.0f;
-			scale_damage = 1.1f;
+			scale_damage = 1.2f;
 			break;
 		}
 		case _btrturret: // big APC cannon
 		{
 			weaponRating = 1;
 			linear_length = 2.0f;
-			scale_damage = 1.25f;
+			scale_damage = 1.33f;
 			break;
 		}
 		case _bradleyturret:
@@ -1101,14 +1101,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.getName() == "c4")
 	{
-		damage *= 1.25f;
+		damage *= 1.33f;
 	}
 
 	if (armorRating >= 3 && customData == Hitters::sword) return 0;
 
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
-		return damage * ((this.hasTag("apc") ? 3.75f : 4.75f)-(armorRating*0.75f));
+		return damage * ((this.hasTag("apc") ? 3.0f : 4.25f)-(armorRating*0.75f));
 	}
 
 	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor

@@ -528,8 +528,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (customData == HittersAW::heavybullet) 
 	{
-		damage += 0.05f;
-		return damage * 0.85f;
+		damage += 0.1f;
 	}
 	else if (customData == HittersAW::bullet)
 	{
