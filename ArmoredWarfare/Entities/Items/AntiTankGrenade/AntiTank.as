@@ -16,7 +16,7 @@ enum State
 
 void onInit(CBlob@ this)
 {
-	this.set_s8(penRatingString, 4);
+	this.set_s8(penRatingString, 3);
 
     CSprite@ sprite = this.getSprite();
     sprite.ScaleBy(0.9f, 0.9f);
@@ -27,11 +27,11 @@ void onInit(CBlob@ this)
     if (separatists_power)
 	{
 		extra_amount = 16.0f;
-		extra_damage = 2.0f;
+		extra_damage = 1.0f;
 	}
 
 	this.set_f32(projExplosionRadiusString, 64.0f+extra_amount);
-	this.set_f32(projExplosionDamageString, 15.0f+extra_damage);
+	this.set_f32(projExplosionDamageString, 14.0f+extra_damage);
 
 	this.set_bool("map_damage_raycast", true);
 	this.set_bool("explosive_teamkill", true);
