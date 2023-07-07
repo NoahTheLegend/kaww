@@ -13,6 +13,8 @@ void onInit(CBlob@ this)
 	this.addCommandID(launchOrdnanceIDString);
 	this.addCommandID(launcherSetDeathIDString);
 	this.addCommandID(launcherUpdateStateIDString);
+
+	this.set_u32("consume_delay", 0);
 }
 
 bool canBePutInInventory( CBlob@ this, CBlob@ inventoryBlob )
@@ -37,6 +39,9 @@ void onCommand( CBlob@ this, u8 cmd, CBitStream @params )
 		}
 		else
 		{
+			if (this.get_u32("consume_delay") > getGameTime()) return;
+			this.set_u32("consume_delay", getGameTime() + 2);
+
 			AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
 			if (point is null) return;
 
