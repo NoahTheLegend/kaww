@@ -142,7 +142,7 @@ void onTick(CBlob@ this)
 	if (this.get_bool("deactivating"))
 	{
 		CBlob@ caller = getBlobByNetworkID(this.get_u16("caller_id"));
-		if (caller !is null && caller.isOverlapping(this)
+		if (caller !is null && caller.getDistanceTo(this) < this.getRadius() * 2
 			&& (!(caller.getHealth() < this.get_f32("caller_health")-0.1f)
 				|| this.get_f32("caller_health") > 500.0f))
 		{
