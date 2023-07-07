@@ -1087,15 +1087,18 @@ shared class TDMCore : RulesCore
 	{
 		if (getPlayersCount() <= 8)
 		{
-			LoadMapCycle("MAPS/mapcyclesmaller.cfg");
+			error("LOADING MAPCYCLE: SMALL");
+			LoadMapCycle("mapcyclesmaller.cfg");
 		}
 		else if (getPlayersCount() <= 14)
 		{
-			LoadMapCycle("MAPS/mapcycle.cfg");
+			error("LOADING MAPCYCLE: AVERAGE");
+			LoadMapCycle("mapcycle.cfg");
 		}
 		else
 		{
-			LoadMapCycle("MAPS/mapcyclelarger.cfg");
+			error("LOADING MAPCYCLE: LARGE");
+			LoadMapCycle("mapcyclelarger.cfg");
 		}
 	}
 };
