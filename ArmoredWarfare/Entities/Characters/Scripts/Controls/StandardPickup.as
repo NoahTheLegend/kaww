@@ -37,7 +37,12 @@ void onInit(CBlob@ this)
 			PickupWheelOption("sgrenade"),
 			PickupWheelOption("sagrenade")
 		};
+		const PickupWheelOption[] atgrenade_options = {
+			PickupWheelOption("atgrenade"),
+			PickupWheelOption("mat_atgrenade")
+		};
 		menu.add_entry(PickupWheelMenuEntry("Grenade", "$grenade$", grenade_options, Vec2f(0, 0)));
+		menu.add_entry(PickupWheelMenuEntry("Anti-Tank Grenade", "$atgrenade$", atgrenade_options, Vec2f(0, 0)));
 		const PickupWheelOption[] molotovs = {PickupWheelOption("molotov", 1), PickupWheelOption("mat_molotov", 0)};
 		menu.add_entry(PickupWheelMenuEntry("Molotov", "$mat_molotov$", molotovs, Vec2f(0, -8.0f)));
 		menu.add_entry(PickupWheelMenuEntry("Medkit", "$medkit$", "medkit"));
@@ -384,7 +389,7 @@ f32 getPriorityPickupScale(CBlob@ this, CBlob@ b)
 		return factor_super_important;
 	}
 
-	if((name == "molotov" || name == "agrenade" || name == "sgrenade" || name == "grenade") && (b.hasTag("activated") || b.get_u8("exploding_2") > 0)){
+	if((name == "molotov" || name == "agrenade" || name == "sgrenade" || name == "grenade" || name == "atgrenade" || name == "mat_atgrenade") && (b.hasTag("activated") || b.get_u8("exploding_2") > 0)){
 		return factor_super_important; //pick up activated stuff before deactivated stuff
 	}
 
