@@ -1860,13 +1860,13 @@ const string[] AverageMaps = {
 	"SoldiercombatTDM.png",
 	"TheSmallCityTDM.png",
 	"BridgeTDM.png",
+	"KingslyCastleTDM.png",
 	"TesfoMineTDM.png",
 	"Airplane.png",
 	"Battleship.png",
 	"KnollTDM.png",
 	"LandscapingTDM.png",
 	"SoldiercombatTDM.png",
-	"Stratego.png",
 	"TheCityTDM.png",
 	"TriPointTDM.png"
 };
@@ -1896,6 +1896,7 @@ const string[] TdmMaps = {
 	"LandscapingTDM.png",
 	"SmallSoldiercombatTDM.png",
 	"TheSmallCityTDM.png",
+	"KingslyCastleTDM.png",
 	"BridgeTDM.png",
 	"TrainTDM.png",
 	"Airplane.png",

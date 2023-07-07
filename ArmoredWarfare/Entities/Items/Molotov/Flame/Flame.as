@@ -10,7 +10,6 @@ void onInit(CBlob@ this)
 	{
 		this.getCurrentScript().tickFrequency = 15;
 	}
-
 	if(isClient())
 	{
 		this.getCurrentScript().tickFrequency = 2;
