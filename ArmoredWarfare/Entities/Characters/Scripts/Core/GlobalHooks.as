@@ -99,9 +99,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			damage *= 0.5f;
 		}
-		else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+		else if (!is_bullet && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
 		{
-			damage *= 0.75f;
+			damage *= 0.66f;
 		}
 	}
 	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
