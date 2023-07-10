@@ -37,6 +37,14 @@ void UpdateAngle(CBlob@ this)
 	this.setAngleDegrees(-mouseAngle);
 }
 
+void onDie(CBlob@ this)
+{
+	if (isClient())
+	{
+		Sound::Play("Break.ogg", this.getPosition(), 2.0f, 1.2f);
+	}
+}
+
 void onTick(CBlob@ this)
 {	
 	if (this.isAttached())
