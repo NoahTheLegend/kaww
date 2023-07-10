@@ -172,14 +172,13 @@ void onTick(CBlob@ this)
 
 			f32 mod = 0.125f;
 			CPlayer@ p = pilot.getPlayer();
-			if (p !is null)
+			if (p !is null && !this.hasTag("falling"))
 			{
 				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
 				{
 					mod = 0.15f;
 				}
 			}
-			if (this.hasTag('falling')) mod = 0.15f;
 			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, mod);
 
 			// this.SetFacingLeft(dir.x > 0);
@@ -260,7 +259,20 @@ void onTick(CBlob@ this)
 	if (this.hasTag("falling") || this.getHealth() <= this.getInitialHealth() * 0.33f)
 	{
 		u8 rand = 5;
-		if (this.hasTag("falling")) rand = 1;
+		if (this.hasTag("falling"))
+		{
+			if (ap_pilot is null)
+			{
+				Vec2f old_pos = this.getOldPosition();
+				Vec2f pos = this.getPosition();
+				Vec2f dir = pos-old_pos;
+				dir.Normalize();
+				dir.RotateBy(this.isFacingLeft() ? -1.0f * (getGameTime()-this.get_u32("falling_time")) * 0.1f : 0.1f * (getGameTime()-this.get_u32("falling_time")));
+				this.set_Vec2f("direction", dir);
+			}
+
+			rand = 1;
+		}
 		if (XORRandom(rand) == 0)
 		{
 			const Vec2f pos = this.getPosition() + getRandomVelocity(0, this.getRadius()*0.4f, 360);
