@@ -517,7 +517,7 @@ void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 
 void RenderTimer(CRules@ this, CBlob@ flag, Vec2f position)
 {
-	bool isTDM = (getMap().tilemapwidth < 200);
+	bool isTDM = (getMap().tilemapwidth <= 300);
 	if (flag is null || isTDM) return;
 
 	GUI::SetFont("menu");

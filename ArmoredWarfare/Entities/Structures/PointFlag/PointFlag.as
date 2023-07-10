@@ -133,7 +133,7 @@ void onTick(CBlob@ this)
         }
     }
 
-	bool isTDM = (getMap().tilemapwidth < 200);
+	bool isTDM = (getMap().tilemapwidth <= 300);
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
 
@@ -210,7 +210,7 @@ void onTick(CBlob@ this)
 			if (this.getTeamNum() == teamleft) this.set_s8(teamcapping, (num_teamleft > num_teamright ? teamleft : teamright));
 			else if (this.getTeamNum() == teamright) this.set_s8(teamcapping, (num_teamright > num_teamleft ? teamleft : teamright));
 		}
-		if (getMap() !is null && getMap().tilemapwidth < 200) mod *= 2; // twice faster on small maps
+		if (getMap() !is null && getMap().tilemapwidth <= 300) mod *= 2; // twice faster on small maps
 
 		//printf(""+mod);
 
@@ -441,7 +441,7 @@ void onRender(CSprite@ this)
 
 	if (blob.getTeamNum() >= 7 || blob.get_u8("numcapping") > 0) return;
 
-	bool isTDM = (getMap().tilemapwidth < 200);
+	bool isTDM = (getMap().tilemapwidth <= 300);
 	if (isTDM) return;
 	
 	// draw crate generation progress

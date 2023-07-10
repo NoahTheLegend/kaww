@@ -134,7 +134,7 @@ void Config(TDMCore@ this)
 	// basic time
 	this.gameDuration = (getTicksASecond() * 60 * gameDurationMinutes) + this.warmUpTime;
 	// tdm map time
-	if (getMap() !is null && getMap().tilemapwidth < 200)  this.gameDuration = (getTicksASecond() * 60 * 15.0f) + this.warmUpTime;
+	if (getMap() !is null && getMap().tilemapwidth <= 300)  this.gameDuration = (getTicksASecond() * 60 * 15.0f) + this.warmUpTime;
 	// siege time
 	CBlob@[] vehbuilders;
     getBlobsByName("vehiclebuilder", @vehbuilders);
@@ -253,7 +253,15 @@ shared class TDMSpawns : RespawnSystem
 				printf("New player team: "+int(p_info.team));
 			}
 
-			if (player.exists("last_class"))
+			bool isTDM = (getMap().tilemapwidth <= 300);
+
+			string[] blocked_classes = {
+				"lmg",
+				"firebringer",
+				"rpg"
+			}; // i berate myself for doing this in so way but i am too lazy to bind this small feature to InitClasses()
+			if (player.exists("last_class")
+				&& (!isTDM || blocked_classes.find(player.get_string("last_class")) == -1))
 			{
 				p_info.blob_name = player.get_string("last_class");
 			}
@@ -1115,7 +1123,7 @@ void Reset(CRules@ this)
 
 	if (getMap() !is null)
 	{
-		bool isTDM = (getMap().tilemapwidth < 200);
+		bool isTDM = (getMap().tilemapwidth <= 300);
 		this.set_bool("enable_powers", !isTDM);
 		this.Sync("enable_powers", true);
 	}
