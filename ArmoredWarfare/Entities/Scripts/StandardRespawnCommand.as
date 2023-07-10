@@ -188,8 +188,8 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Bull", "$10_class_icon$", "Bull",
 						"Bull:\n\n"+"$10_class_icon$"+"Physical Strength"
 						+"\n                   - Better walking, jumping, sprinting     "
-						+"\n                   - 33% Faster reload" //25% actually
-						+"\n                   - Take 75% of damage"
+						+"\n                   - 33% Faster reload"
+						+"\n                   - Take 66.6% of non-bullet damage"
 						+"\n\n                  Restlessness"
 						+"\n                   - Killing an enemy speeds you up"
 						+"\n                   - Can't use vehicles"
