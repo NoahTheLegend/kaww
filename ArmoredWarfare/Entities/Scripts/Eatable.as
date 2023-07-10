@@ -45,8 +45,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 				if (is_burger)
 				{
-					theBlob.set_u32("regen", extra + getGameTime()+120);
-					theBlob.set_u8("step_max_temp", 6);
+					theBlob.set_u32("regen", extra + getGameTime()+150);
+					theBlob.set_u8("step_max_temp", 10);
 					theBlob.set_f32("regen_amount", 0.5f);
 				}
 				else
