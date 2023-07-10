@@ -24,15 +24,15 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (isServer() && this.getTickSinceCreated() == 180 && getGameTime() <= 210)
-	{
-		CMap@ map = this.getMap();
-		if (map !is null)
-		{//dont rotate it depending on side after constructing map
-			this.server_setTeamNum(this.getPosition().x > map.tilemapwidth*4 ? 1 : 0);
-			this.SetFacingLeft(this.getPosition().x > map.tilemapwidth*4);
-		}
-	}
+	//if (isServer() && this.getTickSinceCreated() == 180 && getGameTime() <= 210)
+	//{
+	//	CMap@ map = this.getMap();
+	//	if (map !is null)
+	//	{//dont rotate it depending on side after constructing map
+	//		this.server_setTeamNum(this.getPosition().x > map.tilemapwidth*4 ? 1 : 0);
+	//		this.SetFacingLeft(this.getPosition().x > map.tilemapwidth*4);
+	//	}
+	//}
 
     float repair_distance = 16.0f;
     float repair_amount = 1.2f;  
