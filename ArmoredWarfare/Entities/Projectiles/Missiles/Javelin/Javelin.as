@@ -8,8 +8,8 @@
 
 Random _missile_r(12231);
 
-const f32 radius = 48.0f;
-const f32 damage = 17.0f;
+const f32 radius = 64.0f;
+const f32 damage = 20.0f;
 
 void onInit(CBlob@ this)
 {
@@ -29,7 +29,7 @@ void onInit(CBlob@ this)
 	this.set_f32(projExplosionRadiusString, 30.0f);
 	this.set_f32(projExplosionDamageString, damage);
 
-	this.set_s8(penRatingString, 5);
+	this.set_s8(penRatingString, 6);
 
 	this.set_f32(robotechHeightString, 64.0f); // pixels
 	this.set_f32("map_damage_ratio", 0.5f);
