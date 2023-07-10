@@ -56,6 +56,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 					theBlob.set_f32("regen_amount", 0.125f);
 				}
 
+				CBitStream params;
+				params.write_u32(theBlob.get_u32("regen"));
+				theBlob.SendCommand(theBlob.getCommandID("sync_regen"), params);
 				/*
 				f32 res = 1.5f;
 				if (theBlob.getPlayer() !is null && getRules().get_string(theBlob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
