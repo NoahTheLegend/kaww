@@ -1324,12 +1324,16 @@ void InAirLogic(CBlob@ this, u8 inaccuracyCap)
 		{
 			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage")
 			{
-				if (!this.isOnGround() && this.getVelocity().Length() < 0.1f) inaccuracy = 1;
+				if (!this.isOnGround() && this.getVelocity().Length() < 0.1f) 
+				{
+					inaccuracy = 0;
+				}
 			}
 		}
 
 		u8 inaccuracyFinal = Maths::Min(this.get_u8("inaccuracy") + inaccuracy, inaccuracyCap);
 		this.set_u8("inaccuracy", inaccuracyFinal);
+		//printf(""+this.get_u8("inaccuracy"));
 		this.setVelocity(Vec2f(this.getVelocity().x*0.90f, this.getVelocity().y));
 	}
 }
