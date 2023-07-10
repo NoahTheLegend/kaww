@@ -7,6 +7,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("apc");
 	this.Tag("deal_bunker_dmg");
+	this.Tag("engine_can_get_stuck");
 	this.Tag("ignore fall");
 
 	CShape@ shape = this.getShape();
@@ -14,7 +15,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    7000.0f, // move speed 125
+	    7500.0f, // move speed 125
 	    0.45f,  // turn speed
 	    Vec2f(0.0f, 0.56f), // jump out velocity
 	    false);  // inventory access

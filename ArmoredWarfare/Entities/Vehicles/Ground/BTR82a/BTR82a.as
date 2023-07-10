@@ -7,6 +7,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("apc");
 	this.Tag("deal_bunker_dmg");
+	this.Tag("engine_can_get_stuck");
 	this.Tag("ignore fall");
 
 	CShape@ shape = this.getShape();
