@@ -1113,6 +1113,25 @@ shared class TDMCore : RulesCore
 	}
 };
 
+void SetCorrectMapType(const int pcount)
+{
+	if (pcount <= 8)
+	{
+		error("LOADING MAPCYCLE: SMALL");
+		LoadMapCycle("mapcyclesmaller.cfg");
+	}
+	else if (pcount <= 14)
+	{
+		error("LOADING MAPCYCLE: AVERAGE");
+		LoadMapCycle("mapcycle.cfg");
+	}
+	else
+	{
+		error("LOADING MAPCYCLE: LARGE");
+		LoadMapCycle("mapcyclelarger.cfg");
+	}
+}
+
 //pass stuff to the core from each of the hooks
 void Reset(CRules@ this)
 {
@@ -1120,6 +1139,8 @@ void Reset(CRules@ this)
 	this.set_u16("teamright_kills", 0);
 	this.Sync("teamleft_kills", true);
 	this.Sync("teamright_kills", true);
+
+	SetCorrectMapType(getPlayersCount());
 
 	if (getMap() !is null)
 	{
