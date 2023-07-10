@@ -145,6 +145,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("throw fire");
 	this.addCommandID("basic_sync");
 	this.addCommandID("sync_mag");
+	this.addCommandID("sync_regen");
 
 	this.Tag("3x2");
 	this.set_u32("set_nomenus", 0);
@@ -172,6 +173,7 @@ void onInit(CBlob@ this)
 	this.set_u8("inaccuracy", 0);
 	this.set_u32("bull_boost", 0);
 	this.set_u32("turret_delay", 0);
+	this.set_u32("regen", 0);
 
 	this.set_bool("has_arrow", false);
 	this.set_f32("gib health", -1.5f);
@@ -1591,6 +1593,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.set_bool("isReloading", isReloading);
 			this.set_s32("my_chargetime", my_chargetime);
 		}
+	}
+	else if (cmd == this.getCommandID("sync_regen")) // Eatable.as, syncs serverside prop to color hp bar in yellow
+	{
+		if (!isClient()) return;
+		u32 regen = params.read_u32();
+		this.set_u32("regen", regen);
 	}
 	else if (cmd == this.getCommandID("shoot rpg"))
 	{

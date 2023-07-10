@@ -38,6 +38,7 @@ void onInit(CBlob@ this)
 	this.Tag("3x2");
 	this.set_u32("can_spot", 0);
 	this.set_u32("bull_boost", 0);
+	this.set_u32("regen", 0);
 
 	HitData hitdata;
 	this.set("hitdata", hitdata);
@@ -50,6 +51,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("addxp_universal");
 	this.addCommandID("attach_parachute");
 	this.addCommandID("detach turret");
+	this.addCommandID("sync_regen");
 
 	this.set_u32("turret_delay", 0);
 
@@ -496,6 +498,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			this.getSprite().PlaySound("FatesFriend.ogg", 2.0);
 		}
+	}
+	else if (cmd == this.getCommandID("sync_regen")) // Eatable.as, syncs serverside prop to color hp bar in yellow
+	{
+		if (!isClient()) return;
+		u32 regen = params.read_u32();
+		this.set_u32("regen", regen);
 	}
 	else if (cmd == this.getCommandID("levelup_effects"))
 	{
