@@ -452,7 +452,9 @@ shared class TDMCore : RulesCore
 					"ranger",
 					"shotgun",
 					"sniper",
-					"mp5"
+					"mp5",
+					"lmg",
+					"shielder"
 					};
 				
 				float exp = _rules.get_u32(info.username + "_exp");
