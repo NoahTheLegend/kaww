@@ -9,9 +9,9 @@ void onInit(CBlob@ this)
 	this.Tag("shootseat");
 	this.Tag("weak vehicle");
 	this.Tag("has mount");
+	this.Tag("engine_can_get_stuck");
 	this.Tag("friendly_bullet_pass");
 	this.Tag("truck");
-	this.Tag("no_remount");
 
 	this.set_f32("max_angle_diff", 0.5f);
 
@@ -178,6 +178,10 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	if (blob.hasTag("boat"))
 	{
 		return true;
+	}
+	if (blob.hasTag("bunker"))
+	{
+		return false;
 	}
 	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
 	if (blob.hasTag("vehicle"))
