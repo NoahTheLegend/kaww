@@ -35,7 +35,7 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$change_class$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 12, 2);
 	AddIconToken("$change_perk$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 11);
 
-	bool isTDM = (getMap().tilemapwidth < 200);
+	bool isTDM = (getMap().tilemapwidth <= 300);
 	if (!isTDM)
 	{
 		addPlayerClass(this, "---- Mechanic ----", "$mechanic_class_icon$", "mechanic",
@@ -225,7 +225,7 @@ void BuildRespawnMenuFor(CBlob@ this, CBlob @caller)
 
 	if (caller !is null && caller.isMyPlayer() && classes !is null)
 	{
-		bool isTDM = (getMap().tilemapwidth < 200);
+		bool isTDM = (getMap().tilemapwidth <= 300);
 		u8 cols = 5;
 		u8 rows = 2;
 		if (isTDM)
