@@ -372,7 +372,8 @@ f32 getPriorityPickupScale(CBlob@ this, CBlob@ b)
 		factor_boring = 0.8f,
 		factor_important = 0.025f,
 		factor_very_important = 0.01f,
-		factor_super_important = 0.001f;
+		factor_super_important = 0.001f,
+		factor_extremely_important = 0.0001f;
 
 	// //anything other than builder
 	// const bool military = (thisname != "builder");
@@ -385,8 +386,13 @@ f32 getPriorityPickupScale(CBlob@ this, CBlob@ b)
 		return factor_super_important;
 	}
 
+	if(name == "mine")
+	{
+		return !b.hasTag("mine_priming") ? factor_boring : factor_extremely_important;
+	}
+
 	if(name == "mat_nuke"){
-		return factor_super_important;
+		return factor_extremely_important;
 	}
 
 	if((name == "molotov" || name == "agrenade" || name == "sgrenade" || name == "grenade" || name == "atgrenade" || name == "mat_atgrenade") && (b.hasTag("activated") || b.get_u8("exploding_2") > 0)){
@@ -399,7 +405,7 @@ f32 getPriorityPickupScale(CBlob@ this, CBlob@ b)
 	if(name == "mat_molotov" || name == "agrenade" || name == "sgrenade" || name == "grenade" || name == "medkit"){
 		return factor_very_important;
 	}
-	if(name == "ammo" || name == "specammo" || name == "mat_14mmround" || name == "mat_bolts" || name == "tanktrap" || name == "mine"){
+	if(name == "ammo" || name == "specammo" || name == "mat_14mmround" || name == "mat_bolts" || name == "tanktrap"){
 		return factor_boring;
 	}
 
