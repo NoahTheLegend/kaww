@@ -64,7 +64,7 @@ shared class Accolades
 	Accolades(ConfigFile@ cfg, string _username)
 	{
 		username = _username;
-		customHeadTexture = "../Mods/ArmoredWarfare/BlavsArmoredWarfare/SPRITES/CustomHeads/" + username + ".png";
+		customHeadTexture = "Sprites/CustomHeads/" + username + ".png";
 
 		string[] patreonMembers = getPatreonMembers();
 		for (u16 i = 0; i < patreonMembers.length; i++)
@@ -165,8 +165,7 @@ shared class Accolades
 
 	bool doesCustomHeadExists()
 	{
-		return CFileMatcher(customHeadTexture).getFirst() == customHeadTexture;
-
+		return CFileMatcher(customHeadTexture).getFirst() == customHeadTexture;	
 	}
 
 	bool hasCustomHead()
