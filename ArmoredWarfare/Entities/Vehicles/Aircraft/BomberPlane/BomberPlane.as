@@ -192,7 +192,7 @@ void onTick(CBlob@ this)
 							CBlob@ item = inv.getItem(0);
 							u32 quantity = item.getQuantity();
 
-							if (item.getName() != "mat_smallbomb")
+							if (!item.hasTag("bomber ammo"))
 							{ 
 								CBlob@ b = server_CreateBlob("paracrate", this.getTeamNum(), this.getPosition()+Vec2f(0,8));
 								if (b !is null)
