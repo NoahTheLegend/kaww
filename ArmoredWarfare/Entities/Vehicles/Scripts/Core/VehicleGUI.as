@@ -3,6 +3,38 @@
 void onInit(CSprite@ this)
 {
 	this.getCurrentScript().runFlags |= Script::tick_hasattached;
+
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+
+	blob.set_u8("mode", 1);
+	blob.set_f32("lastvel", 0);
+	blob.set_f32("vel", 0);
+}
+
+void onTick(CSprite@ this)
+{
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+
+	f32 lastvel = blob.get_f32("lastvel");
+	f32 vel = Maths::Lerp(lastvel, Maths::Abs(blob.getVelocity().x), 0.25f);
+	blob.set_f32("lastvel", vel);
+
+	AttachmentPoint@ driver = blob.getAttachments().getAttachmentPointByName("DRIVER");
+	if (driver !is null)
+	{
+		CBlob@ driverblob = driver.getOccupied();
+		if (driverblob !is null && driverblob.isMyPlayer()
+			&& driverblob.getControls() !is null)
+		{
+			if (driverblob.getControls().isKeyJustPressed(KEY_LCONTROL))
+			{
+				blob.add_u8("mode", 1);
+				if (blob.get_u8("mode") > 1) blob.set_u8("mode", 0);
+			}
+		}
+	}
 }
 
 void onRender(CSprite@ this)
@@ -24,9 +56,9 @@ void onRender(CSprite@ this)
 		return;
 	}
 
+	AttachmentPoint@ driver = blob.getAttachments().getAttachmentPointByName("DRIVER");
 	if (!blob.hasTag("pass_60sec"))
 	{
-		AttachmentPoint@ driver = blob.getAttachments().getAttachmentPointByName("DRIVER");
 		if (getGameTime() <= 60*30 && driver !is null && driver.getOccupied() !is null)
 		{
 			//Vec2f pos2d = blob.getScreenPos() + Vec2f(0, -40);
@@ -37,6 +69,71 @@ void onRender(CSprite@ this)
 			Vec2f dim = Vec2f(115, 15);
 			GUI::SetFont("menu");
 			GUI::DrawShadowedText("Engines starting in: "+(60-(getGameTime()/30))+" seconds." , Vec2f(pos2d.x - dim.x - 3, pos2d.y + y - 1 + 55), SColor(0xffffffff));
+		}
+	}
+
+	if (!blob.hasTag("turret") && driver !is null && driver.getOccupied() !is null && driver.getOccupied() is localBlob)
+	{
+		u8 mode = blob.get_u8("mode");
+		// speedometer
+		if (mode != 0) // not disabled
+		{
+			f32 screenWidth = getScreenWidth();
+			f32 screenHeight = getScreenHeight();
+
+			f32 lastvel = blob.get_f32("lastvel");
+			f32 vel = blob.get_f32("lastvel");
+
+			Vec2f drawpos = Vec2f(15, screenHeight*0.5f);
+			GUI::DrawIcon("Speedometer.png", drawpos, 0.33f);
+
+			s8 thickness = 7;
+			drawpos = drawpos + Vec2f(49, 49); // shift to center
+
+			f32 maxrot = 165+XORRandom(4); // cool effect on max speed
+			f32 rot = Maths::Min(maxrot, vel*12);
+			Vec2f target = drawpos + Vec2f(0, -40).RotateBy(-70+rot);
+			f32 rotmod = rot / maxrot;
+			f32 brightness = Maths::Max(0, (0.5f-Maths::Abs(rotmod-0.5f))*2);
+
+			u8 red = Maths::Clamp(125 -(100*rotmod) + (50*brightness), 0, 255);
+			u8 green = Maths::Clamp(25+(100*rotmod) + (50*brightness), 0, 255);
+			u8 blue = Maths::Clamp(15 + (25*rotmod) + (25*brightness), 0, 255);
+			SColor color = SColor(255, red, green, blue);
+			
+			for (s8 i = 0; i < thickness; i++)
+			{
+				GUI::DrawLine2D(drawpos-Vec2f(thickness/2-i, Maths::Abs(thickness/2-i)).RotateBy(-70+rot), target, color);
+			}
+
+			GUI::SetFont("menu");
+			GUI::DrawTextCentered("CTRL", drawpos+Vec2f(-30, 25), SColor(100, 0, 0, 0));
+			GUI::DrawTextCentered(""+((Maths::Round(30/8*vel*100)/100)), drawpos+Vec2f(-18, -70), SColor(100, 255, 255, 255));
+			GUI::DrawTextCentered("Bl/s", drawpos+Vec2f(10, -70), SColor(100, 255, 255, 255));
+		}
+
+		// draw cooldown bar for driver if gunner is present
+		AttachmentPoint@ tur = blob.getAttachments().getAttachmentPointByName("TURRET");
+		if (tur !is null && tur.getOccupied() !is null)
+		{
+			CBlob@ turret = tur.getOccupied();
+			if (turret !is null)
+			{
+				AttachmentPoint@ gunner = turret.getAttachments().getAttachmentPointByName("GUNNER");
+				if (gunner !is null && gunner.getOccupied() !is null)
+				{
+					VehicleInfo@ tv;
+					if (turret.get("VehicleInfo", @tv))
+					{
+						if (!tv.getCurrentAmmo().infinite_ammo)
+							drawAmmoCount(turret, tv);
+						if (tv.getCurrentAmmo().max_charge_time > 0)
+						{
+							drawCooldownBar(turret, tv);
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -52,7 +149,6 @@ void onRender(CSprite@ this)
 		}
 
 		//drawShellTrajectory(blob, v, gunner.getOccupied());
-	
 
 		Vec2f oldpos = blob.getOldPosition();
 		Vec2f pos = blob.getPosition();
