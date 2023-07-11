@@ -4,6 +4,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("medium weight");
 	this.Tag("trap");
+	this.Tag("weapon");
 	this.getSprite().SetRelativeZ(1.0f); //background
 }
 

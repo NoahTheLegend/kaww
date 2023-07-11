@@ -36,6 +36,7 @@ void onInit(CBlob@ this)
 	this.set_bool("map_damage_raycast", true);
 	this.set_bool("explosive_teamkill", true);
 	this.Tag("collideswithglass");
+	this.Tag("weapon");
 
 	this.getShape().getConsts().collideWhenAttached = false;
 

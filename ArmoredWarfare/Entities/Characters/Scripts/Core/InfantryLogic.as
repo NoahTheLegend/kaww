@@ -205,6 +205,8 @@ void onInit(CBlob@ this)
 	this.set_bool("timed_particle", false);
 	this.set_Vec2f("gun_offset", Vec2f(0,0));
 
+	this.Tag("infantry");
+
 	// todo: move this to infantrycommon.as
 	switch (thisBlobHash)
 	{
@@ -294,30 +296,6 @@ void onInit(CBlob@ this)
 
 	gunInit(this);
 	barInit(this);
-}
-
-void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
-{
-	if (isServer())
-	{
-		if (attached !is null && attached.hasTag("change team on pickup"))
-		{
-			attached.server_setTeamNum(this.getTeamNum());
-		}
-	}
-	if (attached !is null && getLocalPlayer() !is null && getLocalPlayer().getBlob() is this && (attached.getName() == "binoculars" || attached.getName() == "launcher_javelin"))
-	{
-		if (g_fixedcamera)
-		{
-			this.set_bool("disable_fixedcamera", true);
-			g_fixedcamera = false;
-		}
-	}
-
-	if (attachedPoint !is null && attachedPoint.name == "PICKUP" && attached !is this)
-	{
-		this.Untag("parachute");
-	}
 }
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
@@ -425,121 +403,6 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 					map.server_DestroyTile(hi.hitpos, 0.1f, this);
 			}
 		}
-	}
-}
-
-void AttachParachute(CBlob@ this)
-{
-	if (isServer() && this.getTickSinceCreated() > 5)
-	{
-		CAttachment@ aps = this.getAttachments();
-		if (aps !is null)
-		{			
-			AttachmentPoint@ att = aps.getAttachmentPointByName("PARACHUTE");
-			CBlob@ para = server_CreateBlob("parachuteblob", this.getTeamNum(), this.getPosition());
-			if (para !is null)
-			{
-				CBlob@ carry = this.getCarriedBlob();
-				if (carry !is null && this.get_u32("detach_delay") <= getGameTime())
-				{
-					carry.server_DetachFromAll();
-					this.server_PutInInventory(carry);
-					this.set_u32("detach_delay", 10);
-				}
-				this.server_AttachTo(para, att);
-			}
-		}
-	}
-}
-
-void ManageParachute(CBlob@ this)
-{
-	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder() || this.hasTag("dead"))
-	{ // disable parachute
-		if (this.hasTag("parachute"))
-		{
-			for (uint i = 0; i < 50; i ++)
-			{
-				Vec2f vel = getRandomVelocity(90.0f, 3.5f + (XORRandom(10) / 10.0f), 25.0f) + Vec2f(0, 2);
-				ParticlePixel(this.getPosition() - Vec2f(0, 30) + getRandomVelocity(90.0f, 10 + (XORRandom(20) / 10.0f), 25.0f), vel, getTeamColor(this.getTeamNum()), true, 119);
-			}
-		}
-		this.Untag("parachute");
-
-		if (isServer())
-		{
-			CAttachment@ aps = this.getAttachments();
-			if (aps !is null)
-			{
-				AttachmentPoint@ ap = aps.getAttachmentPointByName("PARACHUTE");
-				if (ap !is null && ap.getOccupied() !is null)
-				{
-					CBlob@ para = ap.getOccupied();
-					para.server_Die();
-				}
-			}
-		}
-	} // make a parachute
-	else if (!this.hasTag("parachute"))
-	{
-		if (this.getPlayer() !is null && this.get_u32("last_parachute") < getGameTime())
-		{
-			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
-			{
-				if (this.isKeyPressed(key_up) && this.getVelocity().y > 5.0f)
-				{
-					if (isClient())
-					{
-						Sound::Play("/ParachuteOpen", this.getPosition());
-						this.set_u32("last_parachute", getGameTime()+60);
-						this.Tag("parachute");
-						
-						CBitStream params;
-						this.SendCommand(this.getCommandID("attach_parachute"), params);
-					}
-				}
-			}
-		}
-	}
-	
-	// maintain flying
-	if (this.hasTag("parachute"))
-	{
-		if (this.isMyPlayer() && getGameTime()%30==0)
-		{
-			CAttachment@ aps = this.getAttachments();
-			if (aps !is null)
-			{
-				AttachmentPoint@ ap = aps.getAttachmentPointByName("PARACHUTE");
-				if (ap !is null && ap.getOccupied() is null)
-				{
-					CBitStream params;
-					this.SendCommand(this.getCommandID("attach_parachute"), params);
-				}
-			}
-		}
-
-		f32 mod = 1.0f;
-		bool aughhh = false;
-		if (this.getPlayer() !is null)
-		{
-			if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
-			{
-				mod = 10.0f;
-				aughhh = true;
-			}
-		}
-
-		this.AddForce(Vec2f(Maths::Sin(getGameTime() / 9.5f) * 13, (Maths::Sin(getGameTime() / 4.2f) * 8)));
-		Vec2f vel = this.getVelocity();
-		if (aughhh)
-		{
-			if (this.isKeyPressed(key_left))
-				this.AddForce(Vec2f(-20.0f, 0));
-			else if (this.isKeyPressed(key_right))
-				this.AddForce(Vec2f(20.0f, 0));
-		}
-		this.setVelocity(Vec2f(vel.x, vel.y * (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.55f / mod : 0.73/*default fall speed*/)));
 	}
 }
 
