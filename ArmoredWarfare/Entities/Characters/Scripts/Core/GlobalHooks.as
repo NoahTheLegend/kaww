@@ -1,3 +1,4 @@
+// a script to combine builder's and infantry's logic files in here (where possible)
 #include "InfantryCommon.as";
 #include "WarfareGlobal.as";
 #include "AllHashCodes.as";
@@ -176,4 +177,147 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 
 	return damage;
+}
+
+void AttachParachute(CBlob@ this)
+{
+	if (isServer() && this.getTickSinceCreated() > 5)
+	{
+		CAttachment@ aps = this.getAttachments();
+		if (aps !is null)
+		{			
+			AttachmentPoint@ att = aps.getAttachmentPointByName("PARACHUTE");
+			CBlob@ para = server_CreateBlob("parachuteblob", this.getTeamNum(), this.getPosition());
+			if (para !is null)
+			{
+				this.server_AttachTo(para, att);
+			}
+		}
+	}
+}
+
+
+void ManageParachute(CBlob@ this)
+{
+	if (this.hasTag("parachute"))
+	{
+		// disable parachute
+		if (this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder() || this.hasTag("dead"))
+		{
+			for (uint i = 0; i < 50; i ++)
+			{
+				Vec2f vel = getRandomVelocity(90.0f, 3.5f + (XORRandom(10) / 10.0f), 25.0f) + Vec2f(0, 2);
+				ParticlePixel(this.getPosition() - Vec2f(0, 30) + getRandomVelocity(90.0f, 10 + (XORRandom(20) / 10.0f), 25.0f), vel, getTeamColor(this.getTeamNum()), true, 119);
+			}
+			this.Untag("parachute");
+
+			if (isServer())
+			{
+				CAttachment@ aps = this.getAttachments();
+				if (aps !is null)
+				{
+					AttachmentPoint@ ap = aps.getAttachmentPointByName("PARACHUTE");
+					if (ap !is null && ap.getOccupied() !is null)
+					{
+						CBlob@ para = ap.getOccupied();
+						para.server_Die();
+					}
+				}
+			}
+		}
+		else // parachute logic
+		{
+			// hack, builder blob acts different under player controls
+			// current case is that parachute floats slower to left or right for infantry
+			// offtop: also builder saves momentum onDetach()
+			// if you know how to fix pls help
+			bool is_infantry = this.hasTag("infantry");
+			CBlob@ carry = this.getCarriedBlob();
+			bool has_heavy = carry !is null && (carry.hasTag("weapon") || carry.hasTag("heal"));
+			
+			if (this.isMyPlayer() && getGameTime()%30==0)
+			{
+				CAttachment@ aps = this.getAttachments();
+				if (aps !is null)
+				{
+					AttachmentPoint@ ap = aps.getAttachmentPointByName("PARACHUTE");
+					if (ap !is null && ap.getOccupied() is null)
+					{
+						CBitStream params;
+						this.SendCommand(this.getCommandID("attach_parachute"), params);
+					}
+				}
+			}
+
+			f32 mod = is_infantry ? 4.0f : 1.0f;
+			bool is_paratrooper = false;
+			if (this.getPlayer() !is null)
+			{
+				if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+				{
+					mod *= 10.0f;
+					is_paratrooper = true;
+				}
+			}
+			// huge hack =(
+			if (is_infantry) this.AddForce(Vec2f(Maths::Sin(f32(getGameTime()) / 13.0f) * 30.0f,
+				(Maths::Sin(f32(getGameTime() / 4.2f)) * 8.0f)));
+			else  this.AddForce(Vec2f(Maths::Sin(f32(getGameTime()) / 9.5f) * 13.0f,
+				(Maths::Sin(f32(getGameTime() / 4.2f)) * 8.0f)));
+
+			Vec2f vel = this.getVelocity();
+			if (is_paratrooper)
+			{
+				if (this.isKeyPressed(key_left))
+					this.AddForce(Vec2f(-1.0f, 0));
+				else if (this.isKeyPressed(key_right))
+					this.AddForce(Vec2f(1.0f, 0));
+			}
+
+			f32 mod_y = (has_heavy ? 0.85f : (this.isKeyPressed(key_down) ? 0.83f : this.isKeyPressed(key_up) ? 0.25f / mod : 0.5f/*default fall speed*/));
+
+			this.setVelocity(Vec2f(vel.x + (is_infantry ? (this.isKeyPressed(key_left) ? -0.25f : this.isKeyPressed(key_right) ?
+				0.25f : 0) : 0), vel.y * mod_y));
+		}
+	} // make a parachute
+	else if (!this.hasTag("parachute"))
+	{
+		if (this.getPlayer() !is null && this.get_u32("last_parachute") < getGameTime())
+		{
+			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+			{
+				if (this.isKeyPressed(key_up) && this.getVelocity().y > 5.0f)
+				{
+					if (isClient())
+					{
+						Sound::Play("/ParachuteOpen", this.getPosition());
+						this.set_u32("last_parachute", getGameTime()+60);
+						this.Tag("parachute");
+
+						CBitStream params;
+						this.SendCommand(this.getCommandID("attach_parachute"), params);
+					}
+				}
+			}
+		}
+	}
+}
+
+void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
+{
+	if (isServer())
+	{
+		if (attached !is null && attached.hasTag("change team on pickup"))
+		{
+			attached.server_setTeamNum(this.getTeamNum());
+		}
+	}
+	if (attached !is null && getLocalPlayer() !is null && getLocalPlayer().getBlob() is this && (attached.getName() == "binoculars" || attached.getName() == "launcher_javelin"))
+	{
+		if (g_fixedcamera)
+		{
+			this.set_bool("disable_fixedcamera", true);
+			g_fixedcamera = false;
+		}
+	}
 }

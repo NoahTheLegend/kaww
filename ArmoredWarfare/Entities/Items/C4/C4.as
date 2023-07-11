@@ -30,6 +30,7 @@ void onInit(CBlob@ this)
 	}
 	this.set_u8("death_timer", 120);
 	this.Tag("change team on pickup");
+	this.Tag("weapon");
 
 	this.Tag("medium weight");
 	this.addCommandID("switch");

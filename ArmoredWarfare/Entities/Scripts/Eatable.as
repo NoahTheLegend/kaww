@@ -11,6 +11,7 @@ void onInit(CBlob@ this)
 
 	this.Tag("pushedByDoor");
 	this.Tag("trap");
+	this.Tag("heal");
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)

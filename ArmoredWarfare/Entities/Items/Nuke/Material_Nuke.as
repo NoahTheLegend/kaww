@@ -17,6 +17,7 @@ void onInit(CBlob@ this)
 	this.Tag("explosive");
 	this.Tag("always bullet collide");
 	this.Tag("bomber ammo");
+	this.Tag("weapon");
 	
 	this.maxQuantity = 1;
 }

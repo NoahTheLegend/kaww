@@ -12,6 +12,7 @@ void onInit(CBlob@ this)
 	}
 	this.Tag("change team on pickup");
 	this.Tag("collideswithglass");
+	this.Tag("weapon");
 
 }
 

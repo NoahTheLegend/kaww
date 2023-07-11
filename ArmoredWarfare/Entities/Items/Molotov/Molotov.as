@@ -10,7 +10,7 @@ void onInit(CBlob@ this)
 	this.Tag("projectile");
 	this.Tag("map_damage_dirt");
 	this.Tag("collideswithglass");
-
+	this.Tag("weapon");
 }
 
 void onTick(CSprite@ this)

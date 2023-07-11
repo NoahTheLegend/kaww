@@ -40,6 +40,7 @@ void onInit(CBlob@ this)
 
 	this.set_u8("exploding_2", 0);
 	this.Tag("grenade");
+	this.Tag("weapon");
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)

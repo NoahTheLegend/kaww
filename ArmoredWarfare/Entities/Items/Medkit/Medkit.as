@@ -3,6 +3,7 @@ void onInit(CBlob@ this)
 	//this.getShape().SetRotationsAllowed(false);
 	this.set_u8("medamount", 4);
 	this.Tag("trap");
+	this.Tag("heal");
 
 	this.addCommandID("usemed");
 	this.Tag("change team on pickup");
