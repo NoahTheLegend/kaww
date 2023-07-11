@@ -154,7 +154,7 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 				if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
 
 				angle = (-(aim_vec).getAngle() + 180.0f);
-				angle = Maths::Max(-75.0f , Maths::Min(angle , 75.0f));
+				angle = Maths::Max(-80.0f , Maths::Min(angle , 80.0f));
 			}
 			else
 			{
