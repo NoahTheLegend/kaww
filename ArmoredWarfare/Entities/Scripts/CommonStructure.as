@@ -1,3 +1,11 @@
+#include "Hitters.as"
+#include "HittersAW.as"
+
+void onInit(CBlob@ this)
+{
+    this.set_u32("damage_succession_reset", 0);
+    this.set_f32("damage_succession_multi", 0);
+}
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point1)
 {
@@ -62,4 +70,32 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 	    	this.add_s16(prop, requestedAmount);
         }
     }
+}
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	switch (customData)
+	{
+     	case Hitters::builder:
+        {
+            f32 extra = 0.0f + this.get_f32("damage_succession_multi");
+
+            if (this.get_u32("damage_succession_reset") < getGameTime())
+            {
+                this.set_f32("damage_succession_multi", 0);
+                extra = 0.5f;
+            }
+
+            this.set_u32("damage_succession_reset", getGameTime()+30);
+            this.set_f32("damage_succession_multi", Maths::Min(16, this.get_f32("damage_succession_multi")+2));
+
+            damage *= extra;
+			break;
+        }
+	}
+	if (hitterBlob.hasTag("atgrenade") || hitterBlob.getName() == "c4")
+	{
+		return damage * 2.5f;
+	}
+	return damage;
 }

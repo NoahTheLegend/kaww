@@ -67,22 +67,6 @@ void onTick(CSprite@ this)
 	}
 }
 
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (hitterBlob.getTeamNum() == this.getTeamNum()) damage *= 5;
-	switch (customData)
-	{
-     	case Hitters::builder:
-			damage *= 3.50f;
-			break;
-	}
-	if (hitterBlob.hasTag("atgrenade") || hitterBlob.getName() == "c4")
-	{
-		return damage * 2.5f;
-	}
-	return damage;
-}
-
 void onInit(CBlob@ this)
 {
 	CSprite@ sprite = this.getSprite();
