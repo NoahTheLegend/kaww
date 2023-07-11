@@ -108,7 +108,7 @@ void onRender(CSprite@ this)
 
 			GUI::SetFont("menu");
 			GUI::DrawTextCentered("CTRL", drawpos+Vec2f(-30, 25), SColor(100, 0, 0, 0));
-			GUI::DrawTextCentered(""+((Maths::Round(30/8*vel*100)/100)), drawpos+Vec2f(-18, -70), SColor(100, 255, 255, 255));
+			GUI::DrawTextCentered(""+((Maths::Round(30/6*vel*100)/100)), drawpos+Vec2f(-18, -70), SColor(100, 255, 255, 255));
 			GUI::DrawTextCentered("Bl/s", drawpos+Vec2f(10, -70), SColor(100, 255, 255, 255));
 		}
 
