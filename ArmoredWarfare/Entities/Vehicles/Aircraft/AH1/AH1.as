@@ -25,7 +25,7 @@ const u8 recoil = 0;
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 const Vec2f gun_clampAngle = Vec2f(-180, 180);
-const Vec2f miniGun_offset = Vec2f(-43,7);
+const Vec2f miniGun_offset = Vec2f(-40,5);
 const u8 shootDelay = 2;
 
 const int trap_cooldown = 20*30;
@@ -379,7 +379,7 @@ void onTick(CBlob@ this)
 										true_angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
 
 										shootVehicleGun(hooman.getNetworkID(), this.getNetworkID(),
-											true_angle, this.getPosition()+Vec2f(this.isFacingLeft()?-39:39, 7).RotateBy(this.getAngleDegrees()),
+											true_angle, this.getPosition()+Vec2f(this.isFacingLeft()?-39:39, 5).RotateBy(this.getAngleDegrees()),
 											ap.getAimPos(), bulletSpread, 1, 0, 0.4f, 0.6f, 2,
 												this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 
