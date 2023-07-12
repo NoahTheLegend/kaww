@@ -57,7 +57,7 @@ void onRender( CRules@ this )
 		GUI::DrawTextCentered(""+teamRightKills, timelineLPos+Vec2f(-84.0f, 20), getNeonColor(7, 0));
 		GUI::DrawTextCentered(""+teamLeftKills, timelineRPos+Vec2f(128.0f, 20), getNeonColor(7, 0));
 		GUI::DrawIcon("DeathIncarnate.png", 0, Vec2f(16,16), timelineLPos+Vec2f(-130.0f, 7), 0.85f, 0);
-		GUI::DrawIcon("DeathIncarnate.png", 0, Vec2f(16,16), timelineRPos+Vec2f(152.0f, 7), 0.85f, 0);
+		GUI::DrawIcon("DeathIncarnate.png", 0, Vec2f(16,16), timelineRPos+Vec2f(150.0f, 7), 0.85f, 0);
 
 		teamLeftTickets=this.get_s16("teamLeftTickets");
 		teamRightTickets=this.get_s16("teamRightTickets");
@@ -75,12 +75,8 @@ void onRender( CRules@ this )
 		s16 ldiff = teamLeftTickets-teamRightTickets;
 		s16 rdiff = teamRightTickets-teamLeftTickets;
 
-		Vec2f diff_offset = Vec2f(ldiff > rdiff ? -48 : 48, hide_indicator ? 20 : 120);
-		string c_char = ldiff>rdiff?">":"<";
-
+		Vec2f diff_offset = Vec2f(ldiff > rdiff ? -48 : 48, hide_indicator ? 20 : 125);
 		GUI::DrawTextCentered(ldiff!=rdiff?"-"+Maths::Max(ldiff, rdiff):"||", Vec2f(screenWidth/2, diff_offset.y), getNeonColor(ldiff==rdiff?7:ldiff<rdiff?teamleft:teamright, 0));
-		GUI::DrawTextCentered(ldiff!=rdiff?c_char:"", Vec2f(screenWidth/2+diff_offset.x, diff_offset.y),
-			getNeonColor(7, 0));
 	}
 
 	if (hide_indicator) return;

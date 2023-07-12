@@ -1454,6 +1454,8 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 	this.Sync("oldteamright", true);
 	this.Sync("teamleft", true);
 	this.Sync("teamright", true);
+	this.Sync("teamleft_kills", true);
+	this.Sync("teamright_kills", true);
 
 	//if (getPlayersCount() == 5 || getPlayersCount() == 4)
 	//{

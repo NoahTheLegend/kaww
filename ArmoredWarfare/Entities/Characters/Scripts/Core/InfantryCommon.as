@@ -563,7 +563,7 @@ namespace FirebringerParams
 	const ::u8 RANDDELAY 				= 0; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 3.35f; // speed that bullets fly
 	const ::u32 BULLET_LIFETIME 		= 10.0f; // in ticks, time for bullet to die
-	const ::s8 BULLET_PEN 				= 5; // penRating for bullet
+	const ::s8 BULLET_PEN 				= 4; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= false; // should an empty shell be released when shooting
 }
 
