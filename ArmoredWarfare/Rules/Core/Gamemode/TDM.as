@@ -693,19 +693,19 @@ shared class TDMCore : RulesCore
 
         if (victim !is null)
         {
+			if (victim.getTeamNum() == getRules().get_u8("teamright"))
+			{
+				rules.add_u16("teamleft_kills", 1);
+				rules.Sync("teamleft_kills", true);
+			}
+			else if (victim.getTeamNum() == getRules().get_u8("teamleft"))
+			{
+				rules.add_u16("teamright_kills", 1);
+				rules.Sync("teamright_kills", true);
+			}
             if (killer !is null && killer.getTeamNum() != victim.getTeamNum())
             {
                 addKill(killer.getTeamNum()); 
-				if (victim.getTeamNum() == getRules().get_u8("teamright"))
-				{
-					rules.add_u16("teamleft_kills", 1);
-					rules.Sync("teamleft_kills", true);
-				}
-				else if (victim.getTeamNum() == getRules().get_u8("teamleft"))
-				{
-					rules.add_u16("teamright_kills", 1);
-					rules.Sync("teamright_kills", true);
-				}
 			}
             else if (all_death_counts_as_kill)
             {
