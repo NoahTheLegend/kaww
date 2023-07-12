@@ -36,14 +36,14 @@ void onInit(CBlob@ this)
 	                         0.3f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(26.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(24.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(25.5f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(24.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(12.5f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(11.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(10.5f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(9.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-18.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-19.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-18.5f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-20.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 	
 
 
