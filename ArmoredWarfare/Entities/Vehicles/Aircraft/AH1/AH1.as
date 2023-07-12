@@ -119,7 +119,7 @@ void onInit(CSprite@ this)
 		int[] frames = {1, 2, 3, 2};
 		anim.AddFrames(frames);
 		
-		blade.SetOffset(Vec2f(-5.5, -25));
+		blade.SetOffset(Vec2f(-5.5, -27));
 		blade.SetRelativeZ(20.0f);
 		blade.SetVisible(true);
 	}
@@ -131,7 +131,7 @@ void onInit(CSprite@ this)
 		int[] frames = {0, 1, 2, 3};
 		anim.AddFrames(frames);
 		
-		tailrotor.SetOffset(Vec2f(58.0, -6));
+		tailrotor.SetOffset(Vec2f(58.0, -5));
 		tailrotor.SetRelativeZ(20.0f);
 		tailrotor.SetVisible(true);
 	}
@@ -435,11 +435,11 @@ void onTick(CBlob@ this)
 		int anim_time_formula = Maths::Floor(1.00f + (1.00f - Maths::Abs(resultForce.getLength())) * 3) % 4;
 		if (this.hasTag("falling")) anim_time_formula = Maths::Floor(1.00f + (1.00f - Maths::Abs(this.get_Vec2f("result_force").getLength())) * 3) % 4;
 		blade.ResetTransform();
-		blade.SetOffset(Vec2f(-5.5, -25));
+		blade.SetOffset(Vec2f(-5.5, -27));
 		blade.animation.time = anim_time_formula;
 		if (blade.animation.time == 0)
 		{
-			blade.SetOffset(Vec2f(-6.5, -25));
+			blade.SetOffset(Vec2f(-6.5, -27));
 			blade.SetFrameIndex(0);
 			blade.RotateBy(180, Vec2f(0.0f,2.0f));
 		}
