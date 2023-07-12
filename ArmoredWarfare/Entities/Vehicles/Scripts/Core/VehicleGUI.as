@@ -96,8 +96,8 @@ void onRender(CSprite@ this)
 			f32 rotmod = rot / maxrot;
 			f32 brightness = Maths::Max(0, (0.5f-Maths::Abs(rotmod-0.5f))*2);
 
-			u8 red = Maths::Clamp(125 -(100*rotmod) + (50*brightness), 0, 255);
-			u8 green = Maths::Clamp(25+(100*rotmod) + (50*brightness), 0, 255);
+			u8 red = Maths::Clamp(150 -(150*rotmod) + (50*brightness), 0, 255);
+			u8 green = Maths::Clamp(25+(150*rotmod) + (25*brightness), 0, 255);
 			u8 blue = Maths::Clamp(15 + (25*rotmod) + (25*brightness), 0, 255);
 			SColor color = SColor(255, red, green, blue);
 			
