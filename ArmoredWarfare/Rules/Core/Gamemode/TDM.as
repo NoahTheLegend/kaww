@@ -1867,6 +1867,7 @@ const string[] LargeMaps = {
 	"Flattening.png",
 	"RooftopTanks_v2.png",
 	"Goldy_KAWW_Sewage.png",
+	//"BloodGulch.png",
 	"WorldwarFlagless.png",
 	"ClassicFlagless.png",
 	"BridgeWater.png",
