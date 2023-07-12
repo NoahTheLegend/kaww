@@ -137,6 +137,8 @@ void OnCDirtTileHit(CMap@ map, u32 index)
 void scrap_SetTile(CMap@ map, Vec2f pos)
 {
 	map.SetTile(map.getTileOffset(pos), CMap::tile_scrap);
+	map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION);
+	map.RemoveTileFlag(index, Tile::LIGHT_PASSES);
 }
 
 bool isScrapTile(CMap@ map, Vec2f pos)
