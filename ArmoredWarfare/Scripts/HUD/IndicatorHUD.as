@@ -26,8 +26,6 @@ void onRender( CRules@ this )
 	if (p is null || !p.isMyPlayer()) return;
 	CBlob@ local = p.getBlob();
 
-	if (!v_showminimap && local !is null && !local.isKeyPressed(key_map)) return;
-
 	s8 teamNum = p.getTeamNum();
 	bool isSpectator = teamNum < 0;
 
@@ -63,6 +61,8 @@ void onRender( CRules@ this )
 		if (teamRightTickets > 0) GUI::DrawText(""+teamRightTickets, timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
 		else GUI::DrawText("--", timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
 	}
+
+	if (!v_showminimap && local !is null && !local.isKeyPressed(key_map) || (local is null && !v_showminimap)) return;
 
 	//draw tents
 	//GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineLPos, 1.0f, 0);
