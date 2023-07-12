@@ -371,7 +371,8 @@ bool RecdHitCommand(CBlob@ this, CBitStream@ params)
 					}
 				}
 
-				if ((map.isTileThickStone(type) && XORRandom(6) == 0) or (map.isTileStone(type) && XORRandom(10) == 0) or (map.isTileGold(type) && XORRandom(5) == 0))
+				if ((map.isTileThickStone(type) && XORRandom(6) == 0) || (map.isTileStone(type) && XORRandom(10) == 0)
+					|| (map.isTileGold(type) && XORRandom(5) == 0))
 				{
 					CRules@ rules = getRules();
 					CPlayer@ player = this.getPlayer();
