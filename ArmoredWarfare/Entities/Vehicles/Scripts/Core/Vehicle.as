@@ -133,21 +133,21 @@ void onInit(CBlob@ this)
 		}
 		case _mausturret: // MAUS Shell cannon
 		{
-			weaponRating = 3;
+			weaponRating = 5;
 			linear_length = 16.0f;
 			scale_damage = 2.5f;
 			break;
 		}
 		case _t10turret: // T10 Shell cannon
 		{
-			weaponRating = 3;
+			weaponRating = 4;
 			linear_length = 14.0f;
 			scale_damage = 2.0f;
 			break;
 		}
 		case _m60turret: // M60 Shell cannon
 		{
-			weaponRating = 2;
+			weaponRating = 3;
 			linear_length = 10.0f;
 			scale_damage = 1.75f;
 			break;

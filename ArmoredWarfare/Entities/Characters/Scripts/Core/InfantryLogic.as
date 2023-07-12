@@ -1002,13 +1002,14 @@ void TakeAmmo(CBlob@ this, u32 magSize)
 				u16 quantity = mag.getQuantity();
 				if (quantity <= miss)
 				{
-					this.add_u32("mag_bullets", Maths::Max(1, quantity/multiplier));
 					mag.Tag("dead");
 					if (isServer())
 					{
-						CBitStream params;
-						params.write_u32(this.get_u32("mag_bullets"));
-						this.SendCommand(this.getCommandID("sync_mag"), params);
+						this.add_u32("mag_bullets", Maths::Max(0, Maths::Ceil(f32(quantity)/f32(multiplier))));//
+						this.Sync("mag_bullets", true); // for some fucking reason this differs from regular command syncing
+						//CBitStream params;
+						//params.write_u32(this.get_u32("mag_bullets"));
+						//this.SendCommand(this.getCommandID("sync_mag"), params);
 
 						mag.server_Die();
 					}
@@ -1016,13 +1017,14 @@ void TakeAmmo(CBlob@ this, u32 magSize)
 				}
 				else
 				{
-					this.set_u32("mag_bullets", magSize);
 					if (isServer())
 					{
-						CBitStream params;
-						params.write_u32(this.get_u32("mag_bullets"));
-						this.SendCommand(this.getCommandID("sync_mag"), params);
-
+						this.set_u32("mag_bullets", magSize);//
+						this.Sync("mag_bullets", true);
+						//CBitStream params;
+						//params.write_u32(this.get_u32("mag_bullets"));
+						//this.SendCommand(this.getCommandID("sync_mag"), params);
+//
 						mag.server_SetQuantity(quantity - miss);
 					}
 					break;
