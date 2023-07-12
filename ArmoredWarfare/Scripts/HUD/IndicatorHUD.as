@@ -44,10 +44,21 @@ void onRender( CRules@ this )
 	Vec2f timelineLPos = Vec2f(timelineLDist - 16, timelineHeight);
 	Vec2f timelineRPos = Vec2f(timelineRDist - 16, timelineHeight);
 
+	bool hide_indicator = !v_showminimap && local !is null && !local.isKeyPressed(key_map) || (local is null && !v_showminimap);
+
 	if (getBlobByName("pointflag") is null
 	&& getBlobByName("importantarmory") is null
 	&& getBlobByName("importantarmoryt2") is null)
 	{
+		u16 teamLeftKills = this.get_u16("teamleft_kills");
+		u16 teamRightKills = this.get_u16("teamright_kills");
+
+		GUI::SetFont("menu");
+		GUI::DrawTextCentered(""+teamRightKills, timelineLPos+Vec2f(-84.0f, 20), getNeonColor(7, 0));
+		GUI::DrawTextCentered(""+teamLeftKills, timelineRPos+Vec2f(128.0f, 20), getNeonColor(7, 0));
+		GUI::DrawIcon("DeathIncarnate.png", 0, Vec2f(16,16), timelineLPos+Vec2f(-130.0f, 7), 0.85f, 0);
+		GUI::DrawIcon("DeathIncarnate.png", 0, Vec2f(16,16), timelineRPos+Vec2f(152.0f, 7), 0.85f, 0);
+
 		teamLeftTickets=this.get_s16("teamLeftTickets");
 		teamRightTickets=this.get_s16("teamRightTickets");
 
@@ -57,12 +68,22 @@ void onRender( CRules@ this )
 		//if (getGameTime()%30==0)  printf("GETTING TEAMS: "+teamleft+" ||| "+teamright);
 		//if (getGameTime()%30==0) printf(""+(getNeonColor(teamleft, 0).getRed())+" "+(getNeonColor(teamleft, 0).getGreen())+" "+(getNeonColor(teamleft, 0).getBlue()));
 		if (teamLeftTickets > 0) GUI::DrawText(""+teamLeftTickets, timelineLPos+Vec2f(-48.0f, 0), getNeonColor(teamleft, 0));
-		else GUI::DrawText("--", timelineLPos+Vec2f(-48.0f, 0), getNeonColor(teamleft, 0));
+		else GUI::DrawTextCentered("--", timelineLPos+Vec2f(-48.0f, 0), getNeonColor(teamleft, 0));
 		if (teamRightTickets > 0) GUI::DrawText(""+teamRightTickets, timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
-		else GUI::DrawText("--", timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
+		else GUI::DrawTextCentered("--", timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
+
+		s16 ldiff = teamLeftTickets-teamRightTickets;
+		s16 rdiff = teamRightTickets-teamLeftTickets;
+
+		Vec2f diff_offset = Vec2f(ldiff > rdiff ? -48 : 48, hide_indicator ? 20 : 120);
+		string c_char = ldiff>rdiff?">":"<";
+
+		GUI::DrawTextCentered(ldiff!=rdiff?"-"+Maths::Max(ldiff, rdiff):"||", Vec2f(screenWidth/2, diff_offset.y), getNeonColor(ldiff==rdiff?7:ldiff<rdiff?teamleft:teamright, 0));
+		GUI::DrawTextCentered(ldiff!=rdiff?c_char:"", Vec2f(screenWidth/2+diff_offset.x, diff_offset.y),
+			getNeonColor(7, 0));
 	}
 
-	if (!v_showminimap && local !is null && !local.isKeyPressed(key_map) || (local is null && !v_showminimap)) return;
+	if (hide_indicator) return;
 
 	//draw tents
 	//GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), timelineLPos, 1.0f, 0);
