@@ -125,6 +125,6 @@ void onRender(CRules@ this)
 		              ((MinutesToEnd < 10) ? "0" + MinutesToEnd : "" + MinutesToEnd) +
 		              ":" +
 		              ((secondsToEnd < 10) ? "0" + secondsToEnd : "" + secondsToEnd),
-		              color, Vec2f(10, 145), Vec2f(getScreenWidth() - 20, 205), true, false);
+		              color, Vec2f(10, 155), Vec2f(getScreenWidth() - 20, 215), true, false);
 	}
 }
