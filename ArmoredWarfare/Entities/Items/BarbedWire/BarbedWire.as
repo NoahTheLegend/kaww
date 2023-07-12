@@ -1,5 +1,6 @@
 ﻿#include "MapFlags.as"
 #include "Hitters.as"
+#include "CustomBlocks.as"
 
 void onInit(CBlob@ this)
 {
@@ -42,13 +43,15 @@ void onTick(CBlob@ this)
 		CMap@ map = this.getMap();
 		
 		Vec2f pos = this.getPosition();
-		TileType tb = map.getTile(pos+Vec2f(0,8)).type;
-		TileType tl = map.getTile(pos+Vec2f(-8,0)).type;
-		TileType tu = map.getTile(pos+Vec2f(0,-8)).type;
-		TileType tr = map.getTile(pos+Vec2f(8,0)).type;
+		TileType tb = map.getTile(pos+Vec2f(0,8)).type; // bottom
+		TileType tl = map.getTile(pos+Vec2f(-8,0)).type; // left
+		TileType tu = map.getTile(pos+Vec2f(0,-8)).type; // up
+		TileType tr = map.getTile(pos+Vec2f(8,0)).type; // right
 		
 		if (!map.isTileSolid(tb) && !map.isTileSolid(tl)
-		&& !map.isTileSolid(tu) && !map.isTileSolid(tr))
+		&& !map.isTileSolid(tu) && !map.isTileSolid(tr)
+			&& !isTileCustomSolid(tb) && !isTileCustomSolid(tl)
+			&& !isTileCustomSolid(tu) && !isTileCustomSolid(tr))
 		{
 			this.server_Die();
 		}

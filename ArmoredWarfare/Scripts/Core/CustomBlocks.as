@@ -24,6 +24,11 @@ namespace CMap
 	};
 };
 
+bool isTileCustomSolid(TileType tile)
+{
+	return (isTileCompactedDirt(tile) || isTileScrap(tile));
+}
+
 bool isTileCompactedDirt(TileType tile)
 {
 	return tile >= CMap::tile_cdirt && tile <= CMap::tile_cdirt_d3;
