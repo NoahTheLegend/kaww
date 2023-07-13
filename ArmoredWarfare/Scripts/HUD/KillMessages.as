@@ -95,7 +95,7 @@ class KillFeed
 			KillMessage@ message = killMessages[message_step];
 			Vec2f dim, ul, lr;
 			SColor col;
-			f32 yOffset = 1.0f;
+			f32 yOffset = 2.25f;
 
 			Vec2f max_username_size;
 			GUI::GetTextDimensions("####################", max_username_size);//20 chars

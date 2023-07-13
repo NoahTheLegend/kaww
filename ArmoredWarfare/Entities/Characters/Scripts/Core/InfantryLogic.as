@@ -1007,9 +1007,9 @@ void TakeAmmo(CBlob@ this, u32 magSize)
 					{
 						this.add_u32("mag_bullets", Maths::Max(0, Maths::Ceil(f32(quantity)/f32(multiplier))));//
 						this.Sync("mag_bullets", true); // for some fucking reason this differs from regular command syncing
-						//CBitStream params;
-						//params.write_u32(this.get_u32("mag_bullets"));
-						//this.SendCommand(this.getCommandID("sync_mag"), params);
+						CBitStream params; // and for even more retarded (shitcode) reason this is needed for proper RPG sync ¯\_(ツ)_/¯
+						params.write_u32(this.get_u32("mag_bullets"));
+						this.SendCommand(this.getCommandID("sync_mag"), params);
 
 						mag.server_Die();
 					}
@@ -1021,9 +1021,9 @@ void TakeAmmo(CBlob@ this, u32 magSize)
 					{
 						this.set_u32("mag_bullets", magSize);//
 						this.Sync("mag_bullets", true);
-						//CBitStream params;
-						//params.write_u32(this.get_u32("mag_bullets"));
-						//this.SendCommand(this.getCommandID("sync_mag"), params);
+						CBitStream params;
+						params.write_u32(this.get_u32("mag_bullets"));
+						this.SendCommand(this.getCommandID("sync_mag"), params);
 //
 						mag.server_SetQuantity(quantity - miss);
 					}
