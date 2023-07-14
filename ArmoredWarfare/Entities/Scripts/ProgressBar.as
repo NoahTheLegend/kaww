@@ -62,7 +62,7 @@ bool hasBar(Bar@ bar, string name)
 // fills from left to right
 class ProgressBar : Bar {
     bool reverse; bool toright;
-    CBlob@ blob;
+    u16 blobid;
     u8 alpha;
 
     ProgressBar()
@@ -82,11 +82,11 @@ class ProgressBar : Bar {
         this.callback_command = "";
     }
 
-    void Set(CBlob@ _blob, string _name, Vec2f _dim, bool _reoffset, Vec2f _offset, Vec2f _inherit,
+    void Set(u16 _blobid, string _name, Vec2f _dim, bool _reoffset, Vec2f _offset, Vec2f _inherit,
     SColor _color_back, SColor _color_front, string _prop, f32 _max, f32 _lerp,
     f32 _fadeout_time, f32 _fadeout_delay, bool _write_blob, string _callback_command)
     {
-        @this.blob = _blob;
+        this.blobid = _blobid;
         this.name = _name;
         this.dim = _dim;
         this.reoffset = _reoffset;
@@ -106,15 +106,16 @@ class ProgressBar : Bar {
     
     void updatebar()
     {
+        CBlob@ blob = getBlobByNetworkID(this.blobid);
         if (this.max == 0) this.max = 0.1f;
 
-        if (this.blob !is null)
+        if (blob !is null)
         {
             if (this.current < this.target)
                 this.current = Maths::Min(this.max, Maths::Lerp(this.current, this.target+1, this.lerp));
             else
             {
-                this.target = this.blob.get_f32(this.prop);
+                this.target = blob.get_f32(this.prop);
                 if (!this.fadeout && this.percent <= 0.975f) this.current = this.target;
             }
         }
@@ -128,6 +129,8 @@ class ProgressBar : Bar {
 
     void renderbar()
     {
+        CBlob@ blob = getBlobByNetworkID(this.blobid);
+
         Vec2f mod_dim = this.dim;
         Vec2f mod_offset = this.offset;
 
@@ -136,7 +139,7 @@ class ProgressBar : Bar {
 
         this.drawpos = this.pos2d + mod_offset;
         GUI::DrawPane(this.drawpos - (mod_dim*0.5f) - (this.inherit*0.5f), this.drawpos + (mod_dim*0.5f) + (this.inherit*0.5f), this.color_back);
-        if (this.blob !is null && this.blob.getTickSinceCreated() <= 5) return;
+        if (blob !is null && blob.getTickSinceCreated() <= 5) return;
 
         if (this.percent != 0.0f)
             GUI::DrawPane(this.drawpos - (mod_dim*0.5f) + this.inherit, this.drawpos - Vec2f(mod_dim.x*0.33f, 0) + Vec2f(mod_dim.x*0.835f*this.percent,mod_dim.y*0.5f) - this.inherit, this.color_front);
@@ -166,10 +169,11 @@ class Bar : BarHandler{
         return null;
     }
 
-    void AddBar(CBlob@ _blob, ProgressBar@ bar, bool remove) override
+    void AddBar(u16 _blobid, ProgressBar@ bar, bool remove) override
     {
-        BarHandler::AddBar(_blob, bar, remove);
-        @this.tempblob = @_blob;
+        CBlob@ _blob = getBlobByNetworkID(_blobid);
+        BarHandler::AddBar(_blobid, bar, remove);
+        this.tempblobid = _blobid;
     }
 
     bool hasBars()
@@ -211,8 +215,9 @@ class Bar : BarHandler{
         
         for (int i = 0; i < this.active_bars.length; i++)
         {
+            CBlob@ blob = getBlobByNetworkID(this.tempblobid);
             ProgressBar@ active = @this.active_bars[i];
-            if (this.tempblob !is null) active.pos2d = this.tempblob.get_Vec2f("renderbar_lastpos");
+            if (blob !is null) active.pos2d = blob.get_Vec2f("renderbar_lastpos");
     
             active.camera_factor = this.camera_factor;
             //active.target_offset = Vec2f(0, active.offset.y / active.camera_factor + this.mod_gap*i); // todo: fix this shittery
@@ -228,15 +233,16 @@ class Bar : BarHandler{
 
 class BarHandler {
     ProgressBar@[] active_bars;
-    CBlob@ tempblob;
+    u16 tempblobid;
 
-    void AddBar(CBlob@ _blob, ProgressBar@ bar, bool remove)
+    void AddBar(u16 _blobid, ProgressBar@ bar, bool remove)
     {
+        CBlob@ _blob = getBlobByNetworkID(_blobid);
         bar.remove_on_fill = remove;
 
         if (_blob !is null && bar !is null)
         {
-            @this.tempblob = @_blob;
+            this.tempblobid = _blobid;
             this.active_bars.push_back(bar);
         }
     }
@@ -282,11 +288,16 @@ class BarHandler {
     {
         if (active is null) return;
         if (active.callback_command == "") return;
-    
-        CBitStream params;
-        if (active.write_blob)
-            params.write_u16(active.blob.getNetworkID());
-        active.blob.SendCommand(active.blob.getCommandID(active.callback_command), params);
+
+        CBlob@ blob = getBlobByNetworkID(active.blobid);
+
+        if (blob !is null)
+        {
+            CBitStream params;
+            if (active.write_blob)
+                params.write_u16(blob.getNetworkID());
+            blob.SendCommand(blob.getCommandID(active.callback_command), params);
+        }
     }
 
     void Fadeout(ProgressBar@ active)

@@ -718,10 +718,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				SColor team_front = SColor(255, 133, 133, 160);
 				ProgressBar setbar;
-				setbar.Set(this, "flipping", Vec2f(128.0f, 24.0f), true, Vec2f(0, 64), Vec2f(2, 2), back, team_front,
+				setbar.Set(this.getNetworkID(), "flipping", Vec2f(128.0f, 24.0f), true, Vec2f(0, 64), Vec2f(2, 2), back, team_front,
 					"flipping_time", this.get_u32("flipping_endtime"), 0.25f, 5, 5, false, "flip_vehicle");
 
-    			bars.AddBar(this, setbar, true);
+    			bars.AddBar(this.getNetworkID(), setbar, true);
 			}
 		}
 	}

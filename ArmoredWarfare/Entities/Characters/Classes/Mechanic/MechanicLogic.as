@@ -129,10 +129,10 @@ void onTick(CBlob@ this)
 			{
 				SColor team_front = getNeonColor(this.getTeamNum(), 0);
 				ProgressBar setbar;
-				setbar.Set(this, "sentry_build", Vec2f(64.0f, 16.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, team_front,
+				setbar.Set(this.getNetworkID(), "sentry_build", Vec2f(64.0f, 16.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, team_front,
 					"turret_load", 90/*sentry buildtime*/, 1.0f, 5, 5, false, "");
 
-    			bars.AddBar(this, setbar, true);
+    			bars.AddBar(this.getNetworkID(), setbar, true);
 			}
 		}	
 	}
@@ -184,10 +184,10 @@ void onTick(CBlob@ this)
 			{
 				SColor team_front = SColor(255, 133, 133, 160);
 				ProgressBar setbar;
-				setbar.Set(this, "detach", Vec2f(64.0f, 16.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, team_front,
+				setbar.Set(this.getNetworkID(), "detach", Vec2f(64.0f, 16.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, team_front,
 					"detach_time", time, 1.0f, 5, 5, false, "detach turret");
 
-    			bars.AddBar(this, setbar, true);
+    			bars.AddBar(this.getNetworkID(), setbar, true);
 			}
 		}	
 	}

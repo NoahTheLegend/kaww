@@ -571,10 +571,10 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			{
 				SColor team_front = getNeonColor(this.getTeamNum(), 0);
 				ProgressBar setbar;
-				setbar.Set(this, "sentry_build", Vec2f(64.0f, 16.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, team_front,
+				setbar.Set(this.getNetworkID(), "sentry_build", Vec2f(64.0f, 16.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, team_front,
 					"turret_load", 90/*sentry buildtime*/, 1.0f, 5, 5, false, "");
 
-    			bars.AddBar(this, setbar, true);
+    			bars.AddBar(this.getNetworkID(), setbar, true);
 			}
 		}	
 	}
