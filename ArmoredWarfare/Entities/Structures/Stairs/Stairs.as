@@ -27,11 +27,11 @@ void onInit(CBlob@ this)
     HoverButton@ buttons;
     if (!this.get("HoverButton", @buttons))
     {
-        HoverButton setbuttons(this);
+        HoverButton setbuttons(this.getNetworkID());
         setbuttons.offset = Vec2f(0,-16);
         for (u16 i = 0; i < 2; i++)
         {
-            SimpleHoverButton btn(this);
+            SimpleHoverButton btn(this.getNetworkID());
             btn.dim = Vec2f(50, 20);
             btn.font = "menu";
 

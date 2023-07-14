@@ -428,10 +428,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				{
 					SColor team_front = getNeonColor(caller.getTeamNum(), 0);
 					ProgressBar setbar;
-					setbar.Set(this, "construct", Vec2f(64.0f, 16.0f), true, Vec2f(0, 48), Vec2f(2, 2), back, team_front,
+					setbar.Set(this.getNetworkID(), "construct", Vec2f(64.0f, 16.0f), true, Vec2f(0, 48), Vec2f(2, 2), back, team_front,
 						"construct_time", this.get_u32("construct_endtime"), 0.25f, 5, 5, false, "constructed");
 
-    				bars.AddBar(this, setbar, true);
+    				bars.AddBar(this.getNetworkID(), setbar, true);
 				}
 			}
 		}

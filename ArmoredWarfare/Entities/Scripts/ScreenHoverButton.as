@@ -20,13 +20,13 @@ class SimpleHoverButton : HoverButton
 {
     bool hover; bool just_pressed; bool pressed;
     bool show;
-    string callback_command; bool write_blob; bool write_local; // cmd name; this.blob.netid for params; local_blob.netid for params
+    string callback_command; bool write_blob; bool write_local; // cmd name; blob.netid for params; local_blob.netid for params
     string text; string font; SColor text_color;
     string icon; Vec2f icon_offset; f32 icon_scale; u32 icon_frame; Vec2f icon_dim;
 
-    SimpleHoverButton(CBlob@ _blob)
+    SimpleHoverButton(u16 _blobid)
     {
-        @this.blob = @_blob;
+        this.blobid = _blobid;
         this.offset = Vec2f(0,0);
         this.dim = Vec2f(0,0);
         this.show = true;
@@ -72,8 +72,9 @@ class SimpleHoverButton : HoverButton
         this.EventHover(this.local_blob);
         this.EventPress(this.local_blob);
 
-        if (this.blob is null) return;
-        Vec2f drawpos = getDriver().getScreenPosFromWorldPos(this.offset + Vec2f_lerp(this.blob.getOldPosition(), this.blob.getPosition(), getInterpolationFactor()));
+        CBlob@ blob = getBlobByNetworkID(this.blobid);
+        if (blob is null) return;
+        Vec2f drawpos = getDriver().getScreenPosFromWorldPos(this.offset + Vec2f_lerp(blob.getOldPosition(), blob.getPosition(), getInterpolationFactor()));
         CCamera@ camera = getCamera();
         if (camera is null) return;
         f32 mod = 0.5f * camera.targetDistance;
@@ -96,11 +97,12 @@ class SimpleHoverButton : HoverButton
     void EventHover(CBlob@ _local_blob)
     {
         if (_local_blob is null) return;
+        CBlob@ blob = getBlobByNetworkID(this.blobid);
 
         CControls@ controls = _local_blob.getControls();
         if (controls is null) return;
         Vec2f mpos = controls.getMouseWorldPos() + Vec2f(-2.5f, -3);
-        Vec2f blobpos = this.blob.getPosition();
+        Vec2f blobpos = blob.getPosition();
         Vec2f ul = blobpos+this.offset-(dim*0.25f);
         Vec2f br = blobpos+this.offset+(dim*0.25f);
 
@@ -127,10 +129,14 @@ class SimpleHoverButton : HoverButton
         {
             if (this.callback_command != "")
             {
-                CBitStream params;
-                if (this.write_blob) params.write_u16(this.blob.getNetworkID());
-                if (this.write_local) params.write_u16(_local_blob.getNetworkID());
-                this.blob.SendCommand(this.blob.getCommandID(this.callback_command), params);
+                CBlob@ blob = getBlobByNetworkID(this.blobid);
+                if (blob !is null)
+                {
+                    CBitStream params;
+                    if (this.write_blob) params.write_u16(blob.getNetworkID());
+                    if (this.write_local) params.write_u16(_local_blob.getNetworkID());
+                    blob.SendCommand(blob.getCommandID(this.callback_command), params);
+                }
             }
         }
     }
@@ -138,7 +144,7 @@ class SimpleHoverButton : HoverButton
 
 class HoverButton
 {
-    CBlob@ blob; CBlob@ local_blob;
+    u16 blobid; CBlob@ local_blob;
     Vec2f offset; Vec2f dim; Vec2f cell; bool active;
     Vec2f grid; Vec2f gap; f32 hover_dist;
     bool draw_overlap; bool draw_hover; bool draw_attached;
@@ -147,9 +153,9 @@ class HoverButton
 
     SimpleHoverButton@[] list;
 
-    HoverButton(CBlob@ _blob)
+    HoverButton(u16 _blobid)
     {
-        @this.blob = @_blob;
+        this.blobid = _blobid;
         this.active = false; 
         this.grid = Vec2f(1,1);
         this.gap = Vec2f(0,0);
@@ -220,19 +226,21 @@ class HoverButton
 
     void EventOverlap()
     {
-        if (this.blob is null || this.local_blob is null) return;
+        CBlob@ blob = getBlobByNetworkID(this.blobid);
+        if (blob is null || this.local_blob is null) return;
 
-        this.active = this.blob.isOverlapping(this.local_blob);
+        this.active = blob.isOverlapping(this.local_blob);
     }
 
     void EventHover()
     {
-        if (this.blob is null || this.local_blob is null) return;
+        CBlob@ blob = getBlobByNetworkID(this.blobid);
+        if (blob is null || this.local_blob is null) return;
 
         CControls@ controls = this.local_blob.getControls();
         if (controls is null) return;
         Vec2f mpos = controls.getMouseWorldPos() + Vec2f(-2, -3);
-        this.active = ((mpos - this.blob.getPosition()).Length() <= this.hover_dist);
+        this.active = ((mpos - blob.getPosition()).Length() <= this.hover_dist);
     }
 }
 
