@@ -13,44 +13,77 @@ enum EntityHash
 	_mp5 = -1636222121,
 
 	//vehicles
-	_m60 = 505863822, // normal tank
-	_t10 = -360649198, // T10
-	_maus = -544849061, // maus
+	_m60 = 505863822,
+	_t10 = -360649198,
+	_maus = -544849061,
+	_pinkmaus = -1517006893,
+	_desertmaus = 1575278158,
 	_artillery = 1028704049,
 	_artilleryturret = 1853414531,
 	_techbigtruck = 351403048,
 	_barge = -2029400058,
 
-	_pszh4 = 1117406230, // smol APC
-	_btr82a = 1873450872, // big APC
-	_bradley = -1543244522, // bradley m2
-	_transporttruck = -384075523, // vanilla truck?
-	_armory = -2000954281, // shop truck
-	_importantarmory = -1712154697, // break the truck truck
+	_pszh4 = 1117406230,
+	_btr82a = 1873450872,
+	_bradley = -1543244522,
+	_transporttruck = -384075523,
+	_armory = -2000954281,
+	_importantarmory = -1712154697,
 	_importantarmoryt2 = -1269242735,
-	_outpost = 1262542481, // outpost
+	_outpost = 1262542481,
 	
-	_bf109 = 948257107, // plane
-	_bomberplane = 1220259964, // bomberplane
-	_jourcop = 1406825361, // journalist
-	_uh1 = -2084182629, // huey
-	_ah1 = -265313785, // cobra
+	_bf109 = 948257107,
+	_bomberplane = 1220259964, 
+	_jourcop = 1406825361,
+	_uh1 = -2084182629,
+	_ah1 = -265313785,
 	
-	_techtruck = -4555140, // MG truck
-	_motorcycle = -1537538612, // bike
-	_civcar = 2114887441, // car
+	_techtruck = -4555140,
+	_motorcycle = -1537538612,
+	_civcar = 2114887441,
+	_lada = 1728196733,
 
-	_pszh4turret = -561402448, // smol APC cannon
-	_btrturret = 2047864813, // big APC cannon
-	_bradleyturret = 1562236592, // bradley m2 turret
-	_m60turret = -627481976, // M60 Shell cannon
-	_t10turret = -616940740, // T10 Shell cannon
-	_mausturret = 56012293, // MAUS Shell cannon
-	_gun = 1043670821, // light MG
-	_heavygun = -153292038, // MG
+	_pszh4turret = -561402448,
+	_btrturret = 2047864813,
+	_bradleyturret = 1562236592,
+	_m60turret = -627481976,
+	_t10turret = -616940740,
+	_mausturret = 56012293,
+	_pinkmausturret = 625290237,
+	_desertmausturret = -531825848,
+	_gun = 1043670821,
+	_heavygun = -153292038,
 	_firethrower = -468829632,
-	_bunker = -1830468768, // bunker
+	_bunker = -1830468768,
 	_heavybunker = -246580451
-
-	//_ = 1111111,
 };
+
+// TEMPLATE: GROUND VEHICLES
+/*
+    int blobHash = this.getName().getHash();
+    
+    switch (blobHash)
+    {
+        case _motorcycle:
+        case _techtruck:
+        case _techbigtruck:
+        case _armory:
+        case _importantarmory:
+        case _importantarmoryt2:
+        case _transporttruck:
+        case _civcar:
+		case _lada:
+        case _pszh4:
+        case _btr82a:
+        case _bradley:
+        case _m60:
+        case _t10:
+        case _maus:
+		case _pinkmaus:
+		case _desertmaus:
+        case _artillery:
+        {
+            break;
+        }
+    }
+*/
