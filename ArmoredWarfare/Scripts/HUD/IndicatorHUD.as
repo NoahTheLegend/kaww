@@ -307,6 +307,8 @@ u8 getIndicatorFrame( int hash )
 		case _shotgun:
 		case _firebringer:
 		case _maus:
+		case _pinkmaus:
+		case _desertmaus:
 		frame = 4; break;
 
 		case _sniper:

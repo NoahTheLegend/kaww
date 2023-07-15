@@ -45,6 +45,8 @@ void onInit(CBlob@ this)
 	switch(blobHash)
 	{
 		case _maus:
+		case _pinkmaus:
+		case _desertmaus:
 		case _t10:
 		{
 			this.set_string("engine_start", "HeavyEngineStart_tank");
@@ -66,11 +68,15 @@ void onInit(CBlob@ this)
 	{
 		case _barge:
 		case _mausturret: // MAUS Shell cannon
+		case _pinkmausturret:
+		case _desertmausturret:
 		{
 			armorRating = 5;
 			hardShelled = true;
 		}
 		case _maus: // maus
+		case _pinkmaus:
+		case _desertmaus:
 		case _t10turret: // T10 Shell cannon
 		armorRating = 5; break;
 		
@@ -132,6 +138,8 @@ void onInit(CBlob@ this)
 			break;
 		}
 		case _mausturret: // MAUS Shell cannon
+		case _pinkmausturret:
+		case _desertmausturret:
 		{
 			weaponRating = 5;
 			linear_length = 16.0f;
@@ -192,17 +200,19 @@ void onInit(CBlob@ this)
 	switch(blobHash) // backside vulnerability point
 	{
 		case _maus: // maus
-		backsideOffset = 24.0f; break;
+		case _pinkmaus:
+		case _desertmaus:
+		backsideOffset = 32.0f; break;
 
 		case _t10: // T10
-		backsideOffset = 20.0f; break;
+		backsideOffset = 24.0f; break;
 		
 		case _m60: // normal tank
 		case _btr82a: // big APC
 		case _bradley:
 		case _artillery:
 		case _barge:
-		backsideOffset = 16.0f; break;
+		backsideOffset = 20.0f; break;
 
 		case _pszh4: // smol APC
 		backsideOffset = 16.0f; break;
@@ -226,6 +236,8 @@ void onInit(CBlob@ this)
 	switch(blobHash)
 	{
 		case _maus: // maus
+		case _pinkmaus:
+		case _desertmaus:
 		intake = -50.0f; break;
 
 		case _t10: // T10
@@ -913,6 +925,15 @@ void onDie(CBlob@ this)
 				break;
 			} // T10
 			case _maus:
+			case _pinkmaus:
+			case _desertmaus:
+			{
+				scrap_amount = 25+XORRandom(16);
+				explosion_radius = 100.0f;
+				explosion_map_damage = 0.3f;
+				explosion_damage = 7.5f;
+				break;
+			}
 			case _ah1:
 			{
 				scrap_amount = 17+XORRandom(9);
@@ -1021,6 +1042,8 @@ void onDie(CBlob@ this)
 			case _m60turret:
 			case _t10turret:
 			case _mausturret:
+			case _pinkmausturret:
+			case _desertmausturret:
 			case _bunker:
 			case _heavybunker:
 				break;

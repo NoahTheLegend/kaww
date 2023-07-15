@@ -43,15 +43,15 @@ void onInit(CBlob@ this)
 	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
 	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(35.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(28.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(20.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(12.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(4.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-4.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-12.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-18.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-24.0f, 5.0f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(35.0f,  6.5f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(28.0f,  6.5f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(20.0f,  6.5f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(12.0f,  6.5f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(4.0f,   6.5f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-4.0f,  6.5f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-12.0f, 6.5f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-18.0f, 5.5f)); if (w !is null) w.SetRelativeZ(-111.89f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-24.0f, 4.0f)); if (w !is null) {w.SetRelativeZ(-111.89f); w.ScaleBy(Vec2f(0.925f,0.925f));}}
 
 	this.getShape().SetOffset(Vec2f(0, 1));
 
