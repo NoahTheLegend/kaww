@@ -9,6 +9,10 @@ void onInit(CBlob@ this)
     {
         case _pszh4:
         case _btr82a:
+		{
+			susheight = 3.0f;
+			break;
+		}
         case _techtruck:
         case _techbigtruck:
         case _armory:
