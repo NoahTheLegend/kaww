@@ -49,7 +49,8 @@ void onDie(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return blob.getName() == "barge" || ((blob.hasTag("door") && blob.getShape().getConsts().collidable) || blob.getName() == "wooden_platform");
+	if (blob.getName() == "barge") return true;
+	return ((blob.hasTag("door") && blob.getShape().getConsts().collidable) || blob.getName() == "wooden_platform");
 }
 
 void onThisAddToInventory(CBlob@ this, CBlob@ inventoryBlob)
@@ -107,7 +108,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal)
 {
-	if (!solid) return;
+	if ((blob is null && !solid) || (blob !is null && blob.getName() != "barge")) return;
 
 	f32 vellen = this.getOldVelocity().Length();
 	if (vellen >= 8.0f || this.hasTag("dropped")) 
