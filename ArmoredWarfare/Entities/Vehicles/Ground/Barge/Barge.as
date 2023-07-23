@@ -214,6 +214,7 @@ bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool was
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (blob.hasTag("weapon")) return true;
 	if (blob.hasTag("boat")) return blob.getTeamNum() != this.getTeamNum();
 	if (blob.hasTag("player") && blob.getTeamNum() == this.getTeamNum() && blob.getPosition().y > this.getPosition().y+16.0f) return false;
 	return blob.hasTag("vehicle") || Vehicle_doesCollideWithBlob_boat(this, blob);
