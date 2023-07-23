@@ -14,6 +14,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		damage *= extra_amount;
 	}
 
+	bool exposed = this.hasTag("mgunner") || this.hasTag("collidewithbullets");
 	s8 pen = hitterBlob.get_s8("pen_level");
 
 	bool is_bullet = (customData == HittersAW::bullet || customData == HittersAW::heavybullet
@@ -79,11 +80,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
-			return damage*0.04f;
+			return damage*(exposed ? 0.33f : 0.05f);
 		else if (is_bullet)
 			return damage*0.5f;
-		else return (customData == Hitters::sword && (this.hasTag("mgunner") || this.hasTag("collidewithbullets"))
-			? damage*0.5f : 0);
+		else return ((customData == Hitters::sword && exposed) ? damage*0.5f : 0);
 	}
 	if (this.getPlayer() !is null)
 	{
@@ -130,9 +130,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage *= 2.0f; // take double damage
 		}
 	}
-	if (customData != Hitters::explosion && hitterBlob.getName() == "ballista_bolt")
+	if (customData == Hitters::ballista)
 	{
-		return (pen > 2 ? damage*2 : damage/2);
+		return damage * 2;
 	}
 	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.hasTag("grenade"))
 	{
