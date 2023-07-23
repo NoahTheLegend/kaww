@@ -399,6 +399,20 @@ void onDie(CBlob@ this)
 	DoExplosion(this);
 }
 
+void ExplodeInventory(CBlob@ this)
+{
+	CInventory@ inv = this.getInventory();
+	if (inv is null) return;
+	for (u8 i = 0; i < inv.getInventorySlots().x*inv.getInventorySlots().y; i++)
+	{
+		CBlob@ b = inv.getItem(i);
+		if (b is null) continue;
+		if (!b.hasTag("bomber ammo")) continue;
+
+		b.server_Die();
+	}
+}
+
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 {
 	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PILOT");
@@ -515,6 +529,7 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (damage >= this.getHealth()) ExplodeInventory(this);
 	if (this.hasTag("ignore damage")) return 0;
 	if (damage >= this.getHealth())
 	{
