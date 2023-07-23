@@ -1218,6 +1218,7 @@ void HandleResetInfo(CRules@ this)
 {
 	if (this.get_u32("lastgametime") < min_gametime_to_increment) return;
 	this.add_u32("long_matches_passed", 1);
+	this.Sync("long_matches_passed", true);
 }
 
 void onRestart(CRules@ this)
