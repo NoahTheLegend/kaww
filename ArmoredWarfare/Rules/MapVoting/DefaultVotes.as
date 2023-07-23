@@ -150,7 +150,7 @@ class VoteKickCheckFunctor : VoteCheckFunctor
 	{
 		if (!VoteCheckFunctor::PlayerCanVote(player)) return false;
 
-		if (!getSecurity().checkAccess_Feature(player, "mark_player")) return false;
+		//if (!getSecurity().checkAccess_Feature(player, "mark_player")) return false;
 
 		if (reason.find(kick_reason_string[kick_reason_griefer]) != -1 || //reason contains "Griefer"
 				reason.find(kick_reason_string[kick_reason_teamkiller]) != -1 || //or TKer
@@ -386,9 +386,7 @@ class VoteNextmapCheckFunctor : VoteCheckFunctor
 
 	bool PlayerCanVote(CPlayer@ player)
 	{
-		if (!VoteCheckFunctor::PlayerCanVote(player)) return false;
-
-		return getSecurity().checkAccess_Feature(player, "map_vote");
+		return true;
 	}
 };
 
@@ -400,12 +398,12 @@ VoteObject@ Create_VoteNextmap(CPlayer@ byplayer, string reason, u8 maptype)
 	@vote.onvotepassed = VoteNextmapFunctor(byplayer, maptype);
 	@vote.canvote = VoteNextmapCheckFunctor();
 
-	vote.title = "Load new map";
+	vote.title = "Load new map\n\nVote pass: 65%";
 	vote.maptype = TypeToString[maptype % 7];
 	vote.reason = reason;
 	vote.byuser = byplayer.getUsername();
 	vote.forcePassFeature = "nextmap";
-	vote.required_percent = 0.7f;
+	vote.required_percent = 0.65f;
 
 	CalculateVoteThresholds(vote);
 
@@ -579,11 +577,12 @@ VoteObject@ Create_VoteSurrender(CPlayer@ byplayer)
 	@vote.onvotepassed = VoteSurrenderFunctor(byplayer);
 	@vote.canvote = VoteSurrenderCheckFunctor(byplayer.getTeamNum());
 
-	vote.title = "Surrender to the enemy?";
+	vote.title = "Surrender to the enemy?\n\nVote pass: 75%";
 	vote.reason = "";
 	vote.byuser = byplayer.getUsername();
 	vote.forcePassFeature = "surrender";
 	vote.cancel_on_restart = true;
+	vote.required_percent = 0.75f;
 
 	CalculateVoteThresholds(vote);
 
@@ -704,7 +703,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 	bool duplicatePlayer = isDuplicatePlayer(me);
 
 	//kick menu
-	if (getSecurity().checkAccess_Feature(me, "mark_player"))
+	//if (getSecurity().checkAccess_Feature(me, "mark_player"))
 	{
 		if (duplicatePlayer)
 		{
@@ -838,7 +837,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 	Menu::addSeparator(kickmenu);
 
 	//nextmap menu
-	if (getSecurity().checkAccess_Feature(me, "map_vote"))
+	//if (getSecurity().checkAccess_Feature(me, "map_vote"))
 	{
 		if (duplicatePlayer)
 		{
@@ -1107,7 +1106,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 	Menu::addSeparator(scramblemenu);
 
 	//kick bots menu
-	if (getSecurity().checkAccess_Feature(me, "mark_player"))
+	//if (getSecurity().checkAccess_Feature(me, "mark_player"))
 	{
 		bool has_bots = false;
 

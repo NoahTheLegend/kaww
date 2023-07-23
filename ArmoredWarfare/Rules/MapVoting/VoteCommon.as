@@ -43,7 +43,7 @@ class VoteObject
 		maximum_votes = getPlayersCount();
 		current_yes = current_no = 0;
 		timeremaining = 30 * 30; //default 30s
-		required_percent = 0.5f; //default 50%
+		required_percent = 0.5f; //default 70%
 		cancel_on_restart = false;
 	}
 
