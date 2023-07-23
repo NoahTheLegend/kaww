@@ -20,16 +20,6 @@ float screenMidX = getScreenWidth()/2;
 
 bool mouseWasPressed2 = false;
 
-const string[] descriptions = {
-	"A chance to receive extra ore (+20%, +2)",
-	"Shorter respawn time, longer spawn protection (-1s, +1.5s)",
-	"Faster constructing, less constraining building (+20%, -50% lock radius)",
-	"Cheaper and stronger molotovs (-25%-33%, more liquid)",
-	"Faster vehicle capture, faster C-4 activation, better grenades (+50%, -2.5s, +10% radius)",
-	"A chance to receive more coins in an income (33%, +1)",
-	"Increased damage resist for infantry, mines activate faster (+5%, -2s)"
-};
-
 //returns the bottom
 float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CTeam@ team, Vec2f emblem, int teamnum)
 {

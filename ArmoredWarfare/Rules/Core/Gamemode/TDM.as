@@ -1216,7 +1216,6 @@ void Reset(CRules@ this)
 
 void HandleResetInfo(CRules@ this)
 {
-	printf(""+this.get_u32("lastgametime"));
 	if (this.get_u32("lastgametime") < min_gametime_to_increment) return;
 	this.add_u32("long_matches_passed", 1);
 }

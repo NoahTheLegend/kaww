@@ -214,6 +214,15 @@ namespace Material
 			harvest.get(name, quantity);
 			u16 harvestAmount = quantity * damage;
 
+			if (blob.getName() == "log")
+			{
+				bool alliance_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 0; // team 0 buff
+        		f32 extra_amount = 1.0f;
+        		if (alliance_power && XORRandom(5)==0) extra_amount = 1.2f;
+
+				harvestAmount *= extra_amount;
+			}
+
 			if(maxHarvest != -1 && harvestAmount > maxHarvest)//do we have the cap? if so are we over it
 			{
 				harvestAmount = maxHarvest;
