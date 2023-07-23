@@ -197,7 +197,7 @@ namespace ShotgunParams
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
-	const ::u8 BURST_SIZE 				= 6; // bullets fired per click
+	const ::u8 BURST_SIZE 				= 7; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 60; // time to reload
 	const ::u8 NORELOADTIMER 			= 15; // time after each shot to prevent reloading
