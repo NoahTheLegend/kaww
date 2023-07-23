@@ -16,7 +16,7 @@
 #include "ProgressBar.as";
 #include "TeamColorCollections.as";
 #include "StandardFire.as";
-#include "GlobalHooks.as";
+#include "GlobalInfantryHooks.as";
 
 // firebringer's stats
 const f32 firebringer_max_scale = 750.0f;

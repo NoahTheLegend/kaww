@@ -15,7 +15,7 @@
 #include "PlayerRankInfo.as";
 #include "ProgressBar.as";
 #include "TeamColorCollections.as";
-#include "GlobalHooks.as";
+#include "GlobalInfantryHooks.as";
 
 //can't be <2 - needs one frame less for gathering infos
 const s32 hit_frame = 2;
