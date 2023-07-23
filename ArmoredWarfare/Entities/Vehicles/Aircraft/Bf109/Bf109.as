@@ -408,7 +408,7 @@ CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 			proj.SetDamageOwnerPlayer(this.getPlayer());
 			proj.Init();
 
-			proj.set_s8(penRatingString, 2);
+			proj.set_s8(penRatingString, 1);
 
 			proj.set_f32("bullet_damage_body", projDamage);
 			proj.set_f32("bullet_damage_head", projDamage*1.25f);
