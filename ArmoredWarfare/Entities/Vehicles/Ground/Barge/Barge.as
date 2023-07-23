@@ -50,10 +50,10 @@ void onInit(CBlob@ this)
 	this.getShape().AddShape(backbackShape);
 
 	Vec2f[] backShape;
-	backShape.push_back(Vec2f(25.0f, -6.0f));
-	backShape.push_back(Vec2f(27.0f, -6.0f));
-	backShape.push_back(Vec2f(27.0f, 10.0f));
+	backShape.push_back(Vec2f(24.0f, -8.0f));
+	backShape.push_back(Vec2f(30.0f, -8.0f));
 	backShape.push_back(Vec2f(25.0f, 10.0f));
+	backShape.push_back(Vec2f(24.0f, 10.0f));
 	this.getShape().AddShape(backShape);
 
 	Vec2f[] frontShape;
