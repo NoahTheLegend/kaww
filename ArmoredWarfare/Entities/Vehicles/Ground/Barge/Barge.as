@@ -57,8 +57,8 @@ void onInit(CBlob@ this)
 	this.getShape().AddShape(backShape);
 
 	Vec2f[] frontShape;
-	frontShape.push_back(Vec2f(108.0f, 0.0f));
-	frontShape.push_back(Vec2f(120.0f, 16.0f));
+	frontShape.push_back(Vec2f(108.0f, 8.0f));
+	frontShape.push_back(Vec2f(116.0f, 16.0f));
 	frontShape.push_back(Vec2f(108.0f, 16.0f));
 	frontShape.push_back(Vec2f(108.0f, 16.0f));
 	this.getShape().AddShape(frontShape);
@@ -214,7 +214,7 @@ bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool was
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (blob.hasTag("boat")) return false;
+	if (blob.hasTag("boat")) return blob.getTeamNum() != this.getTeamNum();
 	if (blob.hasTag("player") && blob.getTeamNum() == this.getTeamNum() && blob.getPosition().y > this.getPosition().y+16.0f) return false;
 	return blob.hasTag("vehicle") || Vehicle_doesCollideWithBlob_boat(this, blob);
 }
