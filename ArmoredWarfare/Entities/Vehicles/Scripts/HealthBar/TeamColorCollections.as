@@ -41,18 +41,18 @@ SColor getNeonColor(u8 team, u8 darkness)
 			color_dark	= 0xff643909;
 			break;
 		}
-		case 5: // cyan
+		case 5: // cyan (changed to yellow)
 		{
-			color_light = 0xff1cc99c;
-			color_mid	= 0xff1a9776;
-			color_dark	= 0xff106851;
+			color_light = 0xffc9d500;
+			color_mid	= 0xff969e00;
+			color_dark	= 0xff727800;
 			break;
 		}
-		case 6: // violet
+		case 6: // violet (changed to black)
 		{
-			color_light = 0xff4d40ff;
-			color_mid	= 0xff392ecd;
-			color_dark	= 0xff251d8f;
+			color_light = 0xff555555;
+			color_mid	= 0xff454545;
+			color_dark	= 0xff252525;
 			break;
 		}
 	}
