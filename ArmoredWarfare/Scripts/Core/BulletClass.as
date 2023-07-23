@@ -437,7 +437,10 @@ class BulletObj
 								if (!has_helmet)
 									hoomanSprite.PlaySound("HitmarkerHeadshot.ogg", 0.85f, 0.8f + XORRandom(31) * 0.01f);
 								else
+								{
 									hoomanSprite.PlaySound("Headshot.ogg", 1.5f, 0.75f + XORRandom(51) * 0.01f);
+									hoomanSprite.PlaySound("HitmarkerHeadshot.ogg", 0.65f, 0.75f + XORRandom(21) * 0.01f);
+								}
 							}
 						}
 					}
