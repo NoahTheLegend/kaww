@@ -7,6 +7,9 @@
 #include "HittersAW.as";
 #include "PlayerRankInfo.as";
 
+const u32 min_gametime_to_increment = 20 * 30*60;
+const int max_matches_before_restart = 5; // change this in TDM_interface.as too
+const u16 restart_delay = 450; // this too
 const u8 MAX_BOTS = 8; // fills while server's pop is lesser than value
 
 ConfigFile cfg_playerexp;
@@ -1135,6 +1138,8 @@ void SetCorrectMapType(const int pcount)
 //pass stuff to the core from each of the hooks
 void Reset(CRules@ this)
 {
+	this.set_u32("lastgametime", 0);
+
 	this.set_u16("teamleft_kills", 0);
 	this.set_u16("teamright_kills", 0);
 	this.Sync("teamleft_kills", true);
@@ -1209,9 +1214,18 @@ void Reset(CRules@ this)
 	}
 }
 
+void HandleResetInfo(CRules@ this)
+{
+	printf(""+this.get_u32("lastgametime"));
+	if (this.get_u32("lastgametime") < min_gametime_to_increment) return;
+	this.add_u32("long_matches_passed", 1);
+}
+
 void onRestart(CRules@ this)
 {
+	HandleResetInfo(this);
 	WriteMatchInfo(this);
+
 	Reset(this);
 	this.set_u32("warn_extended_time", 0);
 	this.set_bool("show_warn_extended_time", false);
@@ -1537,6 +1551,12 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 void onTick(CRules@ this)
 {
 	g_screenshake = true;
+	this.set_u32("lastgametime", getGameTime());
+
+	if (this.get_u32("long_matches_passed") >= max_matches_before_restart && getGameTime() > restart_delay)
+	{
+		QuitGame();
+	}
 
 	//if (isServer() && getGameTime() > 5)
 	//{
@@ -1818,6 +1838,7 @@ void onInit(CRules@ this)
         cfg_playerexp = ConfigFile("AW/exp.cfg");
     }
 
+	this.set_u32("long_matches_passed", 0);
 	this.set_u32("matches_passed", 0);
 	this.set_u8("match_info", 0);
 
