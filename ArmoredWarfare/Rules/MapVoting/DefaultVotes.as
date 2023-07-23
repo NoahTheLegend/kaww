@@ -398,7 +398,7 @@ VoteObject@ Create_VoteNextmap(CPlayer@ byplayer, string reason, u8 maptype)
 	@vote.onvotepassed = VoteNextmapFunctor(byplayer, maptype);
 	@vote.canvote = VoteNextmapCheckFunctor();
 
-	vote.title = "Load new map\n\nVote pass: 65%";
+	vote.title = "Load new map\nVote pass: 65%";
 	vote.maptype = TypeToString[maptype % 7];
 	vote.reason = reason;
 	vote.byuser = byplayer.getUsername();
@@ -577,7 +577,7 @@ VoteObject@ Create_VoteSurrender(CPlayer@ byplayer)
 	@vote.onvotepassed = VoteSurrenderFunctor(byplayer);
 	@vote.canvote = VoteSurrenderCheckFunctor(byplayer.getTeamNum());
 
-	vote.title = "Surrender to the enemy?\n\nVote pass: 75%";
+	vote.title = "Surrender to the enemy?\nVote pass: 75%";
 	vote.reason = "";
 	vote.byuser = byplayer.getUsername();
 	vote.forcePassFeature = "surrender";
