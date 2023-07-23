@@ -156,7 +156,7 @@ class BulletObj
 
 		if (blob.hasTag("door") && shape.getConsts().collidable) return true; // blocked by closed doors
 
-		if (blob.hasTag("missile") && !same_team) return true;
+		if (blob.hasTag("missile") && blob.getTickSinceCreated() > 15 && !same_team) return true;
 
 		if (same_team && blob.hasTag("friendly_bullet_pass")) return false;
 
