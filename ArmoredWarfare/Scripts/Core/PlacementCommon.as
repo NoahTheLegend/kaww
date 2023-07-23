@@ -117,7 +117,8 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 	{
 		//repair like tiles
 	}
-	else if ( buildTile == CMap::tile_scrap && backtile.type >= CMap::tile_castle && backtile.type <= CMap::tile_castle_d0)
+	else if ((buildTile == CMap::tile_scrap && backtile.type >= CMap::tile_castle && backtile.type <= CMap::tile_castle_d0)
+		|| buildTile == CMap::tile_scrap && backtile.type == CMap::tile_castle_moss)
 	{
 		// can build scrap on stone
 	}

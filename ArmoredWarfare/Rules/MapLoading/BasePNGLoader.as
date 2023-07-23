@@ -106,10 +106,6 @@ class PNGLoader
     		_teamleft = teamleft;
     		_teamright = teamright;
 		}
-
-		
-
-		//printf("setting teams: "+teamleft+" | "+teamright);
 	}
 
 	bool loadMap(CMap@ _map, const string& in filename)
@@ -881,10 +877,12 @@ void PlaceMostLikelyTile(CMap@ map, int offset)
 
 u8 getTeamFromChannel(u8 channel)
 {
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+
 	// only the bits we want
 	channel &= 0x0F;
-
-	return (channel > 7)? 255 : channel;
+	return channel == 0 ? teamleft : channel == 1 ? teamright : 7;
 }
 
 u8 getChannelFromTeam(u8 team)
