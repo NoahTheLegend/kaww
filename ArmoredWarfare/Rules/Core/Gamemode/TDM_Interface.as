@@ -1,5 +1,8 @@
 #include "TDM_Structs.as";
 
+const int max_matches_before_restart = 5;
+const u16 restart_delay = 450;
+
 void onTick( CRules@ this )
 {
     if (this.hasTag("restart_after_match"))
@@ -121,8 +124,6 @@ void onRender(CRules@ this)
 			f32 wave = Maths::Sin(getGameTime() / 3.0f) * 5.0f - 25.0f;
 			GUI::DrawTextCentered("Your truck is under attack!", Vec2f(getDriver().getScreenWidth()/2, 220+wave), SColor(255,255,255,0));
 		}
-
-		
 	}
 
 	CBitStream serialised_team_hud;
@@ -224,6 +225,18 @@ void onRender(CRules@ this)
 			}
 		}
 	}
+
+	int match_count = this.get_u32("long_matches_passed");
+	int diff = max_matches_before_restart - match_count;
+	bool alert = diff == 1;
+	bool restarting = diff == 0;
+	int countdown = restarting ? Maths::Floor((restart_delay - getGameTime())/30) : 0;
+
+	GUI::SetFont((alert || restarting) && getGameTime() < restart_delay ? "menu" : "normal");
+	u8 g = (!alert || Maths::Floor(getGameTime()/30%2) == 0 ? 255 : 155);
+
+	string warn = restarting ? "Restarting server in "+countdown+" seconds" : "Server will restart in ~"+diff+" match"+(diff==1?"":"es");
+	GUI::DrawText(warn, restarting ? Vec2f(getScreenWidth()/2-105, 200) : Vec2f(25, 75), SColor(255, 255, g, 0));
 }
 
 void onCommand(CRules@ this, u8 cmd, CBitStream @params)

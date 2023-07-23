@@ -54,10 +54,10 @@ void onRender( CRules@ this )
 		u16 teamRightKills = this.get_u16("teamright_kills");
 
 		GUI::SetFont("menu");
-		GUI::DrawTextCentered(""+teamRightKills, timelineLPos+Vec2f(-84.0f, 20), getNeonColor(7, 0));
-		GUI::DrawTextCentered(""+teamLeftKills, timelineRPos+Vec2f(128.0f, 20), getNeonColor(7, 0));
-		GUI::DrawIcon("DeathIncarnate.png", 0, Vec2f(16,16), timelineLPos+Vec2f(-130.0f, 7), 0.85f, 0);
-		GUI::DrawIcon("DeathIncarnate.png", 0, Vec2f(16,16), timelineRPos+Vec2f(150.0f, 7), 0.85f, 0);
+		GUI::DrawTextCentered(""+teamRightKills, timelineLPos+Vec2f(-78.0f, 35), getNeonColor(7, 0));
+		GUI::DrawTextCentered(""+teamLeftKills, timelineRPos+Vec2f(122.0f, 35), getNeonColor(7, 0));
+		GUI::DrawIcon("DeathIncarnate.png", 0, Vec2f(16,16), timelineLPos+Vec2f(-115.0f, 21), 0.85f, 0);
+		GUI::DrawIcon("DeathIncarnate.png", 0, Vec2f(16,16), timelineRPos+Vec2f(135.0f, 21), 0.85f, 0);
 
 		teamLeftTickets=this.get_s16("teamLeftTickets");
 		teamRightTickets=this.get_s16("teamRightTickets");
