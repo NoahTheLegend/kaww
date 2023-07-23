@@ -823,17 +823,17 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			}
 		}
 	}
-	else
-	{
-		Menu::addInfoBox(
-			kickmenu,
-			getTranslatedString("Can't vote"),
-			getTranslatedString(
-				"You are now allowed to votekick\n" +
-				"players on this server\n"
-			)
-		);
-	}
+	//else
+	//{
+	//	Menu::addInfoBox(
+	//		kickmenu,
+	//		getTranslatedString("Can't vote"),
+	//		getTranslatedString(
+	//			"You are now allowed to votekick\n" +
+	//			"players on this server\n"
+	//		)
+	//	);
+	//}
 	Menu::addSeparator(kickmenu);
 
 	//nextmap menu
@@ -922,17 +922,17 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			}
 		}
 	}
-	else
-	{
-		Menu::addInfoBox(
-			mapmenu,
-			getTranslatedString("Can't vote"),
-			getTranslatedString(
-				"You are not allowed to vote\n" +
-				"to change the map on this server\n"
-			)
-		);
-	}
+	//else
+	//{
+	//	Menu::addInfoBox(
+	//		mapmenu,
+	//		getTranslatedString("Can't vote"),
+	//		getTranslatedString(
+	//			"You are not allowed to vote\n" +
+	//			"to change the map on this server\n"
+	//		)
+	//	);
+	//}
 	Menu::addSeparator(mapmenu);
 
 	//extendtime menu
@@ -1169,17 +1169,17 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			Menu::addSeparator(kickbotsmenu);
 		}
 	}
-	else
-	{
-		Menu::addInfoBox(
-			kickbotsmenu,
-			getTranslatedString("Can't vote"),
-			getTranslatedString(
-				"You are now allowed to votekick\n" +
-				"bots on this server\n"
-			)
-		);
-	}
+	//else
+	//{
+	//	Menu::addInfoBox(
+	//		kickbotsmenu,
+	//		getTranslatedString("Can't vote"),
+	//		getTranslatedString(
+	//			"You are now allowed to votekick\n" +
+	//			"bots on this server\n"
+	//		)
+	//	);
+	//}
 	Menu::addSeparator(kickbotsmenu);
 }
 
