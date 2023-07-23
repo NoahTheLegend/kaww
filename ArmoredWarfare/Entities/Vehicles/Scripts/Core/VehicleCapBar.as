@@ -1,21 +1,23 @@
 #include "TeamColorCOllections.as"
 
 const string capture_prop = "capture time";
+const string last_capture_prop = "last capture time";
 const string teamcapping = "teamcapping";
-const u16 capture_time = 350;
+const f32 capture_time = 350/15; // divide by tck frequency
 
 void onInit(CBlob@ this)
 {
-	this.set_u16(capture_prop, 0);
+	this.set_f32(capture_prop, 0);
 	this.set_u8("numcapping", 0);
 	this.set_s8(teamcapping, -1);
+	this.getCurrentScript().tickFrequency = 15;
 }
 
 void onTick(CBlob@ this)
 {
 	if (this.isAttached()) return;
     float capture_distance = 38.0f; //Distance from this blob that it can be cpaped
-
+	
     u8 num_teamleft = 0;
     u8 num_teamright = 0;
 
@@ -26,7 +28,7 @@ void onTick(CBlob@ this)
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
 
-    for (u16 i = 0; i < blobs.size(); i++)
+    for (f32 i = 0; i < blobs.size(); i++)
     {
         if (blobs[i].hasTag("player") && !blobs[i].hasTag("dead")) // Only players
         {
@@ -58,31 +60,31 @@ void onTick(CBlob@ this)
     		this.set_u8("numcapping", num_teamright);
     		this.set_s8(teamcapping, teamright);
 
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_teamright);
+    		this.set_f32(capture_prop, this.get_f32(capture_prop) + num_teamright);
     	}
     	else if (num_teamleft > 0 && num_teamright == 0 && this.get_s8(teamcapping) != teamright && (this.getTeamNum() == teamright || this.getTeamNum() == 255)) // blue capping
     	{
     		this.set_u8("numcapping", num_teamleft);
     		this.set_s8(teamcapping, teamleft);
 
-    		this.set_u16(capture_prop, this.get_u16(capture_prop) + num_teamleft);
+    		this.set_f32(capture_prop, this.get_f32(capture_prop) + num_teamleft);
     	}
     }
     
-    if ((this.get_u16(capture_prop) > 0 && getGameTime() % 2 == 0) && ((num_teamleft == 0 && this.getTeamNum() == teamright) 
+    if ((this.get_f32(capture_prop) > 0 && getGameTime() % 2 == 0) && ((num_teamleft == 0 && this.getTeamNum() == teamright) 
 		|| (num_teamright == 0 && this.getTeamNum() == teamleft) || (num_teamright == 0 && this.get_s8(teamcapping) == teamright
 		&& this.getTeamNum() == 255) || (num_teamleft == 0 && this.get_s8(teamcapping) == teamleft&& this.getTeamNum() == 255)))
     {
-    	this.set_u16(capture_prop, this.get_u16(capture_prop) - 1);
+    	this.set_f32(capture_prop, this.get_f32(capture_prop) - 1);
     }
-    else if (this.get_u16(capture_prop) == 0) //returned to zero
+    else if (this.get_f32(capture_prop) == 0) //returned to zero
     {
     	this.set_s8(teamcapping, -1);
     }
 
-    if (this.get_u16(capture_prop) >= (this.getTeamNum() == 255 ? capture_time/2 : capture_time))
+    if (this.get_f32(last_capture_prop) >= (this.getTeamNum() == 255 ? capture_time/2 : capture_time))
     {
-    	this.set_u16(capture_prop, 0);
+    	this.set_f32(capture_prop, 0);
 
     	this.server_setTeamNum(this.get_s8(teamcapping));
 
@@ -95,7 +97,8 @@ void onRender(CSprite@ this)
 	CBlob@ blob = this.getBlob();
 	if (blob is null || blob.hasTag("no_cap_bar")) return;
 
-	u16 returncount = blob.get_u16(capture_prop);
+	blob.set_f32(last_capture_prop, Maths::Lerp(blob.get_f32(last_capture_prop), blob.get_f32(capture_prop), 0.01f));
+	f32 returncount = Maths::Min(capture_time, blob.get_f32(last_capture_prop));
 	if (returncount == 0) return;
 
 	const f32 scalex = getDriver().getResolutionScaleFactor()/2;
