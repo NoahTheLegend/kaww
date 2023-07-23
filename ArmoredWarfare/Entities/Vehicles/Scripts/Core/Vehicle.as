@@ -1166,7 +1166,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		return (this.getName() == "maus" || armorRating > 4 ? damage*0.9f : damage * (1.5f+XORRandom(21)*0.01f));
 	}
 
-
 	if (!this.hasTag("aerial") && hitterBlob.getName() == "missile_javelin")
 	{
 		finalRating = Maths::Max(0, finalRating);
