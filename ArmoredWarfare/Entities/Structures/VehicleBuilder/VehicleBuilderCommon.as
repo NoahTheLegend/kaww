@@ -40,7 +40,7 @@ void buildT1ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 35);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -107,7 +107,7 @@ void buildT2ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -233,14 +233,14 @@ void buildT3ShopCombined(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", "Fire thrower.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
+		ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", "Fire thrower.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -297,7 +297,7 @@ void buildT1ShopGround(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 30);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -371,7 +371,7 @@ void buildT2ShopGround(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -462,14 +462,14 @@ void buildT3ShopGround(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", "Fire thrower.\nCan be attached to some tanks.\n\nUses Ammunition.", false, true);
+		ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", "Fire thrower.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
