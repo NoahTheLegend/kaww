@@ -1537,8 +1537,8 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 		warn("Last player left, quitting the game");
 		if (isServer())
 		{
-			QuitGame();
-			//printf("tried to quitgame tdm.as line 1353");
+			//QuitGame();
+			printf("tried to quitgame from TDM.as");
 		}
 	}
 
@@ -1553,8 +1553,13 @@ void onTick(CRules@ this)
 	g_screenshake = true;
 	this.set_u32("lastgametime", getGameTime());
 
-	if (this.get_u32("long_matches_passed") >= max_matches_before_restart && getGameTime() > restart_delay)
+	if (isServer() && this.get_u32("long_matches_passed") >= max_matches_before_restart && getGameTime() > restart_delay)
 	{
+		for (u8 i = 0; i < getPlayersCount(); i++)
+		{
+			CPlayer@ p = getPlayer(i);
+			if (p !is null) getNet().DisconnectPlayer(p);
+		}
 		QuitGame();
 	}
 
