@@ -28,7 +28,7 @@ void onTick(CBlob@ this)
 	{
 		if (isServer() && (getGameTime() + this.getNetworkID()) % 30 == 0)
 		{
-			bucketAdder(this, 0.0625f); // amount of bucket refilled, out of 1.0f
+			bucketAdder(this, 0.05f); // amount of bucket refilled, out of 1.0f
 		}
 
 		float bucketAmount = this.get_f32(bucketAmountString); // MedicisCommon.as
