@@ -112,6 +112,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (hitterBlob is this) return damage;
 	if (hitterBlob.getTeamNum() == this.getTeamNum() && customData != 0) return damage / 10.0f;
 	return damage;
 }
