@@ -883,7 +883,7 @@ bool canHit(CBlob@ this, CBlob@ b, Vec2f tpos, bool extra = true)
 			return false;
 	}
 	//no hitting stuff in hands
-	else if (b.isAttached() && !b.hasTag("player") && !b.hasTag("collidewithbullets") && !b.hasTag("mgunner"))
+	else if (b.isAttached() && !b.hasTag("player") && !b.hasTag("collidewithbullets") && !b.hasTag("machinegunner"))
 	{
 		return false;
 	}

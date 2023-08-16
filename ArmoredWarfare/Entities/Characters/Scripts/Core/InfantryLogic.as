@@ -380,7 +380,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 				const bool large = b.hasTag("blocks sword") && !b.isAttached() && b.isCollidable();
 				if (b.hasTag("ignore sword")) continue;
 				if (b.getTeamNum() == this.getTeamNum()) continue;
-				if (b.exists("mg_invincible") && b.get_u32("mg_invincible") >= getGameTime()) continue;
+				if (b.exists("mg_invincible") && b.get_u8("mg_hidelevel") >= getGameTime()) continue;
 				if (b.getName() == "wooden_platform") damage *= 1.25f;
 				if (b.hasTag("door")) damage *= 2.5f;
 
@@ -1294,7 +1294,7 @@ const u32 firehit_delay = 1;
 
 bool solidHit(CBlob@ this, CBlob@ blob)
 {
-	return ((!blob.isAttached() || blob.hasTag("collidewithbullets") || blob.hasTag("mgunner"))
+	return ((!blob.isAttached() || blob.hasTag("collidewithbullets") || blob.hasTag("machinegunner"))
 			&& !blob.hasTag("machinegun") && (blob.hasTag("wooden")
 			|| blob.hasTag("door") || blob.hasTag("flesh") || blob.hasTag("vehicle")));
 }

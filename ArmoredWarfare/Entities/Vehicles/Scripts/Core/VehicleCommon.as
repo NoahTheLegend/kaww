@@ -651,7 +651,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 
 						moveForce *= Maths::Clamp(this.get_f32("engine_RPM"), 0, engine_topspeed) / 4500;
 
-						if (space && this.getName() != "bradley")
+						/*if (space && this.getName() != "bradley")
 						{
 							AttachmentPoint@[] aps;
 							this.getAttachmentPoints(@aps);
@@ -707,7 +707,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 									}
 								}
 							}
-						}
+						}*/
 
 						bool slopeangle = (angle > 15 && angle < 345 && this.isOnMap());
 

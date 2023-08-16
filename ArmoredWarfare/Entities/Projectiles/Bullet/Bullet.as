@@ -447,7 +447,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 	if (is_young && (blob.hasTag("vehicle") || blob.getName() == "sandbags")) return false;
 
-	if (blob.hasTag("player") && blob.exists("mg_invincible") && blob.get_u32("mg_invincible") > getGameTime())
+	if (blob.hasTag("player") && blob.exists("mg_invincible") && blob.get_u8("mg_hidelevel") > getGameTime())
 		return false;
 		
 	if (blob.hasTag("vehicle"))
