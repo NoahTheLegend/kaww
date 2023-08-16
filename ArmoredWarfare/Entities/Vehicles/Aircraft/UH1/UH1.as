@@ -38,6 +38,7 @@ void onInit(CBlob@ this)
 	this.set_bool("music", false);
 
 	this.addCommandID("shoot bullet");
+	this.addCommandID("sync_vel");
 
 	if (this !is null)
 	{
@@ -421,6 +422,13 @@ void onTick(CBlob@ this)
 			this.setAngleDegrees(this.getAngleDegrees() + (Maths::Sin(getGameTime() / 5.0f) * 8.5f));
 		}
 	}
+
+	if (isServer() && (getGameTime()+this.getNetworkID())%90==0)
+	{
+		CBitStream params;
+		params.write_Vec2f(this.get_Vec2f("target_force"));
+		this.SendCommand(this.getCommandID("sync_vel"), params);
+	}
 }
 
 void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
@@ -441,9 +449,18 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		this.server_Die();
 }
 
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
-	if (cmd == this.getCommandID("shoot bullet"))
+	if (cmd == this.getCommandID("sync_vel"))
+	{
+		if (isClient())
+		{
+			Vec2f vel;
+			if (!params.saferead_Vec2f(vel)) return;
+			this.set_Vec2f("target_force", vel);
+		}
+	}
+	else if (cmd == this.getCommandID("shoot bullet"))
 	{
 		this.set_u32("next_shoot", getGameTime()+15);
 		Vec2f arrowPos;
@@ -623,9 +640,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 0.65f;
 	}
-
-	return damage;
-
+	
 	return damage;
 }
 
