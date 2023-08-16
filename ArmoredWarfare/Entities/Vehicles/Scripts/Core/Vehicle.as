@@ -334,7 +334,7 @@ void ManageDisguise(CBlob@ this)
 		{
 			if (!this.hasTag("turret"))
 			{
-				this.setInventoryName("");
+				this.setInventoryName("Hidden");
 			}
 			
 			this.set_u32("disguise", getGameTime() + 90);
