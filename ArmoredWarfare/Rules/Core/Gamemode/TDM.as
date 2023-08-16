@@ -1902,6 +1902,7 @@ const string[] LargeMaps = {
 	//"Goldy_KAWW_Sewage.png",
 	"BloodGulch.png",
 	"SkeletalTowers.png",
+	"SerenityHills.png",
 	"WorldwarFlagless.png",
 	"ClassicFlagless.png",
 	"BridgeWater.png",
