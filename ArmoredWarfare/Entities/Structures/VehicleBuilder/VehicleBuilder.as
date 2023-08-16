@@ -40,7 +40,7 @@ void onInit(CBlob@ this)
 		buildT1ShopCombined(this);
 	else if (this.getName() == "vehiclebuildert2" || this.getName() == "vehiclebuildert2const")
 		buildT2ShopCombined(this);
-	else if (this.getName() == "vehiclebuildert3" || this.getName() == "vehiclebuildert3const")
+	else if (this.getName() == "vehiclebuildert3")
 		buildT3ShopCombined(this);
 	//Ground only
 	if (this.getName() == "vehiclebuilderground" || this.getName() == "vehiclebuildergroundconst")

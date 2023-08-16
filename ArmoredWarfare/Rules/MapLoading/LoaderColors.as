@@ -267,8 +267,6 @@ namespace map_colors
 		r_vehiclebuilderconst       = 0xff47133f,
 		b_vehiclebuildert2const     = 0xff3e3c4f,
 		r_vehiclebuildert2const     = 0xff47333f,
-		b_vehiclebuildert3const     = 0xff3e3e4f,
-		r_vehiclebuildert3const     = 0xff47343f,
 
 		//only ground vehicles
 		b_vehiclebuilderground       = 0xff3e3cf7,
@@ -336,6 +334,8 @@ namespace map_colors
 
 		blue_uh1               = 0xff133899,
 		red_uh1                = 0xff113cce,
+		blue_ah1               = 0xff1338a9,
+		red_ah1                = 0xffa13cce,
 
 		blue_outpost           = 0xffff6f98,
 		red_outpost            = 0xff980fff,
