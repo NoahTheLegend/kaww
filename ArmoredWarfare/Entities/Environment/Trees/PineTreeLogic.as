@@ -42,9 +42,6 @@ void onInit(CBlob@ this)
 
 	u8 icon_frame = 11;
 	if (this.hasTag("startbig")) icon_frame = 13;
-	
-	if (getBlobByName("info_snow") !is null)
-		this.set_u8("particle type", 1);
 }
 
 void onTick(CBlob@ this)
@@ -62,6 +59,15 @@ void onTick(CBlob@ this)
 				this.Tag("no logs");
 				this.server_Die();
 			}
+		}
+		
+		if (isServer())
+		{
+			if (getBlobByName("info_snow") !is null) this.set_u8("particle type", 1);
+			else if (getBlobByName("info_desert") !is null) this.set_u8("particle type", 2);
+			else this.set_u8("particle type", 0);
+
+			this.Sync("particle type", true);
 		}
 	}
 
