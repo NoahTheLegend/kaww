@@ -451,14 +451,11 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
-	if (cmd == this.getCommandID("sync_vel"))
+	if (isClient() && cmd == this.getCommandID("sync_vel"))
 	{
-		if (isClient())
-		{
-			Vec2f vel;
-			if (!params.saferead_Vec2f(vel)) return;
-			this.set_Vec2f("target_force", vel);
-		}
+		Vec2f vel;
+		if (!params.saferead_Vec2f(vel)) return;
+		this.set_Vec2f("target_force", vel);
 	}
 	else if (cmd == this.getCommandID("shoot bullet"))
 	{

@@ -136,6 +136,7 @@ bool Rules_AlreadyHasVote(CRules@ this)
 
 bool Vote_Conclusive(VoteObject@ vote)
 {
+	printf(""+vote.required_percent)
 	bool adminOnline = getRules().get_bool("admin online");
 	return !adminOnline && (vote.current_yes > vote.required_percent * vote.maximum_votes
 	                        || vote.current_no > (1 - vote.required_percent) * vote.maximum_votes
