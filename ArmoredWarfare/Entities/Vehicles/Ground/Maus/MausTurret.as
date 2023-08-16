@@ -9,7 +9,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u16 cooldown_time = 330;
+const u16 cooldown_time = 360;
 const f32 damage_modifier = 1.25f;
 
 const s16 init_gunoffset_angle = -2; // up by so many degrees

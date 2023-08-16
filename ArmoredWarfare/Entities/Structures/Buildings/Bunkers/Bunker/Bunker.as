@@ -7,7 +7,7 @@ void onInit(CBlob@ this)
 	this.set_TileType("background tile", CMap::tile_castle_back);
 	this.Tag("builder always hit");
 	this.Tag("bunker");
-	this.set_s8(armorRatingString, 2);
+	this.set_s8(armorRatingString, 3);
 
 	this.getShape().getConsts().mapCollisions = false;
 
