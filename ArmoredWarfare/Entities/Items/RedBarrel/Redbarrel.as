@@ -8,9 +8,8 @@ void onInit(CBlob@ this)
 	this.Tag("always bullet collide");
 	this.Tag("trap");
 
-	this.getShape().SetRotationsAllowed(false);
-
 	this.getSprite().SetZ(-20.0f);
+	this.Tag("heavy weight");
 }
 
 void onTick(CBlob@ this)
@@ -39,7 +38,7 @@ void onTick(CBlob@ this)
 
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 {
-	return false;
+	return true;
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -131,4 +130,10 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 {
 	if (!isClient()) return;
 	ParticleAnimated(filename, this.getPosition() + pos, vel, float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 1 + XORRandom(4), XORRandom(100) * -0.00005f, true);
+}
+
+void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
+{
+	this.getSprite().SetZ(-20);
+	this.getSprite().SetRelativeZ(-20);
 }
