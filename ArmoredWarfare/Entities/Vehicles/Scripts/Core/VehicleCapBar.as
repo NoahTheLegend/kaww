@@ -177,3 +177,9 @@ void onRender(CSprite@ this)
 	GUI::SetFont("menu");
 	GUI::DrawShadowedText("★ Capturing... ★", Vec2f(pos.x - dimension.x + -2, pos.y + 12), SColor(0xffffffff));
 }
+
+void onChangeTeam(CBlob@ this, const int oldTeam)
+{
+	this.set_f32(capture_prop, 0);
+	this.set_f32(last_capture_prop, 0);
+}
