@@ -329,7 +329,11 @@ shared class TDMSpawns : RespawnSystem
 		{// && getBlobByNetworkID(p.get_u16("spawnpick")).hasTag("spawn")
 			//printf("done");
 			CBlob@ b = getBlobByNetworkID(p.get_u16("spawnpick"));
-			if (b.getName() == "outpost") b.server_Hit(b, b.getPosition(), Vec2f(0,0), b.getInitialHealth()/(b.get_u16("max_respawns")+1), Hitters::builder);
+			if (b.getName() == "outpost")
+			{
+				f32 dmg = b.getInitialHealth()/(b.get_u16("max_respawns")+1);
+				b.server_Hit(b, b.getPosition(), Vec2f(0,0), dmg, Hitters::builder);
+			}
 			teamspawns.push_back(b);
 			return b.getPosition();
 		}
