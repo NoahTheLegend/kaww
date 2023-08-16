@@ -18,7 +18,7 @@ void onInit(CBlob@ this)
 	//this.server_setTeamNum(0);
 	this.getShape().getConsts().mapCollisions = false;
 
-	this.set_u16(capture_prop, 0);
+	this.set_f32(capture_prop, 0);
 	this.set_s8(teamcapping, -1); //1 is teamright, 0 is teamleft, this is also a commentary on the nature of team colors and the effect it has on team performance. The color teamright, associated with blood will positively impact a team's competitive gameplay. For opposing teams, a teamright coloteamright enemy player will subconsiously instill fear.
 	//this.set_bool(isteamleftcapture, false); //false is teamright, true is teamleft, this is also a commentary on the nature of good and evil, and colors.
 	this.set_u8("numcapping", 0);
@@ -36,7 +36,7 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 {
 	if (oldTeam > 6)
 	{
-		this.set_u16(capture_prop, 0);
+		this.set_f32(capture_prop, 0);
 	}
 
 	//this.set_u8("oldteam", this.getTeamNum());
@@ -176,9 +176,9 @@ void onTick(CBlob@ this)
     		this.set_s8(teamcapping, teamright);
 
     		num_teamright = Maths::Min(num_teamright, 2);
-    		u16 time = this.get_u16(capture_prop) + num_teamright * (getMap() !is null && isTDM ? 1 : 2);
+    		u16 time = this.get_f32(capture_prop) + num_teamright * (getMap() !is null && isTDM ? 1 : 2);
 			if (time > capture_time*4) time = 0;
-    		this.set_u16(capture_prop, time);
+    		this.set_f32(capture_prop, time);
 		}
     	else if (num_teamleft > 0 && num_teamright == 0 && this.get_s8(teamcapping) != teamright && (this.getTeamNum() == teamright || this.getTeamNum() == 255)) // teamleft capping
     	{
@@ -186,16 +186,16 @@ void onTick(CBlob@ this)
     		this.set_s8(teamcapping, teamleft);
 
     		num_teamleft = Maths::Min(num_teamleft, 2);
-			u16 time = this.get_u16(capture_prop) + num_teamleft * (getMap() !is null && isTDM ? 1 : 2);
+			u16 time = this.get_f32(capture_prop) + num_teamleft * (getMap() !is null && isTDM ? 1 : 2);
 			if (time > capture_time*4) time = 0;
-    		this.set_u16(capture_prop, time);
+    		this.set_f32(capture_prop, time);
 		}
     }
-	else if (this.get_u16(capture_prop) > 0
-	&& (this.get_u16(capture_prop) < (capture_time / 4) - 5
-	|| this.get_u16(capture_prop) > (capture_time / 4) + 5)) this.add_u16(capture_prop, -1); // printf("prop "+this.get_u16(capture_prop));
+	else if (this.get_f32(capture_prop) > 0
+	&& (this.get_f32(capture_prop) < (capture_time / 4) - 5
+	|| this.get_f32(capture_prop) > (capture_time / 4) + 5)) this.add_f32(capture_prop, -1); // printf("prop "+this.get_f32(capture_prop));
 
-    if ((this.get_u16(capture_prop) > 0
+    if ((this.get_f32(capture_prop) > 0
 	&& getGameTime() % 2 == 0)
 	&& ((num_teamleft == 0 && this.getTeamNum() == teamright)
 	|| (num_teamright == 0 && this.getTeamNum() == teamleft)
@@ -203,7 +203,7 @@ void onTick(CBlob@ this)
 	|| (num_teamleft  == 0 && this.get_s8(teamcapping) == teamleft && this.getTeamNum() == 255)))
     {
 		u8 mod = 0;
-		if (this.get_u16(capture_prop) > 50+getPlayersCount())
+		if (this.get_f32(capture_prop) > 50+getPlayersCount())
 			mod = num_teamleft+num_teamright;
 		else
 		{
@@ -214,18 +214,18 @@ void onTick(CBlob@ this)
 
 		//printf(""+mod);
 
-		u16 time = this.get_u16(capture_prop) - (2+mod);
+		u16 time = this.get_f32(capture_prop) - (2+mod);
 		if (time > capture_time*4) time = 0;
-    	this.set_u16(capture_prop, time);
+    	this.set_f32(capture_prop, time);
     }
-    else if (this.get_u16(capture_prop) == 0) //returned to zero
+    else if (this.get_f32(capture_prop) == 0) //returned to zero
     {
     	this.set_s8(teamcapping, -1);
     }
 
-    if (this.get_u16(capture_prop) >= (this.getTeamNum() == 255 ? capture_time/2 : capture_time))
+    if (this.get_f32(capture_prop) >= (this.getTeamNum() == 255 ? capture_time/2 : capture_time))
     {
-    	this.set_u16(capture_prop, 0);
+    	this.set_f32(capture_prop, 0);
 
     	this.server_setTeamNum(this.get_s8(teamcapping));
 
@@ -240,13 +240,13 @@ void onTick(CBlob@ this)
 		f32 offsety = this.get_f32("offsety");
 		bool down = false;
 		u8 team = this.getTeamNum();
-		if (this.get_u16(capture_prop) < (capture_time / 2)) down = true;
+		if (this.get_f32(capture_prop) < (capture_time / 2)) down = true;
 		if (down && !(team < 7)) flag.SetVisible(false);
 
 		if (team < 7)
 		{
 			f32 max = capture_time / 4;
-			f32 curr = this.get_u16(capture_prop);
+			f32 curr = this.get_f32(capture_prop);
 			f32 mod = (curr/(max)) * 1.0f;
 			offsety = (down ? -51.0f*(1.0f - mod) : 51.0f * (3.0f - mod));
 			if (offsety > 49.0f)
@@ -263,11 +263,11 @@ void onTick(CBlob@ this)
 		else
 		{
 			f32 max = capture_time / 4;
-			f32 curr = this.get_u16(capture_prop);
+			f32 curr = this.get_f32(capture_prop);
 			f32 mod = (curr/(max/2)) * 1.0f;
 			offsety = 17.5f * (3.0f - mod*1.5);
 
-			if (num_teamleft == 0 && num_teamright == 0 && this.get_u16(capture_prop) == 1)
+			if (num_teamleft == 0 && num_teamright == 0 && this.get_f32(capture_prop) == 1)
 			{
 				for (u8 i = 0; i < 15; i++)
 				{
@@ -304,7 +304,7 @@ void onTick(CBlob@ this)
 					flag.SetAnimation(this.getTeamNum() == teamleft ? anim_teamleft : anim_teamright);
 				}
 			}
-			else if (this.get_u16(capture_prop) > 0 || (num_teamleft > 0 || num_teamright > 0))
+			else if (this.get_f32(capture_prop) > 0 || (num_teamleft > 0 || num_teamright > 0))
 			{
 				flag.SetVisible(true);
 				if (this.get_s8(teamcapping) == teamleft)
@@ -349,7 +349,7 @@ void onRender(CSprite@ this)
 	if (getLocalPlayer() !is null && getLocalPlayer().getBlob() !is null
 	&& (getLocalPlayer().getBlob().getAimPos() - blob.getPosition()).Length() <= 88.0f)
 		focus = true;
-	u16 returncount = blob.get_u16(capture_prop);
+	u16 returncount = blob.get_f32(capture_prop);
 
 	if (returncount == 0 && !focus) return;
 	GUI::SetFont("menu");

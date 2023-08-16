@@ -202,7 +202,7 @@ class WheelMenu
 
 		@hovered = null;
 
-		Vec2f cursor = getControls().getMouseScreenPos()-Vec2f(4,4);
+		Vec2f cursor = getControls().getMouseScreenPos()-Vec2f(3,3);
 
 		// ignore cursor at center of the screen
 		if (is_cursor_in_range(cursor, WheelMenu::hover_distance))
