@@ -7,13 +7,9 @@
 #include "ScreenHoverButton.as";
 
 const int STUNTIME = 45;
-CBlob@ nextfloor;
-CBlob@ prevfloor;
 Vec2f Up;
 Vec2f Down;
-CBlob@[] staircase;
 bool doesStaircaseExist;
-
 
 void onInit(CBlob@ this)
 {
@@ -23,6 +19,8 @@ void onInit(CBlob@ this)
     this.addCommandID("go up");
     this.addCommandID("go down");
     this.set_TileType("background tile", CMap::tile_castle_back);
+    
+    this.getCurrentScript().tickFrequency = 90;
 
     HoverButton@ buttons;
     if (!this.get("HoverButton", @buttons))
@@ -60,6 +58,16 @@ void onInit(CBlob@ this)
     if (buttons is null) return;
 }
 
+void onTick(CBlob@ this)
+{
+    if (!this.hasTag("bedrockcheck"))
+    {
+        if (getMap() !is null && getMap().isTileBedrock(getMap().getTile(this.getPosition()+Vec2f(0, 16)).type))
+            this.AddScript("IgnoreDamage.as");
+        this.Tag("bedrockcheck");
+    }
+}
+
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
     const u16 callerID = params.read_u16();
@@ -67,10 +75,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
     if(caller !is null && this.getDistanceTo(caller) < this.getRadius() && !isKnocked(caller))
     {
-        if(cmd == this.getCommandID("go up") )
+        if(cmd == this.getCommandID("go up"))
         {
+            CBlob@[] staircase;
             doesStaircaseExist = getStaircase(this, staircase);
-            @nextfloor = getNextFloor(this, staircase); 
+            CBlob@ nextfloor = getNextFloor(this, staircase); 
 
             if(nextfloor !is null && isKnockable(caller))
             {
@@ -88,8 +97,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
         if (cmd == this.getCommandID("go down"))
         {
+            CBlob@[] staircase;
             doesStaircaseExist = getStaircase(this, staircase);
-            @prevfloor = getPreviousFloor(this, staircase);
+            CBlob@ prevfloor = getPreviousFloor(this, staircase);
 
             if(prevfloor !is null && isKnockable(caller))
             {
@@ -102,22 +112,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
                 {
                     Travel(this, caller, prevfloor, Down, false);
                 }  
-            }
-        }
-    }
-}
-
-void onTick(CBlob@ this)
-{
-    if (getLocalPlayer() !is null)
-    {
-        CBlob@ local = getLocalPlayer().getBlob();
-        if (local !is null)
-        {
-            HoverButton@ buttons;
-            if (this.get("HoverButton", @buttons))
-            {
-                buttons.active = local.isOverlapping(this) && local.isKeyPressed(key_down);
             }
         }
     }
