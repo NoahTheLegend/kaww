@@ -106,7 +106,7 @@ void onInit(CBlob@ this)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
-	attached.Tag("mgunner");
+	attached.Tag("machinegunner");
 	if (!attached.hasTag("has mount")) return;
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
 	if (cage !is null)
@@ -117,7 +117,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
-	detached.Untag("mgunner");
+	detached.Untag("machinegunner");
 	if (detached.getSprite() !is null) detached.getSprite().ResetTransform();
 	if (this.isAttached()) return;
 
@@ -249,7 +249,7 @@ void onTick(CBlob@ this)
 		{
 			CBlob@ gunner = ap.getOccupied();
 			CSprite@ gsprite = gunner.getSprite();
-			f32 perc = (gunner.get_u8("mg_offset")*0.8f) / 4.0f;
+			f32 perc = (gunner.get_u8("mg_hidelevel")*0.8f) / 4.0f;
 
 			if (gsprite !is null)
 			{
@@ -258,11 +258,10 @@ void onTick(CBlob@ this)
 			}
 			if (ap.isKeyPressed(key_action2))
 			{
-				gunner.set_u32("mg_invincible", getGameTime()+1);
-				if (gunner.get_u8("mg_offset") > 0) gunner.set_u8("mg_offset", gunner.get_u8("mg_offset") - 1);
+				if (gunner.get_u8("mg_hidelevel") > 0) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") - 1);
 			}
-			else if (gunner.get_u8("mg_offset") < 5) gunner.set_u8("mg_offset", gunner.get_u8("mg_offset") + 1);
-			if (gunner.get_u8("mg_offset") < 5) return;
+			else if (gunner.get_u8("mg_hidelevel") < 5) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") + 1);
+			if (gunner.get_u8("mg_hidelevel") < 5) return;
 		}
 	}
 

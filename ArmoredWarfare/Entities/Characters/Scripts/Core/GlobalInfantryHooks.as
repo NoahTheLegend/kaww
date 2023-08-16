@@ -14,7 +14,15 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		damage *= extra_amount;
 	}
 
-	bool exposed = this.hasTag("mgunner") || this.hasTag("collidewithbullets");
+	bool exposed = this.hasTag("machinegunner") || this.hasTag("collidewithbullets");
+	bool mg_attached = false;
+	if (exposed)
+	{
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+		mg_attached = ap !is null && ap.getOccupied() !is null && ap.getOccupied().isAttached();
+	}
+	bool hiding = this.get_u8("mg_hidelevel") > getGameTime();
+
 	s8 pen = hitterBlob.get_s8("pen_level");
 
 	bool is_bullet = (customData == HittersAW::bullet || customData == HittersAW::heavybullet
@@ -80,10 +88,21 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (this.isAttached())
 	{
 		if (customData == Hitters::explosion)
-			return damage*(exposed ? 0.33f : 0.05f);
+		{
+			//printf("explosion");
+			//printf(""+damage * (exposed && !mg_attached ? 0.2f : hiding ? 0.01f : 0.025f));
+			damage *= (exposed && !mg_attached ? 0.2f : hiding ? 0.01f : 0.025f);
+		}
 		else if (is_bullet)
-			return damage*0.5f;
-		else return ((customData == Hitters::sword && exposed) ? damage*0.5f : 0);
+		{
+			//printf("bullet");
+			damage *= 0.5f;
+		}
+		else if (customData == Hitters::sword)
+		{
+			//printf("sword");
+			damage *= (exposed ? 0.5f : 0);
+		}
 	}
 	if (this.getPlayer() !is null)
 	{
