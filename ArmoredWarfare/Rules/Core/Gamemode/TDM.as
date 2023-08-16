@@ -11,6 +11,7 @@ const u32 min_gametime_to_increment = 20 * 30*60;
 const int max_matches_before_restart = 5; // change this in TDM_interface.as too
 const u16 restart_delay = 450; // this too
 const u8 MAX_BOTS = 8; // fills while server's pop is lesser than value
+const bool autorestart = false;
 
 ConfigFile cfg_playerexp;
 
@@ -1223,8 +1224,8 @@ void HandleResetInfo(CRules@ this)
 
 void onRestart(CRules@ this)
 {
-	HandleResetInfo(this);
-	WriteMatchInfo(this);
+	if (autorestart) HandleResetInfo(this);
+	//WriteMatchInfo(this);
 
 	Reset(this);
 	this.set_u32("warn_extended_time", 0);
