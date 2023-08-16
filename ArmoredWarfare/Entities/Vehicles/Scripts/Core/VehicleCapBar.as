@@ -99,7 +99,7 @@ void onRender(CSprite@ this)
 
 	blob.set_f32(last_capture_prop, Maths::Lerp(blob.get_f32(last_capture_prop), blob.get_f32(capture_prop), 0.1f));
 	f32 returncount = Maths::Min(capture_time, blob.get_f32(last_capture_prop));
-	if (returncount == 0) return;
+	if (returncount <= 1) return;
 
 	const f32 scalex = getDriver().getResolutionScaleFactor()/2;
 	const f32 zoom = getCamera().targetDistance * scalex;
