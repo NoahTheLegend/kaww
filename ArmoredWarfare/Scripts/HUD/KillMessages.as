@@ -6,6 +6,7 @@
 #include "HoverMessage.as";
 #include "AssistCommon.as";
 #include "PlayerRankInfo.as";
+#include "TeamColorCollections.as"
 
 int fade_time = 350;
 
@@ -115,7 +116,7 @@ class KillFeed
 				GUI::GetTextDimensions(message.attacker_tag + " ", attacker_tag_size);
 				Vec2f dim(getScreenWidth() - attacker_name_size.x - max_username_size.x - max_clantag_size.x - single_space_size.x - 36, 0);
 				ul.Set(dim.x + 160, (message_step + yOffset + assists) * 28);
-				col = getTeamColor(message.attackerteam);
+				col = getNeonColor(message.attackerteam, 0);
 				GUI::DrawText(message.attacker, ul, col);
 
 				ul.x -= attacker_tag_size.x;
@@ -133,7 +134,7 @@ class KillFeed
 				GUI::GetTextDimensions(message.helper_tag + " ", helper_tag_size);
 				Vec2f dim(getScreenWidth() - helper_name_size.x - max_username_size.x - max_clantag_size.x - single_space_size.x - 36, 0);
 				ul.Set(dim.x + 160, (message_step + yOffset + assists + 1) * 28);
-				col = getTeamColor(message.attackerteam);
+				col = getNeonColor(message.attackerteam, 0);
 				GUI::DrawText(message.helper, ul, col);
 
 				ul.x -= helper_tag_size.x;
@@ -221,7 +222,7 @@ class KillFeed
 				GUI::DrawText(message.victim_tag, ul, col);
 
 				ul.Set(dim.x + 160 + victim_tag_size.x, (message_step + yOffset + assists) * 28);
-				col = getTeamColor(message.victimteam);
+				col = getNeonColor(message.victimteam, 0);
 				GUI::DrawText(message.victim, ul, col);
 			}
 

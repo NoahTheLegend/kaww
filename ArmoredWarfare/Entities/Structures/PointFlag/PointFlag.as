@@ -1,5 +1,5 @@
 #include "PlayerRankInfo.as"
-#include "TeamColorCOllections.as"
+#include "TeamColorCollections.as"
 
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
