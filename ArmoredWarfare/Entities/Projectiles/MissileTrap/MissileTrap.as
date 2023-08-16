@@ -26,11 +26,7 @@ void onTick(CBlob@ this)
 	{
 		this.setVelocity(Vec2f(this.getVelocity().x*0.975f, this.getVelocity().y));
 	}
-	if (this.getTickSinceCreated() > (5 + (Maths::Sqrt(this.getNetworkID())%10)))
-	{
-		this.setVelocity(Vec2f(this.getVelocity().x, 1.0f));
-	}
-
+	
 	if (isClient())
 	{
 		if (this.getSprite() !is null) this.getSprite().setRenderStyle(RenderStyle::outline_front);

@@ -29,7 +29,7 @@ const Vec2f miniGun_offset = Vec2f(-40,5);
 const u8 shootDelay = 2;
 
 const int trap_cooldown = 20*30;
-const u8 traps_amount = 5;
+const u8 traps_amount = 6;
 
 void onInit(CBlob@ this)
 {
@@ -626,16 +626,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			for (u8 i = 0; i < traps_amount; i++)
 			{
-				CBlob@ proj = server_CreateBlob("missiletrap", this.getTeamNum(), this.getPosition()+Vec2f(XORRandom(8)-4, XORRandom(8)-4));
+				CBlob@ proj = server_CreateBlob("missiletrap", this.getTeamNum(), this.getPosition()+Vec2f(XORRandom(8)-4, 0));
 				if (proj is null) return;
 
 				proj.set_u16("heli_id", this.getNetworkID());
-				Vec2f vel = Vec2f(0, -8).RotateBy(((195+XORRandom(166))/traps_amount) * i - 90);
-				vel.y = -0.5f * XORRandom(6);
-				vel.x *= 0.25f;
+	
+				Vec2f vel = Vec2f(-XORRandom(21)*0.1f-1.0f, 0).RotateBy(180/(traps_amount-1)*i);
 				proj.setVelocity(vel);
-				proj.getShape().SetGravityScale(0);
-				proj.server_SetTimeToDie(5.0f);
+				proj.getShape().SetGravityScale(0.025f);
+				proj.server_SetTimeToDie(10.0f);
 			}
 		} 
 	}
