@@ -348,8 +348,8 @@ void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f coll
 		else if (blob.hasTag("tank")) damage *= 3.0f;
 		else if (blob.hasTag("motorcycle"))
 		{
-			damage = 0.25f;
 			this.server_Hit(blob, blob.getPosition(), blob.getVelocity(), damage*4, Hitters::fall);
+			damage = 0;
 		}
 
 		damage *= 1.0f;
