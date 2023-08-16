@@ -324,7 +324,7 @@ shared class TDMSpawns : RespawnSystem
 		//}
 		CBlob@ sp = getBlobByNetworkID(p.get_u16("spawnpick"));
 		if (p !is null && sp !is null
-		&& sp.get_u16("capture time") == 0
+		&& sp.get_f32("capture time") == 0
 		&& p.getTeamNum() == sp.getTeamNum())
 		{// && getBlobByNetworkID(p.get_u16("spawnpick")).hasTag("spawn")
 			//printf("done");

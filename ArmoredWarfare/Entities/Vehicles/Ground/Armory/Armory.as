@@ -332,7 +332,7 @@ void onTick(CBlob@ this)
 
 	CBlob@[] tents;
 	getBlobsByName("tent", @tents);
-	if (tents.length == 0) this.set_u16("capture time", 0);
+	if (tents.length == 0) this.set_f32("capture time", 0);
 }
 
 // Lose
