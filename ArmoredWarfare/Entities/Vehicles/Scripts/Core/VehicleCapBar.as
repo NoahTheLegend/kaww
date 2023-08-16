@@ -1,4 +1,4 @@
-#include "TeamColorCOllections.as"
+#include "TeamColorCollections.as"
 
 const string capture_prop = "capture time";
 const string last_capture_prop = "last capture time";
