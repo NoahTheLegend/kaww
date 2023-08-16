@@ -1933,8 +1933,7 @@ const string[] AverageMaps = {
 	"KnollTDM.png",
 	"LandscapingTDM.png",
 	"SoldiercombatTDM.png",
-	"TheCityTDM.png",
-	"TriPointTDM.png"
+	"TheCityTDM.png"
 };
 
 const string[] FlagMaps = {
@@ -1944,8 +1943,7 @@ const string[] FlagMaps = {
 	"Goldy_KAWW_Megalith.png",
 	"Mortar.png",
 	"PlainHills.png",
-	"Worldwar.png",
-	"TriPointTDM.png"
+	"Worldwar.png"
 };
 
 const string[] TruckMaps = {
