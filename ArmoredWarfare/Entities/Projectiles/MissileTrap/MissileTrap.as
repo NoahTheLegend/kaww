@@ -3,7 +3,7 @@
 #include "HittersAW.as";
 #include "MakeDustParticle.as";
 
-const f32 distance = 256.0f; // 32 tiles
+const f32 distance = 384.0f; // 48 tiles
 
 void onInit(CBlob@ this)
 {
