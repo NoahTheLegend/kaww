@@ -51,6 +51,7 @@ void onInit(CBlob@ this)
 	this.set_bool("lastTurn", false);
 	this.addCommandID("shoot bullet");
 	this.addCommandID("release traps");
+	this.addCommandID("sync_vel");
 
 	this.set_u32("traps_endtime", trap_cooldown);
 	this.set_f32("traps_time", trap_cooldown); // load immediately
@@ -473,6 +474,13 @@ void onTick(CBlob@ this)
 			this.setAngleDegrees(this.getAngleDegrees() + (Maths::Sin(getGameTime() / 5.0f) * 8.5f));
 		}
 	}
+
+	if (isServer() && (getGameTime()+this.getNetworkID())%90==0)
+	{
+		CBitStream params;
+		params.write_Vec2f(this.get_Vec2f("target_force"));
+		this.SendCommand(this.getCommandID("sync_vel"), params);
+	}
 }
 
 void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
@@ -527,7 +535,16 @@ void ShootGun(CBlob@ this, f32 angle, Vec2f gunPos)
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-	if (cmd == this.getCommandID("shoot"))
+	if (cmd == this.getCommandID("sync_vel"))
+	{
+		if (isClient())
+		{
+			Vec2f vel;
+			if (!params.saferead_Vec2f(vel)) return;
+			this.set_Vec2f("target_force", vel);
+		}
+	}
+	else if (cmd == this.getCommandID("shoot"))
 	{
 		this.set_u32("next_shoot", getGameTime()+shootDelay);
 		s32 arrowAngle;
