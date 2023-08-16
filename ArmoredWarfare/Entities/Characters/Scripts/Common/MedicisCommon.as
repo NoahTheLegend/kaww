@@ -17,8 +17,9 @@ void drawBucketHud(float bucketAmount, float bucketCost)
 
 void drawMedicCalling(Vec2f HUDpos)
 {
-	u8 frame = (getGameTime() % 180) / 20;
-	if (frame > 4) frame = 9 - frame;
+	//u8 frame = (getGameTime() % 180) / 20;
+	//if (frame > 4) frame = 9 - frame;
+	frame = 0;
 	GUI::DrawIcon("CallMedic.png", frame, Vec2f(16, 16), HUDpos);
 }
 
