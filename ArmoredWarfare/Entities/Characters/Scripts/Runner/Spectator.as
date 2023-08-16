@@ -42,25 +42,30 @@ void Spectator(CRules@ this)
 	//Zoom in and out using mouse wheel
 	if (timeToScroll <= 0)
 	{
-		if (controls.mouseScrollUp)
+		if (controls.mouseScrollUp && zoomTarget < 2.5f)
 		{
-			timeToScroll = 7;
-			if (zoomTarget < 1.0f)
-				zoomTarget = 1.0f;
+			
+			if (zoomTarget < 0.5f)
+			{
+				zoomTarget += 0.1f;
+				timeToScroll = 3;
+			}
 			else
-				zoomTarget = 2.0f;
-
+			{
+				zoomTarget += 0.5f;
+				timeToScroll = 5;
+			}
 		}
-		else if (controls.mouseScrollDown)
+		else if (controls.mouseScrollDown && zoomTarget > 0.5f)
 		{
-			timeToScroll = 7;
-			if (zoomTarget > 1.0f)
-				zoomTarget = 1.0f;
-			else
-				zoomTarget = 0.5f;
-
+			timeToScroll = 5;
+			zoomTarget -= 0.5f;
 		}
-
+		else if (controls.mouseScrollDown && zoomTarget > 0.2f)
+		{
+			timeToScroll = 3;
+			zoomTarget -= 0.1f;
+		}
 	}
 	else
 	{
