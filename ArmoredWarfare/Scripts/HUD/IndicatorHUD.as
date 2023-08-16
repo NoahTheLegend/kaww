@@ -454,7 +454,7 @@ void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 {
 	if (flag is null) return;
 
-	u16 returncount = flag.get_u16("capture time");
+	u16 returncount = flag.get_f32("capture time");
 	if (returncount == 0) return;
 
 	GUI::SetFont("menu");
