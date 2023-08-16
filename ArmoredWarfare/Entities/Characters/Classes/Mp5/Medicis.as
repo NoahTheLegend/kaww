@@ -96,7 +96,7 @@ void onRender(CSprite@ this)
 	if (thisBlob.hasTag(medicTagString))
 	{
 		CBlob@ target_to_heal = getBlobByNetworkID(thisBlob.get_u16("heal_target_id"));
-		if (target_to_heal !is null)
+		if (target_to_heal !is null && thisBlob.isMyPlayer())
 		{
 			if (thisBlob.get_u16("last_target") != target_to_heal.getNetworkID())
 			{
