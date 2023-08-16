@@ -43,7 +43,7 @@ SColor getNeonColor(u8 team, u8 darkness)
 		}
 		case 5: // cyan (changed to yellow)
 		{
-			color_light = 0xffc9d500;
+			color_light = 0xffc1cd00;
 			color_mid	= 0xff969e00;
 			color_dark	= 0xff727800;
 			break;
