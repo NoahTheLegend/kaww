@@ -43,11 +43,8 @@ void onInit(CBlob@ this)
 	u8 icon_frame = 11;
 	if (this.hasTag("startbig")) icon_frame = 13;
 	
-	if (isServer())
-	{
-		this.set_u8("particle type", 1);	// 0: bushy, 1: pine
-		this.Sync("particle type", true);
-	}
+	if (getBlobByName("info_snow") !is null)
+		this.set_u8("particle type", 1);
 }
 
 void onTick(CBlob@ this)
