@@ -99,7 +99,7 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Buy stone (250)", "$mat_stone$", "mat_stone", "Purchase 250 stone.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 30);
+			AddRequirement(s.requirements, "coin", "", "Coins", 36);
 		}
 	}
 	else // tdm maps
