@@ -24,7 +24,7 @@ void onTick(CSprite@ this)
 
 	CSpriteLayer@ parachute = this.getSpriteLayer("parachute");
 
-	if (parachute !is null && blob.isMyPlayer())
+	if (parachute !is null)
 	{
 		if (blob.hasTag("parachute") && !blob.isAttached() && !blob.hasTag("dead"))
 		{
