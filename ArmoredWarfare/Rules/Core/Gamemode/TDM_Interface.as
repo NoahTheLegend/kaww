@@ -2,6 +2,7 @@
 
 const int max_matches_before_restart = 5;
 const u16 restart_delay = 450;
+const bool autorestart = false;
 
 void onTick( CRules@ this )
 {
@@ -225,6 +226,8 @@ void onRender(CRules@ this)
 			}
 		}
 	}
+
+	if (!autorestart) return;
 
 	int match_count = this.get_u32("long_matches_passed");
 	int diff = max_matches_before_restart - match_count;
