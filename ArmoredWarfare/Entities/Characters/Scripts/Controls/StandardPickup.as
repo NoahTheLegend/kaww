@@ -388,7 +388,7 @@ f32 getPriorityPickupScale(CBlob@ this, CBlob@ b)
 
 	if(name == "mine")
 	{
-		return !b.hasTag("mine_priming") ? factor_boring : factor_extremely_important;
+		return b.getTeamNum() != this.getTeamNum() ? factor_extremely_important : factor_boring;
 	}
 
 	if(name == "mat_nuke"){
