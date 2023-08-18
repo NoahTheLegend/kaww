@@ -854,6 +854,8 @@ void onTick(CBrain@ this)
 								bool sitinoccupied = false;
 								bool userealpos = false;
 								bool pickadifferentseat = false;
+
+								set_emote(blob, Emotes::fire, 30);
 								
 								//print("d " + blob.get_string("behavior"));
 								if (blob.get_string("behavior") == "drive")
