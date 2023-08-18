@@ -53,61 +53,87 @@ void onInit(CBlob@ this)
 	// Give random loot items
 	if (isServer())
 	{
-		if (XORRandom(2) == 0)
+
+    	array<string> _items =
+    	{
+    		"mat_scrap",
+    	    "mat_wood",
+    	    "mat_stone",
+
+    		"grenade",
+			"mat_atgrenade",
+			"mat_molotov",
+
+    		"helmet",
+    		"medkit",
+    	    "food",
+
+    	    "ammo",
+			"mat_14mmround",
+    	    "mat_bolts",
+
+    	    "pipewrench"
+    	};
+    	array<float> _chances =
+    	{
+    	    0.25,
+    	    0.3,
+    	    0.2,
+
+    	    0.1,
+    	    0.05,
+			0.125,
+
+    	    0.075,
+    	    0.125,
+    	    0.15,
+
+    	    0.1,
+			0.033,
+			0.05,
+			
+    	    0.05
+    	};
+    	array<u16> _amount =
+    	{
+    	    XORRandom(8)+3,
+    	    (XORRandom(15))*10+100,
+    	    (XORRandom(10))*10+50,
+
+    	    1,
+    	    1,
+			1,
+
+    	    1,
+    	    1,
+    	    1,
+
+    	    (XORRandom(4)+1)*100,
+			(XORRandom(6)+1)*10,
+			(XORRandom(4)+1)*6,
+			
+			1
+    	};
+
+		if (_items.length != _amount.length || _items.length != _chances.length)
 		{
-			CBlob@ b = server_CreateBlob("ammo", -1, this.getPosition());
-			this.server_PutInInventory(b);
+			warn("Ammo crate has different lengths of arrays!\n_items: "+_items.length+"\n_amount: "+_amount.length+"\n_chances: "+_chances.length);
+			return;
 		}
-		if (XORRandom(2) == 0)
-		{
-			CBlob@ b = server_CreateBlob("ammo", -1, this.getPosition());
-			this.server_PutInInventory(b);
-		}
-		if (XORRandom(2) == 0)
-		{
-			CBlob@ b = server_CreateBlob("ammo", -1, this.getPosition());
-			this.server_PutInInventory(b);
-		}
-		if (XORRandom(3) == 0)
-		{
-			CBlob@ b = server_CreateBlob("mat_14mmround", -1, this.getPosition());
-			this.server_PutInInventory(b);
-		}
-		if (XORRandom(3) == 0)
-		{
-			CBlob@ b = server_CreateBlob("mat_bolts", -1, this.getPosition());
-			this.server_PutInInventory(b);
-		}
-		if (XORRandom(2) == 0)
-		{
-			CBlob@ b = server_CreateBlob("steak", -1, this.getPosition());
-			this.server_PutInInventory(b);
-		}
-		if (XORRandom(10) == 0)
-		{
-			CBlob@ b = server_CreateBlob("mat_heatwarhead", -1, this.getPosition());
-			this.server_PutInInventory(b);
-		}
-		if (XORRandom(4) == 0)
-		{
-			CBlob@ b = server_CreateBlob("grenade", -1, this.getPosition());
-			this.server_PutInInventory(b);
-		}
-		if (XORRandom(3) == 0)
-		{
-			CBlob@ b = server_CreateBlob("mat_molotov", -1, this.getPosition());
-			this.server_PutInInventory(b);
-		}
-		if (XORRandom(6) == 0)
-		{
-			CBlob@ b = server_CreateBlob("medkit", -1, this.getPosition());
-			this.server_PutInInventory(b);
-		}
-		if (XORRandom(10) == 0)
-		{
-			CBlob@ b = server_CreateBlob("binoculars", -1, this.getPosition());
-			this.server_PutInInventory(b);
-		}
+    	if (getNet().isServer())
+    	{
+    		for (int i = 0; i < XORRandom(5)+5; i++)
+			{
+		        u32 element = RandomWeightedPicker(_chances, XORRandom(1000));
+		        CBlob@ b = server_CreateBlobNoInit(_items[element]); 
+				b.Init();
+				b.server_SetQuantity(_amount[element]);
+				//printf(b.getName()+" elem "+element+" quantity "+_amount[element]);
+				b.server_setTeamNum(-1);
+				b.setPosition(this.getPosition());
+				this.server_PutInInventory(b);
+    		}
+    	}
 	}
 }
 
@@ -211,7 +237,7 @@ void onTick(CSprite@ this)
     }
 }
 
-f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData )
+f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	f32 dmg = damage;
 	dmg *= 0.3;
@@ -298,65 +324,6 @@ void onDie(CBlob@ this)
 	 if (this.hasTag("despawned")) return;
 
     this.getSprite().Gib();
-
-    // Drop loot on break
-
-    array<string> _items =
-    {
-    	"mat_scrap",
-        "mat_wood",
-        "mat_stone",
-
-    	"grenade",
-    	"helmet",
-    	"medkit",
-        "food",
-        "ammo",
-        "mat_bolts",
-        "pipewrench"
-    };
-    array<float> _chances =
-    {
-        0.3,
-        0.25,
-        0.25,
-
-        0.08,
-        0.05,
-        0.02,
-        0.08,
-        0.02,
-        0.01,
-        0.01
-    };
-    array<u8> _amount =
-    {
-        (XORRandom(3)+2),
-        (XORRandom(9)+1)*10,
-        (XORRandom(7)+1)*10,
-
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
-    };
-
-    if (getNet().isServer())
-    {
-    	for (int i = 0; i < 2; i++)
-		{
-	        u32 element = RandomWeightedPicker(_chances, XORRandom(1000));
-	        CBlob@ b = server_CreateBlob(_items[element],-1,this.getPosition());  
-	        b.AddForce(Vec2f((XORRandom(5)-2)/1.3, -5));  
-	        if (b.getMaxQuantity() > 1)
-	        {
-	            b.server_SetQuantity(_amount[element]);
-	        }
-    	}
-    }
 }
 
 shared u32 RandomWeightedPicker(array<float> chances, u32 seed = 0)
