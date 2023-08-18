@@ -28,7 +28,7 @@ void onTick(CBlob@ this)
 	const bool is_client = isClient();
 	const bool is_dead = this.hasTag("dead");
 	s8 launcherFrame = this.get_s8("launcher_frame");
-	float launcherAngle = this.get_f32("launcher_angle");
+	float launcherAngle = this.getAngleDegrees();
 
 	this.setAngleDegrees(launcherAngle);
 	if (is_client) this.getSprite().SetFrame(launcherFrame);
@@ -36,7 +36,6 @@ void onTick(CBlob@ this)
 	if (is_dead)
 	{
 		this.set_s8("launcher_frame", 3); // no ammo
-		this.set_f32("launcher_angle", 0);
 	}
 
 	if (!this.isAttached())
@@ -45,7 +44,6 @@ void onTick(CBlob@ this)
 		if (!is_dead)
 		{
 			this.set_s8("launcher_frame", 2); // not held
-			this.set_f32("launcher_angle", 0);
 		}
 		return;
 	}
@@ -155,6 +153,8 @@ void onTick(CBlob@ this)
 		if (bestBlob != null)
 		{
 			Vec2f targetPos = bestBlob.getPosition();
+
+			this.setAngleDegrees(ownerBlob.isFacingLeft() ? 45.0f : -45.0f);
 
 			if (bestBlobNetID != curTargetNetID)
 			{
