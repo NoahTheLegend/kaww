@@ -35,7 +35,7 @@ void onTick(CBlob@ this)
 	//}
 
     float repair_distance = 16.0f;
-    float repair_amount = 1.2f;  
+    float repair_amount = 1.5f;  
 
 	f32 weakest = 999.0f;
 	u16 blobid = 0;

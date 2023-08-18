@@ -22,6 +22,8 @@ string[] smokes =
 	"SmallSmoke2.png"
 };
 
+const u8 BASE_NOHEAL_TIME_AFTERHIT = 10; // seconds
+
 const string wheelsTurnAmountString = "wheelsTurnAmount";
 const string engineRPMString = "engine_RPM";
 const string engineRPMTargetString = "engine_RPMtarget";
@@ -1284,7 +1286,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	// if damage is not insignificant, prevent repairs for a time
 	if (hitterBlob.getTeamNum() == this.getTeamNum() ? damage > 0.5f : damage > 0.15f)
 	{
-		this.set_u32("no_heal", getGameTime()+(15+(this.exists("extra_no_heal") ? this.get_u16("extra_no_heal") : 0))*30);
+		this.set_u32("no_heal", getGameTime()+(BASE_NOHEAL_TIME_AFTERHIT+(this.exists("extra_no_heal") ? this.get_u16("extra_no_heal") : 0))*30);
 
 		if (isClient())
 		{
