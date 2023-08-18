@@ -928,7 +928,7 @@ void onTick(CBrain@ this)
 									{
 										AttachmentPoint@ ap = aps[XORRandom(aps.length)];
 
-										if (ap.getOccupied() is null)
+										if (ap.getOccupied() is null && ap.name.find("PASSENGER") == -1)
 										{
 											// random seat in the vehicle is empty
 
