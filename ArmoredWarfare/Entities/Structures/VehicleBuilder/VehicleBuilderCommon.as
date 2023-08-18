@@ -62,7 +62,7 @@ void buildT1ShopCombined(CBlob@ this)
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else
 		{
-			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 8*30 * 60);
+			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 10*30 * 60);
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
 		}
 	}
@@ -319,7 +319,7 @@ void buildT1ShopGround(CBlob@ this)
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else
 		{
-			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 8*30 * 60);
+			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 10*30 * 60);
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 100);
 		}
 	}
@@ -521,7 +521,7 @@ void buildT1ShopAir(CBlob@ this)
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else
 		{
-			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 8*30 * 60);
+			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 10*30 * 60);
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
 		}
 	}
