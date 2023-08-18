@@ -95,6 +95,7 @@ void onInit(CBlob@ this)
 		case _bradleyturret:
 		case _heavygun: // MG
 		case _firethrower: // MG
+		case _ah1: // cobra
 		armorRating = 3; break;
 
 		case _transporttruck: // vanilla truck?
@@ -103,10 +104,9 @@ void onInit(CBlob@ this)
 		case _btrturret: // big APC cannon
 		case _pszh4: // smol APC
 		case _pszh4turret: // smol APC cannon
-		case _ah1: // cobra
+		case _uh1: // heli
 		armorRating = 2; break;
 
-		case _uh1: // heli
 		case _techtruck: // MG truck
 		case _gun: // light MG
 		case _techbigtruck:

@@ -40,6 +40,21 @@ void onInit(CBlob@ this)
 	this.addCommandID("shoot bullet");
 	this.addCommandID("sync_vel");
 
+	// shits in console if not added
+	this.addCommandID("fire");
+	this.addCommandID("fire blob");
+	this.addCommandID("flip_over");
+	this.addCommandID("getin_mag");
+	this.addCommandID("load_ammo");
+	this.addCommandID("ammo_menu");
+	this.addCommandID("swap_ammo");
+	this.addCommandID("sync_ammo");
+	this.addCommandID("sync_last_fired");
+	this.addCommandID("putin_mag");
+	this.addCommandID("vehicle getout");
+	this.addCommandID("reload");
+	this.addCommandID("recount ammo");
+
 	if (this !is null)
 	{
 		CShape@ shape = this.getShape();
@@ -684,10 +699,6 @@ void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string fi
 	ParticleAnimated(filename, this.getPosition() + pos, vel, float(XORRandom(360)), 1 + XORRandom(200) * 0.01f, 2 + XORRandom(5), XORRandom(100) * -0.00005f, true);
 }
 
-bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
-
-void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}
-
 void onRender(CSprite@ this)
 {
 	CBlob@ blob = this.getBlob();
@@ -740,3 +751,7 @@ void onRender(CSprite@ this)
 		}
 	}
 }
+
+bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
+
+void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}
