@@ -459,7 +459,7 @@ void GoToImportant(CBlob@ blob, CBlob@ importantblob, CBlob@ target)
 
 bool DefaultRetreatBlob(CBlob@ blob, CBlob@ target)
 {
-	//set_emote( blob, Emotes::attn );
+	set_emote( blob, Emotes::strike);
 	//print("1331 " + blob.getName() + " " + target.getName());
 
 	Vec2f mypos = blob.getPosition();
@@ -502,7 +502,7 @@ void SeekCover(CBlob@ blob, Vec2f pos)
 	
 	if (vecDistance > 22.0f)
 	{
-		//set_emote( blob, Emotes::cry );
+		//set_emote(blob, Emotes::attn);
 
 		if (pos.x < myPos.x)
 		{
@@ -670,7 +670,8 @@ void DriveToPos(CBlob@ blob, CBlob@ vehicle, Vec2f position, float dist)
 
 		bool vehicleislow = (vehicle.getHealth() < vehicle.getInitialHealth() / 3);
 
-		if (vehicle.getShape().vellen < (vehicleislow ? 0.24f : 0.38f))
+		if (vehicle.getShape().vellen < (vehicleislow ? 0.24f : 0.38f)
+		|| vehicle.getAngleDegrees() > 75 || vehicle.getAngleDegrees() < 75)
 		{
 			// hmm we haven't moved, are we stuck?
 			blob.add_u16("behaviortimer", 2);
@@ -687,7 +688,11 @@ void DriveToPos(CBlob@ blob, CBlob@ vehicle, Vec2f position, float dist)
 		{
 			if (getGameTime() % 200 + blob.get_u8("myKey") < 160)
 			{
-				blob.setKeyPressed(key_action2, true);
+				if (vehicle !is null && vehicle.hasCommandID("init_flipping"))
+				{
+					CBitStream params;
+					vehicle.SendCommand(vehicle.getCommandID("init_flipping"), params);
+				}
 			}
 			
 			if (position.x > blob.getPosition().x) blob.setKeyPressed(key_left, true);
