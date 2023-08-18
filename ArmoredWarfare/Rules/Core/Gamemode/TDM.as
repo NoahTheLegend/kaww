@@ -782,7 +782,7 @@ shared class TDMCore : RulesCore
 			}
 		}
 		
-		string[] maps = {
+		string[] maps = { // emergency load maps
 			"Desert.png",
 		   	"WinterFactory.png",
 		   	"Touge.png",
@@ -1883,29 +1883,30 @@ const string[] LargeMaps = {
 	"Cavern.png",
 	"Selfish_goldy.png",
 	"Goldy_KAWW_Megalith.png",
-	"Valley.png",
+	//"Valley.png", out of cycle
 	"Foothills.png",
 	"PlainHills.png",
 	"Worldwar.png",
 	"Classic.png",
-	"SmallClassic.png",
 	"Moats.png",
 	"Canyon.png",
 	"OldTouge.png",
 	"Fugue.png",
-	"Vietnam.png",
+	//"Vietnam.png", ooc
 	"FragFest.png",
-	"Florida.png",
+	//"Florida.png", ooc
 	"SoldiercombatTDM.png",
 	"Flattening.png",
 	"RooftopTanks_v2.png",
-	//"Goldy_KAWW_Sewage.png",
+	//"Goldy_KAWW_Sewage.png", ooc
 	"BloodGulch.png",
 	"SkeletalTowers.png",
 	"SerenityHills.png",
+	"MotoMadness.png",
+	"CastleFactory.png",
 	"WorldwarFlagless.png",
 	"ClassicFlagless.png",
-	"BridgeWater.png",
+	//"BridgeWater.png", oofc
 	"SiegeBeachWater_v2.png"
 	"Taiga.png",
 	"Spaceport.png",
@@ -1950,7 +1951,7 @@ const string[] TruckMaps = {
 	"OldTouge.png",
 	"Fugue.png",
 	"Cavern.png",
-	"Florida.png",
+	"Florida.png", // keeping it here
 	"BloodGulch.png"
 };
 
