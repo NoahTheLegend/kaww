@@ -18,22 +18,36 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 20);
 	this.set_s32("custom_hitter", HittersAW::machinegunbullet);
+	this.set_s8(penRatingString, 3);
 
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "DefenseTurret_gun", 48, 32);
 	this.Tag("builder always hit");
 
 	this.Tag("vehicle");
 	this.Tag("turret");
 
+	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "DefenseTurret_gun", 48, 32);
 	if (arm !is null)
 	{
 		Animation@ anim = arm.addAnimation("defaultarm", 0, false);
-		arm.SetOffset(Vec2f(-8.0f, -11.0f));
-		arm.SetRelativeZ(100.0f);
+		arm.SetOffset(Vec2f(-8.0f, -8.0f));
+		arm.SetRelativeZ(50.0f);
 
 		arm.animation.frame = 2;
+	}
+
+	CSpriteLayer@ shield = sprite.addSpriteLayer("shield", "DefenseTurret", 32, 32);
+	if (shield !is null)
+	{
+		Animation@ anim = shield.addAnimation("defaultshield", 0, false);
+		anim.AddFrame(1);
+
+		shield.SetOffset(Vec2f(-1.0f, -9.0f));
+		shield.SetRelativeZ(100.0f);
+		shield.animation.frame = 0;
+		shield.SetAnimation(anim);
+		shield.SetRelativeZ(51.0f);
 	}
 
 	u8 teamleft = getRules().get_u8("teamleft");
@@ -94,8 +108,8 @@ void onTick(CBlob@ this)
 							
 
 						shootVehicleGun(has_owner ? p.getBlob().getNetworkID() : this.getNetworkID(), this.getNetworkID(),
-							true_angle, this.getPosition()+Vec2f(0,this.isFacingLeft()?8:-8).RotateBy(true_angle),
-							targetblob.getPosition(), bulletSpread, 1, 0, 0.25f, 0.33f, 2,
+							true_angle, this.getPosition()+Vec2f(0,this.isFacingLeft()?6:-6).RotateBy(true_angle),
+							targetblob.getPosition(), bulletSpread, 1, 0, 0.35f, 0.5f, this.get_s8(penRatingString),
 								this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));
 					}
 
@@ -157,7 +171,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot"))
 	{
-
 		if (getNet().isServer())
 		{
 			if (!this.get_bool("spawned"))
@@ -169,7 +182,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					this.set_bool("spawned", true);
 					bullet.Init();
 
-					bullet.set_s8(penRatingString, 1);
+					bullet.set_s8(penRatingString, 3);
 
 					bullet.set_f32("bullet_damage_body", 0.18f);
 					bullet.set_f32("bullet_damage_head", 0.18f);
