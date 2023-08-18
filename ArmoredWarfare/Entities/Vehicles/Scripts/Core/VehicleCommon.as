@@ -1012,7 +1012,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 									f32 true_angle = this.isFacingLeft() ? -angle + 180 : angle;
 
 									shootVehicleGun(has_owner ? ap.getOccupied().getNetworkID() : this.getNetworkID(), this.getNetworkID(),
-										true_angle, this.getPosition()-Vec2f(0,1).RotateBy(true_angle),
+										true_angle, this.getPosition()-Vec2f(0,2),
 										aimPos, bulletSpread, 1, 3, 0.4f, 0.65f, 2,
 											this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 								}
