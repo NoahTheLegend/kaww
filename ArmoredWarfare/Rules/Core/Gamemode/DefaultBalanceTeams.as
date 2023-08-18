@@ -448,9 +448,9 @@ void onPlayerRequestSpawn(CRules@ this, CPlayer@ player)
 		return;
 
 	//check if the player doesn't suck - dont swap top half of the team
-	//u32 median = getMedianScore(player.getTeamNum());
-	//if (player.getScore() > median)
-	//	return;
+	u32 median = getMedianScore(player.getTeamNum());
+	if (player.getScore() > median)
+		return;
 
 	s32 newTeam = getSmallestTeam(core.teams);
 
