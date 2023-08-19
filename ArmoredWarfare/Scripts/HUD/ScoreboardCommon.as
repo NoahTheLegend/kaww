@@ -43,7 +43,8 @@ SColor getNameColour(CPlayer@ p)
 		"Nevrotik", // helper
 		"Yeti5000707", // creator
 		"MasterOfCockFights", // patreon
-		"Froghead48" // patreon
+		"Froghead48", // patreon
+		"kongo73"
 	};
 	
 	for (u16 i = 0; i < rainbow.length; i++)

@@ -13,7 +13,8 @@ shared string[] getPatreonMembers()
 		"NoahTheLegend",
 		"nickkardash",
 		"MasterOfCockFights",
-		"Froghead48"
+		"Froghead48",
+		"kongo73"
 	};
 	return patreonMembers;
 }
