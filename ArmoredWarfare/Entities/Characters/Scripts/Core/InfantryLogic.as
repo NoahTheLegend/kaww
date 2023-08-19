@@ -224,6 +224,8 @@ void onInit(CBlob@ this)
 			this.set_u8("stab time", 30);
 			this.set_u8("stab timing", 0);
 			this.set_f32("stab damage", 0.0f);
+
+			this.Tag("is_shielder");
 			break;
 		}
 		case _ranger:

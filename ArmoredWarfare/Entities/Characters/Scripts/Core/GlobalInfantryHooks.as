@@ -39,7 +39,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 	}
 
-	if (this.getName() == "shielder"
+	if (this.hasTag("is_shielder")
 		&& (is_bullet || customData == Hitters::explosion
 			|| customData == Hitters::keg || customData == Hitters::sword))
 	{
@@ -87,11 +87,15 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (this.isAttached())
 	{
-		if (customData == Hitters::explosion)
+		if (customData == Hitters::fire)
+		{
+			damage *= (exposed ? 0.5f : 0.0f);
+		}
+		else if (customData == Hitters::explosion)
 		{
 			//printf("explosion");
 			//printf(""+damage * (exposed && !mg_attached ? 0.2f : hiding ? 0.01f : 0.025f));
-			damage *= (exposed && !mg_attached ? 0.2f : hiding ? 0.01f : 0.025f);
+			damage *= (exposed && !mg_attached ? 0.2f : !exposed || hiding ? 0.01f : 0.025f);
 		}
 		else if (is_bullet)
 		{
