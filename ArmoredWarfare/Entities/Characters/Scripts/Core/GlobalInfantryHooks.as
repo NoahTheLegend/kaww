@@ -91,7 +91,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			damage *= (exposed ? 0.5f : 0.0f);
 		}
-		else if (customData == Hitters::explosion)
+		else if (customData == Hitters::explosion || hitterBlob.getName() == "ballistabolt")
 		{
 			//printf("explosion");
 			//printf(""+damage * (exposed && !mg_attached ? 0.2f : hiding ? 0.01f : 0.025f));
@@ -114,7 +114,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			if (customData == Hitters::fire)
 			{
-				return damage * 2;
+				damage *= 2;
 			}
 		}
 		else if (this.getVelocity().y > 0.0f && !this.isOnGround() && !this.isOnLadder()
@@ -143,7 +143,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				this.SendCommand(this.getCommandID("aos_effects"), params);
 			}
 
-			return damage = 0;
+			return 0;
 		}
 	}
 	if (this.getPlayer() !is null)
@@ -155,9 +155,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (customData == Hitters::ballista)
 	{
-		return damage * 2;
+		damage *= 2;
 	}
-	if ((customData == Hitters::explosion || hitterBlob.getName() == "ballista_bolt") || hitterBlob.hasTag("grenade"))
+	if ((!this.isAttached() || exposed) && (customData == Hitters::explosion
+		|| hitterBlob.getName() == "ballista_bolt")|| hitterBlob.hasTag("grenade"))
 	{
 		if (hitterBlob.hasTag("grenade")) damage *= 5.0f+(XORRandom(301)*0.01f);
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*5.0f;
