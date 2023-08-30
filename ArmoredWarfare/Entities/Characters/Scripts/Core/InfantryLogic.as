@@ -871,6 +871,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				if (hasPerk(this.getPlayer(), Perks::operator))
 				{	
 					sprint = false;
+					walkStat *= 0.95f;
 				}
 				else if (hasPerk(this.getPlayer(), Perks::bull))
 				{

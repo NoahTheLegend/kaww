@@ -23,6 +23,7 @@ void onTick(CBlob@ this)
 {
 	bool has_regen = this.get_u32("regen") > getGameTime();
 	this.add_u8("step", 1);
+	f32 factor = 1.0f;
 
 	if (this.get_u8("step") >= this.get_u8("step_max")
 	|| (has_regen && this.get_u8("step") >= this.get_u8("step_max_temp")))
@@ -32,13 +33,14 @@ void onTick(CBlob@ this)
 		CPlayer@ p = this.getPlayer();
 		if (p !is null)
 		{
-			if (hasPerk(p, Perks::bloodthirsty))
+			if (!has_regen && hasPerk(p, Perks::bloodthirsty))
 			{
+				factor = 0.5f;
 				return;
 			}
 		}
 
 		if (this.getHealth() > this.getInitialHealth() * 0.33f || has_regen) // regen health when its above 33%
-			this.server_Heal(0.05f + (has_regen ? this.get_f32("regen_amount") : 0));
+			this.server_Heal((0.05f + (has_regen ? this.get_f32("regen_amount") : 0)) * factor);
 	}
 }
