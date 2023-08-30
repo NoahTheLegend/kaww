@@ -7,12 +7,10 @@
 
 #include "BaseTeamInfo.as";
 #include "PlayerInfo.as";
-
 #include "RespawnSystem.as";
 
 shared class RulesCore
 {
-
 	CRules@ rules;
 
 	PlayerInfo@[] players;

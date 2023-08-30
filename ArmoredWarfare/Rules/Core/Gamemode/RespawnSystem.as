@@ -10,7 +10,6 @@
 
 shared class RespawnSystem
 {
-
 	private RulesCore@ core;
 
 	RespawnSystem() { @core = null; }

@@ -459,7 +459,7 @@ void GoToImportant(CBlob@ blob, CBlob@ importantblob, CBlob@ target)
 
 bool DefaultRetreatBlob(CBlob@ blob, CBlob@ target)
 {
-	set_emote( blob, Emotes::strike);
+	set_emote(blob, "strike");
 	//print("1331 " + blob.getName() + " " + target.getName());
 
 	Vec2f mypos = blob.getPosition();

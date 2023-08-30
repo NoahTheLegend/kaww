@@ -1939,7 +1939,7 @@ const string[] AverageMaps = {
 
 const string[] FlagMaps = {
 	"WinterFactory.png",
-	"Bridge.png",
+	"BigBridge.png",
 	"Classic.png",
 	"Goldy_KAWW_Megalith.png",
 	"Mortar.png",
