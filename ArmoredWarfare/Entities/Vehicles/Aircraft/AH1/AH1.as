@@ -6,6 +6,7 @@
 #include "ProgressBar.as";
 #include "TeamColorCollections.as";
 #include "GunStandard.as"
+#include "PerksCommon.as";
 
 const Vec2f upVelo = Vec2f(0.00f, -0.05f);
 const Vec2f downVelo = Vec2f(0.00f, 0.01f);
@@ -280,7 +281,7 @@ void onTick(CBlob@ this)
 
 						if (!this.hasTag("falling")
 						&& hooman.getPlayer() !is null
-						&& getRules().get_string(hooman.getPlayer().getUsername()+"_perk") == "Operator")
+						&& hasPerk(hooman.getPlayer(), Perks::operator))
 						{
 							if (pressed_a) newForce += Vec2f(leftVelo.x*0.25f, leftVelo.y*0.25f);
 							if (pressed_d) newForce += Vec2f(rightVelo.x*0.25f, rightVelo.y*0.25f);

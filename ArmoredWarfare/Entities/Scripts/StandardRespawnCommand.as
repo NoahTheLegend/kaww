@@ -45,7 +45,7 @@ void InitClasses(CBlob@ this)
 							"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 350\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
 
 		addPlayerClass(this, "---- AK-47 ----", "$ranger_class_icon$", "ranger",
-							"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 225\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Buttstock");
+							"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Buttstock");
 
 		addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun",
 							"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 275\nLMB: Shoot | 4 Ammo per shot\nRMB: Aim\nSPACEBAR: Dig");
@@ -57,7 +57,7 @@ void InitClasses(CBlob@ this)
 							"---- RPG ----\n\nArmed with a powerful RPG launcher.\n\nHP: 250.\nLMB: RPG | 1 HEAT rocket per shot\nRMB: Aim\nSPACEBAR: Knife");
 
 		addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5",
-							"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half of food healing\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
+							"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half self healing\n\nHP: 200\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
 
 		addPlayerClass(this, "---- Shielder ----", "$shielder_class_icon$", "shielder",
 							"---- Shielder ----\n\nCarries a shield that is able to block insignificant damage.\n\nHP: 300\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
@@ -120,7 +120,7 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Sharp Shooter", "$1_class_icon$", "Sharp Shooter",
 						"Sharp Shooter:\n\n"+"$1_class_icon$"+"Marksman"
-						+"\n                   - Bullets deal 33% more damage       "
+						+"\n                   - Bullets deal 25% more damage       "
 						+"\n                   - Increased accuracy"
 						+"\n                   - Increased view range"
 						+"\n\n                  Long reload"
@@ -131,12 +131,9 @@ void InitClasses(CBlob@ this)
 						"Bloodthirst:\n\n"+"$3_class_icon$"+"Vampirism"
 						+"\n                   - Regenerate health when killing     "
 						+"\n                   - Get only 50% of other heal     "
-						+"\n                   - Can't regenerate passively     "	
-						+"\n                   - Can't eat food     "					
+						+"\n                   - Can't regenerate passively     "					
 						+"\n\n                  Leech"
 						+"\n                   - Bullets restore health on hit"
-						+"\n\n                  Silver bullets"
-						+"\n                   - Take 110% damage from bullets       "
 						);
 
 	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",

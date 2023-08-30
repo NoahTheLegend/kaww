@@ -9,9 +9,8 @@
 #include "PixelOffsets.as"
 #include "RunnerTextures.as"
 #include "Accolades.as"
+#include "PerksCommon.as";
 
-
-//
 
 void onInit(CSprite@ this)
 {
@@ -128,7 +127,7 @@ void onTick(CSprite@ this)
 
 		if (camo !is null)
 		{
-			if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
+			if (blob.getPlayer() !is null && hasPerk(blob.getPlayer(), Perks::camouflage))
 			{
 				isCamo = true;
 
@@ -264,7 +263,6 @@ void onTick(CSprite@ this)
 
 	if (blob.hasTag("dead"))
 	{
-		//if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
 		{
 			CSpriteLayer@ camo = this.getSpriteLayer("camo");
 			if (camo !is null) camo.SetAnimation("death");

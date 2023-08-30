@@ -2,6 +2,7 @@
 
 #include "KnockedCommon.as"
 #include "EatCommon.as";
+#include "PerksCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -11,7 +12,7 @@ void onInit(CBlob@ this)
 bool canHeal(CBlob@ this)
 {
 	if (this.getPlayer() is null) return true;
-	if (getRules() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+	if (getRules() !is null && hasPerk(this.getPlayer(), Perks::bloodthirsty))
 		return false;
 
 	return true;

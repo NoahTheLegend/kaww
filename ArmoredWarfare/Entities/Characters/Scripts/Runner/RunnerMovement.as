@@ -4,6 +4,7 @@
 #include "MakeDustParticle.as";
 #include "FallDamageCommon.as";
 #include "KnockedCommon.as";
+#include "PerksCommon.as";
 
 void onInit(CMovement@ this)
 {
@@ -526,7 +527,7 @@ void onTick(CMovement@ this)
 	bool left_or_right = (left || right);
 	{
 		bool is_engi = false;
-		if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		if (blob.getPlayer() !is null && hasPerk(blob.getPlayer(), Perks::fieldengineer))
 		{
 			is_engi = true;
 			u8 items = 0;

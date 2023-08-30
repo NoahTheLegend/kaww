@@ -4,6 +4,7 @@
 #include "KnockedCommon.as";
 #include "PixelOffsets.as"
 #include "RunnerTextures.as"
+#include "PerksCommon.as";
 
 const f32 config_offset = -4.0f;
 
@@ -245,7 +246,7 @@ void onTick(CSprite@ this)
 
 		if (camo !is null && frontarm !is null)
 		{
-			if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
+			if (blob.getPlayer() !is null && hasPerk(blob.getPlayer(), Perks::camouflage))
 			{
 				isCamo = true;
 
@@ -376,8 +377,7 @@ void onTick(CSprite@ this)
 			this.RemoveSpriteLayer("frontarm");
 			this.RemoveSpriteLayer("backarm");
 		}
-
-		//if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage")
+		
 		{
 			CSpriteLayer@ camo = this.getSpriteLayer("camo");
 			if (camo !is null) camo.SetAnimation("death");

@@ -8,6 +8,7 @@
 #include "HittersAW.as";
 #include "CustomBlocks.as";
 #include "WarfareGlobal.as";
+#include "PerksCommon.as";
 
 const SColor trueWhite = SColor(255,255,255,255);
 Driver@ PDriver = getDriver();
@@ -307,7 +308,7 @@ class BulletObj
 							{
 								CPlayer@ p = hoomanShooter.getDamageOwnerPlayer();
 
-								if (getRules().get_string(p.getUsername() + "_perk") == "Bloodthirsty")
+								if (hasPerk(p, Perks::bloodthirsty))
 								{
 									CBlob@ pblob = p.getBlob();
 									if (pblob !is null)
@@ -458,18 +459,6 @@ class BulletObj
 					{
 						endBullet = true;
 						//break;
-					}
-
-					if (blob.hasTag("flesh"))
-					{
-						if (blob.getPlayer() !is null)
-						{
-							// player is using bloodthirsty
-							if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
-							{
-								dmg *= 1.1f; // take extra damage
-							}
-						}
 					}
 
 					if (dmg > 0.0f)

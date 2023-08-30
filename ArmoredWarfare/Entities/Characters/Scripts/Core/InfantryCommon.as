@@ -1,5 +1,8 @@
 #include "WarfareGlobal.as"
 #include "AllHashCodes.as"
+#include "PerksCommon.as";
+
+
 Random _infantry_r(67886);
 
 namespace ArcherParams
@@ -215,7 +218,7 @@ namespace RangerParams
 	const ::string CLASSNAME 			= "Ranger"; // case sensitive
 	// DAMAGE
 	const ::f32 DAMAGE_BODY 			= 0.35f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.5f; // damage dealt on headshot
+	const ::f32 DAMAGE_HEAD 			= 0.55f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 1.0f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
@@ -316,8 +319,8 @@ namespace Mp5Params
 {
 	const ::string CLASSNAME 			= "Mp5"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.3f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.45f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.25f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.4f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.85f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
@@ -343,10 +346,10 @@ namespace Mp5Params
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.8f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 36; // max amount of inaccuracy
+	const ::u8 INACCURACY_CAP 			= 45; // max amount of inaccuracy
 	const ::u8 INACCURACY_PER_SHOT 		= 5; // aim inaccuracy  (+3 per shot)
 	const ::u8 INACCURACY_MIDAIR        = 6;
-	const ::u8 INACCURACY_HIT  		    = 6;
+	const ::u8 INACCURACY_HIT  		    = 15;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
@@ -520,8 +523,8 @@ namespace FirebringerParams
 {
 	const ::string CLASSNAME 			= "Firebringer"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.315f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.315f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.333f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.333f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.95f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.65f; // airwalk
@@ -1322,7 +1325,7 @@ void InAirLogic(CBlob@ this, u8 inaccuracyCap)
 
 		if ((isServer() || this.isMyPlayer()) && this.getPlayer() !is null)
 		{
-			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage")
+			if (hasPerk(this.getPlayer(), Perks::camouflage))
 			{
 				if (!this.isOnGround() && this.getVelocity().Length() < 0.1f) 
 				{

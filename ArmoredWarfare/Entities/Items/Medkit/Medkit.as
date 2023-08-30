@@ -1,3 +1,5 @@
+#include "PerksCommon.as";
+
 void onInit(CBlob@ this)
 {
 	//this.getShape().SetRotationsAllowed(false);
@@ -23,7 +25,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (caller is null) return;
 	if (caller.exists("next_med") && caller.get_u32("next_med") >= getGameTime()) return;
-	if (caller.getPlayer() !is null && getRules() !is null && getRules().get_string(caller.getPlayer().getUsername() + "_perk") == "Bull")
+	if (caller.getPlayer() !is null && getRules() !is null && hasPerk(caller.getPlayer(), Perks::bull))
 	{
 		return;
 	}
@@ -70,7 +72,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				}
 
 				f32 heal_amount = 1.5f;
-				if (blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
+				if (blob.getPlayer() !is null && hasPerk(blob.getPlayer(), Perks::bloodthirsty))
 				{
 					heal_amount /= 2;
 				}

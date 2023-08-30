@@ -1,5 +1,7 @@
 #define SERVER_ONLY
 
+#include "PerksCommon.as";
+
 string cost_config_file = "tdm_vars.cfg";
 
 void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
@@ -11,13 +13,13 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 			if (killer !is victim && killer.getTeamNum() != victim.getTeamNum())
 			{
 				int coins = 2;
-				if (getRules().get_string(killer.getUsername() + "_perk") == "Wealthy")
+				if (hasPerk(killer, Perks::wealthy))
 				{
 					coins = 6;
 				}
 				killer.server_setCoins(killer.getCoins() + coins);
 
-				if (getRules().get_string(killer.getUsername() + "_perk") == "Bloodthirsty")
+				if (hasPerk(killer, Perks::bloodthirsty))
 				{
 					// if killer is alive
 					if (killer.getBlob() !is null)
@@ -29,7 +31,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 			}
 		}
 
-		if (getRules().get_string(victim.getUsername() + "_perk") == "Wealthy")
+		if (hasPerk(victim, Perks::wealthy))
 		{
 			victim.server_setCoins(Maths::Ceil(victim.getCoins() * 0.66f)); 
 		}
@@ -38,7 +40,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 			victim.server_setCoins(victim.getCoins() - 2);
 		}
 
-		if (killer !is null && killer.getBlob() !is null && getRules().get_string(killer.getUsername() + "_perk") == "Bull")
+		if (killer !is null && killer.getBlob() !is null && hasPerk(killer, Perks::bull))
 		{
 			killer.getBlob().set_u32("bull_boost", getGameTime()+150);
 			killer.getBlob().Sync("bull_boost", true);

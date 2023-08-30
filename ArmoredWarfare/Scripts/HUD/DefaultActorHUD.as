@@ -1,6 +1,7 @@
 #include "ActorHUDCON.as";
 #include "PlayerRankInfo.as";
 #include "AllHashCodes.as";
+#include "PerksCommon.as";
 
 const int slotsSize = 6;
 
@@ -233,7 +234,7 @@ void onRender(CSprite@ this)
 
 			for (u8 i = 0; i < perks.length; i++)
 			{
-				if (getRules().get_string(player.getUsername() + "_perk") == perks[i])
+				if (hasPerk(player, perks[i]))
 					icon_num = i < 7 ? i+1 : i+2;
 			}
 

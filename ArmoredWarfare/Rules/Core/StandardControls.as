@@ -2,6 +2,7 @@
 
 #include "EmotesCommon.as"
 #include "StandardControlsCommon.as"
+#include "PerksCommon.as";
 
 bool zoomModifier = false; // decides whether to use the 3 zoom system or not
 int zoomModifierLevel = 4; // for the extra zoom levels when pressing the modifier key
@@ -494,7 +495,7 @@ void ManageCamera(CBlob@ this)
 			camera.mouseFactor = 0.55f;
 		}
 
-		if (getRules().get_string(getLocalPlayer().getUsername() + "_perk") == "Sharp Shooter")
+		if (hasPerk(getLocalPlayer(), Perks::sharpshooter))
 		{
 			extra += 0.15f;
 			camera.mouseFactor += 0.15f;

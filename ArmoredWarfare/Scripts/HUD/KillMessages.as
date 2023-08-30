@@ -7,6 +7,7 @@
 #include "AssistCommon.as";
 #include "PlayerRankInfo.as";
 #include "TeamColorCollections.as"
+#include "PerksCommon.as";
 
 int fade_time = 350;
 
@@ -304,7 +305,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 				{
 					// give exp
 					int exp_reward = 5+XORRandom(6); // 5 - 10
-					if (rules.get_string(killer.getUsername() + "_perk") == "Death Incarnate")
+					if (hasPerk(killer, Perks::deathincarnate))
 					{
 						exp_reward *= 5;
 					}

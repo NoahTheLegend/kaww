@@ -1,6 +1,7 @@
 #include "Hitters.as";
 #include "HittersAW.as";
 #include "Knocked.as";
+#include "PerksCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -95,7 +96,7 @@ void onTick(CBlob@ this)
 									float repair_amount = 0.35f;
 									if (holder.getPlayer() !is null)
 									{
-										if (getRules().get_string(holder.getPlayer().getUsername() + "_perk") == "Operator")
+										if (hasPerk(holder.getPlayer(), Perks::operator))
 										{
 											repair_cd = 22;
 										}

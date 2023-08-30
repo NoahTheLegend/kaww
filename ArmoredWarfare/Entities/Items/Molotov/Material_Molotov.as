@@ -1,4 +1,5 @@
 #include "ParticleSparks.as";
+#include "PerksCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -66,7 +67,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 						this.SetDamageOwnerPlayer(holder.getPlayer());
 
-						if (getRules().get_string(holder.getPlayer().getUsername() + "_perk") == "Camouflage")
+						if (hasPerk(holder.getPlayer(), Perks::camouflage))
 						{
 							if (getMap() !is null && XORRandom(100) < 33)
 							{

@@ -6,6 +6,7 @@
 #include "Hitters.as";
 #include "HittersAW.as";
 #include "PlayerRankInfo.as";
+#include "PerksCommon.as";
 
 const u32 min_gametime_to_increment = 20 * 30*60;
 const int max_matches_before_restart = 5; // change this in TDM_interface.as too
@@ -1804,7 +1805,7 @@ void onTick(CRules@ this)
 						extra_amount = 1;
 					}
 					
-					if (this.get_string(player.getUsername() + "_perk") == "Wealthy")
+					if (hasPerk(player, Perks::wealthy))
 					{
 						player.server_setCoins(player.getCoins()+2+extra_amount); // double
 					}
