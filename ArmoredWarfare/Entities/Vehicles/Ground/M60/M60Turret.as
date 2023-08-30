@@ -2,6 +2,7 @@
 #include "GenericButtonCommon.as";
 #include "Explosion.as"
 #include "Hitters.as"
+#include "PerksCommon.as";
 
 const u8 cooldown_time = 210;//210;
 const u8 barrel_compression = 6; // max barrel movement
@@ -205,7 +206,7 @@ void onTick(CBlob@ this)
 			CPlayer@ p = gunner.getOccupied().getPlayer();
 			if (p !is null)
 			{
-				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+				if (hasPerk(p, Perks::operator))
 				{
 					isOperator = true;
 					high_angle = 67.0f;

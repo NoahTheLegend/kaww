@@ -1,4 +1,5 @@
 #include "EatCommon.as";
+#include "PerksCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -60,28 +61,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				CBitStream params;
 				params.write_u32(theBlob.get_u32("regen"));
 				theBlob.SendCommand(theBlob.getCommandID("sync_regen"), params);
-				/*
-				f32 res = 1.5f;
-				if (theBlob.getPlayer() !is null && getRules().get_string(theBlob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
-				{
-					if (heal_amount != 255) heal_amount /= 2;
-					res /= 2;
-				}
-
-				if (heal_amount == 255)
-				{
-					res = (theBlob.getInitialHealth()-theBlob.getHealth())*res;
-					theBlob.add_f32("heal amount", theBlob.getInitialHealth() - theBlob.getHealth());
-					res <= 0.5f*(res/1.5f) ? theBlob.server_SetHealth(theBlob.getInitialHealth()) :  theBlob.server_Heal(Maths::Max(res, 0.25f));
-					if (theBlob.getHealth() > theBlob.getInitialHealth()) theBlob.server_SetHealth(theBlob.getInitialHealth());
-				}
-				else
-				{
-					f32 oldHealth = theBlob.getHealth();
-					theBlob.server_Heal(f32(heal_amount) * 0.25f);
-					theBlob.add_f32("heal amount", theBlob.getHealth() - oldHealth);
-				}
-				*/
 
 				//give coins for healing teammate
 				if (this.exists("healer"))
@@ -96,7 +75,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 						if (!healerHealed && sameTeam)
 						{
 							int coins = 2;
-							if (getRules().get_string(healer.getUsername() + "_perk") == "Wealthy")
+							if (hasPerk(healer, Perks::wealthy))
 							{
 								coins *= 2;
 							}
@@ -116,8 +95,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 bool canHeal(CBlob@ this, CBlob@ blob)
 {
 	if (blob.getPlayer() is null) return true;
-	if (getRules() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Bloodthirsty")
-		return false;
 
 	return true;
 }

@@ -3,6 +3,8 @@
 #include "Hitters.as";
 #include "HittersAW.as";
 #include "Explosion.as";
+#include "PerksCommon.as";
+
 // const u32 fuel_timer_max = 30 * 600;
 const f32 SPEED_MAX = 57.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
@@ -120,7 +122,7 @@ void onTick(CBlob@ this)
 			CPlayer@ p = pilot.getPlayer();
 			if (p !is null && !this.hasTag("falling"))
 			{
-				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+				if (hasPerk(p, Perks::operator))
 				{
 					mod = 0.1f;
 				}

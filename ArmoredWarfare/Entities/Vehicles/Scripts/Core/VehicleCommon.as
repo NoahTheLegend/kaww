@@ -3,6 +3,7 @@
 #include "VehicleAttachmentCommon.as"
 #include "KnockedCommon.as"
 #include "GunStandard.as"
+#include "PerksCommon.as";
 
 class AmmoInfo
 {
@@ -621,7 +622,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						// operators are better drivers
 						if (blob.getPlayer() !is null)
 						{
-							if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Operator")
+							if (hasPerk(blob.getPlayer(), Perks::operator))
 							{
 								// braking or reversing
 								if ((this.isFacingLeft() && right) || (!this.isFacingLeft() && left))

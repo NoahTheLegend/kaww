@@ -1,6 +1,7 @@
 #include "VehicleCommon.as"
 #include "Hitters.as"
 #include "HittersAW.as"
+#include "PerksCommon.as";
 
 const Vec2f arm_offset = Vec2f(-2, 0);
 const f32 MAX_OVERHEAT = 2.0f;
@@ -416,7 +417,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 			CPlayer@ p = gunner.getPlayer();
 			if (p !is null)
 			{
-				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+				if (hasPerk(p, Perks::operator))
 				{
 					overheat_mod = 0.9f;
 				}

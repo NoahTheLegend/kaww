@@ -4,6 +4,7 @@
 #include "HittersAW.as";
 #include "Explosion.as";
 #include "GunStandard.as";
+#include "PerksCommon.as";
 
 // const u32 fuel_timer_max = 30 * 600;
 const f32 SPEED_MAX = 62.5;
@@ -174,7 +175,7 @@ void onTick(CBlob@ this)
 			CPlayer@ p = pilot.getPlayer();
 			if (p !is null && !this.hasTag("falling"))
 			{
-				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+				if (hasPerk(p, Perks::operator))
 				{
 					mod = 0.15f;
 				}

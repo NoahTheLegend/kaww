@@ -1,5 +1,6 @@
 #include "ActorHUDCON.as";
 #include "InfantryCommon.as";
+#include "PerksCommon.as";
 
 const int slotsSize = 6;
 
@@ -36,11 +37,11 @@ void onRender(CSprite@ this)
 				if (p is null) return;
 
 				f32 mod = 1.0f;
-				if (getRules().get_string(p.getUsername() + "_perk") == "Sharp Shooter")
+				if (hasPerk(p, Perks::sharpshooter))
 				{
 					mod = 1.5f;
 				}
-				else if (getRules().get_string(p.getUsername() + "_perk") == "Bull")
+				else if (hasPerk(p, Perks::bull))
 				{
 					mod = 0.70f;
 				}

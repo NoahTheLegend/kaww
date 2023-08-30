@@ -1,5 +1,6 @@
 #include "Hitters.as"
 #include "HoverMessage.as";
+#include "PerksCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -43,7 +44,7 @@ f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hit
 
     if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum() && hitterBlob.hasTag("player"))
 	{
-		if (hitterBlob.getPlayer() !is null && getRules().get_string(hitterBlob.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		if (hitterBlob.getPlayer() !is null && hasPerk(hitterBlob.getPlayer(), Perks::fieldengineer))
 		{
 			return damage;
 		}

@@ -5,6 +5,7 @@
 #include "HittersAW.as";
 #include "KnockedCommon.as";
 #include "FallDamageCommon.as";
+#include "PerksCommon.as";
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point1)
 {
@@ -24,7 +25,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 
 	if (this.getPlayer() !is null )
 	{
-		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+		if (hasPerk(this.getPlayer(), Perks::paratrooper))
 		{
             vely *= 1.5;
         }

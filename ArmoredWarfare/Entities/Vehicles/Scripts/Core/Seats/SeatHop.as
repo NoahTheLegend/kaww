@@ -2,6 +2,8 @@
 
 #define SERVER_ONLY
 
+#include "PerksCommon.as";
+
 void onInit(CBlob@ this)
 {
 	this.getCurrentScript().runFlags |= Script::tick_blob_in_proximity;
@@ -38,7 +40,7 @@ void onTick(CBlob@ this)
 			{
 				if (this.getPlayer() !is null)
 				{
-					if (!blob.hasTag("gun") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+					if (hasPerk(this.getPlayer(), Perks::bull))
 					{
     			        continue;
     			    }

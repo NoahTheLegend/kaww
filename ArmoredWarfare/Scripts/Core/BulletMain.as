@@ -8,6 +8,7 @@
 #include "BulletClass.as";
 #include "BulletCase.as";
 #include "InfantryCommon.as";
+#include "PerksCommon.as";
 
 Random@ r = Random(12345);
 
@@ -184,10 +185,10 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 			if (this.getPlayer() !is null)
 			{
-				if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
+				if (hasPerk(this.getPlayer(), Perks::sharpshooter))
 				{
-					damageBody *= 1.33f; // 150%
-					damageHead *= 1.33f;
+					damageBody *= 1.25f;
+					damageHead *= 1.25f;
 				}
 			}
 
@@ -285,7 +286,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 						CPlayer@ p = gunner.getPlayer();
 						if (p !is null)
 						{
-							if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+							if (hasPerk(p, Perks::operator))
 							{
 								overheat_mod = 0.5f;
 							}

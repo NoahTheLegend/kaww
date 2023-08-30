@@ -83,7 +83,7 @@ void onTick(CBlob@ this)
 	bool lock_stab = false;
 	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && this.isKeyPressed(key_down) && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
 	{
-		if (this.hasBlob("mat_scrap", 1) && this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		if (this.hasBlob("mat_scrap", 1) && this.getPlayer() !is null && hasPerk(this.getPlayer(), Perks::fieldengineer))
 		{
 			if (getGameTime()%12 == 0 && this.getSprite() !is null)
 			{
@@ -171,7 +171,7 @@ void onTick(CBlob@ this)
 	if (this.hasTag("init_detaching"))
 	{
 		u16 time = 150;
-		if (this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+		if (hasPerk(this.getPlayer(), Perks::operator))
 		{	
 			time = 75;
 		}
@@ -199,7 +199,7 @@ void onTick(CBlob@ this)
 
 	//if (this.getName() != "sniper")
 	{
-		bool has_camo = this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage";
+		bool has_camo = this.getPlayer() !is null && hasPerk(this.getPlayer(), Perks::camouflage);
 		if (!has_camo)
 		{
 			if (this.hasScript("ClimbTree.as")) this.RemoveScript("ClimbTree.as");
@@ -230,7 +230,7 @@ void onTick(CBlob@ this)
 		{
 			if (!this.hasBlob("aceofspades", 1)
 			&& this.get_u32("aceofspades_timer") < getGameTime()
-			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+			&& hasPerk(p, Perks::lucky))
 			{
 				CInventory@ inv = this.getInventory();
 				if (inv !is null)
@@ -270,7 +270,7 @@ void onTick(CBlob@ this)
 		RunnerMoveVars@ moveVars;
 		if (this.get("moveVars", @moveVars))
 		{
-			if (this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+			if (this.getPlayer() !is null && hasPerk(this.getPlayer(), Perks::bull))
 			{
 				bool sprint = this.getHealth() >= this.getInitialHealth()/2 && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
 				
@@ -383,17 +383,11 @@ bool RecdHitCommand(CBlob@ this, CBitStream@ params)
 						{
 							// give exp
 							int exp_reward = 1;
-							//if (rules.get_string(player.getUsername() + "_perk") == "Death Incarnate")
-							//{
-							//	exp_reward *= 3;
-							//}
+
 							CBitStream params;
 							params.write_u32(exp_reward);
 							this.server_SendCommandToPlayer(this.getCommandID("dig_exp"), params, player);
-							//rules.add_u32(player.getUsername() + "_exp", exp_reward);
-							//rules.Sync(player.getUsername() + "_exp", true);
 						}
-									// sometimes makes a null blob not found error! test this future me
 					}
 				}
 			}

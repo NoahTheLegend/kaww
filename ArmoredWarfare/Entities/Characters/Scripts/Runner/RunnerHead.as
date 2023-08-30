@@ -5,6 +5,7 @@
 #include "PixelOffsets.as"
 #include "RunnerTextures.as"
 #include "Accolades.as"
+#include "PerksCommon.as";
 
 const s32 NUM_HEADFRAMES = 4;
 const s32 NUM_UNIQUEHEADS = 30;
@@ -286,7 +287,7 @@ void onTick(CSprite@ this)
 		{
 			head.SetVisible(false);
 		}
-		else if (layer == 0 || ((!blob.isAttached() || blob.hasTag("dead")) && blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Camouflage"))
+		else if (layer == 0 || ((!blob.isAttached() || blob.hasTag("dead")) && blob.getPlayer() !is null && hasPerk(blob.getPlayer(), Perks::camouflage)))
 		{
 			head.SetVisible(false);
 		}

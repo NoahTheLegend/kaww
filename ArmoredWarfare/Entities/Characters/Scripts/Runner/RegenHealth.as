@@ -1,5 +1,7 @@
 #define SERVER_ONLY
 
+#include "PerksCommon.as";
+
 // regen hp
 
 const string max_prop = "regen maximum";
@@ -30,7 +32,7 @@ void onTick(CBlob@ this)
 		CPlayer@ p = this.getPlayer();
 		if (p !is null)
 		{
-			if (getRules().get_string(p.getUsername() + "_perk") == "Bloodthirsty")
+			if (hasPerk(p, Perks::bloodthirsty))
 			{
 				return;
 			}

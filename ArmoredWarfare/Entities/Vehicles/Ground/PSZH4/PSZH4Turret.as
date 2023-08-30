@@ -2,6 +2,7 @@
 #include "GenericButtonCommon.as";
 #include "Explosion.as";
 #include "Hitters.as"
+#include "PerksCommon.as";
 
 string[] smoke = 
 {
@@ -192,7 +193,7 @@ void onTick(CBlob@ this)
 			CPlayer@ p = gunner.getOccupied().getPlayer();
 			if (p !is null)
 			{
-				if (getRules().get_string(p.getUsername() + "_perk") == "Operator")
+				if (hasPerk(p, Perks::operator))
 				{
 					isOperator = true;
 					high_angle = 72.0f; // upper depression limit

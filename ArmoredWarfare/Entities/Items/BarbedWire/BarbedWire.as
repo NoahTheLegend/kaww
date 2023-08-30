@@ -1,6 +1,7 @@
 ﻿#include "MapFlags.as"
 #include "Hitters.as"
 #include "CustomBlocks.as"
+#include "PerksCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -20,7 +21,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (blob is null) return;
 	if (isServer() && blob.hasTag("flesh") && blob.getTeamNum() != this.getTeamNum() && !blob.isAttached())
 	{
-		bool is_engi = blob.getPlayer() !is null && getRules().get_string(blob.getPlayer().getUsername() + "_perk") == "Field Engineer";
+		bool is_engi = blob.getPlayer() !is null && hasPerk(blob.getPlayer(), Perks::fieldengineer);
 		this.server_Hit(blob, this.getPosition(), Vec2f(0, 0), 0.15f, is_engi ? Hitters::fall : Hitters::spikes, true);
 	}
 	if (isServer() && blob.getTeamNum() != this.getTeamNum()
@@ -62,7 +63,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {
 	if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum() && hitterBlob.hasTag("player"))
 	{
-		if (hitterBlob.getPlayer() !is null && getRules().get_string(hitterBlob.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		if (hitterBlob.getPlayer() !is null && hasPerk(hitterBlob.getPlayer(), Perks::fieldengineer))
 		{
 			damage *= 2.25f;
 		}

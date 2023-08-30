@@ -248,6 +248,7 @@ void onInit(CBlob@ this)
 		case _mp5:
 		{
 			this.set_bool("timed_particle", true);
+			this.Tag("is_mp5");
 			break;
 		}
 		case _shotgun:
@@ -329,7 +330,6 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 		}
 	}
 }
-
 
 void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 {
@@ -447,7 +447,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			
 			if (!this.hasBlob("aceofspades", 1)
 			&& this.get_u32("aceofspades_timer") < getGameTime()
-			&& getRules().get_string(p.getUsername() + "_perk") == "Lucky")
+			&& hasPerk(p, Perks::lucky))
 			{
 				CInventory@ inv = this.getInventory();
 				if (inv !is null)
@@ -527,7 +527,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 	bool lock_stab = false;
 	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && this.isKeyPressed(key_down) && !hidegun && !isReloading && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
 	{
-		if (this.hasBlob("mat_scrap", 1) && this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Field Engineer")
+		if (this.hasBlob("mat_scrap", 1) && this.getPlayer() !is null && hasPerk(this.getPlayer(), Perks::fieldengineer))
 		{
 			if (getGameTime()%12 == 0 && this.getSprite() !is null)
 			{
@@ -602,7 +602,7 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 		if (this.exists("stab damage")) damage = this.get_f32("stab damage");
 		if (this.isKeyPressed(key_action3) && !this.hasTag("no_knife") && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime()+6 && no_medkit)
 		{
-			if (this.getName() != "mp5" && !lock_stab)
+			if (canStab(this) && !lock_stab)
 			{
 				this.set_u32("end_stabbing", getGameTime()+time);
 				this.Tag("attacking");
@@ -673,12 +673,12 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 			if (anim !is null)
 			{
 				u8 time = anim.time;
-				if (getRules().get_string(p.getUsername() + "_perk") == "Sharp Shooter")
+				if (hasPerk(p, Perks::sharpshooter))
 				{
 					reloadTime = infantry.reload_time * 1.5f;
 					time = Maths::Round(this.get_u8("initial_reloadanim_time")*1.5f);
 				}
-				else if (getRules().get_string(p.getUsername() + "_perk") == "Bull")
+				else if (hasPerk(p, Perks::bull))
 				{
 					reloadTime = infantry.reload_time * 0.75f;
 					time = Maths::Round(this.get_u8("initial_reloadanim_time")*0.75f);
@@ -868,12 +868,11 @@ void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infan
 				getMovementStats(this.getName().getHash(), sprint, walkStat, airwalkStat, jumpStat);
 
 				// operators move slower than normal
-				if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Operator")
+				if (hasPerk(this.getPlayer(), Perks::operator))
 				{	
 					sprint = false;
-					walkStat *= 0.95f;
 				}
-				else if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+				else if (hasPerk(this.getPlayer(), Perks::bull))
 				{
 					sprint = this.getHealth() >= this.getInitialHealth()/2 && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
 					walkStat = 1.1f;
@@ -1085,7 +1084,7 @@ void onTick(CBlob@ this)
 
 	if (this.getName() != "sniper")
 	{
-		bool has_camo = this.getPlayer() !is null && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage";
+		bool has_camo = this.getPlayer() !is null && hasPerk(this.getPlayer(), Perks::camouflage);
 		if (!has_camo)
 		{
 			if (this.hasScript("ClimbTree.as")) this.RemoveScript("ClimbTree.as");
@@ -1174,7 +1173,7 @@ void ClientFire( CBlob@ this, const s16 charge_time, InfantryInfo@ infantry, Vec
 	float perk_mod = 1.0f;
 	if (this.getPlayer() !is null)
 	{
-		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Sharp Shooter")
+		if (hasPerk(this.getPlayer(), Perks::sharpshooter))
 		{
 			perk_mod = 1.5f; // improved accuracy
 		}

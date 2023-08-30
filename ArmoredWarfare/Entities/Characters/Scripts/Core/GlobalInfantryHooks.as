@@ -3,6 +3,7 @@
 #include "WarfareGlobal.as";
 #include "AllHashCodes.as";
 #include "KnockedCommon.as";
+#include "PerksCommon.as";
 
 const f32 shield_angle = 60;
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
@@ -39,7 +40,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 	}
 
-	if (this.hasTag("is_shielder")
+	if (canStab(this)
 		&& (is_bullet || customData == Hitters::explosion
 			|| customData == Hitters::keg || customData == Hitters::sword))
 	{
@@ -79,7 +80,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	CPlayer@ p = this.getPlayer();
 	if (p !is null)
 	{
-		if (getRules().get_string(p.getUsername() + "_perk") == "Lucky" && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
+		if (hasPerk(p, Perks::lucky) && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
 	}
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
@@ -110,7 +111,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (this.getPlayer() !is null)
 	{
-		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Camouflage")
+		if (hasPerk(this.getPlayer(), Perks::camouflage))
 		{
 			if (customData == Hitters::fire)
 			{
@@ -119,11 +120,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		else if (this.getVelocity().y > 0.0f && !this.isOnGround() && !this.isOnLadder()
 		&& !this.isInWater() && !this.isAttached()
-		&& getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+		&& hasPerk(this.getPlayer(), Perks::paratrooper))
 		{
 			damage *= 0.5f;
 		}
-		else if (!is_bullet && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Bull")
+		else if (!is_bullet && hasPerk(this.getPlayer(), Perks::bull))
 		{
 			damage *= 0.66f;
 		}
@@ -148,7 +149,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (this.getPlayer() !is null)
 	{
-		if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Death Incarnate")
+		if (hasPerk(this.getPlayer(), Perks::deathincarnate))
 		{
 			damage *= 2.0f; // take double damage
 		}
@@ -273,12 +274,13 @@ void ManageParachute(CBlob@ this)
 		bool is_paratrooper = false;
 		if (this.getPlayer() !is null)
 		{
-			if (this.hasTag("parachute") && getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+			if (this.hasTag("parachute") && hasPerk(this.getPlayer(), Perks::paratrooper))
 			{
 				mod *= 10.0f;
 				is_paratrooper = true;
 			}
 		}
+		
 		// huge hack =(
 		if (is_infantry) this.AddForce(Vec2f(Maths::Sin(f32(getGameTime()) / 13.0f) * 30.0f,
 			(Maths::Sin(f32(getGameTime() / 4.2f)) * 8.0f)));
@@ -304,7 +306,7 @@ void ManageParachute(CBlob@ this)
 	{
 		if (this.getPlayer() !is null && this.get_u32("last_parachute") < getGameTime())
 		{
-			if (getRules().get_string(this.getPlayer().getUsername() + "_perk") == "Paratrooper")
+			if (hasPerk(this.getPlayer(), Perks::paratrooper))
 			{
 				if (this.isKeyPressed(key_up) && this.getVelocity().y > 5.0f)
 				{
@@ -340,4 +342,9 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 			g_fixedcamera = false;
 		}
 	}
+}
+
+bool canStab(CBlob@ this)
+{
+	return (!this.hasTag("is_shielder") && !this.hasTag("is_mp5"));
 }
