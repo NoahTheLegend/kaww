@@ -269,10 +269,10 @@ void onTick(CBrain@ this)
 																{
 																	if (XORRandom(2) == 0)
 																	{
-																		set_emote(blob, getEmote("okhand"));
+																		set_emote(blob, Emotes::okhand);
 																	}
 																	else{
-																		set_emote(blob, getEmote("left"));
+																		set_emote(blob, Emotes::left);
 																	}
 																}
 															}
@@ -285,10 +285,10 @@ void onTick(CBrain@ this)
 																{
 																	if (XORRandom(2) == 0)
 																	{
-																		set_emote(blob, getEmote("okhand"));
+																		set_emote(blob, Emotes::okhand);
 																	}
 																	else{
-																		set_emote(blob, getEmote("right"));
+																		set_emote(blob, Emotes::right);
 																	}
 																}
 															}
@@ -344,7 +344,7 @@ void onTick(CBrain@ this)
 									
 									if (listentogunner)
 									{
-										if (emotes) set_emote(blob, getEmote("attn"), 10);
+										if (emotes) set_emote(blob, Emotes::attn, 10);
 									}
 									else{
 										DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 300);
@@ -353,7 +353,7 @@ void onTick(CBrain@ this)
 								else{
 									//target is ground infantry
 
-									if (emotes) set_emote(blob, getEmote("check"), 10);
+									if (emotes) set_emote(blob, Emotes::check, 10);
 
 									DriveToPos(blob, vehicle, blob.get_Vec2f("generalenemylocation"), 300);
 								}
@@ -372,7 +372,7 @@ void onTick(CBrain@ this)
 							repairsneeded = true; // todo: based on distance to repair station
 						}
 
-						if (emotes) set_emote(blob, getEmote("down"), 10);
+						if (emotes) set_emote(blob, Emotes::down, 10);
 					}
 				}
 				else{
@@ -391,15 +391,15 @@ void onTick(CBrain@ this)
 							{
 								if (XORRandom(2) == 0)
 								{
-									set_emote(blob, getEmote("flex"));
+									set_emote(blob, Emotes::flex);
 								}
 								else{
 									if (blob.get_Vec2f("generalenemylocation").x > vehicle.getPosition().x)
 									{
-										set_emote(blob, getEmote("right"));
+										set_emote(blob, Emotes::right);
 									}
 									else{
-										set_emote(blob, getEmote("left"));
+										set_emote(blob, Emotes::left);
 									}
 									
 								}
@@ -412,7 +412,7 @@ void onTick(CBrain@ this)
 							{
 								if (getGameTime() % 30 == 0 && XORRandom(30) == 0)
 								{
-									set_emote(blob, getEmote("down"));
+									set_emote(blob, Emotes::down);
 								}
 							}
 						}
@@ -423,7 +423,7 @@ void onTick(CBrain@ this)
 					{
 						if (getGameTime() % 30 == 0 && XORRandom(90) == 0)
 						{
-							set_emote(blob, getEmote("attn"));
+							set_emote(blob, Emotes::attn);
 						}
 					}
 				}
@@ -452,15 +452,15 @@ void onTick(CBrain@ this)
 								{
 									if (XORRandom(2) == 0)
 									{
-										set_emote(blob, XORRandom(2) == 0 ? getEmote("builder") : getEmote("frown"));
+										set_emote(blob, XORRandom(2) == 0 ? Emotes::builder : Emotes::frown);
 									}
 									else{
 										if (tertiarytarget.getPosition().x > vehicle.getPosition().x)
 										{
-											set_emote(blob, getEmote("right"));
+											set_emote(blob, Emotes::right);
 										}
 										else{
-											set_emote(blob, getEmote("left"));
+											set_emote(blob, Emotes::left);
 										}
 									}
 								}
@@ -523,7 +523,7 @@ void onTick(CBrain@ this)
 							// need repairs emotes & hop out!
 							if (getGameTime() % 30 == 0 && XORRandom(40) == 0)
 							{
-								set_emote(blob, XORRandom(2) == 0 ? getEmote("builder") : getEmote("heal"));
+								set_emote(blob, XORRandom(2) == 0 ? Emotes::builder : Emotes::heal);
 
 								if (XORRandom(2) == 0)
 								{
@@ -544,7 +544,7 @@ void onTick(CBrain@ this)
 						{
 							if (XORRandom(200) == 0 && getGameTime() % 30 == 0)
 							{
-								set_emote(blob, getEmote("mad"));
+								set_emote(blob, Emotes::mad);
 							}
 						}
 
@@ -624,7 +624,7 @@ void onTick(CBrain@ this)
 				{
 					if (XORRandom(200) == 0 && getGameTime() % 30 == 0)
 					{
-						set_emote(blob, getEmote("note"));
+						set_emote(blob, Emotes::note);
 					}
 				}
 				else{
@@ -632,10 +632,10 @@ void onTick(CBrain@ this)
 					{
 						if (XORRandom(2) == 0)
 						{
-							set_emote(blob, getEmote("troll"));
+							set_emote(blob, Emotes::troll);
 						}
 						else{
-							set_emote(blob, getEmote("finger"));
+							set_emote(blob, Emotes::finger);
 						}
 					}
 				}
@@ -769,7 +769,7 @@ void onTick(CBrain@ this)
 					// do driver repair emotes
 					if (getGameTime() % 30 == 0 && XORRandom(200) == 0)
 					{
-						set_emote(blob, XORRandom(2) == 0 ? getEmote("heal") : getEmote("cry"));
+						set_emote(blob, XORRandom(2) == 0 ? Emotes::heal : Emotes::cry);
 					}
 				}
 			}
@@ -845,7 +845,7 @@ void onTick(CBrain@ this)
 					{
 						if (secondarytarget.hasTag("vehicle")) // we are going for a vehicle seat
 						{
-							if (emotes) set_emote(blob, getEmote("cog"), 2);
+							if (emotes) set_emote(blob, Emotes::cog, 2);
 
 							if ((secondarytarget.getPosition() - blob.getPosition()).getLength() < 40 && secondarytarget.getAttachments() !is null)
 							{
@@ -855,7 +855,7 @@ void onTick(CBrain@ this)
 								bool userealpos = false;
 								bool pickadifferentseat = false;
 
-								set_emote(blob, getEmote("fire"), 30);
+								set_emote(blob, Emotes::fire, 30);
 								
 								//print("d " + blob.get_string("behavior"));
 								if (blob.get_string("behavior") == "drive")
@@ -998,10 +998,12 @@ void onTick(CBrain@ this)
 
 									if (blob.get_u8("moveover") == 1) // 1 == right
 									{
+										//if (emotes) set_emote(blob, Emotes::right, 10);
 										blob.setKeyPressed(key_right, true);
 									}
 									else // 0 == left
 									{		
+										//if (emotes) set_emote(blob, Emotes::left, 10);
 										blob.setKeyPressed(key_left, true);
 									}
 
@@ -1023,7 +1025,7 @@ void onTick(CBrain@ this)
 						}		
 						else if (secondarytarget.getName() == "pointflag") // we are going for flag
 						{	
-							if (emotes) set_emote(blob, getEmote("redflag"), 10);
+							if (emotes) set_emote(blob, Emotes::redflag, 10);
 
 							if (secondarytarget.getTeamNum() != blob.getTeamNum()) // capturable for us
 							{
@@ -1043,10 +1045,10 @@ void onTick(CBrain@ this)
 									{
 										if (XORRandom(2) == 0)
 										{
-											set_emote(blob, getEmote("smile"));
+											set_emote(blob, Emotes::smile);
 										}
 										else{
-											set_emote(blob, getEmote("thumbsup"));
+											set_emote(blob, Emotes::thumbsup);
 										}
 									}
 								}
@@ -1055,7 +1057,7 @@ void onTick(CBrain@ this)
 						}
 						else if (secondarytarget.getName() == "repairstation") // we are capping a repair station
 						{	
-							if (emotes) set_emote(blob, getEmote("redflag"), 10);
+							if (emotes) set_emote(blob, Emotes::redflag, 10);
 
 							if (secondarytarget.getTeamNum() != blob.getTeamNum()) // capturable for us
 							{
@@ -1140,12 +1142,12 @@ void onTick(CBrain@ this)
 
 				if (blob.get_u8("moveover") == 1) // 1 == right
 				{
-					//if (emotes) set_emote(blob, getEmote("right"), 10);
+					//if (emotes) set_emote(blob, Emotes::right, 10);
 					blob.setKeyPressed(key_right, true);
 				}
 				else // 0 == left
 				{		
-					//if (emotes) set_emote(blob, getEmote("left"), 10);
+					//if (emotes) set_emote(blob, Emotes::left, 10);
 					blob.setKeyPressed(key_left, true);
 				}
 
@@ -1191,12 +1193,12 @@ void onTick(CBrain@ this)
 
 			if (blob.get_u8("moveover") == 1) // 1 == right
 			{
-				//if (emotes) set_emote(blob, getEmote("right"), 10);
+				//if (emotes) set_emote(blob, Emotes::right, 10);
 				blob.setKeyPressed(key_right, true);
 			}
 			else // 0 == left
 			{		
-				//if (emotes) set_emote(blob, getEmote("left"), 10);
+				//if (emotes) set_emote(blob, Emotes::left, 10);
 				blob.setKeyPressed(key_left, true);
 			}
 
