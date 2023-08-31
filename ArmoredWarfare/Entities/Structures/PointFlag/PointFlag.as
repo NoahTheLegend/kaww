@@ -4,7 +4,7 @@
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 
-const u16 capture_time = 3000;
+const f32 capture_time = 3000;
 const u16 crate_frequency_min = 180; // 3.0 min
 const u16 crate_frequency_seconds = 5.0f * 60; // 5 min by default
 const u16 increase_frequency_byplayer = 6; // 10 players decrease by 1 min
