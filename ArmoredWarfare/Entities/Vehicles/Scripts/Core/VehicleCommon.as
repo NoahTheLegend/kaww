@@ -5,6 +5,11 @@
 #include "GunStandard.as"
 #include "PerksCommon.as";
 
+// HOOKS THAT YOU MUST IMPLEMENT WHEN INCLUDING THIS FILE
+// void Vehicle_onFire( CBlob@ this, CBlob@ bullet, const u8 charge )
+//      bullet will be null on client! always check for null
+// bool Vehicle_canFire( CBlob@ this, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue )
+
 class AmmoInfo
 {
 	u8 loaded_ammo;
@@ -533,6 +538,7 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 		{
 			// empty shot
 			this.getSprite().PlayRandomSound(v.getCurrentAmmo().empty_sound, 0.75f);
+			Vehicle_onFire(this, v, null, 0);
 		}
 
 		// finally set the delay
@@ -986,7 +992,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								CBlob@ b = ap.getOccupied();
 							}
 
-							if (canFire(this, v) && (blob.isMyPlayer() || (isServer() && blob.isBot())))
+							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && (blob.isMyPlayer() || (isServer() && blob.isBot())))
 							{
 								Vec2f aimPos = ap.getAimPos();
 
