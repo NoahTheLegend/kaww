@@ -660,40 +660,6 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 	return this.getTeamNum() == forBlob.getTeamNum();
 }
 
-CBlob@ CreateBullet(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
-{
-	if (!this.hasTag("no_more_proj"))
-	{
-		CBlob@ proj = server_CreateBlobNoInit("bulletheavy");
-		if (proj !is null)
-		{
-			proj.SetDamageOwnerPlayer(this.getPlayer());
-			proj.Init();
-
-			proj.set_s8(penRatingString, 2);
-
-			proj.set_f32("bullet_damage_body", projDamage);
-			proj.set_f32("bullet_damage_head", projDamage+0.125f);
-			proj.IgnoreCollisionWhileOverlapped(this);
-			proj.server_setTeamNum(this.getTeamNum());
-			proj.setVelocity(arrowVel.RotateBy(0.025f*(XORRandom(5)-2.0f)));
-
-			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
-			if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
-			{
-				proj.SetDamageOwnerPlayer(ap.getOccupied().getPlayer());
-			}
-			
-			//proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
-			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -90.0f : 24.0f), 8.0f).RotateBy(this.getAngleDegrees()));
-		}
-		this.Tag("no_more_proj");
-		return proj;
-	}
-	else
-		return null;
-}
-
 CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
 {
 	if (!this.hasTag("no_more_proj"))

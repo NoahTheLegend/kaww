@@ -39,7 +39,7 @@ void onInit(CBlob@ this)
 	                    1, // fire cost
 	                    "ammo", // bullet ammo config name
 	                    "Ammo", // name for ammo selection
-	                    "bulletheavy", // bullet config name
+	                    "arrow", // bullet config name
 	                    "M60fire", // fire sound  
 	                    "EmptyFire", // empty fire sound
 	                    Vehicle_Fire_Style::custom,

@@ -108,13 +108,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		if (getNet().isServer() && this.get_u32("no_more_proj") <= getGameTime())
 		{
-			//CBlob@ proj = CreateProj(this, arrowPos, arrowVel);
-			//if (proj !is null)
-			//{
-			//	proj.server_SetTimeToDie(5.5);
-			//	proj.Tag("aircraft_bullet");
-			//}
-
 			CInventory@ inv = this.getInventory();
 			if (inv !is null)
 			{
@@ -397,41 +390,6 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 		true_angle, this.getPosition()+Vec2f(0, 8),
 		aimpos, bulletSpread, 1, 0, 0.5f, 0.75f, 1,
 			this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
-}
-
-CBlob@ CreateProj(CBlob@ this, Vec2f arrowPos, Vec2f arrowVel)
-{
-	if (this.get_u32("no_more_proj") <= getGameTime())
-	{
-		CBlob@ proj = server_CreateBlobNoInit("bulletheavy");
-		if (proj !is null)
-		{
-			proj.SetDamageOwnerPlayer(this.getPlayer());
-			proj.Init();
-
-			proj.set_s8(penRatingString, 1);
-
-			proj.set_f32("bullet_damage_body", projDamage);
-			proj.set_f32("bullet_damage_head", projDamage*1.25f);
-			proj.IgnoreCollisionWhileOverlapped(this);
-			proj.server_setTeamNum(this.getTeamNum());
-			arrowVel.RotateBy(this.isFacingLeft() ? -2.5 : 2.5);
-			proj.setVelocity(arrowVel.RotateBy(0.125f*(XORRandom(36)-17.5f)));
-
-			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PILOT");
-			if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null) //getting player is necessary in case when player leaves
-			{
-				proj.SetDamageOwnerPlayer(ap.getOccupied().getPlayer());
-			}
-			
-			//proj.getShape().setDrag(proj.getShape().getDrag() * 0.3f);
-			proj.setPosition(arrowPos + Vec2f((this.isFacingLeft() ? -16.0f : 16.0f), 8.0f).RotateBy(this.getAngleDegrees()));
-		}
-		//this.set_u32("no_more_proj", getGameTime()+1);
-		return proj;
-	}
-	else
-		return null;
 }
 
 void Shoot(CBlob@ this)
