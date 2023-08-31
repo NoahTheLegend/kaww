@@ -95,8 +95,7 @@ void onTick(CBlob@ this)
 					if (isServer())
 					{
 						f32 angle = (targetblob.getPosition()-this.getPosition()+Vec2f(0, 8)).Angle();
-						//this.SendCommand(this.getCommandID("shoot"));
-						//this.set_bool("spawned", false);
+
 						f32 bulletSpread = 5.0f;
 						angle += XORRandom(bulletSpread+1)/10-bulletSpread/10/2;
 						f32 true_angle = -angle;
@@ -165,41 +164,6 @@ void ClientFire(CBlob@ this)
 		"ShellCasing",                      // sound
 		this.get_u8("team_color"));         // team number
 	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -32.0f : 32.0f, -6.0f).RotateBy(angle), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.75f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
-}
-
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
-	if (cmd == this.getCommandID("shoot"))
-	{
-		if (getNet().isServer())
-		{
-			if (!this.get_bool("spawned"))
-			{
-				CBlob@ bullet = server_CreateBlobNoInit("bulletheavy");
-
-				if (bullet !is null)
-				{
-					this.set_bool("spawned", true);
-					bullet.Init();
-
-					bullet.set_s8(penRatingString, 3);
-
-					bullet.set_f32("bullet_damage_body", 0.18f);
-					bullet.set_f32("bullet_damage_head", 0.18f);
-					bullet.IgnoreCollisionWhileOverlapped(this);
-					bullet.server_setTeamNum(this.getTeamNum());
-					Vec2f pos_ = this.getPosition()-Vec2f(0.0f, 7.0f);
-					bullet.setPosition(pos_);
-
-					f32 angle = getAimAngle(this);
-					angle += ((XORRandom(512) - 256) / 132.0f);
-					Vec2f vel = Vec2f(530.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
-					bullet.setVelocity(vel);
-
-				}
-			}
-		}
-	}
 }
 
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
