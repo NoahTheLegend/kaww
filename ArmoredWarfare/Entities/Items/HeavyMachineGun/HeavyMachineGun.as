@@ -220,13 +220,13 @@ void onTick(CBlob@ this)
 		{
 			this.add_f32("overheat", -COOLDOWN_RATE);
 		}
-		else if (this.get_f32("overheat") <= COOLDOWN_RATE)
+		else if (Maths::Round(this.get_f32("overheat")) < 1)
 		{
 			this.set_f32("overheat", 0);
 			this.set_bool("overheated", false);
 		}
 	}
-	else if (this.get_f32("overheat") >= this.get_f32("max_overheat") - this.get_f32("overheat_per_shot"))
+	else if (this.get_f32("overheat") >= MAX_OVERHEAT - OVERHEAT_PER_SHOT)
 	{
 		this.set_bool("overheated", true);
 		v.firing = false;
@@ -236,7 +236,7 @@ void onTick(CBlob@ this)
 	{
 		if (this.getSprite() !is null)
 		{
-			if (this.get_f32("overheat") >= this.get_f32("max_overheat")-this.get_f32("overheat_per_shot"))
+			if (this.get_f32("overheat") >= MAX_OVERHEAT-OVERHEAT_PER_SHOT)
 				this.getSprite().PlaySound("DrillOverheat.ogg", 1.0f, 0.95f);
 			else if (getGameTime() % 3 + XORRandom(2) == 0) this.getSprite().PlaySound("Steam.ogg", 0.85f, 1.075f);
 		}
@@ -430,7 +430,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 			return;
 		}
 
-		this.add_f32("overheat", this.get_f32("overheat_per_shot") * overheat_mod);
+		this.set_f32("overheat", Maths::Min(MAX_OVERHEAT, this.get_f32("overheat") + OVERHEAT_PER_SHOT * overheat_mod));
 
 		if (isServer())
 		{
