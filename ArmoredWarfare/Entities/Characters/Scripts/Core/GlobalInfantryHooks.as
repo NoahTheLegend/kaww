@@ -40,7 +40,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 	}
 
-	if (canStab(this)
+	if (this.hasTag("is_shielder")
 		&& (is_bullet || customData == Hitters::explosion
 			|| customData == Hitters::keg || customData == Hitters::sword))
 	{
