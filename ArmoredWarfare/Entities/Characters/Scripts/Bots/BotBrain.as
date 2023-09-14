@@ -259,7 +259,7 @@ void onTick(CBrain@ this)
 														// take directions from gunner
 
 														// respond to gunner emotes
-														if (realemotes)
+														/*if (realemotes)
 														{
 															if (point.getOccupied().get_u8("emote") == 11) // go to left
 															{
@@ -292,7 +292,7 @@ void onTick(CBrain@ this)
 																	}
 																}
 															}
-														}
+														}*/
 
 														f32 gunangle = Vehicle_getWeaponAngle(turret, v);
 
