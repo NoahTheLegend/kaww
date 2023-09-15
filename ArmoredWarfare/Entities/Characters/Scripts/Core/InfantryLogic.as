@@ -1069,7 +1069,7 @@ void HandleOther(CBlob@ this)
 bool ModifyTDM(CBlob@ this, RunnerMoveVars@ moveVars)
 {
 	bool isTDM = (getMap().tilemapwidth <= 300);
-	//if (!isTDM) return false;
+	if (!isTDM) return false;
 	
 	if (this.isMyPlayer())
 	{
@@ -1115,6 +1115,11 @@ void Dash(CBlob@ this, RunnerMoveVars moveVars)
 	f32 force = this.getMass() * dash_force * moveVars.walkFactor * dir_x;
 	this.setVelocity(Vec2f(0, this.getVelocity().y));
 	this.AddForce(Vec2f(force, 0));
+
+	if (this.getSprite() !is null)
+	{
+		this.getSprite().PlaySound("Dash.ogg", 0.5f, 1.25f);
+	}
 }
 
 void onTick(CBlob@ this)
