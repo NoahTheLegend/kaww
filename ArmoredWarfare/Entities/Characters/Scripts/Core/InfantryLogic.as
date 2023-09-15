@@ -22,6 +22,9 @@
 const f32 firebringer_max_scale = 750.0f;
 const u8 firebringer_aftershot = 30;
 
+const u16 dash_cooldown = 120;
+const f32 dash_force = 4.5f;
+
 void onInit(CBlob@ this)
 {
 	CSprite@ sprite = this.getSprite();
@@ -431,7 +434,7 @@ void onDie(CBlob@ this)
 	}
 }
 
-void ManageGun( CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, InfantryInfo@ infantry )
+void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, InfantryInfo@ infantry)
 {
 	bool ismyplayer = this.isMyPlayer();
 	bool responsible = ismyplayer;
@@ -1037,43 +1040,101 @@ void TakeAmmo(CBlob@ this, u32 magSize)
 	}
 }
 
-void HandleSpecific(CBlob@ this)
+void HandleOther(CBlob@ this)
 {
-	if (isServer()&&getGameTime()%30==0)
+	u32 gt = getGameTime()+this.getNetworkID();
+	if (isServer() && gt%30==0)
 	{
 		if (!this.hasTag("camera_offset") && !(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
 		if (this.hasTag("invincible") && !this.isAttached()) this.Untag("invincible");
 	}
+	if (isClient() && gt%30==0)
+	{
+		if (!this.hasTag("set light")
+		&& ((this.getTeamNum() == getRules().get_u8("teamleft") && getRules().get_s16("teamLeftTickets") == 0)
+		|| (this.getTeamNum() == getRules().get_u8("teamright") && getRules().get_s16("teamRightTickets") == 0)))
+		{
+			this.Tag("set light");
+			this.SetLightRadius(8.0f);
+			this.SetLightColor(SColor(255, 255, 255, 255));
+			this.SetLight(true);
+		}
+	}
+	if (this.get_u32("reset_reloadtime") < getGameTime())
+	{
+		this.set_s32("my_reloadtime", 0);
+	}
+}
+
+bool ModifyTDM(CBlob@ this, RunnerMoveVars@ moveVars)
+{
+	bool isTDM = (getMap().tilemapwidth <= 300);
+	//if (!isTDM) return false;
+	
+	if (this.isMyPlayer())
+	{
+		this.set_f32("dash_cooldown_current", Maths::Max(0, this.get_f32("next_dash")-getGameTime()));
+		f32 cooldown = this.get_f32("dash_cooldown_current");
+
+		Bar@ bars;
+		if (this.get("Bar", @bars))
+		{
+			if (cooldown <= dash_cooldown/10 && hasBar(bars, "dash"))
+			{
+				bars.RemoveBar("dash", false);
+			}
+
+			CControls@ controls = this.getControls();
+			if (controls is null) return false;
+			if (!controls.isKeyJustPressed(KEY_LCONTROL) || this.isAttached()) return false;
+
+			if (!hasBar(bars, "dash"))
+			{
+				this.set_f32("dash_cooldown_current", dash_cooldown);
+				this.set_f32("next_dash", getGameTime()+dash_cooldown);
+				
+				SColor color = SColor(255, 255, 255, 255);
+				ProgressBar setbar;
+				setbar.Set(this.getNetworkID(), "dash", Vec2f(48.0f, 12.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, color,
+					"dash_cooldown_current", dash_cooldown+5, 1.0f, 5, 5, false, "");
+
+    			bars.AddBar(this.getNetworkID(), setbar, true);
+				Dash(this, moveVars);
+			}
+		}
+	}
+
+	return true;
+}
+
+void Dash(CBlob@ this, RunnerMoveVars moveVars)
+{
+	f32 dir_x = 1;
+	this.isKeyPressed(key_left) ? dir_x = -1 : this.isKeyPressed(key_right) ? dir_x = 1 : this.isFacingLeft() ? dir_x = -1 : dir_x = 1;
+
+	f32 force = this.getMass() * dash_force * moveVars.walkFactor * dir_x;
+	this.setVelocity(Vec2f(0, this.getVelocity().y));
+	this.AddForce(Vec2f(force, 0));
 }
 
 void onTick(CBlob@ this)
 {
 	barTick(this);
-	HandleSpecific(this);
+	HandleOther(this);
 
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
-	
-	if (!this.hasTag("set light")
-	&& ((this.getTeamNum() == getRules().get_u8("teamleft") && getRules().get_s16("teamLeftTickets") == 0)
-	|| (this.getTeamNum() == getRules().get_u8("teamright") && getRules().get_s16("teamRightTickets") == 0)))
-	{
-		this.Tag("set light");
-		this.SetLightRadius(8.0f);
-		this.SetLightColor(SColor(255, 255, 255, 255));
-		this.SetLight(true);
-	}
-
-	if (this.get_u32("reset_reloadtime") < getGameTime())
-	{
-		this.set_s32("my_reloadtime", 0);
-	}
 
 	InfantryInfo@ infantry;
 	if (!this.get( "infantryInfo", @infantry )) return;
 
 	ArcherInfo@ archer;
 	if (!this.get("archerInfo", @archer)) return;
+	
+	RunnerMoveVars@ moveVars;
+	if (!this.get("moveVars", @moveVars)) return;
+
+	bool isTDM = ModifyTDM(this, moveVars);
 
 	ManageFirebringerLogic(this);
 	ManageParachute(this);
@@ -1100,9 +1161,6 @@ void onTick(CBlob@ this)
 		//getHUD().SetCursorFrame(0);
 		return;
 	}
-
-	RunnerMoveVars@ moveVars;
-	if (!this.get("moveVars", @moveVars)) return;	
 
 	ManageGun(this, archer, moveVars, infantry);
 	if (getHUD() !is null && getHUD().hasMenus())
