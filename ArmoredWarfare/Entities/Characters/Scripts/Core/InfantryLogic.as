@@ -22,8 +22,8 @@
 const f32 firebringer_max_scale = 750.0f;
 const u8 firebringer_aftershot = 30;
 
-const u16 dash_cooldown = 120;
-const f32 dash_force = 4.5f;
+const u16 dash_cooldown = 90;
+const f32 dash_force = 4.15f;
 
 void onInit(CBlob@ this)
 {
