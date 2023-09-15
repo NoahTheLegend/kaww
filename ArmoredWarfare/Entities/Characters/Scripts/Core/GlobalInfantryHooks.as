@@ -280,11 +280,8 @@ void ManageParachute(CBlob@ this)
 				is_paratrooper = true;
 			}
 		}
-		
-		// huge hack =(
-		if (is_infantry) this.AddForce(Vec2f(Maths::Sin(f32(getGameTime()) / 13.0f) * 30.0f,
-			(Maths::Sin(f32(getGameTime() / 4.2f)) * 8.0f)));
-		else  this.AddForce(Vec2f(Maths::Sin(f32(getGameTime()) / 9.5f) * 13.0f,
+
+		this.AddForce(Vec2f(Maths::Sin(f32(getGameTime()) / 9.5f) * 13.0f,
 			(Maths::Sin(f32(getGameTime() / 4.2f)) * 8.0f)));
 
 		Vec2f vel = this.getVelocity();
