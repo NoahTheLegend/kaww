@@ -22,8 +22,13 @@
 const f32 firebringer_max_scale = 750.0f;
 const u8 firebringer_aftershot = 30;
 
-const u16 dash_cooldown = 90;
-const f32 dash_force = 4.15f;
+const u16 dash_cooldown = 45;
+const f32 dash_force = 4.25f;
+const u16 jet_fuel = 35; // flytime in ticks
+const u8 jet_fuel_restore = 2; // per tick
+const u8 jet_refuel_delay = 30;
+const u8 jet_fuel_min = jet_fuel/10;
+const f32 jet_force = 32.0f;
 
 void onInit(CBlob@ this)
 {
@@ -149,6 +154,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("basic_sync");
 	this.addCommandID("sync_mag");
 	this.addCommandID("sync_regen");
+	this.addCommandID("jet_effects");
 
 	this.Tag("3x2");
 	this.set_u32("set_nomenus", 0);
@@ -1076,6 +1082,8 @@ bool ModifyTDM(CBlob@ this, RunnerMoveVars@ moveVars)
 		this.set_f32("dash_cooldown_current", Maths::Max(0, this.get_f32("next_dash")-getGameTime()));
 		f32 cooldown = this.get_f32("dash_cooldown_current");
 
+		if (this.isAttached()) return false;
+
 		Bar@ bars;
 		if (this.get("Bar", @bars))
 		{
@@ -1086,17 +1094,59 @@ bool ModifyTDM(CBlob@ this, RunnerMoveVars@ moveVars)
 
 			CControls@ controls = this.getControls();
 			if (controls is null) return false;
-			if (!controls.isKeyJustPressed(KEY_LCONTROL) || this.isAttached()) return false;
+			CSprite@ sprite = this.getSprite();
+			if (sprite is null) return false;
 
-			if (!hasBar(bars, "dash"))
+			if (controls.isKeyPressed(KEY_LSHIFT) && this.get_f32("jet_current") > jet_fuel_min)
 			{
+
+				if (!hasBar(bars, "jet"))
+				{
+					SColor color = SColor(255, 255, 2255, 55);
+					ProgressBar setbar;
+					setbar.Set(this.getNetworkID(), "jet", Vec2f(48.0f, 12.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, color,
+						"jet_current", jet_fuel+1, 1.0f, 5, 5, false, "");
+
+    				bars.AddBar(this.getNetworkID(), setbar, true);
+
+					this.set_f32("jet_current", jet_fuel);
+				}
+
+				this.set_f32("jet_current", Maths::Max(jet_fuel_min, this.get_f32("jet_current") - 1));
+				this.set_u32("jet_refuel_delay", getGameTime()+jet_refuel_delay);
+
+				Jet(this);
+
+				sprite.SetEmitSound("FlamethrowerFire.ogg");
+				sprite.SetEmitSoundVolume(0.3f);
+				sprite.SetEmitSoundSpeed(0.85f+0.15f*(jet_fuel/this.get_f32("jet_current")));
+				sprite.SetEmitSoundPaused(false);
+			}
+			else
+			{
+				sprite.SetEmitSoundPaused(true);
+			}
+			
+			if (this.get_u32("jet_refuel_delay") < getGameTime()) //&& (this.isOnGround() || this.isOnLadder() || this.isInWater()))
+			{
+				this.set_f32("jet_current", Maths::Min(jet_fuel, this.get_f32("jet_current") + jet_fuel_restore));
+				if (this.get_f32("jet_current") == jet_fuel)
+				{
+					bars.RemoveBar("jet", false);
+					sprite.RewindEmitSound();
+				}
+			}
+
+			if (controls.isKeyJustPressed(KEY_LCONTROL) && cooldown < 5)
+			{
+				bars.RemoveBar("dash", true);
 				this.set_f32("dash_cooldown_current", dash_cooldown);
 				this.set_f32("next_dash", getGameTime()+dash_cooldown);
 				
 				SColor color = SColor(255, 255, 255, 255);
 				ProgressBar setbar;
 				setbar.Set(this.getNetworkID(), "dash", Vec2f(48.0f, 12.0f), false, Vec2f(0, 40), Vec2f(2, 2), back, color,
-					"dash_cooldown_current", dash_cooldown+5, 1.0f, 5, 5, false, "");
+					"dash_cooldown_current", dash_cooldown+2, 1.0f, 5, 5, false, "");
 
     			bars.AddBar(this.getNetworkID(), setbar, true);
 				Dash(this, moveVars);
@@ -1118,8 +1168,19 @@ void Dash(CBlob@ this, RunnerMoveVars moveVars)
 
 	if (this.getSprite() !is null)
 	{
-		this.getSprite().PlaySound("Dash.ogg", 0.5f, 1.25f);
+		this.getSprite().PlayRandomSound("Dash", 0.5f+XORRandom(150)*0.001f, 1.0f+XORRandom(250)*0.001f);
 	}
+}
+
+void Jet(CBlob@ this)
+{
+	f32 dir_x = 1;
+	this.isKeyPressed(key_left) ? dir_x = -1 : this.isKeyPressed(key_right) ? dir_x = 1 : this.isFacingLeft() ? dir_x = -1 : dir_x = 1;
+	Vec2f force = Vec2f(dir_x / 10, -1.0f) * jet_force;
+	this.AddForce(force);
+
+	CBitStream params;
+	this.SendCommand(this.getCommandID("jet_effects"), params);
 }
 
 void onTick(CBlob@ this)
@@ -1648,6 +1709,19 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				this);	
 		}
 	}
+	else if (cmd == this.getCommandID("jet_effects"))
+	{
+		if (isServer() && !isClient())
+		{
+			CBitStream params;
+			this.SendCommand(this.getCommandID("jet_effects"), params);
+		}
+		if (isClient())
+		{
+			MakeParticle(this, Vec2f(0, 0.5f + XORRandom(50)*0.01f), "SmallExplosion" + (1 + XORRandom(2)));
+			MakeParticle(this, Vec2f(0, 0.5f + XORRandom(50)*0.01f), XORRandom(100) < 65 ? "SmallGreySteam" : "MediumGreySteam");
+		}
+	}
 	else if (cmd == this.getCommandID("aos_effects"))
 	{
 		if (this.isMyPlayer()) // are we on server?
@@ -1758,4 +1832,12 @@ bool canHit(CBlob@ this, CBlob@ b)
 void onRender(CSprite@ this)
 {
 	barRender(this);
+}
+
+void MakeParticle(CBlob@ this, const Vec2f vel, const string filename = "SmallSteam")
+{
+	if (!isClient()) return;
+
+	Vec2f offset = Vec2f(0, 8);
+	ParticleAnimated(filename, this.getPosition() + offset, vel, float(XORRandom(360)), 0.66f, 2 + XORRandom(3), -0.1f, false);
 }

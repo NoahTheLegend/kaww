@@ -155,7 +155,7 @@ class Bar : BarHandler{
     bool remove_on_fill; bool removing; string name; string callback_command; bool write_blob;
     f32 gap; f32 mod_gap; f32 camera_factor;
     string prop; u32 tick_since_created;
-    bool reoffset;
+    bool reoffset; // unused yet
 
     ProgressBar@ getBar(string name)
     {
