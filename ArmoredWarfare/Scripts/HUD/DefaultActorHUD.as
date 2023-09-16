@@ -345,6 +345,14 @@ void onRender(CSprite@ this)
 
 	GUI::DrawIcon("ClassIconSimple.png", icon_num, Vec2f(48, 48), Vec2f(icon_num == 0 ? -14 : 46, getScreenHeight()-166), 2);
 
+	bool isTDM = (getMap().tilemapwidth <= 300);
+	if (isTDM)
+	{
+		GUI::DrawIcon("JetpackIcon.png", 0, Vec2f(32,32), Vec2f(32.0f, getHUDY() - dim.y - 180.0f), 1.0f);
+		GUI::DrawText("C\nT\nR\nL", Vec2f(20.0f, getHUDY() - dim.y - 172.0f), SColor(0x99ffffff));
+		GUI::DrawText("S\nH\nF\nT", Vec2f(96.0f, getHUDY() - dim.y - 172.0f), SColor(0x99ffffff));
+	}
+
 	string ammo_amt = blob.get_u32("mag_bullets");
 	string ammo_amt_max = blob.get_u32("mag_bullets_max");
 	Vec2f pngsize = Vec2f(98, 159);

@@ -1337,7 +1337,7 @@ void InAirLogic(CBlob@ this, u8 inaccuracyCap)
 		u8 inaccuracyFinal = Maths::Min(this.get_u8("inaccuracy") + inaccuracy, inaccuracyCap);
 		this.set_u8("inaccuracy", inaccuracyFinal);
 		//printf(""+this.get_u8("inaccuracy"));
-		//this.setVelocity(Vec2f(this.getVelocity().x*0.90f, this.getVelocity().y));
+		if (this.hasTag("parachute")) this.setVelocity(Vec2f(this.getVelocity().x*0.95f, this.getVelocity().y));
 	}
 }
 
