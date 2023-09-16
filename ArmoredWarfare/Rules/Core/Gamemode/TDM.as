@@ -1972,5 +1972,7 @@ const string[] TdmMaps = {
 	"DesertedFlagTDM.png",
 	"TesfoMineTDM.png",
 	"TomeTDM.png",
-	"Battleship.png"
+	"Battleship.png",
+	"Oilrig.png",
+	"Golf.png"
 };
