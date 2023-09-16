@@ -1709,18 +1709,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				this);	
 		}
 	}
-	else if (cmd == this.getCommandID("jet_effects"))
+	if (!isServer() && cmd == this.getCommandID("jet_effects"))
+	{	
+		MakeParticle(this, Vec2f(0, 0.5f + XORRandom(50)*0.01f), "SmallExplosion" + (1 + XORRandom(2)));
+		MakeParticle(this, Vec2f(0, 0.5f + XORRandom(50)*0.01f), XORRandom(100) < 65 ? "SmallGreySteam" : "MediumGreySteam");
+	}
+	else if (!isClient() && cmd == this.getCommandID("jet_effects"))
 	{
-		if (isServer() && !isClient())
-		{
-			CBitStream params;
-			this.SendCommand(this.getCommandID("jet_effects"), params);
-		}
-		if (isClient())
-		{
-			MakeParticle(this, Vec2f(0, 0.5f + XORRandom(50)*0.01f), "SmallExplosion" + (1 + XORRandom(2)));
-			MakeParticle(this, Vec2f(0, 0.5f + XORRandom(50)*0.01f), XORRandom(100) < 65 ? "SmallGreySteam" : "MediumGreySteam");
-		}
+		CBitStream params;
+		this.SendCommand(this.getCommandID("jet_effects"), params);
 	}
 	else if (cmd == this.getCommandID("aos_effects"))
 	{
