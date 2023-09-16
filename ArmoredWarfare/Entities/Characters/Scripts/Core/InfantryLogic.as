@@ -155,6 +155,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("sync_mag");
 	this.addCommandID("sync_regen");
 	this.addCommandID("jet_effects");
+	this.addCommandID("jet_effects_kagsucks");
 
 	this.Tag("3x2");
 	this.set_u32("set_nomenus", 0);
@@ -1709,7 +1710,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				this);	
 		}
 	}
-	if (!isServer() && cmd == this.getCommandID("jet_effects"))
+	if (!isServer() && cmd == this.getCommandID("jet_effects_kagsucks"))
 	{	
 		MakeParticle(this, Vec2f(0, 0.5f + XORRandom(50)*0.01f), "SmallExplosion" + (1 + XORRandom(2)));
 		MakeParticle(this, Vec2f(0, 0.5f + XORRandom(50)*0.01f), XORRandom(100) < 65 ? "SmallGreySteam" : "MediumGreySteam");
@@ -1717,7 +1718,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	else if (!isClient() && cmd == this.getCommandID("jet_effects"))
 	{
 		CBitStream params;
-		this.SendCommand(this.getCommandID("jet_effects"), params);
+		this.SendCommand(this.getCommandID("jet_effects_kagsucks"), params);
 	}
 	else if (cmd == this.getCommandID("aos_effects"))
 	{
