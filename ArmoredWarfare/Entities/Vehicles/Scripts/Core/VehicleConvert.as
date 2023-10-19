@@ -218,9 +218,9 @@ void onRender(CSprite@ this)
 		}
 		//draw balance of power
 		for (int i = 1; i <= friendlyCount; i++)
-	 		GUI::DrawIcon("VehicleConvertIcon.png", 0, Vec2f(8, 16), pos2d + Vec2f(i * 8 - 8, -4), 0.9f, blob.getTeamNum());
+	 		GUI::DrawIcon("#VehicleConvertIcon.png", 0, Vec2f(8, 16), pos2d + Vec2f(i * 8 - 8, -4), 0.9f, blob.getTeamNum());
 	 	for (int i = 1; i <= enemyCount; i++)
-	 		GUI::DrawIcon("VehicleConvertIcon.png", 1, Vec2f(8, 16), pos2d + Vec2f(i * -8 - 8, -4), 0.9f);
+	 		GUI::DrawIcon("#VehicleConvertIcon.png", 1, Vec2f(8, 16), pos2d + Vec2f(i * -8 - 8, -4), 0.9f);
 	}
 	else
 	{

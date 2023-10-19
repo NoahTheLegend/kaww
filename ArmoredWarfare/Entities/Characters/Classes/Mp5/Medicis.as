@@ -46,6 +46,15 @@ void onTick(CBlob@ this)
 					}
 					else
 					{
+						if (player_found is this)
+						{
+							if (player_found.hasBlob("aceofspades", 1))
+							{
+								player_found.TakeBlob("aceofspades", 1);
+								player_found.set_u32("aceofspades_timer", getGameTime()+180);
+							}
+						}
+
 						RestoreHealth(player_found, player_found is this ? 0.25f : 0.5f);
 
 						CBitStream params;
