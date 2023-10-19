@@ -85,9 +85,7 @@ void onTick(CBlob@ this)
     if (this.get_f32(capture_prop) >= (this.getTeamNum() == 255 ? capture_time/2 : capture_time))
     {
     	this.set_f32(capture_prop, 0);
-
     	this.server_setTeamNum(this.get_s8(teamcapping));
-
     	this.getSprite().PlaySound("CapturePoint", 1.0f, 1.0f);
     }   
 }

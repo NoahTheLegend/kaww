@@ -11,7 +11,7 @@ const f32 SPEED_MAX = 62.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 
 const u32 shootDelay = 2; // Ticks
-const f32 projDamage = 0.7f;
+const f32 projDamage = 0.5f;
 
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);
@@ -575,16 +575,27 @@ bool doesCollideWithBlob( CBlob@ this, CBlob@ blob )
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (isServer() && solid && this.hasTag("falling"))
-		this.server_Die();
-
-	if (isServer() && blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck"))
-		&& this.getVelocity().Length() > 4.0f)
+	if (isServer())
 	{
-		f32 mod_self = 0.75f;
-		f32 mod_target = 3.0f;
-		blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
-		this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
+		if (solid && this.hasTag("falling"))
+			this.server_Die();
+
+		f32 impact = this.getOldVelocity().getLength();
+		if (impact > 12.5f && blob is null
+			&& (!this.exists("collision_dmg_delay") || this.get_u32("collision_dmg_delay") < getGameTime()))
+		{
+			this.server_Hit(this, this.getPosition(), Vec2f(0, 0), Maths::Sqrt(impact)*(impact/2), 0, true);
+			this.set_u32("collision_dmg_delay", getGameTime()+30);
+		}
+
+		if (blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck"))
+		&& this.getVelocity().Length() > 4.0f)
+		{
+			f32 mod_self = 1.25f;
+			f32 mod_target = 3.0f;
+			blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
+			this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
+		}
 	}
 }
 

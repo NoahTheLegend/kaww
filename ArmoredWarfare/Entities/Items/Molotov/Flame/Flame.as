@@ -31,6 +31,8 @@ void onTick(CBlob@ this)
 {
 	// print("" + this.getDamageOwnerPlayer().getUsername());
 
+	if (isServer() && this.isInWater()) this.server_Die();
+
 	if (isServer() && this.getTickSinceCreated() > 5) 
 	{
 		// getMap().server_setFireWorldspace(this.getPosition() + Vec2f(XORRandom(16) - 8, XORRandom(16) - 8), true);

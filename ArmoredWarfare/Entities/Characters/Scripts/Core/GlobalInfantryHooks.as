@@ -26,6 +26,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	s8 pen = hitterBlob.get_s8("pen_level");
 
+	const bool explosion_damage = customData == Hitters::explosion || customData == Hitters::keg || customData == Hitters::mine;
+	const bool fire_damage = customData == Hitters::fire || customData == Hitters::burn;
+
 	bool is_bullet = (customData == HittersAW::bullet || customData == HittersAW::heavybullet
 		|| customData == HittersAW::machinegunbullet || customData == HittersAW::aircraftbullet);
 	
@@ -41,8 +44,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 
 	if (this.hasTag("is_shielder")
-		&& (is_bullet || customData == Hitters::explosion
-			|| customData == Hitters::keg || customData == Hitters::sword))
+		&& (is_bullet || explosion_damage || customData == Hitters::sword))
 	{
 		bool isReloading = this.get_bool("isReloading") || this.get_s32("my_reloadtime") > 0;
 
@@ -82,13 +84,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (hasPerk(p, Perks::lucky) && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
 	}
-	if (hitterBlob.getName() == "mat_smallbomb")
-	{
-		damage *= 4;
-	}
 	if (this.isAttached())
 	{
-		if (customData == Hitters::fire)
+		if (fire_damage)
 		{
 			damage *= (exposed ? 0.5f : 0.0f);
 		}
@@ -113,7 +111,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (hasPerk(this.getPlayer(), Perks::camouflage))
 		{
-			if (customData == Hitters::fire)
+			if (fire_damage)
 			{
 				damage *= 2;
 			}
@@ -158,13 +156,19 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		damage *= 2;
 	}
-	if ((!this.isAttached() || exposed) && (customData == Hitters::explosion
-		|| hitterBlob.getName() == "ballista_bolt")|| hitterBlob.hasTag("grenade"))
+	if ((!this.isAttached() || exposed) && (explosion_damage
+		|| hitterBlob.getName() == "ballista_bolt") || hitterBlob.hasTag("grenade"))
 	{
 		if (hitterBlob.hasTag("grenade")) damage *= 5.0f+(XORRandom(301)*0.01f);
-		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*5.0f;
+		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) damage *= 5.0f;
 		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
 		if (hitterBlob.exists("explosion_damage_scale")) damage *= hitterBlob.get_f32("explosion_damage_scale");
+		
+		if (hitterBlob.getName() == "mat_smallbomb")
+		{
+			damage *= 10;
+		}
+
 		bool at_bunker = false;
 		Vec2f pos = this.getPosition();
 		Vec2f hit_pos = hitterBlob.getPosition();

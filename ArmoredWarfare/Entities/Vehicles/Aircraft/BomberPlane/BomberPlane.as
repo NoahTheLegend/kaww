@@ -447,16 +447,27 @@ bool doesCollideWithBlob( CBlob@ this, CBlob@ blob )
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (isServer() && solid && this.hasTag("falling"))
-		this.server_Die();
-	
-	if (isServer() && blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck"))
-		&& this.getVelocity().Length() > 4.0f)
+	if (isServer())
 	{
-		f32 mod_self = 0.75f;
-		f32 mod_target = 4.0f;
-		blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
-		this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
+		if (solid && this.hasTag("falling"))
+			this.server_Die();
+
+		f32 impact = this.getOldVelocity().getLength();
+		if (impact > 10.0f && blob is null
+			&& (!this.exists("collision_dmg_delay") || this.get_u32("collision_dmg_delay") < getGameTime()))
+		{
+			this.server_Hit(this, this.getPosition(), Vec2f(0, 0), Maths::Sqrt(impact)*(impact/2), 0, true);
+			this.set_u32("collision_dmg_delay", getGameTime()+30);
+		}
+
+		if (blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck"))
+		&& this.getVelocity().Length() > 4.0f)
+		{
+			f32 mod_self = 1.5f;
+			f32 mod_target = 6.0f;
+			blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
+			this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
+		}
 	}
 }
 

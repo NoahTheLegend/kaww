@@ -52,7 +52,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		return;
 	}
 
-	if (blob.hasTag("flesh") && blob.getTeamNum() == this.getTeamNum()) return;
+	if ((blob.hasTag("flesh") && blob.getTeamNum() == this.getTeamNum()) || blob.isAttached()) return;
 
 	if (blob.hasTag("flesh") || blob.hasTag("door") || blob.hasTag("platform"))
 	{
