@@ -81,14 +81,12 @@ void GUIStuff(int id)
 void RenderingBullets() // Bullets
 {
 	BulletGrouped.FillArray(); // Fill up v_r_bullets
-	if (v_r_bullet.length() > 0) // If there are no bullets on our screen, dont render
-	{
-		Render::RawQuads("Bullet2.png", v_r_bullet);
+	
+	Render::RawQuads("Bullet2.png", v_r_bullet);
 
-		if (g_debug == 0) // useful for lerp testing
-		{
-			v_r_bullet.clear();
-		}
+	if (g_debug == 0) // useful for lerp testing
+	{
+		v_r_bullet.clear();
 	}
 }
 
