@@ -43,6 +43,7 @@ class BulletObj
 	bool HadRico;
 	u32 CreateTime;
 	Vec2f Scale;
+	Random Rng;
 
 	u8 TeamNum;
 	u8 Speed;
@@ -77,13 +78,15 @@ class BulletObj
 		HadRico = false;
 		CreateTime = creation_time;
 		CurrentHitter = hitter;
+
+		Rng.Reset(creation_time);
 		
 		// y increases length, x increases width
 		Scale = Vec2f(2.0f, 2.5f);
 		if (CurrentType == -1)
 			Scale = Vec2f(1.75f, 1.25f);
 		else if (CurrentType == 1)
-			Scale = Vec2f(2.0f, 5.0f+XORRandom(11)*0.1f);
+			Scale = Vec2f(2.0f, 5.0f+Rng.NextRanged(11)*0.1f);
 		
 
 		lastDelta = 0;
@@ -175,14 +178,14 @@ class BulletObj
 		{
 			if (same_team)
 			{
-				if (blob.hasTag("apc") || blob.hasTag("turret")) return (XORRandom(100) > 70);
-				else if (blob.hasTag("tank")) return (XORRandom(100) > 50);
+				if (blob.hasTag("apc") || blob.hasTag("turret")) return (Rng.NextRanged(100) > 70);
+				else if (blob.hasTag("tank")) return (Rng.NextRanged(100) > 50);
 				else if (blob.hasTag("machinegun")) return false;
 				else return true;
 			}
 			else
 			{
-				if (blob.hasTag("machinegun")) return (XORRandom(100) < 33);
+				if (blob.hasTag("machinegun")) return (Rng.NextRanged(100) < 33);
 				return true;
 			}
 		}
@@ -198,8 +201,8 @@ class BulletObj
 
 		if ((!is_young || !same_team) && blob.isAttached() && !blob.hasTag("covered"))
 		{
-			if (blob.hasTag("collidewithbullets")) return XORRandom(2)==0;
-			if (XORRandom(4) == 0 || blob.hasTag("player"))
+			if (blob.hasTag("collidewithbullets")) return Rng.NextRanged(2)==0;
+			if (Rng.NextRanged(4) == 0 || blob.hasTag("player"))
 				return true;
 
 			AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
@@ -322,7 +325,7 @@ class BulletObj
 									CBlob@ pblob = p.getBlob();
 									if (pblob !is null)
 									{
-										f32 mod = 0.4f + XORRandom(11)*0.01f;
+										f32 mod = 0.4f + Rng.NextRanged(11)*0.01f;
 										f32 amount = DamageBody * mod;
 										if (human.getHealth() + amount >= human.getInitialHealth())
 										{
@@ -362,11 +365,11 @@ class BulletObj
 
 					if (blob.hasTag("vehicle") && !HadRico)
 					{
-						if (isClient() && XORRandom(101) < (can_pierce ? 20 : 35))
+						if (isClient() && Rng.NextRanged(101) < (can_pierce ? 20 : 35))
 						{
 							Vec2f velr = TrueVelocity/(XORRandom(4)+2.5f);
 							velr += Vec2f(0.0f, -3.0f);
-							velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+							velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(Rng.NextRanged(100)) / 100.0f;
 
 							ParticlePixel(CurrentPos, velr, SColor(255, 255, 255, 0), true);
 						}
@@ -396,6 +399,7 @@ class BulletObj
 						}
 						else
 						{ 
+							if (isClient()) {
 							if (!v_fastrender)
 							{
 								CParticle@ p = ParticleAnimated("PingParticle.png", OldPos+TrueVelocity, Vec2f(0,0), XORRandom(360), 0.75f + XORRandom(4) * 0.10f, 3, 0.0f, false);
@@ -408,6 +412,7 @@ class BulletObj
 							}
 
 							sprite.PlaySound("BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
+							}
 
 							TimeLeft = 15;
 						}
@@ -496,12 +501,12 @@ class BulletObj
 					bool try_rico = true;
 					bool do_hit_map = true;
 
-					if (map.isTileWood(tile) && XORRandom(2)==0)
+					if (map.isTileWood(tile) && Rng.NextRanged(2)==0)
 					{ // hit wood
 						map.server_DestroyTile(hitpos, 0.1f);
 					}
 					else if (!isTileCompactedDirt(tile) && (((tile == CMap::tile_ground || isTileScrap(tile)) 
-					&& XORRandom(100) <= 1) || (!map.isTileGround(tile) && tile <= 255 && XORRandom(100) < 3)))
+					&& Rng.NextRanged(100) <= 1) || (!map.isTileGround(tile) && tile <= 255 && Rng.NextRanged(100) < 3)))
 					{ // hit resistant tile
 						if (map.getSectorAtPosition(hitpos, "no build") is null)
 						{
@@ -659,6 +664,7 @@ class BulletObj
 					// hit map
 					if (do_hit_map)
 					{
+						if (isClient()) {
 						ParticleAnimated("Smoke", hitpos, Vec2f(0.0f, -0.1f), 0.0f, 1.0f, 5, XORRandom(70) * -0.00005f, true);
 
 						Sound::Play("/BulletDirt" + XORRandom(3), CurrentPos, 1.7f, 0.85f + XORRandom(25) * 0.01f);
@@ -691,6 +697,7 @@ class BulletObj
 						{
 							CParticle@ p = ParticleAnimated("BulletHitParticle1.png", hitpos + Vec2f(0.0f, 1.0f), Vec2f(0,0), impact_angle, 0.55f + XORRandom(50)*0.01f, 2+XORRandom(2), 0.0f, true);
 							if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
+							}
 						}
 					}
 
