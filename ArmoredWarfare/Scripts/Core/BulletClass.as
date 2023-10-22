@@ -42,6 +42,7 @@ class BulletObj
 	f32 MaxAngleRicochet;
 	bool HadRico;
 	u32 CreateTime;
+	Vec2f Scale;
 
 	u8 TeamNum;
 	u8 Speed;
@@ -76,6 +77,13 @@ class BulletObj
 		HadRico = false;
 		CreateTime = creation_time;
 		CurrentHitter = hitter;
+		
+		// y increases length, x increases width
+		Scale = Vec2f(2.0f, 2.5f);
+		if (CurrentType == -1)
+			Scale = Vec2f(1.75f, 1.25f);
+		else if (CurrentType == 1)
+			Scale = Vec2f(2.0f, 5.0f+XORRandom(11)*0.1f);
 		
 
 		lastDelta = 0;
@@ -711,17 +719,10 @@ class BulletObj
 
 		f32 angle = Direction.getAngleDegrees();
 
-		// y increases length, x increases width
-		Vec2f scale = Vec2f(2.0f, 2.5f);
-		if (CurrentType == -1)
-			scale = Vec2f(1.75f, 1.25f);
-		else if (CurrentType == 1)
-			scale = Vec2f(2.0f, 5.0f+XORRandom(11)*0.1f);
-
-		Vec2f TopLeft  = Vec2f(newPos.x -0.7*scale.x, newPos.y-3*scale.y);
-		Vec2f TopRight = Vec2f(newPos.x -0.7*scale.x, newPos.y+3*scale.y);
-		Vec2f BotLeft  = Vec2f(newPos.x +0.7*scale.x, newPos.y-3*scale.y);
-		Vec2f BotRight = Vec2f(newPos.x +0.7*scale.x, newPos.y+3*scale.y);
+		Vec2f TopLeft  = Vec2f(newPos.x -0.7*Scale.x, newPos.y-3*Scale.y);
+		Vec2f TopRight = Vec2f(newPos.x -0.7*Scale.x, newPos.y+3*Scale.y);
+		Vec2f BotLeft  = Vec2f(newPos.x +0.7*Scale.x, newPos.y-3*Scale.y);
+		Vec2f BotRight = Vec2f(newPos.x +0.7*Scale.x, newPos.y+3*Scale.y);
 
 		angle = -((angle % 360) + 90);
 
