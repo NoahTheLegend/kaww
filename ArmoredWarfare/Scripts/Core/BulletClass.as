@@ -314,8 +314,9 @@ class BulletObj
 					else
 					{
 						// play sound
-						if (blob.hasTag("flesh") && isServer())
+						if (blob.hasTag("flesh"))
 						{
+							if (isServer()) {
 							if (human !is null && !blob.hasTag("dead") && human.getDamageOwnerPlayer() !is null)
 							{
 								CPlayer@ p = human.getDamageOwnerPlayer();
@@ -332,6 +333,7 @@ class BulletObj
 											human.server_SetHealth(human.getInitialHealth());
 										}
 										else human.server_Heal(amount);
+									}
 									}
 								}
 							}
@@ -367,15 +369,11 @@ class BulletObj
 					{
 						if (isClient() && Rng.NextRanged(101) < (can_pierce ? 20 : 35))
 						{
-							Vec2f velr = TrueVelocity/(XORRandom(4)+2.5f);
+							Vec2f velr = TrueVelocity/(Rng.NextRanged(4)+2.5f);
 							velr += Vec2f(0.0f, -3.0f);
 							velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(Rng.NextRanged(100)) / 100.0f;
 
 							ParticlePixel(CurrentPos, velr, SColor(255, 255, 255, 0), true);
-						}
-						if (isServer() && XORRandom(101) < (can_pierce ? 20 : 35))
-						{
-							// skip seed's value i guess?
 						}
 
 						if (!can_pierce)
@@ -429,7 +427,7 @@ class BulletObj
 							has_helmet = true;
 							dmg *= 0.5;
 
-							if (XORRandom(100) < 25)
+							if (Rng.NextRanged(100) < 25)
 							{
 								HadRico = true;
 
@@ -438,7 +436,15 @@ class BulletObj
 								Vec2f velr = getRandomVelocity(!FacingLeft ? 70 : 110, 4.3f, 40.0f);
 								velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 
+
+								if (isClient()) {
+
+								if (isClient()) {
+									Sound::Play("/BulletRico" + XORRandom(4), CurrentPos, 1.2f, 0.7f + XORRandom(60) * 0.01f);
+
 								ParticlePixel(CurrentPos, velr, SColor(255, 255, 255, 0), true);
+								}
+
 								TimeLeft = 10;
 
 								dmg = 0;
