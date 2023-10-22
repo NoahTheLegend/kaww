@@ -271,6 +271,12 @@ class BulletObj
 
 		CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + CurrentPos;
 		TrueVelocity = CurrentPos - OldPos;
+		
+
+		// Check that the human that owns us hasnt died before we crash
+		if (human.hasTag("Dead")) {
+			@human = null;
+		}
 
 		bool endBullet = false;
 		bool breakLoop = false;
