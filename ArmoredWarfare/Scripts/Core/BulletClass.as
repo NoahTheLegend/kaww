@@ -239,6 +239,7 @@ class BulletObj
 		return false; // if all else fails, do not collide
 	}
 
+
 	// Returns false if we need to be removed from the render queue
 	bool onFakeTick(CMap@ map)
 	{
@@ -254,7 +255,9 @@ class BulletObj
 		OldPos = CurrentPos;
 		Gravity -= BulletGrav;
 		f32 angle = FacingLeft ? StartingAimPos+180 : StartingAimPos;
+
 		Vec2f dir = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
+
 		CurrentPos = ((dir * Speed) - (Gravity * Speed)) + CurrentPos;
 		TrueVelocity = CurrentPos - OldPos;
 
@@ -271,7 +274,6 @@ class BulletObj
 				Vec2f hitpos = hit.hitpos;
 				CBlob@ blob = @hit.blob;
 				TileType tile = map.getTile(hitpos).type;
-				
 
 				if (blob !is null && !doesCollideWithBlob(blob, human))
 				{
@@ -703,17 +705,6 @@ class BulletObj
 
 	void JoinQueue() // Every bullet gets forced to join the queue in onRenders, so we use this to calc to position
 	{   
-		// Are we on the screen?
-		const Vec2f xLast = PDriver.getScreenPosFromWorldPos(LastPos);
-		const Vec2f xNew  = PDriver.getScreenPosFromWorldPos(CurrentPos);
-		if(!(xNew.x > 0 && xNew.x < ScreenX)) // Is our main position still on screen?
-		{
-			if(!(xLast.x > 0 && xLast.x < ScreenX)) // Was our last position on screen?
-			{
-				return; // No, lets not stay here then
-			}
-		}
-
 		// Lerp
 		Vec2f newPos = Vec2f_lerp(LastPos, CurrentPos, FRAME_TIME);
 		LastPos = newPos;
