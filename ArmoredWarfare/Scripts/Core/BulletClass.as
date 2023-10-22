@@ -17,6 +17,7 @@ const int ScreenY = getDriver().getScreenWidth();
 
 class BulletObj
 {
+	CBlob@ human;
 	u16 hoomanShooterID;
 	u16 LastHitBlobID;
 
@@ -53,7 +54,7 @@ class BulletObj
 		f32 damage_head, s8 penetration, u32 creation_time, s32 hitter, u8 time, u8 speedo)
 	{
 		LastHitBlobID = 0;
-		CBlob@ human = getBlobByNetworkID(humanBlobID);
+		@human = getBlobByNetworkID(humanBlobID);
 
 		CurrentType = type;
 		CurrentPos = pos;
@@ -257,13 +258,10 @@ class BulletObj
 		CurrentPos = ((dir * Speed) - (Gravity * Speed)) + CurrentPos;
 		TrueVelocity = CurrentPos - OldPos;
 
-
-		CBlob@ hoomanShooter = getBlobByNetworkID(hoomanShooterID);
-
 		bool endBullet = false;
 		bool breakLoop = false;
 		HitInfo@[] list;
-		if (map.getHitInfosFromRay(OldPos, -(CurrentPos - OldPos).Angle(), (OldPos - CurrentPos).Length(), hoomanShooter, @list))
+		if (map.getHitInfosFromRay(OldPos, -(CurrentPos - OldPos).Angle(), (OldPos - CurrentPos).Length(), human, @list))
 		{
 			for (int a = 0; a < list.length(); a++)
 			{
@@ -275,7 +273,7 @@ class BulletObj
 				TileType tile = map.getTile(hitpos).type;
 				
 
-				if (blob !is null && !doesCollideWithBlob(blob, hoomanShooter))
+				if (blob !is null && !doesCollideWithBlob(blob, human))
 				{
 					continue;
 				}
@@ -296,7 +294,7 @@ class BulletObj
 					{
 						if (isServer())
 						{
-							if (hoomanShooter !is null) hoomanShooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
+							if (human !is null) human.server_Hit(blob, OldPos, Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
 							else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
 						}
 					}
@@ -305,9 +303,9 @@ class BulletObj
 						// play sound
 						if (blob.hasTag("flesh") && isServer())
 						{
-							if (hoomanShooter !is null && !blob.hasTag("dead") && hoomanShooter.getDamageOwnerPlayer() !is null)
+							if (human !is null && !blob.hasTag("dead") && human.getDamageOwnerPlayer() !is null)
 							{
-								CPlayer@ p = hoomanShooter.getDamageOwnerPlayer();
+								CPlayer@ p = human.getDamageOwnerPlayer();
 
 								if (hasPerk(p, Perks::bloodthirsty))
 								{
@@ -316,11 +314,11 @@ class BulletObj
 									{
 										f32 mod = 0.4f + XORRandom(11)*0.01f;
 										f32 amount = DamageBody * mod;
-										if (hoomanShooter.getHealth() + amount >= hoomanShooter.getInitialHealth())
+										if (human.getHealth() + amount >= human.getInitialHealth())
 										{
-											hoomanShooter.server_SetHealth(hoomanShooter.getInitialHealth());
+											human.server_SetHealth(human.getInitialHealth());
 										}
-										else hoomanShooter.server_Heal(amount);
+										else human.server_Heal(amount);
 									}
 								}
 							}
@@ -346,7 +344,7 @@ class BulletObj
 						if (isServer()) 
 						{
 							f32 door_dmg = BlobName != "stone_door" ? CurrentType == 1 ? 1.0f : 0.1f : 0.01f;
-							if (hoomanShooter !is null) hoomanShooter.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
+							if (human !is null) human.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
 							else blob.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
 						}
 						endBullet = true;
@@ -431,9 +429,9 @@ class BulletObj
 								dmg = 0;
 							}
 						}
-						if (hoomanShooter !is null && hoomanShooter.isMyPlayer())
+						if (human !is null && human.isMyPlayer())
 						{
-							CSprite@ hoomanSprite = hoomanShooter.getSprite();
+							CSprite@ hoomanSprite = human.getSprite();
 							if (hoomanSprite !is null)
 							{
 								if (!has_helmet)
@@ -449,7 +447,7 @@ class BulletObj
 
 					if (blob.hasTag("nolegs")) dmg = DamageHead;
 
-					if (CurrentType < 1 && (hoomanShooter is null || hoomanShooter.getName() != "sniper")) {
+					if (CurrentType < 1 && (human is null || human.getName() != "sniper")) {
 						// do less dmg offscreen
 						int creationTicks = getGameTime()-CreateTime;
 						if (creationTicks > 20) 		dmg *= 0.75f;
@@ -464,7 +462,7 @@ class BulletObj
 
 					if (dmg > 0.0f)
 					{
-						if (hoomanShooter !is null) hoomanShooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
+						if (human !is null) human.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 						else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 						LastHitBlobID = blob.getNetworkID();
 					}
