@@ -75,7 +75,7 @@ void GunRender(int id)
 
 void GUIStuff(int id)
 {
-	renderScreenpls();
+	RenderUI();
 }
 
 void RenderingBullets() // Bullets
@@ -90,7 +90,7 @@ void RenderingBullets() // Bullets
 	}
 }
 
-void renderScreenpls() // Bullet ammo gui
+void RenderUI() // Bullet ammo gui
 {
 	CBlob@ holder = getLocalPlayerBlob();           
 	if (holder !is null) 
