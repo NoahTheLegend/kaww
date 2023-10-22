@@ -431,17 +431,12 @@ class BulletObj
 							{
 								HadRico = true;
 
-								Sound::Play("/BulletRico" + XORRandom(4), CurrentPos, 1.2f, 0.7f + XORRandom(60) * 0.01f);
-
 								Vec2f velr = getRandomVelocity(!FacingLeft ? 70 : 110, 4.3f, 40.0f);
 								velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 
 
 								if (isClient()) {
-
-								if (isClient()) {
 									Sound::Play("/BulletRico" + XORRandom(4), CurrentPos, 1.2f, 0.7f + XORRandom(60) * 0.01f);
-
 								ParticlePixel(CurrentPos, velr, SColor(255, 255, 255, 0), true);
 								}
 
