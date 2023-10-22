@@ -645,7 +645,7 @@ class BulletObj
 								}
 							}
 							
-							if (has_rico && XORRandom(100) < 100-angle_diff*(right_floor ? 2 : 4))
+							if (has_rico && Rng.NextRanged(100) < 100-angle_diff*(right_floor ? 2 : 4))
 							{
 								HadRico = true;
 								if (!v_fastrender)
