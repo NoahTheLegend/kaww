@@ -118,7 +118,6 @@ class BulletObj
 	bool doesCollideWithBlob(CBlob@ blob, CBlob@ hoomanBlob)
 	{
 		CBlob@ LastHitBlob = getBlobByNetworkID(LastHitBlobID);
-		Random _rand_r(getGameTime());
 		const bool is_young = getGameTime() - CreateTime <= 1;
 		const bool same_team = TeamNum == blob.getTeamNum();
 
@@ -167,14 +166,14 @@ class BulletObj
 		{
 			if (same_team)
 			{
-				if (blob.hasTag("apc") || blob.hasTag("turret")) return (_rand_r.NextRanged(100) > 70);
-				else if (blob.hasTag("tank")) return (_rand_r.NextRanged(100) > 50);
+				if (blob.hasTag("apc") || blob.hasTag("turret")) return (XORRandom(100) > 70);
+				else if (blob.hasTag("tank")) return (XORRandom(100) > 50);
 				else if (blob.hasTag("machinegun")) return false;
 				else return true;
 			}
 			else
 			{
-				if (blob.hasTag("machinegun")) return (_rand_r.NextRanged(100) < 33);
+				if (blob.hasTag("machinegun")) return (XORRandom(100) < 33);
 				return true;
 			}
 		}
@@ -190,8 +189,8 @@ class BulletObj
 
 		if ((!is_young || !same_team) && blob.isAttached() && !blob.hasTag("covered"))
 		{
-			if (blob.hasTag("collidewithbullets")) return _rand_r.NextRanged(2)==0;
-			if (_rand_r.NextRanged(4) == 0 || blob.hasTag("player"))
+			if (blob.hasTag("collidewithbullets")) return XORRandom(2)==0;
+			if (XORRandom(4) == 0 || blob.hasTag("player"))
 				return true;
 
 			AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
@@ -239,11 +238,9 @@ class BulletObj
 		return false; // if all else fails, do not collide
 	}
 
+	// Returns false if we need to be removed from the render queue
 	bool onFakeTick(CMap@ map)
 	{
-		CBlob@ hoomanShooter = getBlobByNetworkID(hoomanShooterID);
-		Random _rand_r(getGameTime());
-
 		//Time to live check
 		TimeLeft--;
 
@@ -260,6 +257,9 @@ class BulletObj
 		CurrentPos = ((dir * Speed) - (Gravity * Speed)) + CurrentPos;
 		TrueVelocity = CurrentPos - OldPos;
 
+
+		CBlob@ hoomanShooter = getBlobByNetworkID(hoomanShooterID);
+
 		bool endBullet = false;
 		bool breakLoop = false;
 		HitInfo@[] list;
@@ -273,6 +273,7 @@ class BulletObj
 				Vec2f hitpos = hit.hitpos;
 				CBlob@ blob = @hit.blob;
 				TileType tile = map.getTile(hitpos).type;
+				
 
 				if (blob !is null && !doesCollideWithBlob(blob, hoomanShooter))
 				{
@@ -313,7 +314,7 @@ class BulletObj
 									CBlob@ pblob = p.getBlob();
 									if (pblob !is null)
 									{
-										f32 mod = 0.4f+_rand_r.NextRanged(11)*0.01f;
+										f32 mod = 0.4f + XORRandom(11)*0.01f;
 										f32 amount = DamageBody * mod;
 										if (hoomanShooter.getHealth() + amount >= hoomanShooter.getInitialHealth())
 										{
@@ -353,7 +354,7 @@ class BulletObj
 
 					if (blob.hasTag("vehicle") && !HadRico)
 					{
-						if (isClient() && _rand_r.NextRanged(101) < (can_pierce ? 20 : 35))
+						if (isClient() && XORRandom(101) < (can_pierce ? 20 : 35))
 						{
 							Vec2f velr = TrueVelocity/(XORRandom(4)+2.5f);
 							velr += Vec2f(0.0f, -3.0f);
@@ -361,7 +362,7 @@ class BulletObj
 
 							ParticlePixel(CurrentPos, velr, SColor(255, 255, 255, 0), true);
 						}
-						if (isServer() && _rand_r.NextRanged(101) < (can_pierce ? 20 : 35))
+						if (isServer() && XORRandom(101) < (can_pierce ? 20 : 35))
 						{
 							// skip seed's value i guess?
 						}
@@ -415,7 +416,7 @@ class BulletObj
 							has_helmet = true;
 							dmg *= 0.5;
 
-							if (_rand_r.NextRanged(100) < 25)
+							if (XORRandom(100) < 25)
 							{
 								HadRico = true;
 
@@ -487,12 +488,12 @@ class BulletObj
 					bool try_rico = true;
 					bool do_hit_map = true;
 
-					if (map.isTileWood(tile) && _rand_r.NextRanged(2)==0)
+					if (map.isTileWood(tile) && XORRandom(2)==0)
 					{ // hit wood
 						map.server_DestroyTile(hitpos, 0.1f);
 					}
 					else if (!isTileCompactedDirt(tile) && (((tile == CMap::tile_ground || isTileScrap(tile)) 
-					&& _rand_r.NextRanged(100) <= 1) || (!map.isTileGround(tile) && tile <= 255 && _rand_r.NextRanged(100) < 3)))
+					&& XORRandom(100) <= 1) || (!map.isTileGround(tile) && tile <= 255 && XORRandom(100) < 3)))
 					{ // hit resistant tile
 						if (map.getSectorAtPosition(hitpos, "no build") is null)
 						{
@@ -624,7 +625,7 @@ class BulletObj
 								}
 							}
 							
-							if (has_rico && _rand_r.NextRanged(100) < 100-angle_diff*(right_floor ? 2 : 4))
+							if (has_rico && XORRandom(100) < 100-angle_diff*(right_floor ? 2 : 4))
 							{
 								HadRico = true;
 								if (!v_fastrender)
@@ -777,7 +778,7 @@ class BulletHolder
 				a--;
 			}
 		}
-		//print(bullets.length() + '');
+		print(bullets.length() + '');
 		 
 		for (int a = 0; a < PParticles.length(); a++)
 		{
