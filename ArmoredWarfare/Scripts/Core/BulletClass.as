@@ -29,11 +29,11 @@ class BulletObj
 	Vec2f TrueVelocity;
 	Vec2f CurrentPos;
 	Vec2f BulletGrav;
-	Vec2f RenderPos;
 	Vec2f OldPos;
 	Vec2f LastPos;
 	Vec2f Gravity;
 	Vec2f KB;
+	Vec2f Direction;
 	f32 StartingAimPos;
 	f32 lastDelta;
 	f32 DamageBody;
@@ -71,7 +71,7 @@ class BulletObj
 		StartingAimPos = angle;
 		OldPos     = CurrentPos;
 		LastPos    = CurrentPos;
-		RenderPos  = CurrentPos;
+		Direction  = Vec2f(0,0);
 		MaxAngleRicochet = 25;
 		HadRico = false;
 		CreateTime = creation_time;
@@ -256,9 +256,9 @@ class BulletObj
 		Gravity -= BulletGrav;
 		f32 angle = FacingLeft ? StartingAimPos+180 : StartingAimPos;
 
-		Vec2f dir = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
+		Direction = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
 
-		CurrentPos = ((dir * Speed) - (Gravity * Speed)) + CurrentPos;
+		CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + CurrentPos;
 		TrueVelocity = CurrentPos - OldPos;
 
 		bool endBullet = false;
@@ -565,9 +565,9 @@ class BulletObj
 									angle = -angle;
 
 									OldPos = CurrentPos;
-									dir = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
-									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
-									SetStartAimPos(CurrentPos+(dir*mod), FacingLeft);
+									Direction = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
+									CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos+(Direction*mod), FacingLeft);
 									TrueVelocity = CurrentPos - OldPos;
 									has_rico = true;
 								}
@@ -585,9 +585,9 @@ class BulletObj
 									if (e) right_floor = true; // hack
 
 									OldPos = CurrentPos;
-									dir = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
-									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
-									SetStartAimPos(CurrentPos+(dir*mod), FacingLeft);
+									Direction = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
+									CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos+(Direction*mod), FacingLeft);
 									TrueVelocity = CurrentPos - OldPos;
 									has_rico = true;
 								}
@@ -601,9 +601,9 @@ class BulletObj
 									angle = -angle;
 
 									OldPos = CurrentPos;
-									dir = Vec2f((FacingLeft ? 1 : -1), 0.0f).RotateBy(angle);
-									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
-									SetStartAimPos(CurrentPos+dir, FacingLeft);
+									Direction = Vec2f((FacingLeft ? 1 : -1), 0.0f).RotateBy(angle);
+									CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos+Direction, FacingLeft);
 									TrueVelocity = CurrentPos - OldPos;
 									has_rico = true;
 								}
@@ -617,9 +617,9 @@ class BulletObj
 									angle = -angle;
 
 									OldPos = CurrentPos;
-									dir = Vec2f((FacingLeft ? 1 : -1), 0.0f).RotateBy(angle);
-									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
-									SetStartAimPos(CurrentPos-dir, FacingLeft);
+									Direction = Vec2f((FacingLeft ? 1 : -1), 0.0f).RotateBy(angle);
+									CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos-Direction, FacingLeft);
 									TrueVelocity = CurrentPos - OldPos;
 									has_rico = true;
 								}
@@ -709,7 +709,7 @@ class BulletObj
 		Vec2f newPos = Vec2f_lerp(LastPos, CurrentPos, FRAME_TIME);
 		LastPos = newPos;
 
-		f32 angle = Vec2f(CurrentPos.x-newPos.x, CurrentPos.y-newPos.y).getAngleDegrees();//Sets the angle
+		f32 angle = Direction.getAngleDegrees();
 
 		// y increases length, x increases width
 		Vec2f scale = Vec2f(2.0f, 2.5f);
@@ -767,7 +767,7 @@ class BulletHolder
 				a--;
 			}
 		}
-		print(bullets.length() + '');
+		//print(bullets.length() + '');
 		 
 		for (int a = 0; a < PParticles.length(); a++)
 		{
