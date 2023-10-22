@@ -37,7 +37,10 @@ void onInit(CRules@ this)
 	{
 		Render::addScript(Render::layer_postworld, "BulletMain", "GunRender", 0.0f);
 		Render::addScript(Render::layer_prehud, "BulletMain", "GUIStuff", 0.0f);
+
+		Texture::createFromFile("_bullets_texture", "Bullet2.png");
 	}
+	
 }
 
 void onRestart(CRules@ this)
@@ -69,30 +72,28 @@ void onTick(CRules@ this)
 
 void GunRender(int id)
 {
-	FRAME_TIME += getRenderDeltaTime() * getTicksASecond();  // We are using this because ApproximateCorrectionFactor is lerped
+	FRAME_TIME += getRenderApproximateCorrectionFactor(); //getRenderDeltaTime() * getTicksASecond();  // We are using this because ApproximateCorrectionFactor is lerped
 	RenderingBullets();
 }
 
 void GUIStuff(int id)
 {
-	renderScreenpls();
+	RenderUI();
 }
 
 void RenderingBullets() // Bullets
 {
 	BulletGrouped.FillArray(); // Fill up v_r_bullets
-	if (v_r_bullet.length() > 0) // If there are no bullets on our screen, dont render
-	{
-		Render::RawQuads("Bullet2.png", v_r_bullet);
+	
+	Render::RawQuads("_bullets_texture", v_r_bullet);
 
-		if (g_debug == 0) // useful for lerp testing
-		{
-			v_r_bullet.clear();
-		}
+	if (g_debug == 0) // useful for lerp testing
+	{
+		v_r_bullet.clear();
 	}
 }
 
-void renderScreenpls() // Bullet ammo gui
+void RenderUI() // Bullet ammo gui
 {
 	CBlob@ holder = getLocalPlayerBlob();           
 	if (holder !is null) 
@@ -211,7 +212,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 				if (bulletSpread > 0.0f) spreadAimpos += Vec2f(bulletSpread * (0.5f - _infantry_r.NextFloat()), bulletSpread * (0.5f - _infantry_r.NextFloat()));
 				angle = -(spreadAimpos - pos).Angle();
 				
-				BulletObj@ bullet = BulletObj(this.getNetworkID(), angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(),
+				BulletObj@ bullet = BulletObj(this.getNetworkID(), angle, pos, type, damageBody, damageHead, bulletPen, timeSpawnedAt,
 					this.get_s32("custom_hitter"), this.get_u8("TTL"), this.get_u8("speed"));
 
 				CMap@ map = getMap();
@@ -259,7 +260,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 			for (u8 i = 0; i < burstSize; i++)
 			{
-				BulletObj@ bullet = BulletObj(this.getNetworkID(), angle, pos, type, damageBody, damageHead, bulletPen, getGameTime(),
+				BulletObj@ bullet = BulletObj(this.getNetworkID(), angle, pos, type, damageBody, damageHead, bulletPen, timeSpawnedAt,
 					custom_hitter, timetolive, speed);
 
 				CMap@ map = getMap();

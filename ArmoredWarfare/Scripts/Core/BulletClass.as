@@ -17,6 +17,7 @@ const int ScreenY = getDriver().getScreenWidth();
 
 class BulletObj
 {
+	CBlob@ human;
 	u16 hoomanShooterID;
 	u16 LastHitBlobID;
 
@@ -28,11 +29,11 @@ class BulletObj
 	Vec2f TrueVelocity;
 	Vec2f CurrentPos;
 	Vec2f BulletGrav;
-	Vec2f RenderPos;
 	Vec2f OldPos;
 	Vec2f LastPos;
 	Vec2f Gravity;
 	Vec2f KB;
+	Vec2f Direction;
 	f32 StartingAimPos;
 	f32 lastDelta;
 	f32 DamageBody;
@@ -41,6 +42,8 @@ class BulletObj
 	f32 MaxAngleRicochet;
 	bool HadRico;
 	u32 CreateTime;
+	Vec2f Scale;
+	Random Rng;
 
 	u8 TeamNum;
 	u8 Speed;
@@ -53,7 +56,7 @@ class BulletObj
 		f32 damage_head, s8 penetration, u32 creation_time, s32 hitter, u8 time, u8 speedo)
 	{
 		LastHitBlobID = 0;
-		CBlob@ human = getBlobByNetworkID(humanBlobID);
+		@human = getBlobByNetworkID(humanBlobID);
 
 		CurrentType = type;
 		CurrentPos = pos;
@@ -70,11 +73,20 @@ class BulletObj
 		StartingAimPos = angle;
 		OldPos     = CurrentPos;
 		LastPos    = CurrentPos;
-		RenderPos  = CurrentPos;
+		Direction  = Vec2f(0,0);
 		MaxAngleRicochet = 25;
 		HadRico = false;
 		CreateTime = creation_time;
 		CurrentHitter = hitter;
+
+		Rng.Reset(creation_time);
+		
+		// y increases length, x increases width
+		Scale = Vec2f(2.0f, 2.5f);
+		if (CurrentType == -1)
+			Scale = Vec2f(1.75f, 1.25f);
+		else if (CurrentType == 1)
+			Scale = Vec2f(2.0f, 5.0f+Rng.NextRanged(11)*0.1f);
 		
 
 		lastDelta = 0;
@@ -118,7 +130,6 @@ class BulletObj
 	bool doesCollideWithBlob(CBlob@ blob, CBlob@ hoomanBlob)
 	{
 		CBlob@ LastHitBlob = getBlobByNetworkID(LastHitBlobID);
-		Random _rand_r(getGameTime());
 		const bool is_young = getGameTime() - CreateTime <= 1;
 		const bool same_team = TeamNum == blob.getTeamNum();
 
@@ -167,14 +178,14 @@ class BulletObj
 		{
 			if (same_team)
 			{
-				if (blob.hasTag("apc") || blob.hasTag("turret")) return (_rand_r.NextRanged(100) > 70);
-				else if (blob.hasTag("tank")) return (_rand_r.NextRanged(100) > 50);
+				if (blob.hasTag("apc") || blob.hasTag("turret")) return (Rng.NextRanged(100) > 70);
+				else if (blob.hasTag("tank")) return (Rng.NextRanged(100) > 50);
 				else if (blob.hasTag("machinegun")) return false;
 				else return true;
 			}
 			else
 			{
-				if (blob.hasTag("machinegun")) return (_rand_r.NextRanged(100) < 33);
+				if (blob.hasTag("machinegun")) return (Rng.NextRanged(100) < 33);
 				return true;
 			}
 		}
@@ -190,8 +201,8 @@ class BulletObj
 
 		if ((!is_young || !same_team) && blob.isAttached() && !blob.hasTag("covered"))
 		{
-			if (blob.hasTag("collidewithbullets")) return _rand_r.NextRanged(2)==0;
-			if (_rand_r.NextRanged(4) == 0 || blob.hasTag("player"))
+			if (blob.hasTag("collidewithbullets")) return Rng.NextRanged(2)==0;
+			if (Rng.NextRanged(4) == 0 || blob.hasTag("player"))
 				return true;
 
 			AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
@@ -239,11 +250,10 @@ class BulletObj
 		return false; // if all else fails, do not collide
 	}
 
+
+	// Returns true if we need to be removed from the render queue
 	bool onFakeTick(CMap@ map)
 	{
-		CBlob@ hoomanShooter = getBlobByNetworkID(hoomanShooterID);
-		Random _rand_r(getGameTime());
-
 		//Time to live check
 		TimeLeft--;
 
@@ -256,14 +266,22 @@ class BulletObj
 		OldPos = CurrentPos;
 		Gravity -= BulletGrav;
 		f32 angle = FacingLeft ? StartingAimPos+180 : StartingAimPos;
-		Vec2f dir = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
-		CurrentPos = ((dir * Speed) - (Gravity * Speed)) + CurrentPos;
+
+		Direction = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
+
+		CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + CurrentPos;
 		TrueVelocity = CurrentPos - OldPos;
+		
+
+		// Check that the human that owns us hasnt died before we crash
+		if (human.hasTag("dead")) {
+			@human = null;
+		}
 
 		bool endBullet = false;
 		bool breakLoop = false;
 		HitInfo@[] list;
-		if (map.getHitInfosFromRay(OldPos, -(CurrentPos - OldPos).Angle(), (OldPos - CurrentPos).Length(), hoomanShooter, @list))
+		if (map.getHitInfosFromRay(OldPos, -(CurrentPos - OldPos).Angle(), (OldPos - CurrentPos).Length(), human, @list))
 		{
 			for (int a = 0; a < list.length(); a++)
 			{
@@ -274,7 +292,7 @@ class BulletObj
 				CBlob@ blob = @hit.blob;
 				TileType tile = map.getTile(hitpos).type;
 
-				if (blob !is null && !doesCollideWithBlob(blob, hoomanShooter))
+				if (blob !is null && !doesCollideWithBlob(blob, human))
 				{
 					continue;
 				}
@@ -295,31 +313,33 @@ class BulletObj
 					{
 						if (isServer())
 						{
-							if (hoomanShooter !is null) hoomanShooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
+							if (human !is null) human.server_Hit(blob, OldPos, Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
 							else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
 						}
 					}
 					else
 					{
 						// play sound
-						if (blob.hasTag("flesh") && isServer())
+						if (blob.hasTag("flesh"))
 						{
-							if (hoomanShooter !is null && !blob.hasTag("dead") && hoomanShooter.getDamageOwnerPlayer() !is null)
+							if (isServer()) {
+							if (human !is null && !blob.hasTag("dead") && human.getDamageOwnerPlayer() !is null)
 							{
-								CPlayer@ p = hoomanShooter.getDamageOwnerPlayer();
+								CPlayer@ p = human.getDamageOwnerPlayer();
 
 								if (hasPerk(p, Perks::bloodthirsty))
 								{
 									CBlob@ pblob = p.getBlob();
 									if (pblob !is null)
 									{
-										f32 mod = 0.4f+_rand_r.NextRanged(11)*0.01f;
+										f32 mod = 0.4f + Rng.NextRanged(11)*0.01f;
 										f32 amount = DamageBody * mod;
-										if (hoomanShooter.getHealth() + amount >= hoomanShooter.getInitialHealth())
+										if (human.getHealth() + amount >= human.getInitialHealth())
 										{
-											hoomanShooter.server_SetHealth(hoomanShooter.getInitialHealth());
+											human.server_SetHealth(human.getInitialHealth());
 										}
-										else hoomanShooter.server_Heal(amount);
+										else human.server_Heal(amount);
+									}
 									}
 								}
 							}
@@ -345,7 +365,7 @@ class BulletObj
 						if (isServer()) 
 						{
 							f32 door_dmg = BlobName != "stone_door" ? CurrentType == 1 ? 1.0f : 0.1f : 0.01f;
-							if (hoomanShooter !is null) hoomanShooter.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
+							if (human !is null) human.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
 							else blob.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
 						}
 						endBullet = true;
@@ -353,17 +373,13 @@ class BulletObj
 
 					if (blob.hasTag("vehicle") && !HadRico)
 					{
-						if (isClient() && _rand_r.NextRanged(101) < (can_pierce ? 20 : 35))
+						if (isClient() && Rng.NextRanged(101) < (can_pierce ? 20 : 35))
 						{
-							Vec2f velr = TrueVelocity/(XORRandom(4)+2.5f);
+							Vec2f velr = TrueVelocity/(Rng.NextRanged(4)+2.5f);
 							velr += Vec2f(0.0f, -3.0f);
-							velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
+							velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(Rng.NextRanged(100)) / 100.0f;
 
 							ParticlePixel(CurrentPos, velr, SColor(255, 255, 255, 0), true);
-						}
-						if (isServer() && _rand_r.NextRanged(101) < (can_pierce ? 20 : 35))
-						{
-							// skip seed's value i guess?
 						}
 
 						if (!can_pierce)
@@ -387,6 +403,7 @@ class BulletObj
 						}
 						else
 						{ 
+							if (isClient()) {
 							if (!v_fastrender)
 							{
 								CParticle@ p = ParticleAnimated("PingParticle.png", OldPos+TrueVelocity, Vec2f(0,0), XORRandom(360), 0.75f + XORRandom(4) * 0.10f, 3, 0.0f, false);
@@ -399,6 +416,7 @@ class BulletObj
 							}
 
 							sprite.PlaySound("BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
+							}
 
 							TimeLeft = 15;
 						}
@@ -415,24 +433,27 @@ class BulletObj
 							has_helmet = true;
 							dmg *= 0.5;
 
-							if (_rand_r.NextRanged(100) < 25)
+							if (Rng.NextRanged(100) < 25)
 							{
 								HadRico = true;
-
-								Sound::Play("/BulletRico" + XORRandom(4), CurrentPos, 1.2f, 0.7f + XORRandom(60) * 0.01f);
 
 								Vec2f velr = getRandomVelocity(!FacingLeft ? 70 : 110, 4.3f, 40.0f);
 								velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 
+
+								if (isClient()) {
+									Sound::Play("/BulletRico" + XORRandom(4), CurrentPos, 1.2f, 0.7f + XORRandom(60) * 0.01f);
 								ParticlePixel(CurrentPos, velr, SColor(255, 255, 255, 0), true);
+								}
+
 								TimeLeft = 10;
 
 								dmg = 0;
 							}
 						}
-						if (hoomanShooter !is null && hoomanShooter.isMyPlayer())
+						if (human !is null && human.isMyPlayer())
 						{
-							CSprite@ hoomanSprite = hoomanShooter.getSprite();
+							CSprite@ hoomanSprite = human.getSprite();
 							if (hoomanSprite !is null)
 							{
 								if (!has_helmet)
@@ -448,7 +469,7 @@ class BulletObj
 
 					if (blob.hasTag("nolegs")) dmg = DamageHead;
 
-					if (CurrentType < 1 && (hoomanShooter is null || hoomanShooter.getName() != "sniper")) {
+					if (CurrentType < 1 && (human is null || human.getName() != "sniper")) {
 						// do less dmg offscreen
 						int creationTicks = getGameTime()-CreateTime;
 						if (creationTicks > 20) 		dmg *= 0.75f;
@@ -463,7 +484,7 @@ class BulletObj
 
 					if (dmg > 0.0f)
 					{
-						if (hoomanShooter !is null) hoomanShooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
+						if (human !is null) human.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 						else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 						LastHitBlobID = blob.getNetworkID();
 					}
@@ -487,12 +508,12 @@ class BulletObj
 					bool try_rico = true;
 					bool do_hit_map = true;
 
-					if (map.isTileWood(tile) && _rand_r.NextRanged(2)==0)
+					if (map.isTileWood(tile) && Rng.NextRanged(2)==0)
 					{ // hit wood
 						map.server_DestroyTile(hitpos, 0.1f);
 					}
 					else if (!isTileCompactedDirt(tile) && (((tile == CMap::tile_ground || isTileScrap(tile)) 
-					&& _rand_r.NextRanged(100) <= 1) || (!map.isTileGround(tile) && tile <= 255 && _rand_r.NextRanged(100) < 3)))
+					&& Rng.NextRanged(100) <= 1) || (!map.isTileGround(tile) && tile <= 255 && Rng.NextRanged(100) < 3)))
 					{ // hit resistant tile
 						if (map.getSectorAtPosition(hitpos, "no build") is null)
 						{
@@ -564,9 +585,9 @@ class BulletObj
 									angle = -angle;
 
 									OldPos = CurrentPos;
-									dir = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
-									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
-									SetStartAimPos(CurrentPos+(dir*mod), FacingLeft);
+									Direction = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
+									CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos+(Direction*mod), FacingLeft);
 									TrueVelocity = CurrentPos - OldPos;
 									has_rico = true;
 								}
@@ -584,9 +605,9 @@ class BulletObj
 									if (e) right_floor = true; // hack
 
 									OldPos = CurrentPos;
-									dir = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
-									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
-									SetStartAimPos(CurrentPos+(dir*mod), FacingLeft);
+									Direction = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
+									CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos+(Direction*mod), FacingLeft);
 									TrueVelocity = CurrentPos - OldPos;
 									has_rico = true;
 								}
@@ -600,9 +621,9 @@ class BulletObj
 									angle = -angle;
 
 									OldPos = CurrentPos;
-									dir = Vec2f((FacingLeft ? 1 : -1), 0.0f).RotateBy(angle);
-									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
-									SetStartAimPos(CurrentPos+dir, FacingLeft);
+									Direction = Vec2f((FacingLeft ? 1 : -1), 0.0f).RotateBy(angle);
+									CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos+Direction, FacingLeft);
 									TrueVelocity = CurrentPos - OldPos;
 									has_rico = true;
 								}
@@ -616,15 +637,15 @@ class BulletObj
 									angle = -angle;
 
 									OldPos = CurrentPos;
-									dir = Vec2f((FacingLeft ? 1 : -1), 0.0f).RotateBy(angle);
-									CurrentPos = ((dir * Speed) - (Gravity * Speed)) + hitpos;
-									SetStartAimPos(CurrentPos-dir, FacingLeft);
+									Direction = Vec2f((FacingLeft ? 1 : -1), 0.0f).RotateBy(angle);
+									CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + hitpos;
+									SetStartAimPos(CurrentPos-Direction, FacingLeft);
 									TrueVelocity = CurrentPos - OldPos;
 									has_rico = true;
 								}
 							}
 							
-							if (has_rico && _rand_r.NextRanged(100) < 100-angle_diff*(right_floor ? 2 : 4))
+							if (has_rico && XORRandom(100) < 100-angle_diff*(right_floor ? 2 : 4))
 							{
 								HadRico = true;
 								if (!v_fastrender)
@@ -650,6 +671,7 @@ class BulletObj
 					// hit map
 					if (do_hit_map)
 					{
+						if (isClient()) {
 						ParticleAnimated("Smoke", hitpos, Vec2f(0.0f, -0.1f), 0.0f, 1.0f, 5, XORRandom(70) * -0.00005f, true);
 
 						Sound::Play("/BulletDirt" + XORRandom(3), CurrentPos, 1.7f, 0.85f + XORRandom(25) * 0.01f);
@@ -682,6 +704,7 @@ class BulletObj
 						{
 							CParticle@ p = ParticleAnimated("BulletHitParticle1.png", hitpos + Vec2f(0.0f, 1.0f), Vec2f(0,0), impact_angle, 0.55f + XORRandom(50)*0.01f, 2+XORRandom(2), 0.0f, true);
 							if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
+							}
 						}
 					}
 
@@ -704,34 +727,16 @@ class BulletObj
 
 	void JoinQueue() // Every bullet gets forced to join the queue in onRenders, so we use this to calc to position
 	{   
-		// Are we on the screen?
-		const Vec2f xLast = PDriver.getScreenPosFromWorldPos(LastPos);
-		const Vec2f xNew  = PDriver.getScreenPosFromWorldPos(CurrentPos);
-		if(!(xNew.x > 0 && xNew.x < ScreenX)) // Is our main position still on screen?
-		{
-			if(!(xLast.x > 0 && xLast.x < ScreenX)) // Was our last position on screen?
-			{
-				return; // No, lets not stay here then
-			}
-		}
-
 		// Lerp
 		Vec2f newPos = Vec2f_lerp(LastPos, CurrentPos, FRAME_TIME);
 		LastPos = newPos;
 
-		f32 angle = Vec2f(CurrentPos.x-newPos.x, CurrentPos.y-newPos.y).getAngleDegrees();//Sets the angle
+		f32 angle = Direction.getAngleDegrees();
 
-		// y increases length, x increases width
-		Vec2f scale = Vec2f(2.0f, 2.5f);
-		if (CurrentType == -1)
-			scale = Vec2f(1.75f, 1.25f);
-		else if (CurrentType == 1)
-			scale = Vec2f(2.0f, 5.0f+XORRandom(11)*0.1f);
-
-		Vec2f TopLeft  = Vec2f(newPos.x -0.7*scale.x, newPos.y-3*scale.y);
-		Vec2f TopRight = Vec2f(newPos.x -0.7*scale.x, newPos.y+3*scale.y);
-		Vec2f BotLeft  = Vec2f(newPos.x +0.7*scale.x, newPos.y-3*scale.y);
-		Vec2f BotRight = Vec2f(newPos.x +0.7*scale.x, newPos.y+3*scale.y);
+		Vec2f TopLeft  = Vec2f(newPos.x -0.7*Scale.x, newPos.y-3*Scale.y);
+		Vec2f TopRight = Vec2f(newPos.x -0.7*Scale.x, newPos.y+3*Scale.y);
+		Vec2f BotLeft  = Vec2f(newPos.x +0.7*Scale.x, newPos.y-3*Scale.y);
+		Vec2f BotRight = Vec2f(newPos.x +0.7*Scale.x, newPos.y+3*Scale.y);
 
 		angle = -((angle % 360) + 90);
 
