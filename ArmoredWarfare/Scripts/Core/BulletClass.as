@@ -251,7 +251,7 @@ class BulletObj
 	}
 
 
-	// Returns false if we need to be removed from the render queue
+	// Returns true if we need to be removed from the render queue
 	bool onFakeTick(CMap@ map)
 	{
 		//Time to live check
