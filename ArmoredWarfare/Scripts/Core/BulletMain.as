@@ -37,7 +37,10 @@ void onInit(CRules@ this)
 	{
 		Render::addScript(Render::layer_postworld, "BulletMain", "GunRender", 0.0f);
 		Render::addScript(Render::layer_prehud, "BulletMain", "GUIStuff", 0.0f);
+		
+		Texture::createFromFile("_bullets_texture", "Bullet2.png");
 	}
+	
 }
 
 void onRestart(CRules@ this)
@@ -82,7 +85,7 @@ void RenderingBullets() // Bullets
 {
 	BulletGrouped.FillArray(); // Fill up v_r_bullets
 	
-	Render::RawQuads("Bullet2.png", v_r_bullet);
+	Render::RawQuads("_bullets_texture", v_r_bullet);
 
 	if (g_debug == 0) // useful for lerp testing
 	{
