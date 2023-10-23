@@ -274,7 +274,7 @@ class BulletObj
 		
 
 		// Check that the human that owns us hasnt died before we crash
-		if (human.hasTag("dead")) {
+		if (human !is null && human.hasTag("dead")) {
 			@human = null;
 		}
 
