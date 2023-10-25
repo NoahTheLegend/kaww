@@ -56,6 +56,7 @@ void Reset(CRules@ this)
 	FireShotgunID = this.addCommandID("fireShotgun");
 	v_r_bullet.clear();
 	v_r_fade.clear();
+	BulletGrouped = BulletHolder();
 }
 
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
@@ -179,7 +180,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 			float damageBody = infantry.damage_body;
 			float damageHead = infantry.damage_head;
 
-			if (this.get_bool("is_lmg"))
+			if (this.get_bool("is_lmg")) // todo: rewrite this to relative var once we need a delay for other class
 			{
 				this.set_u32("lmg_aftershot", getGameTime()+LMG_AFTERSHOT_DELAY);
 			}
