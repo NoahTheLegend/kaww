@@ -32,15 +32,15 @@ void onInit(CBlob@ this)
             break;
         }
         case _m60:
-        case _t10:
         case _maus:
         case _pinkmaus:
         case _desertmaus:
-        case _bradley:
         {
             susheight = 1.5f;
             break;
         }
+		case _t10:
+		case _bradley:
         {
             susheight = 1.0f;
             break;
