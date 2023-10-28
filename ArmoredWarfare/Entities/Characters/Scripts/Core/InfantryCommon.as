@@ -1039,6 +1039,8 @@ void getWeaponStats( int blobNameHash,
 
 		default: // _shotgun, but it'll be default stats
 		{
+			bool isTDM = (getMap() !is null && getMap().tilemapwidth <= 300);
+
 			inaccuracy_cap = ShotgunParams::INACCURACY_CAP;
 			inaccuracy_pershot = ShotgunParams::INACCURACY_PER_SHOT;
 			inaccuracy_midair = ShotgunParams::INACCURACY_MIDAIR;
@@ -1056,6 +1058,15 @@ void getWeaponStats( int blobNameHash,
 			bullet_velocity = ShotgunParams::BULLET_VELOCITY;
 			bullet_lifetime = ShotgunParams::BULLET_LIFETIME;
 			bullet_pen = ShotgunParams::BULLET_PEN;
+
+			if (isTDM)
+			{
+				delayafterfire += 1;
+				mag_size = mag_size/2;
+				reload_time += 15;
+				bullet_velocity -= 5.0f;
+				bullet_lifetime += 2;
+			}
 
 			emptyshellonfire = ShotgunParams::EMPTYSHELLONFIRE;
 		}
