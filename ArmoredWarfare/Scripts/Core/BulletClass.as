@@ -130,7 +130,7 @@ class BulletObj
 	bool doesCollideWithBlob(CBlob@ blob, CBlob@ hoomanBlob)
 	{
 		CBlob@ LastHitBlob = getBlobByNetworkID(LastHitBlobID);
-		const bool is_young = getGameTime() - CreateTime <= 1;
+		const bool is_young = getGameTime() - CreateTime <= 4;
 		const bool same_team = TeamNum == blob.getTeamNum();
 
 		if (LastHitBlob is blob)
@@ -274,7 +274,7 @@ class BulletObj
 		
 
 		// Check that the human that owns us hasnt died before we crash
-		if (human.hasTag("dead")) {
+		if (human !is null && human.hasTag("dead")) {
 			@human = null;
 		}
 
@@ -645,7 +645,7 @@ class BulletObj
 								}
 							}
 							
-							if (has_rico && XORRandom(100) < 100-angle_diff*(right_floor ? 2 : 4))
+							if (has_rico && Rng.NextRanged(100) < 100-angle_diff*(right_floor ? 2 : 4))
 							{
 								HadRico = true;
 								if (!v_fastrender)
@@ -760,7 +760,6 @@ class BulletObj
 		v_r_bullet.push_back(Vertex(BotRight.x, BotRight.y,     0, 1, 1, trueWhite));   // bot right
 		v_r_bullet.push_back(Vertex(BotLeft.x,  BotLeft.y,      0, 0, 1, trueWhite));   // bot left
 	}
-
 }
 
 class BulletHolder

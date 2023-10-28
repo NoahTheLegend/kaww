@@ -41,7 +41,7 @@ void onInit(CBlob@ this)
 	this.set_u8("TTL", 60);
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 20);
-	this.set_s32("custom_hitter", HittersAW::aircraftbullet);
+	this.set_s32("custom_hitter", HittersAW::machinegunbullet);
 
 	this.getShape().SetOffset(Vec2f(0,0));
 
@@ -133,6 +133,7 @@ void onInit(CSprite@ this)
 		int[] frames = {0, 1, 2, 3};
 		anim.AddFrames(frames);
 		
+		tailrotor.ScaleBy(Vec2f(1.25f,1.25f));
 		tailrotor.SetOffset(Vec2f(58.0, -5));
 		tailrotor.SetRelativeZ(20.0f);
 		tailrotor.SetVisible(true);
@@ -788,6 +789,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		damage += 0.1f;
 		return damage * 0.65f;
+	}
+	else if (customData == HittersAW::machinegunbullet) 
+	{
+		damage += 0.15f;
+		return damage * 0.75f;
 	}
 	else if (customData == HittersAW::bullet)
 	{
