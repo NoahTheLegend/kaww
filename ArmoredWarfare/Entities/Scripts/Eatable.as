@@ -29,7 +29,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			CBlob@ theBlob = getBlobByNetworkID(blob_id);
 			if (theBlob !is null)
 			{
-				//if (theBlob.getHealth() > oldHealth)
+				if (this.getName() != "heart")
 				{
 					if (theBlob.hasBlob("aceofspades", 1))
 					{
