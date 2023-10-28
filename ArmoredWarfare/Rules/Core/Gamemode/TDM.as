@@ -47,7 +47,7 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 		{
 			this.set_s16("teamRightTickets", this.get_s16("teamRightTickets") / 2);
 			this.Sync("teamRightTickets", true);
-			printf("decrease by 2");
+			//printf("decrease by 2");
 		} 
 
 		this.set_s16("teamLeftTickets", numTickets);
@@ -62,7 +62,7 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 		{
 			this.set_s16("teamLeftTickets", this.get_s16("teamLeftTickets") / 2);
 			this.Sync("teamRightTickets", true);
-			printf("decrease by 2");
+			//printf("decrease by 2");
 		} 
 
 		this.set_s16("teamRightTickets", numTickets);
