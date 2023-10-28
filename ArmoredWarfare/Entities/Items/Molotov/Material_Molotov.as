@@ -34,8 +34,8 @@ void onTick(CBlob@ this)
 	if (this.isAttached() && !this.hasTag("activated"))
 	{
 		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
-		if (ap !is null && ap.isKeyJustPressed(key_action3) && ap.getOccupied() !is null && ap.getOccupied().isMyPlayer())
-		{
+		if (ap !is null && ap.isKeyJustPressed(key_action3) && ap.getOccupied() !is null && ap.getOccupied().isMyPlayer() && !ap.getOccupied().isAttached())
+			{
 			//if (!this.hasTag("no_pin")) Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
 			CBitStream params;
 			this.SendCommand(this.getCommandID("activate"), params);
@@ -76,7 +76,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 						}
 					}
 					CBlob@ blob = server_CreateBlob("molotov", this.getTeamNum(), this.getPosition());
-					if (blob !is null) blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
+					if (blob !is null)
+					{
+						blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
+						//blob.setVelocity(this.getVelocity());
+					}
 					holder.server_Pickup(blob);
 					this.server_Die();
 					

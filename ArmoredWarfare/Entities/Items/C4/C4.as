@@ -103,7 +103,7 @@ void DoExplosion(CBlob@ this)
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (this.exists("delay") && this.get_u32("delay") > getGameTime()) return;
- 	if (caller is null || !caller.isMyPlayer()) return;
+ 	if (caller is null || !caller.isMyPlayer() || caller.isAttached()) return;
 	if (this.getDistanceTo(caller) > 10.0f || this.get_bool("deactivating")) return;
 	if (this.isAttachedTo(caller) || !this.isAttached())
 	{
