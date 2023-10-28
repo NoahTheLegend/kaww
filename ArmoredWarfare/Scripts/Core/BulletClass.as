@@ -130,7 +130,7 @@ class BulletObj
 	bool doesCollideWithBlob(CBlob@ blob, CBlob@ hoomanBlob)
 	{
 		CBlob@ LastHitBlob = getBlobByNetworkID(LastHitBlobID);
-		const bool is_young = getGameTime() - CreateTime <= 1;
+		const bool is_young = getGameTime() - CreateTime <= 4;
 		const bool same_team = TeamNum == blob.getTeamNum();
 
 		if (LastHitBlob is blob)
