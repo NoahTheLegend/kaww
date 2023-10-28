@@ -390,6 +390,20 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 }
 
+void onCollision(CBlob@ this, CBlob@ blob, bool solid)
+{
+	if (isServer())
+	{
+		f32 impact = this.getOldVelocity().getLength();
+		if (impact > 7.5f && blob is null
+			&& (!this.exists("collision_dmg_delay") || this.get_u32("collision_dmg_delay") < getGameTime()))
+		{
+			this.server_Hit(this, this.getPosition(), Vec2f(0, 0), Maths::Sqrt(impact)*(impact/2), 0, true);
+			this.set_u32("collision_dmg_delay", getGameTime()+30);
+		}
+	}
+}
+
 void MakeParticle(CBlob@ this, const Vec2f vel, const string filename = "SmallSteam")
 {
 	if (!isClient()) return;
