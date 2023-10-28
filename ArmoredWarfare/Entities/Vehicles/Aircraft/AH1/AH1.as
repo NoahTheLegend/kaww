@@ -133,6 +133,7 @@ void onInit(CSprite@ this)
 		int[] frames = {0, 1, 2, 3};
 		anim.AddFrames(frames);
 		
+		tailrotor.ScaleBy(Vec2f(1.25f,1.25f));
 		tailrotor.SetOffset(Vec2f(58.0, -5));
 		tailrotor.SetRelativeZ(20.0f);
 		tailrotor.SetVisible(true);
