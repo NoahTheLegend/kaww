@@ -255,7 +255,7 @@ void onTick(CBlob@ this)
 						if (currentAngle < targetAngle) currentAngle += factor;
 						else currentAngle += factor;
 					}
-					this.set_f32("gunelevation", ((currentAngle % 360) + 360) % 360);
+					this.set_f32("gunelevation", ((currentAngle % 360.0f) + 360.0f) % 360.0f);
 					Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 				}
 				else if (difference <= factor)
@@ -265,11 +265,11 @@ void onTick(CBlob@ this)
 			}
 		}
 
-		if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+		if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360.0f-high_angle, Maths::Max(this.get_f32("gunelevation") , 360.0f-low_angle)));
 		else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 	}
 
-	if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360-high_angle, Maths::Max(this.get_f32("gunelevation") , 360-low_angle)));
+	if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360.0f-high_angle, Maths::Max(this.get_f32("gunelevation") , 360.0f-low_angle)));
 	else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 
 	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
