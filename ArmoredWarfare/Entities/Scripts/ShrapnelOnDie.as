@@ -3,6 +3,8 @@ void onDie(CBlob@ this)
 {
     if (isServer())
     {
+        if (this.get_string("shrapnel_iftag") != "" && !this.hasTag(this.get_string("shrapnel_iftag")))
+            return;
         //common
         u8 count = 10; 
         f32 time_to_die = 10.0f;

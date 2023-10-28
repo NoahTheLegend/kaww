@@ -24,6 +24,7 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shrapnel_offset", Vec2f(0,-1));
 	this.set_f32("shrapnel_angle_deviation", 15.0f);
 	this.set_f32("shrapnel_angle_max", 45.0f+XORRandom(21));
+	this.set_string("shrapnel_iftag", "DoExplosion");
 
 	// this.Tag("map_damage_dirt");
 
@@ -35,7 +36,7 @@ void onInit(CBlob@ this)
 	this.Tag("bomber ammo");
 	this.Tag("weapon");
 
-	this.maxQuantity = 4;
+	this.maxQuantity = 3;
 	if (isServer()) this.server_SetQuantity(this.maxQuantity);
 }
 
@@ -55,7 +56,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void onThisAddToInventory(CBlob@ this, CBlob@ inventoryBlob)
 {
-	this.SetInventoryIcon("Material_SmallBomb.png", 34+((this.getQuantity()-1)*8), Vec2f(16,16));
+	this.SetInventoryIcon("Material_SmallBomb.png", this.getQuantity()-1, Vec2f(16,16));
 }
 
 void onTick(CBlob@ this)
@@ -112,7 +113,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal)
 
 	f32 vellen = this.getOldVelocity().Length();
 	if (vellen >= 8.0f || this.hasTag("dropped")) 
-	{	
+	{
 		this.Tag("DoExplode");
 		//DoExplosion(this);
 		this.server_Die();
