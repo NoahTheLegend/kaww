@@ -179,16 +179,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	{
 		return true;
 	}
-	if (blob.hasTag("bunker"))
+	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
+	if (blob.hasTag("vehicle") || blob.hasTag("bunker") || blob.hasTag("flesh"))
 	{
 		return false;
 	}
-	if ((!blob.getShape().isStatic() || blob.getName() == "wooden_platform") && blob.getTeamNum() == this.getTeamNum()) return false;
-	if (blob.hasTag("vehicle"))
-	{
-		return true;
-	}
-
 	if (blob.hasTag("flesh") && !blob.isAttached())
 	{
 		return true;
