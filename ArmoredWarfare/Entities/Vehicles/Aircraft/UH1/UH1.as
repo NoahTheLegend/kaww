@@ -634,10 +634,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		return damage * 0.75f;
 	}
-	else if (hitterBlob.getName() == "ballista_bolt")
-	{
-		return damage * 1.0f;
-	}
 	
 	if (customData == HittersAW::aircraftbullet) 	 
 	{
