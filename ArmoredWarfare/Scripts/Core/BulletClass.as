@@ -825,6 +825,8 @@ class BulletHolder
 	void Clean()
 	{
 		bullets.clear();
+		PParticles.clear();
+		fade.clear();
 	}
 
 	int ArrayCount()

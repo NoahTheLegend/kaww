@@ -56,7 +56,7 @@ void Reset(CRules@ this)
 	FireShotgunID = this.addCommandID("fireShotgun");
 	v_r_bullet.clear();
 	v_r_fade.clear();
-	BulletGrouped = BulletHolder();
+	BulletGrouped.Clean();
 }
 
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
