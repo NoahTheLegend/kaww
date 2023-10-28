@@ -138,7 +138,8 @@ void onTick(CBlob@ this)
 	}
 
 	Vehicle_LevelOutInAir(this);
-	Vehicle_DontRotateInWater(this);
+	if (!this.isOnWall()) Vehicle_DontRotateInWater(this);
+	else if (this.getShape() !is null) this.getShape().SetRotationsAllowed(true);
 }
 
 // Blow up
