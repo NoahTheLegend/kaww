@@ -858,6 +858,12 @@ bool canHit(CBlob@ this, CBlob@ b, Vec2f tpos, bool extra = true)
 		return false;
 	}
 
+	if (b.isAttached())
+	{
+		bool exposed = b.hasTag("machinegunner") || b.hasTag("collidewithbullets");
+		return exposed;
+	}
+
 	if (b.getTeamNum() == this.getTeamNum())
 	{
 		//no hitting friendly carried stuff

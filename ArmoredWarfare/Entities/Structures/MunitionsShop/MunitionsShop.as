@@ -107,19 +107,19 @@ void onInit(CBlob@ this)
 		this.set_Vec2f("shop menu size", Vec2f(4, 1));
 		{
 			ShopItem@ s = addShopItem(this, "Ammuniton", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 3);
+			AddRequirement(s.requirements, "coin", "", "Coins", 1);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Beer", "$heart$", "heart", "Leaf Lovers special", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 7);
+			AddRequirement(s.requirements, "coin", "", "Coins", 2);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Food", "$food$", "food", "A tasty burger", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 12);
+			AddRequirement(s.requirements, "coin", "", "Coins", 8);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 25);
+			AddRequirement(s.requirements, "coin", "", "Coins", 15);
 		}
 	}
 }

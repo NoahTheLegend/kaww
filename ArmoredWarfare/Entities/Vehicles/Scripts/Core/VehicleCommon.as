@@ -340,6 +340,11 @@ void SetFireDelay(CBlob@ this, int shot_delay, VehicleInfo@ v)
 	v.fire_time = (getGameTime() + shot_delay);
 }
 
+u32 getRemainingFireDelay(CBlob@ this, VehicleInfo@ v)
+{
+	return Maths::Max(getGameTime(), v.fire_time) - getGameTime();
+}
+
 bool Vehicle_AddFlipButton(CBlob@ this, CBlob@ caller)
 { // moved to controls
 	/*if (isFlipped(this))
@@ -1322,6 +1327,20 @@ void Vehicle_onAttach(CBlob@ this, VehicleInfo@ v, CBlob@ attached, AttachmentPo
 			attached.server_DetachFromAll();
 			this.server_PutInInventory(attached);
 			server_LoadAmmo(this, attached, v.getCurrentAmmo().fire_amount, v);
+		}
+	}
+	if (this.hasTag("turret") && !this.hasTag("apc") && attached !is null && attached.hasTag("player"))
+	{
+		const u8 mod_delay_onattach = 3;
+		u32 delay = getRemainingFireDelay(this, v);
+		if (delay < v.getCurrentAmmo().fire_delay/mod_delay_onattach)
+		{
+			if (delay == 0)
+			{
+				v.cooldown_time =  v.getCurrentAmmo().fire_delay/mod_delay_onattach;
+				if (v.getCurrentAmmo().fire_delay/mod_delay_onattach < 110) Sound::Play("TankReload.ogg", this.getPosition(), 0.5f, 1.0f + (0.01f * XORRandom(30)));
+			}
+			SetFireDelay(this, v.getCurrentAmmo().fire_delay/mod_delay_onattach, v);
 		}
 	}
 	// move mag offset

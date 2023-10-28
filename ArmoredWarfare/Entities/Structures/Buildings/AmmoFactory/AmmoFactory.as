@@ -30,7 +30,7 @@ void onInit(CBlob@ this)
 	this.Tag("structure");
 
 	this.set_string("prod_blob", "ammo");
-	this.set_u8("prod_amount", 50);
+	this.set_u8("prod_amount", 200);
 	this.set_u8("prod_time", 0);
 	this.set_u8("cost", 1);
 	this.set_f32("mod", 1.0f);
