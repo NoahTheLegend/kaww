@@ -1279,14 +1279,13 @@ void Vehicle_DontRotateInWater(CBlob@ this)
 
 	if (getMap().isInWater(this.getPosition() + Vec2f(0.0f, this.getHeight() * 0.5f)))
 	{
-		const f32 thresh = 15.0f;
+		const f32 thresh = 5.0f;
 		const f32 angle = this.getAngleDegrees();
 		if ((angle < thresh || angle > 360.0f - thresh) && !this.hasTag("sinking"))
 		{
 			this.setAngleDegrees(0.0f);
 			this.getShape().SetRotationsAllowed(false);
 			return;
-
 		}
 	}
 
