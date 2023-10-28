@@ -29,7 +29,8 @@ void onInit(CBlob@ this)
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
 
-	if (map.tilemapwidth > 200) // normal maps
+	bool isTDM = (getMap().tilemapwidth <= 300);
+	if (!isTDM) // normal maps
 	{
 		this.set_Vec2f("shop menu size", Vec2f(5, 3));
 		{
