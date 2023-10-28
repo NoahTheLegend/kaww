@@ -387,16 +387,16 @@ class PNGLoader
 			case map_colors::platform_left:  autotile(offset); spawnBlob(map, "wooden_platform", offset, 255, true, Vec2f_zero, -90); break;
 
 			// Doors
-			case map_colors::wooden_door_h_blue:   autotile(offset); spawnBlob(map, "wooden_door", offset,   0, true); break;
-			case map_colors::wooden_door_v_blue:   autotile(offset); spawnBlob(map, "wooden_door", offset,   0, true, Vec2f_zero, 90); break;
-			case map_colors::wooden_door_h_red:    autotile(offset); spawnBlob(map, "wooden_door", offset,   1, true); break;
-			case map_colors::wooden_door_v_red:    autotile(offset); spawnBlob(map, "wooden_door", offset,   1, true, Vec2f_zero, 90); break;
+			case map_colors::wooden_door_h_blue:   autotile(offset); spawnBlob(map, "wooden_door", offset,   teamleft, true); break;
+			case map_colors::wooden_door_v_blue:   autotile(offset); spawnBlob(map, "wooden_door", offset,   teamleft, true, Vec2f_zero, 90); break;
+			case map_colors::wooden_door_h_red:    autotile(offset); spawnBlob(map, "wooden_door", offset,   teamright, true); break;
+			case map_colors::wooden_door_v_red:    autotile(offset); spawnBlob(map, "wooden_door", offset,   teamright, true, Vec2f_zero, 90); break;
 			case map_colors::wooden_door_h_noteam: autotile(offset); spawnBlob(map, "wooden_door", offset, 255, true); break;
 			case map_colors::wooden_door_v_noteam: autotile(offset); spawnBlob(map, "wooden_door", offset, 255, true, Vec2f_zero, 90); break;
-			case map_colors::stone_door_h_blue:    autotile(offset); spawnBlob(map, "stone_door",  offset,   0, true); break;
-			case map_colors::stone_door_v_blue:    autotile(offset); spawnBlob(map, "stone_door",  offset,   0, true, Vec2f_zero, 90); break;
-			case map_colors::stone_door_h_red:     autotile(offset); spawnBlob(map, "stone_door",  offset,   1, true); break;
-			case map_colors::stone_door_v_red:     autotile(offset); spawnBlob(map, "stone_door",  offset,   1, true, Vec2f_zero, 90); break;
+			case map_colors::stone_door_h_blue:    autotile(offset); spawnBlob(map, "stone_door",  offset,   teamleft, true); break;
+			case map_colors::stone_door_v_blue:    autotile(offset); spawnBlob(map, "stone_door",  offset,   teamleft, true, Vec2f_zero, 90); break;
+			case map_colors::stone_door_h_red:     autotile(offset); spawnBlob(map, "stone_door",  offset,   teamright, true); break;
+			case map_colors::stone_door_v_red:     autotile(offset); spawnBlob(map, "stone_door",  offset,   teamright, true, Vec2f_zero, 90); break;
 			case map_colors::stone_door_h_noteam:  autotile(offset); spawnBlob(map, "stone_door",  offset, 255, true); break;
 			case map_colors::stone_door_v_noteam:  autotile(offset); spawnBlob(map, "stone_door",  offset, 255, true, Vec2f_zero, 90); break;
 
