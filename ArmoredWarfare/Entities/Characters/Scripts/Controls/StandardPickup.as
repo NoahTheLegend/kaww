@@ -79,7 +79,7 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (this.isInInventory() || isKnocked(this))
+	if (this.isInInventory() || isKnocked(this) || this.isAttached())
 	{
 		this.clear("pickup blobs");
 		this.clear("closest blobs");
