@@ -229,7 +229,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		CBlob@ item = getBlobByNetworkID(params.read_netid());
 		if (item !is null && caller !is null)
 		{
-			this.getSprite().PlaySound("/Construct.ogg");
+			this.getSprite().PlaySound("/ConstructShort.ogg");
 			this.getSprite().getVars().gibbed = true;
 			this.server_Die();
 			caller.ClearMenus();
