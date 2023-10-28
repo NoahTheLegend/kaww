@@ -1046,8 +1046,17 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					const bool left = ap.isKeyPressed(key_left);
 					const bool right = ap.isKeyPressed(key_right);
 					const Vec2f vel = this.getVelocity();
-
 					bool backwards = false;
+
+					bool a1 = false;
+					bool a2 = false;
+
+					//CBlob@ rower = ap.getOccupied();
+					//if (rower !is null)
+					{
+						a1 = ap.isKeyPressed(key_action1);
+						a2 = ap.isKeyPressed(key_action2);
+					}
 
 					// row left/right
 
@@ -1055,11 +1064,11 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					{
 						force.x -= moveForce;
 
-						if (vel.x < -turnSpeed)
+						if (vel.x < -turnSpeed && !a2)
 						{
 							this.SetFacingLeft(true);
 						}
-						else
+						else if (!a2)
 						{
 							backwards = true;
 						}
@@ -1071,11 +1080,11 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					{
 						force.x += moveForce;
 
-						if (vel.x > turnSpeed)
+						if (vel.x > turnSpeed && !a2)
 						{
 							this.SetFacingLeft(false);
 						}
-						else
+						else if (!a2)
 						{
 							backwards = true;
 						}
