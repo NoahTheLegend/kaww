@@ -219,7 +219,7 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 
 			s.customButton = true;
 
@@ -276,7 +276,7 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 
 			s.customButton = true;
 
