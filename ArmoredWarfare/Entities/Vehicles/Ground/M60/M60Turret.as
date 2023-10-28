@@ -342,6 +342,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 	this.getSprite().PlayRandomSound(v.getCurrentAmmo().fire_sound);
 	if (bullet !is null)
 	{
+		bullet.Tag("shell");
 		u8 charge_prop = _charge;
 
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();

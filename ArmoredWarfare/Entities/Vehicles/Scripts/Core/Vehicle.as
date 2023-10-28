@@ -1150,6 +1150,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	s8 finalRating = getFinalRating(this, armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
 	bool is_aircraft = customData == HittersAW::aircraftbullet;
 
+	if (this.hasTag("aerial") && hitterBlob.hasTag("shell"))
+	{
+		damage *= 2.5f;
+	}
 	if (hitterBlob.hasTag("grenade"))
 	{
 		if (!hitterBlob.hasTag("atgrenade")) damage *= Maths::Max(0.1f, (0.5f-0.2f*finalRating));
@@ -1160,7 +1164,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		else damage *= 1.0f+(XORRandom(26)*0.01f);
 		
-		if (this.hasTag("aerial")) return damage*4.5f;
+		if (this.hasTag("aerial")) return damage*4.0f;
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*1.5f;
 
 		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/8.0f);
