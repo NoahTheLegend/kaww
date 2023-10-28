@@ -134,7 +134,7 @@ void onRender(CSprite@ this)
 			thisBlob.set_Vec2f("last_pos2d", pos2d);
 		}
 		
-		if (thisBlob is renderBlob) // if the blob is YOU, draw the hud. Otherwise fuck off
+		if (thisBlob is renderBlob) // if the blob is YOU, draw the hud
 		{
 			float bucketAmount = thisBlob.get_f32(bucketAmountString);
 			float bucketCost = 1.0f / bucket_Max_Charges;
@@ -144,9 +144,14 @@ void onRender(CSprite@ this)
 		{
 			Vec2f oldpos = getDriver().getScreenPosFromWorldPos(thisBlob.getOldPosition());
 			Vec2f pos = getDriver().getScreenPosFromWorldPos(thisBlob.getPosition());
-			
-			Vec2f pos2d = Vec2f_lerp(oldpos, pos, interfactor) + Vec2f(-18, -80);
-			drawMedicIdentifier(pos2d); // MedicisCommon.as
+
+			string token = thisBlob.get_string("emote");
+			u32 time = thisBlob.get_u32("emotetime");
+			if (!(time > getGameTime() && token != ""))
+			{
+				Vec2f pos2d = Vec2f_lerp(oldpos, pos, interfactor) + Vec2f(-18, -80);
+				drawMedicIdentifier(pos2d); // MedicisCommon.as
+			}
 		}
 	}
 	else if (draw_call && renderBlob.hasTag(medicTagString)) // if YOU are a medic, draw the "Help Me" icon on players with the variable set TRUE
