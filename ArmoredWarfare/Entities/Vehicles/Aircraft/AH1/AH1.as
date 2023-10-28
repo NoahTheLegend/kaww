@@ -41,7 +41,7 @@ void onInit(CBlob@ this)
 	this.set_u8("TTL", 60);
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 20);
-	this.set_s32("custom_hitter", HittersAW::aircraftbullet);
+	this.set_s32("custom_hitter", HittersAW::machinegunbullet);
 
 	this.getShape().SetOffset(Vec2f(0,0));
 
@@ -788,6 +788,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		damage += 0.1f;
 		return damage * 0.65f;
+	}
+	else if (customData == HittersAW::machinegunbullet) 
+	{
+		damage += 0.15f;
+		return damage * 0.75f;
 	}
 	else if (customData == HittersAW::bullet)
 	{
