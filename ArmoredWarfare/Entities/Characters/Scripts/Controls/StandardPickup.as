@@ -79,11 +79,14 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (this.isInInventory() || isKnocked(this) || this.isAttached())
+	bool clear = !isKnocked(this) && !this.isAttached();
+
+	if (this.isInInventory())
 	{
 		this.clear("pickup blobs");
 		this.clear("closest blobs");
-		return;
+		
+		if (clear) return;
 	}
 
 	CControls@ controls = getControls();
@@ -91,49 +94,49 @@ void onTick(CBlob@ this)
 	// drop / pickup / throw
 	if (controls.ActionKeyPressed(AK_PICKUP_MODIFIER))
 	{
-		WheelMenu@ menu = get_wheel_menu("pickup");
-		if (this.isKeyPressed(key_pickup) && menu !is get_active_wheel_menu())
+		if (clear)
 		{
-			set_active_wheel_menu(@menu);
-		}
-
-		if (this.isKeyPressed(key_pickup))
-		{
-			GatherPickupBlobs(this);
-
-			CBlob@[]@ pickupBlobs;
-			this.get("pickup blobs", @pickupBlobs);
-
-			CBlob@[] available;
-			FillAvailable(this, available, pickupBlobs);
-
-			for (uint i = 0; i < menu.entries.length; i++)
+			WheelMenu@ menu = get_wheel_menu("pickup");
+			if (this.isKeyPressed(key_pickup) && menu !is get_active_wheel_menu())
 			{
-				PickupWheelMenuEntry@ entry = cast<PickupWheelMenuEntry>(menu.entries[i]);
-				entry.disabled = true;
+				set_active_wheel_menu(@menu);
+			}
 
-				for (uint j = 0; j < available.length; j++)
+			if (this.isKeyPressed(key_pickup))
+			{
+				GatherPickupBlobs(this);
+
+				CBlob@[]@ pickupBlobs;
+				this.get("pickup blobs", @pickupBlobs);
+
+				CBlob@[] available;
+				FillAvailable(this, available, pickupBlobs);
+
+				for (uint i = 0; i < menu.entries.length; i++)
 				{
-					string bname = available[j].getName();
-					for (uint k = 0; k < entry.options.length; k++)
+					PickupWheelMenuEntry@ entry = cast<PickupWheelMenuEntry>(menu.entries[i]);
+					entry.disabled = true;
+
+					for (uint j = 0; j < available.length; j++)
 					{
-						if (entry.options[k].name == bname)
+						string bname = available[j].getName();
+						for (uint k = 0; k < entry.options.length; k++)
 						{
-							entry.disabled = false;
+							if (entry.options[k].name == bname)
+							{
+								entry.disabled = false;
+								break;
+							}
+						}
+
+						if (!entry.disabled)
+						{
 							break;
 						}
 					}
-
-					if (!entry.disabled)
-					{
-						break;
-					}
 				}
-
 			}
-
 		}
-
 	}
 	else if (this.isKeyJustPressed(key_pickup))
 	{
@@ -159,7 +162,7 @@ void onTick(CBlob@ this)
 				}
 			}
 		}
-		else if (carryBlob !is null && !carryBlob.hasTag("custom drop") && (!carryBlob.hasTag("temp blob")))
+		else if (clear && carryBlob !is null && !carryBlob.hasTag("custom drop") && (!carryBlob.hasTag("temp blob")))
 		{
 			ClearPickupBlobs(this);
 			client_SendThrowCommand(this);
