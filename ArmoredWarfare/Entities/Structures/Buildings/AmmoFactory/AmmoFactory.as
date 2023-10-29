@@ -31,7 +31,7 @@ void onInit(CBlob@ this)
 
 	this.set_string("prod_blob", "ammo");
 	this.set_u8("prod_amount", 200);
-	this.set_u8("prod_time", 0);
+	this.set_u8("prod_time", 2);
 	this.set_u8("cost", 1);
 	this.set_f32("mod", 1.0f);
 
@@ -279,7 +279,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	else if (cmd == this.getCommandID("7mm"))
 	{
 		this.set_string("prod_blob", "ammo"); // blob cfg name
-		this.set_u8("prod_amount", 50); // how many
+		this.set_u8("prod_amount", 200); // how many
 		this.set_u8("prod_time", 2); // extra seconds time (10 sec for default)
 		this.set_u8("cost", 1); // how many scrap to take
 
