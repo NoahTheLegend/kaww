@@ -32,7 +32,7 @@ https://github.com/NoahTheLegend/kaww/assets/76755422/f1712463-2183-465d-9fb5-2a
 
 # A great thank to contributors:
 
-### Blav (dev), Nevrotik (dev, community), GlitchGames (dev), GoldenGuy (host, dev), Skemonde (sprites), PURPLExeno (sprites), Froghead48 ($, mapping), Dpants ($), Goldy (mapping), petey5 (sprites), ThinkAbout (miscellaneous), LorderPlay (sprites), Warrior (community), Markoss (community), Alainx277 (bugs), kongo73 ($), shadowguy ($), MasterOfCockFights ($)
+### Blav (dev), Nevrotik (dev, community), GlitchGames (dev), GoldenGuy (host, dev), Skemonde (sprites), PURPLExeno (sprites), Froghead48 (donation, mapping), Dpants (donation), Goldy (mapping), petey5 (sprites), ThinkAbout (miscellaneous), LorderPlay (sprites), Warrior (community), Markoss (community), Alainx277 (bugs), kongo73 (donation), shadowguy (donation), MasterOfCockFights (donation)
 
 This mod wouldn't have success without these people
 
