@@ -16,17 +16,17 @@ One of the most popular mods in the game, more than 5000 unique players in 1 and
 
 ![kaww2](https://github.com/NoahTheLegend/kaww/assets/76755422/9dd2d448-a784-4954-a880-d6519a4f954c)
 
-<h3 align="center"> Aerial dogfights </h3>
+<h3 align="center"> Aerial dogfights </h2>
 
 ![kaww3](https://github.com/NoahTheLegend/kaww/assets/76755422/c396d446-3236-4334-96ac-da56f7ddfb94)
 
 
 
-Strong bunkers
+<h3 align="center">Strong bunkers</h2>
 
 ![kaww1](https://github.com/NoahTheLegend/kaww/assets/76755422/7c69e3b7-280e-434b-af7a-7ad4a53bcdcf)
 
-And colossal facilities
+<h3 align="center">And colossal facilities</h2>
 
 ![kaww2](https://github.com/NoahTheLegend/kaww/assets/76755422/54cfd8a8-6e0a-469d-a049-3edfd80ad4f3)
 
