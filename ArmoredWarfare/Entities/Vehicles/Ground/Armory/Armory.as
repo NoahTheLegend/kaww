@@ -124,7 +124,7 @@ void InitShop(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 300);
-		AddRequirement(s.requirements, "gametime", "", "Unlocks at", 30*30 * 60); // 45th min
+		AddRequirement(s.requirements, "gametime", "", "Unlocks at", 30*30 * 60);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 3;
@@ -510,12 +510,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				u8 teamleft = getRules().get_u8("teamleft");
 				u8 teamright = getRules().get_u8("teamright");
-				printf(""+(getLocalPlayer().getTeamNum())+" "+teamleft+" "+teamright+" "+warn_team);
+				//printf(""+(getLocalPlayer().getTeamNum())+" "+teamleft+" "+teamright+" "+warn_team);
 				if ((getLocalPlayer().getTeamNum() == teamleft && !warn_team)
 					|| (getLocalPlayer().getTeamNum() == teamright && warn_team))
 				{
 					Sound::Play("nuke_warn.ogg", getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos()), 500.0f, 0.825f);
 					client_AddToChat("Enemy has constructed a nuclear bomb!", SColor(255, 255, 0, 0));
+
+					error("debug: playing sound & sending nukewarn message");
 				}
 				else
 				{
