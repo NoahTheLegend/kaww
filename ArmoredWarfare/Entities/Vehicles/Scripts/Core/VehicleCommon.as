@@ -1462,32 +1462,45 @@ f32 getWeaponAngle(CBlob@ this, VehicleInfo@ v)
 
 	return angle;
 }
-/*
-void UpdateWheels(CBlob@ this)
+
+int getCrew(CBlob@ this, CBlob@[] &out blobs, string[] &out ap_names)
 {
+	int count = 0;
+	AttachmentPoint@[] aps;
+	if (this.getAttachmentPoints(@aps))
 	{
-		CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 1
-
-		if (soundmanager !is null)
+		for (uint i = 0; i < aps.length; i++)
 		{
-			soundmanager.set_bool("manager_Type", false);
-			soundmanager.Init();
-			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
-
-			this.set_u16("followid", soundmanager.getNetworkID());
+			AttachmentPoint@ ap = aps[i];
+			CBlob@ oc = ap.getOccupied();
+			if (oc !is null && oc.getPlayer() !is null)
+			{
+				blobs.push_back(@oc);
+				ap_names.push_back(ap.name);
+				count++;
+			}
 		}
 	}
-	{
-		CBlob@ soundmanager = server_CreateBlobNoInit("soundmanager"); // manager 2
-
-		if (soundmanager !is null)
-		{
-			soundmanager.set_bool("manager_Type", true);
-			soundmanager.Init();
-			soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
-			
-			this.set_u16("followid2", soundmanager.getNetworkID());
-		}
-	}
+	return count;
 }
-*/
+
+int getAttachedBlobs(CBlob@ this, CBlob@[] &out blobs, string[] &out ap_names)
+{
+	int count = 0;
+	AttachmentPoint@[] aps;
+	if (this.getAttachmentPoints(@aps))
+	{
+		for (uint i = 0; i < aps.length; i++)
+		{
+			AttachmentPoint@ ap = aps[i];
+			CBlob@ oc = ap.getOccupied();
+			if (oc !is null)
+			{
+				blobs.push_back(@oc);
+				ap_names.push_back(ap.name);
+				count++;
+			}
+		}
+	}
+	return count;
+}
