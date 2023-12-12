@@ -1302,6 +1302,8 @@ void Vehicle_ensureFallingCollision(CBlob@ this)
 
 bool Vehicle_doesCollideWithBlob_ground(CBlob@ this, CBlob@ blob)
 {
+	if (blob.hasTag("always vehicle collide"))
+		return blob.isCollidable();
 	if (!blob.isCollidable() || blob.isAttached()) // no colliding against people inside vehicles
 		return false;
 	if (blob.getRadius() > this.getRadius() ||
