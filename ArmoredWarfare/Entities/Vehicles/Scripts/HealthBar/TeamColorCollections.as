@@ -1,4 +1,3 @@
-
 SColor getNeonColor(u8 team, u8 darkness)
 {
     SColor color_light = 0xffd8d8d8;
