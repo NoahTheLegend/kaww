@@ -9,6 +9,12 @@
 #include "Explosion.as";
 #include "ProgressBar.as";
 
+// general script for all vehicles, includes movement features, attachments,
+// visuals, core damage modifiers and damage logic (for bunkers as well)
+//
+// more nitpicked damage modifiers (mostly for precise balancing) and
+// unique vehicles' logic that is not reused are located in corresponding blob files 
+
 string[] particles = 
 {
 	"LargeSmoke",
@@ -44,6 +50,7 @@ void onInit(CBlob@ this)
 
 	this.set_string("engine_start", "EngineStart_tank");
 
+	// misc
 	switch(blobHash)
 	{
 		case _maus:
@@ -61,10 +68,9 @@ void onInit(CBlob@ this)
 		}
 	}
 
+	// armor
 	s8 armorRating = 0;
 	bool hardShelled = false;
-
-	s8 weaponRating = 0;
 
 	switch(blobHash)
 	{
@@ -128,8 +134,12 @@ void onInit(CBlob@ this)
 		}
 	}
 
-	f32 linear_length = 4.0f;
-	f32 scale_damage = 1.0f;
+	// weapon & projectile
+
+	s8 weaponRating = 0; // penetration rating
+	f32 linear_length = 4.0f; // explosion depth
+	f32 scale_damage = 1.0f; // damage modifier
+
 	switch(blobHash) // weapon rating and length of linear (map) and circled explosion damage
 	{
 		case _artilleryturret:
@@ -198,8 +208,10 @@ void onInit(CBlob@ this)
 	this.set_f32("linear_length", linear_length);
 	this.set_f32("explosion_damage_scale", scale_damage);
 
+	// vulnerabilities
 	float backsideOffset = -1.0f;
-	switch(blobHash) // backside vulnerability point
+
+	switch(blobHash) // backside
 	{
 		case _maus: // maus
 		case _pinkmaus:
@@ -233,7 +245,7 @@ void onInit(CBlob@ this)
 		backsideOffset = -32.0f; break;
 	}
 
-	// speedy stuff
+	// engine power
 	f32 intake = 0.0f;
 	switch(blobHash)
 	{
@@ -270,15 +282,13 @@ void onInit(CBlob@ this)
 		case _artillery:
 		intake = 200.0f; break;
 	}
+
 	this.set_f32("add_gas_intake", intake);
-
-	this.set_f32(backsideOffsetString, backsideOffset);
-
+	
 	this.set_s8(armorRatingString, armorRating);
 	this.set_bool(hardShelledString, hardShelled);
-
 	this.set_s8(weaponRatingString, weaponRating);
-
+	this.set_f32(backsideOffsetString, backsideOffset);
 
 	this.set_f32(engineRPMString, 0.0f);
 	this.set_f32(engineThrottleString, 0.0f);
@@ -329,10 +339,10 @@ void ManageFlipping(CBlob@ this)
 
 void ManageDisguise(CBlob@ this)
 {
-	if (getGameTime() % 45 == 0 && !this.hasTag("gun"))
+	if ((getGameTime()+this.getNetworkID()) % 45 == 0 && !this.hasTag("gun"))
 	{
 		const u8 map_luminance = getMap().getColorLight(this.getPosition()).getLuminance();
-		if (map_luminance < 100)
+		if (map_luminance < 85)
 		{
 			if (!this.hasTag("turret"))
 			{
@@ -340,31 +350,6 @@ void ManageDisguise(CBlob@ this)
 			}
 			
 			this.set_u32("disguise", getGameTime() + 90);
-		}
-		else if ((this.getPosition()-this.getOldPosition()).Length() <= 0.1f)
-		{
-			CBlob@[] bushes;
-			this.getOverlapping(@bushes);
-			
-			int bushcount = 0;
-			for (u16 i = 0; i < bushes.length; i++)
-			{
-				if (bushes[i] is null || bushes[i].getName() != "bush") continue;
-				else bushcount ++;
-			}
-			if (bushcount > 4)
-			{
-				if (!this.hasTag("turret"))
-				{
-					this.setInventoryName("");
-				}
-
-				this.set_u32("disguise", getGameTime() + 90);
-			}
-			else if (!this.hasTag("turret"))
-			{
-				this.setInventoryName(this.get_string("invname"));
-			}
 		}
 		else
 		{
@@ -376,10 +361,14 @@ void ManageDisguise(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	barTick(this);
-
+	CMap@ map = getMap();
+	if (map is null) return;
+	
+	visualTimerTick(this);
 	ManageFlipping(this);
 	ManageDisguise(this);
+
+	u32 gt = getGameTime();
 
 	if (!(isClient() && isServer()) && !this.hasTag("aerial") && getGameTime() < 60*30 && !this.hasTag("pass_60sec"))
 	{
@@ -1102,6 +1091,7 @@ void DoExplosion(CBlob@ this, f32 damage, f32 map_damage, f32 radius)
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (this.hasTag("broken") || this.hasTag("falling")) return 0;
+	
 	if (customData == Hitters::fire)
 	{
 		return damage*2;
@@ -1124,6 +1114,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	s8 penRating = hitterBlob.get_s8(penRatingString);
 	bool hardShelled = this.get_bool(hardShelledString);
 
+	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor
+
 	if (hitterBlob.getName() == "c4")
 	{
 		damage *= 1.33f;
@@ -1133,10 +1125,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.getName() == "mat_smallbomb")
 	{
-		return damage * ((this.hasTag("apc") ? 3.0f : 4.25f)-(armorRating*0.75f));
+		damage *= ((this.hasTag("apc") ? 3.0f : 4.25f)-(armorRating*0.75f));
 	}
-
-	if (customData == Hitters::sword) penRating -= 3; // knives don't pierce armor
 
 	if (this.hasTag("turret")) this.set_u32("show_hp", getGameTime() + turretShowHPSeconds * 30);
 
@@ -1164,17 +1154,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		else damage *= 1.0f+(XORRandom(26)*0.01f);
 		
-		if (this.hasTag("aerial")) return damage*4.0f;
-		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) return damage*1.5f;
+		if (this.hasTag("aerial")) damage *= 4.0f;
+		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) damage *= 1.5f;
 
 		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/8.0f);
 		if (blocks_between > 5) damage /= 1.0f-(5.0f-blocks_between);
 		return (this.getName() == "maus" || armorRating > 4 ? damage*0.9f : damage * (1.5f+XORRandom(21)*0.01f));
 	}
 
-	if (!this.hasTag("aerial") && hitterBlob.getName() == "missile_javelin")
+	if (this.hasTag("tank") && hitterBlob.getName() == "missile_javelin")
 	{
-		finalRating = Maths::Max(0, finalRating);
+		if (damage > 10.0f) damage = 10.0f + 10.0f * 0.33f; // limit damage to thick armor (hack?)
 	}
 	
 	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet

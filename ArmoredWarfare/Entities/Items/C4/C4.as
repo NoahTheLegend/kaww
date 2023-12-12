@@ -125,7 +125,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 
 void onTick(CBlob@ this)
 {
-	barTick(this);
+	visualTimerTick(this);
 
 	if (isServer() && this.get_bool("explode") && getGameTime()%15==0)
 	{

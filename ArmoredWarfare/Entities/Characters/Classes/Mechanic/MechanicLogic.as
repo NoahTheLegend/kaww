@@ -75,7 +75,7 @@ void onSetPlayer(CBlob@ this, CPlayer@ player)
 
 void onTick(CBlob@ this)
 {
-	barTick(this);
+	visualTimerTick(this);
 
 	const bool ismyplayer = this.isMyPlayer();
 	ManageParachute(this);

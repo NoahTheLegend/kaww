@@ -18,7 +18,7 @@ void barInit(CBlob@ this)
 const SColor back = SColor(255, 75, 75, 0);
 const SColor front = SColor(255, 255, 255, 255);
 
-void barTick(CBlob@ this)
+void visualTimerTick(CBlob@ this)
 {
     Bar@ bars;
     if (!this.get("Bar", @bars))

@@ -1186,7 +1186,7 @@ void Jet(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	barTick(this);
+	visualTimerTick(this);
 	HandleOther(this);
 
 	CSprite@ sprite = this.getSprite();
