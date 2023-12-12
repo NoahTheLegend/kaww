@@ -6,6 +6,8 @@
 #include "KnockedCommon.as";
 #include "PerksCommon.as";
 
+const u8 wallrun_length = 3;
+
 void onInit(CMovement@ this)
 {
 	this.getCurrentScript().removeIfTag = "dead";
@@ -354,9 +356,16 @@ void onTick(CMovement@ this)
 				        ((left && surface_left && !jumpedLEFT) || (right && surface_right && !jumpedRIGHT) || set_contact))
 				{
 					//within range
+					//if (set_contact ||
+					//        (pos.y - 1.0f < moveVars.wallrun_current &&
+					//         pos.y + 1.0f > moveVars.wallrun_start - map.tilesize * moveVars.wallrun_length))
+
+					// hardcode for each class (not really relevant to keep it either)
+					u8 wallrun_len = wallrun_length;
+					
 					if (set_contact ||
 					        (pos.y - 1.0f < moveVars.wallrun_current &&
-					         pos.y + 1.0f > moveVars.wallrun_start - map.tilesize * moveVars.wallrun_length))
+					         pos.y + 1.0f > moveVars.wallrun_start - map.tilesize * wallrun_len))
 					{
 						moveVars.wallrun_current = Maths::Min(pos.y - 1.0f, moveVars.wallrun_current - 1.0f);
 
