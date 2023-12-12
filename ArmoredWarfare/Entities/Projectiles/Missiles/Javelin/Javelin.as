@@ -9,7 +9,7 @@
 Random _missile_r(12231);
 
 const f32 radius = 64.0f;
-const f32 damage = 18.5f;
+const f32 damage = 17.5f;
 
 void onInit(CBlob@ this)
 {
@@ -29,7 +29,7 @@ void onInit(CBlob@ this)
 	this.set_f32(projExplosionRadiusString, 30.0f);
 	this.set_f32(projExplosionDamageString, damage);
 
-	this.set_s8(penRatingString, 6);
+	this.set_s8(penRatingString, 5);
 
 	this.set_f32(robotechHeightString, 64.0f); // pixels
 	this.set_f32("map_damage_ratio", 0.5f);
@@ -405,6 +405,9 @@ void makeMissileEffect(Vec2f thisPos = Vec2f_zero)
 
 bool DoExplosion(CBlob@ this, Vec2f explosionVec)
 {
+	if (this.hasTag("dead")) return false;
+	this.Tag("dead");
+
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
 	float projExplosionDamage = this.get_f32(projExplosionDamageString);
 

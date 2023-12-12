@@ -179,7 +179,7 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 
 void onTick(CBlob@ this)
 {
-	barTick(this);
+	visualTimerTick(this);
 
 	if (this !is null)
 	{

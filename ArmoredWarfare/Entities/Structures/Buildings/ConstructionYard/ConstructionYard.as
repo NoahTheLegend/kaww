@@ -117,7 +117,7 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	barTick(this);
+	visualTimerTick(this);
 	if (this.get_bool("constructing") && getMap() !is null)
 	{
 		CBlob@[] overlapping;
