@@ -7,6 +7,7 @@
 #include "HittersAW.as";
 #include "PlayerRankInfo.as";
 #include "PerksCommon.as";
+#include "Perks.as";
 
 const u32 min_gametime_to_increment = 20 * 30*60;
 const int max_matches_before_restart = 5; // change this in TDM_interface.as too
@@ -1862,6 +1863,7 @@ void onInit(CRules@ this)
 	this.set("maptypes-flag", FlagMaps);
 	this.set("maptypes-truck", TruckMaps);
 	this.set("maptypes-tdm", TdmMaps);
+	this.set("maptypes-water", WaterMaps);
 }
 
 const string[] ClassicMaps = {
@@ -1975,4 +1977,12 @@ const string[] TdmMaps = {
 	"Battleship.png",
 	"Oilrig.png",
 	"Golf.png"
+};
+
+const string[] WaterMaps = {
+	"SeaHalt.png",
+	"BridgeWater.png",
+	"FrogsLudendorff.png",
+	"SiegeBeachWater_v2.png",
+	"HamburgerHillWater.png"
 };

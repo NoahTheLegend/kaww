@@ -365,6 +365,15 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
+					case 7:
+					{
+						string[]@ WaterMaps;
+						getRules().get("maptypes-water", @WaterMaps);
+
+						LoadMap(WaterMaps[XORRandom(WaterMaps.length)]);
+					}
+					break;
+
 					// If the maptype is invalid or set to default, 
 					// load next map like before
 					default:
@@ -399,11 +408,11 @@ VoteObject@ Create_VoteNextmap(CPlayer@ byplayer, string reason, u8 maptype)
 	@vote.canvote = VoteNextmapCheckFunctor();
 
 	vote.title = "Load new map\nVote pass: 65%";
-	vote.maptype = TypeToString[maptype % 7];
+	vote.maptype = TypeToString[maptype % 8];
 	vote.reason = reason;
 	vote.byuser = byplayer.getUsername();
 	vote.forcePassFeature = "nextmap";
-	vote.required_percent = 0.65f;
+	vote.required_percent = 0.7f;
 
 	CalculateVoteThresholds(vote);
 
@@ -872,6 +881,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			CContextMenu@ flag_map_menu = Menu::addContextMenu(mapmenu,  "Flags Map");
 			CContextMenu@ truck_map_menu = Menu::addContextMenu(mapmenu,  "Trucks Map");
 			CContextMenu@ tdm_map_menu = Menu::addContextMenu(mapmenu,  "TDM Map");
+			CContextMenu@ water_map_menu = Menu::addContextMenu(mapmenu,  "Water Map");
 
 			for (uint i = 0 ; i < nextmap_reason_count; ++i)
 			{
@@ -919,6 +929,14 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 				params.write_u8(i);
 				params.write_u8(6);
 				Menu::addContextItemWithParams(tdm_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
+			}
+
+			for (uint i = 0 ; i < nextmap_reason_count; ++i)
+			{
+				CBitStream params;
+				params.write_u8(i);
+				params.write_u8(7);
+				Menu::addContextItemWithParams(water_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
 			}
 		}
 	}
@@ -1422,5 +1440,6 @@ const string[] TypeToString = {
 	"Average",
 	"CTF",
 	"DTT",
-	"TDM"
+	"TDM",
+	"Watered"
 };
