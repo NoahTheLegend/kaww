@@ -169,11 +169,11 @@ namespace ShotgunParams
 	const ::f32 DAMAGE_BODY 			= 0.333f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.375f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.95f; // walk
+	const ::f32 WALK_STAT 				= 1.0f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.9f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.175f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 3.1f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.15f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.75f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 0.95f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 20.0f; // x shake (20)
@@ -220,11 +220,11 @@ namespace RangerParams
 	const ::f32 DAMAGE_BODY 			= 0.35f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.55f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 1.0f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
+	const ::f32 WALK_STAT 				= 0.95f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.35f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.87f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.15f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 3.1f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.1f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.65f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 0.95f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 0.0f; // x shake (20)
@@ -271,11 +271,11 @@ namespace LMGParams
 	const ::f32 DAMAGE_BODY 			= 0.25f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.4f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.775f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
+	const ::f32 WALK_STAT 				= 0.85f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.25f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.9f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 0.85f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 3.1f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 0.95f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.5f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 0.95f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 5.0f; // x shake (20)
@@ -322,11 +322,11 @@ namespace Mp5Params
 	const ::f32 DAMAGE_BODY 			= 0.25f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.4f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.85f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
+	const ::f32 WALK_STAT 				= 0.95f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.4f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.87f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.1f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 3.1f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.05f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.65; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.0f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 22.0f; // x shake (20)
@@ -373,11 +373,11 @@ namespace RevolverParams
 	const ::f32 DAMAGE_BODY 			= 0.4f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 1.0f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.95f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.6f; // airwalk
-	const ::f32 JUMP_STAT 				= 0.87f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.2f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 3.25f; // airwalk (sprint)
+	const ::f32 WALK_STAT 				= 1.0f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
+	const ::f32 JUMP_STAT 				= 1.0f; // jump
+	const ::f32 WALK_STAT_SPRINT 		= 1.1f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.75f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.0f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 4.0f; // x shake (20)
@@ -424,11 +424,11 @@ namespace ShielderParams
 	const ::f32 DAMAGE_BODY 			= 0.3f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.5f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.95f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.6f; // airwalk
+	const ::f32 WALK_STAT 				= 1.0f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.9f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.15f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 3.2f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.1f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.75f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.1f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 3.0f; // x shake (20)
@@ -475,11 +475,11 @@ namespace SniperParams
 	const ::f32 DAMAGE_BODY 			= 1.33f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 2.25f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.95f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
+	const ::f32 WALK_STAT 				= 0.85f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.35f; // airwalk
 	const ::f32 JUMP_STAT 				= 1.0f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 1.0f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 3.1f; // airwalk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.65f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.0f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 48.0f; // x shake (20)
@@ -526,11 +526,11 @@ namespace FirebringerParams
 	const ::f32 DAMAGE_BODY 			= 0.333f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.333f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.95f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.65f; // airwalk
+	const ::f32 WALK_STAT 				= 0.85f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.35f; // airwalk
 	const ::f32 JUMP_STAT 				= 1.0f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.05f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 2.9f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.0f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.65f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.1f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 10.0f; // x shake (20)
@@ -577,11 +577,11 @@ namespace RPGParams
 	const ::f32 DAMAGE_BODY 			= 1.5f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 2.5f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.8f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.55f; // airwalk
-	const ::f32 JUMP_STAT 				= 1.05f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.05f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 3.15f; // airwalk (sprint)
+	const ::f32 WALK_STAT 				= 0.85f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.35f; // airwalk
+	const ::f32 JUMP_STAT 				= 0.87f; // jump
+	const ::f32 WALK_STAT_SPRINT 		= 1.00f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.65f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.05f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 350.0f; // x shake (20)
@@ -1336,11 +1336,15 @@ void InAirLogic(CBlob@ this, u8 inaccuracyCap)
 
 		if ((isServer() || this.isMyPlayer()) && this.getPlayer() !is null)
 		{
-			if (hasPerk(this.getPlayer(), Perks::camouflage))
+			PerkStats@ stats;
+			if (this.getPlayer().get("PerkStats", @stats))
 			{
-				if (!this.isOnGround() && this.getVelocity().Length() < 0.1f) 
+				if (stats.ghillie)
 				{
-					inaccuracy = 0;
+					if (this.getVelocity().Length() < 0.1f) 
+					{
+						inaccuracy = 0;
+					}
 				}
 			}
 		}

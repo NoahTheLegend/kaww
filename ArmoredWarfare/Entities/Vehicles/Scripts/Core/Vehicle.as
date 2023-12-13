@@ -44,6 +44,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("init_flipping");
 	this.addCommandID("sync_flipping");
 	this.addCommandID("flip_vehicle");
+	this.addCommandID("aos_effects");
 
 	string blobName = this.getName();
 	int blobHash = blobName.getHash();
@@ -728,6 +729,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			}
 		}
 	}
+	else if (cmd == this.getCommandID("aos_effects"))
+	{
+		this.getSprite().PlaySound("FatesFriend.ogg", 2.0);
+	}
 	else if (cmd == this.getCommandID("flip_vehicle"))
 	{
 		Bar@ bars;
@@ -1090,7 +1095,7 @@ void DoExplosion(CBlob@ this, f32 damage, f32 map_damage, f32 radius)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (this.hasTag("broken") || this.hasTag("falling")) return 0;
+	if (this.hasTag("broken") || this.hasTag("falling") || (this.exists("ignore_damage") && this.get_u32("ignore_damage") > getGameTime())) return 0;
 	
 	if (customData == Hitters::fire)
 	{
@@ -1244,7 +1249,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	else
 	{
 		// lucky perk
-		if (this.getHealth()-damage/2 <= 0.0f && this.getHealth() != 0.01f)
+		if (this.getHealth()-damage/2 <= 0.0f && this.getHealth() > 0.1f)
 		{
 			AttachmentPoint@ drv = this.getAttachments().getAttachmentPointByName("DRIVER");
 			if (drv !is null)
@@ -1252,22 +1257,24 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				CBlob@ driver = drv.getOccupied();
 				if (driver !is null)
 				{
-					if (isServer())
+					if (isServer() && !this.hasTag("aerial"))
 					{
-						if (driver.hasBlob("aceofspades", 1))
+						if (driver.get_bool("has_aos"))
 						{
 							driver.TakeBlob("aceofspades", 1);
 
-							this.server_SetHealth(0.01f);
+							this.server_SetHealth(0.1f);
 
-							driver.getSprite().PlaySound("FatesFriend.ogg", 1.6);
+							CBitStream params;
+							this.SendCommand(this.getCommandID("aos_effects"), params);
 
 							if (driver.isMyPlayer()) // are we on server?
 							{
 								SetScreenFlash(42,   255,   150,   150,   0.28);
 							}
 
-							this.server_SetHealth(0.01f);
+							this.server_SetHealth(0.1f);
+							this.set_u32("ignore_damage", getGameTime()+30);
 
 							return 0;
 						}

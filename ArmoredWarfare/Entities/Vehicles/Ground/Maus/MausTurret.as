@@ -192,19 +192,12 @@ void onTick(CBlob@ this)
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 			
 			CPlayer@ p = gunner.getOccupied().getPlayer();
-			if (p !is null)
+			PerkStats@ stats;
+			if (p !is null && p.get("PerkStats", @stats))
 			{
-				if (hasPerk(p, Perks::operator))
-				{
-					isOperator = true;
-					high_angle = 73.5f;
-					low_angle = 102.0f;
-				}
-				else
-				{
-					high_angle = 76.5f; // upper depression limit
-					low_angle = 99.0f; // lower depression limit
-				}
+				isOperator = stats.id == Perks::operator;
+				high_angle = 76.5f - stats.top_angle;
+				low_angle =  99.0f + stats.down_angle;
 			}
 
 			bool facing_left = this.isFacingLeft();

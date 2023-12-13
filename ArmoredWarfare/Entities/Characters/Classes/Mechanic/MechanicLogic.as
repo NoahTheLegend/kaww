@@ -39,6 +39,7 @@ void onInit(CBlob@ this)
 	this.set_u32("can_spot", 0);
 	this.set_u32("bull_boost", 0);
 	this.set_u32("regen", 0);
+	this.set_u8("scoreboard_icon", 6);
 
 	HitData hitdata;
 	this.set("hitdata", hitdata);
@@ -70,6 +71,11 @@ void onSetPlayer(CBlob@ this, CPlayer@ player)
 	if (player !is null)
 	{
 		player.SetScoreboardVars("ScoreboardIcons.png", 1, Vec2f(16, 16));
+
+		if (!player.exists("PerkStats"))
+		{
+			addPerk(player, 0);
+		}
 	}
 }
 
@@ -78,12 +84,19 @@ void onTick(CBlob@ this)
 	visualTimerTick(this);
 
 	const bool ismyplayer = this.isMyPlayer();
-	ManageParachute(this);
+	CPlayer@ p = this.getPlayer();
+
+	bool stats_loaded = false;
+    PerkStats@ stats = getPerkStats(p, stats_loaded);
+
+	ManageParachute(this, stats);
+
+	this.set_bool("has_aos", stats_loaded && this.hasBlob("aceofspades", 1));
 
 	bool lock_stab = false;
 	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && this.isKeyPressed(key_down) && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
 	{
-		if (this.hasBlob("mat_scrap", 1) && this.getPlayer() !is null && hasPerk(this.getPlayer(), Perks::fieldengineer))
+		if (this.hasBlob("mat_scrap", 1) && this.getPlayer() !is null && stats.id == Perks::fieldengineer)
 		{
 			if (getGameTime()%12 == 0 && this.getSprite() !is null)
 			{
@@ -167,14 +180,13 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
+	
 	// detach secondary weapon from the vehicle
 	if (this.hasTag("init_detaching"))
 	{
 		u16 time = 150;
-		if (hasPerk(this.getPlayer(), Perks::operator))
-		{	
-			time = 75;
-		}
+		if (stats_loaded)
+			time = stats.demontage_time;
 
 		this.Untag("init_detaching");
 		Bar@ bars;
@@ -197,14 +209,10 @@ void onTick(CBlob@ this)
 		return;
 	}
 
-	//if (this.getName() != "sniper")
+	if (stats_loaded)
 	{
-		bool has_camo = this.getPlayer() !is null && hasPerk(this.getPlayer(), Perks::camouflage);
-		if (!has_camo)
-		{
-			if (this.hasScript("ClimbTree.as")) this.RemoveScript("ClimbTree.as");
-		}
-		else if (!this.hasScript("ClimbTree.as")) this.AddScript("ClimbTree.as");
+		if (!stats.ghillie && this.hasScript("ClimbTree.as")) this.RemoveScript("ClimbTree.as");
+		else if (stats.ghillie && !this.hasScript("ClimbTree.as")) this.AddScript("ClimbTree.as");
 	}
 	
 	if (!this.hasTag("set light")
@@ -222,15 +230,17 @@ void onTick(CBlob@ this)
 	{
 		Pickaxe(this);
 	}
-
-	CPlayer@ p = this.getPlayer();
+	
 	if (isServer())
 	{
-		if (p !is null)
+		bool stats_loaded = false;
+   		PerkStats@ stats = getPerkStats(this, stats_loaded);
+
+		if (stats_loaded)
 		{
-			if (!this.hasBlob("aceofspades", 1)
+			if (stats.id == Perks::lucky
 			&& this.get_u32("aceofspades_timer") < getGameTime()
-			&& hasPerk(p, Perks::lucky))
+			&& !this.get_bool("has_aos"))
 			{
 				CInventory@ inv = this.getInventory();
 				if (inv !is null)
@@ -270,26 +280,51 @@ void onTick(CBlob@ this)
 		RunnerMoveVars@ moveVars;
 		if (this.get("moveVars", @moveVars))
 		{
-			if (this.getPlayer() !is null && hasPerk(this.getPlayer(), Perks::bull))
+			if (p !is null)
 			{
-				bool sprint = this.getHealth() >= this.getInitialHealth()/2 && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
-				
-				if (sprint) moveVars.walkFactor *= 1.1f;
-				moveVars.walkFactor *= 1.1f;
-				moveVars.walkSpeedInAir = 2.0f;
-				moveVars.jumpFactor *= 1.2f;
+				float walkStat = 1.1f;
+				float airwalkStat = 2.2f;
+				float jumpStat = 0.95f;
 
-				if (this.get_u32("bull_boost") != 0 && this.get_u32("bull_boost") > getGameTime())
+				bool sprint = (stats_loaded ? stats.sprint : true) && this.getHealth() == this.getInitialHealth() && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+
+				// operators move slower than normal
+				if (stats_loaded)
 				{
-					moveVars.walkFactor *= 1.075f;
-					moveVars.walkSpeedInAir = 2.25f;
-					moveVars.jumpFactor *= 1.25f;
+					if (stats.id == Perks::bull) sprint = stats.sprint && this.getHealth() >= this.getInitialHealth()*0.5f && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+					
+					walkStat 	*= stats.walk_factor;
+					airwalkStat *= stats.walk_factor_air;
+					jumpStat 	*= stats.jump_factor;
+
+					if (stats.id == Perks::bull && this.get_u32("bull_boost") != 0 && this.get_u32("bull_boost") > getGameTime())
+					{
+						walkStat 	*= stats.walk_extra_factor;
+						airwalkStat *= stats.walk_extra_factor_air;
+						jumpStat 	*= stats.jump_extra_factor;
+					}
 				}
-			}
-			else  if (this.getPlayer() !is null)
-			{
-				moveVars.walkFactor *= this.getPlayer().hasTag("Conditioning") ? 1.1f : 1.0f;
-				moveVars.jumpFactor *= this.getPlayer().hasTag("Conditioning") ? 1.1f : 1.0f;
+
+				if (sprint)
+				{
+					CBlob@ carried = this.getCarriedBlob();
+					if (!this.hasTag("sprinting") && (carried is null || !carried.hasTag("very heavy weight")))
+					{
+						if (isClient())
+						{
+							ParticleAnimated("DustSmall.png", this.getPosition()-Vec2f(0, -3.75f), Vec2f(this.isFacingLeft() ? 1.0f : -1.0f, -0.1f), 0.0f, 0.75f, 2, XORRandom(70) * -0.00005f, true);
+						}
+					}
+					this.Tag("sprinting");
+				}
+				else
+				{
+					this.Untag("sprinting");
+				}
+
+				moveVars.walkFactor *= walkStat;
+				moveVars.walkSpeedInAir = airwalkStat;
+				moveVars.jumpFactor *= jumpStat;
 			}
 		}
 	}
@@ -463,13 +498,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				this);	
 		}
 	}
-	else if (cmd == this.getCommandID("attach_parachute"))
-	{
-		if (isServer())
-		{
-			AttachParachute(this);
-		}
-	}
+	//else if (cmd == this.getCommandID("attach_parachute"))
+	//{
+	//	if (isServer())
+	//	{
+	//		AttachParachute(this);
+	//	}
+	//}
 	else if (cmd == this.getCommandID("addxp_universal"))
 	{
 		u8 exp_reward;
@@ -924,12 +959,15 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	{
 		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 150.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
 		{
-			if (!this.hasTag("parachute") || (isServer() && !isClient()))
+			bool stats_loaded = false;
+    		PerkStats@ stats = getPerkStats(this, stats_loaded);
+				
+			if (stats_loaded && stats.parachute && (!this.hasTag("parachute") || (isServer() && !isClient())))
 			{
 				Sound::Play("/ParachuteOpen", detached.getPosition());
 				this.Tag("parachute");
 
-				AttachParachute(this);
+				//AttachParachute(this);
 			}
 		}
 	}

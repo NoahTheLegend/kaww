@@ -1,4 +1,5 @@
 #include "MedicisCommon.as"
+#include "PerksCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -48,10 +49,13 @@ void onTick(CBlob@ this)
 					{
 						if (player_found is this)
 						{
-							if (player_found.hasBlob("aceofspades", 1))
+							bool stats_loaded = false;
+    						PerkStats@ stats = getPerkStats(player_found, stats_loaded);
+
+							if (player_found.get_bool("has_aos"))
 							{
 								player_found.TakeBlob("aceofspades", 1);
-								player_found.set_u32("aceofspades_timer", getGameTime()+180);
+								player_found.set_u32("aceofspades_timer", getGameTime()+stats.aos_healed_time);
 							}
 						}
 

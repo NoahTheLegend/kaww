@@ -325,8 +325,12 @@ class BulletObj
 							if (human !is null && !blob.hasTag("dead") && human.getDamageOwnerPlayer() !is null)
 							{
 								CPlayer@ p = human.getDamageOwnerPlayer();
+								bool stats_loaded = false;
+								PerkStats@ stats;
+								if (p !is null && p.get("PerkStats", @stats) && stats !is null)
+									stats_loaded = true;
 
-								if (hasPerk(p, Perks::bloodthirsty))
+								if (stats_loaded && stats.id == Perks::bloodthirsty)
 								{
 									CBlob@ pblob = p.getBlob();
 									if (pblob !is null)

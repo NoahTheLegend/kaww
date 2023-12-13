@@ -319,15 +319,22 @@ void onTick(CBlob@ this)
 						*/
 						const f32 mass = this.getMass();
 
-						if (!this.hasTag("falling")
-						&& hooman.getPlayer() !is null
-						&& hasPerk(hooman.getPlayer(), Perks::operator))
-						{
-							if (pressed_a) newForce += Vec2f(leftVelo.x*0.25f, leftVelo.y*0.25f);
-							if (pressed_d) newForce += Vec2f(rightVelo.x*0.25f, rightVelo.y*0.25f);
+						bool stats_loaded = false;
+						CPlayer@ p = hooman.getPlayer();
+						PerkStats@ stats;
+						if (p !is null && p.get("PerkStats", @stats))
+							stats_loaded =  true;
 
-							if (pressed_w) newForce += Vec2f(upVelo.x*0.75f, upVelo.y*0.75f);
-							if (pressed_s) newForce += Vec2f(downVelo.x*0.5f, downVelo.y*0.5f);
+						if (!this.hasTag("falling") && stats_loaded)
+						{
+							f32 xmod = stats.heli_velo.x;
+							f32 ymod = stats.heli_velo.y;
+
+							if (pressed_a) newForce += Vec2f(leftVelo.x*xmod, leftVelo.y*xmod);
+							if (pressed_d) newForce += Vec2f(rightVelo.x*xmod, rightVelo.y*xmod);
+
+							if (pressed_w) newForce += Vec2f(upVelo.x*ymod, upVelo.y*ymod);
+							if (pressed_s) newForce += Vec2f(downVelo.x*ymod, downVelo.y*ymod);
 						}
 						if (!this.hasTag("falling"))
 						{

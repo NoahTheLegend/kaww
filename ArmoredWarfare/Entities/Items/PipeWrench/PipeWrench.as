@@ -96,9 +96,10 @@ void onTick(CBlob@ this)
 									float repair_amount = 0.35f;
 									if (holder.getPlayer() !is null)
 									{
-										if (hasPerk(holder.getPlayer(), Perks::operator))
+										PerkStats@ stats;
+										if (holder.getPlayer().get("PerkStats", @stats))
 										{
-											repair_cd = 22;
+											repair_cd = stats.wrench_repair_time;
 										}
 									}
 									if (blob.hasTag("bunker"))

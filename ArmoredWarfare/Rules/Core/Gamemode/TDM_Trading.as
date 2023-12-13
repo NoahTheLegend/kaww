@@ -12,14 +12,19 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 		{
 			if (killer !is victim && killer.getTeamNum() != victim.getTeamNum())
 			{
+				bool stats_loaded = false;
+				PerkStats@ stats;
+				if (killer.get("PerkStats", @stats) && stats !is null)
+					stats_loaded = true;
+
 				int coins = 2;
-				if (hasPerk(killer, Perks::wealthy))
+				if (stats_loaded)
 				{
-					coins = 6;
+					coins = stats.kill_coins;
 				}
 				killer.server_setCoins(killer.getCoins() + coins);
 
-				if (hasPerk(killer, Perks::bloodthirsty))
+				if (stats_loaded && stats.id == Perks::bloodthirsty)
 				{
 					// if killer is alive
 					if (killer.getBlob() !is null)
@@ -31,18 +36,17 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 			}
 		}
 
-		if (hasPerk(victim, Perks::wealthy))
+		PerkStats@ vstats;
+		if (victim.get("PerkStats", @vstats) && vstats !is null)
 		{
-			victim.server_setCoins(Maths::Ceil(victim.getCoins() * 0.66f)); 
-		}
-		else
-		{
-			victim.server_setCoins(victim.getCoins() - 2);
+			if (vstats.id == Perks::wealthy) victim.server_setCoins(Maths::Ceil(victim.getCoins() * 0.66f));
+			else victim.server_setCoins(victim.getCoins() - 2);
 		}
 
-		if (killer !is null && killer.getBlob() !is null && hasPerk(killer, Perks::bull))
+		PerkStats@ kstats;
+		if (killer !is null && killer.getBlob() !is null && killer.get("PerkStats", @kstats) && kstats.id == Perks::bull)
 		{
-			killer.getBlob().set_u32("bull_boost", getGameTime()+150);
+			killer.getBlob().set_u32("bull_boost", getGameTime()+kstats.kill_bonus_time);
 			killer.getBlob().Sync("bull_boost", true);
 		}
 	}

@@ -120,12 +120,10 @@ void onTick(CBlob@ this)
 			dir.RotateBy(this.isFacingLeft() ? 30 : -30); // make it fly directly to cursor, works weird vertically
 			f32 mod = 0.075f;
 			CPlayer@ p = pilot.getPlayer();
-			if (p !is null && !this.hasTag("falling"))
+			PerkStats@ stats;
+			if (p !is null && !this.hasTag("falling") && p.get("PerkStats", @stats))
 			{
-				if (hasPerk(p, Perks::operator))
-				{
-					mod = 0.1f;
-				}
+				mod += stats.plane_velo;
 			}
 			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, mod);
 

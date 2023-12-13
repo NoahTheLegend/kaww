@@ -31,10 +31,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			{
 				if (this.getName() != "heart")
 				{
-					if (theBlob.hasBlob("aceofspades", 1))
+					CPlayer@ p = theBlob.getPlayer();
+					bool stats_loaded = false;
+					PerkStats@ stats;
+					if (p !is null && p.get("PerkStats", @stats) && stats !is null)
+						stats_loaded = true;
+
+					if (stats_loaded && theBlob.get_bool("has_aos"))
 					{
 						theBlob.TakeBlob("aceofspades", 1);
-						theBlob.set_u32("aceofspades_timer", getGameTime()+180);
+						theBlob.set_u32("aceofspades_timer", getGameTime()+stats.aos_healed_time);
 					}
 				}
 
@@ -48,7 +54,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				if (is_burger)
 				{
 					theBlob.set_u32("regen", extra + getGameTime()+150);
-					theBlob.set_u8("step_max_temp", 10);
+					theBlob.set_u8("step_max_temp", 8);
 					theBlob.set_f32("regen_amount", 0.5f);
 				}
 				else
@@ -61,28 +67,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				CBitStream params;
 				params.write_u32(theBlob.get_u32("regen"));
 				theBlob.SendCommand(theBlob.getCommandID("sync_regen"), params);
-
-				//give coins for healing teammate
-				if (this.exists("healer"))
-				{
-					CPlayer@ player = theBlob.getPlayer();
-					u16 healerID = this.get_u16("healer");
-					CPlayer@ healer = getPlayerByNetworkId(healerID);
-					if (player !is null && healer !is null)
-					{
-						bool healerHealed = healer is player;
-						bool sameTeam = healer.getTeamNum() == player.getTeamNum();
-						if (!healerHealed && sameTeam)
-						{
-							int coins = 2;
-							if (hasPerk(healer, Perks::wealthy))
-							{
-								coins *= 2;
-							}
-							healer.server_setCoins(healer.getCoins() + coins);
-						}
-					}
-				}
 
 				theBlob.Sync("heal amount", true);
 			}

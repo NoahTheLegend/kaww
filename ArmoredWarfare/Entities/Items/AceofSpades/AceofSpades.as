@@ -1,3 +1,5 @@
+#include "PerksCommon.as";
+
 void onTick(CBlob@ this)
 {
 	if (!isServer()) return;
@@ -17,18 +19,21 @@ void onTick(CBlob@ this)
 void onThisAddToInventory(CBlob@ this, CBlob@ blob)
 {
 	if (!isServer()) return;
+	CPlayer@ p = blob.getPlayer();
 
 	if (!blob.hasTag("flesh"))
 	{
 		this.server_Die();
 		return;
 	}
-	if (blob.getPlayer() is null)
+	if (p is null)
 	{
 		this.server_Die();
 		return;
 	}
-	if (getRules().get_string(blob.getPlayer().getUsername() + "_perk") != "Lucky")
+
+	PerkStats@ stats;
+	if (!p.get("PerkStats", @stats) || stats.id != 5)
 	{
 		this.server_Die();
 		return;

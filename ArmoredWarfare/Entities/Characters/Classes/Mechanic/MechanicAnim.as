@@ -127,10 +127,11 @@ void onTick(CSprite@ this)
 
 		if (camo !is null)
 		{
-			if (blob.getPlayer() !is null && hasPerk(blob.getPlayer(), Perks::camouflage))
-			{
-				isCamo = true;
+			bool stats_loaded = false;
+    		PerkStats@ stats = getPerkStats(blob, stats_loaded);
 
+			if (blob.getPlayer() !is null && blob.getPlayer().get("PerkStats", @stats) && stats !is null && stats.ghillie)
+			{
 				if (helmet !is null) helmet.SetVisible(false);
 
 				if (blob.getShape().vellen > 0.1f)
@@ -236,13 +237,15 @@ void onTick(CSprite@ this)
 		else if (helmet !is null) helmet.SetVisible(true);
 	}
 
-	string perk;
-	if (blob.getPlayer() !is null) perk = getRules().get_string(blob.getPlayer().getUsername() + "_perk");
+	u8 perk_id = 0;
 
+	bool stats_loaded = false;
+    PerkStats@ stats = getPerkStats(blob, stats_loaded);
+	
 	CSpriteLayer@ skull = this.getSpriteLayer("skull");
 	if (skull !is null)
 	{
-		if (perk == "Death Incarnate")
+		if (perk_id == 7)
 		{
 			skull.SetFacingLeft(false);
 			skull.SetVisible(true);
@@ -253,10 +256,10 @@ void onTick(CSprite@ this)
 	CSpriteLayer@ aos = this.getSpriteLayer("aos");
 	if (aos !is null)
 	{
-		if (perk == "Lucky")
+		if (perk_id == 5)
 		{
 			aos.SetFacingLeft(false);
-			aos.SetVisible(blob.hasBlob("aceofspades", 1) && blob.getHealth() > 0.01f);
+			aos.SetVisible(blob.get_bool("has_aos") && blob.getHealth() > 0.01f);
 		}
 		else if (aos.isVisible()) aos.SetVisible(false);
 	}

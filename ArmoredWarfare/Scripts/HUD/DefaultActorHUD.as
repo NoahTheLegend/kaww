@@ -178,7 +178,6 @@ void onRender(CSprite@ this)
 
 		if (player !is null)
 		{
-			
 			float exp = 0;
 			// load exp
 			if (blob.getPlayer() !is null)
@@ -217,30 +216,10 @@ void onRender(CSprite@ this)
 			//GUI::DrawText("\n\nNext rank: "+RANKS[level], Vec2f(60, 10), SColor(0xffffffff));
 
 			// draw perk icon
-			int icon_num = 0;
-			
-			string[] perks = {
-				"Sharp Shooter",
-				"Wealthy",
-				"Bloodthirsty",
-				"Lucky",
-				"Operator",
-				"Camouflage",
-				"Death Incarnate",
-				"Paratrooper",
-				"Bull",
-				"Field Engineer"
-			};
-
-			for (u8 i = 0; i < perks.length; i++)
+			PerkStats@ stats;
+			if (player.get("PerkStats", @stats) && stats !is null)
 			{
-				if (hasPerk(player, perks[i]))
-					icon_num = i < 7 ? i+1 : i+2;
-			}
-
-			if (icon_num > 0)
-			{
-				GUI::DrawIcon("PerkIcon.png", icon_num, Vec2f(36, 36), Vec2f(180, getScreenHeight()-87), 1);
+				GUI::DrawIcon("PerkIcon.png", stats.id, Vec2f(32, 32), Vec2f(180, getScreenHeight()-87), 1);
 			}
 		}
 	}

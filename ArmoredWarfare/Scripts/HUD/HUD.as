@@ -36,22 +36,23 @@ void onRender(CSprite@ this)
 				CPlayer@ p = blob.getPlayer();
 				if (p is null) return;
 
-				f32 mod = 1.0f;
-				if (hasPerk(p, Perks::sharpshooter))
-				{
-					mod = 1.5f;
-				}
-				else if (hasPerk(p, Perks::bull))
-				{
-					mod = 0.70f;
-				}
+				f32 reload_mod = 1.0f;
+
+				bool stats_loaded = false;
+				PerkStats@ stats;
+				if (p !is null && p.get("PerkStats", @stats) && stats !is null)
+					stats_loaded = true;
+
+				if (stats_loaded)
+					reload_mod = stats.reload_time;
+				
 				f32 end = blob.get_u32("reset_reloadtime");
 				f32 reloadtime = infantry.reload_time;
 				f32 diff = (end-getGameTime());
-				f32 perc = (diff/(reloadtime*mod));
+				f32 perc = (diff/(reloadtime*reload_mod));
 
 				u8 icons_total = 8;
-				u8 icon = Maths::Clamp(icons_total/mod-(Maths::Ceil(icons_total*perc)), 0, icons_total-1);
+				u8 icon = Maths::Clamp(icons_total/reload_mod-(Maths::Ceil(icons_total*perc)), 0, icons_total-1);
 
 				getHUD().SetCursorImage("GunReload.png", Vec2f(32, 32));
 				getHUD().SetCursorFrame(icon);

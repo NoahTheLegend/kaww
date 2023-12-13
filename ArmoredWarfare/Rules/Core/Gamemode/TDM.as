@@ -292,11 +292,13 @@ shared class TDMSpawns : RespawnSystem
 					CBlob@ b = getBlobByName("pointflag");
 					CBlob@[] tents;
 					getBlobsByName("tent", @tents);
-					if (!(XORRandom(100) < 50 && getRules().get_string(player.getUsername()+"_perk") == "Death Incarnate"))
-					{
-						if (b is null && tents.length > 0)
-							decrementTickets(getRules(), playerBlob.getTeamNum());
-					}
+
+					PerkStats@ stats;
+					if (XORRandom(100) < 50 && player.get("PerkStats", @stats) && stats.id == Perks::deathincarnate)
+						return;
+					
+					if (b is null && tents.length > 0)
+						decrementTickets(getRules(), playerBlob.getTeamNum());
 				}
 			}
 		}
@@ -1806,13 +1808,14 @@ void onTick(CRules@ this)
 						extra_amount = 1;
 					}
 					
-					if (hasPerk(player, Perks::wealthy))
+					bool stats_loaded = false;
+					PerkStats@ stats;
+					if (player.get("PerkStats", @stats) && stats !is null)
+						stats_loaded = true;
+
+					if (stats_loaded)
 					{
-						player.server_setCoins(player.getCoins()+2+extra_amount); // double
-					}
-					else
-					{
-						player.server_setCoins(player.getCoins()+1+extra_amount);
+						player.server_setCoins(player.getCoins()+1+stats.coins_income+extra_amount); // double
 					}
 				}
 			}

@@ -630,26 +630,18 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							moveForce *= 1.6f; // gear 1
 						}
 
-						// operators are better drivers
-						if (blob.getPlayer() !is null)
-						{
-							if (hasPerk(blob.getPlayer(), Perks::operator))
-							{
-								// braking or reversing
-								if ((this.isFacingLeft() && right) || (!this.isFacingLeft() && left))
-								{
-									moveForce *= 1.35f;
-								}
+						CPlayer@ p = blob.getPlayer();
+						PerkStats@ stats;
 
-								if (this.getShape().vellen < 1.6f)
-								{
-									moveForce *= 1.45f;
-								}
-								else
-								{
-									moveForce *= 1.15f;
-								}
+						// operators are better drivers
+						if (p !is null && p.get("PerkStats", @stats) && stats.id == Perks::operator)
+						{
+							// braking or reversing
+							if ((this.isFacingLeft() && right) || (!this.isFacingLeft() && left))
+							{
+								moveForce *= 1.35f;
 							}
+							moveForce *= 1.45f - Maths::Clamp(vel.Length()*0.1f, 0.0f, 0.3f);
 						}
 
 						const f32 engine_topspeed = v.move_speed;

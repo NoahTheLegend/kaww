@@ -474,13 +474,15 @@ void ManageCamera(CBlob@ this)
 		camera.mousecamstyle = 1;
 	}
 
-
-	if (getLocalPlayer().getBlob() !is null)
+	CPlayer@ local = getLocalPlayer();
+	CBlob@ localblob = getLocalPlayerBlob();
+	
+	if (localblob !is null)
 	{
 		f32 extra = 0;
 
 		bool lock_zoom = false;
-		CBlob@ localblob = getLocalPlayer().getBlob();
+		
 		if (localblob.hasTag("binoculars"))
 		{
 			camera.mouseFactor = 0.65f;
@@ -494,11 +496,16 @@ void ManageCamera(CBlob@ this)
 		{
 			camera.mouseFactor = 0.55f;
 		}
+		
+		bool stats_loaded = false;
+		PerkStats@ stats;
+		if (local.get("PerkStats", @stats) && stats !is null)
+			stats_loaded = true;
 
-		if (hasPerk(getLocalPlayer(), Perks::sharpshooter))
+		if (stats_loaded)
 		{
-			extra += 0.15f;
-			camera.mouseFactor += 0.15f;
+			extra += stats.additional_vision_distance;
+			camera.mouseFactor += stats.additional_vision_distance;
 		}
 
 		// camera

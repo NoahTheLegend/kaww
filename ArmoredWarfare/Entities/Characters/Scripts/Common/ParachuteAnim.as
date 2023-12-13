@@ -26,7 +26,8 @@ void onTick(CSprite@ this)
 
 	if (parachute !is null)
 	{
-		if (blob.hasTag("parachute") && !blob.isAttached() && !blob.hasTag("dead"))
+		bool parachuting = blob.hasTag("parachute") && !blob.isAttached() && !blob.hasTag("dead");
+		if (parachuting)
 		{
 			parachute.SetFacingLeft(false);
 
@@ -38,11 +39,8 @@ void onTick(CSprite@ this)
 			parachute.ResetTransform();
 			parachute.RotateBy(parachute_angle, Vec2f(0.5, 35.0));
 			
-			parachute.SetVisible(true);
 		}
-		else
-		{	
-			parachute.SetVisible(false);
-		}		
+		
+		parachute.SetVisible(parachuting);	
 	}
 }
