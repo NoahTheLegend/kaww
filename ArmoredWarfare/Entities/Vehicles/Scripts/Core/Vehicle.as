@@ -1249,7 +1249,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	else
 	{
 		// lucky perk
-		if (this.getHealth()-damage/2 <= 0.0f && this.getHealth() > 0.1f)
+		if (this.getHealth()-damage/2 <= 0.0f && this.getHealth() > 5.0f)
 		{
 			AttachmentPoint@ drv = this.getAttachments().getAttachmentPointByName("DRIVER");
 			if (drv !is null)
@@ -1263,8 +1263,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 						{
 							driver.TakeBlob("aceofspades", 1);
 
-							this.server_SetHealth(0.1f);
-
 							CBitStream params;
 							this.SendCommand(this.getCommandID("aos_effects"), params);
 
@@ -1273,7 +1271,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 								SetScreenFlash(42,   255,   150,   150,   0.28);
 							}
 
-							this.server_SetHealth(0.1f);
+							this.server_SetHealth(0.01f);
 							this.set_u32("ignore_damage", getGameTime()+30);
 
 							return 0;
