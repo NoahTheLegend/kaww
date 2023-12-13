@@ -8,6 +8,9 @@
 const f32 shield_angle = 60;
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (this.exists("ignore_damage") && this.get_u32("ignore_damage") > getGameTime()) return 0;
+	CPlayer@ p = this.getPlayer();
+
 	bool coalition_power = this.getTeamNum() == 6 && getRules().get_bool("enable_powers"); // team 6 buff
 	f32 extra_amount = 0.95f;
 	if (coalition_power)
@@ -25,6 +28,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	bool hiding = this.get_u8("mg_hidelevel") > getGameTime();
 
 	s8 pen = hitterBlob.get_s8("pen_level");
+
+	bool stats_loaded = false;
+    PerkStats@ stats = getPerkStats(this, stats_loaded);
 
 	const bool explosion_damage = customData == Hitters::explosion || customData == Hitters::keg || customData == Hitters::mine;
 	const bool fire_damage = customData == Hitters::fire || customData == Hitters::burn;
@@ -79,11 +85,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 	}
 
-	CPlayer@ p = this.getPlayer();
-	if (p !is null)
-	{
-		if (hasPerk(p, Perks::lucky) && this.getHealth() <= 0.01f && !this.hasBlob("aceofspades", 1)) return 0;
-	}
 	if (this.isAttached())
 	{
 		if (fire_damage)
@@ -94,7 +95,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			//printf("explosion");
 			//printf(""+damage * (exposed && !mg_attached ? 0.2f : hiding ? 0.01f : 0.025f));
-			damage *= (exposed && !mg_attached ? 0.2f : !exposed || hiding ? 0.01f : 0.025f);
+			damage *= ((exposed && !mg_attached) ? 0.25f : ((!exposed || hiding) ? 0.01f : 0.025f));
 		}
 		else if (is_bullet)
 		{
@@ -109,30 +110,30 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (this.getPlayer() !is null)
 	{
-		if (hasPerk(this.getPlayer(), Perks::camouflage))
+		if (fire_damage)
 		{
-			if (fire_damage)
+			damage *= stats.fire_in_damage;
+		}
+
+		if (stats_loaded)
+		{
+			if (stats.id == Perks::paratrooper
+			&& this.getVelocity().y > 0.0f && !this.isOnGround() && !this.isOnLadder()
+			&& !this.isInWater() && !this.isAttached())
 			{
-				damage *= 2;
+				damage *= stats.para_damage_in;
 			}
 		}
-		else if (this.getVelocity().y > 0.0f && !this.isOnGround() && !this.isOnLadder()
-		&& !this.isInWater() && !this.isAttached()
-		&& hasPerk(this.getPlayer(), Perks::paratrooper))
-		{
-			damage *= 0.5f;
-		}
-		else if (!is_bullet && hasPerk(this.getPlayer(), Perks::bull))
-		{
-			damage *= 0.66f;
-		}
 	}
-	if (damage > 0.15f && this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
+	if (this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
 	{
-		if (this.hasBlob("aceofspades", 1))
+		CPlayer@ p = this.getPlayer();
+		PerkStats@ stats;
+		if (p !is null && p.get("PerkStats", @stats) && stats.id == Perks::lucky && this.get_bool("has_aos"))
 		{
 			this.TakeBlob("aceofspades", 1);
-			this.set_u32("aceofspades_timer", getGameTime()+30);
+			this.set_u32("aceofspades_timer", getGameTime()+stats.aos_taken_time);
+			this.set_u32("ignore_damage", getGameTime()+stats.aos_invulnerability_time);
 
 			this.server_SetHealth(0.01f);
 
@@ -145,19 +146,23 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			return 0;
 		}
 	}
-	if (this.getPlayer() !is null)
+	if (stats_loaded)
 	{
-		if (hasPerk(this.getPlayer(), Perks::deathincarnate))
+		if (stats.id == Perks::bull && !is_bullet)
 		{
-			damage *= 2.0f; // take double damage
+			damage *= stats.damage_in;
+		}
+		else if (stats.id == Perks::deathincarnate)
+		{
+			damage *= stats.damage_in;
 		}
 	}
-	if (customData == Hitters::ballista)
+	if (customData == Hitters::ballista) // shell damage
 	{
 		damage *= 2;
 	}
-	if ((!this.isAttached() || exposed) && (explosion_damage
-		|| hitterBlob.getName() == "ballista_bolt") || hitterBlob.hasTag("grenade"))
+	if ((!this.isAttached() || exposed) && (explosion_damage || hitterBlob.getName() == "ballista_bolt") 
+		|| hitterBlob.hasTag("grenade") || hitterBlob.getName() == "c4")
 	{
 		if (hitterBlob.hasTag("grenade")) damage *= 5.0f+(XORRandom(301)*0.01f);
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) damage *= 5.0f;
@@ -208,25 +213,25 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	return damage;
 }
 
-void AttachParachute(CBlob@ this)
-{
-	if (isServer() && this.getTickSinceCreated() > 5)
-	{
-		CAttachment@ aps = this.getAttachments();
-		if (aps !is null)
-		{			
-			AttachmentPoint@ att = aps.getAttachmentPointByName("PARACHUTE");
-			CBlob@ para = server_CreateBlob("parachuteblob", this.getTeamNum(), this.getPosition());
-			if (para !is null)
-			{
-				this.server_AttachTo(para, att);
-			}
-		}
-	}
-}
+//void AttachParachute(CBlob@ this)
+//{
+//	if (isServer() && this.getTickSinceCreated() > 5)
+//	{
+//		CAttachment@ aps = this.getAttachments();
+//		if (aps !is null)
+//		{			
+//			AttachmentPoint@ att = aps.getAttachmentPointByName("PARACHUTE");
+//			CBlob@ para = server_CreateBlob("parachuteblob", this.getTeamNum(), this.getPosition());
+//			if (para !is null)
+//			{
+//				this.server_AttachTo(para, att);
+//			}
+//		}
+//	}
+//}
 
 
-void ManageParachute(CBlob@ this)
+void ManageParachute(CBlob@ this, PerkStats@ stats)
 {
 	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder() || this.hasTag("dead"))
 	{
@@ -278,7 +283,7 @@ void ManageParachute(CBlob@ this)
 		bool is_paratrooper = false;
 		if (this.getPlayer() !is null)
 		{
-			if (this.hasTag("parachute") && hasPerk(this.getPlayer(), Perks::paratrooper))
+			if (this.hasTag("parachute") && stats !is null && stats.id == Perks::paratrooper)
 			{
 				mod *= 10.0f;
 				is_paratrooper = true;
@@ -307,7 +312,7 @@ void ManageParachute(CBlob@ this)
 	{
 		if (this.getPlayer() !is null && this.get_u32("last_parachute") < getGameTime())
 		{
-			if (hasPerk(this.getPlayer(), Perks::paratrooper))
+			if (stats !is null && stats.id == Perks::paratrooper)
 			{
 				if (this.isKeyPressed(key_up) && this.getVelocity().y > 5.0f)
 				{

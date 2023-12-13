@@ -149,7 +149,7 @@ void addPerksToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 
 	if (this.get("playerperks", @perks))
 	{
-		AddIconToken("$locked_perk_icon$", "PerkIcon.png", Vec2f(36, 36), 8);
+		AddIconToken("$locked_perk_icon$", "PerkIcon.png", Vec2f(32, 32), 19);
 
 		for (uint i = 0 ; i < perks.length; i++)
 		{
@@ -187,7 +187,7 @@ void addPerksToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 				PlayerPerk @pperk = perks[i];
 
 				CBitStream params;
-				write_perkchange(params, callerID, pperk.configFilename);
+				write_perkchange(params, callerID, i, pperk.configFilename);
 
 				CGridButton@ button = menu.AddButton(pperk.iconName, getTranslatedString(pperk.name), SpawnCmd::changePerk, Vec2f(PERK_BUTTON_SIZE, PERK_BUTTON_SIZE), params);
 				button.SetHoverText( pperk.description + "\n" );
@@ -197,7 +197,7 @@ void addPerksToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 				PlayerPerk @pperk = perks[i];
 
 				CBitStream params;
-				write_perkchange(params, callerID, pperk.configFilename);
+				write_perkchange(params, callerID, i, pperk.configFilename);
 
 				CGridButton@ button = menu.AddButton("$locked_perk_icon$", getTranslatedString("LOCKED"), SpawnCmd::lockedItem, Vec2f(PERK_BUTTON_SIZE, PERK_BUTTON_SIZE), params);
 				button.SetHoverText(pperk.name + "\n\nYou need to unlock this perk first. " + "\n\nUnlocks at: " + getRankName((i+3)) + "\n");

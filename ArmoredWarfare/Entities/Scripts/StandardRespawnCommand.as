@@ -1,5 +1,6 @@
-	#include "ClassSelectMenu.as"
+#include "ClassSelectMenu.as"
 #include "KnockedCommon.as"
+#include "PerksCommon.as"
 
 void InitRespawnCommand(CBlob@ this)
 {
@@ -92,34 +93,36 @@ void InitClasses(CBlob@ this)
 							"---- Shielder ----\n\nCarries a shield that is able to block insignificant damage.\n\nHP: 275\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
 	}
 
-	AddIconToken("$0_class_icon$", "PerkIcon.png", Vec2f(36, 36), 0);
-	AddIconToken("$1_class_icon$", "PerkIcon.png", Vec2f(36, 36), 1);
-	AddIconToken("$2_class_icon$", "PerkIcon.png", Vec2f(36, 36), 2);
-	AddIconToken("$3_class_icon$", "PerkIcon.png", Vec2f(36, 36), 3);
-	AddIconToken("$4_class_icon$", "PerkIcon.png", Vec2f(36, 36), 4);
-	AddIconToken("$5_class_icon$", "PerkIcon.png", Vec2f(36, 36), 5);
-	AddIconToken("$6_class_icon$", "PerkIcon.png", Vec2f(36, 36), 6);
-	AddIconToken("$7_class_icon$", "PerkIcon.png", Vec2f(36, 36), 7);
-	AddIconToken("$9_class_icon$", "PerkIcon.png", Vec2f(36, 36), 9);
-	AddIconToken("$10_class_icon$","PerkIcon.png", Vec2f(36, 36), 10);
-	AddIconToken("$11_class_icon$","PerkIcon.png", Vec2f(36, 36), 11);
+	AddIconToken("$0_class_icon$", "PerkIcon.png", Vec2f(32, 32), 0);
+	AddIconToken("$1_class_icon$", "PerkIcon.png", Vec2f(32, 32), 1);
+	AddIconToken("$2_class_icon$", "PerkIcon.png", Vec2f(32, 32), 2);
+	AddIconToken("$3_class_icon$", "PerkIcon.png", Vec2f(32, 32), 3);
+	AddIconToken("$4_class_icon$", "PerkIcon.png", Vec2f(32, 32), 4);
+	AddIconToken("$5_class_icon$", "PerkIcon.png", Vec2f(32, 32), 5);
+	AddIconToken("$6_class_icon$", "PerkIcon.png", Vec2f(32, 32), 6);
+	AddIconToken("$7_class_icon$", "PerkIcon.png", Vec2f(32, 32), 7);
+	AddIconToken("$8_class_icon$", "PerkIcon.png", Vec2f(32, 32), 8);
+	AddIconToken("$9_class_icon$", "PerkIcon.png", Vec2f(32, 32), 9);
+	AddIconToken("$10_class_icon$","PerkIcon.png", Vec2f(32, 32), 10);
+	AddIconToken("$11_class_icon$","PerkIcon.png", Vec2f(32, 32), 11);
 
 
 	addPlayerPerk(this, "No Perk", "$0_class_icon$", "No Perk", "---- No Perk ----");
 
-	addPlayerPerk(this, "Camouflage", "$6_class_icon$", "Camouflage",
-						"Ghillie Suit:\n\n"+"$6_class_icon$"+"Ghillie suit"
+	addPlayerPerk(this, "Camouflage", "$1_class_icon$", "Camouflage",
+						"Ghillie Suit:\n\n"+"$1_class_icon$"+"Ghillie suit"
 						+"\n                   - Turn into a bush!     "
 						+"\n                   - Hold DOWN while standing     "
+						+"\n                   - 10% More agile     "
 						+"\n\n                   Climbing Gear"
 						+"\n                   - Allows you to climb trees     "
 						+"\n\n                   Flammable"
 						+"\n                   - Fire is more deadly   "
-						+"\n                   - Using a molotov may light you   "
+						+"\n                   - Molotovs may light you   "
 						);	
 
-	addPlayerPerk(this, "Sharp Shooter", "$1_class_icon$", "Sharp Shooter",
-						"Sharp Shooter:\n\n"+"$1_class_icon$"+"Marksman"
+	addPlayerPerk(this, "Sharp Shooter", "$2_class_icon$", "Sharp Shooter",
+						"Sharp Shooter:\n\n"+"$2_class_icon$"+"Marksman"
 						+"\n                   - Bullets deal 25% more damage       "
 						+"\n                   - Increased accuracy"
 						+"\n                   - Increased view range"
@@ -136,8 +139,8 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Bullets restore health on hit"
 						);
 
-	addPlayerPerk(this, "Operator", "$5_class_icon$", "Operator",
-						"Operator:\n\n"+"$5_class_icon$"+"Crewman"
+	addPlayerPerk(this, "Operator", "$4_class_icon$", "Operator",
+						"Operator:\n\n"+"$4_class_icon$"+"Crewman"
 						+"\n                   - Improved vehicle handling"
 						+"\n                   - Improved vehicle repair speed      "
 						+"\n\n                   Gunner"
@@ -148,17 +151,17 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Can't sprint  "
 						);
 
-	addPlayerPerk(this, "Lucky", "$4_class_icon$", "Lucky",
-						"Lucky:\n\n"+"$4_class_icon$"+"Fate's Friend"
+	addPlayerPerk(this, "Lucky", "$5_class_icon$", "Lucky",
+						"Lucky:\n\n"+"$5_class_icon$"+"Fate's Friend"
 						+"\n                   - Always survive on 1 health          "
 						+"\n                   - Food and medkits delay the ability         "
 						+"\n\n                  Lucky Charm"
 						+"\n                   - Must carry an Ace of Spades           "
 						);
 
-	addPlayerPerk(this, "Wealthy", "$2_class_icon$", "Wealthy",
-						"Wealthy:\n\n"+"$2_class_icon$"+"Highroller"
-						+"\n                   - Twice as much money earned"
+	addPlayerPerk(this, "Wealthy", "$6_class_icon$", "Wealthy",
+						"Wealthy:\n\n"+"$6_class_icon$"+"Highroller"
+						+"\n                   - Extra money income"
 						+"\n                   - Kills give you 6 coins"
 						+"\n\n                  Health Insurance"
 						+"\n                   - Lose 33% of all money on death          "
@@ -171,7 +174,19 @@ void InitClasses(CBlob@ this)
 						+"\n\n                 Hardcore Soldier     "
 						+"\n                   - Take twice as much damage     "
 						);
+
+	addPlayerPerk(this, "Bull", "$8_class_icon$", "Bull",
+						"Bull:\n\n"+"$8_class_icon$"+"Physical Strength"
+						+"\n                   - Better walk, jump, sprint     "
+						+"\n                   - 25% Faster reload"
+						+"\n                   - 66% Non-bullet resistance"
+						+"\n\n                  Restlessness"
+						+"\n                   - Agility boost on kill"
+						+"\n                   - Can't use vehicles"
+						+"\n                   - Can't use medkits"
+						);
 	
+		
 	addPlayerPerk(this, "Paratrooper", "$9_class_icon$", "Paratrooper",
 						"Paratrooper:\n\n"+"$9_class_icon$"+"Modernized Parachute"
 						+"\n                   - Use parachute any time"
@@ -182,19 +197,8 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Take 200% fall damage     "
 						);
 
-	addPlayerPerk(this, "Bull", "$10_class_icon$", "Bull",
-						"Bull:\n\n"+"$10_class_icon$"+"Physical Strength"
-						+"\n                   - Better walking, jumping, sprinting     "
-						+"\n                   - 33% Faster reload"
-						+"\n                   - Take 66.6% of non-bullet damage"
-						+"\n\n                  Restlessness"
-						+"\n                   - Killing an enemy speeds you up"
-						+"\n                   - Can't use vehicles"
-						+"\n                   - Can't use medkits"
-						);
-	
-	addPlayerPerk(this, "Field Engineer", "$11_class_icon$", "Field Engineer",
-						"Field Engineer:\n\n"+"$11_class_icon$"+"Improvised Screwdriver"
+	addPlayerPerk(this, "Field Engineer", "$10_class_icon$", "Field Engineer",
+						"Field Engineer:\n\n"+"$10_class_icon$"+"Improvised Screwdriver"
 						+"\n                   - Break traps faster"
 						+"\n                   - Open loot crates faster"
 						+"\n\n                  Modernized Handles"
@@ -208,9 +212,7 @@ void InitClasses(CBlob@ this)
 						+"\n                      on the ground"
 						+"\n                      (requires 1 scrap)"
 						+"\n\n                  Overstaffed"
-						+"\n                   - Jump height and walking"
-						+"\n                     speed reduces by amount"
-						+"\n                   	  of items in your inventory"
+						+"\n                   - Missing parachute!"
 						);
 						
 }
@@ -391,6 +393,8 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			// build menu for them
 			CBlob@ caller = getBlobByNetworkID(params.read_u16());
 
+			u8 perknum;
+			if (!params.saferead_u8(perknum)) return;
 			string perkconfig = "";
 			if (!params.saferead_string(perkconfig)) return;
 
@@ -399,7 +403,9 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				CPlayer@ callerPlayer = caller.getPlayer();
 				if (callerPlayer !is null)
 				{
-					getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
+					//getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
+					addPerk(caller.getPlayer(), perknum);
+					
 					if (getNet().isServer())
 					{
 						bool single_switch = this.getName() == "outpost";
@@ -410,7 +416,7 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 							this.SendCommand(this.getCommandID("lock_perkchange"), stream);
 						}
 						// prevents doubling up on perks, although.. lucky + bloodthirsty is very fun
-						if (caller.hasBlob("aceofspades", 1))
+						if (caller.get_bool("has_aos"))
 						{
 							caller.TakeBlob("aceofspades", 1);
 						}

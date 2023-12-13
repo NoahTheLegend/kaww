@@ -24,7 +24,7 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shrapnel_offset", Vec2f(0,-1));
 	this.set_f32("shrapnel_angle_deviation", 15.0f);
 	this.set_f32("shrapnel_angle_max", 45.0f+XORRandom(21));
-	this.set_string("shrapnel_iftag", "DoExplosion");
+	this.set_string("shrapnel_iftag", "DoExplode");
 
 	// this.Tag("map_damage_dirt");
 
@@ -97,11 +97,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		damage *= (3-this.getQuantity()/4);
 	}
 
-	if (damage >= this.getHealth() && !this.hasTag("dead"))
+	if (damage >= this.getHealth())
 	{
 		this.Tag("DoExplode");
 		//this.set_f32("bomb angle", 90);
-		this.server_Die();
+		if (!this.hasTag("dead"))
+		{
+			this.server_Die();
+		}
 	}
 
 	return damage;

@@ -23,12 +23,11 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 
 	if (vely < 0 || Maths::Abs(normal.x) > Maths::Abs(normal.y) * 2) { return; }
 
-	if (this.getPlayer() !is null )
+	CPlayer@ p = this.getPlayer();
+	PerkStats@ stats;
+	if (p !is null && p.get("PerkStats", @stats))
 	{
-		if (hasPerk(this.getPlayer(), Perks::paratrooper))
-		{
-            vely *= 1.5;
-        }
+		vely *= stats.fall_damage_in;
     }
 	f32 damage = FallDamageAmount(vely);
 	if (damage != 0.0f) //interesting value

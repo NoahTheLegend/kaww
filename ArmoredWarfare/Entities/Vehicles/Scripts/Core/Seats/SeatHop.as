@@ -38,12 +38,12 @@ void onTick(CBlob@ this)
 			        (blob.getTeamNum() > 6 || blob.getTeamNum() == this.getTeamNum()) &&
 					!this.getMap().rayCastSolid(this.getPosition(), blob.getPosition()))
 			{
-				if (this.getPlayer() !is null)
+				bool stats_loaded = false;
+    			PerkStats@ stats = getPerkStats(this, stats_loaded);
+
+				if (stats_loaded && stats.id == Perks::bull)
 				{
-					if (hasPerk(this.getPlayer(), Perks::bull))
-					{
-    			        continue;
-    			    }
+    			    continue;
     			}
 				//can't get into carried blob - can pick it up after they get in though
 				//(prevents dinghy rockets)

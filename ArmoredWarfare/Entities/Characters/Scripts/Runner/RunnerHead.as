@@ -282,12 +282,12 @@ void onTick(CSprite@ this)
 		int layer = 0;
 		Vec2f head_offset = getHeadOffset(blob, -1, layer);
 
-		// behind, in front or not drawn
-		if (blob.hasTag("hide_head"))
-		{
-			head.SetVisible(false);
-		}
-		else if (layer == 0 || ((!blob.isAttached() || blob.hasTag("dead")) && blob.getPlayer() !is null && hasPerk(blob.getPlayer(), Perks::camouflage)))
+		bool has_camo = false;
+		PerkStats@ stats;
+		if (blob.getPlayer() !is null && blob.getPlayer().get("PerkStats", @stats))
+			has_camo = stats.ghillie;
+
+		if (blob.hasTag("hide_head") || (layer == 0 || ((!blob.isAttached() || blob.hasTag("dead")) && has_camo)))
 		{
 			head.SetVisible(false);
 		}

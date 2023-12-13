@@ -67,9 +67,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 						this.SetDamageOwnerPlayer(holder.getPlayer());
 
-						if (hasPerk(holder.getPlayer(), Perks::camouflage))
+						bool has_camo = false;
+						PerkStats@ stats;
+						if (holder.getPlayer().get("PerkStats", @stats))
+							has_camo = stats.ghillie;
+
+						if (has_camo)
 						{
-							if (getMap() !is null && XORRandom(100) < 33)
+							if (getMap() !is null && XORRandom(100) < stats.ignite_self_chance)
 							{
 								getMap().server_setFireWorldspace(holder.getPosition(), true);
 							}

@@ -211,10 +211,9 @@ void onTick(CBlob@ this)
 			CPlayer@ p = gunner.getPlayer();
 			if (p !is null)
 			{
-				if (hasPerk(p, Perks::operator))
-				{
-					overheat_mod = 0.75f;
-				}
+				PerkStats@ stats;
+				if (p.get("PerkStats", @stats))
+					overheat_mod = stats.ftw_overheat;
 			}
 
 			if (ap.isKeyPressed(key_action1) && gunner.get_u8("mg_hidelevel") < getGameTime()

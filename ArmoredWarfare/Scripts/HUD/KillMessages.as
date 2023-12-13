@@ -303,11 +303,12 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 			{
 				if (killer.getTeamNum() != victim.getTeamNum())
 				{
+					PerkStats@ stats;
 					// give exp
 					int exp_reward = 5+XORRandom(6); // 5 - 10
-					if (hasPerk(killer, Perks::deathincarnate))
+					if (killer.get("PerkStats", @stats))
 					{
-						exp_reward *= 5;
+						exp_reward *= stats.exp;
 					}
 
 					if (victim.isBot())

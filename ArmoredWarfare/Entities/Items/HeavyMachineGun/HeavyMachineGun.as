@@ -417,10 +417,9 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 			CPlayer@ p = gunner.getPlayer();
 			if (p !is null)
 			{
-				if (hasPerk(p, Perks::operator))
-				{
-					overheat_mod = 0.9f;
-				}
+				PerkStats@ stats;
+				if (p.get("PerkStats", @stats))
+					overheat_mod = stats.mg_overheat;
 
 				bullet.SetDamageOwnerPlayer(p);
 			}

@@ -184,14 +184,18 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 			{
 				this.set_u32("lmg_aftershot", getGameTime()+LMG_AFTERSHOT_DELAY);
 			}
+			
+			CPlayer@ p = this.getPlayer();
 
-			if (this.getPlayer() !is null)
+			bool stats_loaded = false;
+			PerkStats@ stats;
+			if (p !is null && p.get("PerkStats", @stats) && stats !is null)
+				stats_loaded = true;
+
+			if (stats_loaded)
 			{
-				if (hasPerk(this.getPlayer(), Perks::sharpshooter))
-				{
-					damageBody *= 1.25f;
-					damageHead *= 1.25f;
-				}
+				damageBody *= stats.damage_body;
+				damageHead *= stats.damage_head;
 			}
 
 			s8 bulletPen = infantry.bullet_pen;
@@ -286,13 +290,9 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 					if (gunner !is null)
 					{
 						CPlayer@ p = gunner.getPlayer();
-						if (p !is null)
-						{
-							if (hasPerk(p, Perks::operator))
-							{
-								overheat_mod = 0.5f;
-							}
-						}
+						PerkStats@ stats;
+						if (p !is null && p.get("PerkStats", @stats))
+							overheat_mod = stats.mg_overheat;
 					}
 					else
 					{

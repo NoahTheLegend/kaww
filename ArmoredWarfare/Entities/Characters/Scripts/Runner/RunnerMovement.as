@@ -535,38 +535,21 @@ void onTick(CMovement@ this)
 
 	bool left_or_right = (left || right);
 	{
-		bool is_engi = false;
-		if (blob.getPlayer() !is null && hasPerk(blob.getPlayer(), Perks::fieldengineer))
-		{
-			is_engi = true;
-			u8 items = 0;
-			CInventory@ inv = blob.getInventory();
-			for (u8 i = 0; i < inv.getInventorySlots().x*inv.getInventorySlots().y; i++)
-			{
-				CBlob@ item = inv.getItem(i);
-				if (item is null) continue;
-				if (item.getName() == "launcher_javelin") items += 2;
-				else if (item.getName() == "mat_heatwarhead") items += 2; // stacks count
-				else items++;
-			}
-			if (items > 0)
-			{
-				moveVars.walkFactor *= 1.00f - (0.03f * items);
-				moveVars.jumpStart = 0.7 - (0.1f * items);
-				moveVars.jumpMid = 0.2f;
-				moveVars.jumpEnd = 0.1f;
-				set_jump_height = true;
-			}
-		}
 		// carrying heavy
 		CBlob@ carryBlob = blob.getCarriedBlob();
 		if (carryBlob !is null)
 		{
-            if (blob.getPlayer() !is null && is_engi && carryBlob.getName() != "heavygun"
+			CPlayer@ p = blob.getPlayer();
+			bool stats_loaded = false;
+			PerkStats@ stats;
+			if (p !is null && p.get("PerkStats", @stats))
+				stats_loaded = true;
+
+            if (stats_loaded && stats.id == Perks::fieldengineer && carryBlob.getName() != "heavygun"
             && (carryBlob.hasTag("medium weight") || carryBlob.hasTag("heavy weight")))
             {
-                moveVars.walkFactor *= 0.95f;
-				moveVars.jumpFactor *= 0.95f;
+                moveVars.walkFactor *= 0.9f;
+				moveVars.jumpFactor *= 0.9f;
             }
             else
             {

@@ -23,7 +23,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (hitterBlob.getTeamNum() != this.getTeamNum() && hitterBlob.hasTag("player"))
 		{
-			if (hitterBlob.getPlayer() !is null && hasPerk(hitterBlob.getPlayer(), Perks::fieldengineer))
+			bool stats_loaded = false;
+    		PerkStats@ stats = getPerkStats(hitterBlob, stats_loaded);
+
+			if (stats_loaded && stats.id == Perks::fieldengineer)
 			{
 				damage *= 2.0f;
 			}

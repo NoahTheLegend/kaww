@@ -21,7 +21,7 @@ enum State
 void onInit(CBlob@ this)
 {
 	this.set_f32("explosive_radius", 42.0f);
-	this.set_f32("explosive_damage", 12.0f);
+	this.set_f32("explosive_damage", 24.0f);
 	this.set_f32("map_damage_radius", 32.0f);
 	this.set_f32("map_damage_ratio", 0.5f);
 	this.set_bool("map_damage_raycast", true);
@@ -262,7 +262,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {
 	if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum() && hitterBlob.hasTag("player"))
 	{
-		if (hitterBlob.getPlayer() !is null && hasPerk(hitterBlob.getPlayer(), Perks::fieldengineer))
+		bool stats_loaded = false;
+    	PerkStats@ stats = getPerkStats(hitterBlob, stats_loaded);
+
+		if (stats_loaded && stats.id == Perks::fieldengineer)
 		{
 			damage *= 2.5f;
 		}

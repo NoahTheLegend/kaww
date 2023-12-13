@@ -11,9 +11,16 @@ void onInit(CBlob@ this)
 
 bool canHeal(CBlob@ this)
 {
-	if (this.getPlayer() is null) return true;
-	if (getRules() !is null && hasPerk(this.getPlayer(), Perks::bloodthirsty))
-		return false;
+	CPlayer@ p = this.getPlayer();
+	if (p is null) return false;
+
+	//bool stats_loaded = false;
+	//PerkStats@ stats;
+	//if (p.get("PerkStats", @stats) && stats !is null)
+	//	stats_loaded = true;
+
+	//if (stats_loaded && stats.id == Perks::bloodthirsty) 
+	//	return false;
 
 	return true;
 }

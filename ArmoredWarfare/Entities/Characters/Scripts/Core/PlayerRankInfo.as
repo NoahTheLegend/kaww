@@ -1,4 +1,5 @@
 // info for ranks
+// very controversial code, overhaul in v5.0?
 
 // The base amount of exp required to reach level 2
 const int LEVEL_2_EXP = 25;
@@ -12,6 +13,7 @@ const int ROUNDER2 = 500;
 
 const float PLATEAU = 0.82f;
 const float MAX_LEVEL = 9000.0f; //sergeant-major
+
 
 const string[] RANKS = {"Recruit",              // new player
                         "Private",
@@ -205,7 +207,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
         // Calculate the exp required to reach each level
         for (int i = 1; i <= RANKS.length; i++)
         {
-            if (exp >= getExpToNextLevel(i - 0))
+            if (exp >= getExpToNextLevel(i))
             {
                 level = i + 1;
                 rank = RANKS[Maths::Min(i, RANKS.length-1)];
@@ -227,7 +229,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
         oldrank = rank;
     }
 
-    if (rank != oldrank && isServer()) // means that we leveled up
+    if (isServer() && rank != oldrank) // means that we leveled up
     {
         CBitStream params;
         params.write_u8(level);

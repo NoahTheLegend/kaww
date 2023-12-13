@@ -21,7 +21,13 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (blob is null) return;
 	if (isServer() && blob.hasTag("flesh") && blob.getTeamNum() != this.getTeamNum() && !blob.isAttached())
 	{
-		bool is_engi = blob.getPlayer() !is null && hasPerk(blob.getPlayer(), Perks::fieldengineer);
+		CPlayer@ p = blob.getPlayer();
+		bool stats_loaded = false;
+		PerkStats@ stats;
+		if (p !is null && p.get("PerkStats", @stats))
+			stats_loaded = true;
+
+		bool is_engi = stats_loaded && stats.id == Perks::fieldengineer;
 		this.server_Hit(blob, this.getPosition(), Vec2f(0, 0), 0.15f, is_engi ? Hitters::fall : Hitters::spikes, true);
 	}
 	if (isServer() && blob.getTeamNum() != this.getTeamNum()
@@ -63,7 +69,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 {
 	if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum() && hitterBlob.hasTag("player"))
 	{
-		if (hitterBlob.getPlayer() !is null && hasPerk(hitterBlob.getPlayer(), Perks::fieldengineer))
+		bool stats_loaded = false;
+    	PerkStats@ stats = getPerkStats(hitterBlob, stats_loaded);
+
+		if (stats_loaded && stats.id == Perks::fieldengineer)
 		{
 			damage *= 2.25f;
 		}

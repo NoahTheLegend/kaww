@@ -3,6 +3,7 @@
 #include "ColoredNameToggleCommon.as";
 #include "PlayerRankInfo.as";
 #include "AllHashCodes.as";
+#include "PerksCommon.as";
 
 CPlayer@ hoveredPlayer;
 Vec2f hoveredPos;
@@ -137,66 +138,10 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			frame = 7;
 			framesize.Set(16, 16);
 		}
-		else
+		else if (p.getBlob() !is null)
 		{
 			tex = "ClassIcons.png";
-            if (p.getBlob() !is null)
-            {
-				int blobHash = p.getBlob().getName().getHash();
-				switch (blobHash)
-				{
-					case _revolver:
-					{
-						frame = 0;
-						break;
-					}
-					case _ranger:
-					{
-						frame = 1;
-						break;
-					}
-					case _rpg:
-					{
-						frame = 2;
-						break;
-					}
-					case _shotgun:
-					{
-						frame = 3;
-						break;
-					}
-					case _sniper:
-					{
-						frame = 4;
-						break;
-					}
-					case _mp5:
-					{
-						frame = 5;
-						break;
-					}
-					case _mechanic:
-					{
-						frame = 6;
-						break;
-					}
-					case _shielder:
-					{
-						frame = 8;
-						break;
-					}
-					case _firebringer:
-					{
-						frame = 9;
-						break;
-					}
-					case _lmg:
-					{
-						frame = 10;
-						break;
-					}
-				}
-            }
+			frame = p.getBlob().get_u8("scoreboard_icon");
 			framesize.Set(16, 16);
 		}
 		if (tex != "")
@@ -327,24 +272,17 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		}
 
 		{
-			//draw perk
 			u8 icon = 0;
-			string perk = (getRules().get_string(username + "_perk")).substr(0,2);
-			// TODO: change this to hashcodes (they are assumingly faster)
-			if (perk == "Ca") icon = 6;
-			else if (perk == "Sh") icon = 1;
-			else if (perk == "Bl") icon = 3;
-			else if (perk == "Op") icon = 5;
-			else if (perk == "Lu") icon = 4;
-			else if (perk == "We") icon = 2;
-			else if (perk == "De") icon = 7;
-			else if (perk == "Pa") icon = 9;
-			else if (perk == "Bu") icon = 10;
-			else if (perk == "Fi") icon = 11;
+
+			//draw perk
+			PerkStats@ stats;
+			if (p.get("PerkStats", @stats) && stats !is null)
+				icon = stats.id;
 
 			float x = bottomright.x - accolades_start - 140;
 			float extra = 8;
-			GUI::DrawIcon("PerkIcon", icon, Vec2f(36, 36), Vec2f(x, topleft.y-12), 0.5f, 0);
+
+			GUI::DrawIcon("PerkIcon", icon, Vec2f(32, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
 		}
 
 		//render player accolades

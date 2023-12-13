@@ -25,7 +25,11 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (caller is null) return;
 	if (caller.exists("next_med") && caller.get_u32("next_med") >= getGameTime()) return;
-	if (caller.getPlayer() !is null && getRules() !is null && hasPerk(caller.getPlayer(), Perks::bull))
+
+	bool stats_loaded = false;
+    PerkStats@ stats = getPerkStats(caller, stats_loaded);
+
+	if (stats_loaded && stats.id == Perks::bull)
 	{
 		return;
 	}
@@ -62,19 +66,25 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		{
 			if (blob !is null)
 			{
+				CPlayer@ p = blob.getPlayer();
+				bool stats_loaded = false;
+				PerkStats@ stats;
+				if (p !is null && p.get("PerkStats", @stats) && stats !is null)
+					stats_loaded = true;
+
 				//if (blob.getHealth() > oldHealth)
 				{
-					if (blob.hasBlob("aceofspades", 1))
+					if (stats_loaded && blob.get_bool("has_aos"))
 					{
 						blob.TakeBlob("aceofspades", 1);
-						blob.set_u32("aceofspades_timer", getGameTime()+180);
+						blob.set_u32("aceofspades_timer", getGameTime()+stats.aos_healed_time);
 					}
 				}
 
-				f32 heal_amount = 1.5f;
-				if (blob.getPlayer() !is null && hasPerk(blob.getPlayer(), Perks::bloodthirsty))
+				f32 heal_amount = 1.5f; // 1.0f is 50 HP
+				if (stats_loaded)
 				{
-					heal_amount /= 2;
+					heal_amount *= stats.regen;
 				}
 				blob.server_Heal(heal_amount);
 				
