@@ -241,11 +241,13 @@ void onTick(CSprite@ this)
 
 	bool stats_loaded = false;
     PerkStats@ stats = getPerkStats(blob, stats_loaded);
+
+	if (stats_loaded) perk_id = stats.id;
 	
 	CSpriteLayer@ skull = this.getSpriteLayer("skull");
 	if (skull !is null)
 	{
-		if (perk_id == 7)
+		if (perk_id == Perks::deathincarnate)
 		{
 			skull.SetFacingLeft(false);
 			skull.SetVisible(true);
@@ -256,7 +258,7 @@ void onTick(CSprite@ this)
 	CSpriteLayer@ aos = this.getSpriteLayer("aos");
 	if (aos !is null)
 	{
-		if (perk_id == 5)
+		if (perk_id == Perks::lucky)
 		{
 			aos.SetFacingLeft(false);
 			aos.SetVisible(blob.get_bool("has_aos") && blob.getHealth() > 0.01f);
