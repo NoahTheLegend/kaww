@@ -235,6 +235,7 @@ void onInit(CBlob@ this)
 			this.Tag("no bulletgib on shot");
 			this.set_f32("stab damage", 1.33f);
 			this.set_u8("scoreboard_icon", 0);
+			this.set_u8("class_icon", 1);
 			break;
 		}
 		case _shielder:
@@ -244,6 +245,7 @@ void onInit(CBlob@ this)
 			this.set_u8("stab timing", 0);
 			this.set_f32("stab damage", 0.0f);
 			this.set_u8("scoreboard_icon", 8);
+			this.set_u8("class_icon", 7);
 
 			this.Tag("is_shielder");
 			break;
@@ -254,6 +256,7 @@ void onInit(CBlob@ this)
 			this.set_u8("stab timing", 22);
 			this.set_f32("stab damage", 1.1f);
 			this.set_u8("scoreboard_icon", 1);
+			this.set_u8("class_icon", 2);
 			break;
 		}
 		case _lmg:
@@ -265,12 +268,14 @@ void onInit(CBlob@ this)
 			this.set_bool("timed_particle", true);
 			this.set_Vec2f("gun_offset", Vec2f(0,2));
 			this.set_u8("scoreboard_icon", 10);
+			this.set_u8("class_icon", 9);
 			break;
 		}
 		case _mp5:
 		{
 			this.set_bool("timed_particle", true);
 			this.set_u8("scoreboard_icon", 5);
+			this.set_u8("class_icon", 6);
 
 			this.Tag("is_mp5");
 			break;
@@ -284,6 +289,7 @@ void onInit(CBlob@ this)
 			this.set_f32("stab damage", 1.25f);
 			this.set_u8("ammo_pershot", 4);
 			this.set_u8("scoreboard_icon", 3);
+			this.set_u8("class_icon", 3);
 			break;
 		}
 		case _sniper:
@@ -292,6 +298,7 @@ void onInit(CBlob@ this)
 			this.set_s16("bullet_type", 1);
 			this.set_u8("ammo_pershot", 2);
 			this.set_u8("scoreboard_icon", 4);
+			this.set_u8("class_icon", 4);
 			break;
 		}
 		case _firebringer:
@@ -309,6 +316,7 @@ void onInit(CBlob@ this)
 			this.set_string("ammo_prop", "specammo");
 			this.set_f32("stab damage", 1.25f);
 			this.set_u8("scoreboard_icon", 9);
+			this.set_u8("class_icon", 8);
 			break;
 		}
 		case _rpg:
@@ -318,6 +326,7 @@ void onInit(CBlob@ this)
 			this.set_u32("mag_bullets", 0);
 			this.set_string("ammo_prop", "mat_heatwarhead");
 			this.set_u8("scoreboard_icon", 3);
+			this.set_u8("class_icon", 5);
 			break;
 		}
 	}

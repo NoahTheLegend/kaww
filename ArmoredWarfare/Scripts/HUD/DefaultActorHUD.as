@@ -249,56 +249,7 @@ void onRender(CSprite@ this)
 	// draw class icon
 
 	int blobHash = blob.getName().getHash();
-	int icon_num = 0;
-
-	switch (blobHash)
-	{
-		case _revolver:
-		{
-			icon_num = 1;
-			break;
-		}
-		case _ranger:
-		{
-			icon_num = 2;
-			break;
-		}
-		case _shotgun:
-		{
-			icon_num = 3;
-			break;
-		}
-		case _sniper:
-		{
-			icon_num = 4;
-			break;
-		}
-		case _rpg:
-		{
-			icon_num = 5;
-			break;
-		}
-		case _mp5:
-		{
-			icon_num = 6;
-			break;
-		}
-		case _shielder:
-		{
-			icon_num = 7;
-			break;
-		}
-		case _firebringer:
-		{
-			icon_num = 8;
-			break;
-		}
-		case _lmg:
-		{
-			icon_num = 9;
-			break;
-		}
-	}
+	int icon_num = blob.get_u8("class_icon");
 
 	GUI::DrawIcon("ClassIconSimple.png", icon_num, Vec2f(48, 48), Vec2f(icon_num == 0 ? -14 : 46, getScreenHeight()-166), 2);
 
