@@ -45,6 +45,36 @@ void onInit(CBlob@ this)
 	this.addCommandID("sync_flipping");
 	this.addCommandID("flip_vehicle");
 	this.addCommandID("aos_effects");
+	this.addCommandID("sync_mag");
+	this.addCommandID("reload_mag");
+
+	//vehicle common
+	this.addCommandID("fire");
+	this.addCommandID("fire blob");
+	this.addCommandID("flip_over");
+	this.addCommandID("getin_mag");
+	this.addCommandID("load_ammo");
+	this.addCommandID("ammo_menu");
+	this.addCommandID("swap_ammo");
+	this.addCommandID("sync_ammo");
+	this.addCommandID("sync_last_fired");
+	this.addCommandID("putin_mag");
+	this.addCommandID("vehicle getout");
+	this.addCommandID("reload");
+	this.addCommandID("recount ammo");
+
+	// armory
+	this.addCommandID("separate");
+	this.addCommandID("pick_10");
+	this.addCommandID("pick_5");
+	this.addCommandID("pick_2");
+	this.addCommandID("pick_1");
+	this.addCommandID("warn_opposite_team");
+
+	// heavygun
+	this.addCommandID("set detaching");
+	this.addCommandID("set attaching");
+	this.addCommandID("sync overheat");
 
 	string blobName = this.getName();
 	int blobHash = blobName.getHash();
@@ -92,10 +122,12 @@ void onInit(CBlob@ this)
 		case _t10: // T10
 		case _importantarmory:
 		case _importantarmoryt2:
+		case _m60turret: // M60 Shell cannon
 		armorRating = 4; break;
 			
 		case _m60: // normal tank
-		case _m60turret: // M60 Shell cannon
+		case _bc25t:
+		case _bc25turret:
 		case _artillery:
 		case _artilleryturret:
 		case _bradley: // bradley
@@ -173,6 +205,12 @@ void onInit(CBlob@ this)
 			scale_damage = 1.75f;
 			break;
 		}
+		case _bc25turret:
+		{
+			weaponRating = 2;
+			linear_length = 2.0f;
+			scale_damage = 0.75f;
+		}
 		case _uh1: // heli
 		case _ah1:
 		{
@@ -220,6 +258,7 @@ void onInit(CBlob@ this)
 		backsideOffset = 32.0f; break;
 
 		case _t10: // T10
+		case _bc25t:
 		backsideOffset = 24.0f; break;
 		
 		case _m60: // normal tank
@@ -243,7 +282,7 @@ void onInit(CBlob@ this)
 		backsideOffset = 16.0f; break;
 
 		case _techbigtruck:
-		backsideOffset = -32.0f; break;
+		backsideOffset = -20.0f; break;
 	}
 
 	// engine power
@@ -258,7 +297,10 @@ void onInit(CBlob@ this)
 		case _t10: // T10
 		intake = -25.0f;
 		break;
-		
+
+		case _bc25t: // normal tank
+		intake = -50.0f; break;
+
 		case _m60: // normal tank
 		intake = 50.0f; break;
 
@@ -301,6 +343,13 @@ void onInit(CBlob@ this)
 
 	this.set_u32("flipping_endtime", 0);
 	this.set_f32("flipping_time", 0);
+
+	if (isClient() && getLocalPlayer() !is null)
+	{
+		CBitStream params;
+		params.write_u16(getLocalPlayer().getNetworkID());
+		this.SendCommand(this.getCommandID("sync_mag"),params);
+	}
 }
 
 void ManageFlipping(CBlob@ this)
@@ -517,7 +566,7 @@ void onTick(CBlob@ this)
 		f32 custom_add = this.get_f32("add_gas_intake");
 		if (custom_add == 0) custom_add = 1.0f;
 		f32 gas_intake = 180 + custom_add + XORRandom(70+custom_add/3.5f); // gas flow variance  (needs equation)
-		if (this.get_f32("engine_RPM") > 2000) {gas_intake += 150;}
+		if (this.get_f32("engine_RPM") > 2000) {gas_intake += 150+custom_add;}
 		this.add_f32("engine_RPM", this.get_f32("engine_throttle") * gas_intake); 
 
 		if (XORRandom(100) < 60)
@@ -680,7 +729,64 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.SendCommand(this.getCommandID("sync_flipping"), params1);
 		}
 	}
-	if (cmd == this.getCommandID("sync_flipping"))
+	if (cmd == this.getCommandID("sync_mag"))
+	{
+		u16 id;
+		if (!params.saferead_u16(id)) return;
+
+		VehicleInfo@ v;
+		if (!this.get("VehicleInfo", @v))
+		{
+			return;
+		}
+
+		if (id != 0 && isServer)
+		{
+			CPlayer@ p = getPlayerByNetworkId(id);
+			if (p is null) return;
+
+			syncMagToPlayer(this, p, v);
+		}
+		if (id == 0 && isClient())
+		{
+			u32 cooldown_time;
+			if (!params.saferead_u32(cooldown_time)) return;
+			u32 fire_time;
+			if (!params.saferead_u32(fire_time)) return;
+			u32 fired_amount;
+			if (!params.saferead_u32(fired_amount)) return;
+
+			v.cooldown_time = cooldown_time;
+			v.fire_time = fire_time;
+			v.fired_amount = fired_amount;
+		}
+	}
+	else if (cmd == this.getCommandID("reload_mag"))
+	{
+		VehicleInfo@ v;
+		if (!this.get("VehicleInfo", @v))
+		{
+			return;
+		}
+		
+		if (v.cooldown_time > 0 || v.fired_amount <= 1) return;
+
+		bool init;
+		if (!params.saferead_bool(init)) return;
+		
+		if (init && isServer)
+		{
+			CBitStream params1;
+			params1.write_bool(false);
+			this.SendCommand(this.getCommandID("reload_mag"), params1);
+			reloadMag(this);
+		}
+		if (!init && isClient())
+		{
+			reloadMag(this);
+		}
+	}
+	else if (cmd == this.getCommandID("sync_flipping"))
 	{
 		if (!isFlipped(this))
 		{
@@ -780,7 +886,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		u8 last;
 		if (!params.saferead_u8(last)) return;
+		u32 fired_amount;
+		if (!params.saferead_u32(fired_amount)) return;
 
+		v.fired_amount = fired_amount;
+		this.set_u32("fired_amount", fired_amount);
 		v.last_fired_index = last;
 	}
 	/// PUT IN MAG
@@ -890,6 +1000,35 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 }
 
+void syncMagToPlayer(CBlob@ this, CPlayer@ p, VehicleInfo@ v)
+{
+	CBitStream params;
+	params.write_u16(0);
+	params.write_u32(v.cooldown_time);
+	params.write_u32(v.fire_time);
+	params.write_u32(v.fired_amount);
+	this.server_SendCommandToPlayer(this.getCommandID("sync_mag"), params, p);
+}
+
+void reloadMag(CBlob@ this)
+{
+	VehicleInfo@ v;
+	if (!this.get("VehicleInfo", @v))
+	{
+		return;
+	}
+
+	v.getCurrentAmmo().fire_delay = this.get_u16("cooldown_time");
+	v.cooldown_time = v.getCurrentAmmo().fire_delay;
+	v.fired_amount = 1;
+	v.fire_time = 0;
+	v.charge = 0;
+	v.firing = false;
+
+	this.set_u32("fired_amount", v.fired_amount);
+	SetFireDelay(this, v.getCurrentAmmo().fire_delay, v);
+}
+
 void onDie(CBlob@ this)
 {
 	if (this.hasTag("dead")) return;
@@ -904,6 +1043,7 @@ void onDie(CBlob@ this)
 		u8 scrap_amount = 0;
 		switch (this.getName().getHash())
 		{
+			case _bc25t:
 			case _m60:
 			{
 				scrap_amount = 8+XORRandom(8);
@@ -1036,6 +1176,7 @@ void onDie(CBlob@ this)
 			case _btrturret:
 			case _bradleyturret:
 			case _m60turret:
+			case _bc25turret:
 			case _t10turret:
 			case _mausturret:
 			case _pinkmausturret:

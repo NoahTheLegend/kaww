@@ -11,7 +11,7 @@ string[] smoke =
 };
 
 const u8 cooldown_time = 105;
-const u8 barrel_compression = 6; // max barrel movement
+const u8 barrel_compression = 5; // max barrel movement
 const u16 recoil = 180;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees

@@ -78,12 +78,7 @@ void onInit(CBlob@ this)
 	this.getShape().SetRotationsAllowed(false);
 	this.set_string("autograb blob", "ammo");
 
-	this.addCommandID("set detaching");
-	this.addCommandID("set attaching");
 	sprite.SetZ(20.0f);
-
-	this.addCommandID("sync overheat");
-
 	this.set_f32("overheat", 0);
 	this.set_f32("max_overheat", MAX_OVERHEAT);
 	this.set_f32("overheat_per_shot", OVERHEAT_PER_SHOT);

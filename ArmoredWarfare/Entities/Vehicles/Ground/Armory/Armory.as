@@ -17,13 +17,6 @@ void onInit(CBlob@ this)
 	this.Tag("armory");
 	this.Tag("truck");
 
-	this.addCommandID("separate");
-	this.addCommandID("pick_10");
-	this.addCommandID("pick_5");
-	this.addCommandID("pick_2");
-	this.addCommandID("pick_1");
-	this.addCommandID("warn_opposite_team");
-
 	AddIconToken("$icon_10%$", "Scrap.png", Vec2f(16, 16), 3);
 	AddIconToken("$icon_5%$", "Scrap.png", Vec2f(16, 16), 2);
 	AddIconToken("$icon_2%$", "Scrap.png", Vec2f(16, 16), 1);

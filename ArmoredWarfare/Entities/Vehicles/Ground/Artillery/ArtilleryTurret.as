@@ -14,7 +14,7 @@ const u16 cooldown_time = 750; // 25 sec cd
 const f32 damage_modifier = 1.65f;
 
 const s16 init_gunoffset_angle = -2; // up by so many degrees
-const u8 barrel_compression = 6; // max barrel movement
+const u8 barrel_compression = 24; // max barrel movement
 const u16 recoil = 180;
 
 // 0 == up, 90 == sideways

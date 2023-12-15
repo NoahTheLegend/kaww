@@ -5,7 +5,7 @@
 #include "PerksCommon.as";
 
 const u8 cooldown_time = 210;//210;
-const u8 barrel_compression = 6; // max barrel movement
+const u8 barrel_compression = 9; // max barrel movement
 const u16 recoil = 210;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees

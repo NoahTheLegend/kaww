@@ -27,6 +27,7 @@ void onInit(CBlob@ this)
         case _civcar:
         case _lada:
         case _artillery:
+		case _bc25t:
         {
             susheight = 2.0f;
             break;

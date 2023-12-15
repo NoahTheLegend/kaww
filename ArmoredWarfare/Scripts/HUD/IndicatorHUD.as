@@ -290,6 +290,7 @@ u8 getIndicatorFrame( int hash )
 	{
 		case _mechanic:
 		case _m60:
+		case _bc25t:
 		frame = 1; break;
 
 		case _revolver:

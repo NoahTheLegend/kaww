@@ -125,6 +125,8 @@ void onRender(CSprite@ this)
 					VehicleInfo@ tv;
 					if (turret.get("VehicleInfo", @tv))
 					{
+						if (blob.hasTag("autoturret")) // autocycle cannon gui
+							drawRemainingShellsInCassette(turret, tv);
 						if (!tv.getCurrentAmmo().infinite_ammo)
 							drawAmmoCount(turret, tv);
 						if (tv.getCurrentAmmo().max_charge_time > 0)
@@ -140,6 +142,9 @@ void onRender(CSprite@ this)
 	AttachmentPoint@ gunner = blob.getAttachments().getAttachmentPointByName("GUNNER");
 	if (gunner !is null	&& gunner.getOccupied() is localBlob)
 	{
+		if (blob.hasTag("autoturret")) // autocycle cannon gui
+			drawRemainingShellsInCassette(blob, v);
+
 		if (!v.getCurrentAmmo().infinite_ammo)
 			drawAmmoCount(blob, v);
 
@@ -274,6 +279,23 @@ void drawCooldownBar(CBlob@ blob, VehicleInfo@ v)
 	GUI::DrawRectangle(ul + Vec2f(4, 4), lr + Vec2f(4, 4), SColor(0xff3B1406));
 	GUI::DrawRectangle(ul + Vec2f(6, 6), lr + Vec2f(2, 4), SColor(0xff941B1B));
 	GUI::DrawRectangle(ul + Vec2f(6, 6), lr + Vec2f(2, 2), SColor(0xffB73333));
+}
+
+void drawRemainingShellsInCassette(CBlob@ blob, VehicleInfo@ v)
+{
+	Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 64);
+
+	u8 size = blob.get_u8("cassette_size");
+	if (size == 0) return;
+	int fired = blob.get_u32("fired_amount")-1;
+	for (u8 i = 0; i < size; i++)
+	{
+		u8 icon = i >= size-fired?0:1;
+		if (v.cooldown_time > 0 && fired == 0) icon = 0;
+		Vec2f drawpos = pos2d + Vec2f(-16 * (size*0.5f) + 16 * i, 0);
+		GUI::DrawIcon("CassetteShell.png", icon, Vec2f(16,16), drawpos, 0.75f);
+		GUI::DrawTextCentered("Shift+R - Reload", pos2d+Vec2f(0,74),SColor(25,255,255,255));
+	}
 }
 
 void drawShellTrajectory(CBlob@ blob, VehicleInfo@ v, CBlob@ gunner)
