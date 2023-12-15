@@ -22,7 +22,7 @@ void onInit(CBlob@ this)
 
 	AddIconToken("$scrap$", "Scrap.png", Vec2f(16, 16), 1);
 	AddIconToken("$mat_105mmround$", "Materials.png", Vec2f(16, 16), 22);
-	AddIconToken("$nuke$", "Materials.png", Vec2f(16, 16), 34);
+	AddIconToken("$5tbomb$", "Materials.png", Vec2f(16, 16), 34);
 
 	// setup pickup menu wheel
 	WheelMenu@ menu = get_wheel_menu("pickup");
@@ -394,7 +394,7 @@ f32 getPriorityPickupScale(CBlob@ this, CBlob@ b)
 		return b.getTeamNum() != this.getTeamNum() ? factor_extremely_important : factor_boring;
 	}
 
-	if(name == "mat_nuke"){
+	if(name == "mat_5tbomb"){
 		return factor_extremely_important;
 	}
 

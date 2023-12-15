@@ -16,6 +16,7 @@ void onInit(CBlob@ this)
 	
 	this.Tag("explosive");
 	this.Tag("always bullet collide");
+	this.Tag("trap");
 	this.Tag("bomber ammo");
 	this.Tag("no_armory_pickup");
 	this.Tag("weapon");
@@ -53,6 +54,28 @@ void DoExplosion(CBlob@ this, Vec2f velocity)
 
 void onTick(CBlob@ this)
 {
+	if (isServer() && this.isAttached())
+	{
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
+		if (ap !is null && ap.getOccupied() !is null)
+		{
+			CBlob@ oc = ap.getOccupied();
+			AttachmentPoint@[] aps;
+			oc.getAttachmentPoints(aps);
+			for (u8 i = 0; i < aps.size(); i++)
+			{
+				AttachmentPoint@ api = aps[i];
+				if (api is null) continue;
+				if (api.getOccupied() is null) continue;
+
+				if (api.getOccupied().hasTag("aerial") || api.getOccupied().hasTag("machinegun"))
+				{
+					this.server_DetachFromAll();
+					break;
+				}
+			}
+		}
+	}
 	if (this.get_bool("booming") && this.get_u8("boom_start") < boom_max)
 	{
 		DoExplosion(this, Vec2f(0, 0));
@@ -66,11 +89,16 @@ void onTick(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (hitterBlob.getTeamNum() != this.getTeamNum() || hitterBlob is null)
+	if (this.exists("damage") && this.get_f32("damage") > this.getInitialHealth()) 
 	{
 		if (!this.get_bool("booming")) ExplosionEffects(this);
 		this.set_bool("booming", true);
 	}
+	if (hitterBlob !is null && hitterBlob.getTeamNum() == this.getTeamNum())
+	{
+		damage *= 0.1f;
+	}
+	this.add_f32("damage", damage);
 	return damage;
 }
 
@@ -101,7 +129,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 	f32 vellen = this.getOldVelocity().Length();
 
-	if (vellen > 5.0f)
+	if (vellen > 6.0f)
 	{
 		if (!this.get_bool("booming")) ExplosionEffects(this);
 		this.set_bool("booming", true);

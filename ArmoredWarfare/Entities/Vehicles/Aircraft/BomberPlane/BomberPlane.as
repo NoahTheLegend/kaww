@@ -12,6 +12,9 @@ const Vec2f gun_offset = Vec2f(-30, 8.5);
 const u32 shootDelay = 1; // Ticks
 const f32 projDamage = 0.75f;
 
+const u16 droptime = 15;
+const u16 droptime_heavy = 150;
+
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);
 
@@ -185,11 +188,11 @@ void onTick(CBlob@ this)
 						}
 					}
 
+					CBlob@ item = inv.getItem(0);
 					if (itemCount > 0 && can_drop) 
 					{
 						if (isServer()) 
 						{
-							CBlob@ item = inv.getItem(0);
 							u32 quantity = item.getQuantity();
 
 							if (!item.hasTag("bomber ammo"))
@@ -236,7 +239,7 @@ void onTick(CBlob@ this)
 						}
 					}
 
-					this.set_u32("lastDropTime",getGameTime() + 15);
+					this.set_u32("lastDropTime",getGameTime() + (item !is null && item.hasTag("heavy weight") ? droptime_heavy : droptime));
 				}
 			}
 			
@@ -562,20 +565,20 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (customData == HittersAW::aircraftbullet) 	 
 	{
-		damage += 0.05f;
-		return damage * 0.35f;
+		damage += 0.15f;
+		return damage * 0.4f;
 	}
 	else if (customData == HittersAW::heavybullet) 
 	{
-		damage += 0.1f;
+		damage += 0.25f;
 	}
 	else if (customData == HittersAW::machinegunbullet) 
 	{
-		damage += 0.15f;
+		damage += 0.25f;
 	}
 	else if (customData == HittersAW::bullet)
 	{
-		return damage * 0.65f;
+		return damage * 0.75f;
 	}
 
 	return damage;
