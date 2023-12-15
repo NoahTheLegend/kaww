@@ -89,7 +89,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 				f32 vehdmg = 1.0f + blob.getShape().vellen;
 				if (blob.getPosition().y < this.getPosition().y-8) vehdmg *= 3;
 				this.server_Hit(blob, blob.getPosition(), Vec2f_zero, vehdmg, vehdmg <= 10.0f ? Hitters::sword : Hitters::builder);
-				this.server_Hit(this, this.getPosition(), Vec2f_zero, blob.getShape().vellen * massmod * 0.025f, Hitters::builder);
+				this.server_Hit(this, this.getPosition(), Vec2f_zero, 5.0f * blob.getShape().vellen * massmod * 0.025f, Hitters::builder);
 			
 				blob.setVelocity(Vec2f(0, blob.getVelocity().y));
 			}
