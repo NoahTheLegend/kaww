@@ -78,34 +78,7 @@ void onTick(CBlob@ this)
 			CSpriteLayer@ icon = sprite.getSpriteLayer("icon");
 			if (icon !is null)
 			{
-				u8 index = 0;
-				string b = this.get_string("prod_blob");
-
-				if (b == "ammo")
-					index = 0;
-				else if (b == "mat_14mmround")
-					index = 1;
-				else if (b == "mat_bolts")
-					index = 2;
-				else if (b == "mat_heatwarhead")
-					index = 3;
-				else if (b == "mat_molotov")
-					index = 4;
-				else if (b == "grenade")
-					index = 5;
-				else if (b == "mine")
-					index = 6;
-				else if (b == "helmet")
-					index = 7;
-				else if (b == "specammo")
-					index = 8;
-				else if (b == "medkit")
-					index = 9;
-				else if (b == "mat_atgrenade")
-					index = 10;
-
-				icon.SetAnimation("default");
-				icon.SetFrameIndex(index);
+				icon.SetFrameIndex(this.get_u8("id"));
 			}
 		}
 	}
@@ -282,6 +255,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 200); // how many
 		this.set_u8("prod_time", 2); // extra seconds time (10 sec for default)
 		this.set_u8("cost", 1); // how many scrap to take
+		this.set_u8("id", 0);
 
 		ResetTimer(this);
 	}
@@ -291,6 +265,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 15);
 		this.set_u8("prod_time", 5);
 		this.set_u8("cost", 1);
+		this.set_u8("id", 1);
 
 		ResetTimer(this);
 	}
@@ -300,6 +275,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 4);
 		this.set_u8("prod_time", 7);
 		this.set_u8("cost", 1);
+		this.set_u8("id", 2);
 
 		ResetTimer(this);
 	}
@@ -309,6 +285,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 3);
 		this.set_u8("prod_time", 28);
 		this.set_u8("cost", 7);
+		this.set_u8("id", 3);
 
 		ResetTimer(this);
 	}
@@ -322,6 +299,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 10-extra_amount);
 		this.set_u8("cost", 2);
+		this.set_u8("id", 4);
 
 		ResetTimer(this);
 	}
@@ -331,6 +309,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 10);
 		this.set_u8("cost", 2);
+		this.set_u8("id", 5);
 
 		ResetTimer(this);
 	}
@@ -340,6 +319,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 20);
 		this.set_u8("cost", 3);
+		this.set_u8("id", 6);
 
 		ResetTimer(this);
 	}
@@ -349,6 +329,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 15);
 		this.set_u8("cost", 2);
+		this.set_u8("id", 7);
 
 		ResetTimer(this);
 	}
@@ -358,6 +339,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 50);
 		this.set_u8("prod_time", 10);
 		this.set_u8("cost", 2);
+		this.set_u8("id", 8);
 
 		ResetTimer(this);
 	}
@@ -367,6 +349,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 15);
 		this.set_u8("cost", 4);
+		this.set_u8("id", 10);
 
 		ResetTimer(this);
 	}
@@ -376,6 +359,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	//	this.set_u8("prod_amount", 2);
 	//	this.set_u8("prod_time", 10);
 	//	this.set_u8("cost", 2);
+	//  this.set_u8("id", 9);
 //
 	//	ResetTimer(this);
 	//}
