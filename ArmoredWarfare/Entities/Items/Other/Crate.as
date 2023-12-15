@@ -111,11 +111,6 @@ void onTick(CBlob@ this)
 
 	if (this.hasTag("parachute"))		// wont work with the tick frequency
 	{
-		if (this.getSprite().getSpriteLayer("parachutesl") is null)
-		{
-			ShowParachute(this);
-		}
-
 		// para force + swing in wind
 		this.AddForce(Vec2f(Maths::Sin(getGameTime() * 0.03f) * 1.0f, -30.0f * this.getVelocity().y));
 
@@ -152,7 +147,6 @@ void onTick(CBlob@ this)
 void Land(CBlob@ this)
 {
 	this.Untag("parachute");
-	HideParachute(this);
 
 	// unpack immediately
 	if (this.exists("packed") && this.hasTag("unpack on land"))
@@ -469,22 +463,6 @@ void Unpack(CBlob@ this)
 bool isUnpacking(CBlob@ this)
 {
 	return getGameTime() <= this.get_u32("unpack time");
-}
-
-void ShowParachute(CBlob@ this)
-{
-	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ parachute = sprite.addSpriteLayer("parachutesl", "ParachuteSL.png", 64, 64);
-
-	if (parachute !is null)
-	{
-		Animation@ anim = parachute.addAnimation("default", 3, true);
-		anim.AddFrame(0);
-		anim.AddFrame(1);
-		anim.AddFrame(2);
-		parachute.SetOffset(Vec2f(-1.0f, - 28.0f));
-		parachute.SetRelativeZ(-100.0f);
-	}
 }
 
 void HideParachute(CBlob@ this)
