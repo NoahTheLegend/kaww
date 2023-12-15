@@ -183,10 +183,10 @@ void buildT3ShopCombined(CBlob@ this)
 	makeShopItem(this,params,c_ah1);}
 
 	{string[] params = {n_truckbig,t_truckbig,bn_truckbig,d_truckbig,b,s,ds};
-	makeShopItem(this,params,c_truckbig);}
+	makeShopItem(this,params,c_truckbig,Vec2f(3,2));}
 
 	{string[] params = {n_arti,t_arti,bn_arti,d_arti,b,s,ds};
-	makeShopItem(this,params,c_arti);}
+	makeShopItem(this,params,c_arti,Vec2f(3,2));}
 
 	{string[] params = {n_barge,t_barge,bn_barge,d_barge,b,s,ds};
 	makeShopItem(this,params,c_barge-2, Vec2f(3,2), false, true);}
