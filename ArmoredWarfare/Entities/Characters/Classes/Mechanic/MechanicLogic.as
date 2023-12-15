@@ -40,6 +40,7 @@ void onInit(CBlob@ this)
 	this.set_u32("bull_boost", 0);
 	this.set_u32("regen", 0);
 	this.set_u8("scoreboard_icon", 6);
+	this.set_u8("class_icon", 0);
 
 	HitData hitdata;
 	this.set("hitdata", hitdata);
