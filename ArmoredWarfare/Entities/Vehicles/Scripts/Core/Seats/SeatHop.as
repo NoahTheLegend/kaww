@@ -41,7 +41,7 @@ void onTick(CBlob@ this)
 				bool stats_loaded = false;
     			PerkStats@ stats = getPerkStats(this, stats_loaded);
 
-				if (stats_loaded && stats.id == Perks::bull)
+				if (stats_loaded && stats.id == Perks::bull && !blob.hasTag("machinegun"))
 				{
     			    continue;
     			}
