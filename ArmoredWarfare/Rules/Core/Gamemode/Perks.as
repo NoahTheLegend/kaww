@@ -150,7 +150,7 @@ shared class PerkOperator : PerkStats {
         ftw_overheat = 0.75f;
         wrench_repair_time = 22;
         heli_velo = Vec2f(0.25f, 0.75f);
-        plane_velo = 0.025f;
+        plane_velo = 0.033f;
         top_angle = 3;
         down_angle = 4;
     }

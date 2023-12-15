@@ -261,13 +261,13 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 				}
 			}
 
-			float x = bottomright.x - accolades_start - 80;
+			float x = bottomright.x - accolades_start - 90;
 			float extra = 8;
-			GUI::DrawIcon("Ranks", level - 1, Vec2f(32, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
+			GUI::DrawIcon("Ranks", level, Vec2f(32, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
 
 			if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
 			{
-				hovered_rank = level - 1;
+				hovered_rank = level;
 			}
 		}
 

@@ -12,8 +12,7 @@ const int ROUNDER = 25;
 const int ROUNDER2 = 500;
 
 const float PLATEAU = 0.82f;
-const float MAX_LEVEL = 9000.0f; //sergeant-major
-
+const float MAX_LEVEL = getLevels()[getLevels().size()-1];
 
 const string[] RANKS = {"Recruit",              // new player
                         "Private",
@@ -39,17 +38,20 @@ const string[] RANKS = {"Recruit",              // new player
                         "General-Brigadier",
                         "General-Major",
                         "General-Lieutenant",
-                        "Army Chief"
+                        "Army Chief",
+                        "Marshal",
+                        "Marshal-Lieutenant",
+                        "Apex Commandant"
                         };
 
-shared int[] getLevels() // +- LINEAR PROGRESSION
+shared int[] getLevels()
 {
     int[] list = {
-        25, // +25 Ranger               | Private
-        100, // +75 Shotgun             | Refreiter
-        250, // +150 Sniper             | Corporal
-        450, // +200 RPG                | Master Corporal
-        800, // +350 MP5                | Sergeant
+        25, // +25                      | Private
+        100, // +75                     | Refreiter
+        250, // +150                    | Corporal
+        450, // +200                    | Master Corporal
+        800, // +350                    | Sergeant
         1250, // +450                   | Staff Sergeant
         1800, // +550                   | Master Sergeant
         2500, // +700                   | First Sergeant
@@ -69,7 +71,9 @@ shared int[] getLevels() // +- LINEAR PROGRESSION
         106000, // +13500               | General-Major
         121000, // +15000               | General-Lieutenant
         150000, // +29000               | Army Chief
-        999999 // +NaN                  | Filler
+        182500, // +32500               | Marshal
+        220000, // +37500               | Supreme Marshal
+        265000  // +45000               | Apex Commandant
     };
     return list;
 }
@@ -109,7 +113,7 @@ shared int getExpToNextLevelShared(u32 level)
         mod_plateau *= 0.85f;
     }
  
-    return int(Maths::Round(LEVEL_2_EXP * Maths::Pow(EXP_MULTIPLIER * mod_plateau, level - 1) / mod) * mod);
+    return int(Maths::Round(LEVEL_2_EXP * Maths::Pow(EXP_MULTIPLIER * mod_plateau, level) / mod) * mod);
 }
 
 // Calculate the exp required to reach the next level
@@ -147,7 +151,7 @@ int getExpToNextLevel(u32 level)
         mod_plateau *= 0.85f;
     }
     
-    return int(Maths::Round(LEVEL_2_EXP * Maths::Pow(EXP_MULTIPLIER * mod_plateau, level - 1) / mod) * mod);
+    return int(Maths::Round(LEVEL_2_EXP * Maths::Pow(EXP_MULTIPLIER * mod_plateau, level) / mod) * mod);
 }
 
 // Calculate the exp required to reach my current level
@@ -190,7 +194,39 @@ int getExpToMyLevel(u32 level)
 // Get the player's current rank name
 string getRankName(u32 level)
 {
-    return RANKS[level - 1];
+    return RANKS[level];
+}
+
+int getRankId(CPlayer@ player)
+{
+    if (player is null) return -1;
+    if (player.exists("rank")) return Maths::Min(RANKS.size(), player.get_u32("rank"));
+
+    u32 exp = 0;
+	exp = getRules().get_u32(player.getUsername() + "_exp");
+
+	int level = 0;
+
+	if (exp > 0)
+	{
+		// Calculate the exp required to reach each level
+		for (int i = 1; i <= RANKS.length; i++)
+		{
+			if (exp >= getExpToNextLevel(i - 0))
+			{
+				level = i + 1;
+				//print("rank: " + RANKS[i]+ "  - exp needed to reach: " + )
+			}
+			else
+			{
+				// The current level has been reached
+                player.set_u32("rank", level);
+				break;
+			}
+		}
+	}
+
+    return Maths::Min(RANKS.size(), level);
 }
 
 void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
@@ -199,7 +235,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
     CPlayer@ player = blob.getPlayer();
     if (player is null) return;
 
-    int level = 1;
+    int level = 0;
     string rank = RANKS[0];
 
     if (exp > 0)
@@ -214,6 +250,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
             }
             else
             {
+                player.set_u32("rank", level);
                 break;
             }
         }
@@ -228,7 +265,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
         rules.set_string(player.getUsername() + "_last_lvlup", rank);
         oldrank = rank;
     }
-
+    
     if (isServer() && rank != oldrank) // means that we leveled up
     {
         CBitStream params;

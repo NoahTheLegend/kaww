@@ -214,7 +214,7 @@ void onTick(CBlob@ this)
 			CBlob@ realPlayer = getLocalPlayerBlob();
 			const bool pressed_m3 = gunner.isKeyPressed(key_action3);
 			const f32 flip_factor = flip ? -1 : 1;
-			f32 angle = this.get_f32("gunelevation")-90;
+			f32 angle = this.get_f32("gunelevation")-90 + this.getAngleDegrees();
 
 			if (pressed_m3)
 			{

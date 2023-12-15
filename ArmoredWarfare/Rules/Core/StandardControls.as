@@ -367,7 +367,7 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 
 	if (zoomModifier) {
 		switch (zoomModifierLevel) {
-			//case 0:	zoom_target = 0.5f; zoomLevel = 0; break;
+			//case 0: zoom_target = 0.5f; zoomLevel = 0; break;
 			//case 1: zoom_target = 0.5625f; zoomLevel = 0; break;
 			//case 2: zoom_target = 0.625f; zoomLevel = 0; break;
 			//case 3: zoom_target = 0.75f; zoomLevel = 0; break;
