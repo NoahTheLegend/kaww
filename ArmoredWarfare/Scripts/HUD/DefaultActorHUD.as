@@ -180,46 +180,24 @@ void onRender(CSprite@ this)
 		{
 			float exp = 0;
 			// load exp
-			if (blob.getPlayer() !is null)
+			u32 level = getRankId(blob.getPlayer());
+			string rank = RANKS[level];
+			if (level != -1)
 			{
-				exp = getRules().get_u32(blob.getPlayer().getUsername() + "_exp");
-			}
+				GUI::DrawIcon("Ranks", level, Vec2f(32, 32), Vec2f(0, -12), 1.0f, 0);
 
-			int level = 1;
-			string rank = RANKS[0];
+				// draw player username
+				GUI::SetFont("menu");
+				GUI::DrawText(rank + " | "+player.getCharacterName(), Vec2f(60, 10), SColor(0xffffffff));
+				//GUI::SetFont("text");
+				//GUI::DrawText("\n\nNext rank: "+RANKS[level], Vec2f(60, 10), SColor(0xffffffff));
 
-			if (exp > 0)
-			{
-				// Calculate the exp required to reach each level
-				for (int i = 1; i <= RANKS.length; i++)
+				// draw perk icon
+				PerkStats@ stats;
+				if (player.get("PerkStats", @stats) && stats !is null)
 				{
-					if (exp >= getExpToNextLevel(i - 0))
-					{
-						level = i + 1;
-						rank = RANKS[Maths::Min(i, RANKS.length-1)];
-						//print("rank: " + RANKS[i]+ "  - exp needed to reach: " + )
-					}
-					else
-					{
-						// The current level has been reached
-						break;
-					}
+					GUI::DrawIcon("PerkIcon.png", stats.id, Vec2f(32, 32), Vec2f(180, getScreenHeight()-87), 1);
 				}
-			}
-
-			GUI::DrawIcon("Ranks", level - 1, Vec2f(32, 32), Vec2f(16, -12), 1.0f, 0);
-
-			// draw player username
-			GUI::SetFont("menu");
-			GUI::DrawText(rank + " | "+player.getCharacterName(), Vec2f(60, 10), SColor(0xffffffff));
-			//GUI::SetFont("text");
-			//GUI::DrawText("\n\nNext rank: "+RANKS[level], Vec2f(60, 10), SColor(0xffffffff));
-
-			// draw perk icon
-			PerkStats@ stats;
-			if (player.get("PerkStats", @stats) && stats !is null)
-			{
-				GUI::DrawIcon("PerkIcon.png", stats.id, Vec2f(32, 32), Vec2f(180, getScreenHeight()-87), 1);
 			}
 		}
 	}
