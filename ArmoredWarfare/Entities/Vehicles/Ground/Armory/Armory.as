@@ -66,7 +66,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(7, 3));
+	this.set_Vec2f("shop menu size", Vec2f(8, 3));
 	this.set_string("shop description", "Buy Equipment");
 	this.set_u8("shop icon", 25);
 
@@ -83,7 +83,7 @@ void onInit(CBlob@ this)
 void InitShop(CBlob@ this)
 {
 	bool isCTF = getBlobByName("pointflag") !is null;
-	if (isCTF) this.set_Vec2f("shop menu size", Vec2f(8, 3));
+	if (isCTF) this.set_Vec2f("shop menu size", Vec2f(9, 3));
 
 	{
 		ShopItem@ s = addShopItem(this, "Standard Ammo", "$ammo$", "ammo", "Used by all small arms guns, and vehicle machineguns.", false);
@@ -113,11 +113,21 @@ void InitShop(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
+
+	{
+		ShopItem@ s = addShopItem(this, "907 Kilogram-trotile Bomb", "$mat_907kgbomb$", "mat_907kgbomb", "A good way to damage enemy facilities.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
+		//AddRequirement(s.requirements, "gametime", "", "Unlocks at", 15*30 * 60);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 3;
+	}
+
 	if (isCTF)
 	{
-		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
+		ShopItem@ s = addShopItem(this, "5000 Kilogram-trotile Bomb", "$mat_5tbomb$", "mat_5tbomb", "The best way to destroy enemy facilities.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 300);
-		AddRequirement(s.requirements, "gametime", "", "Unlocks at", 30*30 * 60);
+		//AddRequirement(s.requirements, "gametime", "", "Unlocks at", 30*30 * 60);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 3;
@@ -483,13 +493,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		Vec2f pos = this.getPosition();
 		
 		string name = params.read_string();
-		if (name == "mat_nuke")
+		if (name == "mat_5tbomb" || name == "mat_907kgbomb")
 		{
 			u8 teamleft = getRules().get_u8("teamleft");
 			u8 teamright = getRules().get_u8("teamright");
-
+			u8 id = (name == "mat_5tbomb" ? 1 : 0);
 			CBitStream params;
 			params.write_bool(this.getTeamNum() == teamleft);
+			params.write_u8(id);
 			this.SendCommand(this.getCommandID("warn_opposite_team"), params);
 		}
 	}
@@ -498,6 +509,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (isClient())
 		{
 			bool warn_team = params.read_bool(); // left is true
+			u8 id = params.read_u8();
 
 			if (getLocalPlayer() !is null)
 			{
@@ -508,13 +520,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					|| (getLocalPlayer().getTeamNum() == teamright && warn_team))
 				{
 					Sound::Play("nuke_warn.ogg", getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos()), 500.0f, 0.825f);
-					client_AddToChat("Enemy has constructed a nuclear bomb!", SColor(255, 255, 0, 0));
+					client_AddToChat("Enemy has constructed a "+(id==0?"907kg":"5 ton")+" bomb!", SColor(255, 255, 0, 0));
 
-					error("debug: playing sound & sending nukewarn message");
+					error("debug: playing sound & sending bomb warn message");
 				}
 				else
 				{
-					client_AddToChat("Your team has constructed a nuclear bomb.", SColor(255, 0, 150, 0));
+					client_AddToChat("Your team has constructed a "+(id==0?"907kg":"5 ton")+" bomb. Enemies see that.", SColor(255, 0, 150, 0));
 				}
 			}
 		}

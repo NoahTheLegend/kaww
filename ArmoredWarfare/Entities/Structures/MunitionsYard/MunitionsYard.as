@@ -61,7 +61,7 @@ void InitShop(CBlob@ this)
 	}
 	if (isCTF)
 	{
-		ShopItem@ s = addShopItem(this, "Nuke", "$mat_nuke$", "mat_nuke", "The best way to destroy enemy facilities.\nNo area pollutions included!", false);
+		ShopItem@ s = addShopItem(this, "5 ton Bomb", "$mat_5tbomb$", "mat_5tbomb", "The best way to destroy enemy facilities.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 300);
 		AddRequirement(s.requirements, "gametime", "", "Unlocks at", 30*30 * 60); // 45th min
 		s.customButton = true;
