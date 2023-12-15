@@ -343,12 +343,11 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 	if (infos is null) return;
 
 	removeBalanceInfo(player.getUsername(), infos);
-
 }
 
 void onTick(CRules@ this)
 {
-	if (haveRestarted || (getGameTime() % 1800 == 0))
+	if (haveRestarted || (getGameTime() % 900 == 0))
 	{
 		//get the core and balance infos
 		RulesCore@ core;
@@ -445,11 +444,6 @@ void onPlayerRequestSpawn(CRules@ this, CPlayer@ player)
 
 	//player swapped/joined team ages ago -> no balance
 	if (b.lastBalancedTime < getAverageBalance(infos))
-		return;
-
-	//check if the player doesn't suck - dont swap top half of the team
-	u32 median = getMedianScore(player.getTeamNum());
-	if (player.getScore() > median)
 		return;
 
 	s32 newTeam = getSmallestTeam(core.teams);
