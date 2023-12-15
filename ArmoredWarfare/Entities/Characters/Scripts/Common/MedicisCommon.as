@@ -23,9 +23,9 @@ void drawMedicCalling(Vec2f HUDpos)
 	GUI::DrawIcon("CallMedic.png", frame, Vec2f(16, 16), HUDpos);
 }
 
-void drawMedicIdentifier(Vec2f HUDpos)
+void drawMedicIdentifier(Vec2f HUDpos, u8 alpha)
 {
-	GUI::DrawIcon("MedicIdentifier.png", 0, Vec2f(16, 16), HUDpos);
+	GUI::DrawIcon("MedicIdentifier.png", 0, Vec2f(16, 16), HUDpos, 1.0f, SColor(alpha,255,255,255));
 }
 
 void drawTargetIdentifier(Vec2f HUDpos)
