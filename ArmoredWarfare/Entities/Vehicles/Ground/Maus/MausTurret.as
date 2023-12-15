@@ -14,8 +14,11 @@ const u16 cooldown_time = 360;
 const f32 damage_modifier = 1.25f;
 
 const s16 init_gunoffset_angle = -2; // up by so many degrees
-const u8 barrel_compression = 6; // max barrel movement
+const u8 barrel_compression = 12; // max barrel movement
 const u16 recoil = 180;
+
+const u8 shootDelay = 3;
+const f32 projDamage = 0.25f;
 
 // 0 == up, 90 == sideways
 f32 high_angle = 76.5f; // upper depression limit
@@ -27,6 +30,13 @@ void onInit(CBlob@ this)
 	this.Tag("turret");
 	this.Tag("tank");
 	this.Tag("blocks bullet");
+
+	// machinegun stuff
+	this.set_u8("TTL", 75);
+	this.set_Vec2f("KB", Vec2f(0,0));
+	this.set_u8("speed", 15);
+	this.set_s32("custom_hitter", HittersAW::machinegunbullet);
+	this.addCommandID("shoot");
 
 	this.Tag("fireshe");
 	this.set_f32("damage_modifier", damage_modifier);
@@ -65,11 +75,20 @@ void onInit(CBlob@ this)
 	// auto-load on creation
 	if (getNet().isServer())
 	{
-		CBlob@ ammo = server_CreateBlob("mat_bolts");
+		CBlob@ shells = server_CreateBlob("mat_bolts");
+		if (shells !is null)
+		{
+			if (!this.server_PutInInventory(shells))
+				shells.server_Die();
+		}
+
+		CBlob@ ammo = server_CreateBlob("ammo");
 		if (ammo !is null)
 		{
 			if (!this.server_PutInInventory(ammo))
 				ammo.server_Die();
+
+			ammo.server_SetQuantity(ammo.getQuantity()*3);
 		}
 	}
 
@@ -145,7 +164,6 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 	}
 
 	this.Untag("nogunner");
-
 	if (facing_left) { angle *= -1; }
 
 	return angle;
@@ -189,7 +207,37 @@ void onTick(CBlob@ this)
 		AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
 		if (gunner !is null && gunner.getOccupied() !is null && !broken)
 		{
+			CBlob@ hooman = gunner.getOccupied();
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+
+			bool flip = this.isFacingLeft();
+			CBlob@ realPlayer = getLocalPlayerBlob();
+			const bool pressed_m3 = gunner.isKeyPressed(key_action3);
+			const f32 flip_factor = flip ? -1 : 1;
+			f32 angle = this.get_f32("gunelevation")-90;
+
+			if (pressed_m3)
+			{
+				if (getGameTime() > this.get_u32("fireDelayGun") && hooman.isMyPlayer())
+				{
+					if (this.hasBlob("ammo", 1))
+					{
+						f32 spread = XORRandom(5)-2.5f;
+						Vec2f shootpos = Vec2f(26*flip_factor,-2);
+						shootVehicleGun(hooman.getNetworkID(), this.getNetworkID(),
+							angle+spread, this.getPosition()+shootpos.RotateBy(this.getAngleDegrees()),
+								gunner.getAimPos(), 0.0f, 1, 0, 0.4f, 0.6f, 2,
+									this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
+
+						CBitStream params;
+						params.write_s32(this.get_f32("gunAngle"));
+						params.write_Vec2f(this.getPosition()+(shootpos-Vec2f(6*flip_factor,0)).RotateBy(this.getAngleDegrees()));
+
+						this.SendCommand(this.getCommandID("shoot"), params);
+						this.set_u32("fireDelayGun", getGameTime() + (shootDelay));
+					}
+				}
+			}
 			
 			CPlayer@ p = gunner.getOccupied().getPlayer();
 			PerkStats@ stats;
@@ -255,7 +303,7 @@ void onTick(CBlob@ this)
 	{
 		arm.ResetTransform();
 		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 8.0f));
-		arm.SetOffset(Vec2f(-19.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -20.5f + (this.isFacingLeft() ? -0.5f : 0.5f)));
+		arm.SetOffset(Vec2f(-19.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -10.0f + (this.isFacingLeft() ? -0.5f : 0.5f)));
 		arm.SetOffset(arm.getOffset() - Vec2f(-barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
 		arm.SetRelativeZ(-20.0f);
 	}
@@ -331,6 +379,21 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		
 		Vehicle_onFire(this, v, blob, charge);
 	}
+	else if (cmd == this.getCommandID("shoot"))
+	{
+		this.set_u32("next_shoot", getGameTime()+shootDelay);
+		s32 arrowAngle;
+		if (!params.saferead_s32(arrowAngle)) return;
+		Vec2f arrowPos;
+		if (!params.saferead_Vec2f(arrowPos)) return;
+
+		if (this.hasBlob("ammo", 1))
+		{
+			if (isServer()) this.TakeBlob("ammo", 1);
+			ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(this.isFacingLeft()?arrowAngle+180:arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+			this.getSprite().PlaySound("M60fire.ogg", 0.75f, 1.0f + XORRandom(15) * 0.01f);
+		}
+	}
 }
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
@@ -368,7 +431,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
 		Vec2f vel = Vec2f(0.0f, -27.5f).RotateBy(angle);
 		bullet.setVelocity(vel);
-		Vec2f pos = this.getPosition() + Vec2f((this.isFacingLeft() ? -1 : 1)*60.0f, -12.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
+		Vec2f pos = this.getPosition() + Vec2f((this.isFacingLeft() ? -1 : 1)*60.0f, -5.5f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
 		bullet.setPosition(pos + (this.isFacingLeft()?Vec2f(-12.0f,0):Vec2f(12.0f,0)).RotateBy((this.isFacingLeft()?angle+90:angle-90)));
 
 		CBlob@ hull = getBlobByNetworkID(this.get_u16("tankid"));
@@ -474,4 +537,28 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (customData >= HittersAW::bullet) return 0;
 	return damage;
+}
+
+void onRender(CSprite@ this)
+{
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+
+	AttachmentPoint@ GUNNER = blob.getAttachments().getAttachmentPointByName("GUNNER");
+	if (GUNNER !is null && GUNNER.getOccupied() !is null)
+	{
+		CBlob@ driver_blob = GUNNER.getOccupied();
+		if (!driver_blob.isMyPlayer()) return;
+
+		// draw ammo count
+		Vec2f oldpos = driver_blob.getOldPosition();
+		Vec2f pos = driver_blob.getPosition();
+		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) + Vec2f(0, -22);
+
+		GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
+		GUI::DrawIcon("Materials.png", 31, Vec2f(16,16), pos2d+Vec2f(-40, 42.0f), 0.75f, 1.0f);
+		GUI::SetFont("menu");
+		if (blob.getInventory() !is null)
+			GUI::DrawTextCentered(""+blob.getInventory().getCount("ammo"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
+	}
 }

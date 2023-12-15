@@ -57,6 +57,7 @@ class VehicleInfo
 	u16 charge;
 	u16 last_charge;
 	u16 cooldown_time;
+	u32 fired_amount;
 
 	AmmoInfo@ getCurrentAmmo()
 	{
@@ -96,20 +97,8 @@ void Vehicle_Setup(CBlob@ this,
 	v.current_ammo_index = 0;
 	v.last_fired_index = 0;
 	v.wep_angle = 0.0f;
+	v.fired_amount = 1;
 
-	this.addCommandID("fire");
-	this.addCommandID("fire blob");
-	this.addCommandID("flip_over");
-	this.addCommandID("getin_mag");
-	this.addCommandID("load_ammo");
-	this.addCommandID("ammo_menu");
-	this.addCommandID("swap_ammo");
-	this.addCommandID("sync_ammo");
-	this.addCommandID("sync_last_fired");
-	this.addCommandID("putin_mag");
-	this.addCommandID("vehicle getout");
-	this.addCommandID("reload");
-	this.addCommandID("recount ammo");
 	this.Tag("vehicle");
 	this.getShape().getConsts().collideWhenAttached = false;
 	AttachmentPoint@ mag = getMagAttachmentPoint(this);
@@ -523,12 +512,16 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 					}
 				}
 
+				v.fired_amount++;
+				this.set_u32("fired_amount", v.fired_amount);
+				
 				v.getCurrentAmmo().loaded_ammo = 0;
 				SetOccupied(mag, 0);
 			
 				v.last_fired_index = v.current_ammo_index;
 				CBitStream params;
 				params.write_u8(v.last_fired_index);
+				params.write_u32(v.fired_amount);
 				this.SendCommand(this.getCommandID("sync_last_fired"), params);
 			}
 		}
@@ -988,7 +981,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								v.firing = true;
 								CBlob@ b = ap.getOccupied();
 							}
-
 							if (Vehicle_canFire(this, v, ap.isKeyPressed(key_action1), ap.isKeyPressed(key_action1), charge) && canFire(this, v) && (blob.isMyPlayer() || (isServer() && blob.isBot())))
 							{
 								Vec2f aimPos = ap.getAimPos();
@@ -1002,6 +994,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
 									has_owner = true;
 
+								// shoot machineguns
 								if (this.hasTag("machinegun") && !this.hasTag("firethrower") && this.get_u32("no_more_proj") < getGameTime() && this.hasBlob("ammo", 1))
 								{
 									this.set_u32("no_more_proj", getGameTime()+v.getCurrentAmmo().fire_delay);

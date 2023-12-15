@@ -89,14 +89,14 @@ void buildT2ShopCombined(CBlob@ this)
 	{string[] params = {n_m60,t_m60,bn_m60,d_m60,b,s,ds};
 	makeShopItem(this,params,c_m60-5);}
 
+	{string[] params = {n_bc25t,t_bc25t,bn_bc25t,d_bc25t,b,s,ds};
+	makeShopItem(this,params,c_bc25t);}
+
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-5);}
 
 	{string[] params = {n_maus,t_maus,bn_maus,d_maus,b,s,ds};
 	makeShopItem(this,params,c_maus);}
-
-	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
-	makeShopItem(this,params,c_armory-5);}
 
 	{string[] params = {n_mgun,t_mgun,bn_mgun,d_mgun,b,s,ds};
 	makeShopItem(this,params,c_mgun-1, Vec2f(1,1), false, true);}
@@ -104,11 +104,14 @@ void buildT2ShopCombined(CBlob@ this)
 	{string[] params = {n_jav,t_jav,bn_jav,d_jav,b,s,ds};
 	makeShopItem(this,params,c_jav-3, Vec2f(1,1), true, false);}
 
+	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
+	makeShopItem(this,params,c_armory-5);}
+
 	{string[] params = {n_bf109,t_bf109,bn_bf109,d_bf109,b,s,ds};
-	makeShopItem(this,params,c_bf109-5);}
+	makeShopItem(this,params,c_bf109-5, Vec2f(3,2), false, false);}
 
 	{string[] params = {n_bomber,t_bomber,bn_bomber,d_bomber,b,s,ds};
-	makeShopItem(this,params,c_bomber);}
+	makeShopItem(this,params,c_bomber, Vec2f(3,2), false, false);}
 
 	{string[] params = {n_uh1,t_uh1,bn_uh1,d_uh1,b,s,ds};
 	makeShopItem(this,params,c_uh1);}
@@ -155,6 +158,9 @@ void buildT3ShopCombined(CBlob@ this)
 	{string[] params = {n_m60,t_m60,bn_m60,d_m60,b,s,ds};
 	makeShopItem(this,params,c_m60-10);}
 
+	{string[] params = {n_bc25t,t_bc25t,bn_bc25t,d_bc25t,b,s,ds};
+	makeShopItem(this,params,c_bc25t-5);}
+
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-10);}
 
@@ -165,10 +171,10 @@ void buildT3ShopCombined(CBlob@ this)
 	makeShopItem(this,params,c_armory-10);}
 
 	{string[] params = {n_bf109,t_bf109,bn_bf109,d_bf109,b,s,ds};
-	makeShopItem(this,params,c_bf109-10);}
+	makeShopItem(this,params,c_bf109-10, Vec2f(3,2), false, false);}
 
 	{string[] params = {n_bomber,t_bomber,bn_bomber,d_bomber,b,s,ds};
-	makeShopItem(this,params,c_bomber-5);}
+	makeShopItem(this,params,c_bomber-5, Vec2f(3,2), false, false);}
 
 	{string[] params = {n_uh1,t_uh1,bn_uh1,d_uh1,b,s,ds};
 	makeShopItem(this,params,c_uh1-10);}
@@ -264,6 +270,9 @@ void buildT2ShopGround(CBlob@ this)
 	{string[] params = {n_m60,t_m60,bn_m60,d_m60,b,s,ds};
 	makeShopItem(this,params,c_m60-5);}
 
+	{string[] params = {n_bc25t,t_bc25t,bn_bc25t,d_bc25t,b,s,ds};
+	makeShopItem(this,params,c_bc25t);}
+
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-5);}
 
@@ -280,12 +289,12 @@ void buildT2ShopGround(CBlob@ this)
 	makeShopItem(this,params,c_jav-3, Vec2f(1,1), true, false);}
 
 	{string[] params = {n_barge,t_barge,bn_barge,d_barge,b,s,ds};
-	makeShopItem(this,params,c_barge, Vec2f(3,2), false, true);}
+	makeShopItem(this,params,c_barge, Vec2f(2,2), false, true);}
 
 	{
 		ShopItem@ s = addShopItem(this, "Upgrade to Tier 3", "$vehiclebuildert3$", "vehiclebuildert3ground", "Tier 3 - Ground Vehicle builder.\n\nUnlocks more specific vehicles for late-game.", false, false);
 		s.customButton = true;
-		s.buttonwidth = 2;
+		s.buttonwidth = 1;
 		s.buttonheight = 2;
 		
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
@@ -320,6 +329,9 @@ void buildT3ShopGround(CBlob@ this)
 	{string[] params = {n_m60,t_m60,bn_m60,d_m60,b,s,ds};
 	makeShopItem(this,params,c_m60-10);}
 
+	{string[] params = {n_bc25t,t_bc25t,bn_bc25t,d_bc25t,b,s,ds};
+	makeShopItem(this,params,c_bc25t-5);}
+
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-10);}
 
@@ -330,13 +342,13 @@ void buildT3ShopGround(CBlob@ this)
 	makeShopItem(this,params,c_armory-10);}
 
 	{string[] params = {n_truckbig,t_truckbig,bn_truckbig,d_truckbig,b,s,ds};
-	makeShopItem(this,params,c_truckbig, Vec2f(3,2));}
+	makeShopItem(this,params,c_truckbig, Vec2f(2,2));}
 
 	{string[] params = {n_arti,t_arti,bn_arti,d_arti,b,s,ds};
 	makeShopItem(this,params,c_arti, Vec2f(3,2));}
 
 	{string[] params = {n_barge,t_barge,bn_barge,d_barge,b,s,ds};
-	makeShopItem(this,params,c_barge-2, Vec2f(4,2), false, true);}
+	makeShopItem(this,params,c_barge-2, Vec2f(3,2), false, true);}
 	
 	{string[] params = {n_mgun,t_mgun,bn_mgun,d_mgun,b,s,ds};
 	makeShopItem(this,params,c_mgun-3, Vec2f(1,1), false, true);}

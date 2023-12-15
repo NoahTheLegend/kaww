@@ -16,8 +16,6 @@ const Vec2f rightVelo = Vec2f(0.03f, 0.00f);
 const Vec2f minClampVelocity = Vec2f(-0.50f, -0.80f);
 const Vec2f maxClampVelocity = Vec2f( 0.475f, 0.00f);
 
-const f32 projDamage = 0.275f;
-
 const f32 thrust = 1020.00f;
 
 const u8 cooldown_time = 15;//210;
@@ -28,6 +26,7 @@ const s16 init_gunoffset_angle = -3; // up by so many degrees
 const Vec2f gun_clampAngle = Vec2f(-180, 180);
 const Vec2f miniGun_offset = Vec2f(-40,5);
 const u8 shootDelay = 2;
+const f32 projDamage = 0.275f;
 
 const int trap_cooldown = 20*30;
 const u8 traps_amount = 6;
@@ -50,7 +49,7 @@ void onInit(CBlob@ this)
 	this.Tag("helicopter");
 	
 	this.set_bool("lastTurn", false);
-	this.addCommandID("shoot bullet");
+	this.addCommandID("shoot rocket");
 	this.addCommandID("release traps");
 	this.addCommandID("sync_vel");
 
@@ -501,7 +500,7 @@ void ShootBullet(CBlob @this, Vec2f arrowPos, Vec2f aimpos, f32 arrowspeed)
 	CBitStream params;
 	params.write_Vec2f(arrowPos);
 	params.write_Vec2f(arrowVel);
-	this.SendCommand(this.getCommandID("shoot bullet"), params);
+	this.SendCommand(this.getCommandID("shoot rocket"), params);
 }
 
 void ReleaseTraps(CBlob@ this)
@@ -580,7 +579,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(this.isFacingLeft()?arrowAngle+180:arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 		}
 	}
-	else if (cmd == this.getCommandID("shoot bullet"))
+	else if (cmd == this.getCommandID("shoot rocket"))
 	{
 		this.set_u32("next_shoot", getGameTime()+15);
 		Vec2f arrowPos;

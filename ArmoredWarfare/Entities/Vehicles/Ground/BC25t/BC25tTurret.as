@@ -1,40 +1,36 @@
 #include "VehicleCommon.as"
 #include "GenericButtonCommon.as";
-#include "Explosion.as";
+#include "Explosion.as"
 #include "Hitters.as"
 #include "PerksCommon.as";
 
-string[] smoke = 
-{
-	"Explosion.png",
-	"LargeSmoke"
-};
-
-const u16 cooldown_time = 280;//210;
-const u8 barrel_compression = 11; // max barrel movement
-const u16 recoil = 275;
-const f32 damage_modifier = 1.125f;
+const u16 cooldown_time = 480;
+const u16 cycle_cooldown = 90;
+const u8 barrel_compression = 8; // max barrel movement
+const u16 recoil = 120;
+const u8 cassette_size = 4;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 // 0 == up, 90 == sideways
-f32 high_angle = 75.0f; // upper depression limit
-f32 low_angle = 97.5f; // lower depression limit
+f32 high_angle = 62.0f;
+f32 low_angle = 115.0f;
 
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
 	this.Tag("turret");
 	this.Tag("tank");
-	this.Tag("has mount");
+	this.Tag("autoturret");
 	this.Tag("blocks bullet");
 
-	this.set_f32("damage_modifier", damage_modifier);
+	this.set_u16("cooldown_time", cooldown_time);
+	this.set_u8("cassette_size", cassette_size);
 
 	Vehicle_Setup(this,
 	    0.0f, // move speed
 	    0.3f,  // turn speed
-	    Vec2f(0.0f, 0.56f), // jump out velocity
+	    Vec2f(0.0f, -2.5f), // jump out velocity
 	    true);  // inventory access
 
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
@@ -63,43 +59,50 @@ void onInit(CBlob@ this)
 	consts.collideWhenAttached = true;	 // we have our own map collision
 
 	// auto-load on creation
-	if (getNet().isServer())
-	{
-		CBlob@ bow = server_CreateBlob("heavygun");	
-
-		if (bow !is null)
-		{
-			bow.server_setTeamNum(this.getTeamNum());
-			this.server_AttachTo( bow, "BOW" );
-			this.set_u16("bowid", bow.getNetworkID());
-
-			bow.SetFacingLeft(this.isFacingLeft());
-		}
-
-		CBlob@ ammo = server_CreateBlob("mat_bolts");
-		if (ammo !is null)
-		{
-			if (!this.server_PutInInventory(ammo))
-				ammo.server_Die();
-		}
-	}
-
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 24, 80);
+	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 32, 80);
 
 	if (arm !is null)
 	{
 		f32 angle = low_angle;
 
 		Animation@ anim = arm.addAnimation("default", 0, false);
-		anim.AddFrame(20);
+		anim.AddFrame(14);
 
 		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
 		if (arm !is null)
 		{
-			arm.SetRelativeZ(0.5f);
-			arm.SetOffset(Vec2f(-90.0f, -7.0f));
+			arm.SetRelativeZ(2.5f);
+		}
+	}
+
+	CSpriteLayer@ tur = sprite.addSpriteLayer("turret", sprite.getConsts().filename, 32, 80);
+
+	if (tur !is null)
+	{
+		f32 angle = low_angle;
+
+		Animation@ anim = tur.addAnimation("default", 0, false);
+		anim.AddFrame(15);
+
+		CSpriteLayer@ tur = this.getSprite().getSpriteLayer("tur");
+		if (tur !is null)
+		{
+			tur.SetRelativeZ(2.6f);
+		}
+	}
+
+	// auto-load on creation
+	if (getNet().isServer())
+	{
+		CBlob@ ammo = server_CreateBlob("mat_bolts");
+		if (ammo !is null)
+		{
+			if (!this.server_PutInInventory(ammo))
+				ammo.server_Die();
+
+			ammo.server_SetQuantity(ammo.getQuantity()*2);
 		}
 	}
 
@@ -121,6 +124,7 @@ void onInit(CBlob@ this)
 	sprite.SetEmitSound("Hydraulics.ogg");
 	sprite.SetEmitSoundPaused(true);
 	sprite.SetEmitSoundVolume(1.25f);
+	sprite.SetEmitSoundSpeed(1.25f);
 }
 
 f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
@@ -133,7 +137,7 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 	if (gunner !is null && gunner.getOccupied() !is null && !gunner.isKeyPressed(key_action2) && !this.hasTag("broken"))
 	{
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+		Vec2f aim_vec = gunner.getPosition()-Vec2f(0,4) - gunner.getAimPos();
 
 		if ((!facing_left && aim_vec.x < 0) ||
 		        (facing_left && aim_vec.x > 0))
@@ -172,15 +176,15 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
-	s16 currentAngle = this.get_f32("gunelevation");
-
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{
 		return;
 	}
-	
+
 	this.getShape().SetOffset(this.isFacingLeft()? Vec2f(-5.0f, -12): Vec2f(5, -12));
+	
+	s16 currentAngle = this.get_f32("gunelevation");
 
 	if (getGameTime() % 5 == 0)
 	{
@@ -193,6 +197,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
+	bool fl = this.isFacingLeft();
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		bool broken = this.hasTag("broken");
@@ -211,17 +216,31 @@ void onTick(CBlob@ this)
 		if (gunner !is null && gunner.getOccupied() !is null && !broken)
 		{
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+			CBlob@ oc = gunner.getOccupied();
+			if (oc.isMyPlayer())
+			{
+				CControls@ c = oc.getControls();
+				if (c !is null)
+				{
+					if (c.isKeyPressed(KEY_LSHIFT) && c.isKeyPressed(KEY_KEY_R))
+					{
+						CBitStream params;
+						params.write_bool(true);
+						this.SendCommand(this.getCommandID("reload_mag"), params);
+					}
+				}
+			}
 			
-			CPlayer@ p = gunner.getOccupied().getPlayer();
+			CPlayer@ p = oc.getPlayer();
 			PerkStats@ stats;
 			if (p !is null && p.get("PerkStats", @stats))
 			{
 				isOperator = stats.id == Perks::operator;
-				high_angle = 75.0f - stats.top_angle;
-				low_angle =  97.5f + stats.down_angle;
+				high_angle = 70.0f - stats.top_angle;
+				low_angle =  105.0f + stats.down_angle;
 			}
 
-			bool facing_left = this.isFacingLeft();
+			bool facing_left = fl;
 		}
 
 		if (angle < 0)
@@ -263,84 +282,44 @@ void onTick(CBlob@ this)
 			}
 		}
 
-		if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360.0f-high_angle, Maths::Max(this.get_f32("gunelevation") , 360.0f-low_angle)));
+		if (fl) this.set_f32("gunelevation", Maths::Min(360.0f-high_angle, Maths::Max(this.get_f32("gunelevation") , 360.0f-low_angle)));
 		else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 	}
 
-	if (this.isFacingLeft()) this.set_f32("gunelevation", Maths::Min(360.0f-high_angle, Maths::Max(this.get_f32("gunelevation") , 360.0f-low_angle)));
+	if (fl) this.set_f32("gunelevation", Maths::Min(360.0f-high_angle, Maths::Max(this.get_f32("gunelevation") , 360.0f-low_angle)));
 	else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 
+	// intended shitcode fix it if you really want
 	CSprite@ sprite = this.getSprite();
+	f32 x = fl ? 2.0f : -4.0f;
+	f32 y = fl ? -37.0f : -45.0f;
 	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
 	if (arm !is null)
 	{
 		arm.ResetTransform();
-		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 15.5f));
-		arm.SetOffset(Vec2f(-20.0f, -27.0f));
-		arm.SetOffset(arm.getOffset() - Vec2f(-barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
+		arm.RotateBy(this.get_f32("gunelevation"), Vec2f(4.0f, 22.0f));
+		arm.SetOffset(Vec2f(x, y+3));
+		arm.SetOffset(arm.getOffset() - Vec2f(-barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, barrel_compression), 0).RotateBy(fl ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
 		arm.SetRelativeZ(-50.0f);
 	}
-}
-
-
-void DoExplosion(CBlob@ this)
-{
-	if (this.hasTag("exploded")) return;
-
-	f32 angle = -this.get_f32("bomb angle");
-
-	this.set_f32("map_damage_radius", 35.0f);
-	this.set_f32("map_damage_ratio", 0.41f);
-	
-	Explode(this, 128.0f, 2.0f);
-	if (isClient())
+	CSpriteLayer@ tur = sprite.getSpriteLayer("turret");
+	if (tur !is null)
 	{
-		Vec2f pos = this.getPosition();
-		CMap@ map = getMap();
-		
-		for (int i = 0; i < (v_fastrender ? 12 : 32); i++)
-		{
-			ParticleAnimated(smoke[XORRandom(smoke.length)], (this.getPosition() + Vec2f((this.isFacingLeft() ? -1 : 1)*12.0f, 0.0f)) + Vec2f(XORRandom(36) - 18, XORRandom(36) - 18), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.16f), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 9 + XORRandom(5), XORRandom(70) * -0.00005f, true);
-			
-			if (i%3!=0 || this.hasTag("apc")) continue;
-			makeGibParticle(
-			"EmptyShell",               		// file name
-			this.getPosition(),                 // position
-			(Vec2f(0.0f,-0.5f) + getRandomVelocity(180, 5, 360)), // velocity
-			0,                                  // column
-			0,                                  // row
-			Vec2f(16, 16),                      // frame size
-			0.5f,                               // scale?
-			0,                                  // ?
-			"ShellCasing",                      // sound
-			this.get_u8("team_color"));         // team number
-		}
+		tur.ResetTransform();
+		tur.RotateBy(this.get_f32("gunelevation"), Vec2f(0.0f, 17.0f));
+		tur.SetOffset(Vec2f(x, y)+(fl?Vec2f(-4,4):Vec2f(2,12)));
+		tur.SetRelativeZ(-49.0f);
 	}
-
-	this.Tag("exploded");
-	if (!v_fastrender) this.getSprite().Gib();
 }
 
 // Blow up
 void onDie(CBlob@ this)
 {
-	DoExplosion(this);
-	Explode(this, 64.0f, 1.0f);
+	//DoExplosion(this);
+
+	//Explode(this, 64.0f, 1.0f);
 
 	this.getSprite().PlaySound("/turret_die");
-}
-
-void GetButtonsFor(CBlob@ this, CBlob@ caller)
-{
-	if (!canSeeButtons(this, caller)) return;
-
-	//if (isOverlapping(this, caller) && !caller.isAttached())
-	{
-		if (!Vehicle_AddFlipButton(this, caller) && caller.getTeamNum() == this.getTeamNum())
-		{
-			//Vehicle_AddLoadAmmoButton(this, caller);
-		}
-	}
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
@@ -369,7 +348,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
 {
 	v.firing = v.firing || isActionPressed;
-
 	bool hasammo = v.getCurrentAmmo().loaded_ammo > 0;
 
 	u8 charge = v.charge;
@@ -397,13 +375,13 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 	{
 		bullet.Tag("shell");
 		u8 charge_prop = _charge;
-
+		bool fl = this.isFacingLeft();
 		f32 angle = this.get_f32("gunelevation") + this.getAngleDegrees();
 		Vec2f vel = Vec2f(0.0f, -27.5f).RotateBy(angle);
 		bullet.setVelocity(vel);
-		Vec2f pos = this.getPosition() + Vec2f((this.isFacingLeft() ? -1 : 1)*66.0f, -10.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
-		bullet.setPosition(pos + (this.isFacingLeft()?Vec2f(-14.0f,0):Vec2f(14.0f,0)).RotateBy((this.isFacingLeft()?angle+90:angle-90)));
-		pos = pos + (this.isFacingLeft()?Vec2f(-3.0f,0):Vec2f(3.0f,0));
+		Vec2f pos = this.getPosition() + Vec2f((fl ? -1 : 1)*56.0f, -17.5f).RotateBy((fl?angle+90:angle-90));
+		bullet.setPosition(pos + (fl?Vec2f(-12.0f,0):Vec2f(12.0f,0)).RotateBy((fl?angle+90:angle-90)));
+		pos = pos + (fl?Vec2f(-5.0f,0):Vec2f(5.0f,0));
 
 		CBlob@ hull = getBlobByNetworkID(this.get_u16("tankid"));
 
@@ -416,7 +394,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 		if (isClient())
 		{
-			bool facing = this.isFacingLeft();
+			bool facing = fl;
 			for (int i = 0; i < 16; i++)
 			{
 				ParticleAnimated("LargeSmokeGray", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(10+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2 + XORRandom(2), -0.0031f, true);
@@ -426,12 +404,12 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 			for (int i = 0; i < 4; i++)
 			{
 				float angle = Maths::ATan2(vel.y, vel.x) + 20;
-				ParticleAnimated("LargeSmoke", pos, this.getShape().getVelocity() + Vec2f(Maths::Cos(angle), Maths::Sin(angle))/2, float(XORRandom(360)), 0.5f + XORRandom(60) * 0.01f, 4 + XORRandom(3), -0.0031f, true);
+				ParticleAnimated("LargeSmoke", pos, this.getShape().getVelocity() + Vec2f(Maths::Cos(angle), Maths::Sin(angle))/2, float(XORRandom(360)), 0.4f + XORRandom(40) * 0.01f, 4 + XORRandom(3), -0.0031f, true);
 				float angle2 = Maths::ATan2(vel.y, vel.x) - 20;
-				ParticleAnimated("LargeSmoke", pos, this.getShape().getVelocity() + Vec2f(Maths::Cos(angle2), Maths::Sin(angle2))/2, float(XORRandom(360)), 0.5f + XORRandom(60) * 0.01f, 4 + XORRandom(3), -0.0031f, true);
+				ParticleAnimated("LargeSmoke", pos, this.getShape().getVelocity() + Vec2f(Maths::Cos(angle2), Maths::Sin(angle2))/2, float(XORRandom(360)), 0.4f + XORRandom(40) * 0.01f, 4 + XORRandom(3), -0.0031f, true);
 
-				ParticleAnimated("LargeSmokeGray", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(70) * 0.01f, 8 + XORRandom(3), -0.0031f, true);
-				ParticleAnimated("Explosion", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(70) * 0.01f, 2, -0.0031f, true);
+				ParticleAnimated("LargeSmokeGray", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 6 + XORRandom(3), -0.0031f, true);
+				ParticleAnimated("Explosion", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2, -0.0031f, true);
 			}
 		}
 
@@ -450,7 +428,21 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 	v.last_charge = _charge;
 	v.charge = 0;
-	v.cooldown_time = v.getCurrentAmmo().fire_delay;
+
+	if (v.fired_amount < cassette_size)
+	{
+		v.getCurrentAmmo().fire_delay = cycle_cooldown;
+		v.cooldown_time = cycle_cooldown;
+		v.fire_time = 0;
+	}
+	else
+	{
+		v.getCurrentAmmo().fire_delay = cooldown_time;
+		v.cooldown_time = cooldown_time;
+		v.fired_amount = 0;
+	}
+
+	this.set_u32("fired_amount", v.fired_amount);
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)

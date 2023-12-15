@@ -493,6 +493,7 @@ class PNGLoader
 			case map_colors::blue_btr82a:      autotile(offset); spawnVehicle(map, "btr82a",   offset, teamleft); break;
 			case map_colors::blue_t10:       autotile(offset); spawnVehicle(map, "t10",   offset, teamleft); break;
 			case map_colors::blue_m60:         autotile(offset); spawnVehicle(map, "m60",   offset, teamleft); break;
+			case map_colors::blue_bc25t:         autotile(offset); spawnVehicle(map, "bc25t",   offset, teamleft); break;
 			case map_colors::blue_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, teamleft); break;
 			case map_colors::blue_bf109:         autotile(offset); spawnVehicle(map, "bf109",   offset, teamleft); break;
 			case map_colors::blue_bomberplane:         autotile(offset); spawnVehicle(map, "bomberplane",   offset, teamleft); break;
@@ -506,6 +507,7 @@ class PNGLoader
 			case map_colors::red_btr82a:       autotile(offset); spawnVehicle(map, "btr82a",   offset, teamright); break;
 			case map_colors::red_t10:        autotile(offset); spawnVehicle(map, "t10",   offset, teamright); break;
 			case map_colors::red_m60:          autotile(offset); spawnVehicle(map, "m60",   offset, teamright); break;
+			case map_colors::red_bc25t:          autotile(offset); spawnVehicle(map, "bc25t",   offset, teamright); break;
 			case map_colors::red_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, teamright); break;
 			case map_colors::red_bf109:        autotile(offset); spawnVehicle(map, "bf109",   offset, teamright); break;
 			case map_colors::red_bomberplane:        autotile(offset); spawnVehicle(map, "bomberplane",   offset, teamright); break;
