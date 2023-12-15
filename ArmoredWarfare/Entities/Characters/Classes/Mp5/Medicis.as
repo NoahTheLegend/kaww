@@ -142,20 +142,13 @@ void onRender(CSprite@ this)
 		{
 			float bucketAmount = thisBlob.get_f32(bucketAmountString);
 			float bucketCost = 1.0f / bucket_Max_Charges;
+
 			drawBucketHud(bucketAmount, bucketCost); // MedicisCommon.as
+			renderMedicIdentifier(thisBlob);
 		}
 		else if (!renderBlob.hasTag(medicTagString)) // only draw medic identifier on people if you yourself are not a medic
 		{
-			Vec2f oldpos = getDriver().getScreenPosFromWorldPos(thisBlob.getOldPosition());
-			Vec2f pos = getDriver().getScreenPosFromWorldPos(thisBlob.getPosition());
-
-			string token = thisBlob.get_string("emote");
-			u32 time = thisBlob.get_u32("emotetime");
-			if (!(time > getGameTime() && token != ""))
-			{
-				Vec2f pos2d = Vec2f_lerp(oldpos, pos, interfactor) + Vec2f(-18, -80);
-				drawMedicIdentifier(pos2d); // MedicisCommon.as
-			}
+			renderMedicIdentifier(thisBlob);
 		}
 	}
 	else if (draw_call && renderBlob.hasTag(medicTagString)) // if YOU are a medic, draw the "Help Me" icon on players with the variable set TRUE
@@ -173,6 +166,22 @@ void onRender(CSprite@ this)
 
 	if (thisBlob.hasTag("target_to_heal"))
 		thisBlob.Untag("target_to_heal");
+}
+
+void renderMedicIdentifier(CBlob@ thisBlob)
+{
+	f32 interfactor = getInterpolationFactor();
+	Vec2f oldpos = getDriver().getScreenPosFromWorldPos(thisBlob.getOldPosition());
+	Vec2f pos = getDriver().getScreenPosFromWorldPos(thisBlob.getPosition());
+
+	string token = thisBlob.get_string("emote");
+	u32 time = thisBlob.get_u32("emotetime");
+	f32 diff = 0;
+	if (time+10 > getGameTime()) diff = time+10 - getGameTime();
+
+	u8 alpha = Maths::Max(0, 255*(1.0f-(Maths::Min(1.0f, diff/12))));
+	Vec2f pos2d = Vec2f_lerp(oldpos, pos, interfactor) + Vec2f(-18, -80);
+	drawMedicIdentifier(pos2d, alpha); // MedicisCommon.as
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
