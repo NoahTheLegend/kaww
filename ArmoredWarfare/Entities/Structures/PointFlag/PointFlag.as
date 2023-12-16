@@ -3,19 +3,13 @@
 
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
-
 const f32 capture_time = 3000;
-const u16 crate_frequency_min = 180; // 3.0 min
-const u16 crate_frequency_seconds = 5.0f * 60; // 5 min by default
-const u16 increase_frequency_byplayer = 6; // 10 players decrease by 1 min
-const u16 min_items = 8;
-const u16 rand_items = 2;
+const Vec2f startpos = Vec2f(9.0f, -51.0f);
 
 //flags HUD is in TDM_Interface
 
 void onInit(CBlob@ this)
 {
-	//this.server_setTeamNum(0);
 	this.getShape().getConsts().mapCollisions = false;
 
 	this.set_f32(capture_prop, 0);
@@ -24,97 +18,78 @@ void onInit(CBlob@ this)
 	this.set_u8("numcapping", 0);
 	this.set_f32("offsety", -51.0f);
 
-	this.set_u32("crate_timer", 0);
-
 	this.set_u8("oldteam", this.getTeamNum());
 
-	u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
-	this.set_u32("crate_timer_end", num);
-}
-
-void onChangeTeam(CBlob@ this, const int oldTeam)
-{
-	if (oldTeam > 6)
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+	CSpriteLayer@ flag = sprite.addSpriteLayer("flag", "CTF_Flag.png", 32, 16);
+	if (flag !is null)
 	{
-		this.set_f32(capture_prop, 0);
-	}
+		flag.SetRelativeZ(10.0f);
+		flag.SetOffset(startpos);
 
-	//this.set_u8("oldteam", this.getTeamNum());
-	
-	CBlob@[] blobs;
-	bool won = false;
-	u8 numteamleft = getRules().get_u8("teamleft");
-	u8 numteamright = getRules().get_u8("teamright");
+		u8 teamleft = getRules().get_u8("teamleft");
+		u8 teamright = getRules().get_u8("teamright");
 
-	u8 teamleft = 0;
-	u8 teamright = 0;
-	getBlobsByName("pointflag", @blobs);
-	{
-		for (u8 i = 0; i < blobs.length; i++)
+		Animation@ anim_default = flag.addAnimation("flag_wave255", XORRandom(3)+3, true);
+		int[] frames = {28,29,30,31};
+		if (anim_default !is null)
+			anim_default.AddFrames(frames);
+
+		Animation@ anim_teamleft = flag.addAnimation("flag_wave"+teamleft, XORRandom(3)+3, true);
+		Animation@ anim_teamright = flag.addAnimation("flag_wave"+teamright, XORRandom(3)+3, true);
+
+		if (anim_teamleft !is null && anim_teamright !is null)
 		{
-			CBlob@ b = blobs[i];
-			if (b is null) continue;
-			if (b.getTeamNum() != numteamleft && b.getTeamNum() != numteamright) return;
-			b.getTeamNum() == numteamleft ? teamleft++ : teamright++;
+			for (u8 i = 0; i < 4; i++)
+			{
+				u8 frameleft = 4*teamleft+i;
+				u8 frameright = 4*teamright+i;
+
+				//printf("adding frameleft "+frameleft);
+				//printf("adding framerihgt "+frameright);
+
+				anim_teamleft.AddFrame(frameleft);
+				anim_teamright.AddFrame(frameright);
+			}
+
+			u8 team = this.getTeamNum();
+			if (team < 7) flag.SetAnimation((team == getRules().get_u8("teamleft") ? anim_teamleft : anim_teamright));
 		}
 	}
-	u8 team = 255;
-	if (teamright == 0) team = numteamleft;
-	else if (teamleft == 0) team = numteamright;
-	//printf("old "+oldteam);
-	//printf("team "+team);
-	if (getRules() !is null && team != 255)
+}
+
+const f32 pole_height = 100.0f;
+void onTick(CSprite@ sprite)
+{
+	CBlob@ this = sprite.getBlob();
+	if (this is null) return;
 	{
-		getRules().SetTeamWon(team);
-		getRules().SetCurrentState(GAME_OVER);
-		CTeam@ teamis = getRules().getTeam(team);
-		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
+		CSpriteLayer@ flag = sprite.getSpriteLayer("flag");
+		if (flag !is null)
+		{
+			u8 teamleft = getRules().get_u8("teamleft");
+			u8 teamright = getRules().get_u8("teamright");
+			u8 cap_team = this.getTeamNum();
+
+			f32 cap = this.get_f32(capture_prop);
+			f32 slide = cap/capture_time * pole_height;
+			if (cap_team == 255) slide *= 2;
+
+			flag.SetOffset(Vec2f(0, slide) + startpos);
+			flag.SetAnimation("flag_wave"+cap_team);
+		}
 	}
 }
 
 void onTick(CBlob@ this)
 {
-	if (this.getTickSinceCreated() == 1)
-	{
-		CSprite@ sprite = this.getSprite();
-		if (sprite is null) return;
-		CSpriteLayer@ flag = sprite.addSpriteLayer("flag", "CTF_Flag.png", 32, 16);
-		if (flag !is null)
-		{
-			flag.SetRelativeZ(10.0f);
-			flag.SetOffset(Vec2f(9.0f, -51.0f));
-	
-			u8 teamleft = getRules().get_u8("teamleft");
-			u8 teamright = getRules().get_u8("teamright");
-	
-			Animation@ anim_teamleft = flag.addAnimation("flag_wave_teamleft", XORRandom(3)+3, true);
-			Animation@ anim_teamright = flag.addAnimation("flag_wave_teamright", XORRandom(3)+3, true);
-	
-			if (anim_teamleft !is null && anim_teamright !is null)
-			{
-				for (u8 i = 0; i < 4; i++)
-				{
-					u8 frameleft = 4*teamleft+i;
-					u8 frameright = 4*teamright+i;
-	
-					//printf("adding frameleft "+frameleft);
-					//printf("adding framerihgt "+frameright);
-	
-					anim_teamleft.AddFrame(frameleft);
-					anim_teamright.AddFrame(frameright);
-				}
-	
-				u8 team = this.getTeamNum();
-				if (team < 7) flag.SetAnimation((team == getRules().get_u8("teamleft") ? anim_teamleft : anim_teamright));
-			}
-		}
-	}
     float capture_distance = 76.0f; //Distance from this blob that it can be cpaped
 
     u8 num_teamleft = 0;
     u8 num_teamright = 0;
 
-    array<CBlob@> blobs; //Blob array full of blobs
+    array<CBlob@> blobs;
     CMap@ map = getMap();
     map.getBlobsInRadius(this.getPosition() + Vec2f(4.0f,20.0f), capture_distance, blobs);
 
@@ -136,35 +111,6 @@ void onTick(CBlob@ this)
 	bool isTDM = (getMap().tilemapwidth <= 300);
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
-
-	if (!isTDM && getGameTime() % 30 == 0 && ((num_teamleft == 0 && this.getTeamNum() == teamright) || (num_teamright == 0 && this.getTeamNum() == teamleft)) && this.getTeamNum() < 7)
-	{
-		u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
-		this.set_u32("crate_timer_end", num);
-		this.set_u32("crate_timer", Maths::Min(this.get_u32("crate_timer")+1, num));
-		//printf('n '+num+" t "+this.get_u32("crate_timer"));
-
-		if (this.get_u32("crate_timer") >= num)
-		{
-			if (this.get_u16("last_crateid") != 0)
-			{
-				if (isServer())
-				{
-					CBlob@ crate = getBlobByNetworkID(this.get_u16("last_crateid"));
-					if (crate is null)
-					{
-						this.set_u32("crate_timer", 0);
-						if (isServer()) SpawnLootCrate(this);
-					}
-				}
-			}
-			else
-			{
-				this.set_u32("crate_timer", 0);
-				if (isServer()) SpawnLootCrate(this);
-			}
-		}
-	}
 
     this.set_u8("numcapping", 0);
 
@@ -226,110 +172,15 @@ void onTick(CBlob@ this)
     if (this.get_f32(capture_prop) >= (this.getTeamNum() == 255 ? capture_time/2 : capture_time))
     {
     	this.set_f32(capture_prop, 0);
-
     	this.server_setTeamNum(this.get_s8(teamcapping));
-
     	this.getSprite().PlaySound("UnlockClass", 3.0f, 1.0f); //CapturePoint
     } 
 	
-	CSprite@ sprite = this.getSprite();
-	if (sprite is null) return;
-	CSpriteLayer@ flag = sprite.getSpriteLayer("flag");
-	if (flag !is null)
-	{
-		f32 offsety = this.get_f32("offsety");
-		bool down = false;
-		u8 team = this.getTeamNum();
-		if (this.get_f32(capture_prop) < (capture_time / 2)) down = true;
-		if (down && !(team < 7)) flag.SetVisible(false);
-
-		if (team < 7)
-		{
-			f32 max = capture_time / 4;
-			f32 curr = this.get_f32(capture_prop);
-			f32 mod = (curr/(max)) * 1.0f;
-			offsety = (down ? -51.0f*(1.0f - mod) : 51.0f * (3.0f - mod));
-			if (offsety > 49.0f)
-			{
-				for (u8 i = 0; i < 15; i++)
-				{
-					sparks(this.getPosition()+Vec2f(0, 56.0f),
-					this.getAngleDegrees(),
-					3.5f + (XORRandom(10) / 10.0f),
-					getNeonColor(team, XORRandom(2)));
-				}
-			}
-		}
-		else
-		{
-			f32 max = capture_time / 4;
-			f32 curr = this.get_f32(capture_prop);
-			f32 mod = (curr/(max/2)) * 1.0f;
-			offsety = 17.5f * (3.0f - mod*1.5);
-
-			if (num_teamleft == 0 && num_teamright == 0 && this.get_f32(capture_prop) == 1)
-			{
-				for (u8 i = 0; i < 15; i++)
-				{
-					sparks(this.getPosition()+Vec2f(0, 56.0f),
-					this.getAngleDegrees(),
-					3.5f + (XORRandom(10) / 10.0f),
-					SColor(255, (this.hasTag("last_cap_teamright") ? 255 : 55), 75, (this.hasTag("last_cap_teamleft") ? 255 : 55)));
-				}
-			}
-		}
-
-		this.set_f32("offsety", offsety);
-
-		//printf(""+offsety);
-
-		flag.SetOffset(Vec2f(9.0f, offsety));
-		Animation@ anim_teamleft = flag.getAnimation("flag_wave_teamleft");
-		Animation@ anim_teamright = flag.getAnimation("flag_wave_teamright");
-		if (anim_teamleft !is null && anim_teamright !is null)
-		{
-			if (team < 7)
-			{
-				flag.SetVisible(true);
-				if (this.get_s8(teamcapping) == teamleft)
-				{
-					flag.SetAnimation(!down ? anim_teamleft : anim_teamright);
-				}
-				else if (this.get_s8(teamcapping) == teamright)
-				{
-					flag.SetAnimation(!down ? anim_teamright : anim_teamleft);
-				}
-				else if (this.get_s8(teamcapping) == -1)
-				{
-					flag.SetAnimation(this.getTeamNum() == teamleft ? anim_teamleft : anim_teamright);
-				}
-			}
-			else if (this.get_f32(capture_prop) > 0 || (num_teamleft > 0 || num_teamright > 0))
-			{
-				flag.SetVisible(true);
-				if (this.get_s8(teamcapping) == teamleft)
-				{
-					flag.SetAnimation(anim_teamleft);
-					this.Tag("last_cap_teamleft");
-					this.Untag("last_cap_teamright");
-				}
-				else if (this.get_s8(teamcapping) == teamright)
-				{
-					flag.SetAnimation(anim_teamright);
-					this.Tag("last_cap_teamright");
-					this.Untag("last_cap_teamleft");
-				}
-				else flag.SetVisible(false);
-			}
-		}
-	} 
 	if (isServer())
 	{
 		this.Sync(capture_prop, true);
 		this.Sync(teamcapping, true);
 		this.Sync("offsety", true);
-		this.Sync("crate_timer", true);
-		this.Sync("crate_timer_end", true);
 	}
 }
 
@@ -340,7 +191,7 @@ void sparks(Vec2f at, f32 angle, f32 speed, SColor color)
 	ParticlePixel(at, vel, color, true, 119);
 }
 
-void onRender(CSprite@ this)
+void onRender(CSprite@ this) // draw own capture bar
 {
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
@@ -361,8 +212,9 @@ void onRender(CSprite@ this)
 	Vec2f pos = pos2d + Vec2f(8.0f, 150.0f);
 	Vec2f dimension = Vec2f(115.0f - 8.0f, 22.0f);
 	f32 y = 0.0f;//blob.getHeight() * 100.8f;
+	u8 teamnum = blob.getTeamNum();
 	
-	f32 percentage = 1.0f - float(returncount) / float(blob.getTeamNum() == 255 ? capture_time/2 : capture_time);
+	f32 percentage = 1.0f - float(returncount) / float(teamnum == 255 ? capture_time/2 : capture_time);
 	Vec2f bar = Vec2f(pos.x + (dimension.x * percentage), pos.y + dimension.y);
 
 	f32 perc  = float(returncount) / float(blob.getTeamNum() == 255 ? capture_time/2 : capture_time);
@@ -371,40 +223,35 @@ void onRender(CSprite@ this)
 	SColor color_mid;
 	SColor color_dark;
 	SColor color_darker;
-
-	SColor color_team;
+	SColor flag_color_team = 0xff1c2525;
 
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
+	u8 team = 255;
+	u8 cap_team = blob.get_s8(teamcapping);
 
-	if (blob.getTeamNum() == teamright && returncount > 0 || blob.getTeamNum() == teamleft && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == teamleft)
+	if (returncount > 0) 
 	{
-		color_light = getNeonColor(teamleft, 0);
-		color_mid	=  getNeonColor(teamleft, 1);
-		color_dark	=  getNeonColor(teamleft, 2);
-		color_darker= 0xff222222;
+		if (teamnum == teamleft) // flag is left team
+		{
+			team = teamright;    // then set cap gauge to opposite
+			flag_color_team = getNeonColor(teamleft, 2); // and background to flagteam
+		}
+		else if (teamnum == teamright)
+		{
+			team = teamleft;
+			flag_color_team = getNeonColor(teamright, 2);
+		}
+		else
+		{
+			team = cap_team;
+		}
 	}
-	
-	if (blob.getTeamNum() == teamleft && returncount > 0 || blob.getTeamNum() == teamright && returncount == 0 || blob.getTeamNum() == 255 && blob.get_s8(teamcapping) == teamright)
-	{
-		color_light = getNeonColor(teamright, 0);
-		color_mid	= getNeonColor(teamright, 1);
-		color_dark	= getNeonColor(teamright, 2);
-		color_darker= 0xff222222;
-	}
-
-	if (blob.getTeamNum() == teamleft)
-	{
-		color_team = getNeonColor(teamleft, 0);
-	}
-	if (blob.getTeamNum() == teamright)
-	{
-		color_team = getNeonColor(teamright, 0);
-	}
-	if (blob.getTeamNum() == 255)
-	{
-		color_team = 0xff1c2525;//ff36373f;
-	}
+		
+	color_light = getNeonColor(team, 0);
+	color_mid	= getNeonColor(team, 1);
+	color_dark	= getNeonColor(team, 2);
+	color_darker= 0xff222222;
 
 	if (returncount != 0)
 	{
@@ -414,7 +261,7 @@ void onRender(CSprite@ this)
 
 
 		GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 3,                        pos.y + y + 1),
-						   Vec2f(pos.x + dimension.x - 2,                        pos.y + y + dimension.y - 3), color_team);
+						   Vec2f(pos.x + dimension.x - 2,                        pos.y + y + dimension.y - 3), flag_color_team);
 
 
 		// whiteness
@@ -439,215 +286,54 @@ void onRender(CSprite@ this)
 		}
 	}
 
-	if (blob.getTeamNum() >= 7 || blob.get_u8("numcapping") > 0) return;
+	if (teamnum >= 7 || blob.get_u8("numcapping") > 0) return;
 
 	bool isTDM = (getMap().tilemapwidth <= 300);
 	if (isTDM) return;
-	
-	// draw crate generation progress
-	dimension = Vec2f(50, 15);
-	y = 32.0f;
-	u32 num = Maths::Max(crate_frequency_min, crate_frequency_seconds-(getPlayersCount()*increase_frequency_byplayer));
-	blob.set_u32("crate_timer_end", num);
-	perc = float(blob.get_u32("crate_timer")) / float(num);
-
-	// Border
-	GUI::DrawRectangle(Vec2f(pos.x - dimension.x,                        pos.y + y - 1),
-						 Vec2f(pos.x + dimension.x,                        pos.y + y + dimension.y - 1), color_darker);
-
-	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 3,                        pos.y + y + 1),
-					    Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 2, pos.y + y + dimension.y - 3), color_mid);
-
-	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 7,                        pos.y + y + 1),
-						Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 6, pos.y + y + dimension.y - 4), color_light);
 }
 
-// resources
-const array<string> _items_res =
-{
-	"mat_scrap",
-    "mat_wood",
-    "mat_stone",
-    "mat_gold"
-};
-const array<float> _amounts_res =
-{
-	3+XORRandom(11),
-	300+XORRandom(301),
-	150+XORRandom(151),
-	20+XORRandom(41),
-};
-const array<float> _chances_res =
-{
-	0.5,
-	0.75,
-	0.65,
-	0.25
-};
 
-// offense
-const array<string> _items_off =
+void onChangeTeam(CBlob@ this, const int oldTeam)
 {
-	"ammo",
-	"specammo",
-    "mat_14mmround",
-    "mat_bolts",
-    "mat_smallbomb",
-	"grenade",
-	"mat_molotov",
-	"launcher_javelin",
-	"mat_heatwarhead"
-};
-const array<float> _amounts_off =
-{
-	100,
-	50,
-	35,
-	12,
-	4,
-	1,
-	1,
-	1,
-	2
-};
-const array<float> _chances_off =
-{
-	0.5,
-	0.15,
-	0.2,
-	0.4,
-	0.15,
-	0.35,
-	0.4,
-	0.01,
-	0.3
-};
-
-// defence
-const array<string> _items_def =
-{
-	"food",
-    "medkit",
-    "helmet",
-    "mine",
-	"binoculars",
-	"pipewrench",
-	"launcher_javelin"
-};
-const array<float> _amounts_def =
-{
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
-};
-const array<float> _chances_def =
-{
-	0.4,
-	0.3,
-	0.6,
-	0.25,
-	0.15,
-	0.3,
-	0.05
-};
-
-void SpawnLootCrate(CBlob@ this)
-{
-	if (!isServer()) return;
-	bool spawn_at_sky = true; // cast a ray from sky to make sure it wont stuck above
-	for (f32 i = -2; i < 3; i++)
+	if (oldTeam > 6)
 	{
-		if (getMap().rayCastSolidNoBlobs(Vec2f(this.getPosition().x + 12*i, 0), this.getPosition()))
-			spawn_at_sky = false;
+		this.set_f32(capture_prop, 0);
 	}
 
-	CBlob@ crate = server_CreateBlob("paracrate", this.getTeamNum(), spawn_at_sky ? Vec2f(this.getPosition().x+XORRandom(23), 0) : Vec2f(this.getPosition().x+XORRandom(23), this.getPosition().y - this.getHeight()/2));
-	if (crate !is null)
+	//this.set_u8("oldteam", this.getTeamNum());
+
+	for (u8 i = 0; i < (v_fastrender ? 25 : 75); i++)
 	{
-		crate.Tag("no_expiration");
-		this.set_u16("last_crateid", crate.getNetworkID());
-		crate.server_SetTimeToDie(5*60); // 3 min
+		sparks(this.getPosition()+Vec2f(0, pole_height/2), -90+XORRandom(181), XORRandom(4)+1, getNeonColor(this.getTeamNum(), XORRandom(3)));
+	}
 
-		string[] _items;
-		float[] _amounts;
-		float[] _chances;
+	CBlob@[] blobs;
+	bool won = false;
+	u8 numteamleft = getRules().get_u8("teamleft");
+	u8 numteamright = getRules().get_u8("teamright");
 
-		u8 rand = XORRandom(3);
-		switch(rand)
+	u8 teamleft = 0;
+	u8 teamright = 0;
+	getBlobsByName("pointflag", @blobs);
+	{
+		for (u8 i = 0; i < blobs.length; i++)
 		{
-			case 0: // resources
-			{
-				_items = _items_res;
-				_amounts = _amounts_res;
-				_chances = _chances_res;
-				break;
-			}
-			case 1: // military (offensive)
-			{
-				_items = _items_off;
-				_amounts = _amounts_off;
-				_chances = _chances_off;
-				break;
-			}
-			case 2: // military (defensive)
-			{
-				_items = _items_def;
-				_amounts = _amounts_def;
-				_chances = _chances_def;
-				break;
-			}
+			CBlob@ b = blobs[i];
+			if (b is null) continue;
+			if (b.getTeamNum() != numteamleft && b.getTeamNum() != numteamright) return;
+			b.getTeamNum() == numteamleft ? teamleft++ : teamright++;
 		}
-
-		u8 items_amount = min_items + XORRandom(rand_items+1);
-
-		for (int i = 0; i < items_amount; i++)
-		{
-			u32 element = RandomWeightedPicker(_chances, XORRandom(1000));
-
-	        CBlob@ b = server_CreateBlob(_items[element], -1, this.getPosition());
-			 
-			if (b !is null)
-			{
-	        	if (b.getMaxQuantity() > 1)
-	        	{
-	        	    b.server_SetQuantity(_amounts[element]);
-	        	}
-				crate.server_PutInInventory(b);
-			}
-    	}
 	}
-}
-
-shared u32 RandomWeightedPicker(array<float> chances, u32 seed = 0)
-{
-    if (seed == 0) {seed = (getGameTime() * 404 + 1337 - Time_Local());}
-
-    u32 i;
-    float sum = 0.0f;
-
-    for (i = 0; i < chances.size(); i++) {sum += chances[i];}
-
-    Random@ rnd = Random(seed);//Random with seed
-
-    float random_number = (rnd.Next() + rnd.NextFloat()) % sum;//Get our random number between 0 and the sum
-
-    float current_pos = 0.0f;//Current pos in the bar
-
-    for (i = 0; i < chances.size(); i++)//For every chance
-    {
-        if(current_pos + chances[i] > random_number)
-        {
-            break;//Exit out with i untouched
-        }
-        else//Random number has not yet reached the chance
-        {
-            current_pos += chances[i];//Add to current_pos
-        }
-    }
-
-    return i;//Return the chance that was got
+	u8 team = 255;
+	if (teamright == 0) team = numteamleft;
+	else if (teamleft == 0) team = numteamright;
+	//printf("old "+oldteam);
+	//printf("team "+team);
+	if (getRules() !is null && team != 255)
+	{
+		getRules().SetTeamWon(team);
+		getRules().SetCurrentState(GAME_OVER);
+		CTeam@ teamis = getRules().getTeam(team);
+		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
+	}
 }
