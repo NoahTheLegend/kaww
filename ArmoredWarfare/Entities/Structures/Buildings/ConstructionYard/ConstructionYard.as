@@ -2,7 +2,6 @@
 
 #include "Requirements.as"
 #include "ShopCommon.as"
-#include "Descriptions.as"
 #include "Costs.as"
 #include "CheckSpam.as"
 #include "GenericButtonCommon.as"
