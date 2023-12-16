@@ -1,6 +1,5 @@
 #include "Requirements.as"
 #include "ShopCommon.as"
-#include "Descriptions.as"
 #include "Costs.as"
 #include "GenericButtonCommon.as"
 #include "VehicleBuilderCommon.as"

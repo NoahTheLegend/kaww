@@ -1,3 +1,8 @@
+
+#include "Requirements.as"
+#include "ShopCommon.as"
+#include "Costs.as"
+#include "CheckSpam.as"
 #include "PlayerRankInfo.as"
 #include "TeamColorCollections.as"
 
