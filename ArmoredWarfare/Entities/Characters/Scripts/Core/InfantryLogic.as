@@ -1858,7 +1858,7 @@ bool canHit(CBlob@ this, CBlob@ b)
 
 void onRender(CSprite@ this)
 {
-	barRender(this);
+	visualTimerRender(this);
 }
 
 void MakeParticle(CBlob@ this, const Vec2f vel, const string filename = "SmallSteam")

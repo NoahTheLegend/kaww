@@ -1510,5 +1510,5 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 
 void onRender(CSprite@ this)
 {
-	barRender(this);
+	visualTimerRender(this);
 }

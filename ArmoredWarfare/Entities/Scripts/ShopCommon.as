@@ -11,6 +11,7 @@ shared class ShopItem
 	bool spawnInCrate;
     bool instant;
 	bool spawnNothing;
+	bool enabled;
 	int crate_icon;
 	// production
 	u32 ticksToMake;
@@ -38,6 +39,7 @@ shared class ShopItem
 		spawnInCrate = _spawnInCrate;
         instant = _instant;
 		crate_icon = 0;
+		enabled = true;
 
 		producing = false;
 		timeCreated = 0;
@@ -226,4 +228,35 @@ bool ShopReceiveCreateData(CBlob@ this, CBitStream@ stream, const string &in sho
 	}
 
 	return true;
+}
+
+ShopItem[]@ getShopItems(CBlob@ this)
+{
+	ShopItem[]@ shop_items;
+	if (!this.get(SHOP_ARRAY, @shop_items)) return null;
+	return shop_items;
+}
+
+ShopItem@ findItem(ShopItem[]@ list, string blobname)
+{
+	return findItem(list, blobname, 0);
+}
+
+ShopItem@ findItem(ShopItem[]@ list, string blobname, u8 &out id)
+{
+	if (list !is null)
+	{
+		for (u16 i = 0; i < list.length; i++)
+		{
+			ShopItem@ item = list[i];
+			if (item is null) continue;
+			if (item.blobName == blobname)
+			{
+				id = i;
+				return @item;
+			}
+		}
+	}
+
+	return null;
 }

@@ -238,5 +238,5 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onRender(CSprite@ this)
 {
-	barRender(this);
+	visualTimerRender(this);
 }

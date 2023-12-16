@@ -24,76 +24,6 @@ void onInit(CRules@ this)
 	this.set_CBitStream("tdm_serialised_team_hud", stream);
 }
 
-shared class FlagsInfo {
-    bool flagMatch = getBlobByName("pointflag") !is null;
-
-    u8 getFlagsCount(u8 team, bool total)
-    {
-        CBlob@[] flags;
-        getBlobsByName("pointflag", @flags);
-        u8 cock = 0;
-        for (u8 i = 0; i < flags.length; i++)
-        {
-            if (flags[i] is null) continue;
-            if (flags[i].getTeamNum() != team) continue;
-            cock++;
-        }
-        return cock;
-    }
-
-	bool done_sorting = false;
-
-    void renderFlagIcons(Vec2f start_pos)
-    {
-        CBlob@[] flags;
-        getBlobsByName("pointflag", @flags);
-
-        for (u8 i = 0; i < flags.length; i++)
-        {
-        	CBlob@ flag = flags[i];
-            if (flag is null) continue;
-			
-            u8 icon_idx;
-            u8 team_num = flag.getTeamNum();
-            u8 team_state = team_num; // team index | 255 neutral | 2 capping
-
-            if (flag.get_s8("teamcapping") != -1
-            && flag.get_s8("teamcapping") != team_num)
-            {
-                team_state = 2; // alert!!!
-            }
-
-			FlagIcon icon;
-			if (icon !is null)
-			{
-				u8 bigger = 0;
-				for (u8 j = 0; j < flags.length; j++) // set offset from left depending on x coordinate
-				{
-					if (flags[j] !is null)
-					{
-						if (flag.getPosition().x > flags[j].getPosition().x) bigger++;
-					}
-				}
-				icon.xpos = 36.0f*bigger;
-				icon.drawIcon(start_pos, team_state, team_num);
-			}
-        }
-    }
-};
-
-shared class FlagIcon {
-	f32 xpos;
-	void drawIcon(Vec2f start_pos, u8 team_state, u8 team_num)
-	{
-		GUI::DrawIcon("CTFGui.png", 0, Vec2f(16,32), start_pos + Vec2f(xpos, 0), 1.0f, team_num);
-    	if (team_state == 2)// && getGameTime() % 30 == 0) 
-    	{
-    		f32 wave = Maths::Sin(getGameTime() / 5.0f) * 5.0f - 25.0f;
-    		GUI::DrawIcon("CTFGui.png", 1, Vec2f(16,32), start_pos + Vec2f(xpos + 2, 72 + wave), 1.0f, team_num);
-    	}
-	}
-};
-
 void onRender(CRules@ this)
 {
 	if (g_videorecording)
@@ -144,15 +74,7 @@ void onRender(CRules@ this)
 				u8 teamright = getRules().get_u8("teamright");
 
 				u8 team = hud.team_num;
-
 				Vec2f topLeft = Vec2f(-40, 64 + 48 * (team == teamleft && team < teamright ? 0 : team == teamright && team < teamleft ? 0 : 1));
-
-				/*
-				FlagsInfo flags_info;
-    			if (flags_info !is null)
-    			{
-    			    flags_info.renderFlagIcons(Vec2f(16, 140));
-    			}*/
 
 				int team_player_count = 0;
 				int team_dead_count = 0;

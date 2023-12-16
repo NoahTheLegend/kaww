@@ -477,44 +477,19 @@ void applyButtonProperties(CBlob@ shop, CBlob@ caller, CGridButton@ button, Shop
 	{
 		tookReqs = true;
 	}
-	// try taking from caller + storages second
-	//if (!tookReqs)
-	//{
-	//	const s32 team = this.getTeamNum();
-	//	CBlob@[] storages;
-	//	if (getBlobsByTag( "storage", @storages ))
-	//		for (uint step = 0; step < storages.length; ++step)
-	//		{
-	//			CBlob@ storage = storages[step];
-	//			if (storage.getTeamNum() == team)
-	//			{
-	//				CBitStream missing;
-	//				if (hasRequirements_Tech( caller.getInventory(), storage.getInventory(), s_item.requirements, missing ))
-	//				{
-	//					@storageReq = storage;
-	//					break;
-	//				}
-	//			}
-	//		}
-	//}
 
 	const bool takeReqsFromStorage = (storageReq !is null);
 
 	if (s_item.ticksToMake > 0)		   // production
-		SetItemDescription_Tech(button, shop, s_item.requirements, s_item.description, shop.getInventory());
+		SetItemDescription_Tech(button, shop, s_item.requirements, s_item.description, shop.getInventory(), !s_item.enabled);
 	else
 	{
 		string desc = s_item.description;
 		//if (takeReqsFromStorage)
 		//	desc += "\n\n(Using resources from team storage)";
 
-		SetItemDescription_Tech(button, caller, s_item.requirements, getTranslatedString(desc), takeReqsFromStorage ? storageReq.getInventory() : shop.getInventory());
+		SetItemDescription_Tech(button, caller, s_item.requirements, getTranslatedString(desc), takeReqsFromStorage ? storageReq.getInventory() : shop.getInventory(), !s_item.enabled);
 	}
-
-	//if (s_item.producing) {
-	//	button.SetSelected( 1 );
-	//	menu.deleteAfterClick = false;
-	//}
 }
 
 //helper for building menus of shopitems

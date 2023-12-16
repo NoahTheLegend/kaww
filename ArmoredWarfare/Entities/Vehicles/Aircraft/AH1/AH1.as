@@ -871,7 +871,7 @@ void onRender(CSprite@ this)
 			u8 mode = blob.get_u8("mode");
 			if (mode == 0) return; // disabled
 
-			barRender(this);
+			visualTimerRender(this);
 
 			f32 screenWidth = getScreenWidth();
 			f32 screenHeight = getScreenHeight();

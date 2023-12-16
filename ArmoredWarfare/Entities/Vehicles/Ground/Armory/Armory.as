@@ -82,7 +82,7 @@ void onInit(CBlob@ this)
 
 void InitShop(CBlob@ this)
 {
-	bool isCTF = getBlobByName("pointflag") !is null;
+	bool isCTF = getBlobByName("pointflag") !is null || getBlobByName("pointflagt2") !is null;
 	if (isCTF) this.set_Vec2f("shop menu size", Vec2f(9, 3));
 
 	{

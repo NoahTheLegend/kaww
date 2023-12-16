@@ -38,7 +38,7 @@ void onTick(CRules@ this)
         CBlob@[] iarmorys;
         getBlobsByTag("importantarmory", @iarmorys);
         CBlob@[] flags;
-        getBlobsByName("pointflag", @flags);
+        getBlobsByTag("pointflag", @flags);
 
         if (this.get_string("map_name") == "Abacus")
         {

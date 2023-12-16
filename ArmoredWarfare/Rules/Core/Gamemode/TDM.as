@@ -33,6 +33,8 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 
 	//double check idk why its passing
 	CBlob@ b = getBlobByName("pointflag");
+	if (b is null) @b = getBlobByName("pointflagt2");
+
 	CBlob@ t = getBlobByName("tent");
 	if (b !is null || t is null) return 0;
 
@@ -147,7 +149,7 @@ void Config(TDMCore@ this)
     if (vehbuilders.length == 1) 
     {
 		CBlob@[] flags;
-        getBlobsByName("pointflag", @flags);
+        getBlobsByTag("pointflag", @flags);
 		if (flags.length > 1)
 		{
 			this.gameDuration = (getTicksASecond() * 60 * (10.0f+(0.5*flags.length)+(0.25f*getPlayersCount()))) + this.warmUpTime;
@@ -290,6 +292,8 @@ shared class TDMSpawns : RespawnSystem
 				if (getGameTime() >= 300 && !getRules().isWarmup())
 				{
 					CBlob@ b = getBlobByName("pointflag");
+					if (b is null) @b = getBlobByName("pointflagt2");
+
 					CBlob@[] tents;
 					getBlobsByName("tent", @tents);
 
@@ -874,7 +878,7 @@ shared class TDMCore : RulesCore
 		s8 team_wins_on_end = -1;
 
 		CBlob@[] flags;
-		getBlobsByName("pointflag", @flags);
+		getBlobsByTag("pointflag", @flags);
 		bool flags_wincondition = flags.length > 0;
 
 		if (flags_wincondition && getGameTime() >= rules.get_u32("game_end_time"))
@@ -882,7 +886,7 @@ shared class TDMCore : RulesCore
 			if (rules.getCurrentState() != GAME_OVER)
 			{
 				CBlob@[] flags;
-				getBlobsByName("pointflag", @flags);
+				getBlobsByTag("pointflag", @flags);
 	
 				u8 teamright_flags = 0;
 				u8 teamleft_flags = 0;
@@ -1760,7 +1764,7 @@ void onTick(CRules@ this)
 	if (getGameTime() % 30 == 0)
 	{
 		CBlob@[] flags;
-		getBlobsByName("pointflag", @flags);
+		getBlobsByTag("pointflag", @flags);
 
 		u8 teamleft_flags = 0;
 		u8 teamright_flags = 0;

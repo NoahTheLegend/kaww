@@ -90,6 +90,8 @@ string getButtonRequirementsText(CBitStream& inout bs, bool missing)
 	return text;
 }
 
+
+
 void SetItemDescription(CGridButton@ button, CBlob@ caller, CBitStream &in reqs, const string& in description, CInventory@ anotherInventory = null)
 {
 	if (button !is null && caller !is null && caller.getInventory() !is null)

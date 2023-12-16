@@ -1243,7 +1243,7 @@ void onTick(CBrain@ this)
 			if (getGameTime() % 100 + blob.get_u8("mykey") == 0 && XORRandom(4) == 0) // every once in a while
 			{
 				CBlob@[] points;
-				getBlobsByName("pointflag", @points);
+				getBlobsByTag("pointflag", @points);
 				SortBlobsByDistance(blob, points);
 
 				if (points.length > 0) // if there are flags on this map

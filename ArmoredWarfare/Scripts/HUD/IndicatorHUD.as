@@ -47,6 +47,7 @@ void onRender( CRules@ this )
 	bool hide_indicator = !v_showminimap && local !is null && !local.isKeyPressed(key_map) || (local is null && !v_showminimap);
 
 	if (getBlobByName("pointflag") is null
+	&& getBlobByName("pointflagt2") is null
 	&& getBlobByName("importantarmory") is null
 	&& getBlobByName("importantarmoryt2") is null)
 	{
@@ -134,7 +135,7 @@ void onRender( CRules@ this )
 
 	//indicate objectives
 	CBlob@[] objectiveList;
-	getBlobsByName("pointflag", @objectiveList);
+	getBlobsByTag("pointflag", @objectiveList);
 
 	int objectiveCount = objectiveList.length;
 
