@@ -29,7 +29,7 @@ void visualTimerTick(CBlob@ this)
     if (bars.hasBars()) bars.update();
 }
 
-void barRender(CSprite@ sprite)
+void visualTimerRender(CSprite@ sprite)
 {
     if (g_videorecording) return;
 
@@ -60,7 +60,7 @@ bool hasBar(Bar@ bar, string name)
 }
 
 // fills from left to right
-class ProgressBar : Bar {
+shared class ProgressBar : Bar {
     bool reverse; bool toright;
     u16 blobid;
     u8 alpha;
@@ -78,7 +78,7 @@ class ProgressBar : Bar {
         this.lerp = 1;
         this.fadeout_time = 0;
 
-        this.write_blob = false;
+        this.write_blob = false; // writes netid of the blob running this into params
         this.callback_command = "";
     }
 
@@ -146,7 +146,7 @@ class ProgressBar : Bar {
     }
 }
 
-class Bar : BarHandler{
+shared class Bar : BarHandler{
     Vec2f dim; Vec2f pos2d; Vec2f offset; Vec2f target_offset; Vec2f initial_offset; Vec2f drawpos; Vec2f inherit; // positions, offsets
     SColor color_back; SColor color_front; // colors
     f32 current; f32 max; f32 percent; f32 lerp; f32 target; // logic
@@ -155,7 +155,7 @@ class Bar : BarHandler{
     bool remove_on_fill; bool removing; string name; string callback_command; bool write_blob;
     f32 gap; f32 mod_gap; f32 camera_factor;
     string prop; u32 tick_since_created;
-    bool reoffset; // unused yet
+    bool reoffset;
 
     ProgressBar@ getBar(string name)
     {
@@ -222,16 +222,19 @@ class Bar : BarHandler{
             active.camera_factor = this.camera_factor;
             //active.target_offset = Vec2f(0, active.offset.y / active.camera_factor + this.mod_gap*i); // todo: fix this shittery
 
-            active.target_offset = Vec2f(0, active.initial_offset.y + this.mod_gap*i);
-            //active.offset = active.target_offset; // "hard" placement
-            active.offset = Vec2f(Maths::Lerp(active.offset.x, active.target_offset.x, 0.33f), Maths::Lerp(active.offset.y, active.target_offset.y, 0.33f));
+            if (active.reoffset)
+            {
+                active.target_offset = Vec2f(0, active.initial_offset.y + this.mod_gap*i);
+                active.offset = Vec2f(Maths::Lerp(active.offset.x, active.target_offset.x, 0.33f), Maths::Lerp(active.offset.y, active.target_offset.y, 0.33f));
+            }
+            else active.offset = active.initial_offset;
 
             active.renderbar();
         }
     }
 }
 
-class BarHandler {
+shared class BarHandler {
     ProgressBar@[] active_bars;
     u16 tempblobid;
 
