@@ -4,7 +4,7 @@
 #include "Hitters.as"
 #include "PerksCommon.as";
 
-const u16 cooldown_time = 480;
+const u16 cooldown_time = 600;
 const u16 cycle_cooldown = 90;
 const u8 barrel_compression = 8; // max barrel movement
 const u16 recoil = 120;
