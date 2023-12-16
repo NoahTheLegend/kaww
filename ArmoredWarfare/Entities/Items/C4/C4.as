@@ -380,5 +380,5 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 void onRender(CSprite@ this)
 {
-	barRender(this);
+	visualTimerRender(this);
 }

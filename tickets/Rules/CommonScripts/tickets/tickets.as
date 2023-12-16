@@ -19,6 +19,7 @@ shared int decrementTickets(CRules@ this, int team){			//returns 1 if no tickets
 
 	//double check idk why its passing
 	CBlob@ b = getBlobByName("pointflag");
+	if (b is null) @b = getBlobByName("pointflagt2");
 	CBlob@ t = getBlobByName("tent");
 	if (b !is null || t is null) return 0;
 

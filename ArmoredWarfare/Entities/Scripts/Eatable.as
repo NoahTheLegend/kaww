@@ -85,7 +85,7 @@ bool canHeal(CBlob@ this, CBlob@ blob)
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (blob is null || blob.get_u32("regen") > getGameTime())
+	if (blob is null || blob.get_u32("regen") > getGameTime() || blob.isAttached())
 	{
 		return;
 	}

@@ -1,27 +1,37 @@
 
 #include "Requirements.as"
 #include "ShopCommon.as"
+#include "ProductionCommon.as";
 #include "Costs.as"
+#include "GenericButtonCommon.as"
 #include "CheckSpam.as"
 #include "PlayerRankInfo.as"
 #include "TeamColorCollections.as"
+#include "ProgressBar.as";
 
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 const f32 capture_time = 3000;
 const Vec2f startpos = Vec2f(9.0f, -51.0f);
 
-//flags HUD is in TDM_Interface
-
 void onInit(CBlob@ this)
 {
+	this.Tag("pointflag");
 	this.getShape().getConsts().mapCollisions = false;
 
 	this.set_f32(capture_prop, 0);
-	this.set_s8(teamcapping, -1); //1 is teamright, 0 is teamleft, this is also a commentary on the nature of team colors and the effect it has on team performance. The color teamright, associated with blood will positively impact a team's competitive gameplay. For opposing teams, a teamright coloteamright enemy player will subconsiously instill fear.
-	//this.set_bool(isteamleftcapture, false); //false is teamright, true is teamleft, this is also a commentary on the nature of good and evil, and colors.
+	this.set_s8(teamcapping, -1); 
 	this.set_u8("numcapping", 0);
 	this.set_f32("offsety", -51.0f);
+
+	this.set_string("producing", "");
+	this.set_f32("production_time", 0);
+
+	barInit(this);
+	AddIconToken("$upgrade$", "UpgradeIcon.png", Vec2f(24, 24), 0);
+
+	this.addCommandID("produced item");
+	this.inventoryButtonPos = Vec2f(4, 48);
 
 	this.set_u8("oldteam", this.getTeamNum());
 
@@ -51,9 +61,6 @@ void onInit(CBlob@ this)
 				u8 frameleft = 4*teamleft+i;
 				u8 frameright = 4*teamright+i;
 
-				//printf("adding frameleft "+frameleft);
-				//printf("adding framerihgt "+frameright);
-
 				anim_teamleft.AddFrame(frameleft);
 				anim_teamright.AddFrame(frameright);
 			}
@@ -62,34 +69,150 @@ void onInit(CBlob@ this)
 			if (team < 7) flag.SetAnimation((team == getRules().get_u8("teamleft") ? anim_teamleft : anim_teamright));
 		}
 	}
-}
 
-const f32 pole_height = 100.0f;
-void onTick(CSprite@ sprite)
-{
-	CBlob@ this = sprite.getBlob();
-	if (this is null) return;
+	// SHOP
+	InitCosts();
+	bool is_t2 = this.getName().find("t2") != -1;
+
+	this.set_Vec2f("shop offset", Vec2f(4, 30));
+	this.set_Vec2f("shop menu size", Vec2f(4, 2));
+	this.set_string("shop description", "Order");
+	this.set_u8("shop icon", 21);
+
+	// shopitem init id matters for further logic
+	if (!is_t2)
 	{
-		CSpriteLayer@ flag = sprite.getSpriteLayer("flag");
-		if (flag !is null)
 		{
-			u8 teamleft = getRules().get_u8("teamleft");
-			u8 teamright = getRules().get_u8("teamright");
-			u8 cap_team = this.getTeamNum();
-
-			f32 cap = this.get_f32(capture_prop);
-			f32 slide = cap/capture_time * pole_height;
-			if (cap_team == 255) slide *= 2;
-
-			flag.SetOffset(Vec2f(0, slide) + startpos);
-			flag.SetAnimation("flag_wave"+cap_team);
+			ShopItem@ s = addShopItem(this, "Ammuniton", "$ammo$", "ammo", "$ammo$"+"\n\nOrder Ammo");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "$food$"+"\n\nOrder Burgers");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "$medkit$"+"\n\nOrder Medkits");
+			s.spawnNothing = true;
+		}
+		if (!is_t2)
+		{
+			ShopItem@ s = addShopItem(this, "Upgrade", "$upgrade$", "upgrade", "Unlock better stocks");
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 100);
+			s.spawnNothing = true;
+			s.customButton = true;
+			s.buttonwidth = 1;
+			s.buttonheight = 2;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Wood", "$mat_wood$", "mat_wood", "$mat_wood$"+"\n\nOrder Wood");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Stone", "$mat_stone$", "mat_stone", "$mat_stone$"+"\n\nOrder Stone");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "$helmet$"+"\n\nOrder Helmets");
+			s.spawnNothing = true;
+		}
+	}
+	else
+	{
+		this.set_Vec2f("shop menu size", Vec2f(4, 3));
+		
+		{
+			ShopItem@ s = addShopItem(this, "Ammuniton", "$ammo$", "ammo", "$ammo$"+"\n\nOrder Ammo");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Special Ammuniton", "$specammo$", "specammo", "$specammo$"+"\n\nOrder Special Ammo");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "$food$"+"\n\nOrder Burgers");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "$medkit$"+"\n\nOrder Medkits");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Wood", "$mat_wood$", "mat_wood", "$mat_wood$"+"\n\nOrder Wood");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Stone", "$mat_stone$", "mat_stone", "$mat_stone$"+"\n\nOrder Stone");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Gold", "$mat_gold$", "mat_gold", "$mat_gold$"+"\n\nOrder Gold");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "$helmet$"+"\n\nOrder Helmets");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "$pipewrench$"+"\n\nOrder Pipe Wrenches");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "14mm Rounds", "$mat_14mmround$", "mat_14mmround", "$mat_14mmround$"+"\n\nOrder 14mm Rounds");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "105mm Shells", "$mat_bolts$", "mat_bolts", "$mat_bolts$"+"\n\nOrder 105mm Shells");
+			s.spawnNothing = true;
+		}
+		{
+			ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "$mat_heatwarhead$"+"\n\nOrder HEAT Rockets");
+			s.spawnNothing = true;
 		}
 	}
 }
 
+void GetButtonsFor(CBlob@ this, CBlob@ caller)
+{
+	if (!canSeeButtons(this, caller)) return;
+	bool isTDM = (getMap().tilemapwidth <= 300);
+
+	this.set_bool("shop available", this.isOverlapping(caller) && this.getTeamNum() == caller.getTeamNum() && !isTDM);
+}
+
+const f32 pole_height = 100.0f;
 void onTick(CBlob@ this)
 {
-    float capture_distance = 76.0f; //Distance from this blob that it can be cpaped
+	if (this.get_string("producing") == "") // idle
+	{
+		
+	}
+	else
+	{
+		visualTimerTick(this);
+		bool producing = !isProductDone(this);
+
+		Bar@ bars;
+		if (this.get("Bar", @bars))
+		{
+			if (!this.hasTag("full") && this.get_f32(capture_prop) == 0)
+			{
+				if (producing) this.add_f32("production_time", 1.0f);
+				else AddNextProduct(this, this.get_u16("production_time_notcurrent"));
+			}
+			else
+			{
+				this.set_f32("production_time", 0);
+				bars.RemoveBar("production", false);
+			}
+		}
+	}
+    
+	handleCapture(this);
+}
+
+void handleCapture(CBlob@ this)
+{
+	float capture_distance = 76.0f; //Distance from this blob that it can be cpaped
 
     u8 num_teamleft = 0;
     u8 num_teamright = 0;
@@ -189,6 +312,28 @@ void onTick(CBlob@ this)
 	}
 }
 
+void onTick(CSprite@ sprite)
+{
+	CBlob@ this = sprite.getBlob();
+	if (this is null) return;
+	{
+		CSpriteLayer@ flag = sprite.getSpriteLayer("flag");
+		if (flag !is null)
+		{
+			u8 teamleft = getRules().get_u8("teamleft");
+			u8 teamright = getRules().get_u8("teamright");
+			u8 cap_team = this.getTeamNum();
+
+			f32 cap = this.get_f32(capture_prop);
+			f32 slide = cap/capture_time * pole_height;
+			if (cap_team == 255) slide *= 2;
+
+			flag.SetOffset(Vec2f(0, slide) + startpos);
+			flag.SetAnimation("flag_wave"+cap_team);
+		}
+	}
+}
+
 void sparks(Vec2f at, f32 angle, f32 speed, SColor color)
 {
 	Vec2f vel = getRandomVelocity(angle + 90.0f, speed, 25.0f);
@@ -200,6 +345,8 @@ void onRender(CSprite@ this) // draw own capture bar
 {
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
+
+	visualTimerRender(this);
 
 	bool focus = false;
 	if (getLocalPlayer() !is null && getLocalPlayer().getBlob() !is null
@@ -319,7 +466,7 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 
 	u8 teamleft = 0;
 	u8 teamright = 0;
-	getBlobsByName("pointflag", @blobs);
+	getBlobsByTag("pointflag", @blobs);
 	{
 		for (u8 i = 0; i < blobs.length; i++)
 		{
@@ -341,4 +488,259 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 		CTeam@ teamis = getRules().getTeam(team);
 		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
 	}
+}
+
+void onRemoveFromInventory(CBlob@ this, CBlob@ blob)
+{
+	this.Untag("full");
+}
+
+bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
+{
+	bool isTDM = (getMap().tilemapwidth <= 300);
+	return this.getTeamNum() == forBlob.getTeamNum() && !isTDM;
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
+{
+	bool isServer = getNet().isServer();
+	if (cmd == this.getCommandID("shop made item"))
+	{
+		CBlob@ caller = getBlobByNetworkID(params.read_netid());
+		CBlob@ item = getBlobByNetworkID(params.read_netid());
+		string name = params.read_string();
+
+		if (caller !is null)
+		{
+
+			if (name == "upgrade")
+			{
+				if (isClient())
+				{
+					this.getSprite().PlaySound("PowerUp.ogg", 2.0f, 1.0f);
+				}
+
+				if (isServer)
+				{
+					CBlob@ b = server_CreateBlob(this.getName()+"t2", this.getTeamNum(), this.getPosition());
+
+					if (b !is null)
+					{
+						this.MoveInventoryTo(b);
+						b.set_f32(capture_prop, this.get_f32(capture_prop));
+						b.Sync(capture_prop, true);
+					}
+
+					this.server_Die();
+				}
+			}
+			else
+			{
+				if (isClient())
+				{
+					this.getSprite().PlaySound("BombMake.ogg");
+				}
+				caller.ClearMenus();
+
+				ShopItem[]@ list = getShopItems(this);
+				if (list is null) return;
+
+				u8 id = 0;
+				ShopItem@ s_item = findItem(list, name, id);
+				if (s_item is null) return;
+
+				for (u8 i = 0; i < list.length; i++)
+				{
+					ShopItem@ s_temp = list[i];
+					if (s_temp is null) continue;
+
+					s_temp.enabled = true;
+				}
+
+				s_item.enabled = false;
+
+				SetProduct(this, name, id);
+			}
+		}
+	}
+	else if (cmd == this.getCommandID("produced item"))
+	{
+		if (isClient())
+		{
+			this.getSprite().PlaySound("ProduceSound.ogg");
+		}
+
+		if (isServer)
+		{
+			CBlob@ b = server_CreateBlob(this.get_string("producing"), this.getTeamNum(), this.getPosition());
+			if (b !is null)
+			{
+				CInventory@ inv = this.getInventory();
+				if (inv is null) return;
+
+				if (inv.canPutItem(b)) this.server_PutInInventory(b);
+				else
+				{
+					b.Tag("dead");
+					b.server_Die();
+					this.Tag("full");
+				}
+			}
+		}
+	}
+}
+
+void AddNextProduct(CBlob@ this, u16 time)
+{
+	this.set_f32("production_time", 0);
+
+	Bar@ bars;
+	if (this.get("Bar", @bars))
+	{
+		ProgressBar setbar;
+		setbar.Set(this.getNetworkID(), "production", Vec2f(156.0f, 24.0f), false, Vec2f(8, 180), Vec2f(4, 4), SColor(255,55,55,55), getNeonColor(this.getTeamNum(), 0),
+			"production_time", time, 1.0f, 5, 5, false, "produced item");
+
+    	bars.AddBar(this.getNetworkID(), setbar, true);
+	}
+}
+
+bool isProductDone(CBlob@ this)
+{
+	Bar@ bars;
+	if (this.get("Bar", @bars))
+	{
+		return !hasBar(bars, "production"); // nothing is producing, so we can add another
+	}
+
+	return false;
+}
+
+namespace Products
+{
+	const ::u16 time_ammo = 300;
+	const ::u16 time_specammo = 750;
+	const ::u16 time_food = 600;
+	const ::u16 time_medkit = 1125;
+	const ::u16 time_wood = 1350;
+	const ::u16 time_stone = 2700;
+	const ::u16 time_gold = 2700;
+	const ::u16 time_helmet = 1350;
+	const ::u16 time_wrench = 2250;
+	const ::u16 time_14mm = 1800;
+	const ::u16 time_105mm = 2250;
+	const ::u16 time_heat = 2700;
+}
+
+void SetProduct(CBlob@ this, string name, u8 id)
+{
+	this.set_string("producing", name);
+	bool is_t2 = this.getName().find("t2") != -1;
+	
+	u16 time = 1800;
+	if (!is_t2)
+	{
+		switch (id)
+		{
+			case 0:
+			{
+				time = Products::time_ammo;
+				break;
+			}
+			case 1:
+			{
+				time = Products::time_food;
+				break;
+			}
+			case 2:
+			{
+				time = Products::time_medkit;
+				break;
+			}
+			case 4:
+			{
+				time = Products::time_wood;
+				break;
+			}
+			case 5:
+			{
+				time = Products::time_stone;
+				break;
+			}
+			case 6:
+			{
+				time = Products::time_helmet;
+				break;
+			}
+		}
+	}
+	else
+	{
+		switch (id)
+		{
+			case 0:
+			{
+				time = Products::time_ammo;
+				break;
+			}
+			case 1:
+			{
+				time = Products::time_specammo;
+				break;
+			}
+			case 2:
+			{
+				time = Products::time_food;
+				break;
+			}
+			case 3:
+			{
+				time = Products::time_medkit;
+				break;
+			}
+			case 4:
+			{
+				time = Products::time_wood;
+				break;
+			}
+			case 5:
+			{
+				time = Products::time_stone;
+				break;
+			}
+			case 6:
+			{
+				time = Products::time_gold;
+				break;
+			}
+			case 7:
+			{
+				time = Products::time_helmet;
+				break;
+			}
+			case 8:
+			{
+				time = Products::time_wrench;
+				break;
+			}
+			case 9:
+			{
+				time = Products::time_14mm;
+				break;
+			}
+			case 10:
+			{
+				time = Products::time_105mm;
+				break;
+			}
+			case 11:
+			{
+				time = Products::time_heat;
+				break;
+			}
+		}
+	}
+
+	this.set_u16("production_time_notcurrent", time);
+	AddNextProduct(this, time);
 }

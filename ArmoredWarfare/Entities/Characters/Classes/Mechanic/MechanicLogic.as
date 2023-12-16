@@ -1053,5 +1053,5 @@ void onAddToInventory(CBlob@ this, CBlob@ blob)
 
 void onRender(CSprite@ this)
 {
-	barRender(this);
+	visualTimerRender(this);
 }

@@ -399,6 +399,7 @@ void onTick(CSprite@ this)
 
 void onDie(CBlob@ this)
 {
+	ExplodeInventory(this);
 	DoExplosion(this);
 }
 
@@ -411,8 +412,14 @@ void ExplodeInventory(CBlob@ this)
 		CBlob@ b = inv.getItem(i);
 		if (b is null) continue;
 		if (!b.hasTag("bomber ammo")) continue;
-
-		b.server_Die();
+		
+		if (b.hasTag("heavy weight"))
+		{
+			b.set_f32("damage", 99.0f);
+			this.server_Hit(b, b.getPosition(), Vec2f_zero, 99.0f, HittersAW::bullet);
+		}
+		else
+			b.server_Die();
 	}
 }
 
@@ -451,7 +458,10 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (isServer())
 	{
 		if (solid && this.hasTag("falling"))
+		{
+			ExplodeInventory(this);
 			this.server_Die();
+		}
 
 		f32 impact = this.getOldVelocity().getLength();
 		if (impact > 10.0f && blob is null
@@ -543,7 +553,6 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (damage >= this.getHealth()) ExplodeInventory(this);
 	if (this.hasTag("ignore damage")) return 0;
 	if (damage >= this.getHealth())
 	{
@@ -558,7 +567,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		this.set_u32("falling_time", getGameTime());
 		return 0;
 	}
-	else if (hitterBlob.getName() == "missile_javelin")
+
+	if (hitterBlob.getName() == "missile_javelin")
 	{
 		return damage * 1.0f;
 	}
