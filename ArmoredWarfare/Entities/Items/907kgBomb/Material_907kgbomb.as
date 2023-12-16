@@ -11,7 +11,7 @@ void onInit(CBlob@ this)
 	this.set_bool("booming", false);
 	this.Tag("heavy weight");
 		
-	this.set_f32("map_damage_ratio", 0.01f);
+	this.set_f32("map_damage_ratio", 0.1f);
 	this.getCurrentScript().tickFrequency = 10;
 	
 	this.Tag("explosive");
@@ -29,7 +29,7 @@ void DoExplosion(CBlob@ this, Vec2f velocity)
 	ShakeScreen(512, 64, this.getPosition());
 	f32 modifier = this.get_u8("boom_start") / 3.0f;
 	
-	this.set_f32("map_damage_radius", 6.0f * this.get_u8("boom_start"));
+	this.set_f32("map_damage_radius", 8.0f * this.get_u8("boom_start"));
 	
 	for (int i = 0; i < 4; i++)
 	{
@@ -82,6 +82,7 @@ void onTick(CBlob@ this)
 	}
 	if (this.get_bool("booming") && this.get_u8("boom_start") < boom_max)
 	{
+		if (this.getShape() !is null) this.getShape().SetStatic(true);
 		DoExplosion(this, Vec2f(0, 0));
 		this.set_u8("boom_start", this.get_u8("boom_start") + 1);
 		

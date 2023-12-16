@@ -78,6 +78,7 @@ void onTick(CBlob@ this)
 	}
 	if (this.get_bool("booming") && this.get_u8("boom_start") < boom_max)
 	{
+		if (this.getShape() !is null) this.getShape().SetStatic(true);
 		DoExplosion(this, Vec2f(0, 0));
 		this.set_u8("boom_start", this.get_u8("boom_start") + 1);
 		
