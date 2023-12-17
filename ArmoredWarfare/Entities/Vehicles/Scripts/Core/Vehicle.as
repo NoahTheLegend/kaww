@@ -343,6 +343,7 @@ void onInit(CBlob@ this)
 
 	this.set_u32("flipping_endtime", 0);
 	this.set_f32("flipping_time", 0);
+	this.set_f32("shake_diff", 0);
 
 	if (isClient() && getLocalPlayer() !is null)
 	{
@@ -595,14 +596,16 @@ void onTick(CBlob@ this)
 
 		f32 max_diff = 1.0f;
 		if (this.exists("max_angle_diff")) max_diff = this.get_f32("max_angle_diff");
+		max_diff = 2.0f;
 
-		//if (Maths::Abs(max_diff) > 0.1f)
-		{
-			sprite.ResetTransform();
-			sprite.RotateBy((this.getPosition().x - this.getOldPosition().x)*-max_speed*max_diff, Vec2f(this.isFacingLeft() ? 6 : -6, 0));
+		f32 last_diff = this.get_f32("shake_diff");
+		f32 diff = (this.getPosition().x - this.getOldPosition().x);
+		this.set_f32("shake_diff", Maths::Lerp(last_diff, diff, 0.1f));
 
-			//print("angle " + (this.getPosition().x - this.getOldPosition().x)*-max_speed);
-		}
+		f32 delta = diff-this.get_f32("shake_diff"); 
+
+		sprite.ResetTransform();
+		sprite.RotateBy(delta*-max_speed*max_diff, Vec2f(this.isFacingLeft() ? 6 : -6, 0));
 	}
 	else if (sprite !is null) sprite.ResetTransform();
 
