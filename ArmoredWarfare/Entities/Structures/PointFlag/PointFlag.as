@@ -11,7 +11,7 @@
 
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
-const f32 capture_time = 3000;
+const f32 capture_time = 3600;
 const Vec2f startpos = Vec2f(9.0f, -51.0f);
 
 void onInit(CBlob@ this)
@@ -486,7 +486,7 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 		getRules().SetTeamWon(team);
 		getRules().SetCurrentState(GAME_OVER);
 		CTeam@ teamis = getRules().getTeam(team);
-		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
+		if (teamis !is null) getRules().SetGlobalMessage("\n\n\n\n\n"+teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
 	}
 }
 

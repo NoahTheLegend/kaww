@@ -40,6 +40,17 @@ void onTick(CRules@ this)
         CBlob@[] flags;
         getBlobsByTag("pointflag", @flags);
 
+        Driver@ driver = getDriver();
+        if (driver !is null)
+        {
+            bannerDest = Vec2f(driver.getScreenWidth()/2, driver.getScreenHeight()/9);
+            bannerStart = bannerDest;
+            bannerStart.y = 0;
+            bannerPos = bannerStart;
+
+            this.Tag("animateBanner");
+        }
+
         if (this.get_string("map_name") == "Abacus")
         {
             this.set_string("bannertext", "Zombie Mode");
@@ -53,7 +64,8 @@ void onTick(CRules@ this)
             else if (flags.length > 0)
             {
                 // capture the flag
-                this.set_string("bannertext", "Capture all the flags to win!");
+                this.set_string("bannertext", "         Capture all the flags,\nor collect enough points to win!");
+                bannerDest += Vec2f(0, 100);
             }
             else
             {
@@ -61,17 +73,7 @@ void onTick(CRules@ this)
                 this.set_string("bannertext", "Kill the enemy team until they run out of respawns!");
             }
         }
-        
-        Driver@ driver = getDriver();
-        if (driver !is null)
-        {
-            bannerDest = Vec2f(driver.getScreenWidth()/2, driver.getScreenHeight()/9);
-            bannerStart = bannerDest;
-            bannerStart.y = 0;
-            bannerPos = bannerStart;
 
-            this.Tag("animateBanner");
-        }
     }
     else
     {
