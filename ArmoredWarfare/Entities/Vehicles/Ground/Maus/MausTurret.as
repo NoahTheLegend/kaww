@@ -105,12 +105,17 @@ void onInit(CBlob@ this)
 		{
 			anim.AddFrame(10 + this.get_u8("type"));
 		}
-		
-		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
-		if (arm !is null)
+	}
+
+	CSpriteLayer@ mg = sprite.addSpriteLayer("mg", "Maus.png", 16, 48);
+	if (mg !is null)
+	{
+		f32 angle = low_angle;
+
+		Animation@ anim = mg.addAnimation("default", 0, false);
+		if (anim !is null)
 		{
-			arm.SetRelativeZ(110.5f);
-			arm.SetOffset(Vec2f(-80.0f, -7.0f));
+			anim.AddFrame(20 + this.get_u8("type"));
 		}
 	}
 
@@ -230,7 +235,7 @@ void onTick(CBlob@ this)
 									this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 
 						CBitStream params;
-						params.write_s32(this.get_f32("gunAngle"));
+						params.write_s32(this.get_f32("gunelevation")-90);
 						params.write_Vec2f(this.getPosition()+(shootpos-Vec2f(6*flip_factor,0)).RotateBy(this.getAngleDegrees()));
 
 						this.SendCommand(this.getCommandID("shoot"), params);
@@ -306,6 +311,17 @@ void onTick(CBlob@ this)
 		arm.SetOffset(Vec2f(-19.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -10.0f + (this.isFacingLeft() ? -0.5f : 0.5f)));
 		arm.SetOffset(arm.getOffset() - Vec2f(-barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
 		arm.SetRelativeZ(-20.0f);
+
+		CSpriteLayer@ mg = sprite.getSpriteLayer("mg");
+		if (mg !is null)
+		{
+			mg.ResetTransform();
+			mg.ScaleBy(Vec2f(1.1f,1.1f));
+			mg.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 8.0f));
+			mg.SetOffset(Vec2f(-16.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -9.0f + (this.isFacingLeft() ? -0.5f : 0.5f)));
+			mg.SetOffset(mg.getOffset() - Vec2f(-barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
+			mg.SetRelativeZ(-19.0f);
+		}
 	}
 }
 
@@ -390,7 +406,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (this.hasBlob("ammo", 1))
 		{
 			if (isServer()) this.TakeBlob("ammo", 1);
-			ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,0).RotateBy(this.isFacingLeft()?arrowAngle+180:arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
+			ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(8,1).RotateBy(arrowAngle)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 			this.getSprite().PlaySound("M60fire.ogg", 0.75f, 1.0f + XORRandom(15) * 0.01f);
 		}
 	}
