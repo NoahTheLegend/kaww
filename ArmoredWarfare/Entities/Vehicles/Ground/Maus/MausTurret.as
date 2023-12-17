@@ -32,9 +32,9 @@ void onInit(CBlob@ this)
 	this.Tag("blocks bullet");
 
 	// machinegun stuff
-	this.set_u8("TTL", 75);
+	this.set_u8("TTL", 45);
 	this.set_Vec2f("KB", Vec2f(0,0));
-	this.set_u8("speed", 15);
+	this.set_u8("speed", 18);
 	this.set_s32("custom_hitter", HittersAW::machinegunbullet);
 	this.addCommandID("shoot");
 
