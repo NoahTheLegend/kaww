@@ -316,7 +316,7 @@ void onTick(CBlob@ this)
 		if (mg !is null)
 		{
 			mg.ResetTransform();
-			mg.ScaleBy(Vec2f(1.1f,1.1f));
+			//mg.ScaleBy(Vec2f(1.1f,1.1f));
 			mg.RotateBy(this.get_f32("gunelevation"), Vec2f(-0.5f, 8.0f));
 			mg.SetOffset(Vec2f(-16.0f + (this.isFacingLeft() ? -1.0f : 0.0f), -9.0f + (this.isFacingLeft() ? -0.5f : 0.5f)));
 			mg.SetOffset(mg.getOffset() - Vec2f(-barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
