@@ -1158,6 +1158,8 @@ void Reset(CRules@ this)
 	this.Sync("teamleft_kills", true);
 	this.Sync("teamright_kills", true);
 
+	
+
 	SetCorrectMapType(getPlayersCount());
 
 	if (getMap() !is null)
@@ -1419,62 +1421,13 @@ string getRandomCharName()
 
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
-	/*
-	if (isServer())
+	if (isServer() && player !is null)
 	{
-		int localtime = Time_Local();
-		int regtime = player.getRegistrationTime();
-
-		int reg_month = Time_Month(regtime);
-		int reg_day = Time_MonthDate(regtime);
-		int reg_year = Time_Year(regtime);
-
-		int loc_month = Time_Month(localtime);
-		int loc_day = Time_MonthDate(localtime);
-		int loc_year = Time_Year(localtime);
-
-		string[] exclusive_players = {
-			"RazerZF",
-			"simon2005"
-		}; // Add exceptions here
-	
-		bool is_exclusive = false;
-		for (u16 i = 0; i < exclusive_players.length; i++)
+		if (player.isBot())
 		{
-			if (exclusive_players[i] == player.getUsername())
-				is_exclusive = true;
+			player.server_setCharacterName(getRandomCharName());
+			getRules().set_u32(player.getUsername() + "_exp", 2500+XORRandom(1250));
 		}
-
-		//time is sec(60) * min(60) * hours(24)* daysfrom 1970-jan-01
-		// 1 day = 86400  and  30 days = 2592000
-		if (!is_exclusive && (localtime - regtime)<=2592000) // Ban people registered last 30days
-		{
-			CSecurity@ security = getSecurity();
-			bool newban = security.checkAccess_Feature(player, "newban");
-			//in security folder inside normal.cfg add newban; to end of features=
-			// inside preium.cfg add newban; to end of features= if you want preium uses to also registered less than 2 months to be ban
-
-			printf("new player Account age:"+ regtime + " regdate:" + reg_year + "-" + reg_month + "-" + reg_day + " checkAccess_Feature:" + newban + " HWID: "+player.server_getHWID());
-			if(newban)
-			{
-				printf("|");
-				printf("|");
-				printf("|");
-				printf("BANNING PLAYER WITH TOO YOUNG ACCOUNT AGE: "+player.getUsername());
-				printf("|");
-				printf("|");
-				printf("|");
-				BanPlayer(player, 60*100);
-			}
-
-		}
-	}
-	*/
-
-	if (isServer() && player !is null && player.isBot())
-	{
-		player.server_setCharacterName(getRandomCharName());
-		getRules().set_u32(player.getUsername() + "_exp", 2500+XORRandom(1250));
 	}
 
 	this.Sync("oldteamleft", true);
@@ -1483,6 +1436,8 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 	this.Sync("teamright", true);
 	this.Sync("teamleft_kills", true);
 	this.Sync("teamright_kills", true);
+	this.Sync("ctf_points_target", true);
+	this.Sync("ctf_points_left", true);
 
 	//if (getPlayersCount() == 5 || getPlayersCount() == 4)
 	//{
@@ -1561,57 +1516,66 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 	}
 }
 
+const u8 give_flag_points = 2;
+const u16 base_flag_points = 5000;
+const u16 extra_points_per_flag = 1300;
+
+void RunCTF(CRules@ this)
+{
+	if (getGameTime() % 30 != 0 || this.getCurrentState() == GAME_OVER) return;
+
+	CBlob@[] flags;
+	getBlobsByTag("pointflag", @flags);
+	if (flags.size() <= 2) return;
+
+	u8 teamleft = this.get_u8("teamleft");
+	u8 teamright = this.get_u8("teamright");
+	
+	s8 add_left = 0;
+	for (u8 i = 0; i < flags.size(); i++)
+	{
+		CBlob@ flag = flags[i];
+		if (flag is null) continue;
+
+		u8 tn = flag.getTeamNum();
+		if (tn > 6) continue;
+		
+		if (tn == teamleft) add_left++;
+		else if (tn == teamright) add_left--;
+	}
+	
+	this.set_s8("ctf_dominance", add_left == 0 ? -1 : add_left > 0 ? 0 : 1);
+	this.add_f32("ctf_points_left", give_flag_points * add_left);
+
+	f32 points = this.get_f32("ctf_points_left");
+	f32 target = this.get_f32("ctf_points_target");
+
+	s8 team_won = -1;
+	if (points < 0)
+	{
+		this.set_f32("ctf_points_left", 0);
+		team_won = teamright;
+	}
+	else if (points > target)
+	{
+		this.set_f32("ctf_points_left", target);
+		team_won = teamleft;
+	}
+
+	if (team_won != -1)
+	{
+		this.SetTeamWon(team_won); //game over!
+		this.SetCurrentState(GAME_OVER);
+		if (this.getTeam(team_won) !is null)
+			this.SetGlobalMessage("\n\n\n\n\n"+this.getTeam(team_won).getName() + " wins the game!\n\nWell done. Loading next map...");
+	}
+}
+
 void onTick(CRules@ this)
 {
 	g_screenshake = true;
 	this.set_u32("lastgametime", getGameTime());
-
-	//if (isServer() && this.get_u32("long_matches_passed") >= max_matches_before_restart && getGameTime() > restart_delay)
-	//{
-	//	for (u8 i = 0; i < getPlayersCount(); i++)
-	//	{
-	//		CPlayer@ p = getPlayer(i);
-	//		if (p !is null) getNet().DisconnectPlayer(p);
-	//	}
-	//	QuitGame();
-	//}
-
-	//if (isServer() && getGameTime() > 5)
-	//{
-	//	u16 count = 0;
-	//	u16 tempcount = 0;
-	//	string name;
-	//	u16 len = lastblobs.length;
-	//	for (u16 i = 0; i < len; i++)
-	//	{
-	//		for (u16 j = 0; j < len; j++)
-	//		{
-	//			if (lastblobs[i] == lastblobs[j])
-	//			{
-	//				tempcount++;
-	//				if (j == len-i && count < tempcount)
-	//				{
-	//					count = tempcount;
-	//					name = lastblobs[i];
-	//				}
-	//			}
-	//		}
-	//		tempcount = 0;
-	//	}
-	//	string[] empty;
-	//	lastblobs = empty;
-//
-	//	if (count > 30)
-	//	{
-	//		printf("WARNING: BLOB SPAMMED - "+count+" OF "+name);
-	//		ConfigFile cfg = ConfigFile();
-	//		if (!cfg.loadFile("../Cache/crash.cfg"))
-	//		{
-	//			cfg.add_string(name, name+": "+count);
-	//			cfg.saveFile("crash.cfg");
-	//		}
-	//	}
-	//}
+	RunCTF(this);
 
 	if (getGameTime() == 1)
 	{
@@ -1644,6 +1608,25 @@ void onTick(CRules@ this)
 			this.Sync("teamLeftTickets", true);
 			this.Sync("teamRightTickets", true);
 		}
+
+		CBlob@[] flags;
+		getBlobsByTag("pointflag", @flags);
+
+		if (flags.size() > 2)
+		{
+			f32 target = base_flag_points + flags.size()*extra_points_per_flag;
+			this.set_f32("ctf_points_target", target);
+			this.set_f32("ctf_points_left", target/2); // we don't need one for right team
+			this.set_f32("ctf_points_left_lerp", target/2);
+		}
+		else
+		{
+			this.set_f32("ctf_points_target", 0);
+			this.set_f32("ctf_points_left", 0);
+			this.set_f32("ctf_points_left_lerp", 0);
+		}
+		
+		this.set_s8("ctf_dominance", -1);
 	}
 //
 	//if (getGameTime() == 300)

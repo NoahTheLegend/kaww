@@ -37,19 +37,19 @@ void onRender( CRules@ this )
 	float mapWidth = map.tilemapwidth * 8.0f;
 	float mapHeight = map.tilemapheight * 8.0f;
 
-	float timelineLDist = screenWidth*(mapWidth > 1600 ? timelineLeftEnd_large : timelineLeftEnd);
-	float timelineRDist = screenWidth*(mapWidth > 1600 ? timelineRightEnd_large : timelineRightEnd);
+	float timelineLDist = screenWidth*(mapWidth > 2400 ? timelineLeftEnd_large : timelineLeftEnd) - 16;
+	float timelineRDist = screenWidth*(mapWidth > 2400 ? timelineRightEnd_large : timelineRightEnd);
 	float timelineLength = timelineRDist - timelineLDist;
 
 	Vec2f timelineLPos = Vec2f(timelineLDist - 16, timelineHeight);
 	Vec2f timelineRPos = Vec2f(timelineRDist - 16, timelineHeight);
 
 	bool hide_indicator = !v_showminimap && local !is null && !local.isKeyPressed(key_map) || (local is null && !v_showminimap);
-
-	if (getBlobByName("pointflag") is null
-	&& getBlobByName("pointflagt2") is null
-	&& getBlobByName("importantarmory") is null
-	&& getBlobByName("importantarmoryt2") is null)
+	bool isCTF = getBlobByName("pointflag") !is null || getBlobByName("pointflagt2") !is null;
+	bool isDTT = getBlobByName("importantarmory") !is null || getBlobByName("importantarmoryt2") !is null;
+	
+	if (!isCTF
+		&& !isDTT)
 	{
 		u16 teamLeftKills = this.get_u16("teamleft_kills");
 		u16 teamRightKills = this.get_u16("teamright_kills");
@@ -78,6 +78,121 @@ void onRender( CRules@ this )
 
 		Vec2f diff_offset = Vec2f(ldiff > rdiff ? -48 : 48, hide_indicator ? 40 : 125);
 		if (getGameTime() > 450) GUI::DrawTextCentered(ldiff!=rdiff?"-"+Maths::Max(ldiff, rdiff):"||", Vec2f(screenWidth/2-7, diff_offset.y), getNeonColor(ldiff==rdiff?7:ldiff<rdiff?teamleft:teamright, 0));
+	}
+
+	f32 points_target = this.get_f32("ctf_points_target");
+	if (isCTF && points_target > 0)
+	{
+		Vec2f gauge_dim = Vec2f(Maths::Min(timelineRDist-timelineLDist, 500), 24);
+		Vec2f ctf_pos = Vec2f(screenWidth/2, 125);
+
+		Vec2f ctf_tl = ctf_pos - (gauge_dim/2);
+		Vec2f ctf_br = ctf_pos + (gauge_dim/2);
+
+		f32 points_left_target = this.get_f32("ctf_points_left");
+		f32 points_left = Maths::Lerp(this.get_f32("ctf_points_left_lerp"), points_left_target, 0.15f);
+		this.set_f32("ctf_points_left_lerp", points_left);
+		
+		f32 points_right = points_target - points_left;
+
+		f32 factor_left = points_left/points_target;
+		//factor_left = Maths::Sin(getGameTime()*0.01f)/2+0.5f;
+		f32 factor_right = 1.0f-factor_left;
+
+		// bg
+		GUI::DrawRectangle(ctf_tl, ctf_br, SColor(0x75000000));
+
+		// draw points
+		Vec2f vec_dist_left  = Vec2f(ctf_br.x-gauge_dim.x*factor_right, ctf_br.y);
+		Vec2f vec_dist_right = Vec2f(ctf_tl.x+gauge_dim.x*factor_left, ctf_tl.y);
+
+		Vec2f lrect_pos_tl = ctf_tl + Vec2f(0,2);
+		Vec2f lrect_pos_br = vec_dist_left - Vec2f(0,2);
+		Vec2f rrect_pos_tl = vec_dist_right + Vec2f(0,2);
+		Vec2f rrect_pos_br = ctf_br - Vec2f(0,2);
+		Vec2f frame_thickness = Vec2f(3,3);
+		Vec2f inframe_thickness = Vec2f(0,5);
+
+		SColor col_mid_left   = getNeonColor(teamleft,  1);
+		SColor col_mid_right  = getNeonColor(teamright, 1);
+
+		SColor col_dark_left  = getNeonColor(teamleft,  2);
+		SColor col_dark_right = getNeonColor(teamright, 2);
+
+		SColor col_pane_left  = getNeonColor(teamleft,  3);
+		SColor col_pane_right = getNeonColor(teamright, 3);
+
+		// frame
+		GUI::DrawRectangle(lrect_pos_tl, lrect_pos_br, col_dark_left);
+		GUI::DrawRectangle(rrect_pos_tl, rrect_pos_br, col_dark_right);
+		// inner
+		GUI::DrawRectangle(lrect_pos_tl+frame_thickness, lrect_pos_br-frame_thickness, col_pane_left);
+		GUI::DrawRectangle(lrect_pos_tl+inframe_thickness, lrect_pos_br-inframe_thickness, col_mid_left);
+
+		GUI::DrawRectangle(rrect_pos_tl+frame_thickness, rrect_pos_br-frame_thickness, col_pane_right);
+		GUI::DrawRectangle(rrect_pos_tl+inframe_thickness, rrect_pos_br-inframe_thickness, col_mid_right);
+
+		Vec2f slider_tl = ctf_tl+Vec2f(gauge_dim.x*factor_left-4,0);
+		Vec2f slider_br = ctf_br-Vec2f(gauge_dim.x*factor_right-4,0);
+
+		SColor text_col = SColor(0xffcfcd00);
+		s8 left = this.get_s8("ctf_dominance");
+
+		if (left != -1)
+		{
+			// animarrow :D
+			// still much less icons than in scoreboard render
+			u8 fill = 32;
+			f32 fade_dist = 8.0f;
+
+			f32 movedir = -fill;
+			u8 arricon = 0;
+			Vec2f coeff_tl = ctf_tl;
+			Vec2f coeff_br = slider_br;
+			f32 arrfactor = factor_left;
+			f32 mp = getGameTime()%fill;
+			text_col = col_pane_left;
+
+			if (left == 1)
+			{
+				movedir = fill;
+				arricon = 1;
+				coeff_tl = slider_tl;
+				coeff_br = ctf_br;
+				arrfactor = factor_right;
+				mp *= -1.0f;
+				text_col = col_pane_right;
+			}
+			
+			u8 extra_width = 1;
+			Vec2f extra = Vec2f(fill*extra_width, 0);
+			
+			for (u8 i = 0; i < Maths::Ceil(gauge_dim.x/fill)*arrfactor + extra_width+1; i++)
+			{
+				// kinda hard to implement a proper fade-in/out, will do someday
+				// for now its bound to pos.x and fade edges
+				Vec2f arr_pos = coeff_tl - extra + Vec2f(fill*i+mp,4);
+
+				f32 edgemod = 0.0f;
+				if (arr_pos.x + 4 > coeff_tl.x) edgemod = (arr_pos.x + 4 - coeff_tl.x)  / fade_dist;
+				if (arr_pos.x > coeff_br.x - fade_dist*3) edgemod = (coeff_br.x - fade_dist*2 - arr_pos.x) / fade_dist;
+				edgemod = Maths::Clamp(edgemod, 0.0f, 1.0f);
+				//SColor arrcol = col_dark_left;
+				//arrcol.setAlpha(125*edgemod);
+
+				GUI::DrawIcon("MovingIndicatorArrow.png", arricon, Vec2f(16,16), arr_pos, 0.5f, SColor(125*edgemod,0,0,0));
+			}
+		}
+
+		// side rivets
+		GUI::DrawPane(ctf_tl-Vec2f(4,1), ctf_tl-Vec2f(-4,-gauge_dim.y-1), col_dark_left);
+		GUI::DrawPane(ctf_br-Vec2f(4, gauge_dim.y+1),ctf_br-Vec2f(-4,-1), col_dark_right);
+
+		// middle slider
+		GUI::DrawPane(slider_tl, slider_br, 0x25000000);
+
+		GUI::SetFont("menu");
+		GUI::DrawTextCentered(Maths::Round(points_target*factor_left)+"  ---  "+Maths::Round(points_target*factor_right), slider_tl+Vec2f(1,31), text_col);
 	}
 
 	if (hide_indicator) return;
