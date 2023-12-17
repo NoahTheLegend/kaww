@@ -594,9 +594,8 @@ void onTick(CBlob@ this)
 		f32 speed = Maths::Abs(this.getVelocity().x);
 		f32 max_speed = v.move_speed/20000;
 
-		f32 max_diff = 1.0f;
+		f32 max_diff = 1.5f;
 		if (this.exists("max_angle_diff")) max_diff = this.get_f32("max_angle_diff");
-		max_diff = 2.0f;
 
 		f32 last_diff = this.get_f32("shake_diff");
 		f32 diff = (this.getPosition().x - this.getOldPosition().x);
