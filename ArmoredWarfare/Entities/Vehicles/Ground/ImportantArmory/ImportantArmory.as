@@ -8,6 +8,7 @@
 #include "StandardRespawnCommand.as"
 #include "StandardControlsCommon.as"
 #include "PlayerRankInfo.as"
+#include "VehiclesParams.as";
 
 // Armory logic
 
@@ -109,7 +110,7 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "coin", "", "Coins", 30);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total. Bonus: allows medics to perform healing faster.", false);
+		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 12);
 	}
 	{
@@ -121,11 +122,11 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press SPACE while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
+		ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press [SPACEBAR] while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 30);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
+		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Press [SPACEBAR] while holding to arm, ~4 seconds until boom.\nEffective against infantry.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 20);
 	}
 	{
@@ -144,40 +145,40 @@ void onInit(CBlob@ this)
 	//}
 	
 	{
-		ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas a small explosion radius.", false);
+		ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Rocket Ammo.\nHas a small explosion radius.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Motorcycle", "$motorcycle$", "motorcycle", "Speedy transport.");
+		ShopItem@ s = addShopItem(this, "Build a Motorcycle", "$motorcycle$", "motorcycle", d_moto);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", "Lightweight transport.\n\nUses Ammunition.");
+		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", d_truck);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", "Scout car.\n\nPROS: Very fast, medium firerate\nCONS: Very fragile armor, bad elevation angles\n\nUses 14.5mm.");
+		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", d_pszh);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", "Armored transport.\n\nPROS: Fast, good firerate\nCONS: Weak armor, bad elevation angles\n\nUses 14.5mm.");
+		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", d_btr);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", "Medium tank.\n\nPROS: Good engine power, fast, good elevation angles\nCONS: Medium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", d_m60);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
 	}
 	if (t2)
 	{
 		{
-			ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
+			ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", d_mgun, false, true);
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 1;
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", "Fire thrower.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
+			ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", d_ftw, false, true);
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 1;
@@ -185,8 +186,13 @@ void onInit(CBlob@ this)
 		}
 		
 	}
+	if (t2)
 	{
-		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", "Heavy tank.\n\nPROS: Thick armor, big cannon damage.\nCONS: Slow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses 105mm & 7.62mm.");
+		ShopItem@ s = addShopItem(this, "Build a Bat.-Cht. 25t Light Tank", "$bc25t$", "bc25t", d_bc25t);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", d_t10);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
 	}
 	if (t1)
@@ -198,27 +204,30 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 200);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", "A plane.\nUses Ammunition.");
+		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", d_bf109);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 35);
+		s.customButton = true;
+		s.buttonwidth = 3;
+		s.buttonheight = 2;
 	}
 	if (t1)
 	{
 		{
-			ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy MachineGun.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
+			ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", d_mgun, false, true);
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 1;
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
+			ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", d_jav, false, true);
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 1;
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
+			ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Small explosive bombs.", false);
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 
 			s.customButton = true;
@@ -227,7 +236,7 @@ void onInit(CBlob@ this)
 			s.buttonheight = 1;
 		}
 		{
-			ShopItem@ s = addShopItem(this, "C-4 Explosive", "$c4$", "c4", "C-4\nA strong explosive, very effective against blocks and doors.\n\nTakes 10 seconds after activation to explode.\nYou can deactivate it as well.", false, false);
+			ShopItem@ s = addShopItem(this, "C-4 Explosive", "$c4$", "c4", d_c4, false, false);
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 1;
@@ -240,19 +249,22 @@ void onInit(CBlob@ this)
 	{
 		this.set_Vec2f("shop menu size", Vec2f(11, 7));
 		{
-			ShopItem@ s = addShopItem(this, "Build Bomber Plane", "$bomberplane$", "bomberplane", "A bomber plane.\nUses bomber bombs.");
+			ShopItem@ s = addShopItem(this, "Build Bomber Plane", "$bomberplane$", "bomberplane", d_bomber);
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
+			s.customButton = true;
+			s.buttonwidth = 3;
+			s.buttonheight = 2;
 		}
 
 		{
-			ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher.", false, true);
+			ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", d_jav, false, true);
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 1;
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Barge", "$icon_barge$", "barge", "An armored boat for transporting vehicles across the water.", false, true);
+			ShopItem@ s = addShopItem(this, "Barge", "$icon_barge$", "barge", d_barge, false, true);
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 1;
@@ -260,22 +272,22 @@ void onInit(CBlob@ this)
 		}
 
 		{
-			ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", "Super heavy tank.\n\nThick armor, best turret armor, big cannon damage, good elevation angles\nVery slow, slow fire rate, very fragile lower armor plate (weakpoint)\n\nUses 105mm");
+			ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", d_maus);
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Build Artillery", "$artillery$", "artillery", "A long-range, slow and fragile artillery.\n\nUses Bomber Bombs.");
+			ShopItem@ s = addShopItem(this, "Build Artillery", "$artillery$", "artillery", d_arti);
 			s.customButton = true;
 			s.buttonwidth = 3;
 			s.buttonheight = 2;
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Build UH1 Helicopter", "$uh1$", "uh1", "A helicopter with heavy machinegun.\nPress SPACEBAR to launch HEAT warheads.");
+			ShopItem@ s = addShopItem(this, "Build UH1 Helicopter", "$uh1$", "uh1", d_uh1);
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Bombs for bomber planes.", false);
+			ShopItem@ s = addShopItem(this, "Bomber Bomb", "$mat_smallbomb$", "mat_smallbomb", "Small explosive bombs.", false);
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 
 			s.customButton = true;
@@ -284,7 +296,7 @@ void onInit(CBlob@ this)
 			s.buttonheight = 1;
 		}
 		{
-			ShopItem@ s = addShopItem(this, "C-4 Explosive", "$c4$", "c4", "C-4\nA strong explosive, very effective against blocks and doors.\n\nTakes 10 seconds after activation to explode.\nYou can deactivate it as well.", false, false);
+			ShopItem@ s = addShopItem(this, "C-4 Explosive", "$c4$", "c4", d_c4, false, false);
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 1;
