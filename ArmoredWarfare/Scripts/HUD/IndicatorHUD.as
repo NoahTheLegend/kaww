@@ -192,7 +192,7 @@ void onRender( CRules@ this )
 		GUI::DrawPane(slider_tl, slider_br, 0x25000000);
 
 		GUI::SetFont("menu");
-		GUI::DrawTextCentered(Maths::Round(points_target*factor_left)+"  ---  "+Maths::Round(points_target*factor_right), slider_tl+Vec2f(1,31), text_col);
+		GUI::DrawTextCentered(Maths::Round(points_target*factor_left)+"  ---  "+Maths::Round(points_target*factor_right), slider_tl+Vec2f(1,32), text_col);
 	}
 
 	if (hide_indicator) return;
@@ -439,6 +439,7 @@ u8 getIndicatorFrame( int hash )
 		frame = 7; break;
 
 		case _motorcycle:
+		case _armedmotorcycle:
 		frame = 8; break;
 		
 		case _bf109:
@@ -580,10 +581,10 @@ void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 	Vec2f dimension = Vec2f(45.0f - 8.0f, 12.0f);
 	const f32 y = 0.0f;
 	
-	f32 percentage = 1.0f - float(returncount) / float(flag.getTeamNum() == 255 ? 3000 : 3000);
+	f32 percentage = 1.0f - float(returncount) / float(flag.getTeamNum() == 255 ? 3600 : 3600);
 	Vec2f bar = Vec2f(pos.x + (dimension.x * percentage), pos.y + dimension.y);
 
-	const f32 perc  = float(returncount) / float(flag.getTeamNum() == 255 ? 3000/2 : 3000);
+	const f32 perc  = float(returncount) / float(flag.getTeamNum() == 255 ? 3600/2 : 3600);
 
 	SColor color_light;
 	SColor color_mid;

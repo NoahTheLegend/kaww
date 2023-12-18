@@ -14,7 +14,9 @@ void onInit(CRules@ this)
 
 void onTick(CRules@ this)
 {
-	if (!getNet().isServer() || !this.isMatchRunning() || this.get_bool("no timer"))
+	bool isCTF = getBlobByName("pointflag") !is null || getBlobByName("pointflagt2") !is null;
+	if (isCTF) this.set_s32("end_in", -1);
+	if (!getNet().isServer() || !this.isMatchRunning() || this.get_bool("no timer") || isCTF)
 	{
 		return;
 	}

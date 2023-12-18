@@ -12,7 +12,7 @@ SColor getNeonColor(u8 team, u8 darkness)
 			color_light = 0xff2cafde;
 			color_mid	= 0xff1d85ab;
 			color_dark	= 0xff1a4e83;
-			color_pane  = 0xff1d85ab;
+			color_pane  = 0xff2cafde;
 			break;
 		}
 		case 1: // red
