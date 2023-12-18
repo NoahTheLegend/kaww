@@ -200,7 +200,8 @@ string getRankName(u32 level)
 int getRankId(CPlayer@ player)
 {
     if (player is null) return -1;
-    if (player.exists("rank")) return Maths::Min(RANKS.size(), player.get_u32("rank"));
+    if (isServer() && player.exists("rank")) return Maths::Min(RANKS.size(), player.get_u32("rank"));
+    if (isClient() && getRules().exists("rank")) return Maths::Min(RANKS.size(),getRules().get_u32(player.getUsername()+"_rank"));
 
     u32 exp = 0;
 	exp = getRules().get_u32(player.getUsername() + "_exp");
@@ -220,7 +221,9 @@ int getRankId(CPlayer@ player)
 			else
 			{
 				// The current level has been reached
-                player.set_u32("rank", level);
+                if (isServer()) player.set_u32("rank", level);
+                else if (isClient()) getRules().set_u32(player.getUsername()+"_rank", level);
+
 				break;
 			}
 		}
@@ -250,7 +253,9 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
             }
             else
             {
-                player.set_u32("rank", level);
+                if (isServer()) player.set_u32("rank", level);
+                else if (isClient()) getRules().set_u32(player.getUsername()+"_rank", level);
+
                 break;
             }
         }
