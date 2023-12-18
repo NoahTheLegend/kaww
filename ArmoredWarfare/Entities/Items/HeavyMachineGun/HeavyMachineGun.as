@@ -46,6 +46,7 @@ void onInit(CBlob@ this)
 	                    Vec2f(-6.0f, 2.0f), // fire position offset
 	                    0 // charge time
 	                   );
+					   
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 48, 16);

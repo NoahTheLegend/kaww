@@ -416,6 +416,7 @@ void ExplodeInventory(CBlob@ this)
 		if (b.hasTag("heavy weight"))
 		{
 			b.set_f32("damage", 99.0f);
+			b.set_bool("booming", true);
 			this.server_Hit(b, b.getPosition(), Vec2f_zero, 99.0f, HittersAW::bullet);
 		}
 		else
@@ -455,28 +456,33 @@ bool doesCollideWithBlob( CBlob@ this, CBlob@ blob )
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (isServer())
+	if (solid && this.hasTag("falling"))
 	{
-		if (solid && this.hasTag("falling"))
-		{
-			ExplodeInventory(this);
-			this.server_Die();
-		}
+		ExplodeInventory(this);
+		if (isServer()) this.server_Die();
+	}
 
-		f32 impact = this.getOldVelocity().getLength();
-		if (impact > 10.0f && blob is null
-			&& (!this.exists("collision_dmg_delay") || this.get_u32("collision_dmg_delay") < getGameTime()))
-		{
-			this.server_Hit(this, this.getPosition(), Vec2f(0, 0), Maths::Sqrt(impact)*(impact/2), 0, true);
-			this.set_u32("collision_dmg_delay", getGameTime()+30);
-		}
+	f32 impact = this.getOldVelocity().getLength();
+	if (impact > 10.0f && blob is null
+		&& (!this.exists("collision_dmg_delay") || this.get_u32("collision_dmg_delay") < getGameTime()))
+	{
+		f32 dmg = Maths::Sqrt(impact)*(impact/2);
+		if (isServer()) this.server_Hit(this, this.getPosition(), Vec2f(0, 0), dmg, 0, true);
+		this.set_u32("collision_dmg_delay", getGameTime()+30);
+		if (dmg >= this.getHealth()) ExplodeInventory(this);
+	}
 
-		if (blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck"))
-		&& this.getVelocity().Length() > 4.0f)
+	if (blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck"))
+	&& this.getVelocity().Length() > 4.0f)
+	{
+		f32 mod_self = 1.5f;
+		f32 mod_target = 6.0f;
+
+		f32 dmgself = this.getVelocity().getLength()*mod_self;
+		if (dmgself >= this.getHealth()) ExplodeInventory(this);
+		if (isServer())
 		{
-			f32 mod_self = 1.5f;
-			f32 mod_target = 6.0f;
-			blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
+			blob.server_Hit(this, this.getPosition(), this.getVelocity(), dmgself, Hitters::fall);
 			this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
 		}
 	}

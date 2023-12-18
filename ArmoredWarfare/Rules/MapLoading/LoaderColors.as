@@ -307,6 +307,8 @@ namespace map_colors
 
 		blue_motorcycle        = 0xff3a285b,
 		red_motorcycle         = 0xff5e254e,
+		blue_armedmotorcycle   = 0xff3a28ab,
+		red_armedmotorcycle    = 0xffae254e,
 
 		blue_barge        		= 0xff3a58fb,
 		red_barge         		= 0xfffd254e,

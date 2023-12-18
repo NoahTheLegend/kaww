@@ -20,7 +20,8 @@ void onInit(CBlob@ this)
 	this.Tag("bomber ammo");
 	this.Tag("no_armory_pickup");
 	this.Tag("weapon");
-	
+
+	this.addCommandID("force_explode");
 	this.maxQuantity = 1;
 }
 
@@ -140,5 +141,14 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		this.set_bool("booming", true);
 
 		// DoExplosion(this, this.getOldVelocity());
+	}
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
+{
+	if (cmd == this.getCommandID("force_explode"))
+	{
+		if (!this.get_bool("booming")) ExplosionEffects(this);
+		this.set_bool("booming", true);
 	}
 }

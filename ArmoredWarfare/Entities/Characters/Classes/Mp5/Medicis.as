@@ -144,7 +144,6 @@ void onRender(CSprite@ this)
 			float bucketCost = 1.0f / bucket_Max_Charges;
 
 			drawBucketHud(bucketAmount, bucketCost); // MedicisCommon.as
-			renderMedicIdentifier(thisBlob);
 		}
 		else if (!renderBlob.hasTag(medicTagString)) // only draw medic identifier on people if you yourself are not a medic
 		{

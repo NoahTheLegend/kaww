@@ -41,6 +41,8 @@ enum EntityHash
 	
 	_techtruck = -4555140,
 	_motorcycle = -1537538612,
+	_armedmotorcycle = 1914018569,
+
 	_civcar = 2114887441,
 	_lada = 1728196733,
 
@@ -67,6 +69,7 @@ enum EntityHash
     switch (blobHash)
     {
         case _motorcycle:
+		case __armedmotorcycle
         case _techtruck:
         case _techbigtruck:
         case _armory:
@@ -79,6 +82,7 @@ enum EntityHash
         case _btr82a:
         case _bradley:
         case _m60:
+		case _bc25t:
         case _t10:
         case _maus:
 		case _pinkmaus:
