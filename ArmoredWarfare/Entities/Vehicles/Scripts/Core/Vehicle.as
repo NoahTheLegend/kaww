@@ -93,6 +93,7 @@ void onInit(CBlob@ this)
 			break;
 		}
 		case _motorcycle:
+		case _armedmotorcycle:
 		{
 			this.set_string("engine_start", "LightEngineStart_tank");
 			break;
@@ -157,6 +158,7 @@ void onInit(CBlob@ this)
 		armorRating = 0; break;
 
 		case _motorcycle: // bike
+		case _armedmotorcycle:
 		case _jourcop: // journalist
 		armorRating = -1; break;
 
@@ -319,6 +321,7 @@ void onInit(CBlob@ this)
 		case _importantarmory:
 		case _importantarmoryt2:
 		case _civcar:
+		case _armedmotorcycle:
 		intake = 100.0f; break;
 
 		case _motorcycle: // bike
@@ -1167,6 +1170,7 @@ void onDie(CBlob@ this)
 				break;
 			} // bike
 			case _civcar:
+			case _armedmotorcycle:
 			{
 				scrap_amount = 2+XORRandom(2);
 				explosion_radius = 24.0f;

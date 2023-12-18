@@ -36,6 +36,7 @@ void onInit(CBlob@ this)
         case _maus:
         case _pinkmaus:
         case _desertmaus:
+		case _armedmotorcycle:
         {
             susheight = 1.5f;
             break;

@@ -485,6 +485,8 @@ class PNGLoader
 
 			case map_colors::blue_motorcycle:   autotile(offset); spawnVehicle(map, "motorcycle",   offset, teamleft); break;
 			case map_colors::red_motorcycle:   autotile(offset); spawnVehicle(map, "motorcycle",   offset, teamright); break;
+			case map_colors::blue_armedmotorcycle:   autotile(offset); spawnVehicle(map, "armedmotorcycle",   offset, teamleft); break;
+			case map_colors::red_armedmotorcycle:   autotile(offset); spawnVehicle(map, "armedmotorcycle",   offset, teamright); break;
 
 			case map_colors::blue_barge:   autotile(offset); spawnVehicle(map, "barge",   offset, teamleft); break;
 			case map_colors::red_barge:   autotile(offset); spawnVehicle(map, "barge",   offset, teamright); break;

@@ -27,6 +27,7 @@ const string s = "mat_scrap";
 const string ds = "Scrap";
 // names
 const string n_moto = "Build a Motorcycle";
+const string n_amoto = "Build a Motorcycle with machinegun";
 const string n_truck = "Build a Truck";
 const string n_truckbig = "Build a Cargo Truck";
 const string n_pszh = "Build a PSZH-4 Light APC";
@@ -49,6 +50,7 @@ const string n_c4 = "Construct a C-4 Explosive";
 const string n_jav = "Construct a Javelin Missile launcher";
 // descriptions
 const string d_moto = "Speedy transport.";
+const string d_amoto = "Armed motorcycle.";
 const string d_truck = "Lightweight transport.\n\nUses Ammunition.";
 const string d_truckbig = "A modernized truck. Commonly used for gang battles.\n\nUses Ammunition.";
 const string d_pszh = "Scout car.\n\nVery fast, medium firerate\nVery fragile armor, bad elevation angles\n\nUses 14.5mm.";
@@ -71,6 +73,7 @@ const string d_c4 = "A strong explosive, very effective against blocks and doors
 const string d_jav = "Homing Missile launcher.";
 // blobnames
 const string bn_moto = "motorcycle";
+const string bn_amoto = "armedmotorcycle";
 const string bn_truck = "techtruck";
 const string bn_truckbig = "techbigtruck";
 const string bn_pszh = "pszh4";
@@ -93,6 +96,7 @@ const string bn_c4 = "c4";
 const string bn_jav = "launcher_javelin";
 // icon tokens
 const string t_moto = "$"+bn_moto+"$";
+const string t_amoto = "$"+bn_amoto+"$";
 const string t_truck = "$"+bn_truck+"$";
 const string t_truckbig = "$"+bn_truckbig+"$";
 const string t_pszh = "$"+bn_pszh+"$";
