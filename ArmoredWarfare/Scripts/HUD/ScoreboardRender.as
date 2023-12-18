@@ -546,9 +546,7 @@ void onRenderScoreboard(CRules@ this)
 	}
 
 	drawPlayerCard(hoveredPlayer, hoveredPos);
-
 	drawHoverExplanation(hovered_accolade, hovered_rank, Vec2f(getScreenWidth() * 0.5, topleft.y));
-
 	mouseWasPressed2 = controls.mousePressed2; 
 
 	makeWebsiteLink(Vec2f(getScreenWidth()/2+500, 100.0f-scrollOffset), "Discord ", "https://discord.gg/55yueJWy7g");

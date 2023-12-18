@@ -51,7 +51,9 @@ void onTick(CRules@ this)
 //a work in progress
 void onRender(CRules@ this)
 {
-	if (!showHelp) return;
+    if (!showHelp) return;
+    makeLinks(this);
+    return;
 	
 	CPlayer@ player = getLocalPlayer();
 	if (player is null) return;
@@ -154,4 +156,49 @@ void onRender(CRules@ this)
 	
 	//hud icons
 	Vec2f tl = getActorHUDStartPosition(null, 6);
+}
+
+void makeWebsiteLink(Vec2f pos, const string&in text, const string&in website)
+{
+	Vec2f dim;
+	GUI::GetTextDimensions(text, dim);
+
+	const f32 width = dim.x + 20;
+	const f32 height = 30;
+	const Vec2f tl = Vec2f(getScreenWidth() - 10 - width - pos.x, pos.y);
+	const Vec2f br = Vec2f(getScreenWidth() - 10 - pos.x, tl.y + height);
+
+	CControls@ controls = getControls();
+	const Vec2f mousePos = controls.getMouseScreenPos();
+
+	const bool hover = (mousePos.x > tl.x && mousePos.x < br.x && mousePos.y > tl.y && mousePos.y < br.y);
+	if (hover)
+	{
+		GUI::DrawButton(tl, br);
+
+		if (controls.mousePressed1 && !mouseWasPressed1)
+		{
+			Sound::Play("option");
+			OpenWebsite(website);
+		}
+	}
+	else
+	{
+		GUI::DrawPane(tl, br, 0xffcfcfcf);
+	}
+
+	GUI::DrawTextCentered(text, Vec2f(tl.x + (width * 0.50f), tl.y + (height * 0.50f)), 0xffffffff);
+}
+
+void makeLinks(CRules@ this)
+{
+    GUI::SetFont("default");
+    makeWebsiteLink(Vec2f(getScreenWidth()/6-108, 10.0f), "Discord ", "https://discord.gg/55yueJWy7g");
+	makeWebsiteLink(Vec2f(getScreenWidth()/6-163, 10.0f), "Github ",  "https://github.com/NoahTheLegend/kaww");
+	makeWebsiteLink(Vec2f(getScreenWidth()/6-225, 10.0f), "Patreon ", "https://www.patreon.com/armoredwarfare");
+
+    CControls@ controls = getControls();
+    if (controls is null) return;
+
+    mouseWasPressed1 = controls.mousePressed1;
 }
