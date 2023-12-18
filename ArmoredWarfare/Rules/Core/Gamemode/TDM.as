@@ -1227,6 +1227,10 @@ void Reset(CRules@ this)
 	{
 		getMap().SetDayTime(0.03f);
 	}
+	if (isClient() && isServer())
+	{
+		getMap().SetDayTime(0.15f);
+	}
 }
 
 void HandleResetInfo(CRules@ this)
@@ -1546,6 +1550,11 @@ void RunCTF(CRules@ this)
 	
 	this.set_s8("ctf_dominance", add_left == 0 ? -1 : add_left > 0 ? 0 : 1);
 	this.add_f32("ctf_points_left", give_flag_points * add_left);
+	if (isServer())
+	{
+		this.Sync("ctf_dominance", true);
+		this.Sync("ctf_points_left", true);
+	}
 
 	f32 points = this.get_f32("ctf_points_left");
 	f32 target = this.get_f32("ctf_points_target");
@@ -1608,7 +1617,7 @@ void onTick(CRules@ this)
 			this.Sync("teamLeftTickets", true);
 			this.Sync("teamRightTickets", true);
 		}
-
+		
 		CBlob@[] flags;
 		getBlobsByTag("pointflag", @flags);
 
@@ -1618,15 +1627,22 @@ void onTick(CRules@ this)
 			this.set_f32("ctf_points_target", target);
 			this.set_f32("ctf_points_left", target/2); // we don't need one for right team
 			this.set_f32("ctf_points_left_lerp", target/2);
+			this.Sync("ctf_points_target", true);
+			this.Sync("ctf_points_left", true);
+			this.Sync("ctf_points_left_lerp", true);
 		}
 		else
 		{
 			this.set_f32("ctf_points_target", 0);
 			this.set_f32("ctf_points_left", 0);
 			this.set_f32("ctf_points_left_lerp", 0);
+			this.Sync("ctf_points_target", true);
+			this.Sync("ctf_points_left", true);
+			this.Sync("ctf_points_left_lerp", true);
 		}
 		
 		this.set_s8("ctf_dominance", -1);
+		this.Sync("ctf_dominance", true);
 	}
 //
 	//if (getGameTime() == 300)
