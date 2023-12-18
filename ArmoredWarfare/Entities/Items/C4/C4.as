@@ -3,7 +3,8 @@
 #include "ProgressBar.as"
 
 const f32 EXPLODE_TIME = 12.5f;
-const f32 DEFUSE_REQ_TIME = 45;
+const f32 ACTIVATE_REQ_TIME = 90;
+const f32 DEFUSE_REQ_TIME = 60;
 
 void onInit(CBlob@ this)
 {
@@ -19,6 +20,8 @@ void onInit(CBlob@ this)
 	this.set_bool("explode", false);
 	this.set_bool("deactivating", false);
 
+	this.set_f32("activate_endtime", ACTIVATE_REQ_TIME);
+	this.set_f32("activate_time", 10);
 	this.set_f32("defuse_endtime", DEFUSE_REQ_TIME);
 	this.set_f32("defuse_time", 10);
 	this.set_f32("caller_health", 999.0f);
@@ -34,6 +37,7 @@ void onInit(CBlob@ this)
 
 	this.Tag("medium weight");
 	this.addCommandID("switch");
+	this.addCommandID("activate");
 	this.addCommandID("deactivate");
 	this.addCommandID("sync timer");
 
@@ -71,7 +75,7 @@ bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)
 
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 {
-	return !this.get_bool("explode");
+	return !this.get_bool("explode") && !this.hasTag("activating");
 }
 
 void DoExplosion(CBlob@ this)
@@ -102,10 +106,11 @@ void DoExplosion(CBlob@ this)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	if (this.exists("delay") && this.get_u32("delay") > getGameTime()) return;
- 	if (caller is null || !caller.isMyPlayer() || caller.isAttached()) return;
-	if (this.getDistanceTo(caller) > 10.0f || this.get_bool("deactivating")) return;
-	if (this.isAttachedTo(caller) || !this.isAttached())
+	if (this.exists("delay") 				   && this.get_u32("delay") > getGameTime()) return;
+ 	if (caller is null 						   || !caller.isMyPlayer() || caller.isAttached()) return;
+	if (this.getDistanceTo(caller) > 10.0f     || this.get_bool("deactivating")) return;
+	if (this.get_bool("activating") 		   || this.get_bool("deactivating")) return;
+	if (this.isAttachedTo(caller) 		  	   || !this.isAttached())
 	{
 		CBitStream params;
 		params.write_u16(caller.getNetworkID());
@@ -123,54 +128,72 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 	this.server_setTeamNum(attached.getTeamNum());
 }
 
+bool hasPresence(CBlob@ this, CBlob@ caller)
+{
+	return caller !is null && caller.getDistanceTo(this) < this.getRadius() * 2
+			&& (!(caller.getHealth() < this.get_f32("caller_health")-0.1f)
+				|| this.get_f32("caller_health") > 500.0f);
+}
+
 void onTick(CBlob@ this)
 {
 	visualTimerTick(this);
 
-	if (isServer() && this.get_bool("explode") && getGameTime()%15==0)
+	if (isServer() && (this.get_bool("explode") || this.hasTag("activating")) && getGameTime()%15==0)
 	{
 		this.server_DetachFromAll();
 	}
 
-	//if (isServer() && this.hasTag("setstatic"))
-	//{
-	//	this.Untag("setstatic");
-	//	this.getShape().SetStatic(true);
-	//	this.getShape().getConsts().mapCollisions = false;
-	//	this.setVelocity(Vec2f(0,0));
-	//}
+	CBlob@ caller = getBlobByNetworkID(this.get_u16("caller_id"));
+	bool can_interact = hasPresence(this, caller);
+
+	string timer_prop = "defuse_time";
+	f32 req_time = DEFUSE_REQ_TIME;
+	string bar_name = "defuse";
+	string state_prop = "deactivating";
+
+	bool run = false;
+	if (this.get_bool("activating"))
+	{
+		timer_prop = "activate_time";
+		req_time = ACTIVATE_REQ_TIME;
+		bar_name = "activate";
+		state_prop = "activating";
+		run = true;
+	}
 
 	if (this.get_bool("deactivating"))
 	{
-		CBlob@ caller = getBlobByNetworkID(this.get_u16("caller_id"));
-		if (caller !is null && caller.getDistanceTo(this) < this.getRadius() * 2
-			&& (!(caller.getHealth() < this.get_f32("caller_health")-0.1f)
-				|| this.get_f32("caller_health") > 500.0f))
+		run = true;
+	}
+	if (run)
+	{
+		if (can_interact)
 		{
-			if (this.get_f32("defuse_time") > DEFUSE_REQ_TIME)
+			if (this.get_f32(timer_prop) > req_time)
 			{
 				Bar@ bars;
 				if (this.get("Bar", @bars))
 				{
-					bars.RemoveBar("defuse", false);
+					bars.RemoveBar(bar_name, false);
 				}
 			}
-			this.add_f32("defuse_time", 1);
+			this.add_f32(timer_prop, 1);
 			this.set_f32("caller_health", caller.getHealth());
 		}
 		else
 		{
-			this.set_f32("defuse_time", 10);
-			this.set_bool("deactivating", false);
+			this.set_f32(timer_prop, 10);
+			this.set_bool(state_prop, false);
 
 			Bar@ bars;
 			if (this.get("Bar", @bars))
 			{
-				ProgressBar@ defuse = bars.getBar("defuse");
+				ProgressBar@ defuse = bars.getBar(bar_name);
 				if (defuse !is null)
 					defuse.callback_command = "";
 
-				bars.RemoveBar("defuse", false);
+				bars.RemoveBar(bar_name, false);
 			}
 			this.set_f32("caller_health", 999.0f);
 		}
@@ -291,14 +314,35 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.set_bool("active", false);
 			this.set_bool("explode", false);
 			this.set_u16("exploding", 0);
-
 			this.set_f32("defuse_time", 10);
 			this.set_u16("caller_id", 0);
 		}
+
 		this.set_bool("deactivating", false);
+		this.set_bool("activating", false);
+	}
+	else if (cmd == this.getCommandID("activate"))
+	{
+		this.set_bool("deactivating", false);
+		this.set_bool("activating", false);
+
+		this.set_u32("delay", getGameTime()+15);
+		this.set_f32("activate_time", 10);
+
+		this.set_bool("active", true);
+		this.set_bool("explode", true);
+		this.set_u16("exploding", EXPLODE_TIME*getTicksASecond());
+
+		if (isServer())
+		{
+			this.server_DetachFromAll();
+		}
 	}
    	else if (cmd == this.getCommandID("switch"))
 	{
+		u16 callerid = params.read_u16();
+		this.set_u16("caller_id", callerid);
+
 		if (this.get_bool("explode"))
 		{
 			if (isClient())
@@ -324,10 +368,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
     				bars.AddBar(this.getNetworkID(), setbar, true);
 				}
-			}	
+			}
+			
+			this.set_bool("activating", false);
 			this.set_bool("deactivating", true);
-			u16 callerid = params.read_u16();
-			this.set_u16("caller_id", callerid);
 		}
 		else
 		{
@@ -335,26 +379,29 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				Sound::Play("C4Plant.ogg", this.getPosition(), 0.75f, 1.075f);
 			}
-			this.set_u32("delay", getGameTime()+15);
-			this.set_f32("defuse_time", 10);
-
-			this.set_bool("active", true);
-			this.set_bool("explode", true);
-			this.set_u16("exploding", EXPLODE_TIME*getTicksASecond());
-
-			if (isServer())
-			{
-				this.server_DetachFromAll();
-			}
 
 			Bar@ bars;
+			if (!this.get("Bar", @bars))
+			{
+				Bar setbars;
+    			setbars.gap = 20.0f;
+    			this.set("Bar", setbars);
+			}
+
 			if (this.get("Bar", @bars))
 			{
-				ProgressBar@ defuse = bars.getBar("defuse");
-				if (defuse !is null)
-					defuse.callback_command = "deactivate";
+				if (!hasBar(bars, "activate"))
+				{
+					SColor team_front = SColor(255, 255, 255, 55);
+					ProgressBar setbar;
+					setbar.Set(this.getNetworkID(), "activate", Vec2f(48.0f, 12.0f), true, Vec2f(0, 24), Vec2f(2, 2), back, team_front,
+						"activate_time", this.get_f32("activate_endtime"), 0.33f, 5, 5, false, "activate");
+
+    				bars.AddBar(this.getNetworkID(), setbar, true);
+				}
 			}
 			this.set_bool("deactivating", false);
+			this.set_bool("activating", true);
 		}
 	}
 }
