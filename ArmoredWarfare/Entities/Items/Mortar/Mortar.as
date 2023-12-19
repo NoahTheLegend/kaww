@@ -1,10 +1,14 @@
 #include "ScreenHoverButton.as";
+#include "WarfareGlobal.as";
 
 const f32 high_angle = 45;
 const f32 low_angle = 75;
+const u32 fire_rate = 300;
 
 void onInit(CBlob@ this)
 {
+	this.Tag("repairable");
+	
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 
@@ -82,13 +86,25 @@ void onTick(CBlob@ this)
 	CBlob@ local = getLocalPlayerBlob();
 	if (local !is null)
 	{
+		CMap@ map = getMap();
+		if (map is null) return;
+
 		if (this.isOnScreen())
 		{
 			HoverButton@ buttons;
-			if (this.get("HoverButton", @buttons) && !att && local.getDistanceTo(this) < 32.0f)
+			if (this.get("HoverButton", @buttons) && !att && local.getDistanceTo(this) < 32.0f
+				&& !map.rayCastSolidNoBlobs(local.getPosition(), this.getPosition()))
 			{
 				buttons.active = true;
 				this.set_bool("tips_active", true);
+
+				if (buttons.list.size() == 4)
+				{
+					if (buttons.list[2] !is null)
+					{
+						buttons.list[2].inactive = this.get_u32("cooldown") > getGameTime();
+					}
+				}
 			}
 			else
 			{
@@ -115,6 +131,13 @@ void onTick(CBlob@ this)
 		tripod.SetOffset(Vec2f(-4*rot, 6 + 4*rot));
 		pip.SetOffset(tripod.getOffset());
 	}
+
+	//CSpriteLayer@ heat = sprite.getSpriteLayer("heat");
+	//if (heat !is null)
+	//{
+	//	heat.SetVisible(this.get_u32("cooldown") > getGameTime());
+	//	heat.ResetTransform();
+	//}
 
 	CShape@ shape = this.getShape();
 	if (att)
@@ -146,9 +169,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		if (!params.saferead_u8(ammo)) return;
 		f32 angle;
 		if (!params.saferead_f32(angle)) return;
+		u32 cd;
+		if (!params.saferead_u32(cd)) return;
 
 		this.set_u8("ammo", ammo);
 		this.set_f32("current_angle", angle);
+		this.set_u32("cooldown", cd);
 	}
 	else if (cmd == this.getCommandID("reload"))
 	{
@@ -167,7 +193,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 			if (isClient() && this.get_u8("ammo") == 0)
 			{
-				
+				this.getSprite().PlaySound(this.get_u32("cooldown") > getGameTime() ? "mortar_reload_quick" : "mortar_reload", 1.0f, 1.0f);
 			}
 			
 			if (isServer())
@@ -184,23 +210,35 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	}
 	else if (cmd == this.getCommandID("shoot"))
 	{
-		if (this.get_u8("ammo") == 0)
+		if (this.get_u8("ammo") == 0 || this.isAttached())
 		{
 			return;
 		}
 
-		Vec2f pos;
-		if (!params.saferead_Vec2f(pos)) return;
-		Vec2f vel;
-		if (!params.saferead_Vec2f(vel)) return;
+		u16 id = params.read_u16();
+		CBlob@ caller = getBlobByNetworkID(id);
+		if (caller !is null && caller.getPlayer() !is null)
+		{
+			this.SetDamageOwnerPlayer(caller.getPlayer());
+		}
+
+		if (this.get_u32("cooldown") > getGameTime())
+		{
+			this.getSprite().PlaySound("NoAmmo.ogg", 0.75f, 1.25f);
+			return;
+		}
+
+		f32 shoot_angle = this.getAngleDegrees() + (this.isFacingLeft()?180:0);
+		Vec2f pos = this.getPosition() + Vec2f(16,0).RotateBy(shoot_angle);
+		Vec2f vel = Vec2f(30.0f, 0).RotateBy(shoot_angle);
 
 		f32 angle = -vel.getAngle();
+		this.set_u8("ammo", 0);
+		this.set_u32("cooldown", getGameTime()+fire_rate);
 
 		if (isServer())
 		{
-			this.set_u8("ammo", 0);
 			Sync(this);
-
 			CreateProjectile(this, pos, vel);
 		}
 
@@ -228,7 +266,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				ParticleAnimated("Explosion", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.0065f, 360) + vel/(50+XORRandom(24)), float(XORRandom(360)), 0.6f + XORRandom(45) * 0.01f, 2, -0.0031f, true);
 			}
 
-			this.getSprite().PlaySound("sound_128mm.ogg", 1.0f, 1.25f);
+			this.getSprite().PlaySound("sound_105mm.ogg", 2.0f, 1.45f+XORRandom(31)*0.01f);
 		}
 	}
 	else if (cmd == this.getCommandID("angle_up"))
@@ -255,7 +293,36 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 void CreateProjectile(CBlob@ this, Vec2f pos, Vec2f vel)
 {
+	CBlob@ proj = server_CreateBlobNoInit("ballista_bolt");
+	if (proj !is null)
+	{
+		proj.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
+		proj.Init();
 
+		proj.set_f32(projDamageString, 1.0f);
+		proj.set_f32(projExplosionRadiusString, 64.0f);
+		proj.set_f32(projExplosionDamageString, 10.0f);
+		proj.set_f32("linear_length", 4.0f);
+
+		proj.set_f32("bullet_damage_body", 1.0f);
+		proj.set_f32("bullet_damage_head", 1.0f);
+		proj.IgnoreCollisionWhileOverlapped(this);
+		proj.server_setTeamNum(this.getTeamNum());
+		proj.setPosition(pos);
+		proj.setVelocity(vel);
+		proj.set_s8(penRatingString, 2);
+
+		proj.AddScript("ShrapnelOnDie.as");
+		proj.set_u8("shrapnel_count", 7+XORRandom(5));
+		proj.set_f32("shrapnel_vel", 9.0f+XORRandom(5)*0.1f);
+		proj.set_f32("shrapnel_vel_random", 1.5f+XORRandom(16)*0.1f);
+		proj.set_Vec2f("shrapnel_offset", Vec2f(0,-1));
+		proj.set_f32("shrapnel_angle_deviation", 10.0f);
+		proj.set_f32("shrapnel_angle_max", 45.0f+XORRandom(21));
+
+		proj.Tag("rpg");
+		proj.Tag("artillery");
+	}
 }
 
 void Sync(CBlob@ this)
@@ -265,6 +332,7 @@ void Sync(CBlob@ this)
 		CBitStream params;
 		params.write_u8(this.get_u8("ammo"));
 		params.write_f32(this.get_f32("current_angle"));
+		params.write_u32(this.get_u32("cooldown"));
 		this.SendCommand(this.getCommandID("sync"), params);
 	}
 }
@@ -279,6 +347,8 @@ void onRender(CSprite@ this)
 	if (!blob.get_bool("tips_active")) return;
 
 	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(blob.getPosition());
+
+
 
 	GUI::SetFont("menu");
 	GUI::DrawTextCentered("L/R click", pos2d+Vec2f(0,128), SColor(50,255,255,255));
@@ -310,8 +380,18 @@ void onInit(CSprite@ sprite)
 	if (disc !is null)
 	{
 		disc.SetVisible(false);
-		Animation@ anim = tripod.addAnimation("default", 0, false);
+		Animation@ anim = disc.addAnimation("default", 0, false);
 		if (anim !is null)
 		{anim.AddFrame(6);disc.SetAnimation(anim);}
 	}
+
+	//CSpriteLayer@ heat = sprite.addSpriteLayer("heat", fn, 32, 16);
+	//if (heat !is null)
+	//{
+	//	heat.SetVisible(false);
+	//	Animation@ anim = heat.addAnimation("default", 0, false);
+	//	if (anim !is null)
+	//	{anim.AddFrame(2);heat.SetAnimation(anim);}
+	//	heat.setRenderStyle(RenderStyle::additive);
+	//}
 }

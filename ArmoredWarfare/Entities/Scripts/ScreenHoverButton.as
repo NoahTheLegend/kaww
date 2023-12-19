@@ -24,6 +24,7 @@ class SimpleHoverButton : HoverButton
     string text; string font; SColor text_color;
     string icon; Vec2f icon_offset; f32 icon_scale; u32 icon_frame; Vec2f icon_dim;
     string sound; f32 sound_volume; f32 sound_pitch;
+    bool inactive;
 
     SimpleHoverButton(u16 _blobid)
     {
@@ -50,6 +51,7 @@ class SimpleHoverButton : HoverButton
         this.sent_command = false;
         this.skip_command_reset = false;
         this.send_if_held = false;
+        this.inactive = false;
 
         this.t = false;
         this.r = false;
@@ -100,7 +102,7 @@ class SimpleHoverButton : HoverButton
         f32 mod = 0.5f;
         
         DrawSimpleButton(drawpos - (this.dim*mod), drawpos + (this.dim*mod),
-            SColor(255, 125, 135, 115), SColor(255, 40, 50, 50), this.hover, this.pressed,
+            SColor(255, 125, 135, 115), SColor(255, 40, 50, 50), this.hover, this.pressed, this.inactive,
                 2, 2);
 
         if (this.text != "")
@@ -274,7 +276,7 @@ class HoverButton
     }
 }
 
-void DrawSimpleButton(Vec2f tl, Vec2f br, SColor color, SColor bordercolor, bool hover, bool pressed, f32 outer, f32 inner)
+void DrawSimpleButton(Vec2f tl, Vec2f br, SColor color, SColor bordercolor, bool hover, bool pressed, bool inactive, f32 outer, f32 inner)
 {
     if (pressed)
     {
@@ -283,10 +285,17 @@ void DrawSimpleButton(Vec2f tl, Vec2f br, SColor color, SColor bordercolor, bool
     }
     Vec2f combined = Vec2f(inner,inner);
 
+    if (inactive)
+    {
+        color = 0xff000000;
+        bordercolor = 0xff992525;
+    }
+
     u8 hv = hover && !pressed ? 50 : 25;
     GUI::DrawRectangle(tl-Vec2f(outer,outer), br+Vec2f(outer,outer), bordercolor); // draw a bit bigger rectangle for border effect
     GUI::DrawRectangle(tl, br, SColor(color.getAlpha(), color.getRed()+hv, color.getGreen()+hv, color.getBlue()+hv)); // draw inner rectangle border
-    if (pressed)
+    
+    if (pressed || inactive)
     {
         GUI::DrawRectangle(tl+Vec2f(inner,inner), br-Vec2f(inner,inner), bordercolor);
         combined = Vec2f(outer+inner,outer+inner);
