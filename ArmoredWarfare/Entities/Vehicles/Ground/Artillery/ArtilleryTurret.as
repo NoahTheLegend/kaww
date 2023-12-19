@@ -385,8 +385,8 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		Vec2f bullet_pos = this.getPosition()+Vec2f(this.isFacingLeft()?-12.0f:12.0f, -5) + Vec2f((this.isFacingLeft() ? -1 : 1)*16.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
 		Vec2f pos = this.getPosition()+Vec2f(this.isFacingLeft()?-12.0f:12.0f, -5) + Vec2f((this.isFacingLeft() ? -1 : 1)*50.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
 		bullet.setPosition(bullet_pos);
-		bullet.Tag("rpg");
-		bullet.Tag("artillery");
+		bullet.Tag("rpg"); // effects
+		bullet.Tag("artillery"); // shrapnel
 
 		AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
 		if (gunner !is null && gunner.getOccupied() !is null)

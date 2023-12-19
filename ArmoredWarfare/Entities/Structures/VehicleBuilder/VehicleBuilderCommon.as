@@ -145,7 +145,6 @@ void buildT3ShopCombined(CBlob@ this)
 	{string[] params = {n_moto,t_moto,bn_moto,d_moto,b,s,ds};
 	makeShopItem(this,params,c_moto-2);}
 
-	
 	{string[] params = {n_amoto,t_amoto,bn_amoto,d_amoto,b,s,ds};
 	makeShopItem(this,params,c_amoto-2);}
 
@@ -179,11 +178,14 @@ void buildT3ShopCombined(CBlob@ this)
 	{string[] params = {n_truckbig,t_truckbig,bn_truckbig,d_truckbig,b,s,ds};
 	makeShopItem(this,params,c_truckbig,Vec2f(4,2));}
 
+	{string[] params = {n_harti,t_harti,bn_harti,d_harti,b,s,ds};
+	makeShopItem(this,params,c_harti,Vec2f(2,2));}
+
 	{string[] params = {n_arti,t_arti,bn_arti,d_arti,b,s,ds};
-	makeShopItem(this,params,c_arti,Vec2f(4,2));}
+	makeShopItem(this,params,c_arti,Vec2f(3,2));}
 
 	{string[] params = {n_barge,t_barge,bn_barge,d_barge,b,s,ds};
-	makeShopItem(this,params,c_barge-2, Vec2f(4,2), false, true);}
+	makeShopItem(this,params,c_barge-2, Vec2f(3,2), false, true);}
 	
 	{string[] params = {n_mgun,t_mgun,bn_mgun,d_mgun,b,s,ds};
 	makeShopItem(this,params,c_mgun-3, Vec2f(1,1), false, true);}
@@ -319,7 +321,7 @@ void buildT2ShopGround(CBlob@ this)
 
 void buildT3ShopGround(CBlob@ this)
 {
- 	this.set_Vec2f("shop menu size", Vec2f(15, 4));
+ 	this.set_Vec2f("shop menu size", Vec2f(11, 6));
 	{string[] params = {n_moto,t_moto,bn_moto,d_moto,b,s,ds};
 	makeShopItem(this,params,c_moto-2);}
 
@@ -355,12 +357,15 @@ void buildT3ShopGround(CBlob@ this)
 
 	{string[] params = {n_truckbig,t_truckbig,bn_truckbig,d_truckbig,b,s,ds};
 	makeShopItem(this,params,c_truckbig, Vec2f(2,2));}
+	
+	{string[] params = {n_harti,t_harti,bn_harti,d_harti,b,s,ds};
+	makeShopItem(this,params,c_harti,Vec2f(2,2));}
 
 	{string[] params = {n_arti,t_arti,bn_arti,d_arti,b,s,ds};
 	makeShopItem(this,params,c_arti, Vec2f(2,2));}
 
 	{string[] params = {n_barge,t_barge,bn_barge,d_barge,b,s,ds};
-	makeShopItem(this,params,c_barge-2, Vec2f(2,2), false, true);}
+	makeShopItem(this,params,c_barge-2, Vec2f(3,2), false, true);}
 	
 	{string[] params = {n_mgun,t_mgun,bn_mgun,d_mgun,b,s,ds};
 	makeShopItem(this,params,c_mgun-3, Vec2f(1,1), false, true);}
