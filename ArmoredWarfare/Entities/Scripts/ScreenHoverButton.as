@@ -2,7 +2,7 @@
 
 // its better to use less than 255 buttons (u8 limit), you won't need more anyways
 
-void onRender(CSprite@ this)
+void hoverRender(CSprite@ this)
 {
     CBlob@ blob = this.getBlob();
     if (blob is null) return;
@@ -20,9 +20,10 @@ class SimpleHoverButton : HoverButton
 {
     bool hover; bool just_pressed; bool pressed;
     bool show;
-    string callback_command; bool write_blob; bool write_local; // cmd name; blob.netid for params; local_blob.netid for params
+    string callback_command; bool write_blob; bool write_local; bool sent_command; bool skip_command_reset; bool send_if_held;
     string text; string font; SColor text_color;
     string icon; Vec2f icon_offset; f32 icon_scale; u32 icon_frame; Vec2f icon_dim;
+    string sound; f32 sound_volume; f32 sound_pitch;
 
     SimpleHoverButton(u16 _blobid)
     {
@@ -43,6 +44,12 @@ class SimpleHoverButton : HoverButton
         this.callback_command = "";
         this.write_local = false;
         this.write_blob = false;
+        this.sound = "";
+        this.sound_volume = 1.0f;
+        this.sound_pitch = 1.0f;
+        this.sent_command = false;
+        this.skip_command_reset = false;
+        this.send_if_held = false;
 
         this.t = false;
         this.r = false;
@@ -69,15 +76,28 @@ class SimpleHoverButton : HoverButton
 
     void render_button()
     {
-        this.EventHover(this.local_blob);
-        this.EventPress(this.local_blob);
+        if (this.sent_command && !this.skip_command_reset)
+        {
+            this.skip_command_reset = true;
+        }
+        else
+        {
+            this.sent_command = false;
+            this.skip_command_reset = false;
+        }
+
+        CBlob@ local = getBlobByNetworkID(this.local_blob_id);
+        
+        this.EventHover(local);
+        this.EventPress(local);
 
         CBlob@ blob = getBlobByNetworkID(this.blobid);
         if (blob is null) return;
         Vec2f drawpos = getDriver().getScreenPosFromWorldPos(this.offset + Vec2f_lerp(blob.getOldPosition(), blob.getPosition(), getInterpolationFactor()));
-        CCamera@ camera = getCamera();
-        if (camera is null) return;
-        f32 mod = 0.5f * camera.targetDistance;
+        //CCamera@ camera = getCamera();
+        //if (camera is null) return;
+        //f32 mod = 0.5f * camera.targetDistance;
+        f32 mod = 0.5f;
         
         DrawSimpleButton(drawpos - (this.dim*mod), drawpos + (this.dim*mod),
             SColor(255, 125, 135, 115), SColor(255, 40, 50, 50), this.hover, this.pressed,
@@ -121,14 +141,20 @@ class SimpleHoverButton : HoverButton
             this.just_pressed = false;
             return;
         }
-
+            
         this.pressed = _local_blob.isKeyPressed(key_action1) || _local_blob.isKeyPressed(key_action2);
         this.just_pressed = _local_blob.isKeyJustPressed(key_action1) || _local_blob.isKeyJustPressed(key_action2);
         
-        if (_local_blob.isKeyJustPressed(key_action1) || _local_blob.isKeyJustPressed(key_action2))
+        if (this.just_pressed && this.sound != "")
         {
-            if (this.callback_command != "")
+            _local_blob.getSprite().PlaySound(this.sound, this.sound_volume, this.sound_pitch);
+        }
+
+        if (this.just_pressed  || (this.send_if_held && this.pressed))
+        {
+            if (this.callback_command != "" && !this.sent_command)
             {
+                this.sent_command = true;
                 CBlob@ blob = getBlobByNetworkID(this.blobid);
                 if (blob !is null)
                 {
@@ -144,7 +170,7 @@ class SimpleHoverButton : HoverButton
 
 class HoverButton
 {
-    u16 blobid; CBlob@ local_blob;
+    u16 blobid; u16 local_blob_id;
     Vec2f offset; Vec2f dim; Vec2f cell; bool active;
     Vec2f grid; Vec2f gap; f32 hover_dist;
     bool draw_overlap; bool draw_hover; bool draw_attached;
@@ -168,12 +194,14 @@ class HoverButton
 
     void render()
     {
-        if (getLocalPlayer() !is null) @this.local_blob = @getLocalPlayer().getBlob();
+        if (getLocalPlayerBlob() !is null) this.local_blob_id = getLocalPlayerBlob().getNetworkID();
+        CBlob@ local = getBlobByNetworkID(this.local_blob_id);
+
+        if (local is null) return;
         if (this.draw_hover) this.EventHover();
         if (this.draw_overlap) this.EventOverlap();
-        if (this.local_blob is null) return;
 
-        if (!this.active || (!this.draw_attached && this.local_blob.isAttached())) return;
+        if (!this.active || (!this.draw_attached && local.isAttached())) return;
         for (int i = 0; i < list.length(); i++)
         {
             SimpleHoverButton@ button = list[i];
@@ -213,7 +241,7 @@ class HoverButton
 
             button.offset = current_offset;
             //button.offset = this.offset;
-            @button.local_blob = @this.local_blob;
+            button.local_blob_id = this.local_blob_id;
             button.render_button();
         } 
     }
@@ -226,18 +254,20 @@ class HoverButton
 
     void EventOverlap()
     {
+        CBlob@ local = getBlobByNetworkID(this.local_blob_id);
         CBlob@ blob = getBlobByNetworkID(this.blobid);
-        if (blob is null || this.local_blob is null) return;
+        if (blob is null || local is null) return;
 
-        this.active = blob.isOverlapping(this.local_blob);
+        this.active = blob.isOverlapping(local);
     }
 
     void EventHover()
     {
+        CBlob@ local = getBlobByNetworkID(this.local_blob_id);
         CBlob@ blob = getBlobByNetworkID(this.blobid);
-        if (blob is null || this.local_blob is null) return;
+        if (blob is null || local is null) return;
 
-        CControls@ controls = this.local_blob.getControls();
+        CControls@ controls = local.getControls();
         if (controls is null) return;
         Vec2f mpos = controls.getMouseWorldPos() + Vec2f(-2, -3);
         this.active = ((mpos - blob.getPosition()).Length() <= this.hover_dist);
@@ -263,6 +293,6 @@ void DrawSimpleButton(Vec2f tl, Vec2f br, SColor color, SColor bordercolor, bool
     }
 
     hv = hover ? 25 : 0;
-    GUI::DrawRectangle(tl+combined, br-combined, pressed ? SColor(color.getAlpha(), color.getRed()-25, color.getGreen()-25, color.getBlue()-25)
+    GUI::DrawPane(tl+combined, br-combined, pressed ? SColor(color.getAlpha(), color.getRed()-25, color.getGreen()-25, color.getBlue()-25)
         : hover ? SColor(color.getAlpha(), color.getRed()+hv, color.getGreen()+hv, color.getBlue()+hv) : color);
 }

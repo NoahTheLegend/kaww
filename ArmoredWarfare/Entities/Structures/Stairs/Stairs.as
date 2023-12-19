@@ -56,6 +56,12 @@ void onInit(CBlob@ this)
     }
     if (!this.get("HoverButton", @buttons)) return;
     if (buttons is null) return;
+    //
+}
+
+void onRender(CSprite@ this)
+{
+    hoverRender(this);
 }
 
 void onTick(CBlob@ this)
