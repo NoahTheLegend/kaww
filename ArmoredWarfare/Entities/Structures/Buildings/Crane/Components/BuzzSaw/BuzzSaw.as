@@ -49,11 +49,14 @@ void onTick(CBlob@ this)
 			else speed = 0;
 		}
 
-		sprite.RotateBy(this.get_s8("dir") * speed/3, Vec2f(0,0));
-		sprite.SetEmitSoundPaused(speed == 0);
-		sprite.SetEmitSoundSpeed(2.0f*((f32(speed)+Maths::Sin(getGameTime()*0.5f)*4)/max_speed));
-		sprite.SetEmitSoundVolume(2.0f*(f32(speed)/max_speed));
+		if (speed > 0)
+		{
+			sprite.RotateBy(this.get_s8("dir") * speed/3, Vec2f(0,0));
+			sprite.SetEmitSoundSpeed(2.0f*((f32(speed)+Maths::Sin(getGameTime()*0.5f)*4)/max_speed));
+			sprite.SetEmitSoundVolume(2.0f*(f32(speed)/max_speed));
+		}
 
+		sprite.SetEmitSoundPaused(speed == 0);
 		this.set_u16("speed", speed);
 	}
 
