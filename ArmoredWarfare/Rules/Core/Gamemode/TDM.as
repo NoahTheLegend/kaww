@@ -1831,7 +1831,8 @@ void onTick(CRules@ this)
 	if (getGameTime() % 9000 == 0) // auto save exp every 5 minutes
     {
     	SaveEXP(this);
-		if (getLocalPlayer() !is null && XORRandom(5) == 0)
+		
+		if (isClient() && getLocalPlayer() !is null && XORRandom(5) == 0)
 		{
             client_AddToChat("[SV] "+messages[XORRandom(messages.size())], SColor(255,0,0,0));
 		}
