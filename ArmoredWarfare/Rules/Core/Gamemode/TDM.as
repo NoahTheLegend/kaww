@@ -1588,6 +1588,9 @@ void onTick(CRules@ this)
 
 	if (getGameTime() == 1)
 	{
+		if (getBlobByName("info_desert") is null && getBlobByName("info_snow") is null)
+			server_CreateBlob("info_snow", -1, Vec2f(0,0));
+			
 		ConfigFile map_ratios;
 		if (isServer() && getMap() !is null && map_ratios !is null)
 		{
