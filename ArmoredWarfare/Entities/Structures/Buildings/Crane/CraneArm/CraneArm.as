@@ -7,8 +7,10 @@ void onInit(CBlob@ this)
     this.Tag("heavy weight");
     this.Tag("trap");
 
-    this.getShape().getConsts().mapCollisions = false;
-    this.getShape().SetGravityScale(0);
+    CShape@ shape = this.getShape();
+    shape.getConsts().mapCollisions = false;
+    shape.SetGravityScale(0);
+    shape.getConsts().net_threshold_multiplier = 0.5f;
 }
 
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
