@@ -1319,10 +1319,15 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (damage > 10.0f) damage = 10.0f + 10.0f * 0.33f; // limit damage to thick armor (hack?)
 	}
 	
-	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet
-		|| is_aircraft || customData == HittersAW::machinegunbullet)
+	bool is_bullet = (customData >= HittersAW::bullet && customData <= HittersAW::apbullet-1);
+	if (is_bullet)
 	{
 		if (this.hasTag("tank") && !is_aircraft) damage *= 0.25f;
+		finalRating = getFinalRatingBullet(customData, armorRating, penRating, hardShelled, this, this.getPosition(), isHitUnderside, isHitBackside);
+	}
+	if (customData == HittersAW::apbullet)
+	{
+		if (this.hasTag("tank") && !is_aircraft) damage *= 2.0f;
 		finalRating = getFinalRatingBullet(customData, armorRating, penRating, hardShelled, this, this.getPosition(), isHitUnderside, isHitBackside);
 	}
 	//print("finalRating: "+finalRating);

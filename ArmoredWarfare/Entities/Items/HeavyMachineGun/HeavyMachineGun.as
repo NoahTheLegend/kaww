@@ -562,8 +562,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	
 	if (this.isAttached()) return damage;
-	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet
-		|| customData == HittersAW::aircraftbullet || customData == HittersAW::machinegunbullet)
+	bool is_bullet = (customData >= HittersAW::bullet && customData <= HittersAW::apbullet);
+	if (is_bullet)
 	{
 		damage *= 0.5f;
 		damage += 0.1f;

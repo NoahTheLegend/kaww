@@ -168,7 +168,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 			Vec2f aimpos = params.read_Vec2f();
 			f32 bulletSpread = params.read_f32();
 			u8 burstSize = params.read_u8();
-			s8 type = params.read_s8(); // 0 normal, -1 shrapnel, 1 strong
+			s8 type = params.read_s8(); // 0 normal, -1 shrapnel, 1 strong, 4 - AP
 			u32 timeSpawnedAt = params.read_u32();
 
 			InfantryInfo@ infantry;
@@ -350,7 +350,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 							"ShellCasing",                      // sound
 							gun.get_u8("team_color"));         // team number
 	
-							gun.getSprite().PlaySound("M60fire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
+							if (!gun.exists("shoot sound")) gun.getSprite().PlaySound("M60fire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
 						}		
 					}
 				}

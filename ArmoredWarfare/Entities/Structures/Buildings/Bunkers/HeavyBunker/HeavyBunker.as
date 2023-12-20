@@ -177,6 +177,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		return damage * 0.33f;
 	}
 
+	if (customData == HittersAW::apbullet)
+	{
+		return damage * 2;
+	}
+
 	if (customData == Hitters::flying)
 	{
 		this.server_Hit(hitterBlob, hitterBlob.getPosition(), this.getOldVelocity(), 5.0f, Hitters::flying, true);
