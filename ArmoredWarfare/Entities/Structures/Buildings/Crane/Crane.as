@@ -1,0 +1,269 @@
+﻿#include "StandardControlsCommon.as"
+#include "CustomBlocks.as";
+
+const f32 arm_length = 48.0f;
+const f32 rotary_speed = 5.0f;
+
+void onInit(CBlob@ this)
+{
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
+	if (ap !is null)
+	{
+		ap.SetKeysToTake(key_action1 | key_action2);
+	}
+
+	this.set_u16("arm1_id", 0);
+	this.set_u16("arm2_id", 0);
+
+	if (isServer())
+	{
+		CBlob@ arm1 = server_CreateBlob("cranearm", this.getTeamNum(), this.getPosition());
+		if (arm1 !is null)
+		{
+			this.set_u16("arm1_id", arm1.getNetworkID());
+		}
+		CBlob@ arm2 = server_CreateBlob("cranearm_articulated", this.getTeamNum(), this.getPosition());
+		if (arm2 !is null)
+		{
+			this.set_u16("arm2_id", arm2.getNetworkID());
+		}
+	}
+
+	this.set_f32("arm1_angle", 0);
+	this.set_f32("arm2_angle", 0);
+
+	this.set_f32("arm1_target_angle", (this.isFacingLeft()?-1:1) * -25);
+	this.set_f32("arm2_target_angle", (this.isFacingLeft()?-1:1) * 150);
+
+	this.addCommandID("sync");
+	this.addCommandID("grab");
+	this.addCommandID("rotate");
+
+	CSprite@ sprite = this.getSprite();
+	sprite.SetEmitSound("crane_rotary_loop.ogg");
+	sprite.SetEmitSoundSpeed(1.0f);
+	sprite.SetRelativeZ(75.0f);
+
+	this.set_u8("playsound", 0);
+	this.set_f32("volume", 0);
+}
+
+const u8 playsound_fadeout_time = 15;
+const f32 max_volume = 0.5f;
+const f32 volume_kick = 0.1f;
+
+void onTick(CBlob@ this)
+{
+	if (isClient())
+	{
+		CSprite@ sprite = this.getSprite();
+		if (sprite is null) return;
+
+		u8 play_sound_remain = this.get_u8("playsound");
+
+		if (sprite.animation !is null)
+		{
+			sprite.animation.time = play_sound_remain > 0 ? 6 : 0;
+		}
+
+		if (play_sound_remain > 0)
+		{
+			if (this.get_f32("volume") < max_volume)
+				this.add_f32("volume", volume_kick);
+		}
+		else if (this.get_f32("volume") > 0)
+		{
+			this.add_f32("volume", -volume_kick);
+		}
+		
+		sprite.SetEmitSoundPaused(play_sound_remain == 0);
+		sprite.SetEmitSoundVolume(Maths::Min(this.get_f32("volume"), max_volume * play_sound_remain / playsound_fadeout_time));
+
+		if (play_sound_remain > 0) this.add_u8("playsound", -1);
+	}
+
+	if (!isServer()) return;
+	CMap@ map = getMap();
+	if (map is null) return;
+
+	CBlob@ arm1 = getBlobByNetworkID(this.get_u16("arm1_id"));
+	CBlob@ arm2 = getBlobByNetworkID(this.get_u16("arm2_id"));
+
+	if (arm1 is null || arm2 is null) return;
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");
+
+	if (ap is null) return;
+	CBlob@ driver = ap.getOccupied(); // NO NULL CHECK HERE!
+
+	Vec2f pos = this.getPosition()-Vec2f(1,0);
+	
+	const bool a1 = ap.isKeyPressed(key_action1);
+	const bool a2 = ap.isKeyPressed(key_action2);
+
+	f32 new_angle1 = this.get_f32("arm1_angle");
+	f32 new_target_angle1 = this.get_f32("arm1_target_angle");
+	f32 old_angle1 = new_angle1;
+	f32 old_target_angle1 = new_target_angle1;
+
+	f32 new_angle2 = this.get_f32("arm2_angle");
+	f32 new_target_angle2 = this.get_f32("arm2_target_angle");
+	f32 old_angle2 = new_angle2;
+	f32 old_target_angle2 = new_target_angle2;
+
+	Vec2f aimpos = ap.getAimPos()-this.getPosition();
+	f32 aimangle = -aimpos.Angle()+90;
+
+	// rotate arm 1
+	f32 diff = aimangle - new_target_angle1;
+	if (a1 && Maths::Abs(diff) > 2)
+	{
+	    if (diff > 180.0f) 		 diff -= 360.0f;
+	    else if (diff < -180.0f) diff += 360.0f;
+	    new_target_angle1 += (diff > 0.0f) ? rotary_speed / 2 : -rotary_speed / 2;
+	}
+	// clip
+	if (new_angle1 > 360.0f)
+	{new_angle1 -= 360.0f;new_target_angle1 -= 360.0f;}
+	else if (new_angle1 < -360.0f)
+	{new_angle1 += 360.0f;new_target_angle1 += 360.0f;}
+	// return if stuck TODO: make a better collision
+	Vec2f checkpos1 = pos + Vec2f(0,-arm_length).RotateBy(new_target_angle1);
+	TileType t1 = map.getTile(checkpos1).type;
+	if (map.isTileSolid(t1) || isTileCustomSolid(t1) || map.rayCastSolidNoBlobs(pos, checkpos1))
+	{
+		f32 backwards = new_target_angle1 - new_angle1;
+		new_target_angle1 -= backwards*2;
+	}
+	else
+	{
+		Vec2f checkpos2 = this.get_Vec2f("attach_pos");
+		TileType t2 = map.getTile(checkpos2).type;
+		if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(pos, checkpos2))
+		{
+			f32 backwards = new_target_angle1 - new_angle1;
+			new_target_angle1 -= backwards*2;
+		}
+	}
+
+	// recalculate angle arm 1
+	new_angle1 = Maths::Lerp(new_angle1, new_target_angle1, 0.25f);
+
+	Vec2f arm1_pos = pos + Vec2f(0,-arm_length/2).RotateBy(new_angle1);
+	Vec2f pos_end1 = pos + Vec2f(0,-arm_length*1.5f).RotateBy(new_angle1, Vec2f(0,0));
+	// set position
+	arm1.setPosition(arm1_pos);
+	arm1.setAngleDegrees(new_angle1 + 90);
+
+	Vec2f pos_joint = pos + Vec2f(0,-arm_length).RotateBy(new_angle1, Vec2f(0,0));
+	aimpos = ap.getAimPos()-pos_joint;
+	aimangle = -aimpos.Angle()+90;
+
+	// rotate arm 2
+	diff = aimangle - new_target_angle2 - new_angle1;
+	if (a2 && Maths::Abs(diff) > 2)
+	{
+	    if (diff > 180.0f)	 	 diff -= 360.0f;
+	    else if (diff < -180.0f) diff += 360.0f;
+	    new_target_angle2 += (diff > 0.0f) ? rotary_speed : -rotary_speed;
+	}
+	// clip
+	if (new_angle2 > 360.0f) 
+	{new_angle2 -= 360.0f;new_target_angle2 -= 360.0f;}
+	else if (new_angle2 < -360.0f)
+	{new_angle2 += 360.0f;new_target_angle2 += 360.0f;}
+	// return if stuck
+	Vec2f checkpos2 = this.get_Vec2f("attach_pos");
+	TileType t2 = map.getTile(checkpos2).type;
+	if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
+	{
+		f32 backwards = new_target_angle2 - new_angle2;
+		new_target_angle2 -= backwards*2;
+	}
+
+	// recalculate angle arm 2
+	new_angle2 = Maths::Lerp(new_angle2, new_target_angle2, 0.2f);
+
+	Vec2f arm2_pos = (pos_end1 - pos).RotateBy(new_angle2, Vec2f(0, -arm_length).RotateBy(new_angle1));
+	arm2.setPosition(pos + arm2_pos);
+	arm2.setAngleDegrees(new_angle2 + new_angle1 + 90);
+
+	this.set_Vec2f("attach_pos", pos + Vec2f(0,-arm_length*2).RotateBy(new_angle2, Vec2f(0,-arm_length)).RotateBy(new_angle1));
+
+	// send command for visuals and sound
+	if (Maths::Abs(new_target_angle1 - new_angle1) > 2
+		|| Maths::Abs(new_target_angle2 - new_angle2) > 2)
+	{
+		CBitStream params;
+		params.write_f32(Maths::Abs(new_target_angle2 - new_angle2));
+		this.SendCommand(this.getCommandID("rotate"), params);
+	}
+
+	// save angles
+	this.set_f32("arm1_angle", new_angle1);
+	this.set_f32("arm1_target_angle", new_target_angle1);
+	this.set_f32("arm2_angle", new_angle2);
+	this.set_f32("arm2_target_angle", new_target_angle2);
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
+{
+	if (isClient())
+	{
+		if (cmd == this.getCommandID("rotate"))
+		{
+			f32 diff = params.read_f32();
+
+			CSprite@ sprite = this.getSprite();
+			sprite.SetEmitSoundSpeed(1.0f + diff * 0.01f);
+
+			if (this.get_u8("playsound") == 0)
+			{
+				sprite.RewindEmitSound();
+			}
+			this.set_u8("playsound", playsound_fadeout_time);
+		}
+	}
+}
+
+void onRender(CSprite@ this)
+{
+	return;
+	if (!(isClient() && isServer())) return;
+
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+
+	Vec2f pos = blob.getPosition();
+	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(blob.getPosition());
+
+	// main arm
+
+	f32 angle_1 = blob.get_f32("arm1_angle");
+	f32 target_angle_1 = blob.get_f32("arm1_target_angle");
+
+	f32 angle_2 = blob.get_f32("arm2_angle");
+	f32 target_angle_2 = blob.get_f32("arm2_target_angle");
+
+	Vec2f drawpos_actual1 = pos + Vec2f(0,-arm_length).RotateBy(angle_1, Vec2f(0,0));
+	Vec2f drawpos_target1 = pos + Vec2f(0,-arm_length).RotateBy(target_angle_1, Vec2f(0,0));
+
+	Vec2f drawpos_actual1_2d =  getDriver().getScreenPosFromWorldPos(drawpos_actual1);
+	Vec2f drawpos_target1_2d =  getDriver().getScreenPosFromWorldPos(drawpos_target1);
+
+	GUI::DrawRectangle(drawpos_actual1_2d - Vec2f(8,8), drawpos_actual1_2d + Vec2f(8,8), SColor(125,0,0,255));
+	GUI::DrawRectangle(drawpos_target1_2d - Vec2f(8,8), drawpos_target1_2d + Vec2f(8,8), SColor(125,255,0,0));
+	GUI::SetFont("menu");
+	GUI::DrawTextCentered(""+(drawpos_target1-pos).Angle(), drawpos_target1_2d+Vec2f(16,16), SColor(255,255,255,0));
+
+	// secondary arm
+
+	Vec2f drawpos_actual2 = blob.get_Vec2f("attach_pos");
+	Vec2f drawpos_target2 = pos + Vec2f(0,-arm_length*2).RotateBy(target_angle_2, Vec2f(0,-arm_length)).RotateBy(target_angle_1);
+
+	Vec2f drawpos_actual2_2d =  getDriver().getScreenPosFromWorldPos(drawpos_actual2);
+	Vec2f drawpos_target2_2d =  getDriver().getScreenPosFromWorldPos(drawpos_target2);
+
+	GUI::DrawRectangle(drawpos_actual2_2d - Vec2f(8,8), drawpos_actual2_2d + Vec2f(8,8), SColor(125,0,0,255));
+	GUI::DrawRectangle(drawpos_target2_2d - Vec2f(8,8), drawpos_target2_2d + Vec2f(8,8), SColor(125,255,0,0));
+	GUI::DrawTextCentered(""+(drawpos_target2-pos).Angle(), drawpos_target2_2d+Vec2f(16,16), SColor(255,255,255,0));
+}
