@@ -1,5 +1,6 @@
 ﻿#include "StandardControlsCommon.as"
 #include "CustomBlocks.as";
+#include "GenericButtonCommon.as";
 
 const f32 arm_length = 48.0f;
 const f32 rotary_speed = 5.0f;
@@ -9,7 +10,7 @@ void onInit(CBlob@ this)
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)
 	{
-		ap.SetKeysToTake(key_action1 | key_action2);
+		ap.SetKeysToTake(key_action1 | key_action2 | key_action3);
 	}
 
 	this.set_u16("arm1_id", 0);
@@ -38,6 +39,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("sync");
 	this.addCommandID("grab");
 	this.addCommandID("rotate");
+	this.addCommandID("add_mount");
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetEmitSound("crane_rotary_loop.ogg");
@@ -46,6 +48,9 @@ void onInit(CBlob@ this)
 
 	this.set_u8("playsound", 0);
 	this.set_f32("volume", 0);
+
+	this.Tag("builder always hit");
+	this.Tag("structure");
 }
 
 const u8 playsound_fadeout_time = 15;
@@ -99,6 +104,7 @@ void onTick(CBlob@ this)
 	
 	const bool a1 = ap.isKeyPressed(key_action1);
 	const bool a2 = ap.isKeyPressed(key_action2);
+	const bool a3 = ap.isKeyPressed(key_action3);
 
 	f32 new_angle1 = this.get_f32("arm1_angle");
 	f32 new_target_angle1 = this.get_f32("arm1_target_angle");
@@ -203,6 +209,57 @@ void onTick(CBlob@ this)
 	this.set_f32("arm1_target_angle", new_target_angle1);
 	this.set_f32("arm2_angle", new_angle2);
 	this.set_f32("arm2_target_angle", new_target_angle2);
+
+	bool has_augment = this.get_u16("augment_id") != 0;
+	if (has_augment)
+	{
+		CBlob@ augment = getBlobByNetworkID(this.get_u16("augment_id"));
+		if (augment is null) this.set_u16("augment_id", 0);
+		else
+		{
+			if (driver !is null && driver.getPlayer() !is null)
+			{
+				if (a3) augment.Tag("active");
+				else augment.Untag("active");
+
+				augment.SetDamageOwnerPlayer(driver.getPlayer());
+				augment.server_setTeamNum(driver.getTeamNum());
+			}
+
+			augment.Tag("attached");
+			if (augment.isAttached()) augment.server_DetachFromAll();
+
+			augment.setVelocity(Vec2f(0,0));
+			augment.setPosition(this.get_Vec2f("attach_pos"));
+			augment.set_f32("angle", arm2.getAngleDegrees());
+			augment.SetFacingLeft(true);
+
+			if (driver !is null || getGameTime() % 30 == 0)
+			{
+				CBitStream params;
+    			params.write_bool(a3);
+				params.write_bool(true);
+    			augment.SendCommand(augment.getCommandID("sync"), params);
+			}
+		}
+	}
+}
+
+void GetButtonsFor(CBlob@ this, CBlob@ caller)
+{
+	if (caller is null || this.getDistanceTo(caller) > 32.0f) return;
+
+	bool valid = true;
+	CBlob@ carried = caller.getCarriedBlob();
+	if (carried is null || !carried.hasTag("crane_mount")) return;
+	
+	CBitStream params;
+	params.write_u16(caller.getNetworkID());
+	CButton@ button = caller.CreateGenericButton(21, Vec2f(0, -8), this, this.getCommandID("add_mount"), valid ? "Add augment" : "Requires a mount", params);
+	if (button !is null && !valid)
+	{
+		button.SetEnabled(true);
+	}
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
@@ -221,6 +278,46 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				sprite.RewindEmitSound();
 			}
 			this.set_u8("playsound", playsound_fadeout_time);
+		}
+	}
+	if (cmd == this.getCommandID("add_mount"))
+	{
+		u16 callerid;
+		if (!params.saferead_u16(callerid)) return;
+
+		CBlob@ caller = getBlobByNetworkID(callerid);
+		if (caller is null) return;
+
+		CBlob@ carried = caller.getCarriedBlob();
+		if (carried is null) return;
+	
+		if (!carried.hasTag("crane_mount")) return;
+		
+		if (isServer() && this.get_u16("augment_id") != 0)
+		{
+			CBlob@ augment = getBlobByNetworkID(this.get_u16("augment_id"));
+			if (augment !is null)
+			{
+				augment.Untag("active");
+				augment.Untag("attached");
+
+				CBitStream params;
+    			params.write_bool(false);
+				params.write_bool(false);
+    			augment.SendCommand(augment.getCommandID("sync"), params);
+			}
+		}
+
+		this.set_u16("augment_id", carried.getNetworkID());
+
+		if (isServer())
+		{
+			carried.Tag("attached");
+
+			CBitStream params;
+    		params.write_bool(false);
+			params.write_bool(true);
+    		carried.SendCommand(carried.getCommandID("sync"), params);
 		}
 	}
 }
@@ -266,4 +363,14 @@ void onRender(CSprite@ this)
 	GUI::DrawRectangle(drawpos_actual2_2d - Vec2f(8,8), drawpos_actual2_2d + Vec2f(8,8), SColor(125,0,0,255));
 	GUI::DrawRectangle(drawpos_target2_2d - Vec2f(8,8), drawpos_target2_2d + Vec2f(8,8), SColor(125,255,0,0));
 	GUI::DrawTextCentered(""+(drawpos_target2-pos).Angle(), drawpos_target2_2d+Vec2f(16,16), SColor(255,255,255,0));
+}
+
+void onDie(CBlob@ this)
+{
+	if (!isServer()) return;
+	CBlob@ arm1 = getBlobByNetworkID(this.get_u16("arm1_id"));
+	CBlob@ arm2 = getBlobByNetworkID(this.get_u16("arm2_id"));
+
+	if (arm1 !is null) arm1.server_Die();
+	if (arm2 !is null) arm2.server_Die();
 }
