@@ -5,7 +5,6 @@ void onInit(CBlob@ this)
     sprite.SetRelativeZ(this.getName() == "cranearm" ? -45.0f : -46.0f);
 
     this.Tag("heavy weight");
-    this.Tag("trap");
 
     CShape@ shape = this.getShape();
     shape.getConsts().mapCollisions = false;

@@ -26,7 +26,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
             this.Tag("attached");
 
             shape.getConsts().mapCollisions = false;
-            shape.SetGravityScale(0);
+            if (!this.hasTag("rotary_joint")) shape.SetGravityScale(0);
             shape.getConsts().net_threshold_multiplier = 0.5f;
         }
         else
@@ -34,7 +34,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
             this.Untag("attached");
 
             shape.getConsts().mapCollisions = true;
-            shape.SetGravityScale(1.0f);
+            if (!this.hasTag("rotary_joint")) shape.SetGravityScale(1.0f);
             shape.getConsts().net_threshold_multiplier = 1.0f;
         }
     }
