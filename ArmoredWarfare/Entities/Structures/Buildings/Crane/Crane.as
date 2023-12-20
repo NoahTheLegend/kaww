@@ -1,6 +1,9 @@
 ﻿#include "StandardControlsCommon.as"
 #include "CustomBlocks.as";
 #include "GenericButtonCommon.as";
+#include "Requirements.as"
+#include "ShopCommon.as"
+#include "Costs.as"
 
 const f32 arm_length = 48.0f;
 const f32 rotary_speed = 5.0f;
@@ -51,6 +54,24 @@ void onInit(CBlob@ this)
 
 	this.Tag("builder always hit");
 	this.Tag("structure");
+
+	// SHOP
+	this.set_Vec2f("shop offset", Vec2f_zero);
+	this.set_Vec2f("shop menu size", Vec2f(3, 1));
+	this.set_string("shop description", "Construct Augments");
+	this.set_u8("shop icon", 25);
+	{
+		ShopItem@ s = addShopItem(this, "Claw Augment", "$claw$", "claw", "Grabs items, has a tension limit. Disabled on-hit.\n[SPACEBAR]", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Buzz Saw Augment", "$buzzsaw$", "buzzsaw", "Chops trees and cuts weak materials.\n[SPACEBAR]", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Welder Augment", "$welder$", "welder", "Repairs friendly vehicles and structures. Infinite use.\n[SPACEBAR]", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
+	}
 }
 
 const u8 playsound_fadeout_time = 15;
@@ -144,7 +165,7 @@ void onTick(CBlob@ this)
 	{
 		Vec2f checkpos2 = this.get_Vec2f("attach_pos");
 		TileType t2 = map.getTile(checkpos2).type;
-		if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(pos, checkpos2))
+		if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
 		{
 			f32 backwards = new_target_angle1 - new_angle1;
 			new_target_angle1 -= backwards*2;
@@ -229,9 +250,29 @@ void onTick(CBlob@ this)
 			augment.Tag("attached");
 			if (augment.isAttached()) augment.server_DetachFromAll();
 
-			augment.setVelocity(Vec2f(0,0));
-			augment.setPosition(this.get_Vec2f("attach_pos"));
-			augment.set_f32("angle", arm2.getAngleDegrees());
+			if (augment.hasTag("rotary_joint"))
+			{
+				augment.setVelocity(Vec2f(0,0));
+
+				Vec2f augment_pos = augment.getPosition();
+				Vec2f augment_oldpos = augment.getOldPosition();
+
+				Vec2f augment_dir = augment_pos - this.get_Vec2f("attach_pos");
+				f32 augment_dir_angle = -augment_dir.Angle();
+
+				f32 augment_angle = Maths::Abs(augment.getVelocity().Angle());
+				f32 augment_new_angle = augment_angle + augment_dir_angle+180;
+
+				augment.setPosition(this.get_Vec2f("attach_pos")+Vec2f(-3,0).RotateBy(arm2.getAngleDegrees()));
+				augment.setAngleDegrees(augment_new_angle);
+			}
+			else
+			{
+				augment.setPosition(this.get_Vec2f("attach_pos"));
+				augment.setVelocity(Vec2f(0,0));
+				augment.set_f32("angle", arm2.getAngleDegrees());
+			}
+			
 			augment.SetFacingLeft(true);
 
 			if (driver !is null || getGameTime() % 30 == 0)
@@ -249,16 +290,16 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (caller is null || this.getDistanceTo(caller) > 32.0f) return;
 
-	bool valid = true;
 	CBlob@ carried = caller.getCarriedBlob();
-	if (carried is null || !carried.hasTag("crane_mount")) return;
+	if (carried is null) return;
+	bool valid = carried.hasTag("crane_mount");
 	
 	CBitStream params;
 	params.write_u16(caller.getNetworkID());
-	CButton@ button = caller.CreateGenericButton(21, Vec2f(0, -8), this, this.getCommandID("add_mount"), valid ? "Add augment" : "Requires a mount", params);
+	CButton@ button = caller.CreateGenericButton(21, Vec2f(0, -10), this, this.getCommandID("add_mount"), valid ? "Add augment" : "Requires an augment", params);
 	if (button !is null && !valid)
 	{
-		button.SetEnabled(true);
+		button.SetEnabled(false);
 	}
 }
 
@@ -324,11 +365,19 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 void onRender(CSprite@ this)
 {
-	return;
-	if (!(isClient() && isServer())) return;
-
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
+
+	AttachmentPoint@ ap = blob.getAttachments().getAttachmentPointByName("DRIVER");
+	if (ap is null) return;
+	CBlob@ driver = ap.getOccupied();
+	if (driver is null || !driver.isMyPlayer()) return;
+
+	CControls@ controls = getControls();
+	if (controls !is null)
+	{
+		if (!controls.isKeyPressed(KEY_LCONTROL)) return;
+	}
 
 	Vec2f pos = blob.getPosition();
 	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(blob.getPosition());
@@ -350,7 +399,7 @@ void onRender(CSprite@ this)
 	GUI::DrawRectangle(drawpos_actual1_2d - Vec2f(8,8), drawpos_actual1_2d + Vec2f(8,8), SColor(125,0,0,255));
 	GUI::DrawRectangle(drawpos_target1_2d - Vec2f(8,8), drawpos_target1_2d + Vec2f(8,8), SColor(125,255,0,0));
 	GUI::SetFont("menu");
-	GUI::DrawTextCentered(""+(drawpos_target1-pos).Angle(), drawpos_target1_2d+Vec2f(16,16), SColor(255,255,255,0));
+	GUI::DrawTextCentered((drawpos_target1-pos).Angle()+"°", drawpos_target1_2d+Vec2f(16,16), SColor(255,255,255,0));
 
 	// secondary arm
 
@@ -362,7 +411,7 @@ void onRender(CSprite@ this)
 
 	GUI::DrawRectangle(drawpos_actual2_2d - Vec2f(8,8), drawpos_actual2_2d + Vec2f(8,8), SColor(125,0,0,255));
 	GUI::DrawRectangle(drawpos_target2_2d - Vec2f(8,8), drawpos_target2_2d + Vec2f(8,8), SColor(125,255,0,0));
-	GUI::DrawTextCentered(""+(drawpos_target2-pos).Angle(), drawpos_target2_2d+Vec2f(16,16), SColor(255,255,255,0));
+	GUI::DrawTextCentered((drawpos_target2-pos).Angle()+"°", drawpos_target2_2d+Vec2f(16,16), SColor(255,255,255,0));
 }
 
 void onDie(CBlob@ this)
@@ -373,4 +422,22 @@ void onDie(CBlob@ this)
 
 	if (arm1 !is null) arm1.server_Die();
 	if (arm2 !is null) arm2.server_Die();
+}
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (isServer())
+	{
+		bool has_augment = this.get_u16("augment_id") != 0;
+	
+		if (has_augment && hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum())
+		{
+			CBlob@ augment = getBlobByNetworkID(this.get_u16("augment_id"));
+			if (augment !is null && augment.getName() == "claw")
+			{
+				augment.Tag("crane_was_hit");
+			}
+		}
+	}
+	return damage;
 }

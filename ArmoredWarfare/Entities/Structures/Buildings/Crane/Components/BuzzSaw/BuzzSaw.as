@@ -52,7 +52,7 @@ void onTick(CBlob@ this)
 		if (speed > 0)
 		{
 			sprite.RotateBy(this.get_s8("dir") * speed/3, Vec2f(0,0));
-			sprite.SetEmitSoundSpeed(2.0f*((f32(speed)+Maths::Sin(getGameTime()*0.5f)*4)/max_speed));
+			sprite.SetEmitSoundSpeed(2.0f*((f32(speed)+Maths::Sin(getGameTime()*0.5f)*3)/max_speed));
 			sprite.SetEmitSoundVolume(2.0f*(f32(speed)/max_speed));
 		}
 
