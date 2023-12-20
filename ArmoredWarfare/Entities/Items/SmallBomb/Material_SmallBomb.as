@@ -90,8 +90,8 @@ void onTick(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (customData == HittersAW::bullet || customData == HittersAW::heavybullet
-		|| customData == HittersAW::aircraftbullet || customData == HittersAW::machinegunbullet)
+	bool is_bullet = (customData >= HittersAW::bullet && customData <= HittersAW::apbullet);
+	if (is_bullet)
 	{
 		damage += 0.5f - this.getQuantity() * 0.1f;
 		damage *= (3-this.getQuantity()/4);

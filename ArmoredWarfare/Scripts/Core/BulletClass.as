@@ -87,6 +87,8 @@ class BulletObj
 			Scale = Vec2f(1.75f, 1.25f);
 		else if (CurrentType == 1)
 			Scale = Vec2f(2.0f, 5.0f+Rng.NextRanged(11)*0.1f);
+		else if (CurrentType == 4)
+			Scale = Vec2f(2.25f, 6.0f+Rng.NextRanged(11)*0.1f);
 		
 
 		lastDelta = 0;

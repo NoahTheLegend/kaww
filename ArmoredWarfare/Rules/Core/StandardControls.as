@@ -487,7 +487,7 @@ void ManageCamera(CBlob@ this)
 		{
 			camera.mouseFactor = 0.65f;
 		}
-		else if (localblob.hasTag("artillery"))
+		else if (localblob.hasTag("distant_view"))
 		{
 			lock_zoom = true;
 			camera.mouseFactor = 0.75f;

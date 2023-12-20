@@ -35,8 +35,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	const bool explosion_damage = customData == Hitters::explosion || customData == Hitters::keg || customData == Hitters::mine;
 	const bool fire_damage = customData == Hitters::fire || customData == Hitters::burn;
 
-	bool is_bullet = (customData == HittersAW::bullet || customData == HittersAW::heavybullet
-		|| customData == HittersAW::machinegunbullet || customData == HittersAW::aircraftbullet);
+	bool is_bullet = (customData >= HittersAW::bullet && customData <= HittersAW::apbullet);
 	
 	{
 		InfantryInfo@ infantry;

@@ -395,3 +395,9 @@ void onInit(CSprite@ sprite)
 	//	heat.setRenderStyle(RenderStyle::additive);
 	//}
 }
+
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	if (blob.getName() == "barge") return true;
+	return (!blob.hasTag("flesh") && !blob.hasTag("trap") && !blob.hasTag("food") && !blob.hasTag("material") && !blob.hasTag("dead") && !blob.hasTag("vehicle") && blob.isCollidable()) || (blob.hasTag("door") && blob.getShape().getConsts().collidable);
+}

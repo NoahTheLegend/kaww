@@ -40,6 +40,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
         case Hitters::fire:
         case HittersAW::bullet:
         case HittersAW::heavybullet:
+		case HittersAW::apbullet:
         case HittersAW::aircraftbullet:
         case HittersAW::machinegunbullet:
 			scale = 0.0f; break;
