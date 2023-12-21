@@ -122,7 +122,8 @@ void onTick(CBlob@ this)
 			arm.animation.frame = cooldown > getGameTime() ? 1 : ammo > 5 ? 2 : 0;
 		}
 
-		if (getGameTime() == this.get_u32("cooldown")) sprite.PlaySound("PinPull.ogg", 0.66f, 1.15f);
+		if (getGameTime() == this.get_u32("cooldown")-1) // dont run exactly on-reload, gets skipped if shoot cmd is sent constantly
+			sprite.PlaySound("PinPull.ogg", 0.66f, 1.15f); 
 		
 		bool facing_left = sprite.isFacingLeft();
 		f32 rotation = angle * (facing_left ? -1 : 1);
