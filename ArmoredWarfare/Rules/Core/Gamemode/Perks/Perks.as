@@ -230,6 +230,15 @@ shared class PerkFieldEngineer : PerkStats {
     }
 };
 
+shared class PerkMason : PerkStats {
+    PerkMason()
+    {
+        super();
+        name = "Mason";
+        id = 11;
+    }
+};
+
 PerkStats@ getPerkStats(CPlayer@ p, bool &out stats_loaded)
 {
     stats_loaded = false;
@@ -244,4 +253,4 @@ PerkStats@ getPerkStats(CBlob@ b, bool &out stats_loaded)
 {
     if (b is null) return null;
     return getPerkStats(b.getPlayer(), stats_loaded);
-} 
+}

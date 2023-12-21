@@ -96,6 +96,7 @@ void InitSnow()
 	_snow_ready = true;
 
 	Verts.clear();
+
 	CMap@ map  = getMap();
 	int chunksX = map.tilemapwidth  / 32 + 3;
 	int chunksY = map.tilemapheight / 32 + 3;
@@ -128,7 +129,6 @@ void DrawSnow(CBlob@ this, int id)
 		float Y = gt % 255;
 		Matrix::MakeIdentity(trnsfm);
 
-		// TEMP PREPROCESSING
 #ifdef STAGING
 		Matrix::SetTranslation(trnsfm, X, Y, -500);
 		Render::SetZBuffer(true, false);

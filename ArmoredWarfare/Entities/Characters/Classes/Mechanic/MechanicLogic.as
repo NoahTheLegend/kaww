@@ -77,6 +77,8 @@ void onSetPlayer(CBlob@ this, CPlayer@ player)
 		{
 			addPerk(player, 0);
 		}
+
+		InitPerk(this, player);
 	}
 }
 

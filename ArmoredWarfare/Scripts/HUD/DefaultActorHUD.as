@@ -256,9 +256,9 @@ void onRender(CSprite@ this)
 	bool isTDM = (getMap().tilemapwidth <= 300);
 	if (isTDM)
 	{
-		GUI::DrawIcon("JetpackIcon.png", 0, Vec2f(32,32), Vec2f(32.0f, getHUDY() - dim.y - 180.0f), 1.0f);
-		GUI::DrawText("C\nT\nR\nL", Vec2f(20.0f, getHUDY() - dim.y - 172.0f), SColor(0x99ffffff));
-		GUI::DrawText("S\nH\nF\nT", Vec2f(96.0f, getHUDY() - dim.y - 172.0f), SColor(0x99ffffff));
+		GUI::DrawIcon("JetpackIcon.png", 0, Vec2f(32,32), Vec2f(32.0f, getHUDY() - dim.y - 250.0f), 1.0f);
+		GUI::DrawText("C\nT\nR\nL", Vec2f(20.0f, getHUDY() - dim.y - 242.0f), SColor(0x99ffffff));
+		GUI::DrawText("S\nH\nF\nT", Vec2f(96.0f, getHUDY() - dim.y - 242.0f), SColor(0x99ffffff));
 	}
 
 	string ammo_amt = blob.get_u32("mag_bullets");

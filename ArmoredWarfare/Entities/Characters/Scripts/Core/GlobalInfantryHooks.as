@@ -353,3 +353,25 @@ bool canStab(CBlob@ this)
 {
 	return (!this.hasTag("is_shielder") && !this.hasTag("is_mp5"));
 }
+
+void InitPerk(CBlob@ this, CPlayer@ player)
+{
+	// perk commands
+	// initialize for everyone to prevent unexpected behavior
+	this.addCommandID("mason_open_menu");
+	this.addCommandID("mason_select");
+	this.addCommandID("mason_place_structure");
+
+   	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+	
+	PerkStats@ stats;
+	if (player !is null && player.get("PerkStats", @stats) && stats.id == Perks::mason)
+	{
+   		if (player.isMyPlayer() || isServer())
+   		{
+   		    this.AddScript("MasonPerkLogic.as");
+   		    sprite.AddScript("MasonPerkGUI.as");	
+   		}
+	}
+}
