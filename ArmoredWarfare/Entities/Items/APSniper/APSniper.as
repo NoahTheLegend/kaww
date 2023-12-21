@@ -11,9 +11,11 @@ void onInit(CBlob@ this)
 	this.Tag("machinegun");
 	this.Tag("heavy weight");
 
+	this.set_f32("damage_body", 2.5f);
+	this.set_f32("damage_head", 3.5f);
 	this.set_u8("TTL", 30);
 	this.set_Vec2f("KB", Vec2f(0,0));
-	this.set_u8("speed", 35);
+	this.set_u8("speed", 40);
 					   
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
@@ -139,6 +141,10 @@ void onTick(CBlob@ this)
 
 			arm.RotateBy(rotation - this.getAngleDegrees() + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -4.0f : 4.0f, 0.0f));
 		}
+		else if (this.isAttached())
+		{
+			arm.RotateBy(this.isFacingLeft() ? 90 : -90, Vec2f_zero);
+		}
 	}
 }
 
@@ -197,7 +203,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		}
 		shootVehicleGun(blob.getNetworkID(), this.getNetworkID(),
 			angle, this.getPosition()-Vec2f(0,2),
-			aimPos, 0, 1, 4, 3.0f, 4.0f, 6,
+			aimPos, 0, 1, 4, this.get_f32("damage_body"), this.get_f32("damage_head"), 6,
 				this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));
 
 		this.set_u32("cooldown", getGameTime() + fire_rate);

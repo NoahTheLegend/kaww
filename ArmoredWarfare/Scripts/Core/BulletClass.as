@@ -217,7 +217,7 @@ class BulletObj
 			return false;
 		}
 
-		if ((!is_young || !same_team) && blob.isAttached() && !blob.hasTag("covered"))
+		if ((!is_young || !same_team) && blob.isAttached() && (!blob.hasTag("covered") || CurrentType == 4))
 		{
 			if (blob.hasTag("collidewithbullets")) return Rng.NextRanged(2)==0;
 			if (Rng.NextRanged(4) == 0 || blob.hasTag("player"))
@@ -335,8 +335,9 @@ class BulletObj
 					{
 						if (isServer())
 						{
-							if (human !is null) human.server_Hit(blob, OldPos, Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
-							else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f, Hitters::builder);
+							f32 vehdmg = (CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f);
+							if (human !is null) human.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
+							else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
 						}
 					}
 					else
