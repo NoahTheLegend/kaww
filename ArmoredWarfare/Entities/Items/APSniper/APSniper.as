@@ -220,6 +220,11 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 	return !this.isAttached() && !this.hasAttached() && byBlob !is null;
 }
 
+bool canBePutInInventory( CBlob@ this, CBlob@ inventoryBlob )
+{
+	return false;
+}
+
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	return damage;
