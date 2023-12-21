@@ -1,3 +1,5 @@
+// LootCommon.as
+
 const string LOOT = "loot_table";
 const string DROP = "loot_dropped";
 const string PURSE = "coins_carried";
@@ -7,89 +9,45 @@ const string CTF = "CTF";
 
 enum                Index
 {
-	ammo,
-	MAT_WOOD,
+	MAT_WOOD = 0,
 	MAT_STONE,
-	MAT_GOLD,
-	DRILL,
-	MINE,
-	KEG,
-	HEART,
-	FOOD
+    MAT_GOLD,
+	MAT_SCRAP
 };
 
 const string[]      NAME =
 {
-	"ammo",
 	"mat_wood",
 	"mat_stone",
-	"mat_gold",
-	"drill",
-	"mine",
-	"keg",
-	"heart",
-	"food"
+    "mat_gold",
+	"mat_scrap"
 };
 
 const u8[]          WEIGHT =
 {
-	32,						// ammo
-	40,                     // mat_wood
-	25,                     // mat_stone
-	10,                     // mat_gold
-	25,                     // drill
-	15,                     // mine
-	5,                      // keg
-	100,                    // heart
-	20                      // food
+	25,                    // mat_wood
+	35,                    // mat_stone
+    45,                    // mat_gold
+	50					   // mat_scrap
+};
+
+const u16[]         QUANTITY =
+{
+	500,				   // mat_wood
+	255,				   // mat_stone
+	50,					   // mat_gold
+	25					   // mat_scrap
 };
 
 // pre-set 'CLASS' arrays
 // ━━━━━━━━━━━━━━━━━
-const u8[]          INDEX_ARCHER =
-{
-	ammo,
-	MINE
-};
 
 const u8[]          INDEX_BUILDER =
 {
-	ammo,
 	MAT_WOOD,
 	MAT_STONE,
-	MAT_GOLD,
-	DRILL
-};
-
-const u8[]          INDEX_KNIGHT =
-{
-	ammo,
-	MINE,
-	KEG
-};
-
-// pre-set 'GAMEMODE' arrays
-// ━━━━━━━━━━━━━━━━━
-const u8[]          INDEX_CTF =
-{
-	ammo,
-	MAT_WOOD,
-	MAT_STONE,
-	MAT_GOLD,
-	DRILL,
-	MINE,
-	KEG,
-	HEART,
-	FOOD
-};
-
-const u8[]          INDEX_TDM =
-{
-	ammo,
-	MINE,
-	KEG,
-	HEART,
-	FOOD
+    MAT_GOLD,
+	MAT_SCRAP
 };
 
 // add a single piece of 'LOOT'
@@ -172,6 +130,7 @@ void server_CreateLoot(CBlob@ this, const Vec2f &in POSITION, const u8 &in TEAM)
 				force.RotateBy(ANGLE);
 				force *= item.getMass() * 3.6f;
 				item.AddForce(force);
+				item.server_SetQuantity(QUANTITY[NAME.find(loot[i])]);
 			}
 		}
 	}
