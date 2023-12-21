@@ -44,6 +44,12 @@ class BulletObj
 	u32 CreateTime;
 	Vec2f Scale;
 	Random Rng;
+	f32 rotateOnTick;
+	f32 addRotationOnTick;
+	u8 remainingPenWeak;
+	f32 slowOnPen;
+	f32 angleOnPen;
+	Vec2f shrinkOnPen;
 
 	u8 TeamNum;
 	u8 Speed;
@@ -78,6 +84,12 @@ class BulletObj
 		HadRico = false;
 		CreateTime = creation_time;
 		CurrentHitter = hitter;
+		rotateOnTick = 0;
+		addRotationOnTick = 0;
+		remainingPenWeak = 0;
+		slowOnPen = 0;
+		angleOnPen = 0;
+		shrinkOnPen = Vec2f_zero;
 
 		Rng.Reset(creation_time);
 		
@@ -88,7 +100,13 @@ class BulletObj
 		else if (CurrentType == 1)
 			Scale = Vec2f(2.0f, 5.0f+Rng.NextRanged(11)*0.1f);
 		else if (CurrentType == 4)
+		{
 			Scale = Vec2f(2.25f, 6.0f+Rng.NextRanged(11)*0.1f);
+			remainingPenWeak = 2; // doors, platforms, flesh
+			slowOnPen = 0.5f;
+			angleOnPen = 1.0f;
+			shrinkOnPen = Vec2f(0.925f, 0.8f);
+		}
 		
 
 		lastDelta = 0;
@@ -136,7 +154,6 @@ class BulletObj
 
 		if (LastHitBlob is blob)
 		{
-			TimeLeft = 0;
 			return false;
 		}
 
@@ -266,14 +283,18 @@ class BulletObj
 		// Angle update
 		OldPos = CurrentPos;
 		Gravity -= BulletGrav;
-		f32 angle = FacingLeft ? StartingAimPos+180 : StartingAimPos;
 
-		Direction = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle);
+		if (Direction.Angle() < 269 - addRotationOnTick || Direction.Angle() > 271 + addRotationOnTick)
+			rotateOnTick += addRotationOnTick;
+
+		f32 angle = FacingLeft ? StartingAimPos+180 : StartingAimPos;
+		f32 tickRotation = (FacingLeft ? -1 : 1) * rotateOnTick;
+
+		Direction = Vec2f((FacingLeft ? -1 : 1), 0.0f).RotateBy(angle + (FacingLeft ? -1 : 1) * rotateOnTick);
 
 		CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + CurrentPos;
 		TrueVelocity = CurrentPos - OldPos;
 		
-
 		// Check that the human that owns us hasnt died before we crash
 		if (human !is null && human.hasTag("dead")) {
 			@human = null;
@@ -323,28 +344,29 @@ class BulletObj
 						// play sound
 						if (blob.hasTag("flesh"))
 						{
-							if (isServer()) {
-							if (human !is null && !blob.hasTag("dead") && human.getDamageOwnerPlayer() !is null)
+							if (isServer())
 							{
+								if (human !is null && !blob.hasTag("dead") && human.getDamageOwnerPlayer() !is null)
+								{
 								CPlayer@ p = human.getDamageOwnerPlayer();
 								bool stats_loaded = false;
 								PerkStats@ stats;
 								if (p !is null && p.get("PerkStats", @stats) && stats !is null)
 									stats_loaded = true;
 
-								if (stats_loaded && stats.id == Perks::bloodthirsty)
-								{
-									CBlob@ pblob = p.getBlob();
-									if (pblob !is null)
+									if (stats_loaded && stats.id == Perks::bloodthirsty)
 									{
-										f32 mod = 0.4f + Rng.NextRanged(11)*0.01f;
-										f32 amount = DamageBody * mod;
-										if (human.getHealth() + amount >= human.getInitialHealth())
+										CBlob@ pblob = p.getBlob();
+										if (pblob !is null)
 										{
-											human.server_SetHealth(human.getInitialHealth());
+											f32 mod = 0.4f + Rng.NextRanged(11)*0.01f;
+											f32 amount = DamageBody * mod;
+											if (human.getHealth() + amount >= human.getInitialHealth())
+											{
+												human.server_SetHealth(human.getInitialHealth());
+											}
+											else human.server_Heal(amount);
 										}
-										else human.server_Heal(amount);
-									}
 									}
 								}
 							}
@@ -363,17 +385,6 @@ class BulletObj
 								p.Z = 200.0f;
 							}
 						}
-					}
-
-					if (TeamNum != BlobTeamNum && (BlobName == "wooden_platform" || blob.hasTag("door")))
-					{
-						if (isServer()) 
-						{
-							f32 door_dmg = BlobName != "stone_door" ? CurrentType == 1 ? 1.0f : 0.1f : 0.01f;
-							if (human !is null) human.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
-							else blob.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
-						}
-						endBullet = true;
 					}
 
 					if (blob.hasTag("vehicle") && !HadRico)
@@ -423,6 +434,7 @@ class BulletObj
 							sprite.PlaySound("BulletPene" + XORRandom(3), 0.9f, 0.8f + XORRandom(50) * 0.01f);
 							}
 
+							// do not penetrate armored
 							TimeLeft = 15;
 						}
 					}
@@ -451,7 +463,10 @@ class BulletObj
 								ParticlePixel(CurrentPos, velr, SColor(255, 255, 255, 0), true);
 								}
 
-								TimeLeft = 10;
+								if (recountPenetrationsWeak())
+								{
+									TimeLeft = 10;
+								}
 
 								dmg = 0;
 							}
@@ -483,7 +498,25 @@ class BulletObj
 
 					if (!blob.hasTag("weakprop"))
 					{
-						endBullet = true;
+						if (blob.hasTag("flesh"))
+						{
+							endBullet = recountPenetrationsWeak();
+						}
+						else if (TeamNum != BlobTeamNum && (BlobName == "wooden_platform" || blob.hasTag("door")))
+						{
+							if (isServer()) 
+							{
+								f32 door_dmg = BlobName != "stone_door" ? CurrentType == 1 ? 1.0f : 0.1f : 0.01f;
+								if (human !is null) human.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
+								else blob.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
+							}
+
+							endBullet = recountPenetrationsWeak();
+						}
+						else
+						{
+							endBullet = true;
+						}
 						//break;
 					}
 
@@ -493,9 +526,6 @@ class BulletObj
 						else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 						LastHitBlobID = blob.getNetworkID();
 					}
-
-					TimeLeft = 0;
-					return true;
 				}
 				else
 				{
@@ -504,7 +534,6 @@ class BulletObj
 						const Vec2f xNew = PDriver.getScreenPosFromWorldPos(CurrentPos);
 						if(!(xNew.x > 0 && xNew.x < ScreenX)) // Is our main position still on screen?
 						{
-							TimeLeft = 0;
 							return true;
 						}
 					}
@@ -716,18 +745,33 @@ class BulletObj
 					if (stop)
 					{
 						CurrentPos = hitpos;
-						endBullet = true;
+						endBullet = recountPenetrationsWeak();
 						ParticleBullet(CurrentPos, TrueVelocity);
 					}
 				}
 			}
 		}
 
-		if (endBullet == true)
+		if (endBullet)
 		{
 			TimeLeft = 0;
 		}
 		return false;
+	}
+	
+	bool recountPenetrationsWeak()
+	{
+		if (this.remainingPenWeak == 0) return true;
+		onPenetrate();
+		return false;
+	}
+
+	void onPenetrate()
+	{
+		this.remainingPenWeak--;
+		Speed *= slowOnPen;
+		addRotationOnTick += angleOnPen;
+		Scale = Vec2f(Scale.x * shrinkOnPen.x, Scale.y * shrinkOnPen.y);
 	}
 
 	void JoinQueue() // Every bullet gets forced to join the queue in onRenders, so we use this to calc to position

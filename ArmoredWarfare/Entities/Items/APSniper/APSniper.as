@@ -137,7 +137,7 @@ void onTick(CBlob@ this)
 				this.SendCommand(this.getCommandID("fire"), params);
 			}
 
-			arm.RotateBy(rotation + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -4.0f : 4.0f, 0.0f));
+			arm.RotateBy(rotation - this.getAngleDegrees() + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -4.0f : 4.0f, 0.0f));
 		}
 	}
 }
