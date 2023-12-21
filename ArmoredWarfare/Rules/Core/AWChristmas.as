@@ -1,0 +1,167 @@
+// Christmas.as
+//
+//TODO: re-apply new holiday sprites when holiday is active
+//		(check git history around xmas 2018 for holiday versions)
+#include "TreeCommon.as";
+#include "HolidayCommon.as";
+
+#include "TreeCommon.as";
+
+const int present_interval = 30 * 60 * 10; // 10 minutes
+const int gifts_per_hoho = 3;
+
+// Snow stuff
+bool _snow_ready = false;
+Vertex[] Verts;
+SColor snow_col(0xffffffff);
+f64 frameTime = 0;
+
+void onInit(CRules@ this)
+{
+	if (isClient())
+		this.set_s16("snow_render_id", 0);
+	
+	if (!this.exists(holiday_head_prop))
+		this.set_u8(holiday_head_prop, 91);
+
+	// no coin cap during christmas holidays
+	this.Tag("remove coincap");
+
+    this.set_string(holiday_prop, "Christmas"); 
+	this.addCommandID("xmas sound");
+
+	onRestart(this);
+}
+
+void onRestart(CRules@ this)
+{
+	_snow_ready = false;
+	this.set_s32("present timer", present_interval);
+	frameTime = 0;
+}
+
+void onTick(CRules@ this)
+{
+	if (isClient())
+	{
+		s16 renderId = this.get_s16("snow_render_id");
+		// Have we just disabled fast render
+		if (renderId == 0 && !v_fastrender)
+		{
+			// TEMP
+#ifdef STAGING
+			this.set_s16("snow_render_id", Render::addScript(Render::layer_floodlayers, "Christmas.as", "DrawSnow", 0));
+#endif
+#ifndef STAGING
+			this.set_s16("snow_render_id", Render::addScript(Render::layer_background, "Christmas.as", "DrawSnow", 0));
+#endif
+		} 
+		else if (renderId != 0 && v_fastrender) // Have we just enabled fast render OR is holiday over
+		{
+			Render::RemoveScript(renderId);
+			this.set_s16("snow_render_id", 0);
+		}
+	}
+	
+	if (!isServer() || this.isWarmup())
+		return;
+
+	if (!this.exists("present timer") || getBlobByName("info_desert") !is null)
+	{
+		return;
+	}
+	else if (this.get_s32("present timer") <= 0)
+	{
+		// reset present timer
+		this.set_s32("present timer", present_interval);
+
+		CMap@ map = getMap();
+		const f32 mapCenter = map.tilemapwidth * map.tilesize * 0.5;
+
+        CBlob@[] spawns;
+        getBlobsByTag("respawn", @spawns);
+
+        for (u8 i = 0; i < spawns.size(); i++)
+        {
+            CBlob@ tent = spawns[i];
+            if (tent is null || tent.getName() == "outpost") continue;
+
+            spawnPresent(Vec2f(tent.getPosition().x, 0), XORRandom(8)).Tag("parachute");
+        }
+
+		CBitStream bt;
+		this.SendCommand(this.getCommandID("xmas sound"), bt);
+	}
+	else
+	{
+		this.sub_s32("present timer", 1);
+	}
+}
+
+CBlob@ spawnPresent(Vec2f spawnpos, u8 team)
+{
+	return server_CreateBlob("present", team, spawnpos);
+}
+
+void onCommand( CRules@ this, u8 cmd, CBitStream @params )
+{
+	if(cmd == this.getCommandID("xmas sound"))
+	{
+		Sound::Play("Christmas.ogg");
+	}
+}
+
+// Snow
+
+void InitSnow()
+{
+	if(_snow_ready) return;
+
+	_snow_ready = true;
+
+	Verts.clear();
+	CMap@ map  = getMap();
+	int chunksX = map.tilemapwidth  / 32 + 3;
+	int chunksY = map.tilemapheight / 32 + 3;
+	for(int cX = 0; cX < chunksX; cX++)
+	{
+		for(int cY = 0; cY < chunksY; cY++)
+		{
+			float patch = 256;
+			Verts.push_back(Vertex((cX-1)*patch, (cY)*patch,   -500, 0, 0, snow_col));
+			Verts.push_back(Vertex((cX)*patch,   (cY)*patch,   -500, 1, 0, snow_col));
+			Verts.push_back(Vertex((cX)*patch,   (cY-1)*patch, -500, 1, 1, snow_col));
+			Verts.push_back(Vertex((cX-1)*patch, (cY-1)*patch, -500, 0, 1, snow_col));
+		}
+	}
+}
+
+void DrawSnow(int id)
+{
+	InitSnow();
+	frameTime += getRenderApproximateCorrectionFactor();
+	
+	float[] trnsfm;
+	for(int i = 0; i < 3; i++)
+	{
+		float gt = frameTime * (1.0f + (0.031f * i)) + (997 * i);
+		float X = Maths::Cos(gt/49.0f)*20 +
+			Maths::Cos(gt/31.0f) * 5 +
+			Maths::Cos(gt/197.0f) * 10;
+		float Y = gt % 255;
+		Matrix::MakeIdentity(trnsfm);
+
+		// TEMP PREPROCESSING
+#ifdef STAGING
+		Matrix::SetTranslation(trnsfm, X, Y, -500);
+		Render::SetZBuffer(true, false);
+#endif
+#ifndef STAGING
+		Matrix::SetTranslation(trnsfm, X, Y, 0);
+#endif
+
+		Render::SetAlphaBlend(true);
+		Render::SetModelTransform(trnsfm);
+		Render::RawQuads("Snow.png", Verts);
+	}
+}

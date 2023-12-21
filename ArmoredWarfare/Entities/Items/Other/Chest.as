@@ -20,15 +20,6 @@ void onInit(CBlob@ this)
 	{
 		// todo: loot based on gamemode
 		CRules@ rules = getRules();
-
-		if (rules.gamemode_name == TDM)
-		{
-			addLoot(this, INDEX_TDM, 2, 0);
-		}
-		else if (rules.gamemode_name == CTF)
-		{
-			addLoot(this, INDEX_CTF, 2, 0);
-		}
 		addCoin(this, 40 + XORRandom(40));
 	}
 
@@ -87,18 +78,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 			// add guaranteed piece of loot from your class index
 			const string NAME = caller.getName();
-			if (NAME == "archer")
-			{
-				addLoot(this, INDEX_ARCHER, 1, 0);
-			}
-			else if (NAME == "builder")
-			{
-				addLoot(this, INDEX_BUILDER, 1, 0);
-			}
-			else if (NAME == "knight")
-			{
-				addLoot(this, INDEX_KNIGHT, 1, 0);
-			}
+			
+			addLoot(this, INDEX_BUILDER, 1, 0);
 
 			server_CreateLoot(this, this.getPosition(), caller.getTeamNum());
 		}
@@ -116,11 +97,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 void onDie(CBlob@ this)
 {
-	if (getNet().isServer() && !this.exists(DROP))
-	{
-		addLoot(this, INDEX_TDM, 1, 0);
-	}
-
 	CSprite@ sprite = this.getSprite();
 	if (sprite !is null)
 	{
