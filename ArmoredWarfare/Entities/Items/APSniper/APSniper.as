@@ -3,7 +3,7 @@
 #include "HittersAW.as"
 
 const Vec2f arm_offset = Vec2f(-2, 0);
-const u32 fire_rate = 150;
+const u32 fire_rate = 15;
 
 void onInit(CBlob@ this)
 {
@@ -83,7 +83,7 @@ f32 getAimAngle(CBlob@ this)
 				if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
 
 				angle = (-(aim_vec).getAngle() + 180.0f);
-				angle = Maths::Max(-80.0f , Maths::Min(angle , 80.0f));
+				angle = Maths::Max(-25.0f , Maths::Min(angle , 25.0f));
 			}
 			else
 			{
@@ -121,6 +121,8 @@ void onTick(CBlob@ this)
 		{
 			arm.animation.frame = cooldown > getGameTime() ? 1 : ammo > 5 ? 2 : 0;
 		}
+
+		if (getGameTime() == this.get_u32("cooldown")) sprite.PlaySound("PinPull.ogg", 0.66f, 1.15f);
 		
 		bool facing_left = sprite.isFacingLeft();
 		f32 rotation = angle * (facing_left ? -1 : 1);
@@ -153,9 +155,12 @@ void onFire(CBlob@ this, Vec2f vel)
 	f32 anglereal = getAimAngle(this);
 	Vec2f pos = this.getPosition()+arm_offset;
 
+	f32 angle = this.isFacingLeft()?-anglereal:anglereal+180;
+	Vec2f particlevel = this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/4;
+
 	for (int i = 0; i < 3; i++)
 	{
-		ParticleAnimated("LargeSmokeGray", pos + Vec2f(-24,-2).RotateBy(this.isFacingLeft()?-anglereal:anglereal+180), this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/4, float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2 + XORRandom(2), -0.0031f, true);
+		ParticleAnimated("LargeSmokeGray", pos + Vec2f(-24,-2).RotateBy(angle), particlevel.RotateBy(angle-90), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2 + XORRandom(2), -0.0031f, true);
 	}
 
 	float _angle = this.isFacingLeft() ? -anglereal+180 : anglereal; // on turret spawn it works wrong otherwise
@@ -247,6 +252,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 	{
 		attached.Tag("distant_view");
 	}
+	this.set_u32("cooldown", getGameTime()+fire_rate);
 }
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)

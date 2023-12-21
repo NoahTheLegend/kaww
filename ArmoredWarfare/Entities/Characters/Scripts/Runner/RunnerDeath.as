@@ -55,6 +55,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (this.getHealth() <= 0.0f && !this.hasTag("dead"))
 	{
 		this.Tag("dead");
+		if (this.isAttached())
+		{
+			this.server_DetachFromAll();
+			CSpriteLayer@ head = this.getSprite().getSpriteLayer("head");
+			if (head !is null) head.SetVisible(true);
+		}
 		this.set_u32("death time", getGameTime());
 
 		this.UnsetMinimapVars(); //remove minimap icon
