@@ -14,7 +14,8 @@ namespace Perks
         deathincarnate = 7,
         bull = 8,
         paratrooper = 9,
-        fieldengineer = 10
+        fieldengineer = 10,
+        mason = 11
     };
 }
 
@@ -29,7 +30,8 @@ const string[] perks = { // i really dk how else to name it
     "Death Incarnate",
     "Bull",
     "Paratrooper",
-    "Field Engineer"
+    "Field Engineer",
+    "Mason"
 };
 // todo: rewrite these bools for new logic?
 bool hasPerk(CPlayer@ player, u8 current)
@@ -99,6 +101,22 @@ void addPerk(CPlayer@ player, u8 perk)
             case 10:
             {
                 player.set("PerkStats", @PerkFieldEngineer());
+                break;
+            }
+            case 11:
+            {
+                CBlob@ local = player.getBlob();
+                if (local is null) player.set("PerkStats", @reset);
+                CSprite@ sprite = local.getSprite();
+                if (sprite is null) player.set("PerkStats", @reset);
+                
+                if (player.isMyPlayer() || isServer())
+                {
+                    local.AddScript("MasonPerkLogic.as");
+                    sprite.AddScript("MasonPerkGUI.as");
+                }
+
+                player.set("PerkStats", @PerkMason());
                 break;
             }
         }

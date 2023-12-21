@@ -214,6 +214,13 @@ void InitClasses(CBlob@ this)
 						+"\n\n                  Overstaffed"
 						+"\n                   - Missing parachute!"
 						);
+	
+	addPlayerPerk(this, "Mason", "$11_class_icon$", "Mason",
+						"Mason:\n\n"+"$11_class_icon$"+"Building hammer"
+						+"\n                   - Build pre-designed"
+						+"\n                     structures"
+						+"\n                     Requires materials!"
+						);
 						
 }
 

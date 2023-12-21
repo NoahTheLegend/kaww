@@ -393,7 +393,9 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 			//CGridButton@ button9 = menu.AddButton("$medkit$", "Medkit", this.getCommandID("medkit"), Vec2f(1, 1), params);
 			CGridButton@ button9 = menu.AddButton("$atgrenade$", "Anti-Tank Grenade", this.getCommandID("atgrenade"), Vec2f(1, 1), params);
 
-			if (button0 !is null && button1 !is null && button2 !is null && button3 !is null && button4 !is null && button5 !is null && button6 !is null && button7 !is null)
+			if (button0 !is null && button1 !is null && button2 !is null && button3 !is null
+				&& button4 !is null && button5 !is null && button6 !is null && button7 !is null
+				&& button8 !is null && button9 !is null)
 			{
 				string prod_prop = this.get_string("prod_blob");
 
