@@ -114,7 +114,7 @@ class PNGLoader
 		@map_random = Random();
 
 		CRules@ this = getRules();
-		this.set_u8("map_type", 0); // reset type   0 default, 1 desert, 2 grim, 3 snow
+		this.set_u8("map_type", 0); // reset type
 
 		this.set_bool("allowclouds", false);
 		this.set_u8("brightmod", 50); // 50 default
