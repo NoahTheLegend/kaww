@@ -193,7 +193,7 @@ void onTick(CBlob@ this)
 	Vec2f pos_joint = pos + Vec2f(0,-arm_length).RotateBy(new_angle1, Vec2f(0,0));
 	aimpos = ap.getAimPos()-pos_joint;
 	if (driver !is null) aimpos = driver.getAimPos()-pos_joint;
-	
+
 	aimangle = -aimpos.Angle()+90;
 
 	// rotate arm 2
@@ -328,7 +328,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				sprite.SetEmitSoundSpeed(1.0f + diff * 0.01f);
 			}
 
-			if (this.get_u8("playsound") == 0)
+			if (this.get_u8("playsound") == 0 && !this.hasTag("vehicle"))
 			{
 				sprite.RewindEmitSound();
 			}
