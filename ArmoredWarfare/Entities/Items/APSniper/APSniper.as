@@ -68,6 +68,8 @@ f32 getAimAngle(CBlob@ this)
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
 		Vec2f aim_vec = (gunner.getPosition() - Vec2f(0,4)) - gunner.getAimPos();
+		f32 deg = this.getAngleDegrees();
+		aim_vec.RotateBy(-deg);
 		//aim_vec.RotateBy(-this.getAngleDegrees());
 
 		if (this.isAttached())
@@ -83,7 +85,8 @@ f32 getAimAngle(CBlob@ this)
 				if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
 
 				angle = (-(aim_vec).getAngle() + 180.0f);
-				angle = Maths::Max(-25.0f , Maths::Min(angle , 25.0f));
+				angle = Maths::Max(-25.0f, Maths::Min(angle, 25.0f));
+				angle += this.isFacingLeft()?-deg:deg;
 			}
 			else
 			{
