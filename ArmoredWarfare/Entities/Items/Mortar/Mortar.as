@@ -11,6 +11,7 @@ void onInit(CBlob@ this)
 
 	this.addCommandID("reload");
 	this.addCommandID("shoot");
+	this.addCommandID("client_shoot");
 	this.addCommandID("sync");
 	this.addCommandID("angle_up");
 	this.addCommandID("angle_down");
@@ -180,13 +181,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	}
 	else if (cmd == this.getCommandID("reload"))
 	{
-		printf("receive reload");
 		u16 id;
 		if (!params.saferead_u16(id)) return;
-		printf("read");
+
 		CBlob@ caller = getBlobByNetworkID(id);
 		if (caller is null) return;
-		printf('caller is not null');
+
 		if (caller.hasBlob("mat_smallbomb", 1))
 		{
 			if (caller.isMyPlayer() && this.get_u8("ammo") == 1)
@@ -211,22 +211,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			}
 		}
 	}
-	else if (cmd == this.getCommandID("shoot"))
+	else if (cmd == this.getCommandID("client_shoot"))
 	{
-		printf("receive shoot");
-		if (this.get_u8("ammo") == 0 || this.isAttached())
-		{
-			return;
-		}
-		printf("ammo");
+		if (!isClient()) return;
+
 		u16 id = params.read_u16();
 		CBlob@ caller = getBlobByNetworkID(id);
-		if (caller !is null && caller.getPlayer() !is null)
-		{
-			this.SetDamageOwnerPlayer(caller.getPlayer());
-		}
 
-		if (this.get_u32("cooldown") > getGameTime())
+		if (caller.isMyPlayer() && this.get_u32("cooldown") > getGameTime())
 		{
 			this.getSprite().PlaySound("NoAmmo.ogg", 0.75f, 1.25f);
 			return;
@@ -235,10 +227,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		f32 shoot_angle = this.getAngleDegrees() + (this.isFacingLeft()?180:0);
 		Vec2f pos = this.getPosition() + Vec2f(16,0).RotateBy(shoot_angle);
 		Vec2f vel = Vec2f(30.0f, 0).RotateBy(shoot_angle);
-
 		f32 angle = -vel.getAngle();
-		this.set_u8("ammo", 0);
-		this.set_u32("cooldown", getGameTime()+fire_rate);
 
 		if (isServer())
 		{
@@ -271,6 +260,41 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			}
 
 			this.getSprite().PlaySound("sound_105mm.ogg", 2.0f, 1.45f+XORRandom(31)*0.01f);
+		}
+	}
+	else if (cmd == this.getCommandID("shoot"))
+	{
+		if (!isServer()) return;
+		
+		if (this.get_u8("ammo") == 0 || this.get_u32("cooldown") > getGameTime() || this.isAttached())
+		{
+			return;
+		}
+
+		u16 id = params.read_u16();
+		CBlob@ caller = getBlobByNetworkID(id);
+		if (caller !is null && caller.getPlayer() !is null)
+		{
+			this.SetDamageOwnerPlayer(caller.getPlayer());
+		}
+
+		// send effects to clients
+		CBitStream params1;
+		params1.write_u16(id);
+		this.SendCommand(this.getCommandID("client_shoot"), params1);
+
+		f32 shoot_angle = this.getAngleDegrees() + (this.isFacingLeft()?180:0);
+		Vec2f pos = this.getPosition() + Vec2f(16,0).RotateBy(shoot_angle);
+		Vec2f vel = Vec2f(30.0f, 0).RotateBy(shoot_angle);
+
+		f32 angle = -vel.getAngle();
+		this.set_u8("ammo", 0);
+		this.set_u32("cooldown", getGameTime()+fire_rate);
+
+		if (isServer())
+		{
+			Sync(this);
+			CreateProjectile(this, pos, vel);
 		}
 	}
 	else if (cmd == this.getCommandID("angle_up"))
@@ -343,10 +367,14 @@ void Sync(CBlob@ this)
 
 void onRender(CSprite@ this)
 {
-	hoverRender(this);
+	CBlob@ local = getLocalPlayerBlob();
+	if (local is null) return;
 
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
+
+	hoverRender(this);
+	if (local.getTeamNum() != blob.getTeamNum()) return;
 
 	if (!blob.get_bool("tips_active")) return;
 
