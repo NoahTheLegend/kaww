@@ -10,7 +10,7 @@ const f32 rotary_speed = 5.0f;
 
 void onInit(CBlob@ this)
 {
-	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PASSENGER");
 	if (ap !is null)
 	{
 		ap.SetKeysToTake(key_action1 | key_action2 | key_action3);
@@ -45,9 +45,13 @@ void onInit(CBlob@ this)
 	this.addCommandID("add_mount");
 
 	CSprite@ sprite = this.getSprite();
-	sprite.SetEmitSound("crane_rotary_loop.ogg");
-	sprite.SetEmitSoundSpeed(1.0f);
-	sprite.SetRelativeZ(75.0f);
+
+	if (!this.hasTag("vehicle"))
+	{
+		sprite.SetEmitSound("crane_rotary_loop.ogg");
+		sprite.SetEmitSoundSpeed(1.0f);
+		sprite.SetRelativeZ(75.0f);
+	}
 
 	this.set_u8("playsound", 0);
 	this.set_f32("volume", 0);
@@ -102,8 +106,11 @@ void onTick(CBlob@ this)
 			this.add_f32("volume", -volume_kick);
 		}
 		
-		sprite.SetEmitSoundPaused(play_sound_remain == 0);
-		sprite.SetEmitSoundVolume(Maths::Min(this.get_f32("volume"), max_volume * play_sound_remain / playsound_fadeout_time));
+		if (!this.hasTag("vehicle"))
+		{
+			sprite.SetEmitSoundPaused(play_sound_remain == 0);
+			sprite.SetEmitSoundVolume(Maths::Min(this.get_f32("volume"), max_volume * play_sound_remain / playsound_fadeout_time));
+		}
 
 		if (play_sound_remain > 0) this.add_u8("playsound", -1);
 	}
@@ -116,7 +123,7 @@ void onTick(CBlob@ this)
 	CBlob@ arm2 = getBlobByNetworkID(this.get_u16("arm2_id"));
 
 	if (arm1 is null || arm2 is null) return;
-	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PASSENGER");
 
 	if (ap is null) return;
 	CBlob@ driver = ap.getOccupied(); // NO NULL CHECK HERE!
@@ -138,6 +145,8 @@ void onTick(CBlob@ this)
 	f32 old_target_angle2 = new_target_angle2;
 
 	Vec2f aimpos = ap.getAimPos()-this.getPosition();
+	if (driver !is null) aimpos = driver.getAimPos()-this.getPosition();
+
 	f32 aimangle = -aimpos.Angle()+90;
 
 	// rotate arm 1
@@ -183,6 +192,8 @@ void onTick(CBlob@ this)
 
 	Vec2f pos_joint = pos + Vec2f(0,-arm_length).RotateBy(new_angle1, Vec2f(0,0));
 	aimpos = ap.getAimPos()-pos_joint;
+	if (driver !is null) aimpos = driver.getAimPos()-pos_joint;
+	
 	aimangle = -aimpos.Angle()+90;
 
 	// rotate arm 2
@@ -312,7 +323,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			f32 diff = params.read_f32();
 
 			CSprite@ sprite = this.getSprite();
-			sprite.SetEmitSoundSpeed(1.0f + diff * 0.01f);
+			if (!this.hasTag("vehicle"))
+			{
+				sprite.SetEmitSoundSpeed(1.0f + diff * 0.01f);
+			}
 
 			if (this.get_u8("playsound") == 0)
 			{
@@ -368,7 +382,7 @@ void onRender(CSprite@ this)
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
 
-	AttachmentPoint@ ap = blob.getAttachments().getAttachmentPointByName("DRIVER");
+	AttachmentPoint@ ap = blob.getAttachments().getAttachmentPointByName("PASSENGER");
 	if (ap is null) return;
 	CBlob@ driver = ap.getOccupied();
 	if (driver is null || !driver.isMyPlayer()) return;
