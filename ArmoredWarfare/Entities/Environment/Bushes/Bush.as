@@ -38,5 +38,6 @@ void onInit(CSprite@ this)
 	this.animation.frame = (netID % this.animation.getFramesCount());
 	this.SetFacingLeft(((netID % 13) % 2) == 0);
 	//this.getCurrentScript().runFlags |= Script::remove_after_this;	// wont be sent on network
-	this.SetZ(500.0f);
+	this.SetZ(300.0f);
+	this.SetRelativeZ(300.0f);
 }
