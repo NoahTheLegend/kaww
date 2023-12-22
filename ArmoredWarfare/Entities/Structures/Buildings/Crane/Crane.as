@@ -419,9 +419,11 @@ void onDie(CBlob@ this)
 	if (!isServer()) return;
 	CBlob@ arm1 = getBlobByNetworkID(this.get_u16("arm1_id"));
 	CBlob@ arm2 = getBlobByNetworkID(this.get_u16("arm2_id"));
+	CBlob@ augment = getBlobByNetworkID(this.get_u16("augment_id"));
 
 	if (arm1 !is null) arm1.server_Die();
 	if (arm2 !is null) arm2.server_Die();
+	if (augment !is null) augment.server_Die();
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)

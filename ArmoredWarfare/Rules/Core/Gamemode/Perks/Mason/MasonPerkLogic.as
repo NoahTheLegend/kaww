@@ -36,11 +36,13 @@ void onTick(CBlob@ this)
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
+    printf("received open menu");
     if (!this.isMyPlayer() || !isServer()) return;
     if (cmd == this.getCommandID("mason_open_menu"))
     {
         if (isClient())
         {
+            printf("getting");
             u16 id;
             if (!params.saferead_u16(id)) return;
            
@@ -113,6 +115,7 @@ void RunSelectListener(CBlob@ this)
 
 void openMasonMenu(CBlob@ this, CBlob@ caller)
 {
+    printf("open menu");
 	CBitStream params;
 	params.write_u16(caller.getNetworkID());
 
@@ -127,7 +130,7 @@ void openMasonMenu(CBlob@ this, CBlob@ caller)
         {
             controls.setMousePosition(getDriver().getScreenCenterPos());
         }
-        
+        printf("menu not null");
 		for (u8 i = 0; i < structures.size(); i++)
         {
             Structure str = structures[i];

@@ -211,7 +211,7 @@ void onTick(CBlob@ this)
 							f32 spread = XORRandom(3)-1.5f;
 							Vec2f shootpos = Vec2f(4*flip_factor,0);
 							shootVehicleGun(hooman.getNetworkID(), this.getNetworkID(),
-								angle+spread, this.getPosition()+shootpos.RotateBy(this.getAngleDegrees()),
+								angle+spread, (this.getPosition()+this.getVelocity()*1.1f)+shootpos.RotateBy(this.getAngleDegrees()),
 									gunner.getAimPos(), 0.0f, 1, 0, 0.4f, 0.6f, 2,
 										this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 

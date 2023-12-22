@@ -108,7 +108,12 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
 	detached.Untag("machinegunner");
-	if (detached.getSprite() !is null) detached.getSprite().ResetTransform();
+	if (detached.getSprite() !is null && detached !is this && detached.getPlayer() !is null)
+	{
+		detached.getSprite().ResetTransform();
+		detached.getSprite().SetOffset(Vec2f(0,-4));
+		detached.set_u8("mg_hidelevel", 5);
+	}
 	if (this.isAttached()) return;
 
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
@@ -340,7 +345,8 @@ void onTick(CBlob@ this)
 
 	if (is_attached)
 	{
-		if (not_null)
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+		if (ap !is null && ap.getOccupied() !is null)
 		{
 			CBlob@ gunner = ap.getOccupied();
 			CSprite@ gsprite = gunner.getSprite();
@@ -353,7 +359,6 @@ void onTick(CBlob@ this)
 			}
 			if (ap.isKeyPressed(key_action2))
 			{
-				gunner.set_u8("mg_hidelevel", getGameTime()+1);
 				if (gunner.get_u8("mg_hidelevel") > 0) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") - 1);
 			}
 			else if (gunner.get_u8("mg_hidelevel") < 5) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") + 1);

@@ -69,75 +69,76 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	if (!isClient()) return;
-
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 
 	bool fl = this.isFacingLeft();
 	f32 fl_f = fl?1:-1;
 	bool att = this.isAttached();
-	if (sprite.animation !is null)
-	{
-		sprite.animation.frame = att ? 0 : 1;
-	}
-
-	this.set_bool("tips_active", false);
-	CBlob@ local = getLocalPlayerBlob();
-	if (local !is null)
-	{
-		CMap@ map = getMap();
-		if (map is null) return;
-
-		if (this.isOnScreen())
-		{
-			HoverButton@ buttons;
-			if (this.get("HoverButton", @buttons) && !att && local.getDistanceTo(this) < 32.0f
-				&& !map.rayCastSolidNoBlobs(local.getPosition(), this.getPosition()))
-			{
-				buttons.active = true;
-				this.set_bool("tips_active", true);
-
-				if (buttons.list.size() == 4)
-				{
-					if (buttons.list[2] !is null)
-					{
-						buttons.list[2].inactive = this.get_u32("cooldown") > getGameTime();
-					}
-				}
-			}
-			else
-			{
-				buttons.active = false;
-			}
-		}
-	}
-
 	f32 angle = this.get_f32("current_angle");
 
-	CSpriteLayer@ tripod = sprite.getSpriteLayer("tripod");
-	CSpriteLayer@ pip = sprite.getSpriteLayer("pip");
-	if (tripod !is null && pip !is null)
+	if (isClient())
 	{
-		tripod.SetVisible(!att);
-		pip.SetVisible(!att);
+		if (sprite.animation !is null)
+		{
+			sprite.animation.frame = att ? 0 : 1;
+		}
 
-		tripod.ResetTransform();
-		pip.ResetTransform();
-		tripod.RotateBy(fl_f*-angle, Vec2f(0,0));
-		pip.RotateBy(fl_f*-angle, Vec2f(0,0));
+		this.set_bool("tips_active", false);
+		CBlob@ local = getLocalPlayerBlob();
+		if (local !is null)
+		{
+			CMap@ map = getMap();
+			if (map is null) return;
 
-		f32 rot = (1.0f-angle/45);
-		tripod.SetOffset(Vec2f(-4*rot, 6 + 4*rot));
-		pip.SetOffset(tripod.getOffset());
+			if (this.isOnScreen())
+			{
+				HoverButton@ buttons;
+				if (this.get("HoverButton", @buttons) && !att && local.getDistanceTo(this) < 32.0f
+					&& !map.rayCastSolidNoBlobs(local.getPosition(), this.getPosition()))
+				{
+					buttons.active = true;
+					this.set_bool("tips_active", true);
+
+					if (buttons.list.size() == 4)
+					{
+						if (buttons.list[2] !is null)
+						{
+							buttons.list[2].inactive = this.get_u32("cooldown") > getGameTime();
+						}
+					}
+				}
+				else
+				{
+					buttons.active = false;
+				}
+			}
+		}
+
+		CSpriteLayer@ tripod = sprite.getSpriteLayer("tripod");
+		CSpriteLayer@ pip = sprite.getSpriteLayer("pip");
+		if (tripod !is null && pip !is null)
+		{
+			tripod.SetVisible(!att);
+			pip.SetVisible(!att);
+
+			tripod.ResetTransform();
+			pip.ResetTransform();
+			tripod.RotateBy(fl_f*-angle, Vec2f(0,0));
+			pip.RotateBy(fl_f*-angle, Vec2f(0,0));
+
+			f32 rot = (1.0f-angle/45);
+			tripod.SetOffset(Vec2f(-4*rot, 6 + 4*rot));
+			pip.SetOffset(tripod.getOffset());
+		}
+
+		//CSpriteLayer@ heat = sprite.getSpriteLayer("heat");
+		//if (heat !is null)
+		//{
+		//	heat.SetVisible(this.get_u32("cooldown") > getGameTime());
+		//	heat.ResetTransform();
+		//}
 	}
-
-	//CSpriteLayer@ heat = sprite.getSpriteLayer("heat");
-	//if (heat !is null)
-	//{
-	//	heat.SetVisible(this.get_u32("cooldown") > getGameTime());
-	//	heat.ResetTransform();
-	//}
 
 	CShape@ shape = this.getShape();
 	if (att)
@@ -163,8 +164,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
 	if (cmd == this.getCommandID("sync"))
 	{
-		if (!isClient()) return;
-
 		u8 ammo;
 		if (!params.saferead_u8(ammo)) return;
 		f32 angle;
@@ -178,12 +177,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	}
 	else if (cmd == this.getCommandID("reload"))
 	{
+		printf("reloading");
 		u16 id;
 		if (!params.saferead_u16(id)) return;
 
 		CBlob@ caller = getBlobByNetworkID(id);
 		if (caller is null) return;
-
+		printf("reloading 1");
 		if (caller.hasBlob("mat_smallbomb", 1))
 		{
 			if (caller.isMyPlayer() && this.get_u8("ammo") == 1)
@@ -347,8 +347,6 @@ void onRender(CSprite@ this)
 	if (!blob.get_bool("tips_active")) return;
 
 	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(blob.getPosition());
-
-
 
 	GUI::SetFont("menu");
 	GUI::DrawTextCentered("L/R click", pos2d+Vec2f(0,128), SColor(50,255,255,255));

@@ -95,7 +95,7 @@ bool canGrab(CBlob@ this, CBlob@ blob)
 {
 	if ((blob.getTeamNum() != this.getTeamNum() && !blob.hasTag("material")) || blob.hasTag("aerial") || blob.hasTag("structure")
 		|| (blob.getShape() !is null && blob.getShape().isStatic()) || blob.hasTag("projectile")
-		|| blob.isAttached() || blob.isInInventory())
+		|| blob.isAttached() || blob.isInInventory() || blob.hasTag("attached"))
 	{
 		return false;
 	}

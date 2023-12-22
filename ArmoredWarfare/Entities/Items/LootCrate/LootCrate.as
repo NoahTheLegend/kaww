@@ -5,6 +5,7 @@
 void onInit(CBlob@ this)
 {
     this.Tag("trap");
+    this.Tag("wooden");
 	this.getSprite().SetZ(-10.0f);
 }
 
