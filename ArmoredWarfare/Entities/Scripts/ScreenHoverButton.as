@@ -1,9 +1,9 @@
-#define CLIENT_ONLY
-
 // its better to use less than 255 buttons (u8 limit), you won't need more anyways
 
 void hoverRender(CSprite@ this)
 {
+    if (!isClient()) return;
+
     CBlob@ blob = this.getBlob();
     if (blob is null) return;
 
@@ -278,6 +278,8 @@ class HoverButton
 
 void DrawSimpleButton(Vec2f tl, Vec2f br, SColor color, SColor bordercolor, bool hover, bool pressed, bool inactive, f32 outer, f32 inner)
 {
+    if (!isClient()) return;
+    
     if (pressed)
     {
         tl += Vec2f(0,1);
