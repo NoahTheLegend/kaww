@@ -4,8 +4,9 @@
 void onInit(CBlob@ this)
 {
 	this.addCommandID("grab");
-	this.Tag("rotary_joint");
+	this.addCommandID("ungrab");
 
+	this.Tag("rotary_joint");
 	this.set_u32("grab_delay", 0);
 }
 
@@ -55,6 +56,8 @@ void onTick(CBlob@ this)
 	{
 		this.Untag("crane_was_hit");
 		this.set_u16("grabbed_id", 0);
+
+		this.SendCommand(this.getCommandID("ungrab"));
 	}
 	if (active && this.get_u32("grab_delay") < getGameTime())
 	{
@@ -127,6 +130,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 		this.set_u16("grabbed_id", id);
 	}
+	else if (cmd == this.getCommandID("ungrab"))
+	{
+		if (!isClient()) return;
+		this.set_u16("grabbed_id", 0);
+	}
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
@@ -136,6 +144,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum())
 		{
 			this.set_u16("grabbed_id", 0);
+			this.SendCommand(this.getCommandID("ungrab"));
 		}
 	}
 	return damage;
