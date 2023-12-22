@@ -9,6 +9,7 @@ void onInit(CBlob@ this)
 {
 	this.addCommandID("shoot");
 	this.Tag("never_repair");
+	this.Tag("weak vehicle");
 
 	this.set_bool("spawned", false);
 	this.set_u16(target_player_id, 0);

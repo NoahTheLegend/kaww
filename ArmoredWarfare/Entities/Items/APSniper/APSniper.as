@@ -3,7 +3,7 @@
 #include "HittersAW.as"
 
 const Vec2f arm_offset = Vec2f(-2, 0);
-const u32 fire_rate = 15;
+const u32 fire_rate = 180;
 
 void onInit(CBlob@ this)
 {
@@ -140,6 +140,8 @@ void onTick(CBlob@ this)
 				params.write_u16(gunner.getOccupied().getNetworkID());
 				params.write_Vec2f(gunner.getAimPos());
 				this.SendCommand(this.getCommandID("fire"), params);
+
+				this.set_u32("cooldown", getGameTime()+fire_rate);
 			}
 
 			arm.RotateBy(rotation - this.getAngleDegrees() + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -4.0f : 4.0f, 0.0f));
@@ -197,22 +199,23 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			return;
 		}
 
-		if (isServer())
-		{
-			this.TakeBlob("specammo", 5);
-		}
-
 		f32 angle = getAimAngle(this);
 		if (this.isFacingLeft())
 		{
 			angle = -1 * angle + 180;
 		}
-		shootVehicleGun(blob.getNetworkID(), this.getNetworkID(),
-			angle, this.getPosition()-Vec2f(0,2),
-			aimPos, 0, 1, 4, this.get_f32("damage_body"), this.get_f32("damage_head"), 6,
-				this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));
 
-		this.set_u32("cooldown", getGameTime() + fire_rate);
+		if (isServer())
+		{
+			this.TakeBlob("specammo", 5);
+
+			shootVehicleGun(blob.getNetworkID(), this.getNetworkID(),
+				angle, this.getPosition()-Vec2f(0,2),
+				aimPos, 0, 1, 4, this.get_f32("damage_body"), this.get_f32("damage_head"), 6,
+					this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));
+
+			this.set_u32("cooldown", getGameTime()+fire_rate); // we set cooldown on client before receiving this command
+		}
 
 		if (isClient())
 		{

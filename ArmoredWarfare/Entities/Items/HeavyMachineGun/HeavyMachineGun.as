@@ -115,7 +115,12 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
 	detached.Untag("machinegunner");
-	if (detached.getSprite() !is null) detached.getSprite().ResetTransform();
+	if (detached.getSprite() !is null && detached !is this && detached.getPlayer() !is null)
+	{
+		detached.getSprite().ResetTransform();
+		detached.getSprite().SetOffset(Vec2f(0,-4));
+		detached.set_u8("mg_hidelevel", 5);
+	}
 	if (this.isAttached()) return;
 
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
