@@ -26,6 +26,7 @@ void onInit(CBlob@ this)
         SimpleHoverButton btn(this.getNetworkID());
         btn.dim = Vec2f(65, 25);
         btn.font = "menu";
+		btn.write_blob = false;
 		btn.write_local = true;
 		btn.sound = "select.ogg";
 
@@ -179,12 +180,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	}
 	else if (cmd == this.getCommandID("reload"))
 	{
+		printf("receive reload");
 		u16 id;
 		if (!params.saferead_u16(id)) return;
-
+		printf("read");
 		CBlob@ caller = getBlobByNetworkID(id);
 		if (caller is null) return;
-
+		printf('caller is not null');
 		if (caller.hasBlob("mat_smallbomb", 1))
 		{
 			if (caller.isMyPlayer() && this.get_u8("ammo") == 1)
@@ -211,11 +213,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	}
 	else if (cmd == this.getCommandID("shoot"))
 	{
+		printf("receive shoot");
 		if (this.get_u8("ammo") == 0 || this.isAttached())
 		{
 			return;
 		}
-
+		printf("ammo");
 		u16 id = params.read_u16();
 		CBlob@ caller = getBlobByNetworkID(id);
 		if (caller !is null && caller.getPlayer() !is null)
