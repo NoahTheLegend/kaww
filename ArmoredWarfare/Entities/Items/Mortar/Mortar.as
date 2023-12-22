@@ -8,16 +8,13 @@ const u32 fire_rate = 300;
 void onInit(CBlob@ this)
 {
 	this.Tag("repairable");
-	
-	CSprite@ sprite = this.getSprite();
-	if (sprite is null) return;
 
 	this.addCommandID("reload");
 	this.addCommandID("shoot");
 	this.addCommandID("sync");
 	this.addCommandID("angle_up");
 	this.addCommandID("angle_down");
-
+	
 	this.set_f32("current_angle", 45);
 	this.set_u8("ammo", 0);
 	this.Tag("heavy weight");
@@ -70,14 +67,13 @@ void onInit(CBlob@ this)
 void onTick(CBlob@ this)
 {
 	CSprite@ sprite = this.getSprite();
-	if (sprite is null) return;
 
 	bool fl = this.isFacingLeft();
 	f32 fl_f = fl?1:-1;
 	bool att = this.isAttached();
 	f32 angle = this.get_f32("current_angle");
 
-	if (isClient())
+	if (isClient() && sprite !is null)
 	{
 		if (sprite.animation !is null)
 		{
@@ -143,17 +139,23 @@ void onTick(CBlob@ this)
 	CShape@ shape = this.getShape();
 	if (att)
 	{
-		sprite.ResetTransform();
-		sprite.SetRelativeZ(-10.0f);
-		sprite.RotateBy(fl_f*90, Vec2f_zero);
+		if (isClient() && sprite !is null)
+		{
+			sprite.ResetTransform();
+			sprite.SetRelativeZ(-10.0f);
+			sprite.RotateBy(fl_f*90, Vec2f_zero);
+		}
 
 		shape.SetAngleDegrees(0);
 		shape.SetRotationsAllowed(true);
 	}
 	else
 	{
-		sprite.ResetTransform();
-		sprite.SetRelativeZ(0.0f);
+		if (isClient() && sprite !is null)
+		{
+			sprite.ResetTransform();
+			sprite.SetRelativeZ(0.0f);
+		}
 		
 		shape.SetAngleDegrees(fl_f*angle);
 		shape.SetRotationsAllowed(false);
@@ -177,13 +179,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	}
 	else if (cmd == this.getCommandID("reload"))
 	{
-		printf("reloading");
 		u16 id;
 		if (!params.saferead_u16(id)) return;
 
 		CBlob@ caller = getBlobByNetworkID(id);
 		if (caller is null) return;
-		printf("reloading 1");
+
 		if (caller.hasBlob("mat_smallbomb", 1))
 		{
 			if (caller.isMyPlayer() && this.get_u8("ammo") == 1)

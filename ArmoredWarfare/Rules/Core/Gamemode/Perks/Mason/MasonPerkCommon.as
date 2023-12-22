@@ -7,7 +7,6 @@ bool isInArea(Vec2f tl, Vec2f br, Vec2f mpos)
 
 void sendOpenMenu(CBlob@ this)
 {
-    printf("sent");
     CBitStream params;
     params.write_u16(this.getNetworkID());
     this.SendCommand(this.getCommandID("mason_open_menu"), params);
