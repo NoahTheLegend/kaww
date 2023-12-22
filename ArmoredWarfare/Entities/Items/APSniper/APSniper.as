@@ -3,7 +3,7 @@
 #include "HittersAW.as"
 
 const Vec2f arm_offset = Vec2f(-2, 0);
-const u32 fire_rate = 180;
+const u32 fire_rate = 150;
 
 void onInit(CBlob@ this)
 {
@@ -67,7 +67,7 @@ f32 getAimAngle(CBlob@ this)
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+		Vec2f aim_vec = (gunner.getPosition() - Vec2f(0,4)) - gunner.getAimPos();
 		//aim_vec.RotateBy(-this.getAngleDegrees());
 
 		if (this.isAttached())
@@ -256,7 +256,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 	{
 		attached.Tag("distant_view");
 	}
-	this.set_u32("cooldown", getGameTime()+fire_rate);
+	this.set_u32("cooldown", getGameTime()+(fire_rate/2));
 }
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)

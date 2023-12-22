@@ -37,7 +37,7 @@ void onTick(CBlob@ this)
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
     printf("received open menu");
-    if (!this.isMyPlayer() || !isServer()) return;
+    if (!this.isMyPlayer() && !isServer()) return;
     if (cmd == this.getCommandID("mason_open_menu"))
     {
         if (isClient())
