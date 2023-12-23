@@ -74,4 +74,4 @@ class Structure
     }
 }
 
-const array<EKEY_CODE> qte = {KEY_KEY_1, KEY_KEY_2, KEY_KEY_3, KEY_KEY_4, KEY_KEY_5, KEY_KEY_6};
+const array<EKEY_CODE> qte = {KEY_KEY_1, KEY_KEY_2, KEY_KEY_3, KEY_KEY_4, KEY_KEY_5}; // key 6 optional

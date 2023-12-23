@@ -395,6 +395,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				endtime = 1.0f*30;
 			}
+			else if (s.blobName == "crane")
+			{
+				endtime = 15.0f*30;
+			}
 			else
 			{
 				endtime = construct_endtime;

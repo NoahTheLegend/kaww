@@ -1,3 +1,5 @@
+#include "Requirements.as"
+#include "ShopCommon.as"
 
 // initial costs
 const u16 c_moto = 5;
@@ -23,6 +25,7 @@ const u16 c_mgun = 8;
 const u16 c_ftw = 12;
 const u16 c_c4 = 10;
 const u16 c_jav = 25;
+const u16 c_apsniper = 50;
 // common
 const string b = "blob";
 const string s = "mat_scrap";
@@ -51,6 +54,7 @@ const string n_mgun = "Construct a Heavy Machinegun";
 const string n_ftw = "Construct a Firethrower";
 const string n_c4 = "Construct a C-4 Explosive";
 const string n_jav = "Construct a Javelin Missile launcher";
+const string n_apsniper = "Armor-Penetrating Sniper Rifle.";
 // descriptions
 const string d_moto = "Speedy transport.";
 const string d_amoto = "Armed motorcycle.";
@@ -72,9 +76,10 @@ const string d_ah1 = "A destroyer-helicopter with a protected co-pilot seat oper
 const string d_barge = "An armored boat for transporting vehicles across water.";
 const string d_armory = "Supply truck.\nAllows to switch class and perk.";
 const string d_mgun = "Heavy machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.";
-const string d_ftw = "Fire thrower.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.";
+const string d_ftw = "Fire thrower.\nCan be attached to and detached from some vehicles.\n\nUses Special Ammunition.";
 const string d_c4 = "A strong explosive, very effective against blocks and doors.\n\nTakes some time after activation to explode.\nYou can deactivate it as well.";
 const string d_jav = "Homing Missile launcher.";
+const string d_apsniper = "Armor-Penetrating Sniper Rifle.\nPenetrates non-solid blocks and flesh. Can reach tank crew through armor.\n\nUses Special Ammunition.";
 // blobnames
 const string bn_moto = "motorcycle";
 const string bn_amoto = "armedmotorcycle";
@@ -99,6 +104,7 @@ const string bn_mgun = "heavygun";
 const string bn_ftw = "firethrower";
 const string bn_c4 = "c4";
 const string bn_jav = "launcher_javelin";
+const string bn_apsniper = "apsniper";
 // icon tokens
 const string t_moto = "$"+bn_moto+"$";
 const string t_amoto = "$"+bn_amoto+"$";
@@ -123,3 +129,16 @@ const string t_mgun = "$icon_mg$";
 const string t_ftw = "$icon_ft$";
 const string t_c4 = "$"+bn_c4+"$";
 const string t_jav = "$icon_jav$";
+const string t_apsniper = "$"+bn_apsniper+"$";
+
+void makeShopItem(CBlob@ this, string[] params, int cost, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	ShopItem@ s = addShopItem(this, params[0], params[1], params[2], params[3], inv, crate);
+	if (inv || crate || dim.x > 1 || dim.y > 1)
+	{
+		s.customButton = true;
+		s.buttonwidth = dim.x;
+		s.buttonheight = dim.y;
+	}
+	AddRequirement(s.requirements, params[4], params[5], params[6], cost);
+}

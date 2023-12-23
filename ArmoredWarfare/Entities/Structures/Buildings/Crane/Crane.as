@@ -65,15 +65,15 @@ void onInit(CBlob@ this)
 	this.set_string("shop description", "Construct Augments");
 	this.set_u8("shop icon", 25);
 	{
-		ShopItem@ s = addShopItem(this, "Claw Augment", "$claw$", "claw", "Grabs items, has a tension limit. Disabled on-hit.\n[SPACEBAR]", false);
+		ShopItem@ s = addShopItem(this, "Claw Augment", "$claw$", "claw", "Grabs items, has a tension limit.\n\nDisabled on-hit.\n[SPACEBAR]", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Buzz Saw Augment", "$buzzsaw$", "buzzsaw", "Chops trees and cuts weak materials.\n[SPACEBAR]", false);
+		ShopItem@ s = addShopItem(this, "Buzz Saw Augment", "$buzzsaw$", "buzzsaw", "Chops trees and cuts weak materials.\n\n[SPACEBAR]", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Welder Augment", "$welder$", "welder", "Repairs friendly vehicles and structures. Infinite use.\n[SPACEBAR]", false);
+		ShopItem@ s = addShopItem(this, "Welder Augment", "$welder$", "welder", "Repairs friendly vehicles and structures.\n\nUnlimited uses.\n[SPACEBAR]", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 }

@@ -194,5 +194,5 @@ void DrawQTE(CSprite@ this, CBlob@ blob, Vec2f drawpos, f32 zoom, CControls@ con
     }
     else was_pressed_qte = false;
 
-    GUI::DrawIcon("Keys.png", required_button + ((getGameTime() / 5) % 2 == 0 ? qte.size() : 0), Vec2f(16,16), drawpos - Vec2f(0, 64) * zoom, zoom, SColor(255,255,255,255));
+    GUI::DrawIcon("Keys.png", required_button + ((getGameTime() / 5) % 2 == 0 ? qte.size()+1 : 0), Vec2f(16,16), drawpos - Vec2f(0, 64) * zoom, zoom, SColor(255,255,255,255));
 }

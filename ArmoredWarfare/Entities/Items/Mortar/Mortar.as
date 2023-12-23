@@ -1,14 +1,18 @@
 #include "ScreenHoverButton.as";
 #include "WarfareGlobal.as";
+#include "ProgressBar.as"
+#include "TeamColorCollections";
 
 const f32 high_angle = 45;
 const f32 low_angle = 75;
 const u32 fire_rate = 300;
+const f32 RELOAD_REQ_TIME = fire_rate / 2;
 
 void onInit(CBlob@ this)
 {
 	this.Tag("repairable");
 
+	this.addCommandID("init_reload");
 	this.addCommandID("reload");
 	this.addCommandID("shoot");
 	this.addCommandID("client_shoot");
@@ -19,6 +23,9 @@ void onInit(CBlob@ this)
 	this.set_f32("current_angle", 45);
 	this.set_u8("ammo", 0);
 	this.Tag("heavy weight");
+
+	this.set_f32("reload_endtime", RELOAD_REQ_TIME);
+	this.set_f32("reload_time", 0);
 	
     HoverButton setbuttons(this.getNetworkID());
     setbuttons.offset = Vec2f(0,32);
@@ -35,7 +42,7 @@ void onInit(CBlob@ this)
         {	
 			case 0:
             	btn.text = "RELOAD ";
-            	btn.callback_command = "reload";
+            	btn.callback_command = "init_reload";
 				break;
 
 			case 1:
@@ -58,7 +65,6 @@ void onInit(CBlob@ this)
 
         setbuttons.AddButton(btn);
     }
-	
 
     setbuttons.draw_attached = false;
     setbuttons.grid = Vec2f(2,2);
@@ -68,8 +74,10 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	handleReload(this);
+	visualTimerTick(this);
+	
 	CSprite@ sprite = this.getSprite();
-
 	bool fl = this.isFacingLeft();
 	f32 fl_f = fl?1:-1;
 	bool att = this.isAttached();
@@ -179,13 +187,55 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		this.set_f32("current_angle", angle);
 		this.set_u32("cooldown", cd);
 	}
-	else if (cmd == this.getCommandID("reload"))
+	else if (cmd == this.getCommandID("init_reload"))
 	{
 		u16 id;
 		if (!params.saferead_u16(id)) return;
 
 		CBlob@ caller = getBlobByNetworkID(id);
 		if (caller is null) return;
+
+		this.Tag("reloading");
+		this.set_u16("caller_id", id);
+
+		if (!caller.hasBlob("mat_smallbomb", 1) || this.get_u8("ammo") > 0)
+		{
+			if (caller.isMyPlayer())
+			{
+				this.getSprite().PlaySound("NoAmmo.ogg", 0.75f, 1.25f);
+			}
+			return;
+		}
+
+		Bar@ bars;
+		if (!this.get("Bar", @bars))
+		{
+			Bar setbars;
+    		setbars.gap = 20.0f;
+    		this.set("Bar", setbars);
+		}
+
+		if (this.get("Bar", @bars))
+		{
+			if (!hasBar(bars, "reload"))
+			{
+				SColor team_front = getNeonColor(this.getTeamNum(), 0);
+				ProgressBar setbar;
+				setbar.Set(this.getNetworkID(), "reload", Vec2f(64.0f, 16.0f), true, Vec2f(0, 32), Vec2f(2, 2), back, team_front,
+					"reload_time", this.get_f32("reload_endtime"), 0.33f, 5, 5, false, "reload");
+
+    			bars.AddBar(this.getNetworkID(), setbar, true);
+			}
+		}
+	}
+	else if (cmd == this.getCommandID("reload"))
+	{
+		CBlob@ caller = getBlobByNetworkID(this.get_u16("caller_id"));
+		if (caller is null) return;
+
+		this.Untag("reloading");
+		this.set_f32("reload_time", 0);
+		this.set_u16("caller_id", 0);
 
 		if (caller.hasBlob("mat_smallbomb", 1))
 		{
@@ -209,6 +259,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 				Sync(this);
 			}
+		}
+		else if (caller.isMyPlayer())
+		{
+			this.getSprite().PlaySound("NoAmmo.ogg", 0.75f, 1.25f);
 		}
 	}
 	else if (cmd == this.getCommandID("client_shoot"))
@@ -367,6 +421,8 @@ void Sync(CBlob@ this)
 
 void onRender(CSprite@ this)
 {
+	visualTimerRender(this);
+
 	CBlob@ local = getLocalPlayerBlob();
 	if (local is null) return;
 
@@ -430,4 +486,46 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (blob.getName() == "barge" || blob.getName() == "mortar") return true;
 	return (!blob.hasTag("flesh") && !blob.hasTag("trap") && !blob.hasTag("food") && !blob.hasTag("material") && !blob.hasTag("dead") && !blob.hasTag("vehicle") && blob.isCollidable()) || (blob.hasTag("door") && blob.getShape().getConsts().collidable);
+}
+
+void handleReload(CBlob@ this)
+{
+	CBlob@ caller = getBlobByNetworkID(this.get_u16("caller_id"));
+	bool can_interact = hasPresence(this, caller);
+
+	string timer_prop = "reload_time";
+	f32 req_time = RELOAD_REQ_TIME;
+	string bar_name = "reload";
+
+	if (can_interact && this.hasTag("reloading") && this.get_u8("ammo") == 0)
+	{
+		if (this.get_f32(timer_prop) > req_time)
+		{
+			Bar@ bars;
+			if (this.get("Bar", @bars))
+			{
+				bars.RemoveBar(bar_name, false);
+			}
+		}
+		this.add_f32(timer_prop, 1);
+	}
+	else
+	{
+		this.set_f32(timer_prop, 0);
+
+		Bar@ bars;
+		if (this.get("Bar", @bars))
+		{
+			ProgressBar@ reload = bars.getBar(bar_name);
+			if (reload !is null)
+				reload.callback_command = "";
+
+			bars.RemoveBar(bar_name, false);
+		}
+	}
+}
+
+bool hasPresence(CBlob@ this, CBlob@ caller)
+{
+	return caller !is null && caller.getDistanceTo(this) < this.getRadius() * 2;
 }

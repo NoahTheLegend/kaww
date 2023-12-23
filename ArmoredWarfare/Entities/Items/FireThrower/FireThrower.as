@@ -205,6 +205,33 @@ void onTick(CBlob@ this)
 	this.set_f32("timer", Maths::Max(0, this.get_f32("timer")-1));
 	bool not_null = false;
 
+	if (is_attached)
+	{
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+		if (ap !is null && ap.getOccupied() !is null)
+		{
+			CBlob@ gunner = ap.getOccupied();
+			CSprite@ gsprite = gunner.getSprite();
+			f32 perc = (gunner.get_u8("mg_hidelevel")*0.8f) / 4.0f;
+
+			if (gsprite !is null)
+			{
+				gsprite.ResetTransform();
+				gsprite.SetOffset(Vec2f(0, -4.0f*perc));
+			}
+			if (ap.isKeyPressed(key_action2))
+			{
+				if (gunner.get_u8("mg_hidelevel") > 0) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") - 1);
+			}
+			else if (gunner.get_u8("mg_hidelevel") < 5) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") + 1);
+			if (gunner.get_u8("mg_hidelevel") < 5)
+			{
+				this.set_f32("scale", 0);
+				return;
+			}
+		}
+	}
+
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
 	if (ap !is null)
 	{
@@ -341,29 +368,6 @@ void onTick(CBlob@ this)
 			else if (getGameTime() % 3 + XORRandom(2) == 0) this.getSprite().PlaySound("Steam.ogg", 0.85f, 1.075f);
 		}
 		MakeParticle(this, Vec2f(0, -0.5), v);
-	}
-
-	if (is_attached)
-	{
-		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
-		if (ap !is null && ap.getOccupied() !is null)
-		{
-			CBlob@ gunner = ap.getOccupied();
-			CSprite@ gsprite = gunner.getSprite();
-			f32 perc = (gunner.get_u8("mg_hidelevel")*0.8f) / 4.0f;
-
-			if (gsprite !is null)
-			{
-				gsprite.ResetTransform();
-				gsprite.SetOffset(Vec2f(0, -4.0f*perc));
-			}
-			if (ap.isKeyPressed(key_action2))
-			{
-				if (gunner.get_u8("mg_hidelevel") > 0) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") - 1);
-			}
-			else if (gunner.get_u8("mg_hidelevel") < 5) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") + 1);
-			if (gunner.get_u8("mg_hidelevel") < 5) return;
-		}
 	}
 
 	Vehicle_SetWeaponAngle(this, angle, v);
