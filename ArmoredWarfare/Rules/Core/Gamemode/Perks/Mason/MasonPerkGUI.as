@@ -99,7 +99,7 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
 
     CCamera@ camera = getCamera();
     if (camera is null) return;
-    f32 zoom = camera.targetDistance * getDriver().getResolutionScaleFactor() * getDriver().getResolutionScaleFactor();
+    f32 zoom = camera.targetDistance * getDriver().getResolutionScaleFactor();
 
     Vec2f bpos = blob.getPosition();
 
@@ -116,6 +116,7 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
     Structure str = structures[selected];
     bool can_place = false;
 
+    Vec2f nullvec = Vec2f_zero; // staging bug, requires initialized Vec2f
     u8 sz = str.grid.size();
     for (int i = 0; i < sz; i++)
     {
@@ -128,12 +129,12 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
             Vec2f world_tilepos = tile_aimpos + Vec2f((j-szi/2)*8 + 1, (i-sz/2)*8 + 1);
             TileType t = map.getTile(world_tilepos).type;
             TileType newtile = str.grid[i][j];
-
+            
             if (!isTileCustomSolid(t))
             {
                 bool buildable_at_pos = (isBuildableAtPos(blob, world_tilepos, newtile, null, false)
                     && !fakeHasTileSolidBlobs(world_tilepos)
-                    && (!isTileCustomSolid(newtile) || !isBuildRayBlocked(blob.getPosition(), world_tilepos, Vec2f(0,0))));
+                    && (!isTileCustomSolid(newtile) || !isBuildRayBlocked(blob.getPosition(), world_tilepos, nullvec)));
 
                 if ((world_tilepos-bpos).Length() > build_range
                     || !map.hasSupportAtPos(world_tilepos)
