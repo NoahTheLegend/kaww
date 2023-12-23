@@ -1870,7 +1870,6 @@ void SaveEXP(CRules@ this)
 
 void onInit(CRules@ this)
 {
-	getRules().Tag("togglebots");
     if ( !cfg_playerexp.loadFile("../Cache/AW/exp.cfg") )
     {
         cfg_playerexp = ConfigFile("AW/exp.cfg");
