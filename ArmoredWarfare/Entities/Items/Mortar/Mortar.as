@@ -5,7 +5,7 @@
 
 const f32 high_angle = 45;
 const f32 low_angle = 75;
-const u32 fire_rate = 300;
+const u32 fire_rate = 360;
 const f32 RELOAD_REQ_TIME = fire_rate / 2;
 
 void onInit(CBlob@ this)

@@ -155,10 +155,10 @@ void onInit(CBlob@ this)
 		case _bf109: // plane
 		case _bomberplane:
 		case _civcar: // car
+		case _armedmotorcycle:
 		armorRating = 0; break;
 
 		case _motorcycle: // bike
-		case _armedmotorcycle:
 		case _jourcop: // journalist
 		armorRating = -1; break;
 

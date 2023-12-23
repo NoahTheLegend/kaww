@@ -130,7 +130,7 @@ void InitShop(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "Heal to full health instantly.", false);
