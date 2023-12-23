@@ -67,7 +67,7 @@ f32 getAimAngle(CBlob@ this)
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		Vec2f aim_vec = (gunner.getPosition() - Vec2f(0,4)) - gunner.getAimPos();
+		Vec2f aim_vec = (this.getPosition()) - gunner.getAimPos();
 		f32 deg = this.getAngleDegrees();
 		aim_vec.RotateBy(-deg);
 		//aim_vec.RotateBy(-this.getAngleDegrees());
@@ -213,7 +213,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.TakeBlob("specammo", 5);
 
 			shootVehicleGun(blob.getNetworkID(), this.getNetworkID(),
-				angle, this.getPosition()-Vec2f(0,2),
+				angle, this.getPosition()-Vec2f(0,3),
 				aimPos, 0, 1, 4, this.get_f32("damage_body"), this.get_f32("damage_head"), 6,
 					this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));
 

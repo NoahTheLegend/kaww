@@ -56,7 +56,6 @@ void onTick(CBlob@ this)
 	{
 		this.Untag("crane_was_hit");
 		this.set_u16("grabbed_id", 0);
-
 		this.SendCommand(this.getCommandID("ungrab"));
 	}
 	if (active && this.get_u32("grab_delay") < getGameTime())
@@ -89,6 +88,7 @@ void onTick(CBlob@ this)
 		{
 			this.set_u16("grabbed_id", 0);
 			this.set_u32("grab_delay", getGameTime()+grab_delay);
+			this.SendCommand(this.getCommandID("ungrab"));
 		}
 	}
 	//this.setAngleDegrees(this.get_f32("angle"));
