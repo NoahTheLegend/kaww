@@ -543,7 +543,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 	bool was_action1 = reload_time <= 0 && this.wasKeyPressed(key_action1);
 	bool hidegun = false;
 
-	if (this.hasTag("dead"))
+	if (this.hasTag("dead") || (stats_loaded && stats.id == Perks::mason && this.get_s32("selected_structure") != -1))
 	{
 		just_action1 = false;
 		is_action1 = false;

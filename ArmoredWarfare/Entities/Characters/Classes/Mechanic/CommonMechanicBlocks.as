@@ -32,6 +32,7 @@
 #include "Requirements.as"
 #include "Costs.as"
 #include "CustomBlocks.as";
+#include "BlockCosts.as";
 
 const string blocks_property = "blocks";
 const string inventory_offset = "inventory offset";
@@ -60,71 +61,71 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	blocks.push_back(page_0);
 	{
 		BuildBlock b(CMap::tile_castle, "stone_block", "$stone_block$", "Stone Block\nBasic building block\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 15);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", BlockCosts::stone);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(CMap::tile_castle_back, "back_stone_block", "$back_stone_block$", "Back Stone Wall\nExtra support\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 2);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", BlockCosts::stone_bg);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(0, "trap_block", "$trap_block$", "Trap Block\nOnly enemies can pass\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 25);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", BlockCosts::trapblock);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(0, "stone_door", "$stone_door$", "Stone Door\nPlace next to walls\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 60);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", BlockCosts::stone_door);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(CMap::tile_wood, "wood_block", "$wood_block$", "Wood Block\nCheap block\nwatch out for fire!\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", BlockCosts::wood);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(CMap::tile_wood_back, "back_wood_block", "$back_wood_block$", "Back Wood Wall\nCheap extra support\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 2);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", BlockCosts::wood_bg);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(0, "wooden_platform", "$wooden_platform$", "Wooden Platform\nOne way platform\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 15);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", BlockCosts::wood_platform);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(0, "wooden_door", "$wooden_door$", "Wooden Door\nPlace next to walls\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 20);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", BlockCosts::wood_door);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(CMap::tile_scrap, "scrap_block", "$scrap_block$", "Scrap block\nReinforced block of stone, more resistant to explosions and direct hits.\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
-		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", BlockCosts::scrap_stone);
+		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", BlockCosts::scrap_scrap);
 		blocks[0].push_back(b);
 	}
 	{ // TILEINDEX IN BLOCKPLACEMENT.AS IS SET MANUALLY TO THE INDEX OF THIS BLOCK!
 		BuildBlock b(CMap::tile_cdirt, "cdirt_block", "$cdirt_block$", "Compacted dirt\nReinforced block of dirt, almost immune to explosions\nand bullets, can be built only on dirt walls.\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 1);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", BlockCosts::cdirt_wood);
+		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", BlockCosts::cdirt_scrap);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(0, "ladder", "$ladder$", "Ladder\nAnyone can climb it\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", BlockCosts::ladder);
 		blocks[0].push_back(b);
 	}
 	{
 		AddIconToken("$barbedwire_icon$", "BarbedWire.png", Vec2f(16, 16), 0);
 		BuildBlock b(0, "barbedwire", "$barbedwire_icon$", "Barbed Wire\nHard to pass through. Breaks on impact with vehicles.\nRequires to be next to solid blocks.");
-		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 1);
+		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", BlockCosts::barbed_wire);
 		blocks[0].push_back(b);
 	}
 	{
 		AddIconToken("$construction_yard_icon$", "CYardIcon.png", Vec2f(16, 16), 2);
 		BuildBlock b(0, "constructionyard", "$construction_yard_icon$", "Construction Yard\nStand in an open space\nand tap this button.\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 50);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", BlockCosts::building);
 		b.buildOnGround = true;
 		b.size.Set(24, 24);
 		blocks[0].push_back(b);
@@ -137,7 +138,7 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	{
 		AddIconToken("$sandbags_icon$", "SandbagIcon.png", Vec2f(16, 16), 0);
 		BuildBlock b(0, "sandbags", "$sandbags_icon$", "Sandbags\nBags densely filled with sand, great for stopping bullets\n");
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 50);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", BlockCosts::sandbags);
 		b.buildOnGround = true;
 		b.size.Set(24, 8);
 		blocks[0].push_back(b);
@@ -145,14 +146,14 @@ void addCommonBuilderBlocks(CBlob@ this, BuildBlock[][]@ blocks, const string&in
 	{
 		AddIconToken("$bush_icon$", "BushIcon.png", Vec2f(16, 16), 0);
 		BuildBlock b(0, "bush", "$bush_icon$", "Bush\nDisguises small area\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 15);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", BlockCosts::bush);
 		blocks[0].push_back(b);
 	}
 	{
 		AddIconToken("$wooden_gate$", "WoodenGate.png", Vec2f(22, 16), 0, 0);
 		BuildBlock b(0, "woodengate", "$wooden_gate$", "Wooden Gate\nGate for vehicles. Face the direction you want to rotate it.\n");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 250);
-		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", 2);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", BlockCosts::gate_wood);
+		AddRequirement(b.reqs, "blob", "mat_scrap", "Scrap", BlockCosts::gate_scrap);
 		b.buildOnGround = true;
 		b.size.Set(8, 40);
 		blocks[0].push_back(b);
