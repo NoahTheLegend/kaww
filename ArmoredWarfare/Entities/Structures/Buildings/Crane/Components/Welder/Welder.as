@@ -6,7 +6,7 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 }
 
-const u8 repair_rate = 30;
+const u8 repair_rate = 22;
 
 void onTick(CBlob@ this)
 {
