@@ -135,7 +135,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
             bool has_requirements = false;
             string[] req_name;
             u16[]    req_quantity;
-
+            Vec2f nullvec = Vec2f_zero; // staging bug, requires initialized Vec2f
+            
             u8 sz = str.grid.size();
             for (int i = 0; i < sz; i++)
             {
@@ -152,13 +153,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
                     TileType newtile = str.grid[i][j];
                     TileType oldtile = map.getTile(offset).type;
-
+                    
                     //ParticleAnimated("SmallExplosion", offset, Vec2f_zero, 0, 0.5f, 5, 0, false);
                     //map.server_SetTile(offset, newtile);
                     bool buildable_at_pos = (isBuildableAtPos(caller, offset, newtile, null, false)
                         && !fakeHasTileSolidBlobs(offset)
                         && ((!isTileCustomSolid(newtile))
-                            || !isBuildRayBlocked(caller.getPosition(), offset, Vec2f(0,0))));
+                            || !isBuildRayBlocked(caller.getPosition(), offset, nullvec)));
 
                     if (newtile != CMap::tile_empty
                         && (map.hasSupportAtPos(offset))
