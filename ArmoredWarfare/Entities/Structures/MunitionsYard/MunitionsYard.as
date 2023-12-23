@@ -3,6 +3,7 @@
 #include "Costs.as"
 #include "CheckSpam.as"
 #include "GenericButtonCommon.as"
+#include "VehiclesParams.as"
 
 void onInit(CBlob@ this)
 {
@@ -15,7 +16,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(7, 3));
+	this.set_Vec2f("shop menu size", Vec2f(6, 4));
 	this.set_string("shop description", "Craft Equipment");
 	this.set_u8("shop icon", 21);
 
@@ -28,7 +29,7 @@ void onInit(CBlob@ this)
 void InitShop(CBlob@ this)
 {
 	bool isCTF = getBlobByName("pointflag") !is null || getBlobByName("pointflagt2") !is null;
-	if (isCTF) this.set_Vec2f("shop menu size", Vec2f(8, 3));
+	if (isCTF) this.set_Vec2f("shop menu size", Vec2f(7, 4));
 
 	{
 		ShopItem@ s = addShopItem(this, "Standard Ammo", "$ammo$", "ammo", "Used by all small arms guns, and vehicle machineguns.", false);
@@ -54,10 +55,6 @@ void InitShop(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nIneffective against armored vehicles.", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
 	}
-	{
-		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
-	}
 	if (isCTF)
 	{
 		ShopItem@ s = addShopItem(this, "5 ton Bomb", "$mat_5tbomb$", "mat_5tbomb", "The best way to destroy enemy facilities.", false);
@@ -65,7 +62,11 @@ void InitShop(CBlob@ this)
 		AddRequirement(s.requirements, "gametime", "", "Unlocks at", 30*30 * 60); // 45th min
 		s.customButton = true;
 		s.buttonwidth = 1;
-		s.buttonheight = 3;
+		s.buttonheight = 4;
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "Heal to full health instantly.", false);
@@ -114,18 +115,18 @@ void InitShop(CBlob@ this)
 
 		s.customButton = true;
 
-		s.buttonwidth = 1;
+		s.buttonwidth = 2;
 		s.buttonheight = 1;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
+		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", "Fire thrower.\nCCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
+		ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", "Fire thrower.\nCan be attached to and detached from some vehicles.\n\nUses Special Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
@@ -145,6 +146,9 @@ void InitShop(CBlob@ this)
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
+	
+	{string[] params = {n_apsniper,t_apsniper,bn_apsniper,d_apsniper,b,s,ds};
+	makeShopItem(this,params,c_apsniper, Vec2f(2,1), false, false);}
 }
 
 void onTick(CBlob@ this)

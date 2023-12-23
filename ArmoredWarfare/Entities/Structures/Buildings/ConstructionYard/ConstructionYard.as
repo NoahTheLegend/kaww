@@ -23,7 +23,7 @@ void onInit(CBlob@ this)
 
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f(0, 0));
-	this.set_Vec2f("shop menu size", Vec2f(10, 4));
+	this.set_Vec2f("shop menu size", Vec2f(12, 4));
 	this.set_string("shop description", "Construct");
 	this.set_u8("shop icon", 12);
 	this.Tag("builder always hit");
@@ -64,19 +64,27 @@ void onInit(CBlob@ this)
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Quarry", "$quarry$", "quarry", "Produces stone.", false, false, false);
-		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 350);
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 350);
-		AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 50);
-
+		ShopItem@ s = addShopItem(this, "Repair Station", "$repairstation$", "repairstation", "Repairs nearby vehicles if they weren't hurt recently.", false, false, false);
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 150);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 200);
 		s.customButton = true;
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Repair Station", "$repairstation$", "repairstation", "Repairs nearby vehicles if they weren't hurt recently.", false, false, false);
-		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 150);
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 200);
+		ShopItem@ s = addShopItem(this, "Crane", "$crane$", "crane", "Crane with two articulated arms. Requires an augment to use.", false, false, false);
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 500);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
+		s.customButton = true;
+		s.buttonwidth = 2;
+		s.buttonheight = 4;
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Quarry", "$quarry$", "quarry", "Produces stone.", false, false, false);
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 350);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 350);
+		AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 50);
+
 		s.customButton = true;
 		s.buttonwidth = 2;
 		s.buttonheight = 2;

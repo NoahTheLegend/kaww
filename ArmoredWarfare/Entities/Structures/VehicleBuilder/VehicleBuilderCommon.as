@@ -3,18 +3,6 @@
 #include "Costs.as"
 #include "VehiclesParams.as"
 
-void makeShopItem(CBlob@ this, string[] params, int cost, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
-{
-	ShopItem@ s = addShopItem(this, params[0], params[1], params[2], params[3], inv, crate);
-	if (inv || crate || dim.x > 1 || dim.y > 1)
-	{
-		s.customButton = true;
-		s.buttonwidth = dim.x;
-		s.buttonheight = dim.y;
-	}
-	AddRequirement(s.requirements, params[4], params[5], params[6], cost);
-}
-
 //Combined
 void buildT1ShopCombined(CBlob@ this)
 {
@@ -176,7 +164,7 @@ void buildT3ShopCombined(CBlob@ this)
 	makeShopItem(this,params,c_armory-10);}
 
 	{string[] params = {n_truckbig,t_truckbig,bn_truckbig,d_truckbig,b,s,ds};
-	makeShopItem(this,params,c_truckbig,Vec2f(4,2));}
+	makeShopItem(this,params,c_truckbig,Vec2f(3,2));}
 
 	{string[] params = {n_harti,t_harti,bn_harti,d_harti,b,s,ds};
 	makeShopItem(this,params,c_harti,Vec2f(2,2));}
@@ -196,8 +184,11 @@ void buildT3ShopCombined(CBlob@ this)
 	{string[] params = {n_jav,t_jav,bn_jav,d_jav,b,s,ds};
 	makeShopItem(this,params,c_jav-7, Vec2f(1,1), true, false);}
 
+	{string[] params = {n_apsniper,t_apsniper,bn_apsniper,d_apsniper,b,s,ds};
+	makeShopItem(this,params,c_apsniper-10, Vec2f(2,1), false, false);}
+
 	{string[] params = {n_c4,t_c4,bn_c4,d_c4,b,s,ds};
-	makeShopItem(this,params,c_c4, Vec2f(1,1), true, false);}
+	makeShopItem(this,params,c_c4, Vec2f(1,1), false, false);}
 	
 	{string[] params = {n_bf109,t_bf109,bn_bf109,d_bf109,b,s,ds};
 	makeShopItem(this,params,c_bf109-10, Vec2f(4,2), false, false);}
