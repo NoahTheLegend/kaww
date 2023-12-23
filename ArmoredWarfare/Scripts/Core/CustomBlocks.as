@@ -41,7 +41,7 @@ namespace CMap
 
 bool isTileCustomSolid(TileType tile)
 {
-	return (isTileCompactedDirt(tile) || isTileScrap(tile));
+	return (isTileCompactedDirt(tile) || isTileScrap(tile) || getMap().isTileSolid(tile));
 }
 
 bool isTileCompactedDirt(TileType tile)

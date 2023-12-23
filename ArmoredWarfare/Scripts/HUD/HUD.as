@@ -21,7 +21,7 @@ void onRender(CSprite@ this)
 	if (getHUD().hasButtons())
 	{
 		getHUD().SetDefaultCursor();
-		getHUD().SetCursorOffset(Vec2f(-6, -6)); // -6 is perfect alignment but messes up esc cursor
+		getHUD().SetCursorOffset(Vec2f(-2, -2)); // -6 is perfect alignment but messes up esc cursor
 	}
 	else
 	{
@@ -56,7 +56,7 @@ void onRender(CSprite@ this)
 
 				getHUD().SetCursorImage("GunReload.png", Vec2f(32, 32));
 				getHUD().SetCursorFrame(icon);
-				getHUD().SetCursorOffset(Vec2f(-38, -38)); // -38 is perfect alignment but messes up esc cursor
+				getHUD().SetCursorOffset(Vec2f(-32, -32)); // -38 is perfect alignment but messes up esc cursor
 
 				blob.set_u32("wasReloading", getGameTime()+2);
 			}
@@ -66,7 +66,7 @@ void onRender(CSprite@ this)
 
 				if (getGameTime() < blob.get_u32("wasReloading")) getHUD().SetCursorFrame(1); // remove annoying flickering
 
-				getHUD().SetCursorOffset(Vec2f(-38, -38)); // -38 is perfect alignment but messes up esc cursor
+				getHUD().SetCursorOffset(Vec2f(-32, -32)); // -38 is perfect alignment but messes up esc cursor
 
 				//CControls@ controls = blob.getControls();
 				//if (controls !is null)

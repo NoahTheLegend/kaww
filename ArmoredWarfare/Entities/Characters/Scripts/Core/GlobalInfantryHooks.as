@@ -361,6 +361,7 @@ void InitPerk(CBlob@ this, CPlayer@ player)
 	this.addCommandID("mason_open_menu");
 	this.addCommandID("mason_select");
 	this.addCommandID("mason_place_structure");
+	this.addCommandID("mason_place_block");
 
    	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
@@ -370,6 +371,7 @@ void InitPerk(CBlob@ this, CPlayer@ player)
 	{
    		if (player.isMyPlayer() || isServer())
    		{
+			this.set_s32("selected_structure", -1);
    		    this.AddScript("MasonPerkLogic.as");
    		    sprite.AddScript("MasonPerkGUI.as");	
    		}
