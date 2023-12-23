@@ -2,13 +2,6 @@
 #include "LoaderColors.as";
 #include "CustomBlocks.as";
 
-enum tile
-{
-    et = 0,                       // empty
-    wf = CMap::tile_wood,         // wood foreground
-    wb = CMap::tile_wood_back     // wood background
-};
-
 const u16[][] t_empty_grid = {{}};
 const string[][] b_empty_grid = {{}};
 
@@ -50,11 +43,15 @@ u16[][] buildTileGrid(string filename)
 			{
 				switch (pixel_color)
 			    {
-			        case map_colors::tile_castle:           t = CMap::tile_castle;      break;
-			        case map_colors::tile_castle_back:      t = CMap::tile_castle_back; break;
-			        case map_colors::tile_wood:             t = CMap::tile_wood;        break;
-			        case map_colors::tile_wood_back:        t = CMap::tile_wood_back;   break;
-			        case map_colors::tile_scrap:            t = CMap::tile_scrap;       break;
+			        case map_colors::tile_castle:           t = CMap::tile_castle;              break;
+			        case map_colors::tile_castle_back:      t = CMap::tile_castle_back;         break;
+			        case map_colors::tile_wood:             t = CMap::tile_wood;                break;
+			        case map_colors::tile_wood_back:        t = CMap::tile_wood_back;           break;
+			        case map_colors::tile_scrap:            t = CMap::tile_scrap;               break;
+                    case map_colors::platform_up:           t = blobTileMap::platform_up;       break;
+			        case map_colors::platform_right:        t = blobTileMap::platform_right;    break;
+			        case map_colors::platform_down:         t = blobTileMap::platform_down;     break;
+			        case map_colors::platform_left:         t = blobTileMap::platform_left;     break;
 			    }
 		    }
 

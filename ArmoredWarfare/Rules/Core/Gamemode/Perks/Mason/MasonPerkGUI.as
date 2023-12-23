@@ -1,4 +1,5 @@
 #include "MasonPerkCommon.as";
+#include "PlacementCommon.as";
 
 const int sw = getDriver().getScreenWidth();
 const int sh = getDriver().getScreenHeight();
@@ -21,7 +22,8 @@ void onRender(CSprite@ this)
     CControls@ controls = blob.getControls();
     if (controls is null) return;
 
-    u32 timing = blob.get_u32("selected_structure_time");
+    u32 timing = blob.get_u32("place_structure_delay");
+    if (getHUD() !is null && getHUD().hasMenus()) blob.set_u32("place_structure_delay", getGameTime()+15);
 
     Vec2f size = btn_size;
     Vec2f tl = btn_pos;
@@ -112,6 +114,7 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
     Vec2f drawpos = getDriver().getScreenPosFromWorldPos(tile_aimpos);
 
     Structure str = structures[selected];
+    bool can_place = false;
 
     u8 sz = str.grid.size();
     for (int i = 0; i < sz; i++)
@@ -122,36 +125,50 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
             Vec2f tilepos = drawpos + Vec2f((f32(j)-szi/2)*16*zoom, (i-sz/2)*16*zoom);
             SColor col = SColor(150,75,255,75);
 
-            Vec2f world_tilepos = tile_aimpos + Vec2f((j-szi/2)*8, (i-sz/2)*8);
+            Vec2f world_tilepos = tile_aimpos + Vec2f((j-szi/2)*8 + 1, (i-sz/2)*8 + 1);
             TileType t = map.getTile(world_tilepos).type;
+            TileType newtile = str.grid[i][j];
 
             if (!isTileCustomSolid(t))
             {
+                bool buildable_at_pos = (isBuildableAtPos(blob, world_tilepos, newtile, null, false)
+                    && !fakeHasTileSolidBlobs(world_tilepos)
+                    && (!isTileCustomSolid(newtile) || !isBuildRayBlocked(blob.getPosition(), world_tilepos, Vec2f(0,0))));
+
                 if ((world_tilepos-bpos).Length() > build_range
-                    || !map.hasSupportAtPos(world_tilepos))
+                    || !map.hasSupportAtPos(world_tilepos)
+                    || !buildable_at_pos)
                 {
-                    col.setAlpha(50);
+                    col.setAlpha(75);
                     col.setRed(255);
                     col.setGreen(75);
                 }
 
                 u16 num = str.grid[i][j];
                 if (num == 0) col.setAlpha(0);
+                else can_place = true;
 
                 GUI::DrawIcon("World.png", num, Vec2f(8,8), tilepos, zoom, col);
             }
         }
     }
 
+    if (!can_place)
+    {
+        if (getGameTime()%30==0) resetSelection(blob);
+        return;
+    }
+
     if (!building)
     {
         bool pressed_a1 = (controls.mousePressed1);
-        if (pressed_a1 && timing < getGameTime()-5 && getHUD() !is null && !getHUD().hasMenus())
+        if (pressed_a1 && timing < getGameTime())
         {
             if (!was_pressed_lmb)
             {
                 sendPlaceStructure(blob, tile_aimpos);
                 was_pressed_lmb = true;
+
             }
         }
         else was_pressed_lmb = false;
@@ -162,7 +179,7 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
     }
 
     bool pressed_a2 = (controls.mousePressed2);
-    if (pressed_a2 && timing < getGameTime()-5 && getHUD() !is null && !getHUD().hasMenus())
+    if (pressed_a2 && timing < getGameTime())
     {
         if (!was_pressed_rmb)
         {
@@ -172,7 +189,7 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
     }
     else was_pressed_rmb = false;
 
-    GUI::DrawTextCentered("Selection: "+selected, Vec2f(500,500), SColor(255,255,255,0));
+    //GUI::DrawTextCentered("Selection: "+selected, Vec2f(500,500), SColor(255,255,255,0));
 }
 
 bool was_pressed_qte = false;
@@ -194,5 +211,5 @@ void DrawQTE(CSprite@ this, CBlob@ blob, Vec2f drawpos, f32 zoom, CControls@ con
     }
     else was_pressed_qte = false;
 
-    GUI::DrawIcon("Keys.png", required_button + ((getGameTime() / 5) % 2 == 0 ? qte.size()+1 : 0), Vec2f(16,16), drawpos - Vec2f(0, 64) * zoom, zoom, SColor(255,255,255,255));
+    GUI::DrawIcon("AWKeys.png", required_button + ((getGameTime() / 5) % 2 == 0 ? qte.size()+1 : 0), Vec2f(16,16), drawpos - Vec2f(8, 64) * zoom, zoom, SColor(255,255,255,255));
 }

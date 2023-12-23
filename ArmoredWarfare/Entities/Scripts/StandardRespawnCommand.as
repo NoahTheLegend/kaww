@@ -106,6 +106,12 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$10_class_icon$","PerkIcon.png", Vec2f(32, 32), 10);
 	AddIconToken("$11_class_icon$","PerkIcon.png", Vec2f(32, 32), 11);
 
+	AddIconToken("$lmb$","AWKeys.png", Vec2f(16, 16), 12);
+	AddIconToken("$rmb$","AWKeys.png", Vec2f(16, 16), 13);
+	AddIconToken("$and$","AWKeys.png", Vec2f(16, 16), 14);
+	AddIconToken("$shift$","AWKeys.png", Vec2f(32, 16), 9);
+	AddIconToken("$space$","AWKeys.png", Vec2f(32, 16), 10);
+
 
 	addPlayerPerk(this, "No Perk", "$0_class_icon$", "No Perk", "---- No Perk ----");
 
@@ -220,6 +226,12 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Build pre-designed"
 						+"\n                     structures"
 						+"\n                     Requires materials!"
+						+"\n\n$lmb$"+"| "+"$rmb$   Place / Unselect"
+						+"\n                     "
+						+"\n                     "
+						+"\n$shift$              "
+						+"\n             $and$ Build-list"
+						+"\n$space$              "
 						);
 						
 }
