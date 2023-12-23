@@ -90,7 +90,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
             if (sprite !is null) sprite.PlaySound("ConstructShort", 0.75f+XORRandom(11)*0.01f, 0.95f+XORRandom(6)*0.01f);
 
             caller.set_Vec2f("building_structure_pos", pos);
-            caller.set_u8("next_qte", XORRandom(qte.size()));
         }
     }
     else if (cmd == this.getCommandID("mason_place_block"))
@@ -170,7 +169,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
                     {
                         req_name.clear();
                         req_quantity.clear();
-                        
+
                         switch (newtile)
                         {
                             case CMap::tile_castle:     
