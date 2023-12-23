@@ -45,7 +45,7 @@ void sendPlaceStructure(CBlob@ this, Vec2f pos)
     params.write_Vec2f(pos);
     this.SendCommand(this.getCommandID("mason_place_structure"), params);
 
-    resetQTE(this);
+    //resetQTE(this);
 }
 
 void resetSelection(CBlob@ this)
