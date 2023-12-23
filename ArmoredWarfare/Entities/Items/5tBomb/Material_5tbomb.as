@@ -139,3 +139,9 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		// DoExplosion(this, this.getOldVelocity());
 	}
 }
+
+bool canBePutInInventory( CBlob@ this, CBlob@ inventoryBlob )
+{
+	// can't be put in player inventory.
+	return inventoryBlob.getPlayer() is null;
+}

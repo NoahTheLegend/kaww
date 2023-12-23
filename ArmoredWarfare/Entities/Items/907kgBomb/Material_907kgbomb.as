@@ -153,3 +153,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		this.set_bool("booming", true);
 	}
 }
+
+bool canBePutInInventory( CBlob@ this, CBlob@ inventoryBlob )
+{
+	// can't be put in player inventory.
+	return inventoryBlob.getPlayer() is null;
+}
