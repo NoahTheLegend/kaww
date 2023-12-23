@@ -64,8 +64,6 @@ void sendPlaceBlock(CBlob@ this, bool is_correct)
     params.write_s32(this.get_s32("selected_structure"));
     params.write_Vec2f(this.get_Vec2f("building_structure_pos"));
     this.SendCommand(this.getCommandID("mason_place_block"), params);
-
-    resetQTE(this);
 }
 
 void resetQTE(CBlob@ this)
