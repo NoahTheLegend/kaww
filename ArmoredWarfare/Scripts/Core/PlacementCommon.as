@@ -227,8 +227,8 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 						if (b is this && b.getName() == "spikes") continue;
 
 						Vec2f bpos = b.getPosition();
-
 						bool cantBuild = isBlocking(b);
+						//printf(b.getName()+" "+isDoor+" "+(b.getTeamNum() == this.getTeamNum() || b.getTeamNum() == 255)+" "+!b.getShape().isStatic());
 						bool buildingOnTeam = isDoor && (b.getTeamNum() == this.getTeamNum() || b.getTeamNum() == 255) && !b.getShape().isStatic() && this !is b;
 						bool ladderBuild = isLadder && !b.getShape().isStatic();
 
@@ -390,8 +390,7 @@ bool inNoBuildZone(CBlob@ blob, CMap@ map, Vec2f here, TileType buildTile)
 		isSpikes = bname == "spikes";
 	}
 
-	const bool buildSolid = (map.isTileSolid(buildTile) || (blob !is null && blob.isCollidable()));
-
+	const bool buildSolid = (isTileCustomSolid(buildTile) || (blob !is null && blob.isCollidable()));
 	return (!isLadder && (buildSolid || isSpikes) && map.getSectorAtPosition(here, "no build") !is null);
 }
 

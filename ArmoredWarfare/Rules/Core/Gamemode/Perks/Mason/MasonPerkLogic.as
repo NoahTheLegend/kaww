@@ -2,6 +2,7 @@
 #include "CustomBlocks.as";
 #include "MasonPerkCommon.as";
 #include "BlockCosts.as";
+#include "PlacementCommon.as";
 
 // command ids are initialized in InfantryLogic.as
 void onTick(CBlob@ this)
@@ -68,6 +69,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
             caller.set_s32("selected_structure", selected);
             caller.set_u32("selected_structure_time", getGameTime());
             caller.set_Vec2f("building_structure_pos", Vec2f(-1,-1));
+            caller.set_f32("build_pitch", 0);
             selected = -1;
         }
     }
@@ -102,21 +104,19 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
         s32 selected;
         if (!params.saferead_s32(selected)) return;
 
+        Vec2f pos;
+        if (!params.saferead_Vec2f(pos)) return;
+
         CBlob@ caller = getBlobByNetworkID(id);
         if (caller is null) return;
 
-        if (isClient())
-        {
-            CSprite@ sprite = caller.getSprite();
-            if (sprite !is null) sprite.PlaySound(can_place ? "coinpick.ogg" : "NoAmmo.ogg", can_place ? 2.5f : 0.75f, 1.0f+XORRandom(31)*0.01f);
-
-            caller.set_u8("next_qte", XORRandom(qte.size()));
-        }
+        //bool is_blob = false;
 
         if (isServer())
         {
             if (!can_place)
             {
+                sendPlaceBlockClient(this, id, can_place, "NoAmmo.ogg");
                 resetSelection(this);
                 return;
             }
@@ -127,106 +127,189 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
             bool fl = this.isFacingLeft();
             Vec2f bpos = this.getPosition();
 
-            Vec2f pos = this.get_Vec2f("building_structure_pos");
             Vec2f tilepos = map.getTileSpacePosition(pos);
             tilepos = map.getTileWorldPosition(tilepos);
             
             Vec2f match_pos = Vec2f_zero;
             int t = CMap::tile_empty;
 
+            bool has_requirements = false;
+            string[] req_name;
+            u16[]    req_quantity;
+
             u8 sz = str.grid.size();
             for (int i = 0; i < sz; i++)
             {
+                if (has_requirements) break;
                 if ((i+1) % sz == 0 || i % sz == 0) continue;
                 u8 szi = str.grid[i].size();
+
                 for (int j = 0; j < szi; j++)
                 {
+                    if (has_requirements) break;
                     Vec2f offset = tilepos;
 
-                    offset += Vec2f((j-szi/2)*8, (i-sz/2)*8);
+                    offset += Vec2f((j-szi/2)*8 + 1, (i-sz/2)*8 + 1);
 
                     TileType newtile = str.grid[i][j];
                     TileType oldtile = map.getTile(offset).type;
-                    
+
                     //ParticleAnimated("SmallExplosion", offset, Vec2f_zero, 0, 0.5f, 5, 0, false);
                     //map.server_SetTile(offset, newtile);
+                    bool buildable_at_pos = (isBuildableAtPos(caller, offset, newtile, null, false)
+                        && !fakeHasTileSolidBlobs(offset)
+                        && ((!isTileCustomSolid(newtile))
+                            || !isBuildRayBlocked(caller.getPosition(), offset, Vec2f(0,0))));
 
                     if (newtile != CMap::tile_empty
                         && (map.hasSupportAtPos(offset))
                         && !isTileCustomSolid(oldtile)
-                        && oldtile != newtile)
+                        && oldtile != newtile
+                        && (offset - caller.getPosition()).Length() <= build_range
+                        && buildable_at_pos)
                     {
-                        match_pos = offset;
-                        t = newtile;
+                        req_name.clear();
+                        req_quantity.clear();
+                        
+                        switch (newtile)
+                        {
+                            case CMap::tile_castle:     
+                            {
+                                req_name.push_back("mat_stone");
+                                req_quantity.push_back(BlockCosts::stone);
+                                break;
+                            }
+	                        case CMap::tile_castle_back:
+                            {
+                                req_name.push_back("mat_stone");
+                                req_quantity.push_back(BlockCosts::stone_bg);
+                                break;
+                            }
+	                        case CMap::tile_wood:       
+                            {
+                                req_name.push_back("mat_wood");
+                                req_quantity.push_back(BlockCosts::wood);
+                                break;
+                            }
+	                        case CMap::tile_wood_back:  
+                            {
+                                req_name.push_back("mat_wood");
+                                req_quantity.push_back(BlockCosts::wood_bg);
+                                break;
+                            }
+	                        case CMap::tile_scrap:      
+                            {
+                                req_name.push_back("mat_stone");
+                                req_quantity.push_back(BlockCosts::scrap_stone);
+                                req_name.push_back("mat_scrap");
+                                req_quantity.push_back(BlockCosts::scrap_scrap);
+                                break;
+                            }
+                        }
 
-                        break;
+                        u8 matched_reqs = 0;
+                        for (u8 k = 0; k < req_name.size(); k++)
+                        {
+                            bool has_reqs = caller.hasBlob(req_name[k], req_quantity[k]);
+                            if (has_reqs)
+                            {
+                                matched_reqs++;
+                                //printf(req_name[k]+req_quantity[k]);
+                            }
+                        }
+
+
+                        if (matched_reqs > 0 && matched_reqs == req_name.size())
+                        {
+                            match_pos = offset;
+                            t = newtile;
+
+                            has_requirements = true;
+                            break; // enough resources
+                        }
                     }
                 }
             }
 
-            string[] req_name;
-            u16[]    req_quantity;
+            u8 blob_team = 255;
+            u16 blob_deg = 0;
+            string blob_name = "";
+            string place_sound = "NoAmmo.ogg";
 
             switch (t)
             {
                 case CMap::tile_castle:     
                 {
-                    req_name.push_back("mat_stone");
-                    req_quantity.push_back(BlockCosts::stone);
+                    place_sound = "build_wall2.ogg";
                     break;
                 }
 	            case CMap::tile_castle_back:
                 {
-                    req_name.push_back("mat_stone");
-                    req_quantity.push_back(BlockCosts::stone_bg);
+                    place_sound = "build_wall.ogg";
                     break;
                 }
 	            case CMap::tile_wood:       
                 {
-                    req_name.push_back("mat_wood");
-                    req_quantity.push_back(BlockCosts::wood);
+                    place_sound = "build_wood.ogg";
                     break;
                 }
 	            case CMap::tile_wood_back:  
                 {
-                    req_name.push_back("mat_wood");
-                    req_quantity.push_back(BlockCosts::wood_bg);
+                    place_sound = "build_wood.ogg";
                     break;
                 }
 	            case CMap::tile_scrap:      
                 {
-                    req_name.push_back("mat_stone");
-                    req_quantity.push_back(BlockCosts::scrap_stone);
-                    req_name.push_back("mat_scrap");
-                    req_quantity.push_back(BlockCosts::scrap_scrap);
-                    break;
-                }
-            }
-
-            for (u8 i = 0; i < req_name.size(); i++)
-            {
-                if (!caller.hasBlob(req_name[i], req_quantity[i]))
-                {
-                    can_place = false;
+                    place_sound = "build_wall2.ogg";
                     break;
                 }
             }
 
             //ParticleAnimated("LargeSmoke", match_pos, Vec2f_zero, 0, 1.0f, 5, 0, false);
 
-            if (can_place && t != CMap::tile_empty)
+            bool place_block = can_place && t != CMap::tile_empty && has_requirements;
+            sendPlaceBlockClient(this, id, place_block, place_sound);
+            
+            if (place_block)
             {
                 for (u8 i = 0; i < req_name.size(); i++)
                 {
                     caller.TakeBlob(req_name[i], req_quantity[i]);
                 }
 
+                //if (is_blob) spawnBlob(map, blob_name, match_pos, blob_team, true, Vec2f_zero, blob_deg);
+                
                 map.server_SetTile(match_pos, t);
             }
             else
             {
                 resetSelection(this);
             }
+        }
+    }
+    else if (cmd == this.getCommandID("mason_place_block_client"))
+    {
+        if (!isClient()) return;
+
+        u16 id;
+        if (!params.saferead_u16(id)) return;
+
+        bool can_place;
+        if (!params.saferead_bool(can_place)) return;
+
+        string sound;
+        if (!params.saferead_string(sound)) return;
+
+        CBlob@ caller = getBlobByNetworkID(id);
+        if (caller is null || !caller.isMyPlayer()) return;
+        
+        CSprite@ sprite = caller.getSprite();
+        if (sprite !is null)
+        {
+            if (can_place)
+                sprite.PlaySound(sound, 2.0f, 1.0f + caller.get_f32("build_pitch"));
+            else
+                sprite.PlaySound("NoAmmo.ogg", 0.75f, 1.0f+XORRandom(31)*0.01f);
         }
     }
 }
@@ -245,9 +328,11 @@ void RunSelectListener(CBlob@ this)
     Vec2f aimpos = controls.getMouseScreenPos();
 
     int tile_size = 48;
-    
+    aimpos.x += (dim.x % 2 == 1 ? tile_size/2 : 0);
+    aimpos.y += (dim.y % 2 == 0 ? tile_size/2 : 0);
+
     Vec2f dir = (aimpos-pos);
-    selected = Maths::Floor(dim.x/2) + (dir.x) / tile_size + Maths::Floor(((dir.y+tile_size*1.5f) / tile_size) - 1)*5;
+    selected = Maths::Floor(dim.x/2) + (dir.x) / tile_size + Maths::Floor(((dir.y+tile_size*1.5f) / tile_size))*5;
     //printf("hovering at "+selected);
 }
 
@@ -272,11 +357,22 @@ void openMasonMenu(CBlob@ this, CBlob@ caller)
         {
             Structure str = structures[i];
 
-            CGridButton@ button = menu.AddButton(str.icon, str.name, this.getCommandID("mason_select"), Vec2f(1, 1), params);
+            CGridButton@ button = menu.AddButton(str.icon, str.name,this.getCommandID("mason_select"), Vec2f(1, 1), params);
 	        if (button !is null)
 	        {
-            
+                //button.hoverText = str.icon;
 	        }
         }
 	}
+}
+
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+    if (isServer())
+    {
+        resetSelection(this);
+    }
+
+    return damage;
 }

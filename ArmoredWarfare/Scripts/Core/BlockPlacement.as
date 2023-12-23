@@ -5,7 +5,7 @@
 #include "CustomBlocks.as"
 
 // Called server side
-void PlaceBlock(CBlob@ this, u8 index, Vec2f cursorPos)
+void PlaceBlock(CBlob@ this, u16 index, Vec2f cursorPos)
 {
 	BuildBlock @bc = getBlockByIndex(this, index);
 
