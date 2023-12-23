@@ -205,7 +205,7 @@ void DrawQTE(CSprite@ this, CBlob@ blob, Vec2f drawpos, f32 zoom, CControls@ con
     {
         if (!was_pressed_qte)
         {
-            resetQTE(this);
+            resetQTE(blob);
             sendPlaceBlock(blob, correct_qte);
             was_pressed_qte = true;
         }
