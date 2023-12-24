@@ -56,14 +56,19 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
     {
         if (isClient())
         {
+            bool admin = this.getPlayer() !is null && this.getPlayer().isMod();
+
+            if(admin)printf("enter_select");
             u16 id;
             if (!params.saferead_u16(id)) return;
-
+            if(admin)printf("id_pass");
             bool reset;
             if (!params.saferead_bool(reset)) return;
+            if(admin)printf("reset_pass");
 
             CBlob@ caller = getBlobByNetworkID(id);
             if (caller is null) return;
+            if(admin)printf("caller_pass,selected:"+selected);
 
             if (reset) selected = -1;
             caller.set_s32("selected_structure", selected);
