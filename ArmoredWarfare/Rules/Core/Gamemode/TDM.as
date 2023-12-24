@@ -1826,7 +1826,7 @@ void onTick(CRules@ this)
 
 					if (stats_loaded)
 					{
-						player.server_setCoins(player.getCoins()+1+stats.coins_income+extra_amount); // double
+						player.server_setCoins(player.getCoins()+stats.coins_income+extra_amount); // double
 					}
 				}
 			}
