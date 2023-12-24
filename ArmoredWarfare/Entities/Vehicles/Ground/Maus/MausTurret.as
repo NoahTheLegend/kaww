@@ -18,7 +18,7 @@ const u8 barrel_compression = 12; // max barrel movement
 const u16 recoil = 180;
 
 const u8 shootDelay = 3;
-const f32 projDamage = 0.25f;
+const f32 projDamage = 0.35f;
 
 // 0 == up, 90 == sideways
 f32 high_angle = 76.5f; // upper depression limit
