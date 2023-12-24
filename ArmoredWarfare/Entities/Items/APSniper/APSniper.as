@@ -213,7 +213,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.TakeBlob("specammo", 5);
 
 			shootVehicleGun(blob.getNetworkID(), this.getNetworkID(),
-				angle, this.getPosition()-Vec2f(0,3),
+				angle, this.getPosition(),
 				aimPos, 0, 1, 4, this.get_f32("damage_body"), this.get_f32("damage_head"), 6,
 					this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));
 
