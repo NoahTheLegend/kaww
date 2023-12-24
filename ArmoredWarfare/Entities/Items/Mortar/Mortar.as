@@ -527,5 +527,5 @@ void handleReload(CBlob@ this)
 
 bool hasPresence(CBlob@ this, CBlob@ caller)
 {
-	return caller !is null && caller.getDistanceTo(this) < this.getRadius() * 2;
+	return caller !is null && caller.getDistanceTo(this) < this.getRadius() * 2 && !this.isAttachedTo(caller);
 }
