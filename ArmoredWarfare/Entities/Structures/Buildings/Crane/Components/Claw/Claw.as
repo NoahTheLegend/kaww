@@ -52,7 +52,7 @@ void onTick(CBlob@ this)
 	}
 
 	if (!isServer()) return;
-	if (crane_was_hit)
+	if (crane_was_hit || (!attached && this.get_u16("grabbed_id") != 0))
 	{
 		this.Untag("crane_was_hit");
 		this.set_u16("grabbed_id", 0);
