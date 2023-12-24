@@ -214,7 +214,7 @@ class BulletObj
 		if (blob.hasTag("destructable_nosoak"))
 		{
 			if (hoomanBlob !is null) hoomanBlob.server_Hit(blob, CurrentPos, blob.getVelocity(), 0.5f, Hitters::builder);
-			else (blob.server_Hit(blob, CurrentPos, blob.getVelocity(), 0.5f, Hitters::builder);
+			else blob.server_Hit(blob, CurrentPos, blob.getVelocity(), 0.5f, Hitters::builder);
 			return false;
 		}
 
