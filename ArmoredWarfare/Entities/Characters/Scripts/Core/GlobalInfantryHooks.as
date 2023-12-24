@@ -375,7 +375,13 @@ void InitPerk(CBlob@ this, CPlayer@ player)
    		if (player.isMyPlayer() || isServer())
    		{
    		    this.AddScript("MasonPerkLogic.as");
-   		    sprite.AddScript("MasonPerkGUI.as");	
+   		    sprite.AddScript("MasonPerkGUI.as");
+
+			this.set_u32("place_structure_delay", 0);
+            this.set_s32("selected_structure", -1);
+            this.set_u32("selected_structure_time", 0);
+            this.set_Vec2f("building_structure_pos", Vec2f(-1,-1));
+            this.set_f32("build_pitch", 0);
    		}
 	}
 }
