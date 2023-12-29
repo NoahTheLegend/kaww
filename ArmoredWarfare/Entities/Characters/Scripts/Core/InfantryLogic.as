@@ -1078,21 +1078,22 @@ void TakeAmmo(CBlob@ this, u32 magSize)
 void HandleOther(CBlob@ this)
 {
 	u32 gt = getGameTime()+this.getNetworkID();
-	if (isServer() && gt%30==0)
+	if (gt%30==0)
 	{
-		if (!this.hasTag("camera_offset") && !(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
-		if (this.hasTag("invincible") && !this.isAttached()) this.Untag("invincible");
-	}
-	if (isClient() && gt%30==0)
-	{
-		if (!this.hasTag("set light")
-		&& ((this.getTeamNum() == getRules().get_u8("teamleft") && getRules().get_s16("teamLeftTickets") == 0)
-		|| (this.getTeamNum() == getRules().get_u8("teamright") && getRules().get_s16("teamRightTickets") == 0)))
+		if (isServer())
 		{
-			this.Tag("set light");
-			this.SetLightRadius(8.0f);
-			this.SetLightColor(SColor(255, 255, 255, 255));
-			this.SetLight(true);
+			if (!this.hasTag("camera_offset") && !(isClient() && isServer()) && this.getPlayer() is null) this.server_Die(); // bots sometimes get stuck AI
+			if (this.hasTag("invincible") && !this.isAttached()) this.Untag("invincible");
+		}
+		if (isClient())
+		{
+			if (((this.getTeamNum() == getRules().get_u8("teamleft") && getRules().get_s16("teamLeftTickets") == 0)
+			|| (this.getTeamNum() == getRules().get_u8("teamright") && getRules().get_s16("teamRightTickets") == 0)))
+			{
+				this.SetLightRadius(16.0f);
+				this.SetLightColor(SColor(255, 255, 255, 255));
+				this.SetLight(true);
+			}
 		}
 	}
 	if (this.get_u32("reset_reloadtime") < getGameTime())
