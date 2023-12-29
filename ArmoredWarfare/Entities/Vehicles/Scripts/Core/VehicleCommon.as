@@ -57,7 +57,9 @@ class VehicleInfo
 	u16 charge;
 	u16 last_charge;
 	u16 cooldown_time;
+	u32 cassette_size;
 	u32 fired_amount;
+	u32 origin_cooldown;
 
 	AmmoInfo@ getCurrentAmmo()
 	{
@@ -97,7 +99,9 @@ void Vehicle_Setup(CBlob@ this,
 	v.current_ammo_index = 0;
 	v.last_fired_index = 0;
 	v.wep_angle = 0.0f;
+	v.cassette_size = 1;
 	v.fired_amount = 1;
+	v.origin_cooldown = 0;
 
 	this.Tag("vehicle");
 	this.getShape().getConsts().collideWhenAttached = false;
@@ -513,6 +517,8 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 				}
 
 				v.fired_amount++;
+				//if (v.fired_amount == v.cassette_size
+				//	&& v.origin_cooldown > 0) v.cooldown_time = v.origin_cooldown;
 				this.set_u32("fired_amount", v.fired_amount);
 				
 				v.getCurrentAmmo().loaded_ammo = 0;

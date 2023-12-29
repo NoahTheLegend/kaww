@@ -468,7 +468,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
 {
 	if (this.get_bool("overheated")) return false;
-	v.firing = v.firing || isActionPressed;
+	v.firing = isActionPressed;
 
 	bool hasammo = v.getCurrentAmmo().loaded_ammo > 0;
 
