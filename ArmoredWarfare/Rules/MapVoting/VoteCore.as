@@ -101,12 +101,12 @@ void onRender(CRules@ this)
 
 	if (can_force_pass)
 	{
-		GUI::DrawText(getTranslatedString("Ctrl+O Pass"), tl + Vec2f(3, 3 + text_dim.y * 6), SColor(0xff30bf30));
+		GUI::DrawText(getTranslatedString("L&R-Ctrl+O Pass"), tl + Vec2f(3, 3 + text_dim.y * 6), SColor(0xff30bf30));
 	}
 
 	if (can_cancel)
 	{
-		GUI::DrawText(getTranslatedString("Ctrl+P Cancel"), tl + Vec2f(95, 3 + text_dim.y * 6), SColor(0xffbf3030));
+		GUI::DrawText(getTranslatedString("L&R-Ctrl+P Cancel"), tl + Vec2f(95, 3 + text_dim.y * 6), SColor(0xffbf3030));
 	}
 
 	GUI::DrawText(getTranslatedString("Click to close ({TIMELEFT}s)").replace("{TIMELEFT}", "" + Maths::Ceil(vote.timeremaining / 30.0f)), br - Vec2f(175, 7 + text_dim.y), color_white);
@@ -158,7 +158,7 @@ void onTick(CRules@ this)
 
 	if (controls.isKeyPressed(KEY_KEY_O))
 	{
-		if ((controls.isKeyPressed(KEY_LCONTROL) || controls.isKeyPressed(KEY_RCONTROL))
+		if ((controls.isKeyPressed(KEY_LCONTROL) && controls.isKeyPressed(KEY_RCONTROL))
 		        && vote.forcePassFeature != "" && (getSecurity().checkAccess_Feature(me, vote.forcePassFeature)
 		                || getSecurity().checkAccess_Command(me, vote.forcePassFeature)))
 		{
@@ -176,7 +176,7 @@ void onTick(CRules@ this)
 	}
 	else if (controls.isKeyPressed(KEY_KEY_P))
 	{
-		if ((controls.isKeyPressed(KEY_LCONTROL) || controls.isKeyPressed(KEY_RCONTROL))
+		if ((controls.isKeyPressed(KEY_LCONTROL) && controls.isKeyPressed(KEY_RCONTROL))
 		        && getSecurity().checkAccess_Feature(me, "vote_cancel"))
 		{
 			CBitStream params;
