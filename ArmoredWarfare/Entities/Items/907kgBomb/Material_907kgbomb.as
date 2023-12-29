@@ -38,12 +38,17 @@ void DoExplosion(CBlob@ this, Vec2f velocity)
 		//guarantly hit blobs
 		if (getNet().isServer())
 		{
+			CMap@ map = getMap();
+
 			CBlob@[] bs;
-			getMap().getBlobsInRadius(this.getPosition(), 80.0f*modifier, bs);
+			map.getBlobsInRadius(this.getPosition(), 80.0f*modifier, bs);
 			for (u32 i = 0; i < bs.length; i++)
 			{
 				CBlob@ b = bs[i];
 				if (b is null) continue;
+
+				if (map.rayCastSolidNoBlobs(b.getPosition(), this.getPosition())) continue;
+
 				if (b.hasTag("vehicle"))
 				{
 					this.server_Hit(b, b.getPosition(), Vec2f(0,-100), 5.0f / (modifier+1), Hitters::keg);

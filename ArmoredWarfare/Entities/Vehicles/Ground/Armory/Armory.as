@@ -113,7 +113,7 @@ void InitShop(CBlob@ this)
 	
 	{
 		ShopItem@ s = addShopItem(this, "907 Kilogram-trotile Bomb", "$mat_907kgbomb$", "mat_907kgbomb", "A good way to damage enemy facilities.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
 		AddRequirement(s.requirements, "gametime", "", "Unlocks at", 45*30 * 60);
 		s.customButton = true;
 		s.buttonwidth = 1;
