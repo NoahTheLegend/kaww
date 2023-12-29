@@ -323,6 +323,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("activate"))
 	{
+		if (isClient())
+		{
+			Sound::Play("C4Plant.ogg", this.getPosition(), 0.75f, 1.075f);
+		}
+
 		this.set_bool("deactivating", false);
 		this.set_bool("activating", false);
 
@@ -375,11 +380,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		}
 		else
 		{
-			if (isClient())
-			{
-				Sound::Play("C4Plant.ogg", this.getPosition(), 0.75f, 1.075f);
-			}
-
 			Bar@ bars;
 			if (!this.get("Bar", @bars))
 			{
