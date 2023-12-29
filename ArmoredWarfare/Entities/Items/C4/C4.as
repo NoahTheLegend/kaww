@@ -218,7 +218,7 @@ void onTick(CBlob@ this)
 		extra_amount = 2.5f;
 	}
 	f32 explode_time = EXPLODE_TIME - extra_amount;
-	u8 scale = Maths::Min(27, (explode_time - this.get_u16("exploding")/30) * 3.0f);
+	u8 scale = Maths::Min(27, (explode_time - this.get_u16("exploding")/30) * 2.0f);
 	if (this.get_bool("explode") && this.get_u16("exploding") > 0)
 	{
 		if (this.get_u8("timer") >= 30-scale && this.get_u16("exploding") > 20)
