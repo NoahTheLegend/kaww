@@ -10,5 +10,4 @@ void onDie(CBlob@ this)
 
 	if (getGameTime() > 30)
 		server_MakeSeed(pos, this.getName());
-
 }
