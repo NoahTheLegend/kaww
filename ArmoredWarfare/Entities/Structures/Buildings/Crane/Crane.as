@@ -440,6 +440,16 @@ void onDie(CBlob@ this)
 	if (augment !is null) augment.server_Die();
 }
 
+void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
+{
+	attached.Tag("machinegunner");
+}
+
+void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
+{
+	detached.Untag("machinegunner");
+}
+
 //f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 //{
 //	if (isServer())

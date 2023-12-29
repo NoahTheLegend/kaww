@@ -426,7 +426,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 				const bool large = b.hasTag("blocks sword") && !b.isAttached() && b.isCollidable();
 				if (b.hasTag("ignore sword")) continue;
 				if (b.getTeamNum() == this.getTeamNum()) continue;
-				if (b.exists("mg_invincible") && b.get_u8("mg_hidelevel") >= getGameTime()) continue;
+				if (b.get_u8("mg_hidelevel") <= 1) continue;
 				if (b.getName() == "wooden_platform") damage *= 1.25f;
 				if (b.hasTag("door")) damage *= 2.5f;
 

@@ -37,7 +37,6 @@ void onInit(CBlob@ this)
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(10.5f, 7.0f)); if (w !is null) {w.ScaleBy(Vec2f(0.9f, 0.9f)); w.SetRelativeZ(-10.0f);} }
 
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-14.5f, 7.0f)); if (w !is null) {w.ScaleBy(Vec2f(0.9f, 0.9f)); w.SetRelativeZ(-10.0f);} }
-	
 
 
 	this.getShape().SetOffset(Vec2f(0, 2));
@@ -279,7 +278,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
-	attached.Tag("collidewithbullets");
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{
