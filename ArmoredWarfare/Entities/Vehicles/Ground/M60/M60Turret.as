@@ -312,7 +312,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
 {
-	v.firing = v.firing || isActionPressed;
+	v.firing = isActionPressed;
 
 	bool hasammo = v.getCurrentAmmo().loaded_ammo > 0;
 

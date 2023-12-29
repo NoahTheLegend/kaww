@@ -36,7 +36,7 @@ void onInit(CBlob@ this)
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
 
 	Vehicle_AddAmmo(this, v,
-	    cooldown_time, // fire delay (ticks)
+	    cycle_cooldown, // fire delay (ticks)
 	    1, // fire bullets amount
 	    1, // fire cost
 	    "mat_bolts", // bullet ammo config name
@@ -48,6 +48,9 @@ void onInit(CBlob@ this)
 	    Vehicle_Fire_Style::custom,
 	    Vec2f(-6.0f, -8.0f), // fire position offset
 	    1); // charge time
+	
+	v.cassette_size = cassette_size;
+	v.origin_cooldown = cooldown_time;
 
 	Vehicle_SetWeaponAngle(this, low_angle, v);
 	this.set_string("autograb blob", "mat_bolts");
@@ -351,7 +354,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue)
 {
-	v.firing = v.firing || isActionPressed;
+	v.firing = isActionPressed;
 	bool hasammo = v.getCurrentAmmo().loaded_ammo > 0;
 
 	u8 charge = v.charge;
