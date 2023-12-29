@@ -224,8 +224,10 @@ void InitClasses(CBlob@ this)
 	addPlayerPerk(this, "Mason", "$11_class_icon$", "Mason",
 						"Mason:\n\n"+"$11_class_icon$"+"Building hammer"
 						+"\n                   - Build pre-designed"
-						+"\n                     structures"
-						+"\n                     Requires materials!"
+						+"\n                     cheaper structures"
+						+"\n                   - Stand near green"
+						+"\n                     tiles to build!"
+						+"\n                   - Requires materials!"
 						+"\n\n$lmb$"+"| "+"$rmb$   Place / Unselect"
 						+"\n                     "
 						+"\n                     "

@@ -4,6 +4,8 @@
 #include "BlockCosts.as";
 #include "PlacementCommon.as";
 
+f32 mat_discount = 2;
+
 // command ids are initialized in InfantryLogic.as
 void onTick(CBlob@ this)
 {
@@ -181,33 +183,33 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
                             case CMap::tile_castle:     
                             {
                                 req_name.push_back("mat_stone");
-                                req_quantity.push_back(BlockCosts::stone);
+                                req_quantity.push_back(BlockCosts::stone / mat_discount);
                                 break;
                             }
 	                        case CMap::tile_castle_back:
                             {
                                 req_name.push_back("mat_stone");
-                                req_quantity.push_back(BlockCosts::stone_bg);
+                                req_quantity.push_back(BlockCosts::stone_bg / mat_discount);
                                 break;
                             }
 	                        case CMap::tile_wood:       
                             {
                                 req_name.push_back("mat_wood");
-                                req_quantity.push_back(BlockCosts::wood);
+                                req_quantity.push_back(BlockCosts::wood / mat_discount);
                                 break;
                             }
 	                        case CMap::tile_wood_back:  
                             {
                                 req_name.push_back("mat_wood");
-                                req_quantity.push_back(BlockCosts::wood_bg);
+                                req_quantity.push_back(BlockCosts::wood_bg / mat_discount);
                                 break;
                             }
 	                        case CMap::tile_scrap:      
                             {
                                 req_name.push_back("mat_stone");
-                                req_quantity.push_back(BlockCosts::scrap_stone);
+                                req_quantity.push_back(BlockCosts::scrap_stone / mat_discount);
                                 req_name.push_back("mat_scrap");
-                                req_quantity.push_back(BlockCosts::scrap_scrap);
+                                req_quantity.push_back(BlockCosts::scrap_scrap / mat_discount);
                                 break;
                             }
                         }
@@ -215,7 +217,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
                         u8 matched_reqs = 0;
                         for (u8 k = 0; k < req_name.size(); k++)
                         {
-                            bool has_reqs = caller.hasBlob(req_name[k], req_quantity[k]);
+                            bool has_reqs = caller.hasBlob(req_name[k], req_quantity[k] / mat_discount);
                             if (has_reqs)
                             {
                                 matched_reqs++;
@@ -339,7 +341,7 @@ void RunSelectListener(CBlob@ this)
     aimpos.y += (dim.y % 2 == 0 ? tile_size/2 : 0);
 
     Vec2f dir = (aimpos-pos);
-    selected = Maths::Floor(dim.x/2) + (dir.x) / tile_size + Maths::Floor(((dir.y+tile_size*1.5f) / tile_size))*5;
+    selected = Maths::Floor(dim.x/2) + (dir.x) / tile_size + Maths::Floor(((dir.y+tile_size*1.5f) / tile_size))*menu_grid_width;
     //printf("hovering at "+selected);
 }
 
