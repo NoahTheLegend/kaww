@@ -200,9 +200,9 @@ shared class PerkBull : PerkStats {
         walk_factor = 1.05f;
         walk_factor_air = 1.1f;
         jump_factor = 1.3f;
-        walk_extra_factor = 1.1f;
-        walk_extra_factor_air = 1.05f;
-        jump_extra_factor = 1.4f;
+        walk_extra_factor = 1.15f;
+        walk_extra_factor_air = 1.1f;
+        jump_extra_factor = 1.5f;
         reload_time = 0.75f;
         kill_bonus_time = 150;
     }
