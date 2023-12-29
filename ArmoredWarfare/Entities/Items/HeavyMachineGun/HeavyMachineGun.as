@@ -258,7 +258,7 @@ void onTick(CBlob@ this)
 				gsprite.ResetTransform();
 				gsprite.SetOffset(Vec2f(0, -4.0f*perc));
 			}
-			if (ap.isKeyPressed(key_action2) || true)
+			if (ap.isKeyPressed(key_action2))
 			{
 				if (gunner.get_u8("mg_hidelevel") > 0) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") - 1);
 			}
