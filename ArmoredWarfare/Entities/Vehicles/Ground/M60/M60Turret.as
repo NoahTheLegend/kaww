@@ -284,6 +284,12 @@ void onDie(CBlob@ this)
 
 	//Explode(this, 64.0f, 1.0f);
 
+	AttachmentPoint@ turret = this.getAttachments().getAttachmentPointByName("BOW");
+	if (turret !is null)
+	{
+		if (turret.getOccupied() !is null) turret.getOccupied().server_Die();
+	}
+
 	this.getSprite().PlaySound("/turret_die");
 }
 
