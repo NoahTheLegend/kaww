@@ -22,6 +22,7 @@ void onInit(CBlob@ this)
 		this.set('harvest', harvest);
 	}
 
+	this.Tag("trap");
 	this.Tag("pushedByDoor");
 }
 

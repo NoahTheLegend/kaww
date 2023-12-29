@@ -7,7 +7,6 @@ void onInit(CBlob@ this)
 	
 	this.set_string("custom_explosion_sound", "Molotov_Explode.ogg");
 	
-	this.Tag("projectile");
 	this.Tag("map_damage_dirt");
 	this.Tag("collideswithglass");
 	this.Tag("weapon");
