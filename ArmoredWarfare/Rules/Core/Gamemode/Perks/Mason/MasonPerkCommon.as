@@ -3,25 +3,30 @@
 
 //Structure(, "", "structure_.png"),
 Structure[] structures = {
-    Structure(0, "Refinery (layout)", "structure_refinery_layout.png"),
-    Structure(1, "Bridge (short)", "structure_bridge_short.png"),
-    Structure(2, "Bridge (medium)", "structure_bridge_medium.png"),
-    Structure(3, "Ledge (left)", "structure_ledge_left.png"),
-    Structure(4, "Ledge (right)", "structure_ledge_right.png"),
-    Structure(6, "Stone Wall (small)", "structure_wall_small.png"),
-    Structure(6, "Bunker (pit)", "structure_bunker_pit.png"),
-    Structure(7, "Bunker (dome)", "structure_bunker_dome.png"),
-    Structure(8, "Tower (cheap)", "structure_tower_cheap.png"),
-    Structure(9, "Tower (armored)", "structure_tower_expensive.png"),
-    Structure(10, "Pillar (wooden)", "structure_wooden_column.png"),
-    Structure(11, "Pillar (stone)", "structure_stone_column.png"),
-    Structure(12, "Support bracing (wooden)", "structure_wooden_support.png"),
-    Structure(13, "Square (stone)", "structure_stone_bg_square.png"),
-    Structure(14, "Room (stone)", "structure_stone_room.png"),
+    Structure(0, "Refinery (horizontal)", "structure_refinery1_layout.png"),
+    Structure(0, "Refinery (vertical)", "structure_refinery_layout.png"),
+    Structure(0, "Bridge (short)", "structure_bridge_short.png"),
+    Structure(0, "Bridge (medium)", "structure_bridge_medium.png"),
+    Structure(0, "Ledge (left)", "structure_ledge_left.png"),
+    Structure(0, "Ledge (right)", "structure_ledge_right.png"),
+    Structure(0, "Obstacle (left)", "structure_obstacle_left.png"),
+    Structure(0, "Obstacle (right)", "structure_obstacle_right.png"),
+    Structure(0, "Bunker (left)", "structure_bunker_left.png"),
+    Structure(0, "Bunker (right)", "structure_bunker_right.png"),
+    Structure(0, "Tower (cheap)", "structure_tower_cheap.png"),
+    Structure(0, "Tower (armored)", "structure_tower_expensive.png"),
+    Structure(0, "Wooden Wall (small)", "structure_wall_small_wooden.png"),
+    Structure(0, "Stone Wall (small)", "structure_wall_small.png"),
+    Structure(0, "Pillar (wooden)", "structure_wooden_column.png"),
+    Structure(0, "Pillar (stone)", "structure_stone_column.png"),
+    Structure(0, "Support bracing (wooden)", "structure_wooden_support.png"),
+    Structure(0, "Square (stone)", "structure_stone_bg_square.png"),
+    Structure(0, "Room (stone)", "structure_stone_room.png"),
 };
 
+const int menu_grid_width = 6;
 const Vec2f menu_pos = getDriver().getScreenCenterPos();
-const Vec2f menu_dim = Vec2f(Maths::Min(5, structures.size()), Maths::Floor(structures.size() / 5));
+const Vec2f menu_dim = Vec2f(Maths::Min(menu_grid_width, structures.size()), Maths::Floor(structures.size() / menu_grid_width));
 const Vec2f img_size = Vec2f(32,32);
 
 const f32 build_range = 64.0f;

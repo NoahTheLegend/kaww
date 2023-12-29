@@ -123,12 +123,13 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
         u8 szi = str.grid[i].size();
         for (int j = 0; j < szi; j++)
         {
-            Vec2f tilepos = drawpos + Vec2f((f32(j)-szi/2)*16*zoom, (i-sz/2)*16*zoom);
             SColor col = SColor(150,75,255,75);
 
             Vec2f world_tilepos = tile_aimpos + Vec2f((j-szi/2)*8 + 1, (i-sz/2)*8 + 1);
             TileType t = map.getTile(world_tilepos).type;
             TileType newtile = str.grid[i][j];
+
+            Vec2f tilepos = getDriver().getScreenPosFromWorldPos(world_tilepos);
             
             if (!isTileCustomSolid(t))
             {
@@ -136,6 +137,7 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
                     && !fakeHasTileSolidBlobs(world_tilepos)
                     && (!isTileCustomSolid(newtile) || !isBuildRayBlocked(blob.getPosition(), world_tilepos, nullvec)));
 
+                bool red = false;
                 if ((world_tilepos-bpos).Length() > build_range
                     || !map.hasSupportAtPos(world_tilepos)
                     || !buildable_at_pos)
@@ -143,21 +145,19 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
                     col.setAlpha(75);
                     col.setRed(255);
                     col.setGreen(75);
+                    red = true;
                 }
 
                 u16 num = str.grid[i][j];
                 if (num == 0) col.setAlpha(0);
-                else can_place = true;
+                else if (!red)
+                {
+                    can_place = true;
+                }
 
                 GUI::DrawIcon("World.png", num, Vec2f(8,8), tilepos, zoom, col);
             }
         }
-    }
-
-    if (!can_place)
-    {
-        if (getGameTime()%30==0) resetSelection(blob);
-        return;
     }
 
     if (!building)
@@ -176,7 +176,7 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
     }
     else
     {
-        DrawQTE(this, blob, drawpos, zoom, controls);
+        DrawQTE(this, blob, drawpos, zoom, controls, can_place);
     }
 
     bool pressed_a2 = (controls.mousePressed2);
@@ -195,7 +195,7 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
 
 bool was_pressed_qte = false;
 
-void DrawQTE(CSprite@ this, CBlob@ blob, Vec2f drawpos, f32 zoom, CControls@ controls)
+void DrawQTE(CSprite@ this, CBlob@ blob, Vec2f drawpos, f32 zoom, CControls@ controls, bool can_place)
 {
     u8 required_button = blob.get_u8("next_qte");
     bool wrong = true;
@@ -213,5 +213,10 @@ void DrawQTE(CSprite@ this, CBlob@ blob, Vec2f drawpos, f32 zoom, CControls@ con
     }
     else was_pressed_qte = false;
 
+    if (!can_place)
+    {
+        correct_qte = false;
+        required_button = 24;
+    }
     GUI::DrawIcon("AWKeys.png", required_button + ((getGameTime() / 5) % 2 == 0 ? qte.size()+1 : 0), Vec2f(16,16), drawpos - Vec2f(8, 64) * zoom, zoom, SColor(255,255,255,255));
 }
