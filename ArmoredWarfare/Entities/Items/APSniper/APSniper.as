@@ -22,6 +22,7 @@ void onInit(CBlob@ this)
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 48, 16);
 	this.Tag("builder always hit");
 	this.Tag("destructable_nosoak");
+	this.Tag("weapon");
 	this.addCommandID("fire");
 
 	this.set_string("shoot sound", "44magnum_fire.ogg");

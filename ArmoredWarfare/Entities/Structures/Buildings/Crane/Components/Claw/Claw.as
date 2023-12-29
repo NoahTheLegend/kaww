@@ -96,8 +96,7 @@ void onTick(CBlob@ this)
 
 bool canGrab(CBlob@ this, CBlob@ blob)
 {
-	if ((blob.getTeamNum() != this.getTeamNum() && !(blob.hasTag("material") || blob.hasTag("flesh"))) // dont grab enemy items besides flesh and materials
-		|| blob.hasTag("aerial") || blob.hasTag("structure") // dont grab strucute/aerial blobs
+	if (blob.hasTag("structure") // dont grab strucute/aerial blobs
 		|| (blob.getShape() !is null && blob.getShape().isStatic()) || blob.hasTag("projectile") // dont grab static or projectiles
 		|| blob.isAttached() || blob.isInInventory() || blob.hasTag("attached")) // dont grab attached or from inventories
 	{
@@ -105,7 +104,9 @@ bool canGrab(CBlob@ this, CBlob@ blob)
 	}
 
 	if (blob.hasTag("flesh") || blob.hasTag("vehicle")
-		|| blob.hasTag("material") || blob.hasTag("trap"))
+		|| blob.hasTag("material") || blob.hasTag("trap")
+		|| blob.hasTag("vehicle")  || blob.hasTag("machinegun") || blob.hasTag("weapon")
+		|| blob.hasTag("material") || blob.hasTag("trap") 		|| blob.hasTag("flesh"))
 	{
 		return true;
 	}
