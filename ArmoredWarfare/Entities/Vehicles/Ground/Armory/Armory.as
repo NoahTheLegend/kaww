@@ -517,18 +517,21 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 			if (getLocalPlayer() !is null)
 			{
+				bool spectator = getLocalPlayer().getTeamNum() == getRules().getSpectatorTeamNum();
+
 				u8 teamleft = getRules().get_u8("teamleft");
 				u8 teamright = getRules().get_u8("teamright");
 				//printf(""+(getLocalPlayer().getTeamNum())+" "+teamleft+" "+teamright+" "+warn_team);
-				if ((getLocalPlayer().getTeamNum() == teamleft && !warn_team)
-					|| (getLocalPlayer().getTeamNum() == teamright && warn_team))
+				if (!spectator
+					&& ((getLocalPlayer().getTeamNum() == teamleft && !warn_team)
+					|| (getLocalPlayer().getTeamNum() == teamright && warn_team)))
 				{
 					Sound::Play("nuke_warn.ogg", getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos()), 500.0f, 0.825f);
 					client_AddToChat("Enemy has constructed a "+(id==0?"907kg":"5 ton")+" bomb!", SColor(255, 255, 0, 0));
 
-					error("debug: playing sound & sending bomb warn message");
+					//error("debug: playing sound & sending bomb warn message");
 				}
-				else
+				else if (!spectator)
 				{
 					client_AddToChat("Your team has constructed a "+(id==0?"907kg":"5 ton")+" bomb. Enemies see that.", SColor(255, 0, 150, 0));
 				}
