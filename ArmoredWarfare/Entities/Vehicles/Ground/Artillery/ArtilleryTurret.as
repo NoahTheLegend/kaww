@@ -239,14 +239,16 @@ void onTick(CBlob@ this)
 
 				int difference = Maths::Abs(currentAngle - targetAngle);
 
-				if (difference > 1)
-				{	
+				if (difference >= 1)
+				{
+					int req = Maths::Min(difference, factor);
+
 					if (difference < 180) {
-						if (currentAngle < targetAngle) currentAngle += factor;
-						else currentAngle -= factor;
+						if (currentAngle < targetAngle) currentAngle += req;
+						else currentAngle -= req;
 					} else {
-						if (currentAngle < targetAngle) currentAngle += factor;
-						else currentAngle += factor;
+						if (currentAngle < targetAngle) currentAngle += req;
+						else currentAngle += req;
 					}
 					this.set_f32("gunelevation", ((currentAngle % 360.0f) + 360.0f) % 360.0f);
 					Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
