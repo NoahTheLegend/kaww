@@ -67,7 +67,7 @@ f32 getAimAngle(CBlob@ this)
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		Vec2f aim_vec = (this.getPosition()) - gunner.getAimPos();
+		Vec2f aim_vec = (this.getPosition()+Vec2f(0,6)) - gunner.getAimPos();
 		f32 deg = this.getAngleDegrees();
 		aim_vec.RotateBy(-deg);
 		//aim_vec.RotateBy(-this.getAngleDegrees());
