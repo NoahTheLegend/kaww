@@ -374,12 +374,12 @@ void openMasonMenu(CBlob@ this, CBlob@ caller)
 }
 
 
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-    if (isServer())
-    {
-        resetSelection(this);
-    }
-
-    return damage;
-}
+//f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+//{
+//    if (isServer())
+//    {
+//        resetSelection(this);
+//    }
+//
+//    return damage;
+//}
