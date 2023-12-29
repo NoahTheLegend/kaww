@@ -182,19 +182,24 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 const f32 pole_height = 100.0f;
 void onTick(CBlob@ this)
 {
+	Bar@ bars;
 	if (this.get_string("producing") == "") // idle
 	{
-		
+		if (this.get("Bar", @bars))
+		{
+			this.set_f32("production_time", 0);
+			bars.RemoveBar("production", false);
+		}
 	}
 	else
 	{
 		visualTimerTick(this);
 		bool producing = !isProductDone(this);
 
-		Bar@ bars;
+		
 		if (this.get("Bar", @bars))
 		{
-			if (!this.hasTag("full") && this.get_f32(capture_prop) == 0)
+			if (!this.hasTag("full"))
 			{
 				if (producing) this.add_f32("production_time", 1.0f);
 				else AddNextProduct(this, this.get_u16("production_time_notcurrent"));
