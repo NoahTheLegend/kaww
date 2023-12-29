@@ -157,7 +157,7 @@ class BulletObj
 			return false;
 		}
 
-		if (blob.hasTag("player") && blob.exists("mg_invincible") && blob.get_u8("mg_hidelevel") >= getGameTime())
+		if (blob.hasTag("player") && blob.get_u8("mg_hidelevel") <= 1)
 			return false;
 
 		if (blob.hasTag("always bullet collide"))
