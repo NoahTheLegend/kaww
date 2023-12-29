@@ -6,6 +6,8 @@ void onInit(CBlob@ this)
 	sprite.RewindEmitSound();
 	sprite.SetEmitSound("FanfareRussian");
 	sprite.SetEmitSoundPaused(false);
+
+	this.Tag("trap");
 }
 
 void onDie(CBlob@ this)
