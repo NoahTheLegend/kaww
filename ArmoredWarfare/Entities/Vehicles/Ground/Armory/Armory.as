@@ -91,6 +91,10 @@ void InitShop(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
 	}
 	{
+		ShopItem@ s = addShopItem(this, "Special Ammunition", "$specammo$", "specammo", "Special ammunition for advanced weapons.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
+	}
+	{
 		ShopItem@ s = addShopItem(this, "14mm Rounds", "$mat_14mmround$", "mat_14mmround", "Used by APCs", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
 	}
@@ -101,10 +105,6 @@ void InitShop(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, "HEAT War Heads", "$mat_heatwarhead$", "mat_heatwarhead", "HEAT Rockets, used with RPG or different vehicles", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press SPACE while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nIneffective against armored vehicles.", false);
@@ -127,6 +127,10 @@ void InitShop(CBlob@ this)
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 4;
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press SPACE while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
@@ -179,7 +183,7 @@ void InitShop(CBlob@ this)
 
 		s.customButton = true;
 
-		s.buttonwidth = 2;
+		s.buttonwidth = 1;
 		s.buttonheight = 1;
 	}
 	{
