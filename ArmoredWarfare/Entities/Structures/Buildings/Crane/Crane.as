@@ -440,20 +440,20 @@ void onDie(CBlob@ this)
 	if (augment !is null) augment.server_Die();
 }
 
-f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
-{
-	if (isServer())
-	{
-		bool has_augment = this.get_u16("augment_id") != 0;
-	
-		if (has_augment && hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum())
-		{
-			CBlob@ augment = getBlobByNetworkID(this.get_u16("augment_id"));
-			if (augment !is null && augment.getName() == "claw")
-			{
-				augment.Tag("crane_was_hit");
-			}
-		}
-	}
-	return damage;
-}
+//f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+//{
+//	if (isServer())
+//	{
+//		bool has_augment = this.get_u16("augment_id") != 0;
+//	
+//		if (has_augment && hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum())
+//		{
+//			CBlob@ augment = getBlobByNetworkID(this.get_u16("augment_id"));
+//			if (augment !is null && augment.getName() == "claw")
+//			{
+//				augment.Tag("crane_was_hit");
+//			}
+//		}
+//	}
+//	return damage;
+//}
