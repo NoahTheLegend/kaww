@@ -179,8 +179,8 @@ void onFire(CBlob@ this, Vec2f vel)
 	{
 		Vec2f offset = Vec2f(-2,0);
 
-		CBlob@ local = getLocalPlayerBlob();
-		if (local !is null)
+		AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
+		if (gunner !is null && gunner.getOccupied() !is null && gunner.getOccupied().isMyPlayer())
 		{
 			const float recoilx = 200;
 			const float recoily = 150;
