@@ -5,7 +5,8 @@
 void onInit(CSprite@ this)
 {
 	// Building
-	this.SetZ(-60); //-60 instead of -50 so sprite layers are behind ladders
+	this.SetZ(-100); //-60 instead of -50 so sprite layers are behind ladders
+	this.SetRelativeZ(-100);
 }
 
 void onInit(CBlob@ this)
