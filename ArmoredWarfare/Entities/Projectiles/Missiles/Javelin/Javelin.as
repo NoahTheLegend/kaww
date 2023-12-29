@@ -347,9 +347,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	);
 }
 
-void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f collisionPos )
+void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f collisionPos )
 {
-	if ((this == null || blob == null) && solid)
+	if (this.getTickSinceCreated() <= 3) return;
+
+	if (blob is null && solid)
 	{
 		this.server_Die();
 		return;
