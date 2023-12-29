@@ -378,8 +378,11 @@ void buildT1ShopAir(CBlob@ this)
     {string[] params = {n_bf109,t_bf109,bn_bf109,d_bf109,b,s,ds};
 	makeShopItem(this,params,c_bf109, Vec2f(5,2));}
 
-	{string[] params = {n_bomber,t_bomber,bn_bomber,d_bomber,b,s,ds};
-	makeShopItem(this,params,c_bomber, Vec2f(5,2));}
+	{string[] params = {n_uh1,t_uh1,bn_uh1,d_uh1,b,s,ds};
+	makeShopItem(this,params,c_uh1);}
+
+	//{string[] params = {n_bomber,t_bomber,bn_bomber,d_bomber,b,s,ds};
+	//makeShopItem(this,params,c_bomber, Vec2f(5,2));}
 
     {
 		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert3$", "vehiclebuildert2air", "Tier 2 - Aircraft Vehicle builder.\n\nUnlocks more specific vehicles for late-game.", false, false);
