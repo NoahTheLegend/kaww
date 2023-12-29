@@ -157,9 +157,6 @@ class BulletObj
 			return false;
 		}
 
-		if (blob.hasTag("player") && blob.get_u8("mg_hidelevel") <= 1)
-			return false;
-
 		if (blob.hasTag("always bullet collide"))
 		{
 			if (blob.hasTag("trap")) return true;
@@ -208,7 +205,7 @@ class BulletObj
 			}
 		}
 
-		if (blob.hasTag("turret") && !same_team)
+		if ((blob.hasTag("turret") || blob.hasTag("gun")) && !same_team)
 			return true;
 
 		if (blob.hasTag("destructable_nosoak"))
@@ -217,16 +214,24 @@ class BulletObj
 			else blob.server_Hit(blob, CurrentPos, blob.getVelocity(), 0.5f, Hitters::builder);
 			return false;
 		}
-
+		
 		if ((!is_young || !same_team) && blob.isAttached() && (!blob.hasTag("covered") || CurrentType == 4))
 		{
-			if (blob.hasTag("collidewithbullets")) return Rng.NextRanged(2)==0;
-			if (Rng.NextRanged(4) == 0 || blob.hasTag("player"))
-				return true;
-
 			AttachmentPoint@ point = blob.getAttachments().getAttachmentPointByName("GUNNER");
-			if (point !is null && point.getOccupied() !is null && (point.getOccupied().hasTag("machinegun")) && !same_team)
-				return false;
+			if (point !is null && point.getOccupied() !is null && (point.getOccupied().hasTag("machinegun")))
+			{
+				if (blob.exists("mg_hidelevel") && blob.get_u8("mg_hidelevel") <= 1)
+				{
+					return false;
+				}
+			}
+			if (!same_team)
+			{
+				if (blob.hasTag("collidewithbullets")) return true;
+
+				if (Rng.NextRanged(4) == 0 || blob.hasTag("player"))
+					return true;
+			}
 		}
 
 		if (blob.isAttached() && !blob.hasTag("player"))

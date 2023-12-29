@@ -7,8 +7,6 @@ const u32 fire_rate = 150;
 
 void onInit(CBlob@ this)
 {
-	this.Tag("gun");
-	this.Tag("machinegun");
 	this.Tag("heavy weight");
 
 	this.set_f32("damage_body", 2.5f);
@@ -255,6 +253,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
 	if (attached !is null && attached.hasTag("player"))
 	{
+		attached.Tag("machinegunner");
 		attached.Tag("distant_view");
 	}
 	this.set_u32("cooldown", getGameTime()+(fire_rate/2));
@@ -264,6 +263,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
 	if (detached !is null && detached.hasTag("player"))
 	{
+		detached.Untag("machinegunner");
 		detached.Untag("distant_view");
 	}
 }

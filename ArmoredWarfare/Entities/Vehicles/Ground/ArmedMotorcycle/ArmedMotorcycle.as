@@ -375,7 +375,6 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
-	attached.Tag("collidewithbullets");
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
 	{
