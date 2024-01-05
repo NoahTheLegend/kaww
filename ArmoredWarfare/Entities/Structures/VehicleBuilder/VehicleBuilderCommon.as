@@ -142,7 +142,7 @@ void buildT3ShopCombined(CBlob@ this)
 	{string[] params = {n_pszh,t_pszh,bn_pszh,d_pszh,b,s,ds};
 	makeShopItem(this,params,c_pszh-5);}
 
-	{string[] params = {n_btr,t_btr,bn_pszh,d_btr,b,s,ds};
+	{string[] params = {n_btr,t_btr,bn_btr,d_btr,b,s,ds};
 	makeShopItem(this,params,c_btr-10);}
 
 	{string[] params = {n_bradley,t_bradley,bn_bradley,d_bradley,b,s,ds};
@@ -325,7 +325,7 @@ void buildT3ShopGround(CBlob@ this)
 	{string[] params = {n_pszh,t_pszh,bn_pszh,d_pszh,b,s,ds};
 	makeShopItem(this,params,c_pszh-5);}
 
-	{string[] params = {n_btr,t_btr,bn_pszh,d_btr,b,s,ds};
+	{string[] params = {n_btr,t_btr,bn_btr,d_btr,b,s,ds};
 	makeShopItem(this,params,c_btr-10);}
 
 	{string[] params = {n_bradley,t_bradley,bn_bradley,d_bradley,b,s,ds};
