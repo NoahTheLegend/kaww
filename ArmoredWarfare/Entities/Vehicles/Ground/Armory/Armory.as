@@ -530,7 +530,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					&& ((getLocalPlayer().getTeamNum() == teamleft && !warn_team)
 					|| (getLocalPlayer().getTeamNum() == teamright && warn_team)))
 				{
-					Sound::Play("nuke_warn.ogg", getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos()), 500.0f, 0.825f);
+					Sound::Play("nuke_warn.ogg", getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos()), 2.0f, 0.825f);
 					client_AddToChat("Enemy has constructed a "+(id==0?"907kg":"5 ton")+" bomb!", SColor(255, 255, 0, 0));
 
 					//error("debug: playing sound & sending bomb warn message");
