@@ -90,7 +90,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			damage *= (exposed ? 0.5f : 0.0f);
 		}
-		else if (customData == Hitters::explosion || hitterBlob.getName() == "ballistabolt")
+		else if (explosion_damage || hitterBlob.getName() == "ballistabolt")
 		{
 			//printf("explosion");
 			//printf(""+damage * (exposed && !mg_attached ? 0.2f : hiding ? 0.01f : 0.025f));
