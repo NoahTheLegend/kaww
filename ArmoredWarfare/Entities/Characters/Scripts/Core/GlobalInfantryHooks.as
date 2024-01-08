@@ -66,7 +66,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			//printf("angle "+angle+" hit angle "+hit_angle+" diff "+diff);
 			if (block)
 			{
-				if ((customData == Hitters::explosion || customData == Hitters::keg) ? hitterBlob.getDistanceTo(this) < 32.0f+XORRandom(81)*0.1f : damage >= 1.5f)
+				if (explosion_damage ? hitterBlob.getDistanceTo(this) < 32.0f+XORRandom(81)*0.1f : damage >= 1.5f)
 				{
 					setKnocked(this, 15);
 					damage /= (1.75f + XORRandom(21)*0.1f);
