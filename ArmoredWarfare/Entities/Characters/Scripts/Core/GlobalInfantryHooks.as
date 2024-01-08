@@ -156,11 +156,11 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage *= stats.damage_in;
 		}
 	}
-	if (customData == Hitters::ballista) // shell damage
+	if (!this.isAttached() && customData == Hitters::ballista) // shell damage
 	{
 		damage *= 2;
 	}
-	if ((!this.isAttached() || exposed) && (explosion_damage || hitterBlob.getName() == "ballista_bolt") 
+	if ((!this.isAttached() || exposed) && (explosion_damage || hitterBlob.getName() == "ballista_bolt") // common explosion checks & bunker protection
 		|| hitterBlob.hasTag("grenade") || hitterBlob.getName() == "c4")
 	{
 		if (hitterBlob.hasTag("grenade")) damage *= 5.0f+(XORRandom(301)*0.01f);
