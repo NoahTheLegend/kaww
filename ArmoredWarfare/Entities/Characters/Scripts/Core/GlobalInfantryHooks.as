@@ -94,7 +94,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			//printf("explosion");
 			//printf(""+damage * (exposed && !mg_attached ? 0.2f : hiding ? 0.01f : 0.025f));
-			damage *= ((exposed && !mg_attached) ? 0.25f : ((!exposed || hiding) ? 0.01f : 0.025f));
+			damage *= ((exposed && !mg_attached) ? 0.25f : ((!exposed || hiding) ? 0.01f : 0.0175f));
 		}
 		else if (is_bullet)
 		{
