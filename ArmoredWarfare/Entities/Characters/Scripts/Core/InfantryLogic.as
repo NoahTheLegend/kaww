@@ -223,6 +223,7 @@ void onInit(CBlob@ this)
 	
 	this.set_bool("timed_particle", false);
 	this.set_Vec2f("gun_offset", Vec2f(0,0));
+	this.set_u8("mg_hidelevel", 5);
 
 	this.Tag("infantry");
 
