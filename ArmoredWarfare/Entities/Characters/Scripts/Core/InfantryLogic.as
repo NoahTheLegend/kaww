@@ -327,8 +327,8 @@ void onInit(CBlob@ this)
 			this.set_bool("is_rpg", true);
 			this.set_u32("mag_bullets", 0);
 			this.set_string("ammo_prop", "mat_heatwarhead");
-			this.set_u8("scoreboard_icon", 3);
-			this.set_u8("class_icon", 2);
+			this.set_u8("scoreboard_icon", 2);
+			this.set_u8("class_icon", 5);
 			break;
 		}
 	}
