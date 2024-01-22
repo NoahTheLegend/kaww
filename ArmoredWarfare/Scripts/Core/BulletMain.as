@@ -268,6 +268,30 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 				BulletObj@ bullet = BulletObj(this.getNetworkID(), angle, pos, type, damageBody, damageHead, bulletPen, timeSpawnedAt,
 					custom_hitter, timetolive, speed);
 
+				if (bullet !is null && gun.isAttached())
+				{
+					u16 parent_id = 0;
+
+					AttachmentPoint@[] aps;
+					if (gun.getAttachmentPoints(aps))
+					{
+						for (u8 i = 0; i < aps.size(); i++)
+						{
+							AttachmentPoint@ ap = aps[i];
+							if (ap is null || ap.socket) continue; // socket means other blobs can attach to this attachment point
+							CBlob@ oc = ap.getOccupied();
+
+							if (oc !is null && oc !is gun)
+							{
+								parent_id = oc.getNetworkID();
+								break;
+							}
+						}
+
+						bullet.parentBlobID = parent_id;
+					}
+				}
+
 				CMap@ map = getMap();
 				u32 time = timeSpawnedAt;
 

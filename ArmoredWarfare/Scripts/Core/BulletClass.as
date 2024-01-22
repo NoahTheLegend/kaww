@@ -20,6 +20,7 @@ class BulletObj
 	//CBlob@ shooter;
 	u16 shooterBlobID;
 	u16 LastHitBlobID;
+	u16 parentBlobID; // that one we're attached to
 
 	BulletFade@ Fade;
 
@@ -62,6 +63,7 @@ class BulletObj
 		f32 damage_head, s8 penetration, u32 creation_time, s32 hitter, u8 time, u8 speedo)
 	{
 		LastHitBlobID = 0;
+		parentBlobID = 0;
 		//shooter = getBlobByNetworkID(shooterBlobID);
 
 		CBlob@ shooter = getBlobByNetworkID(shooterBlobID);
@@ -151,10 +153,11 @@ class BulletObj
 	bool doesCollideWithBlob(CBlob@ blob, CBlob@ shooterBlob)
 	{
 		CBlob@ LastHitBlob = getBlobByNetworkID(LastHitBlobID);
+		CBlob@ parentBlob = getBlobByNetworkID(parentBlobID);
 		const bool is_young = getGameTime() - CreateTime <= 4;
 		const bool same_team = TeamNum == blob.getTeamNum();
 
-		if (LastHitBlob is blob || shooterBlob is blob)
+		if (LastHitBlob is blob || shooterBlob is blob || parentBlob is blob)
 		{
 			return false;
 		}
