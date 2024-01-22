@@ -185,7 +185,7 @@ void buildT3ShopCombined(CBlob@ this)
 	makeShopItem(this,params,c_jav-7, Vec2f(1,1), true, false);}
 
 	{string[] params = {n_apsniper,t_apsniper,bn_apsniper,d_apsniper,b,s,ds};
-	makeShopItem(this,params,c_apsniper-10, Vec2f(2,1), false, false);}
+	makeShopItem(this,params,c_apsniper-5, Vec2f(2,1), false, false);}
 
 	{string[] params = {n_c4,t_c4,bn_c4,d_c4,b,s,ds};
 	makeShopItem(this,params,c_c4, Vec2f(1,1), false, false);}

@@ -25,7 +25,7 @@ const u16 c_mgun = 8;
 const u16 c_ftw = 12;
 const u16 c_c4 = 10;
 const u16 c_jav = 15;
-const u16 c_apsniper = 30;
+const u16 c_apsniper = 20;
 // common
 const string b = "blob";
 const string s = "mat_scrap";
