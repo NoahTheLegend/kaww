@@ -1663,13 +1663,14 @@ void onTick(CRules@ this)
 	//
 	if (getGameTime() == 10)
 	{
-		if (getBlobByName("info_desert") is null)
+		// holidays
+		/*if (getBlobByName("info_desert") is null)
 		{
 			server_CreateBlob("info_snowfall");
 
 			if (getBlobByName("info_snow") is null)
 				server_CreateBlob("info_snow", -1, Vec2f(0,0));
-		}
+		}*/
 
 		/*
 		u8 bots = 0; // count bots
