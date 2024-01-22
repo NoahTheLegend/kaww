@@ -64,8 +64,6 @@ class BulletObj
 		LastHitBlobID = 0;
 		@shooter = getBlobByNetworkID(shooterBlobID);
 
-		CBlob@ shooter = getBlobByNetworkID(shooterBlobID);
-
 		CurrentType = type;
 		CurrentPos = pos;
 		FacingLeft = shooter !is null ? shooter.isFacingLeft() : true;
