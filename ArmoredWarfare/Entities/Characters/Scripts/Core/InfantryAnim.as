@@ -11,6 +11,16 @@ const f32 config_offset = -4.0f;
 void onInit(CSprite@ this)
 {
 	LoadSprites(this);
+
+	CSpriteLayer@ helmet = this.getSpriteLayer("helmet");
+	if (helmet !is null)
+	{
+		CSpriteLayer@ head = this.getSpriteLayer("head");
+        if (head !is null)
+        {
+            helmet.SetRelativeZ(head.getRelativeZ()+1.0f);
+        }
+	}
 }
 
 void onPlayerInfoChanged(CSprite@ this)
