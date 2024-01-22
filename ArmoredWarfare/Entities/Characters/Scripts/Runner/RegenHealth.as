@@ -23,6 +23,8 @@ void onTick(CBlob@ this)
 {
 	bool do_regen = this.get_u32("regen") > getGameTime();
 	this.add_u8("step", 1);
+
+	f32 amount = 0.05f;
 	f32 factor = 1.0f;
 
 	if (this.get_u8("step") >= this.get_u8("step_max")
@@ -38,13 +40,14 @@ void onTick(CBlob@ this)
 			if (p.get("PerkStats", @stats) && stats !is null)
 				stats_loaded = true;
 
-			if (stats_loaded && stats.id == Perks::bloodthirsty)
+			if (stats_loaded)
 			{
-				return;
+				amount = stats.regen_amount;
+				factor *= stats.heal_factor;
 			}
 		}
 
 		if (this.getHealth() > this.getInitialHealth() * 0.33f || do_regen) // regen health when its above 33%
-			this.server_Heal((0.05f + (do_regen ? this.get_f32("regen_amount") : 0)) * factor);
+			this.server_Heal((amount + (do_regen ? this.get_f32("regen_amount") : 0)) * factor);
 	}
 }
