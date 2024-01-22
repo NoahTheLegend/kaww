@@ -41,6 +41,10 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	//this.setVelocity(Vec2f_zero);
+	//this.getShape().SetGravityScale(0);
+	//this.server_SetTimeToDie(10);
+
 	CMap@ map = getMap(); //standard map check
 	if (map is null)
 	{ return; }
