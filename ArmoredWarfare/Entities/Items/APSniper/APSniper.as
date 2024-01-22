@@ -198,7 +198,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		Vec2f aimPos = params.read_Vec2f();
 		if (isClient())
 		{
-			if (!this.hasBlob("specammo", 5))
+			if (!this.hasBlob("specammo", 3))
 			{
 				this.getSprite().PlaySound("EmptyGun.ogg", 1.0f, 1.0f);
 				return;
@@ -217,7 +217,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		if (isServer())
 		{
-			this.TakeBlob("specammo", 5);
+			this.TakeBlob("specammo", 3);
 
 			shootVehicleGun(blob.getNetworkID(), this.getNetworkID(),
 				angle, this.getPosition(),
