@@ -6,8 +6,9 @@
 #include "PerksCommon.as";
 
 // const u32 fuel_timer_max = 30 * 600;
-const f32 SPEED_MAX = 57.5;
+const f32 SPEED_MAX = 55.0;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
+f32 windage = 4.0f;
 
 const u32 shootDelay = 1; // Ticks
 const f32 projDamage = 0.75f;
@@ -113,6 +114,16 @@ void onTick(CBlob@ this)
 		
 		if (pilot !is null)
 		{
+			if (pilot.isMyPlayer() && pilot.getControls() !is null)
+			{
+				if (pilot.getControls().isKeyJustPressed(KEY_LCONTROL))
+				{
+					this.add_u8("mode", 1);
+					if (this.get_u8("mode") > 1) this.set_u8("mode", 0);
+				}
+			}
+
+			f32 speed = this.get_f32("velocity");
 			Vec2f dir = pilot.getPosition() - pilot.getAimPos();
 			if (this.get_u32("take_control") > getGameTime())
 			{
@@ -120,30 +131,35 @@ void onTick(CBlob@ this)
 			}
 			const f32 len = dir.Length();
 			dir.Normalize();
-			dir.RotateBy(this.isFacingLeft() ? 30 : -30); // make it fly directly to cursor, works weird vertically
-			f32 mod = 0.075f;
+			dir.RotateBy(this.isFacingLeft() ? 32.5f : -32.5f); // make it fly directly to cursor, works weird vertically
+
+			bool og = this.isOnGround();
+			f32 ground_factor = og ? 4.0f : 1.0f;
+
+			f32 mod = 0.1f * ground_factor;
 			CPlayer@ p = pilot.getPlayer();
 			PerkStats@ stats;
 			if (p !is null && !this.hasTag("falling") && p.get("PerkStats", @stats))
 			{
-				mod += stats.plane_velo;
+				mod *= 1.0f+stats.plane_velo;
 			}
-			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, mod);
 
-			// this.SetFacingLeft(dir.x > 0);
-			this.SetFacingLeft(this.getVelocity().x < -0.1f);
-			// const f32 ang = this.isFacingLeft() ? 0 : 180;
-			// this.setAngleDegrees(ang - dir.Angle());
-		
+			f32 vellen = this.getShape().vellen;
+			f32 vellen_factor = Maths::Max((vellen*6)/SPEED_MAX, mod);
+			dir = Vec2f_lerp(this.get_Vec2f("direction"), dir, mod * vellen_factor);
+
+			if (vellen < 4.0f)
+			{
+				dir.y = Maths::Lerp(dir.y, -0.0f, (1.0f-vellen/5.0f) / (4/ground_factor));
+				if (!og) this.set_f32("velocity", this.get_f32("velocity")*0.95f);
+			}
+
+			this.SetFacingLeft(this.getVelocity().x < -0.01f);
+
 			bool pressed_w = ap_pilot.isKeyPressed(key_up);
 			bool pressed_s = ap_pilot.isKeyPressed(key_down);
-			bool pressed_lm = ap_pilot.isKeyPressed(key_action1);
+			bool pressed_lm = ap_pilot.isKeyPressed(key_action1) && !this.isOnGround() && this.getVelocity().Length() > 4.0f;
 
-			//if (this.getTickSinceCreated() == 5*30)
-			//{
-			//	this.Tag('falling');
-			//	this.set_u32("falling_time", getGameTime());
-			//}
 			if (this.hasTag("falling"))
 			{
 				Vec2f old_pos = this.getOldPosition();
@@ -629,5 +645,69 @@ void onRender(CSprite@ this)
 		GUI::SetFont("menu");
 		if (blob.getInventory() !is null)
 			GUI::DrawTextCentered(""+blob.getInventory().getCount("mat_smallbomb"), pos2d+Vec2f(-6, 58.0f), SColor(255, 255, 255, 0));
+		
+		if (blob.get_u8("mode") != 0) return;
+		f32 deg = blob.getAngleDegrees();
+		bool fl = blob.isFacingLeft();
+		f32 new_deg = (fl?180:0)+deg;
+		int d = 64.0f;
+
+		Vec2f offset = Vec2f(0, 0).RotateBy(new_deg);
+		Vec2f len = Vec2f(d, 0).RotateBy(new_deg);
+		GUI::DrawLine2D(pos2d + offset, pos2d + offset + len, SColor(155,0,200,0));
+
+		Vec2f dir = blob.get_Vec2f("direction");
+		dir.Normalize();
+		dir.RotateBy(this.isFacingLeft() ? -32.5f : 32.5f);
+
+		Vec2f len2 = Vec2f(d, 0).RotateBy(-dir.Angle()+180);
+		GUI::DrawLine2D(pos2d + offset, pos2d + offset + len2, SColor(155,200,200,0));
+		
+		Vec2f aimdir = driver_blob.getPosition() - driver_blob.getAimPos();
+		aimdir.Normalize();
+		Vec2f len3 = Vec2f(d, 0).RotateBy(-aimdir.Angle() + 180);
+		GUI::DrawLine2D(pos2d + offset, pos2d + offset + len3, SColor(155,200,0,0));
+
+		f32 vellen_raw = blob.getShape().vellen;
+		f32 vellen = vellen_raw*8;
+		f32 rpm = blob.get_f32("velocity");
+		
+		f32 total_diff = len3.getAngleDegrees()-len2.getAngleDegrees();
+		total_diff += total_diff > 180 ? -360 : total_diff < -180 ? 360 : 0;
+		total_diff = Maths::Abs(Maths::Round(total_diff*10.0f)/10.0f);
+
+		f32 angle_factor = 1.0f-(total_diff/90.0f);
+		f32 rpm_factor = rpm/SPEED_MAX;
+		f32 vel_factor = Maths::Min(1.0f, vellen_raw/windage);
+
+		f32 force_factor_raw = Maths::Lerp(blob.get_f32("force_factor"), angle_factor * rpm_factor * vel_factor, 0.05f);
+		blob.set_f32("force_factor", force_factor_raw);
+		f32 force_factor = Maths::Round(1000.0f * force_factor_raw)/10.0f;
+
+		string state = "ACTIVE";
+		SColor col = SColor(155,255,255,255);
+		SColor col_eng = col;
+		
+		if (blob.isOnGround())
+		{
+			if (vel_factor == 1)
+			{
+				state = "TAKE OFF";
+				col_eng = SColor(155,255,155,0);
+			}
+			else
+			{
+				state = "GROUNDED";
+				col_eng = SColor(155,0,255,0);
+			}
+		}
+		else if (force_factor_raw < 0.5f)
+		{
+			state = "CRITICAL";
+			col_eng = SColor(155,255,0,0);
+		}
+
+		GUI::DrawTextCentered("RPM: "+(Maths::Max(0, Maths::Round(rpm)*10))+".0\nEFF: "+force_factor+"%", pos2d+Vec2f(0,96), col);
+		GUI::DrawTextCentered("ENG: "+state, pos2d+Vec2f(0,112), col_eng);
 	}
 }
