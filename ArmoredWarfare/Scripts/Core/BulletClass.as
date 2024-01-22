@@ -304,7 +304,7 @@ class BulletObj
 		CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + CurrentPos;
 		TrueVelocity = CurrentPos - OldPos;
 		
-		 Check that the shooter that owns us hasnt died before we crash
+		// Check that the shooter that owns us hasnt died before we crash
 		if (shooter !is null && shooter.hasTag("dead")) {
 			@shooter = null;
 		}
