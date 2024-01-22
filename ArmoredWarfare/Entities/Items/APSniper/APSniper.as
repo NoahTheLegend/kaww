@@ -23,7 +23,7 @@ void onInit(CBlob@ this)
 	this.Tag("weapon");
 	this.addCommandID("fire");
 
-	this.set_string("shoot sound", "44magnum_fire.ogg");
+	this.set_string("shoot sound", ""); // we have own code
 
 	this.set_u32("cooldown", 0);
 	this.set_s32("custom_hitter", HittersAW::apbullet);
@@ -197,10 +197,17 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (blob is null) return;
 
 		Vec2f aimPos = params.read_Vec2f();
-		if (!this.hasBlob("specammo", 5))
+		if (isClient())
 		{
-			if (isClient()) this.getSprite().PlaySound("EmptyGun.ogg", 1.0f, 1.0f);
-			return;
+			if (!this.hasBlob("specammo", 5))
+			{
+				this.getSprite().PlaySound("EmptyGun.ogg", 1.0f, 1.0f);
+				return;
+			}
+			else
+			{
+				this.getSprite().PlaySound("44magnum_fire.ogg", 1.0f, 1.0f);
+			}
 		}
 
 		f32 angle = getAimAngle(this);
