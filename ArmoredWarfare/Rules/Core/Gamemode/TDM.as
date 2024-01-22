@@ -1242,6 +1242,9 @@ void HandleResetInfo(CRules@ this)
 
 void onRestart(CRules@ this)
 {
+	s16 renderId = this.get_s16("snow_render_id");
+	if (renderId != 0) Render::RemoveScript(renderId);
+
 	if (autorestart) HandleResetInfo(this);
 	//WriteMatchInfo(this);
 
