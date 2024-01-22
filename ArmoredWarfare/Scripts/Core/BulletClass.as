@@ -17,7 +17,7 @@ const int ScreenY = getDriver().getScreenWidth();
 
 class BulletObj
 {
-	CBlob@ shooter;
+	//CBlob@ shooter;
 	u16 shooterBlobID;
 	u16 LastHitBlobID;
 
@@ -62,7 +62,9 @@ class BulletObj
 		f32 damage_head, s8 penetration, u32 creation_time, s32 hitter, u8 time, u8 speedo)
 	{
 		LastHitBlobID = 0;
-		@shooter = getBlobByNetworkID(shooterBlobID);
+		//shooter = getBlobByNetworkID(shooterBlobID);
+
+		CBlob@ shooter = getBlobByNetworkID(shooterBlobID);
 
 		CurrentType = type;
 		CurrentPos = pos;
@@ -152,7 +154,7 @@ class BulletObj
 		const bool is_young = getGameTime() - CreateTime <= 4;
 		const bool same_team = TeamNum == blob.getTeamNum();
 
-		if (LastHitBlob is blob || shooterBlob is blob || parentBlob is blob)
+		if (LastHitBlob is blob || shooterBlob is blob)
 		{
 			return false;
 		}
@@ -303,10 +305,13 @@ class BulletObj
 		TrueVelocity = CurrentPos - OldPos;
 		
 		// Check that the shooter that owns us hasnt died before we crash
-		if (shooter !is null && shooter.hasTag("dead")) {
-			@shooter = null;
-		}
-
+		//if (shooter !is null && shooter.hasTag("dead")) {
+		//	@shooter = null;
+		//}
+		
+		CBlob@ shooter = getBlobByNetworkID(shooterBlobID);
+		bool shooterExists = shooter !is null;
+		
 		bool endBullet = false;
 		bool breakLoop = false;
 		HitInfo@[] list;
@@ -343,7 +348,7 @@ class BulletObj
 						if (isServer())
 						{
 							f32 vehdmg = (CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f);
-							if (shooter !is null) shooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
+							if (shooterExists) shooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
 							else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
 							LastHitBlobID = blob.getNetworkID();
 						}
@@ -355,7 +360,7 @@ class BulletObj
 						{
 							if (isServer())
 							{
-								if (shooter !is null && !blob.hasTag("dead") && shooter.getDamageOwnerPlayer() !is null)
+								if (shooterExists && !blob.hasTag("dead") && shooter.getDamageOwnerPlayer() !is null)
 								{
 								CPlayer@ p = shooter.getDamageOwnerPlayer();
 								bool stats_loaded = false;
@@ -480,7 +485,7 @@ class BulletObj
 								dmg = 0;
 							}
 						}
-						if (shooter !is null && shooter.isMyPlayer())
+						if (shooterExists && shooter.isMyPlayer())
 						{
 							CSprite@ hoomanSprite = shooter.getSprite();
 							if (hoomanSprite !is null)
@@ -498,7 +503,7 @@ class BulletObj
 
 					if (blob.hasTag("nolegs")) dmg = DamageHead;
 
-					if (CurrentType < 1 && (shooter is null || shooter.getName() != "sniper")) {
+					if (CurrentType < 1 && (!shooterExists || shooter.getName() != "sniper")) {
 						// do less dmg offscreen
 						int creationTicks = getGameTime()-CreateTime;
 						if (creationTicks > 20) 		dmg *= 0.75f;
@@ -516,8 +521,10 @@ class BulletObj
 							if (isServer()) 
 							{
 								f32 door_dmg = BlobName != "stone_door" ? CurrentType == 1 ? 1.0f : 0.1f : 0.01f;
-								if (shooter !is null) shooter.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
+
+								if (shooterExists) shooter.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
 								else blob.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
+
 								LastHitBlobID = blob.getNetworkID();
 							}
 
@@ -532,8 +539,9 @@ class BulletObj
 
 					if (dmg > 0.0f)
 					{
-						if (shooter !is null) shooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
+						if (shooterExists) shooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 						else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
+
 						LastHitBlobID = blob.getNetworkID();
 					}
 				}
@@ -729,22 +737,8 @@ class BulletObj
 							if (p !is null) { p.lighting = true; }}
 						}
 
-						u16 impact_angle = 0;
-
-						// ??? this is probably not working and heavy, remove\rewrite later
-						{ TileType tile = map.getTile(hitpos + Vec2f(0, -1)).type;
-						if (map.isTileSolid(tile)) impact_angle = 180;}
-
-						{ TileType tile = map.getTile(hitpos + Vec2f(0, 1)).type;
-						if (map.isTileSolid(tile)) impact_angle = 0;}
-
-						{ TileType tile = map.getTile(hitpos + Vec2f(-1, 0)).type;
-						if (map.isTileSolid(tile)) impact_angle = 90;}
-
-						{ TileType tile = map.getTile(hitpos + Vec2f(1, 0)).type;
-						if (map.isTileSolid(tile)) impact_angle = 270;}
-
-						if (XORRandom(2) == 0 && !v_fastrender)
+						u16 impact_angle = -Direction.Angle();
+						if (!v_fastrender && XORRandom(2) == 0)
 						{
 							CParticle@ p = ParticleAnimated("BulletHitParticle1.png", hitpos + Vec2f(0.0f, 1.0f), Vec2f(0,0), impact_angle, 0.55f + XORRandom(50)*0.01f, 2+XORRandom(2), 0.0f, true);
 							if (p !is null) { p.diesoncollide = false; p.fastcollision = false; p.lighting = false; }
