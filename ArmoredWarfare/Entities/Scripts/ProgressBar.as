@@ -116,11 +116,13 @@ shared class ProgressBar : Bar {
             else
             {
                 this.target = blob.get_f32(this.prop);
-                if (!this.fadeout && this.percent <= 0.975f) this.current = this.target;
+                if (!this.fadeout && this.percent < 1.0f) this.current = this.target;
             }
         }
-        this.percent = Maths::Min(this.current/this.max, 1.0f);
-        
+
+        f32 raw_percent = this.current/this.max;
+        this.percent = Maths::Min(Maths::Ceil(raw_percent*100)/100, 1.0f);
+
         if (this.current == 0 && this.target == 0)
         {
             this.fadeout_start = 0;
@@ -140,7 +142,7 @@ shared class ProgressBar : Bar {
         this.drawpos = this.pos2d + mod_offset;
         GUI::DrawPane(this.drawpos - (mod_dim*0.5f) - (this.inherit*0.5f), this.drawpos + (mod_dim*0.5f) + (this.inherit*0.5f), this.color_back);
         if (blob !is null && blob.getTickSinceCreated() <= 5) return;
-
+        
         if (this.percent != 0.0f)
             GUI::DrawPane(this.drawpos - (mod_dim*0.5f) + this.inherit, this.drawpos - Vec2f(mod_dim.x*0.33f, 0) + Vec2f(mod_dim.x*0.835f*this.percent,mod_dim.y*0.5f) - this.inherit, this.color_front);
     }
@@ -189,13 +191,13 @@ shared class Bar : BarHandler{
             if (active is null) continue;
 
             BarHandler::Fadeout(active);
-            if (getGameTime()-active.tick_since_created > 90 && active.current <= 1)
+            if (getGameTime()-active.tick_since_created > 15 && active.current <= 0)
             {
                 BarHandler::RemoveBar(active.name, true);
                 continue;
             }
 
-            if (active.remove_on_fill && active.percent == 1.0f)
+            if (active.remove_on_fill && active.percent >= 0.99f)
             {
                 BarHandler::RemoveBar(active.name, false);
             }
@@ -260,7 +262,7 @@ shared class BarHandler {
             {
                 if (force_removal)
                 {
-                    if (isServer() && active.percent > 0.975f)
+                    if (isServer() && active.percent >= 0.99f)
                     {
                         this.SendCommand(active);
                     }
@@ -270,7 +272,7 @@ shared class BarHandler {
                 }
                 else if (!active.fadeout)
                 {
-                    //if (isServer() && active.percent > 0.975f)
+                    //if (isServer() && active.percent >= 0.99f)
                     //{
                     //    this.SendCommand(active);
                     //}
