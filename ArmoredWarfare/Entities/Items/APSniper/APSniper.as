@@ -19,7 +19,6 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 48, 16);
 	this.Tag("builder always hit");
-	this.Tag("destructable_nosoak");
 	this.Tag("weapon");
 	this.addCommandID("fire");
 
