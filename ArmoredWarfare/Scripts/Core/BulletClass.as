@@ -59,15 +59,16 @@ class BulletObj
 
 	bool FacingLeft;
 	
-	BulletObj(u16 shooterBlobID, f32 angle, Vec2f pos, s8 type, f32 damage_body,
+	BulletObj(u16 _shooterBlobID, f32 angle, Vec2f pos, s8 type, f32 damage_body,
 		f32 damage_head, s8 penetration, u32 creation_time, s32 hitter, u8 time, u8 speedo)
 	{
+		shooterBlobID = _shooterBlobID;
 		LastHitBlobID = 0;
 		parentBlobID = 0;
 		//shooter = getBlobByNetworkID(shooterBlobID);
-
+		
 		CBlob@ shooter = getBlobByNetworkID(shooterBlobID);
-
+		
 		CurrentType = type;
 		CurrentPos = pos;
 		FacingLeft = shooter !is null ? shooter.isFacingLeft() : true;
@@ -314,7 +315,7 @@ class BulletObj
 		
 		CBlob@ shooter = getBlobByNetworkID(shooterBlobID);
 		bool shooterExists = shooter !is null;
-		
+
 		bool endBullet = false;
 		bool breakLoop = false;
 		HitInfo@[] list;
@@ -365,18 +366,18 @@ class BulletObj
 							{
 								if (shooterExists && !blob.hasTag("dead") && shooter.getDamageOwnerPlayer() !is null)
 								{
-								CPlayer@ p = shooter.getDamageOwnerPlayer();
-								bool stats_loaded = false;
-								PerkStats@ stats;
-								if (p !is null && p.get("PerkStats", @stats) && stats !is null)
-									stats_loaded = true;
+									CPlayer@ p = shooter.getDamageOwnerPlayer();
+									bool stats_loaded = false;
+									PerkStats@ stats;
+									if (p !is null && p.get("PerkStats", @stats) && stats !is null)
+										stats_loaded = true;
 
 									if (stats_loaded && stats.id == Perks::bloodthirsty)
 									{
 										CBlob@ pblob = p.getBlob();
 										if (pblob !is null)
 										{
-											f32 mod = 0.4f + Rng.NextRanged(11)*0.01f;
+											f32 mod = 0.2f + Rng.NextRanged(11)*0.01f;
 											f32 amount = DamageBody * mod;
 											if (shooter.getHealth() + amount >= shooter.getInitialHealth())
 											{
