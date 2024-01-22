@@ -22,3 +22,11 @@ void onInit(CBlob@ this)
 		map.AddBackground("Backgrounds/Snow_BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
 	}
 }
+
+void onTick(CBlob@ this)
+{
+	if (this.getTickSinceCreated() == 1)
+	{
+		getRules().set_s16("snow_render_id", Render::addScript(Render::layer_floodlayers, "Christmas.as", "DrawSnow", 0));
+	}
+}
