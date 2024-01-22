@@ -526,8 +526,8 @@ namespace FirebringerParams
 	const ::f32 DAMAGE_BODY 			= 0.333f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.333f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.85f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.35f; // airwalk
+	const ::f32 WALK_STAT 				= 0.915f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.4f; // airwalk
 	const ::f32 JUMP_STAT 				= 1.0f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 1.0f; // walk (sprint)
 	const ::f32 AIRWALK_STAT_SPRINT 	= 2.65f; // airwalk (sprint)

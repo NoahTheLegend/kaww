@@ -560,8 +560,8 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 		}
 		else if (this.get_bool("is_firebringer"))
 		{
-			moveVars.walkFactor *= 0.8f;
-			moveVars.jumpFactor *= 0.7f;
+			moveVars.walkFactor *= 0.9f;
+			moveVars.jumpFactor *= 0.8f;
 		}
 	}
 
