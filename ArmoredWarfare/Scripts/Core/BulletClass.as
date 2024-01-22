@@ -170,10 +170,11 @@ class BulletObj
 
 		if (blob.hasTag("bulletpassable"))
 		{
-			if (isServer() )
+			if (isServer())
 			{
 				if (hoomanBlob !is null) hoomanBlob.server_Hit(blob, OldPos, blob.getVelocity(), 0.1f+DamageBody/2, Hitters::builder);
 				else blob.server_Hit(blob, OldPos, blob.getVelocity(), 0.1f+DamageBody/2, Hitters::builder);
+				LastHitBlobID = blob.getNetworkID();
 			}
 			return false;
 		}
@@ -212,6 +213,7 @@ class BulletObj
 		{
 			if (hoomanBlob !is null) hoomanBlob.server_Hit(blob, CurrentPos, blob.getVelocity(), 0.5f, Hitters::builder);
 			else blob.server_Hit(blob, CurrentPos, blob.getVelocity(), 0.5f, Hitters::builder);
+			LastHitBlobID = blob.getNetworkID();
 			return false;
 		}
 		
@@ -344,6 +346,7 @@ class BulletObj
 							f32 vehdmg = (CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f);
 							if (human !is null) human.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
 							else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
+							LastHitBlobID = blob.getNetworkID();
 						}
 					}
 					else
@@ -516,6 +519,7 @@ class BulletObj
 								f32 door_dmg = BlobName != "stone_door" ? CurrentType == 1 ? 1.0f : 0.1f : 0.01f;
 								if (human !is null) human.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
 								else blob.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
+								LastHitBlobID = blob.getNetworkID();
 							}
 
 							endBullet = recountPenetrationsWeak();
