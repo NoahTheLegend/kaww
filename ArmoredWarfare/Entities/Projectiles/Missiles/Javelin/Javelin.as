@@ -33,6 +33,7 @@ void onInit(CBlob@ this)
 
 	this.set_f32(robotechHeightString, 64.0f); // pixels
 	this.set_f32("map_damage_ratio", 0.5f);
+	this.set_u8("invulnerability_time", 30); // required to init for any missile
 
 	this.getShape().SetGravityScale(missile.gravity_scale);
 	if (this.getSprite() !is null) this.getSprite().PlaySound("CruiseMissile_Launch.ogg", 0.5f, 1.5f);
