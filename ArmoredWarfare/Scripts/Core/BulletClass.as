@@ -17,8 +17,8 @@ const int ScreenY = getDriver().getScreenWidth();
 
 class BulletObj
 {
-	CBlob@ human;
-	u16 hoomanShooterID;
+	CBlob@ shooter;
+	u16 shooterBlobID;
 	u16 LastHitBlobID;
 
 	BulletFade@ Fade;
@@ -58,24 +58,26 @@ class BulletObj
 
 	bool FacingLeft;
 	
-	BulletObj(u16 humanBlobID, f32 angle, Vec2f pos, s8 type, f32 damage_body,
+	BulletObj(u16 shooterBlobID, f32 angle, Vec2f pos, s8 type, f32 damage_body,
 		f32 damage_head, s8 penetration, u32 creation_time, s32 hitter, u8 time, u8 speedo)
 	{
 		LastHitBlobID = 0;
-		@human = getBlobByNetworkID(humanBlobID);
+		@shooter = getBlobByNetworkID(shooterBlobID);
+
+		CBlob@ shooter = getBlobByNetworkID(shooterBlobID);
 
 		CurrentType = type;
 		CurrentPos = pos;
-		FacingLeft = human !is null ? human.isFacingLeft() : true;
-		BulletGrav = human !is null ? human.get_Vec2f("grav") : Vec2f_zero;
+		FacingLeft = shooter !is null ? shooter.isFacingLeft() : true;
+		BulletGrav = shooter !is null ? shooter.get_Vec2f("grav") : Vec2f_zero;
 		DamageBody = damage_body;
 		DamageHead = damage_head;
 		CurrentPen = penetration;
-		TeamNum  = human !is null ? human.getTeamNum() : 8;
+		TeamNum  = shooter !is null ? shooter.getTeamNum() : 8;
 		TimeLeft = time;
 		KB       = Vec2f(0,0);
 		Speed    = speedo;
-		hoomanShooterID = humanBlobID;
+		shooterBlobID = shooterBlobID;
 		StartingAimPos = angle;
 		OldPos     = CurrentPos;
 		LastPos    = CurrentPos;
@@ -146,13 +148,13 @@ class BulletObj
 	    }
 	}
 
-	bool doesCollideWithBlob(CBlob@ blob, CBlob@ hoomanBlob)
+	bool doesCollideWithBlob(CBlob@ blob, CBlob@ shooterBlob)
 	{
 		CBlob@ LastHitBlob = getBlobByNetworkID(LastHitBlobID);
 		const bool is_young = getGameTime() - CreateTime <= 4;
 		const bool same_team = TeamNum == blob.getTeamNum();
 
-		if (LastHitBlob is blob)
+		if (LastHitBlob is blob || shooterBlob is blob || parentBlob is blob)
 		{
 			return false;
 		}
@@ -172,7 +174,7 @@ class BulletObj
 		{
 			if (isServer())
 			{
-				if (hoomanBlob !is null) hoomanBlob.server_Hit(blob, OldPos, blob.getVelocity(), 0.1f+DamageBody/2, Hitters::builder);
+				if (shooterBlob !is null) shooterBlob.server_Hit(blob, OldPos, blob.getVelocity(), 0.1f+DamageBody/2, Hitters::builder);
 				else blob.server_Hit(blob, OldPos, blob.getVelocity(), 0.1f+DamageBody/2, Hitters::builder);
 				LastHitBlobID = blob.getNetworkID();
 			}
@@ -210,7 +212,7 @@ class BulletObj
 
 		if (blob.hasTag("destructable_nosoak"))
 		{
-			if (hoomanBlob !is null) hoomanBlob.server_Hit(blob, CurrentPos, blob.getVelocity(), 0.5f, Hitters::builder);
+			if (shooterBlob !is null) shooterBlob.server_Hit(blob, CurrentPos, blob.getVelocity(), 0.5f, Hitters::builder);
 			else blob.server_Hit(blob, CurrentPos, blob.getVelocity(), 0.5f, Hitters::builder);
 			LastHitBlobID = blob.getNetworkID();
 			return false;
@@ -302,15 +304,15 @@ class BulletObj
 		CurrentPos = ((Direction * Speed) - (Gravity * Speed)) + CurrentPos;
 		TrueVelocity = CurrentPos - OldPos;
 		
-		// Check that the human that owns us hasnt died before we crash
-		if (human !is null && human.hasTag("dead")) {
-			@human = null;
+		 Check that the shooter that owns us hasnt died before we crash
+		if (shooter !is null && shooter.hasTag("dead")) {
+			@shooter = null;
 		}
 
 		bool endBullet = false;
 		bool breakLoop = false;
 		HitInfo@[] list;
-		if (map.getHitInfosFromRay(OldPos, -(CurrentPos - OldPos).Angle(), (OldPos - CurrentPos).Length(), human, @list))
+		if (map.getHitInfosFromRay(OldPos, -(CurrentPos - OldPos).Angle(), (OldPos - CurrentPos).Length(), shooter, @list))
 		{
 			for (int a = 0; a < list.length(); a++)
 			{
@@ -321,7 +323,7 @@ class BulletObj
 				CBlob@ blob = @hit.blob;
 				TileType tile = map.getTile(hitpos).type;
 
-				if (blob !is null && !doesCollideWithBlob(blob, human))
+				if (blob !is null && !doesCollideWithBlob(blob, shooter))
 				{
 					continue;
 				}
@@ -343,7 +345,7 @@ class BulletObj
 						if (isServer())
 						{
 							f32 vehdmg = (CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f);
-							if (human !is null) human.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
+							if (shooter !is null) shooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
 							else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
 							LastHitBlobID = blob.getNetworkID();
 						}
@@ -355,9 +357,9 @@ class BulletObj
 						{
 							if (isServer())
 							{
-								if (human !is null && !blob.hasTag("dead") && human.getDamageOwnerPlayer() !is null)
+								if (shooter !is null && !blob.hasTag("dead") && shooter.getDamageOwnerPlayer() !is null)
 								{
-								CPlayer@ p = human.getDamageOwnerPlayer();
+								CPlayer@ p = shooter.getDamageOwnerPlayer();
 								bool stats_loaded = false;
 								PerkStats@ stats;
 								if (p !is null && p.get("PerkStats", @stats) && stats !is null)
@@ -370,11 +372,11 @@ class BulletObj
 										{
 											f32 mod = 0.4f + Rng.NextRanged(11)*0.01f;
 											f32 amount = DamageBody * mod;
-											if (human.getHealth() + amount >= human.getInitialHealth())
+											if (shooter.getHealth() + amount >= shooter.getInitialHealth())
 											{
-												human.server_SetHealth(human.getInitialHealth());
+												shooter.server_SetHealth(shooter.getInitialHealth());
 											}
-											else human.server_Heal(amount);
+											else shooter.server_Heal(amount);
 										}
 									}
 								}
@@ -480,9 +482,9 @@ class BulletObj
 								dmg = 0;
 							}
 						}
-						if (human !is null && human.isMyPlayer())
+						if (shooter !is null && shooter.isMyPlayer())
 						{
-							CSprite@ hoomanSprite = human.getSprite();
+							CSprite@ hoomanSprite = shooter.getSprite();
 							if (hoomanSprite !is null)
 							{
 								if (!has_helmet)
@@ -498,7 +500,7 @@ class BulletObj
 
 					if (blob.hasTag("nolegs")) dmg = DamageHead;
 
-					if (CurrentType < 1 && (human is null || human.getName() != "sniper")) {
+					if (CurrentType < 1 && (shooter is null || shooter.getName() != "sniper")) {
 						// do less dmg offscreen
 						int creationTicks = getGameTime()-CreateTime;
 						if (creationTicks > 20) 		dmg *= 0.75f;
@@ -516,7 +518,7 @@ class BulletObj
 							if (isServer()) 
 							{
 								f32 door_dmg = BlobName != "stone_door" ? CurrentType == 1 ? 1.0f : 0.1f : 0.01f;
-								if (human !is null) human.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
+								if (shooter !is null) shooter.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
 								else blob.server_Hit(blob, CurrentPos, blob.getOldVelocity(), door_dmg, Hitters::builder);
 								LastHitBlobID = blob.getNetworkID();
 							}
@@ -532,7 +534,7 @@ class BulletObj
 
 					if (dmg > 0.0f)
 					{
-						if (human !is null) human.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
+						if (shooter !is null) shooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 						else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 						LastHitBlobID = blob.getNetworkID();
 					}
