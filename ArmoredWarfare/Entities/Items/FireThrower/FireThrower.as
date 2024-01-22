@@ -15,6 +15,7 @@ void onInit(CBlob@ this)
 	this.Tag("machinegun");
 	this.Tag("firethrower");
 	this.Tag("very heavy weight");
+	this.Tag("weapon");
 	
 	Vehicle_Setup(this,
 	              0.0f, // move speed
