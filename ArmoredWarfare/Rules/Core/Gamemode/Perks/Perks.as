@@ -135,7 +135,7 @@ shared class PerkBloodthirsty : PerkStats {
         id = 3;
         regen_amount = 0;
         heal_factor = 0.5f;
-        kill_heal = 1.0f;
+        kill_heal = 1.5f;
     }
 };
 
