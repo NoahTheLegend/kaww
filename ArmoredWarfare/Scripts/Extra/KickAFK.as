@@ -1,40 +1,36 @@
 // kicks players that dont play for a given time
 // by norill
 // move people with kick immunity to spec instead of doing nothing -mazey
+// move people into spec if seeding servers -gingerbeard
 
 #define CLIENT_ONLY
-#include "AdminLogic.as"
 
 bool warned = false;
 int warnTime = 0;
 int lastMoveTime = 0;
 
-const uint checkInterval = 45;
-const uint totalToKickSeconds = 45 * 2 + 30;
+const uint checkInterval = 90;
+const uint totalToKickSeconds = 60 * 2 + 30;
 const uint warnToKickSeconds = 60;
 const uint idleToWarnSeconds = totalToKickSeconds - warnToKickSeconds;
+const f32 seedingPercent = 0.25f;
 
 void onTick(CRules@ this)
 {
-    if (isClient() && isServer())
-    {
-        return;
-    }
 	if (getGameTime() % checkInterval != 0)
 		return;
 
 	CPlayer@ p = getLocalPlayer();
 	CControls@ controls = getControls();
-	if (p is null ||											//no player
-		controls is null ||										//no controls
-		p.getTeamNum() == getRules().getSpectatorTeamNum() ||	//or spectator
-		getNet().isServer())								//or we're running the server
-	{
+	if (p is null || controls is null || isServer())
 		return;
-	}
 
-	bool kickImmunity = getSecurity().checkAccess_Feature(p, "kick_immunity");
-	kickImmunity = true;
+	if (p.getTeamNum() == this.getSpectatorTeamNum())
+		return;
+
+	const bool kickImmunity = getSecurity().checkAccess_Feature(p, "kick_immunity");
+	const bool seeding = getPlayerCount() <= sv_maxplayers * seedingPercent;
+	const bool kickToSpectator = true; //kickImmunity || seeding;
 
 	//not updated yet or numbers from last game?
 	if(controls.lastKeyPressTime == 0 || controls.lastKeyPressTime > getGameTime())
@@ -50,7 +46,7 @@ void onTick(CRules@ this)
 
 	int time = Time_Local();
 	int diff = time - lastMoveTime - idleToWarnSeconds;
-	if (!warned && p.getTeamNum() != getRules().getSpectatorTeamNum())
+	if (!warned)
 	{
 		if (diff > 0)
 		{
@@ -63,7 +59,7 @@ void onTick(CRules@ this)
 			{
 				//you have been warned
 				client_AddToChat("Seems like you are currently away from your keyboard.", SColor(255, 255, 100, 32));
-				client_AddToChat("Move around or you will be " + (kickImmunity ? "moved to spectator" : "kicked") + " in "+warnToKickSeconds+" seconds!", SColor(255, 255, 100, 32));
+				client_AddToChat("Move around or you will be " + (kickToSpectator ? "moved to spectator" : "kicked") + " in "+warnToKickSeconds+" seconds!", SColor(255, 255, 100, 32));
 				warned = true;
 				warnTime = time;
 			}
@@ -73,10 +69,16 @@ void onTick(CRules@ this)
 	if (warned && time - warnTime > warnToKickSeconds)
 	{
 		//so long, sucker
-		client_AddToChat("You were " + (kickImmunity ? "moved to spectator" : "kicked") + " for being AFK too long.", SColor(255, 240, 50, 0));
+		client_AddToChat("You were " + (kickToSpectator ? "moved to spectator" : "kicked") + " for being AFK too long.", SColor(255, 240, 50, 0));
 		warned = false;
-
-		joinNewSpecTeam(this, getLocalPlayer()); //Force-swap to spec team.
+		if (!kickToSpectator)
+		{
+			getNet().DisconnectClient();
+		}
+		else
+		{
+			p.client_ChangeTeam(this.getSpectatorTeamNum());
+		}
 	}
 }
 
@@ -97,15 +99,10 @@ void RemoveWarning()
 
 bool onClientProcessChat(CRules@ this, const string &in textIn, string &out textOut, CPlayer@ player)
 {
-	textOut = textIn;
-
-	if (player is null) return true;
-
-	// Return if it's not the local player
-	if (not player.isMyPlayer()) return true;
-
-	//but register a movement
-	DidInput();
+	if (player !is null && player.isMyPlayer())
+	{
+		DidInput();
+	}
 
 	return true;
 }
