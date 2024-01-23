@@ -464,7 +464,8 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 		sparks(this.getPosition()+Vec2f(0, pole_height/2), -90+XORRandom(181), XORRandom(4)+1, getNeonColor(this.getTeamNum(), XORRandom(3)));
 	}
 
-	//CheckTeamWon(this, oldTeam);
+	bool isTDM = (getMap().tilemapwidth <= 300);
+	if (isTDM) CheckTeamWon(this, oldTeam);
 }
 
 void CheckTeamWon(CBlob@ this, const int oldTeam)
