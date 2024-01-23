@@ -1675,7 +1675,7 @@ void onTick(CRules@ this)
 				server_CreateBlob("info_snow", -1, Vec2f(0,0));
 		}*/
 
-		/*
+		// bots
 		u8 bots = 0; // count bots
 		for (u8 i = 0; i < getPlayersCount(); i++)
 		{
@@ -1738,10 +1738,10 @@ void onTick(CRules@ this)
 				}
 			}
 		}
-		*/
 	}
-
-	/*if (getGameTime() == 20 || this.hasTag("firstjoin"))
+		
+	// bots
+	if (getGameTime() == 20 || this.hasTag("firstjoin"))
 	{
 		this.Untag("firstjoin");
 		if (!this.hasTag("togglebots"))
@@ -1773,7 +1773,6 @@ void onTick(CRules@ this)
 			}
 		}
 	}
-	*/
 	
 	if (getGameTime() % 30 == 0)
 	{
