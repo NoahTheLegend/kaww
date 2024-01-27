@@ -440,7 +440,10 @@ bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool was
 
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge)
 {
-	this.getSprite().PlayRandomSound(v.getCurrentAmmo().fire_sound);
+	if (isClient() && this.getSprite() !is null && v !is null && v.getCurrentAmmo() !is null)
+	{
+		this.getSprite().PlayRandomSound(v.getCurrentAmmo().fire_sound);
+	}
 	if (bullet !is null)
 	{
 		bullet.Tag("shell");
