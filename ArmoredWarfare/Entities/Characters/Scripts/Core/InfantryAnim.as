@@ -30,6 +30,8 @@ void onPlayerInfoChanged(CSprite@ this)
 
 void LoadSprites(CSprite@ this)
 {
+	if (this is null) return;
+	
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
 
