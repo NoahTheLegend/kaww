@@ -29,7 +29,7 @@ const Vec2f menu_pos = getDriver().getScreenCenterPos();
 const Vec2f menu_dim = Vec2f(Maths::Min(menu_grid_width, structures.size()), Maths::Floor(structures.size() / menu_grid_width));
 const Vec2f img_size = Vec2f(32,32);
 
-const f32 build_range = 64.0f;
+const f32 build_range = 80.0f;
 
 bool isInArea(Vec2f tl, Vec2f br, Vec2f mpos)
 {
