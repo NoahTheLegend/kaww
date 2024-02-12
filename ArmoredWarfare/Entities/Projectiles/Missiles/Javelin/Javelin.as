@@ -280,15 +280,15 @@ void doMuzzleFlash(Vec2f thisPos = Vec2f_zero, Vec2f flashVec = Vec2f_zero)
 
 		f32 pAngle = 360.0f * _missile_r.NextFloat();
 
-		CParticle@ p = ParticleAnimated("GenericBlast6.png", pPos, pVel, pAngle, 0.5f, 1, 0, true);
-    	if(p !is null)
-    	{
-			p.collides = false;
-			p.gravity = Vec2f_zero;
-			p.bounce = 0;
-			p.Z = 8;
-			p.timeout = 10;
-		}
+		//CParticle@ p = ParticleAnimated("GenericBlast6.png", pPos, pVel, pAngle, 0.5f, 1, 0, true);
+    	//if(p !is null)
+    	//{
+		//	p.collides = false;
+		//	p.gravity = Vec2f_zero;
+		//	p.bounce = 0;
+		//	p.Z = 8;
+		//	p.timeout = 10;
+		//}
 	}
 }
 
