@@ -35,41 +35,6 @@ void onInit(CBlob@ this)
 
 	this.set_u8("oldteam", this.getTeamNum());
 
-	CSprite@ sprite = this.getSprite();
-	if (sprite is null) return;
-	CSpriteLayer@ flag = sprite.addSpriteLayer("flag", "CTF_Flag.png", 32, 16);
-	if (flag !is null)
-	{
-		flag.SetRelativeZ(10.0f);
-		flag.SetOffset(startpos);
-
-		u8 teamleft = getRules().get_u8("teamleft");
-		u8 teamright = getRules().get_u8("teamright");
-
-		Animation@ anim_default = flag.addAnimation("flag_wave255", XORRandom(3)+3, true);
-		int[] frames = {28,29,30,31};
-		if (anim_default !is null)
-			anim_default.AddFrames(frames);
-
-		Animation@ anim_teamleft = flag.addAnimation("flag_wave"+teamleft, XORRandom(3)+3, true);
-		Animation@ anim_teamright = flag.addAnimation("flag_wave"+teamright, XORRandom(3)+3, true);
-
-		if (anim_teamleft !is null && anim_teamright !is null)
-		{
-			for (u8 i = 0; i < 4; i++)
-			{
-				u8 frameleft = 4*teamleft+i;
-				u8 frameright = 4*teamright+i;
-
-				anim_teamleft.AddFrame(frameleft);
-				anim_teamright.AddFrame(frameright);
-			}
-
-			u8 team = this.getTeamNum();
-			if (team < 7) flag.SetAnimation((team == getRules().get_u8("teamleft") ? anim_teamleft : anim_teamright));
-		}
-	}
-
 	// SHOP
 	InitCosts();
 	bool is_t2 = this.getName().find("t2") != -1;
@@ -182,6 +147,46 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 const f32 pole_height = 100.0f;
 void onTick(CBlob@ this)
 {
+	if (isClient() && this.getTickSinceCreated() >= 1 && !this.hasTag("init_spritelayers"))
+	{
+		CSprite@ sprite = this.getSprite();
+		if (sprite is null) return;
+		CSpriteLayer@ flag = sprite.addSpriteLayer("flag", "CTF_Flag.png", 32, 16);
+		if (flag !is null)
+		{
+			this.Tag("init_spritelayers");
+
+			flag.SetRelativeZ(10.0f);
+			flag.SetOffset(startpos);
+
+			u8 teamleft = getRules().get_u8("teamleft");
+			u8 teamright = getRules().get_u8("teamright");
+
+			Animation@ anim_default = flag.addAnimation("flag_wave255", XORRandom(3)+3, true);
+			int[] frames = {28,29,30,31};
+			if (anim_default !is null)
+				anim_default.AddFrames(frames);
+
+			Animation@ anim_teamleft = flag.addAnimation("flag_wave"+teamleft, XORRandom(3)+3, true);
+			Animation@ anim_teamright = flag.addAnimation("flag_wave"+teamright, XORRandom(3)+3, true);
+
+			if (anim_teamleft !is null && anim_teamright !is null)
+			{
+				for (u8 i = 0; i < 4; i++)
+				{
+					u8 frameleft = 4*teamleft+i;
+					u8 frameright = 4*teamright+i;
+
+					anim_teamleft.AddFrame(frameleft);
+					anim_teamright.AddFrame(frameright);
+				}
+
+				u8 team = this.getTeamNum();
+				if (team < 7) flag.SetAnimation((team == getRules().get_u8("teamleft") ? anim_teamleft : anim_teamright));
+			}
+		}
+	}
+
 	Bar@ bars;
 	if (this.get_string("producing") == "") // idle
 	{
