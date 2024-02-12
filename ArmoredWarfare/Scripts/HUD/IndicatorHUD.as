@@ -12,12 +12,38 @@ const float timelineRightEnd_large = 0.76f;
 int timeout = 900; // 15 seconds timeout for spectator indicator (render is called 60 times a second + staging may have more)
 // dont remove timeout stuff, otherwise game will crash after map compiles
 
-void onRender( CRules@ this )
+s8[] player_frames;
+s8[] player_teams;
+Vec2f[] player_indicator_pos;
+
+s8[] vehicle_frames;
+s8[] vehicle_teams;
+Vec2f[] vehicle_indicator_pos;
+u16[] vehicle_hpbar_ids;
+
+s16 teamLeftTickets = 0;
+s16 teamRightTickets = 0;
+
+s8 teamNum = -1;
+bool isSpectator = false;
+
+float screenWidth = 1;
+float mapWidth = 1;
+float mapHeight = 1;
+float timelineLDist = 1;
+float timelineRDist = 1;
+float timelineLength = 1;
+
+bool hide_indicator = true;
+bool isCTF = false;
+bool isDTT = false;
+
+Vec2f timelineLPos = Vec2f(1,1);
+Vec2f timelineRPos = Vec2f(1,1);
+
+void onTick(CRules@ this)
 {
 	if (g_videorecording) return;
-
-	s16 teamLeftTickets=0;
-	s16 teamRightTickets=0;
 
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
@@ -26,27 +52,149 @@ void onRender( CRules@ this )
 	if (p is null || !p.isMyPlayer()) return;
 	CBlob@ local = p.getBlob();
 
-	s8 teamNum = p.getTeamNum();
-	bool isSpectator = teamNum < 0;
+	Update(p, local);
+	ResetArrays();
 
-	float screenWidth = getScreenWidth();
+	handlePlayers(p);
+	handleVehicles();
+
+	printf(player_frames.size()+" "+player_teams.size()+" "+player_indicator_pos.size()+" "+vehicle_frames.size()+" "+vehicle_teams.size()+" "+vehicle_indicator_pos.size()+" "+vehicle_hpbar_ids.size());
+}
+
+void handleVehicles()
+{
+	//indicate vehicles
+	CBlob@[] vehicleList;
+	getBlobsByTag("vehicle", @vehicleList);
+
+	int vehicleCount = vehicleList.length;
+	for (uint i = 0; i < vehicleCount; i++)
+	{
+		CBlob@ curVehicle = vehicleList[i];
+		if (curVehicle == null) continue;
+
+		s8 vehicleTeamnum = curVehicle.getTeamNum();
+		if (vehicleTeamnum < 0) continue; // do not show neutral vehicles, it crashes due to negative coloring
+
+		if (!isSpectator && vehicleTeamnum != teamNum) continue; // do not show enemy vehicles unless spectator
+
+		u8 frame = getIndicatorFrame(curVehicle.getName().getHash());
+		if (frame == 0) continue;
+
+		float curVehicleXPos = curVehicle.getPosition().x - 28;
+		float indicatorProgress = curVehicleXPos / mapWidth;
+		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+		
+		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
+		Vec2f custom_offset = Vec2f(0,8);
+		if (frame == 10 || frame == 11) custom_offset = Vec2f(0, -48);
+		else if (frame == 12) custom_offset = Vec2f(0, 24);
+
+		u16 id = 0;
+		if (curVehicle.hasTag("importantarmory")) // importantarmory HP
+		{
+			id = curVehicle.getNetworkID();
+		}
+		vehicle_hpbar_ids.push_back(id);
+
+		vehicle_frames.push_back(frame);
+		vehicle_teams.push_back(vehicleTeamnum);
+		vehicle_indicator_pos.push_back(indicatorPos+custom_offset);
+	}
+}
+
+void Update(CPlayer@ p, CBlob@ local)
+{
+	teamNum = p.getTeamNum();
+	isSpectator = teamNum < 0;
+
+	screenWidth = getScreenWidth();
 
 	CMap@ map = getMap();
 	if (map == null) return;
 
-	float mapWidth = map.tilemapwidth * 8.0f;
-	float mapHeight = map.tilemapheight * 8.0f;
+	mapWidth = map.tilemapwidth * 8.0f;
+	mapHeight = map.tilemapheight * 8.0f;
 
-	float timelineLDist = screenWidth*(mapWidth > 2400 ? timelineLeftEnd_large : timelineLeftEnd) - 16;
-	float timelineRDist = screenWidth*(mapWidth > 2400 ? timelineRightEnd_large : timelineRightEnd);
-	float timelineLength = timelineRDist - timelineLDist;
+	timelineLDist = screenWidth*(mapWidth > 2400 ? timelineLeftEnd_large : timelineLeftEnd) - 16;
+	timelineRDist = screenWidth*(mapWidth > 2400 ? timelineRightEnd_large : timelineRightEnd);
+	timelineLength = timelineRDist - timelineLDist;
 
-	Vec2f timelineLPos = Vec2f(timelineLDist - 16, timelineHeight);
-	Vec2f timelineRPos = Vec2f(timelineRDist - 16, timelineHeight);
+	timelineLPos = Vec2f(timelineLDist - 16, timelineHeight);
+	timelineRPos = Vec2f(timelineRDist - 16, timelineHeight);
 
-	bool hide_indicator = !v_showminimap && local !is null && !local.isKeyPressed(key_map) || (local is null && !v_showminimap);
-	bool isCTF = getBlobByName("pointflag") !is null || getBlobByName("pointflagt2") !is null;
-	bool isDTT = getBlobByName("importantarmory") !is null || getBlobByName("importantarmoryt2") !is null;
+	hide_indicator = !v_showminimap && local !is null && !local.isKeyPressed(key_map) || (local is null && !v_showminimap);
+	isCTF = getBlobByName("pointflag") !is null || getBlobByName("pointflagt2") !is null;
+	isDTT = getBlobByName("importantarmory") !is null || getBlobByName("importantarmoryt2") !is null;
+}
+
+void ResetArrays()
+{
+	player_frames = player_teams = vehicle_frames = vehicle_teams = array<s8>();
+	player_indicator_pos = vehicle_indicator_pos = array<Vec2f>();
+	vehicle_hpbar_ids = array<u16>();
+}
+
+void handlePlayers(CPlayer@ p)
+{
+	// players
+	{
+		int playerCount = getPlayerCount();
+		for (uint i = 0; i < playerCount; i++)
+		{
+			CPlayer@ curPlayer = getPlayer(i);
+			if (curPlayer == null) continue;
+
+			s8 curTeamNum = curPlayer.getTeamNum();
+			if (!isSpectator && curTeamNum != teamNum) continue; // do not show enemy players unless spectator
+
+			CBlob@ curBlob = curPlayer.getBlob();
+			if (curBlob !is null && !curBlob.hasTag("player")) continue;
+
+			if (curBlob == null)
+			{
+				if (timeout > 0) timeout--; // otherwise crashes on map compiling
+				if (curPlayer is p && getCamera() !is null && timeout <= 0)
+				{
+					float curBlobXPos = getCamera().getPosition().x;
+					float indicatorProgress = curBlobXPos / mapWidth;
+					float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+					Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
+					
+					player_frames.push_back(0);
+					player_teams.push_back(curTeamNum);
+					player_indicator_pos.push_back(indicatorPos);
+				}
+				continue;
+			}
+
+			u8 frame = 0;
+			if (curPlayer !is p) frame = getIndicatorFrame(curBlob.getName().getHash());
+
+			float curBlobXPos = curBlob.getPosition().x - 28;
+			float curBlobYPos = curBlob.getPosition().y;
+			float indicatorProgress = curBlobXPos / mapWidth;
+			float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+
+			Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
+
+			player_frames.push_back(frame);
+			player_teams.push_back(curTeamNum);
+			player_indicator_pos.push_back(indicatorPos);			
+		}
+	}
+}
+
+void onRender(CRules@ this)
+{
+	if (g_videorecording) return;
+
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+
+	CPlayer@ p = getLocalPlayer();
+	if (p is null || !p.isMyPlayer()) return;
+	CBlob@ local = p.getBlob();
 	
 	if (!isCTF
 		&& !isDTT)
@@ -248,14 +396,10 @@ void onRender( CRules@ this )
 	}
 	*/
 
-	//indicate objectives
-	CBlob@[] objectiveList;
-	getBlobsByTag("pointflag", @objectiveList);
-
-	int objectiveCount = objectiveList.length;
-
+	//indicate respawns
 	CBlob@[] tents;
 	getBlobsByName("tent", @tents);
+
 	for (uint i = 0; i < tents.length; i++)
 	{
 		CBlob@ curBlob = tents[i];
@@ -270,7 +414,12 @@ void onRender( CRules@ this )
 
 		GUI::DrawIcon("indicator_sheet.png", 0, Vec2f(16, 25), indicatorPos, 1.0f, curBlob.getTeamNum());
 	}
-	
+
+	//indicate objectives
+	CBlob@[] objectiveList;
+	getBlobsByTag("pointflag", @objectiveList);
+
+	int objectiveCount = objectiveList.length;
 	for (uint i = 0; i < objectiveCount; i++)
 	{
 		CBlob@ point = objectiveList[i];
@@ -313,88 +462,41 @@ void onRender( CRules@ this )
 		RenderBar(this, point, indicatorPos + Vec2f(-4, flag_height));
 	}
 
-	//if (!v_fastrender)
+	uint player_frames_size = player_frames.size();
+
+	if (player_frames_size == player_indicator_pos.size()
+		&& player_frames_size == player_teams.size())
 	{
-		int playerCount = getPlayerCount();
-		for (uint i = 0; i < playerCount; i++) // walking blobs
+		for (uint i = 0; i < player_indicator_pos.size(); i++) // walking blobs
 		{
-			CPlayer@ curPlayer = getPlayer(i);
-			if (curPlayer == null) continue;
-
-			s8 curTeamNum = curPlayer.getTeamNum();
-			if (!isSpectator && curTeamNum != teamNum) continue; // do not show enemy players unless spectator
-
-			CBlob@ curBlob = curPlayer.getBlob();
-			if (curBlob !is null && !curBlob.hasTag("player")) continue;
-
-			if (curBlob == null)
-			{
-				if (timeout > 0) timeout--; // otherwise crashes on map compiling
-				if (curPlayer is p && getCamera() !is null && timeout <= 0)
-				{
-					float curBlobXPos = getCamera().getPosition().x;
-					float indicatorProgress = curBlobXPos / mapWidth;
-					float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
-					Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
-
-					GUI::DrawIcon("indicator_sheet_small.png", 0, Vec2f(16, 25), indicatorPos, 1.0f, curTeamNum);
-				}
-				continue;
-			}
-
-			u8 frame = 0;
-			if (curPlayer !is p) frame = getIndicatorFrame(curBlob.getName().getHash());
-
-			float curBlobXPos = curBlob.getPosition().x - 28;
-			float curBlobYPos = curBlob.getPosition().y;
-			float indicatorProgress = curBlobXPos / mapWidth;
-			float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
-			float verticalDeviation = curBlobYPos; // blav's soon(tm) heightmap <------
-			Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
-
-			GUI::DrawIcon("indicator_sheet_small.png", frame, Vec2f(16, 25), indicatorPos, 1.0f, curTeamNum);
+			GUI::DrawIcon("indicator_sheet_small.png", player_frames[i], Vec2f(16, 25), player_indicator_pos[i], 1.0f, player_teams[i]);
 		}
 	}
-
-	//indicate vehicles
-	CBlob@[] vehicleList;
-	getBlobsByTag("vehicle", @vehicleList);
-
-	int vehicleCount = vehicleList.length;
-	//print ("count: "+ vehicleCount);
 	
-	for (uint i = 0; i < vehicleCount; i++)
+	uint vehicle_frames_size = vehicle_frames.size();
+
+	if (vehicle_frames_size == vehicle_indicator_pos.size()
+		&& vehicle_frames_size == vehicle_teams.size()
+		&& vehicle_frames_size == vehicle_hpbar_ids.size())
 	{
-		CBlob@ curVehicle = vehicleList[i];
-		if (curVehicle == null) continue;
-
-		s8 vehicleTeamnum = curVehicle.getTeamNum();
-		if (vehicleTeamnum < 0) continue; // do not show neutral vehicles, it crashes due to negative coloring
-
-		if (!isSpectator && vehicleTeamnum != teamNum) continue; // do not show enemy vehicles unless spectator
-
-		u8 frame = getIndicatorFrame(curVehicle.getName().getHash());
-		if (frame == 0) continue;
-
-		float curVehicleXPos = curVehicle.getPosition().x - 28;
-		float indicatorProgress = curVehicleXPos / mapWidth;
-		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
-		
-		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
-		Vec2f custom_offset = Vec2f(0,8);
-		if (frame == 10 || frame == 11) custom_offset = Vec2f(0, -48);
-		else if (frame == 12) custom_offset = Vec2f(0, 24);
-
-		if (curVehicle.hasTag("importantarmory")) // importantarmory HP
+		for (uint i = 0; i < vehicle_frames.size(); i++)
 		{
-			RenderHPBar(this, curVehicle, indicatorPos + custom_offset);
-		}
+			if (vehicle_hpbar_ids[i] != 0)
+			{
+				CBlob@ curVehicle = getBlobByNetworkID(vehicle_hpbar_ids[i]);
 
-		GUI::DrawIcon("indicator_sheet.png", frame, Vec2f(16, 25), indicatorPos + custom_offset, 1.0f, vehicleTeamnum);
+				if (curVehicle !is null)
+				{
+					RenderHPBar(this, curVehicle, vehicle_indicator_pos[i]);
+				}
+			}
+
+			GUI::DrawIcon("indicator_sheet.png", vehicle_frames[i], Vec2f(16, 25), vehicle_indicator_pos[i], 1.0f, vehicle_teams[i]);
+		}
 	}
 }
 
-u8 getIndicatorFrame( int hash )
+u8 getIndicatorFrame(int hash)
 {
 	u8 frame = 0;
 	switch(hash)
