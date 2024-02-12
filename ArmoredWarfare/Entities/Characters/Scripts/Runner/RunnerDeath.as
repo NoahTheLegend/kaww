@@ -198,9 +198,16 @@ void onTick(CBlob@ this)
 
 	if (getGameTime() % 30 == 0)
 	{
-		if (this.isAttached() && isKnocked(this))
+		bool attached = this.isAttached();
+
+		if (attached && isKnocked(this))
 		{
 			SetKnocked(this, 0);
+		}
+		
+		if (!attached && this.hasTag("covered"))
+		{
+			this.Untag("covered");
 		}
 	}
 
