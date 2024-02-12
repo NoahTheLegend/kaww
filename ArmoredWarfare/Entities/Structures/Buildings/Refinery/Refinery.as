@@ -34,8 +34,11 @@ void onTick(CSprite@ this)
 		{
 			b.SetLight(true);
 			if ((getGameTime() + b.getNetworkID()) % 30 == 0) {
-				ParticleAnimated("LargeSmoke", b.getPosition() + Vec2f(b.isFacingLeft() ? -1 : 1 * (XORRandom(8) - 10), XORRandom(8) - 20), getRandomVelocity(0.0f, XORRandom(25) * 0.005f, 360) + Vec2f(0.15,-0.05), float(XORRandom(360)), 0.9f + XORRandom(20) * 0.01f, 16 + XORRandom(6), -0.005 + XORRandom(10) * -0.0001f, true);
-
+				CParticle@ p = ParticleAnimated("LargeSmoke", b.getPosition() + Vec2f(b.isFacingLeft() ? -1 : 1 * (XORRandom(8) - 10), XORRandom(8) - 20), getRandomVelocity(0.0f, XORRandom(25) * 0.005f, 360) + Vec2f(0.15,-0.05), float(XORRandom(360)), 0.9f + XORRandom(20) * 0.01f, 16 + XORRandom(6), -0.005 + XORRandom(10) * -0.0001f, true);
+				if (p !is null)
+				{
+					p.Z = 500.0f;
+				}
 				Vec2f velr = getRandomVelocity(90, 1.3f, 40.0f);
 				velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 			}
