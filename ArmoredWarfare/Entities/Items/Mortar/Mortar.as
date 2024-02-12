@@ -429,6 +429,8 @@ void onRender(CSprite@ this)
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
 
+	if (blob.isInInventory()) return;
+
 	hoverRender(this);
 	if (local.getTeamNum() != blob.getTeamNum()) return;
 
