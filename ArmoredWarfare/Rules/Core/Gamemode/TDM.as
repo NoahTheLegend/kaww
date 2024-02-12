@@ -575,7 +575,9 @@ shared class TDMCore : RulesCore
 		}
 
 		RulesCore::Update(); //update respawns
-		if (getPlayersCount() >= 6) CheckTeamWon();
+
+		bool isCTF = getBlobByName("pointflag") !is null || getBlobByName("pointflagt2") !is null;
+		if (getPlayersCount() >= 6 && !isCTF) CheckTeamWon();
 	}
 
 	void updateHUD()
