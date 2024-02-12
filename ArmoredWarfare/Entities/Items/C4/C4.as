@@ -10,7 +10,7 @@ void onInit(CBlob@ this)
 {
 	this.set_s8(penRatingString, 4);
 	this.set_f32(projExplosionRadiusString, 52.0f+XORRandom(13));
-	this.set_f32(projExplosionDamageString, 4.0f);
+	this.set_f32(projExplosionDamageString, 5.0f);
 
 	this.set_bool("map_damage_raycast", true);
 	this.set_bool("explosive_teamkill", true);
@@ -84,10 +84,10 @@ void DoExplosion(CBlob@ this)
 
 	f32 angle = -this.get_f32("bomb angle");
 
-	this.set_f32("map_damage_radius", 52.0f+XORRandom(5));
-	this.set_f32("map_damage_ratio", 0.15f);
+	this.set_f32("map_damage_radius", 48.0f+XORRandom(17));
+	this.set_f32("map_damage_ratio", 0.5f);
 	
-	for (u8 i = 0; i < 5+XORRandom(2); i++)
+	for (u8 i = 0; i < 4+XORRandom(2); i++)
 	{
 		WarfareExplode(this, this.get_f32(projExplosionRadiusString), this.get_f32(projExplosionDamageString));
 	}

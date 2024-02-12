@@ -164,6 +164,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		|| hitterBlob.hasTag("grenade") || hitterBlob.getName() == "c4")
 	{
 		if (hitterBlob.hasTag("grenade")) damage *= 5.0f+(XORRandom(301)*0.01f);
+		if (hitterBlob.getName() == "c4") damage *= 10;
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) damage *= 5.0f;
 		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
 		if (hitterBlob.exists("explosion_damage_scale")) damage *= hitterBlob.get_f32("explosion_damage_scale");
