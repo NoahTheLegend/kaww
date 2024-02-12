@@ -247,6 +247,10 @@ void ResetPlayer(CBlob@ this)
 
 void onDie(CBlob@ this)
 {
+	if (isServer() && this.hasTag("artillery"))
+	{
+		CBlob@ b = server_CreateBlob("cheapfuckparticles_explosion", this.getTeamNum(), this.getPosition());
+	}
 	if (this.getPlayer() !is null)
 	{
 		ResetPlayer(this);
@@ -269,7 +273,8 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	
 	if (this.hasTag("rpg"))
 	{
-		this.getSprite().PlaySound("/RpgExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
+		if (!this.hasTag("artillery"))
+			this.getSprite().PlaySound("/RpgExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
 	}
 	else // smaller shell
 	{ // why tf is this not working? sounds are not playing
@@ -278,7 +283,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 	Vec2f pos = this.getPosition();
 
-	if (isClient())
+	if (isClient() && !this.hasTag("artillery")) // hacked particles cast with createblob, dont play it twice
 	{
 		for (int i = 0; i < 8; i++)
 		{
