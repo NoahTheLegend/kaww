@@ -4,11 +4,11 @@
 #include "Hitters.as"
 #include "PerksCommon.as";
 
-const u16 cooldown_time = 600;
-const u16 cycle_cooldown = 90;
+const u16 cooldown_time = 660;
+const u16 cycle_cooldown = 60;
 const u8 barrel_compression = 8; // max barrel movement
 const u16 recoil = 120;
-const u8 cassette_size = 4;
+const u8 cassette_size = 5;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
