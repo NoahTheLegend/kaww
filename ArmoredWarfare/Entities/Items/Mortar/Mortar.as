@@ -49,6 +49,7 @@ void onInit(CBlob@ this)
 				btn.text = "Δ ";
             	btn.callback_command = "angle_up";
 				btn.send_if_held = true;
+				btn.press_delay = 15;
 				break;
 
 			case 2:
@@ -60,6 +61,7 @@ void onInit(CBlob@ this)
 				btn.text = "∇ ";
 				btn.callback_command = "angle_down";
 				btn.send_if_held = true;
+				btn.press_delay = 15;
 				break;
         }
 
@@ -440,6 +442,20 @@ void onRender(CSprite@ this)
 
 	GUI::SetFont("menu");
 	GUI::DrawTextCentered("L/R click", pos2d+Vec2f(0,128), SColor(50,255,255,255));
+
+
+	f32 angleWithNormal = blob.get_f32("current_angle");
+	if (this.isFacingLeft()) angleWithNormal = 360 - angleWithNormal;
+			
+	f32 offset = 90.0f;
+	if (blob.isFacingLeft()) offset = 270.0f;
+
+	f32 sign = -1.0f;
+	if (blob.isFacingLeft()) sign = 1.0f;
+	
+	f32 angleWithHorizon = (angleWithNormal - offset) * sign;
+
+	GUI::DrawTextCentered(Maths::Round(angleWithHorizon)+"°", pos2d+Vec2f(0, -40), SColor(0xffffffff));
 }
 
 void onInit(CSprite@ sprite)

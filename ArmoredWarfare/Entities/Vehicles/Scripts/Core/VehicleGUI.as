@@ -194,7 +194,6 @@ void onRender(CSprite@ this)
 			
 			f32 angleWithHorizon = (angleWithNormal - offset) * sign;
 
-
 			Vec2f cursor_pos;
 			AttachmentPoint@ gunner = blob.getAttachments().getAttachmentPointByName("GUNNER");
 			if (gunner !is null && gunner.getOccupied() !is null && gunner.getOccupied().getControls() !is null)
