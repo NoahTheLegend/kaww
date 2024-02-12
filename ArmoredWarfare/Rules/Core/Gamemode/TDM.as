@@ -809,12 +809,12 @@ shared class TDMCore : RulesCore
 		   	"Canyon.png",
 		   	"OldTouge.png",
 		   	"Fugue.png",
-		   	"Vietnam.png",
+		   	//"Vietnam.png", requires an overhaul
 		   	"FragFest.png",
 		   	"Florida.png",
 		   	"SoldiercombatTDM.png",
 		   	"Flattening.png",
-		   	"RooftopTanks_v2.png",
+		   	//"RooftopTanks_v2.png", ooc
 		};
 
 		//spawn the spawns :D
@@ -1111,12 +1111,12 @@ shared class TDMCore : RulesCore
 
 	void SetCorrectMapTypeShared()
 	{
-		if (getPlayersCount() <= 8)
+		if (getPlayersCount() <= 7)
 		{
 			error("LOADING MAPCYCLE: SMALL");
 			LoadMapCycle("mapcyclesmaller.cfg");
 		}
-		else if (getPlayersCount() <= 14)
+		else if (getPlayersCount() <= 13)
 		{
 			error("LOADING MAPCYCLE: AVERAGE");
 			LoadMapCycle("mapcycle.cfg");
@@ -1131,12 +1131,12 @@ shared class TDMCore : RulesCore
 
 void SetCorrectMapType(const int pcount)
 {
-	if (pcount <= 8)
+	if (pcount <= 7)
 	{
 		error("LOADING MAPCYCLE: SMALL");
 		LoadMapCycle("mapcyclesmaller.cfg");
 	}
-	else if (pcount <= 14)
+	else if (pcount <= 13)
 	{
 		error("LOADING MAPCYCLE: AVERAGE");
 		LoadMapCycle("mapcycle.cfg");
@@ -1157,8 +1157,6 @@ void Reset(CRules@ this)
 	this.set_u16("teamright_kills", 0);
 	this.Sync("teamleft_kills", true);
 	this.Sync("teamright_kills", true);
-
-	
 
 	SetCorrectMapType(getPlayersCount());
 
@@ -1920,7 +1918,7 @@ const string[] LargeMaps = {
 	//"Florida.png", ooc
 	"SoldiercombatTDM.png",
 	"Flattening.png",
-	"RooftopTanks_v2.png",
+	//"RooftopTanks_v2.png", ooc
 	//"Goldy_KAWW_Sewage.png", ooc
 	"BloodGulch.png",
 	"SkeletalTowers.png",
