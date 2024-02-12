@@ -51,7 +51,7 @@ void PickupOverlap(CBlob@ this)
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!canSeeButtons(this, caller)) return;
-	if (this.getDistanceTo(caller) < this.getRadius())
+	if (this.getDistanceTo(caller) < this.getRadius() && caller.getTeamNum() == this.getTeamNum())
 	{
 		CBitStream params;
 		params.write_u16(caller.getNetworkID());
