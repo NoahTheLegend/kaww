@@ -7,12 +7,12 @@
 #include "PerksCommon.as";
 
 // const u32 fuel_timer_max = 30 * 600;
-const f32 SPEED_MAX = 60.0;
+const f32 SPEED_MAX = 61.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
-f32 windage = 5.0f;
+f32 windage = 4.0f;
 
 const u32 shootDelay = 2; // Ticks
-const f32 projDamage = 0.5f;
+const f32 projDamage = 0.55f;
 
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);
