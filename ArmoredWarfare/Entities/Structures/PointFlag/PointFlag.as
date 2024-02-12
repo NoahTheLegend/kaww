@@ -97,7 +97,7 @@ void onInit(CBlob@ this)
 		if (!is_t2)
 		{
 			ShopItem@ s = addShopItem(this, "Upgrade", "$upgrade$", "upgrade", "Unlock better stocks");
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 100);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
 			s.spawnNothing = true;
 			s.customButton = true;
 			s.buttonwidth = 1;
