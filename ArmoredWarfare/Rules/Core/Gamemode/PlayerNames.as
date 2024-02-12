@@ -63,7 +63,7 @@ void onRender(CRules@ this)
 			CPlayer@ player = blob.getPlayer();
 			if(player !is null) // you never know...
 			{
-				Vec2f draw_pos = blob.getInterpolatedPosition() + Vec2f(0.0f, blob.getRadius());
+				Vec2f draw_pos = blob.getInterpolatedPosition() + Vec2f(0.0f, blob.getRadius() * 1.5f);
 				draw_pos = getDriver().getScreenPosFromWorldPos(draw_pos);
 
 				// change alpha depending on distance between mouse and player
@@ -84,7 +84,6 @@ void onRender(CRules@ this)
 				if (teamnum != 6) // violet is black here so keep the text white
 					text_color = getNeonColor(teamnum, 0);
 				
-				
                 text_color.setAlpha(255 * alpha);
 
 				SColor rect_color = SColor(80 * alpha, 0, 0, 0);
@@ -94,6 +93,51 @@ void onRender(CRules@ this)
 
                 GUI::DrawIcon("Ranks", level, Vec2f(32, 32), draw_pos-text_dim_half-Vec2f(38,20), 0.66f, 0);
 				GUI::DrawText(name, draw_pos - text_dim_half, text_color);
+
+				f32 segments = Maths::Ceil(blob.getInitialHealth() * 1.5f + 1); // hp bar segments
+
+				Vec2f padding = Vec2f(3, 0);
+				Vec2f dim = Vec2f(32 + segments * 8, 12) - padding;
+				Vec2f hp_bar_pos = draw_pos + Vec2f(-dim.x/2, dim.y-2) + padding;
+				f32 hp_ratio = Maths::Clamp(blob.getHealth()/blob.getInitialHealth(), 0.1f, 1.0f);
+				u8 hp_alpha = text_color.getAlpha();
+
+				//bg
+				GUI::DrawPane(hp_bar_pos - padding, hp_bar_pos + dim + padding, SColor(hp_alpha, 55, 55, 75));
+
+				//red
+				if (hp_ratio < 1)
+				{
+					Vec2f hp_missing_tl = hp_bar_pos + dim * hp_ratio;
+					hp_missing_tl.y = hp_bar_pos.y;
+					
+					GUI::DrawPane(hp_missing_tl - Vec2f(padding.x, 0), hp_bar_pos + dim, SColor(hp_alpha, 255, 75, 75));
+				}
+
+				//green
+				Vec2f hp_br = hp_bar_pos + dim * hp_ratio;
+				hp_br.y = hp_bar_pos.y + dim.y;
+
+				bool saturated = blob.get_u32("regen") > getGameTime();
+
+				GUI::DrawPane(hp_bar_pos, hp_br, SColor(hp_alpha, saturated ? 255 : 75, 225, 75));
+
+				f32 line_h = 4;
+				f32 line_th = 1;
+
+				// decorators
+				GUI::DrawRectangle(hp_bar_pos + Vec2f(Maths::Floor(padding.x*1.5f), line_h), hp_bar_pos + Vec2f(dim.x - Maths::Floor(padding.x*1.5f), line_h + line_th), SColor(text_color.getAlpha(), 255, 255 ,255));
+				
+				u8 sep_padding_y = 2;
+				Vec2f sep_dim = Vec2f(3, dim.y - sep_padding_y*2);
+				for (u8 i = 1; i < segments; i++)
+				{
+					SColor seg_col = SColor(255, saturated ? 85 : 25, 85, 25);
+					Vec2f sep_pos = hp_bar_pos + Vec2f(dim.x * (i/segments) - sep_dim.x/2, sep_padding_y);
+					if (hp_br.x < sep_pos.x + sep_dim.x/2) seg_col = SColor(255, 85, 25, 25);
+					
+					GUI::DrawRectangle(sep_pos, sep_pos+sep_dim, seg_col);
+				}
 			}
 		}
 	}
