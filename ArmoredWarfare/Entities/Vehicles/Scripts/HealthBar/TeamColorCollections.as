@@ -47,12 +47,12 @@ SColor getNeonColor(u8 team, u8 darkness)
 			color_pane  = 0xffe89b45;
 			break;
 		}
-		case 5: // cyan (changed to yellow)
+		case 5: // cyan
 		{
-			color_light = 0xffc1cd00;
-			color_mid	= 0xff969e00;
-			color_dark	= 0xff727800;
-			color_pane  = 0xffc1cd00;
+			color_light = 0xff7ea2a9;
+			color_mid	= 0xff6c969e;
+			color_dark	= 0xff43676d;
+			color_pane  = 0xff7ea2a9;
 			break;
 		}
 		case 6: // violet (changed to black)
