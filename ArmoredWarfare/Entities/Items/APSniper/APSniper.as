@@ -4,6 +4,7 @@
 
 const Vec2f arm_offset = Vec2f(-2, 0);
 const u32 fire_rate = 120;
+const u8 fire_cost = 3;
 
 void onInit(CBlob@ this)
 {
@@ -198,7 +199,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		Vec2f aimPos = params.read_Vec2f();
 		if (isClient())
 		{
-			if (!this.hasBlob("specammo", 3))
+			if (!this.hasBlob("specammo", fire_cost))
 			{
 				this.getSprite().PlaySound("EmptyGun.ogg", 1.0f, 1.0f);
 				return;
@@ -215,9 +216,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			angle = -1 * angle + 180;
 		}
 
-		if (isServer())
+		if (isServer() && this.hasBlob("specammo", fire_cost))
 		{
-			this.TakeBlob("specammo", 3);
+			this.TakeBlob("specammo", fire_cost);
 
 			shootVehicleGun(blob.getNetworkID(), this.getNetworkID(),
 				angle, this.getPosition(),
