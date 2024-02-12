@@ -58,7 +58,7 @@ void onTick(CRules@ this)
 	handlePlayers(p);
 	handleVehicles();
 
-	printf(player_frames.size()+" "+player_teams.size()+" "+player_indicator_pos.size()+" "+vehicle_frames.size()+" "+vehicle_teams.size()+" "+vehicle_indicator_pos.size()+" "+vehicle_hpbar_ids.size());
+	//printf(player_frames.size()+" "+player_teams.size()+" "+player_indicator_pos.size()+" "+vehicle_frames.size()+" "+vehicle_teams.size()+" "+vehicle_indicator_pos.size()+" "+vehicle_hpbar_ids.size());
 }
 
 void handleVehicles()
