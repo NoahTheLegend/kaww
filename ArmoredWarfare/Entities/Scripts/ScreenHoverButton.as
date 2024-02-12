@@ -18,7 +18,7 @@ void hoverRender(CSprite@ this)
 
 class SimpleHoverButton : HoverButton
 {
-    bool hover; bool just_pressed; bool pressed;
+    bool hover; bool just_pressed; bool pressed; u32 press_delay; u32 held_time;
     bool show;
     string callback_command; bool write_blob; bool write_local; bool sent_command; bool skip_command_reset; bool send_if_held;
     string text; string font; SColor text_color;
@@ -34,6 +34,8 @@ class SimpleHoverButton : HoverButton
         this.show = true;
         this.just_pressed = false;
         this.pressed = false;
+        this.held_time = 0;
+        this.press_delay = 0;
         this.text = "";
         this.font = "default";
         this.text_color = SColor(255,255,255,255);
@@ -146,13 +148,16 @@ class SimpleHoverButton : HoverButton
             
         this.pressed = _local_blob.isKeyPressed(key_action1) || _local_blob.isKeyPressed(key_action2);
         this.just_pressed = _local_blob.isKeyJustPressed(key_action1) || _local_blob.isKeyJustPressed(key_action2);
+
+        if (!this.pressed) this.held_time = 0;
+        else this.held_time++;
         
         if (this.just_pressed && this.sound != "")
         {
             _local_blob.getSprite().PlaySound(this.sound, this.sound_volume, this.sound_pitch);
         }
 
-        if (this.just_pressed  || (this.send_if_held && this.pressed))
+        if (this.just_pressed || (this.send_if_held && this.pressed && this.held_time > this.press_delay))
         {
             if (this.callback_command != "" && !this.sent_command)
             {
