@@ -377,57 +377,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	}
 }
 
-void onRender(CSprite@ this)
-{
-	CBlob@ blob = this.getBlob();
-	if (blob is null) return;
-
-	AttachmentPoint@ ap = blob.getAttachments().getAttachmentPointByName("PASSENGER");
-	if (ap is null) return;
-	CBlob@ driver = ap.getOccupied();
-	if (driver is null || !driver.isMyPlayer()) return;
-
-	CControls@ controls = getControls();
-	if (controls !is null)
-	{
-		if (!controls.isKeyPressed(KEY_LCONTROL)) return;
-	}
-
-	Vec2f pos = blob.getPosition();
-	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(blob.getPosition());
-
-	// main arm
-
-	f32 angle_1 = blob.get_f32("arm1_angle");
-	f32 target_angle_1 = blob.get_f32("arm1_target_angle");
-
-	f32 angle_2 = blob.get_f32("arm2_angle");
-	f32 target_angle_2 = blob.get_f32("arm2_target_angle");
-
-	Vec2f drawpos_actual1 = pos + Vec2f(0,-arm_length).RotateBy(angle_1, Vec2f(0,0));
-	Vec2f drawpos_target1 = pos + Vec2f(0,-arm_length).RotateBy(target_angle_1, Vec2f(0,0));
-
-	Vec2f drawpos_actual1_2d =  getDriver().getScreenPosFromWorldPos(drawpos_actual1);
-	Vec2f drawpos_target1_2d =  getDriver().getScreenPosFromWorldPos(drawpos_target1);
-
-	GUI::DrawRectangle(drawpos_actual1_2d - Vec2f(8,8), drawpos_actual1_2d + Vec2f(8,8), SColor(125,0,0,255));
-	GUI::DrawRectangle(drawpos_target1_2d - Vec2f(8,8), drawpos_target1_2d + Vec2f(8,8), SColor(125,255,0,0));
-	GUI::SetFont("menu");
-	GUI::DrawTextCentered((drawpos_target1-pos).Angle()+"°", drawpos_target1_2d+Vec2f(16,16), SColor(255,255,255,0));
-
-	// secondary arm
-
-	Vec2f drawpos_actual2 = blob.get_Vec2f("attach_pos");
-	Vec2f drawpos_target2 = pos + Vec2f(0,-arm_length*2).RotateBy(target_angle_2, Vec2f(0,-arm_length)).RotateBy(target_angle_1);
-
-	Vec2f drawpos_actual2_2d =  getDriver().getScreenPosFromWorldPos(drawpos_actual2);
-	Vec2f drawpos_target2_2d =  getDriver().getScreenPosFromWorldPos(drawpos_target2);
-
-	GUI::DrawRectangle(drawpos_actual2_2d - Vec2f(8,8), drawpos_actual2_2d + Vec2f(8,8), SColor(125,0,0,255));
-	GUI::DrawRectangle(drawpos_target2_2d - Vec2f(8,8), drawpos_target2_2d + Vec2f(8,8), SColor(125,255,0,0));
-	GUI::DrawTextCentered((drawpos_target2-pos).Angle()+"°", drawpos_target2_2d+Vec2f(16,16), SColor(255,255,255,0));
-}
-
 void onDie(CBlob@ this)
 {
 	if (!isServer()) return;
