@@ -106,9 +106,9 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData){
 		int numTickets=0;
 
 		if(teamNum==0){
-			numTickets=this.get_s16("teamLeftTickets");
-		}else{
 			numTickets=this.get_s16("teamRightTickets");
+		}else{
+			numTickets=this.get_s16("teamLeftTickets");
 		}
 		if(numTickets<=0){          //play sound if running/run out of tickets
 			Sound::Play("/depleted.ogg");
