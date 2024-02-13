@@ -1512,8 +1512,8 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 		warn("Last player left, quitting the game");
 		if (isServer())
 		{
-			//QuitGame();
-			printf("tried to quitgame from TDM.as");
+			QuitGame();
+			printf("quitgame from TDM.as");
 		}
 	}
 
