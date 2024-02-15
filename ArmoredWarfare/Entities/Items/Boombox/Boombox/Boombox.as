@@ -11,6 +11,7 @@ void onInit(CBlob@ this)
 
 	this.addCommandID("switch_channel");
 	this.addCommandID("static_sound");
+	this.addCommandID("randomize_play_pos");
 	
 	u8 radio_channel = this.exists("radio channel") ? this.get_u8("radio channel") : 0;
 	this.set_u8("radio channel", radio_channel);
@@ -102,6 +103,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		u8 radio_channel = this.get_u8("radio channel");
 		SetChannel(this, radio_channels[radio_channel]);
 		this.Untag("should switch channel");
+		this.SendCommand(this.getCommandID("randomize_play_pos"));
+	}
+	else if (cmd == this.getCommandID("randomize_play_pos"))
+	{
+		CSprite@ sprite = this.getSprite();
+
+		if (sprite !is null)
+		{
+			sprite.SetEmitSoundPlayPosition(XORRandom(15) * 1000);
+		}
 	}
 }
 
@@ -114,7 +125,6 @@ void SetChannel(CBlob@ blob, string channel)
 		sprite.RewindEmitSound();
 		sprite.SetEmitSound(channel);
 		sprite.SetEmitSoundPaused(false);
-		// sprite.SetEmitSoundPlayPosition(); // broken in vanilla at the moment
 	}
 }
 
