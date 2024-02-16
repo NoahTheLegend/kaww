@@ -1,7 +1,7 @@
 const string[] messages = {
-	"We have official Discord server! (link in TAB)",
-	"Spotted a bug? Game broke? Report it to Discord server! (link in TAB)",
-	"Enjoying mod? Support the developer on Patreon! (link in tab)"
+	"We have official Discord server! (link in TAB menu)",
+	"Spotted a bug? Game broke? Report it to Discord server! (link in TAB menu)",
+	"Enjoying mod? You can support the developer on Patreon! (link in TAB menu)"
 };
 
 void onTick(CRules@ this)
