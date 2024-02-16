@@ -306,6 +306,7 @@ void onTick(CSprite@ this)
 						{
 							this.PlaySound("LeafRustle"+(XORRandom(3)+1)+".ogg", 0.33f, 1.0f);
 						}
+						
 						CSpriteLayer@ bush = this.getSpriteLayer("bush");
 						if (bush is null)
 							@bush = this.addSpriteLayer("bush", getBlobByName("info_desert") !is null ? "Desert_Bushes.png" : "Bushes.png", 24, 24);
