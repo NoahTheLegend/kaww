@@ -532,8 +532,19 @@ class PNGLoader
 
 			case map_colors::civcar:           autotile(offset); spawnVehicle(map, "civcar", offset, 7); break;
 			case map_colors::lada:           autotile(offset); spawnVehicle(map, "lada", offset, 7); break;
-			case map_colors::arabicspeaker:    autotile(offset); spawnVehicle(map, "arabicspeaker", offset); break;
-			case map_colors::russianspeaker:    autotile(offset); spawnVehicle(map, "russianspeaker", offset); break;
+			case map_colors::arabicspeaker:    autotile(offset); spawnVehicle(map, "boombox", offset); break;
+			case map_colors::russianspeaker:    
+			{
+				autotile(offset); 
+				CBlob@ boombox = server_CreateBlobNoInit("boombox");
+				if (boombox !is null)
+				{
+					boombox.set_u8("radio channel", 1);
+					boombox.setPosition(getLocalPlayerBlob().getPosition());
+					boombox.Init();
+				}
+			}
+			break;
 
 			case map_colors::chair:         autotile(offset); spawnBlob(map, "chair", offset, 7); break;
 			case map_colors::camp:         autotile(offset); spawnBlob(map, "camp", offset, 7); break;
