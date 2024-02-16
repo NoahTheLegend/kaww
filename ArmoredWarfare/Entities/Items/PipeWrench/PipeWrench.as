@@ -88,11 +88,6 @@ void onTick(CBlob@ this)
 								if (blob.hasTag("respawn") || blob.hasTag("never_repair")) continue; // dont repair outposts
 								if (team == blob.getTeamNum() || blob.getTeamNum() >= 7)
 								{
-									if (isServer())
-									{
-										holder.server_Hit(this, this.getPosition(), Vec2f(), 0.2f, Hitters::fall, true);
-									}
-
 									float repair_amount = 0.35f;
 									if (holder.getPlayer() !is null)
 									{
@@ -123,6 +118,8 @@ void onTick(CBlob@ this)
 										repair_amount *= blob.getInitialHealth()/5;
 									}
 
+									bool do_self_damage = false;
+
 									if (blob.getHealth() + repair_amount <= blob.getInitialHealth())
 						            {
 						                blob.server_SetHealth(blob.getHealth() + repair_amount);//Add the repair amount.
@@ -143,13 +140,14 @@ void onTick(CBlob@ this)
 
 										this.set_u32("next repair", getGameTime() + repair_cd);
 
+										do_self_damage = true;
 										if (isClient())
 										{
 											this.getSprite().PlaySound("throw.ogg", 1.5f, 1.0f);
 										}
 										break;
 						            }
-						            else //Repair amount would go above the inital health (max health). 
+						            else if (blob.getHealth() != blob.getInitialHealth())//Repair amount would go above the inital health (max health). 
 						            {
 										this.set_u32("next repair", getGameTime() + repair_cd);
 										if (isClient())
@@ -157,8 +155,14 @@ void onTick(CBlob@ this)
 											this.getSprite().PlaySound("throw.ogg", 1.5f, 1.0f);
 										}
 										
+										do_self_damage = true;
 						                blob.server_SetHealth(blob.getInitialHealth());//Set health to the inital health (max health)
 						            }
+
+									if (isServer() && do_self_damage)
+									{
+										holder.server_Hit(this, this.getPosition(), Vec2f(), 0.2f, Hitters::fall, true);
+									}
 					        	}
 					        }
 						}
