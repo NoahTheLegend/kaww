@@ -43,4 +43,8 @@ void onTick(CBlob@ this)
 		this.getCurrentScript().runFlags |= Script::remove_after_this;
 		this.getSprite().setRenderStyle(RenderStyle::normal);
 	}
+	else
+	{
+		this.Tag("invincible");
+	}
 }
