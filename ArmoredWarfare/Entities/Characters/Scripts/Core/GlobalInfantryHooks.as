@@ -337,6 +337,11 @@ void ManageParachute(CBlob@ this, PerkStats@ stats)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
+	if (attached is this)
+	{
+		setKnocked(this, 0); // force unknock us when we accidently sat in a vehicle while knocked
+	}
+
 	if (isServer())
 	{
 		if (attached !is null && attached.hasTag("change team on pickup"))
