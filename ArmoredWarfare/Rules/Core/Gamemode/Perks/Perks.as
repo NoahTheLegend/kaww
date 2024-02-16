@@ -148,7 +148,7 @@ shared class PerkOperator : PerkStats {
         demontage_time = 75;
         sprint = false;
         walk_factor = 0.95f;
-        mg_overheat = 0.85f;
+        mg_overheat = 0.8f;
         ftw_overheat = 0.75f;
         wrench_repair_time = 22;
         heli_velo = Vec2f(0.25f, 0.75f);
