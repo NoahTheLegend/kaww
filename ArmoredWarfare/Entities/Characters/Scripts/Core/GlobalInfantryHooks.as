@@ -8,7 +8,8 @@
 const f32 shield_angle = 60;
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (this.hasTag("invincible") && customData != Hitters::suicide) return 0; // spawn immunity, doesnt work against suicide hitter
+	bool is_suicide = customData == Hitters::suicide;
+	if (this.hasTag("invincible") && !is_suicide) return 0; // spawn immunity, doesnt work against suicide hitter
 
 	if (this.exists("ignore_damage") && this.get_u32("ignore_damage") > getGameTime()) return 0;
 	CPlayer@ p = this.getPlayer();
@@ -119,16 +120,16 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 				damage *= stats.fire_in_damage;
 			}
 
-			if (stats.id == Perks::paratrooper
+			if (stats.id == Perks::paratrooper  && !is_suicide
 			&& this.getVelocity().y > 0.0f && !this.isOnGround() && !this.isOnLadder()
 			&& !this.isInWater() && !this.isAttached())
 			{
 				damage *= stats.para_damage_take_mod;
 			}
 		}
-
-		if (stats.id == Perks::paratrooper
-			this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
+		
+		if (stats.id == Perks::aceofspades  && !is_suicide
+			&& this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
 		{
 			CPlayer@ p = this.getPlayer();
 			PerkStats@ stats;
