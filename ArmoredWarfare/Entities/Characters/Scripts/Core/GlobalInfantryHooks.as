@@ -109,53 +109,54 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			damage *= (exposed ? 0.5f : 0);
 		}
 	}
-	if (this.getPlayer() !is null)
-	{
-		if (fire_damage)
-		{
-			damage *= stats.fire_in_damage;
-		}
 
-		if (stats_loaded)
+	if (stats_loaded)
+	{
+		if (this.getPlayer() !is null)
 		{
+			if (fire_damage)
+			{
+				damage *= stats.fire_in_damage;
+			}
+
 			if (stats.id == Perks::paratrooper
 			&& this.getVelocity().y > 0.0f && !this.isOnGround() && !this.isOnLadder()
 			&& !this.isInWater() && !this.isAttached())
 			{
-				damage *= stats.para_damage_in;
+				damage *= stats.para_damage_take_mod;
 			}
 		}
-	}
-	if (this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
-	{
-		CPlayer@ p = this.getPlayer();
-		PerkStats@ stats;
-		if (p !is null && p.get("PerkStats", @stats) && stats.id == Perks::lucky && this.get_bool("has_aos"))
+
+		if (stats.id == Perks::paratrooper
+			this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
 		{
-			this.TakeBlob("aceofspades", 1);
-			this.set_u32("aceofspades_timer", getGameTime()+stats.aos_taken_time);
-			this.set_u32("ignore_damage", getGameTime()+stats.aos_invulnerability_time);
-
-			this.server_SetHealth(0.01f);
-
-			if (this.getPlayer() !is null)
+			CPlayer@ p = this.getPlayer();
+			PerkStats@ stats;
+			if (p !is null && p.get("PerkStats", @stats) && stats.id == Perks::lucky && this.get_bool("has_aos"))
 			{
-				CBitStream params;
-				this.SendCommand(this.getCommandID("aos_effects"), params);
-			}
+				this.TakeBlob("aceofspades", 1);
+				this.set_u32("aceofspades_timer", getGameTime()+stats.aos_taken_time);
+				this.set_u32("ignore_damage", getGameTime()+stats.aos_invulnerability_time);
 
-			return 0;
+				this.server_SetHealth(0.01f);
+
+				if (this.getPlayer() !is null)
+				{
+					CBitStream params;
+					this.SendCommand(this.getCommandID("aos_effects"), params);
+				}
+
+				return 0;
+			}
 		}
-	}
-	if (stats_loaded)
-	{
+
 		if (stats.id == Perks::bull && !is_bullet)
 		{
-			damage *= stats.damage_in;
+			damage *= stats.damage_take_mod;
 		}
 		else if (stats.id == Perks::deathincarnate)
 		{
-			damage *= stats.damage_in;
+			damage *= stats.damage_take_mod;
 		}
 	}
 	if (!this.isAttached() && customData == Hitters::ballista) // shell damage

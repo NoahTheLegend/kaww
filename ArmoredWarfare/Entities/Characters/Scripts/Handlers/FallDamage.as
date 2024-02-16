@@ -27,7 +27,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 	PerkStats@ stats;
 	if (p !is null && p.get("PerkStats", @stats))
 	{
-		vely *= stats.fall_damage_in;
+		vely *= stats.fall_damage_take_mod;
     }
 	f32 damage = FallDamageAmount(vely);
 	if (damage != 0.0f) //interesting value
