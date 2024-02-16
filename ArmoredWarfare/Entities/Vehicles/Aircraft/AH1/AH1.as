@@ -62,6 +62,7 @@ void onInit(CBlob@ this)
 		if (shape !is null)
 		{
 			shape.SetRotationsAllowed(false);
+			shape.getConsts().net_threshold_multiplier = 0.33f;
 		}
 	}
 

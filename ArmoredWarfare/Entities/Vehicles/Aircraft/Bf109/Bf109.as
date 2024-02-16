@@ -69,6 +69,7 @@ void onInit(CBlob@ this)
 	sprite.SetEmitSoundPaused(false);
 
 	this.getShape().SetRotationsAllowed(true);
+	this.getShape().getConsts().net_threshold_multiplier = 0.5f;
 	this.set_Vec2f("direction", Vec2f(0, 0));
 
 	if (getNet().isServer())
