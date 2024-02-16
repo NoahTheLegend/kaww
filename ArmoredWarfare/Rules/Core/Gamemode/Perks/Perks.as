@@ -41,12 +41,12 @@ shared class PerkStats {
     u8 coins_income;        // base value is 1
 
     // Death Incarnate
-    f32 damage_in;          // mod, also used by bull
+    f32 damage_take_mod;          // mod, also used by bull
     f32 exp;                // mod
 
     // Paratrooper
-    f32 para_damage_in;     // mod, used while parachute is enabled
-    f32 fall_damage_in;     // mod
+    f32 para_damage_take_mod;     // mod, used while parachute is enabled
+    f32 fall_damage_take_mod;     // mod
 
     // Bull
     f32 sprint_factor;
@@ -80,9 +80,9 @@ shared class PerkStats {
         //
         kill_coins = 2; coins_income = 1;
         //
-        damage_in = 1.0f; exp = 1.0f;
+        damage_take_mod = 1.0f; exp = 1.0f;
         //
-        para_damage_in = 1.0f; fall_damage_in = 1.0f;
+        para_damage_take_mod = 1.0f; fall_damage_take_mod = 1.0f;
         //
         sprint_factor = 1.1f; walk_factor = 1.0f; walk_factor_air = 1.0f; jump_factor = 1.0f;
             walk_extra_factor = 1.0f; walk_extra_factor_air = 1.0f; jump_extra_factor = 1.0f; kill_bonus_time = 0;
@@ -187,7 +187,7 @@ shared class PerkDeathIncarnate : PerkStats {
         super();
         name = "Death Incarnate";
         id = 7;
-        damage_in = 2.0f;
+        damage_take_mod = 2.0f;
         exp = 5.0f;
     }
 };
@@ -198,7 +198,7 @@ shared class PerkBull : PerkStats {
         super();
         name = "Bull";
         id = 8;
-        damage_in = 0.66f;
+        damage_take_mod = 0.66f;
         walk_factor = 1.05f;
         walk_factor_air = 1.1f;
         jump_factor = 1.3f;
@@ -216,8 +216,8 @@ shared class PerkParatrooper : PerkStats {
         super();
         name = "Paratrooper";
         id = 9;
-        para_damage_in = 0.5f;
-        fall_damage_in = 1.5f;
+        para_damage_take_mod = 0.5f;
+        fall_damage_take_mod = 1.5f;
     }
 };
 
