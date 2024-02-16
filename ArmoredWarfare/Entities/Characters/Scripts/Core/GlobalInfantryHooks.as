@@ -9,7 +9,7 @@ const f32 shield_angle = 60;
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (this.hasTag("invincible") && customData != Hitters::suicide) return 0; // spawn immunity, doesnt work against suicide hitter
-	printf(""+customData+" "+this.hasTag("invincible"));
+
 	if (this.exists("ignore_damage") && this.get_u32("ignore_damage") > getGameTime()) return 0;
 	CPlayer@ p = this.getPlayer();
 
