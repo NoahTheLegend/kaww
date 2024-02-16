@@ -128,7 +128,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			}
 		}
 		
-		if (stats.id == Perks::aceofspades  && !is_suicide
+		if (stats.id == Perks::lucky && !is_suicide
 			&& this.getHealth() - damage/2 <= 0 && this.getHealth() > 0.01f)
 		{
 			CPlayer@ p = this.getPlayer();
