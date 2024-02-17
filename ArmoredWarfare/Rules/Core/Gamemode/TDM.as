@@ -1467,7 +1467,7 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
 	if (player.getUsername() == "TheCustomerMan")
 	{
-		this.set_u32(player.getUsername() + "_exp", 38000);
+		this.set_u32(player.getUsername() + "_exp", 30000);
 	}
 
 	float exp = this.get_u32(player.getUsername() + "_exp");
