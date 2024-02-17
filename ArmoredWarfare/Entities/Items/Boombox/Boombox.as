@@ -97,7 +97,6 @@ void onTick(CBlob@ this)
 		SetChannel(this, radio_channels[radio_channel]);
 		
 		this.Untag("should switch channel");
-		this.Sync("should switch channel", true);
 		
 		//randomize play pos
 		CSprite@ sprite = this.getSprite();
