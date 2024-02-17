@@ -7,6 +7,7 @@ void onInit(CBlob@ this)
     this.set_f32("damage_succession_multi", 0);
 }
 
+// rewrite this into mat hooks
 void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point1)
 {
 	if (solid || blob is null)
