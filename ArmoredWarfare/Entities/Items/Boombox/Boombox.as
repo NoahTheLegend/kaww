@@ -1,6 +1,6 @@
 #include "GenericButtonCommon.as"
 
-string[] radio_channels = {"FanfareArabic", "FanfareRussian", "FanfareGerman"};
+string[] radio_channels = {"FanfareArabic", "FanfareRussian", "FanfareGerman", "LethalCompany_track1", "LethalCompany_track2", "LethalCompany_track3"};
 
 void onInit(CBlob@ this)
 {	
@@ -13,7 +13,7 @@ void onInit(CBlob@ this)
 	
 	u8 radio_channel = this.exists("radio channel") ? this.get_u8("radio channel") : 0;
 	this.set_u8("radio channel", radio_channel);
-	this.set_u16("switch channel time", 0);
+	this.set_u32("switch channel time", 0);
 	this.set_u16("in water ticks", 0);
 
 	SetChannel(this, radio_channels[radio_channel]);
@@ -55,6 +55,7 @@ void onTick(CBlob@ this)
 {
 	// drown in water
 	bool in_water_not_in_inventory = this.isInWater() && !this.isInInventory();
+	bool jump = this.isOnGround() && this.get_u32("switch channel time") < getGameTime();
 	
 	if ((in_water_not_in_inventory || this.hasTag("drowned")) && !this.hasTag("broken quiet"))
 	{
@@ -84,10 +85,11 @@ void onTick(CBlob@ this)
 		
 		// stop boomboxing
 		StopAnimation(this);
+		jump = false;
 	}
 
 	// switch from static to next channel
-	u16 radio_switch_time = this.get_u16("switch channel time");
+	u16 radio_switch_time = this.get_u32("switch channel time");
 	
 	if (this.hasTag("should switch channel") && radio_switch_time < getGameTime())
 	{
@@ -106,6 +108,12 @@ void onTick(CBlob@ this)
 			sprite.SetEmitSoundPlayPosition(XORRandom(15) * 1000);
 		}
 	}
+
+	if (jump)
+	{
+		this.AddForce(Vec2f(0,-30));
+		this.AddTorque(Maths::Sin(getGameTime()*0.3f)*10);
+	}
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
@@ -120,7 +128,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		
 		SetChannel(this, "BoomboxStatic");
 
-		this.set_u16("switch channel time", getGameTime() + 15 + XORRandom(25));
+		this.set_u32("switch channel time", getGameTime() + 15 + XORRandom(25));
 		this.Tag("should switch channel");
 	}
 }
