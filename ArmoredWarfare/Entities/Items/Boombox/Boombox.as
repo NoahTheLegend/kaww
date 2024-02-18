@@ -9,9 +9,7 @@ void onInit(CBlob@ this)
 
 	SetChannel(this, "FanfareArabic");
 
-	this.addCommandID("switch_channel");
 	this.addCommandID("static_sound");
-	this.addCommandID("randomize_play_pos");
 	
 	u8 radio_channel = this.exists("radio channel") ? this.get_u8("radio channel") : 0;
 	this.set_u8("radio channel", radio_channel);
@@ -56,7 +54,9 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 void onTick(CBlob@ this)
 {
 	// drown in water
-	if ((this.isInWater() || this.hasTag("drowned")) && !this.hasTag("broken quiet"))
+	bool in_water_not_in_inventory = this.isInWater() && !this.isInInventory();
+	
+	if ((in_water_not_in_inventory || this.hasTag("drowned")) && !this.hasTag("broken quiet"))
 	{
 		f32 water_ticks = this.get_u16("in water ticks");
 		water_ticks++;
@@ -91,8 +91,20 @@ void onTick(CBlob@ this)
 	
 	if (this.hasTag("should switch channel") && radio_switch_time < getGameTime())
 	{
-		this.SendCommand(this.getCommandID("switch_channel"));
-		this.getCurrentScript().tickFrequency = 5;
+		// switch channel
+		u8 radio_channel = this.get_u8("radio channel");
+	
+		SetChannel(this, radio_channels[radio_channel]);
+		
+		this.Untag("should switch channel");
+		
+		//randomize play pos
+		CSprite@ sprite = this.getSprite();
+
+		if (sprite !is null)
+		{
+			sprite.SetEmitSoundPlayPosition(XORRandom(15) * 1000);
+		}
 	}
 }
 
@@ -102,32 +114,20 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		return;
 
 	if (cmd == this.getCommandID("static_sound"))
-	{	
+	{
 		u8 next_radio_channel = (this.get_u8("radio channel") + 1) % radio_channels.length();
 		this.set_u8("radio channel", next_radio_channel);
 		
 		SetChannel(this, "BoomboxStatic");
 
 		this.set_u16("switch channel time", getGameTime() + 15 + XORRandom(25));
-		this.getCurrentScript().tickFrequency = 5;
 		this.Tag("should switch channel");
 	}
-	else if (cmd == this.getCommandID("switch_channel"))
-	{
-		u8 radio_channel = this.get_u8("radio channel");
-		SetChannel(this, radio_channels[radio_channel]);
-		this.Untag("should switch channel");
-		this.SendCommand(this.getCommandID("randomize_play_pos"));
-	}
-	else if (cmd == this.getCommandID("randomize_play_pos"))
-	{
-		CSprite@ sprite = this.getSprite();
+}
 
-		if (sprite !is null)
-		{
-			sprite.SetEmitSoundPlayPosition(XORRandom(15) * 1000);
-		}
-	}
+void onThisAddToInventory(CBlob@ this, CBlob@ inventoryBlob)
+{
+	this.doTickScripts = true;
 }
 
 void SetChannel(CBlob@ blob, string channel)
