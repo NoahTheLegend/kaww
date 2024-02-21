@@ -403,7 +403,7 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					int money = parseInt(tokens[1]);
 					player.server_setCoins(money);
 				}
-				else if(tokens.length > 1 && tokens[0] == "!xp")
+				else if(tokens.length > 1 && tokens[0] == "!xp" && sv_test == 1)
 				{
 					int xp = parseInt(tokens[1]);
 					if (tokens.length == 3)
