@@ -73,7 +73,8 @@ shared int[] getLevels()
         150000, // +29000               | Army Chief
         182500, // +32500               | Marshal
         220000, // +37500               | Supreme Marshal
-        265000  // +45000               | Apex Commandant
+        265000, // +45000               | Apex Commandant
+        9999999 //                      | end
     };
     return list;
 }
