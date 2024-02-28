@@ -7,8 +7,11 @@ void onInit(CBlob@ this)
 	this.Tag("trap");
 	this.Tag("heal");
 
-	this.addCommandID("usemed");
+	string cmd_heal = "usemed";
+	this.addCommandID(cmd_heal);
+	this.set_string("cmd_heal", cmd_heal);
 	this.Tag("change team on pickup");
+	this.Tag("take eat food");
 }
 
 void onInit(CSprite@ this)

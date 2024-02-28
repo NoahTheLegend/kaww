@@ -32,6 +32,15 @@ void onTick(CBlob@ this)
 		!isKnocked(this) &&
 		this.getHealth() < this.getInitialHealth()
 	) {
+		CBlob@ carried = this.getCarriedBlob();
+		if (carried !is null && carried.hasTag("take eat food"))
+		{
+			CBitStream params;
+			params.write_u16(this.getNetworkID());
+			carried.SendCommand(carried.getCommandID(carried.get_string("cmd_heal")), params);
+			return;
+		}
+
         if (this.get_u32("regen") <= getGameTime() && canHeal(this))
         {
 		    CBlob @carried = this.getCarriedBlob();
