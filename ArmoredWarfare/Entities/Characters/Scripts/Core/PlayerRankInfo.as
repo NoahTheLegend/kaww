@@ -1,5 +1,27 @@
-// info for ranks
-// very controversial code, overhaul in v5.0?
+// LISTEN HERE THIS CODE IS A REAL SIN I SPENT 5 HOURS DELETING +1 AND -1
+// AND FAILED TO GET RID OF A BUG SO THE SOLUTION IS TO ADD MORE +1 AND -1
+// THIS IS A MENTAL WEAPON THAT MUST BE PERISHED
+//
+// REQUIRES TOTAL WIPE THEN WRITE FROM SCRATCH
+
+/*
+         / \
+        |\_/|
+        |---|
+        |   |
+        |   |
+      _ |=-=| _
+  _  / \|   |/ \
+ / \|   |   |   ||\
+|   |   |   |   | \>
+|   |   |   |   |   \
+| -   -   -   - |)   )
+|                   /
+ \                 /
+  \               /
+   \             /
+    \           /
+*/
 
 // The base amount of exp required to reach level 2
 const int LEVEL_2_EXP = 25;
