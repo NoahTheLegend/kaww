@@ -21,7 +21,7 @@ const int conversion_frequency = 8;	// how often to convert, in seconds
 const int min_input = Maths::Ceil(input/initial_output);
 
 //fuel levels for animation
-const int max_fuel = 1000;
+const int max_fuel = 1500;
 const int mid_fuel = 500;
 const int low_fuel = 250;
 
