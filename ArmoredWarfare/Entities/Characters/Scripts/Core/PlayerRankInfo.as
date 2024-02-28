@@ -208,7 +208,7 @@ int getRankId(CPlayer@ player)
 
 	int level = 0;
 
-	if (exp > 0)
+	if (exp >= 0)
 	{
 		// Calculate the exp required to reach each level
 		for (int i = 1; i <= RANKS.length; i++)
@@ -241,7 +241,7 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
     int level = 0;
     string rank = RANKS[0];
 
-    if (exp > 0)
+    if (exp >= 0)
     {
         // Calculate the exp required to reach each level
         for (int i = 1; i <= RANKS.length; i++)
@@ -273,6 +273,8 @@ void CheckRankUps(CRules@ rules, u32 exp, CBlob@ blob)
     
     if (isServer() && rank != oldrank) // means that we leveled up
     {
+        level = Maths::Max(1, level);
+
         CBitStream params;
         params.write_u8(level);
         params.write_string(rank);

@@ -8,6 +8,7 @@
 #include "PlayerRankInfo.as";
 #include "PerksCommon.as";
 #include "Perks.as";
+#include "SaveExp.as";
 
 const u32 min_gametime_to_increment = 20 * 30*60;
 const int max_matches_before_restart = 5; // change this in TDM_interface.as too
@@ -689,7 +690,7 @@ shared class TDMCore : RulesCore
 		// Calculate the exp required to reach each level
 		for (int i = 1; i <= 6; i++)
 		{
-			if (exp >= getExpToNextLevelShared(i)) unlocked ++;
+			if (exp >= getExpToNextLevelShared(i)) unlocked++;
 			else break;
 		}
 		unlocked = Maths::Min(unlocked, 4);
@@ -1457,12 +1458,19 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
     player.server_setCoins(40);
 
-	if (cfg_playerexp.exists(player.getUsername()))
+	if (!cfg_playerexp.loadFile("../Cache/AW/exp.cfg"))
     {
-		this.set_u32(player.getUsername() + "_exp", cfg_playerexp.read_u32(player.getUsername()));
-	}
-	else{
-		this.set_u32(player.getUsername() + "_exp", 0);
+        error("Could not load EXP config due to an error");
+    }
+	else
+	{
+		if (cfg_playerexp.exists(player.getUsername()))
+    	{
+			this.set_u32(player.getUsername() + "_exp", cfg_playerexp.read_u32(player.getUsername()));
+		}
+		else{
+			this.set_u32(player.getUsername() + "_exp", 0);
+		}
 	}
 
 	if (player.getUsername() == "TheCustomerMan")
@@ -1591,18 +1599,18 @@ void onTick(CRules@ this)
 
 	if (getGameTime() == 1)
 	{
-		ConfigFile map_ratios;
-		if (isServer() && getMap() !is null && map_ratios !is null)
-		{
- 			if (!map_ratios.loadFile("../Cache/AW/mapratios.cfg"))
-    		{
-    		    map_ratios = ConfigFile("AW/mapratios.cfg");
-    		}
-			string mapname = getMap().getMapName();
-			u16 current_amount = map_ratios.read_u16(mapname, 1);
-			map_ratios.add_u16(mapname, current_amount+1);
-			map_ratios.saveFile("AW/mapratios.cfg");
-		}
+		//ConfigFile map_ratios;
+		//if (isServer() && getMap() !is null && map_ratios !is null)
+		//{
+ 		//	if (!map_ratios.loadFile("../Cache/AW/mapratios.cfg"))
+    	//	{
+    	//	    map_ratios = ConfigFile("AW/mapratios.cfg");
+    	//	}
+		//	string mapname = getMap().getMapName();
+		//	u16 current_amount = map_ratios.read_u16(mapname, 1);
+		//	map_ratios.add_u16(mapname, current_amount+1);
+		//	map_ratios.saveFile("AW/mapratios.cfg");
+		//}
 
 		u16 count = 10 + getPlayersCount();
 		if (this.get_s16("teamLeftTickets") == 0 && this.get_s16("teamRightTickets") == 0)
@@ -1845,27 +1853,9 @@ void onTick(CRules@ this)
 	}
 }
 
-void SaveEXP(CRules@ this)
-{
-	uint16 i;
-    	
-    for (i = 0; i < getPlayerCount(); i++)
-    {
-        CPlayer@ player = getPlayer(i);
-		if (player !is null)
-		{
-			if (this.get_u32(player.getUsername() + "_exp") != 0)
-			{
-				cfg_playerexp.add_u32(player.getUsername(), this.get_u32(player.getUsername() + "_exp"));
-			}
-		}
-    }
-	cfg_playerexp.saveFile("AW/exp.cfg");
-}
-
 void onInit(CRules@ this)
 {
-    if ( !cfg_playerexp.loadFile("../Cache/AW/exp.cfg") )
+    if (!cfg_playerexp.loadFile("../Cache/AW/exp.cfg"))
     {
         cfg_playerexp = ConfigFile("AW/exp.cfg");
     }

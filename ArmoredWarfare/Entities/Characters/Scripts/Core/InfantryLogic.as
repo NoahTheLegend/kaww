@@ -1813,7 +1813,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
                 // create floating rank
                 CParticle@ p;
 				//printf(""+level);
-				@p = ParticleAnimated("Ranks.png", this.getPosition() + Vec2f(0,-14), Vec2f(0,-0.9), 0.0f, 1.0f, 0, level, Vec2f(32, 32), 0, 0, true);
+				@p = ParticleAnimated("Ranks.png", this.getPosition() + Vec2f(0,-14), Vec2f(0,-0.9), 0.0f, 1.0f, 0, level-1, Vec2f(32, 32), 0, 0, true);
                
 				if(p !is null)
                 {

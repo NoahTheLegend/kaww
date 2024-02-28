@@ -88,7 +88,7 @@ void onRender(CRules@ this)
 
 				SColor rect_color = SColor(80 * alpha, 0, 0, 0);
                 
-                int level = getRankId(blob.getPlayer());
+                int level = Maths::Max(1, getRankId(blob.getPlayer()))-1;
 				GUI::DrawRectangle(draw_pos - text_dim_half, draw_pos + text_dim_half + Vec2f(5.0f, 3.0f), rect_color);
 
                 GUI::DrawIcon("Ranks", level, Vec2f(32, 32), draw_pos-text_dim_half-Vec2f(38,20), 0.66f, 0);

@@ -180,7 +180,7 @@ void onRender(CSprite@ this)
 		{
 			float exp = 0;
 			// load exp
-			u32 level = getRankId(blob.getPlayer());
+			u32 level = Maths::Max(1, getRankId(blob.getPlayer()))-1;
 			string rank = RANKS[level];
 			if (level != -1)
 			{
