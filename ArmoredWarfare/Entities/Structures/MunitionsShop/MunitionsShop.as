@@ -54,7 +54,7 @@ void onInit(CBlob@ this)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press SPACE while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 35);
+			AddRequirement(s.requirements, "coin", "", "Coins", 30);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
@@ -94,12 +94,12 @@ void onInit(CBlob@ this)
 			AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Buy wood (250)", "$mat_wood$", "mat_wood", "Purchase 250 wood.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 12);
+			ShopItem@ s = addShopItem(this, "Buy wood (250)", "$mat_wood$", "mat_wood", "Purchase 400 wood.", false);
+			AddRequirement(s.requirements, "coin", "", "Coins", 15);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Buy stone (250)", "$mat_stone$", "mat_stone", "Purchase 250 stone.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 36);
+			ShopItem@ s = addShopItem(this, "Buy stone (250)", "$mat_stone$", "mat_stone", "Purchase 300 stone.", false);
+			AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		}
 	}
 	else // tdm maps
