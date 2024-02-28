@@ -180,11 +180,7 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 				}
 			}
 		}
-		if (text_in == "!xp")
-		{
-			//xp
-		}
-		else if (text_in == "!bot")
+		if (text_in == "!bot")
 		{
 			AddBot("Bot");
 			return true;
@@ -404,7 +400,7 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					int money = parseInt(tokens[1]);
 					player.server_setCoins(money);
 				}
-				else if(tokens.length > 1 && tokens[0] == "!xp")
+				else if(tokens.length > 1 && tokens[0] == "!xp" && player.getUsername() == "NoahTheLegend")
 				{
 					int xp = parseInt(tokens[1]);
 					if (tokens.length == 3)
