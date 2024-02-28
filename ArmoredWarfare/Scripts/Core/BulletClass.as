@@ -249,7 +249,10 @@ class BulletObj
 
 		if (blob.isAttached()) return blob.hasTag("collidewithbullets");
 
-		if (blob.hasTag("bunker") && !same_team) return true;
+		if (blob.hasTag("bunker") && !same_team)
+		{
+			return true;
+		}
 
 		if (blob.getName() == "wooden_platform") // get blocked by directional platforms
 		{
@@ -547,6 +550,7 @@ class BulletObj
 						else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), dmg, CurrentHitter, false);
 
 						LastHitBlobID = blob.getNetworkID();
+						return recountPenetrationsWeak();
 					}
 				}
 				else
