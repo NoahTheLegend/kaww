@@ -8,7 +8,7 @@ const string ore = "mat_stone";
 const string rare_ore = "mat_gold";
 
 //balance
-const int input = 75;					// input cost in fuel
+const int input = 125;					// input cost in fuel
 const int stone_amount = 35;
 const int initial_output = 100;			// output amount in ore
 const int min_output = 50;				// minimal possible output in ore
