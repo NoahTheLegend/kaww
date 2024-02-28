@@ -65,6 +65,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	topleft.y += stepheight * 1.5;
 
 	const int accolades_start = 700;
+	bool same_team = teamnum == localplayer.getTeamNum();
 
 	//draw player table header
 	GUI::DrawText(getTranslatedString("Player"), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
@@ -76,7 +77,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 50, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Accolades"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 92, topleft.y), SColor(0xffffffff));
-	GUI::DrawText(getTranslatedString("Perk"), Vec2f(bottomright.x - accolades_start - 140, topleft.y), SColor(0xffffffff));
+	if (same_team) GUI::DrawText(getTranslatedString("Perk"), Vec2f(bottomright.x - accolades_start - 140, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 0.5f;
 
@@ -129,28 +130,30 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			GUI::DrawLine2D(Vec2f(topleft.x, bottomright.y) + lineoffset, bottomright + lineoffset, SColor(playercolour));
 		}
 
-		string tex = "";
-		u16 frame = 0;
-		Vec2f framesize;
-		if (p.isMyPlayer())
+		if (same_team)
 		{
-			tex = "ClassIcons.png";
-			frame = 7;
-			framesize.Set(16, 16);
-		}
-		else if (p.getBlob() !is null)
-		{
-			tex = "ClassIcons.png";
-			frame = p.getBlob().get_u8("scoreboard_icon");
-			framesize.Set(16, 16);
-		}
-		if (tex != "")
-		{
-			GUI::DrawIcon(tex, frame, framesize, topleft, 0.5f, p.getTeamNum());
+			string tex = "";
+			u16 frame = 0;
+			Vec2f framesize;
+			if (p.isMyPlayer())
+			{
+				tex = "ClassIcons.png";
+				frame = 7;
+				framesize.Set(16, 16);
+			}
+			else if (p.getBlob() !is null)
+			{
+				tex = "ClassIcons.png";
+				frame = p.getBlob().get_u8("scoreboard_icon");
+				framesize.Set(16, 16);
+			}
+			if (tex != "")
+			{
+				GUI::DrawIcon(tex, frame, framesize, topleft, 0.5f, p.getTeamNum());
+			}
 		}
 
 		string username = p.getUsername();
-
 		string playername = p.getCharacterName();
 		string clantag = p.getClantag();
 
@@ -183,9 +186,11 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			teamIndex = b.get_s32("head team");
 		}
 
+		f32 hidden_offset_x = same_team ? 0 : 16;
+
 		if (headTexture != "")
 		{
-			GUI::DrawIcon(headTexture, headIndex, Vec2f(16, 16), topleft + Vec2f(22, -12), 1.0f, teamIndex);
+			GUI::DrawIcon(headTexture, headIndex, Vec2f(16, 16), topleft + Vec2f(22 - hidden_offset_x, -12) , 1.0f, teamIndex);
 		}
 
 		//have to calc this from ticks
@@ -205,12 +210,12 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			GUI::GetTextDimensions(clantag, clantag_actualsize);
 			GUI::DrawText(clantag, topleft + Vec2f(name_buffer, 0), SColor(0xff888888));
 			//draw name alongside
-			GUI::DrawText(playername, topleft + Vec2f(name_buffer + clantag_actualsize.x + 8, 0), namecolour);
+			GUI::DrawText(playername, topleft + Vec2f(name_buffer + clantag_actualsize.x + 8 - hidden_offset_x, 0), namecolour);
 		}
 		else
 		{
 			//draw name alone
-			GUI::DrawText(playername, topleft + Vec2f(name_buffer, 0), namecolour);
+			GUI::DrawText(playername, topleft + Vec2f(name_buffer - hidden_offset_x, 0), namecolour);
 		}
 	
 		float exp = 0;
@@ -218,26 +223,6 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		if (p !is null)
 		{
 			exp = getRules().get_u32(p.getUsername() + "_exp");
-		}
-
-		//draw rank level
-		int level = 1;
-		string rank = RANKS[0];
-
-		// Calculate the exp required to reach each level
-		for (int i = 1; i <= RANKS.length; i++)
-		{
-			int expToNextLevel = getExpToNextLevel(level);
-			if (exp >= expToNextLevel)
-			{
-				level = i + 1;
-				rank = RANKS[Maths::Min(i, RANKS.length-1)];
-			}
-			else
-			{
-				// The current level has been reached
-				break;
-			}
 		}
 
 		{
@@ -251,7 +236,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 				int expToNextLevel = getExpToNextLevel(level);
 				if (exp >= expToNextLevel)
 				{
-					level = i + 1;
+					level = i+1;
 					rank = RANKS[Maths::Min(i, RANKS.length-1)];
 				}
 				else
@@ -267,10 +252,11 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 
 			if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
 			{
-				hovered_rank = level;
+				hovered_rank = level-1;
 			}
 		}
 
+		if (same_team)
 		{
 			u8 icon = 0;
 
