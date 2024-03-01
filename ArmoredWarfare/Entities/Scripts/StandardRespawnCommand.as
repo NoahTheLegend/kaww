@@ -177,6 +177,7 @@ void InitClasses(CBlob@ this)
 						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
 						+"\n                   - 500% more XP for kills "
 						+"\n                   - 50% chance to save a ticket "
+						+"\n                   - Suicide wont waste tickets"
 						+"\n\n                 Hardcore Soldier     "
 						+"\n                   - Take twice as much damage     "
 						);
