@@ -464,27 +464,27 @@ void onTick(CSprite@ this)
 
 	if (stats_loaded) perk_id = stats.id;
 	
-	CSpriteLayer@ skull = this.getSpriteLayer("skull");
-	if (skull !is null)
-	{
-		if (perk_id == Perks::deathincarnate)
-		{
-			skull.SetFacingLeft(false);
-			skull.SetVisible(true);
-		}
-		else if (skull.isVisible()) skull.SetVisible(false);	
-	}
+	//CSpriteLayer@ skull = this.getSpriteLayer("skull");
+	//if (skull !is null)
+	//{
+	//	if (perk_id == Perks::deathincarnate)
+	//	{
+	//		skull.SetFacingLeft(false);
+	//		skull.SetVisible(true);
+	//	}
+	//	else if (skull.isVisible()) skull.SetVisible(false);	
+	//}
 
-	CSpriteLayer@ aos = this.getSpriteLayer("aos");
-	if (aos !is null)
-	{
-		if (perk_id == Perks::lucky)
-		{
-			aos.SetFacingLeft(false);
-			aos.SetVisible(blob.get_bool("has_aos") && blob.getHealth() > 0.01f);
-		}
-		else if (aos.isVisible()) aos.SetVisible(false);
-	}
+	//CSpriteLayer@ aos = this.getSpriteLayer("aos");
+	//if (aos !is null)
+	//{
+	//	if (perk_id == Perks::lucky)
+	//	{
+	//		aos.SetFacingLeft(false);
+	//		aos.SetVisible(blob.get_bool("has_aos") && blob.getHealth() > 0.01f);
+	//	}
+	//	else if (aos.isVisible()) aos.SetVisible(false);
+	//}
 
 	if (knocked)
 	{
