@@ -1,6 +1,7 @@
 #include "AllHashCodes.as"
 #include "TeamColour.as";
 #include "TeamColorCollections.as";
+#include "PingCommon.as"
 
 const float timelineHeight = 22.0f;
 const float timelineLeftEnd = 0.34f;
@@ -86,9 +87,9 @@ void handleVehicles()
 		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
 		
 		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
-		Vec2f custom_offset = Vec2f(0,8);
+		Vec2f custom_offset = Vec2f(0,16);
 		if (frame == 10 || frame == 11) custom_offset = Vec2f(0, -48);
-		else if (frame == 12) custom_offset = Vec2f(0, 24);
+		else if (frame == 12) custom_offset = Vec2f(0, 30);
 
 		u16 id = 0;
 		if (curVehicle.hasTag("importantarmory")) // importantarmory HP
@@ -202,18 +203,20 @@ void onRender(CRules@ this)
 		u16 teamLeftKills = this.get_u16("teamleft_kills");
 		u16 teamRightKills = this.get_u16("teamright_kills");
 
-		GUI::SetFont("menu");
-
 		teamLeftTickets=this.get_s16("teamLeftTickets");
 		teamRightTickets=this.get_s16("teamRightTickets");
 
-    	GUI::SetFont("big score font");
+    	GUI::SetFont("score-big");
+
 		u8 teamleft = this.get_u8("teamleft");
 		u8 teamright = this.get_u8("teamright");
+
 		//if (getGameTime()%30==0)  printf("GETTING TEAMS: "+teamleft+" ||| "+teamright);
 		//if (getGameTime()%30==0) printf(""+(getNeonColor(teamleft, 0).getRed())+" "+(getNeonColor(teamleft, 0).getGreen())+" "+(getNeonColor(teamleft, 0).getBlue()));
+		
 		if (teamLeftTickets > 0) GUI::DrawText(""+teamLeftTickets, timelineLPos+Vec2f(-48.0f, 0), getNeonColor(teamleft, 0));
 		else GUI::DrawTextCentered("--", timelineLPos+Vec2f(-48.0f, 0), getNeonColor(teamleft, 0));
+
 		if (teamRightTickets > 0) GUI::DrawText(""+teamRightTickets, timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
 		else GUI::DrawTextCentered("--", timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
 
@@ -393,6 +396,9 @@ void onRender(CRules@ this)
 	*/
 
 	//indicate respawns
+	CMap@ map = getMap();
+	if (map is null) return;
+
 	CBlob@[] tents;
 	getBlobsByName("tent", @tents);
 
@@ -465,7 +471,19 @@ void onRender(CRules@ this)
 	{
 		for (uint i = 0; i < player_indicator_pos.size(); i++) // walking blobs
 		{
+			bool my_player = player_frames[i] == 0;
+
 			GUI::DrawIcon("indicator_sheet_small.png", player_frames[i], Vec2f(16, 25), player_indicator_pos[i], 1.0f, player_teams[i]);
+			if (my_player && getLocalPlayerBlob() !is null)
+			{
+				GUI::SetFont("score-small");
+				//f32 sc = getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos()).x;
+				f32 sc = getLocalPlayerBlob().getPosition().x;
+				int tile_dist = sc/8 - map.tilemapwidth/2;
+
+				Vec2f text_pos = player_indicator_pos[i] + Vec2f(12, 34);
+				GUI::DrawTextCentered(""+tile_dist+"", text_pos, getNeonColor(player_teams[i], 0));
+			}
 		}
 	}
 	
@@ -743,4 +761,79 @@ void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 	// Health meter inside
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
 					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
+}
+
+Ping@[] pings;
+
+const int sw = getDriver().getScreenWidth();
+const int sh = getDriver().getScreenHeight();
+
+void renderPings(CRules@ this)
+{
+	u32 gt = getGameTime();
+
+	Vec2f sc = getDriver().getScreenCenterPos();
+
+	Vec2f offset = Vec2f(64, 64);
+	Vec2f stl = sc - Vec2f(sw, sh)/2 - offset;
+	Vec2f sbr = sc + Vec2f(sw, sh)/2 + offset;
+
+	for (int i = 0; i < pings.size(); i++)
+	{
+		Ping@ ping = pings[i];
+
+		// remove if ping doesnt exist for whatever reason, or is expired already
+		if (ping is null || gt > ping.end_time)
+		{
+			pings.removeAt(i);
+			i--;
+			continue;	
+		}
+
+		// don't draw if ping out of bounds
+		if (ping.pos.x <= stl.x || ping.pos.y <= stl.y
+			|| ping.pos.x >= sbr.x || ping.pos.y >= sbr.y)
+		{
+			continue;
+		}
+
+		ping.render();
+	}
+}
+
+void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
+{
+	if (cmd == this.getCommandID("ping"))
+	{
+		u8 team;
+		if (!params.saferead_u8(team)) return;
+
+		if (isClient()) // ignore if enemy team
+		{
+			CPlayer@ local = getLocalPlayer();
+			if (local is null || local.getTeamNum() != team) return;
+		}
+
+		Vec2f pos;
+		if (!params.saferead_Vec2f(pos)) return;
+
+		u8 type;
+		if (!params.saferead_u8(team)) return;
+
+		u32 end_time;
+		if (!params.saferead_u32(end_time)) return;
+
+		u8 fadeout_time;
+		if (!params.saferead_u8(fadeout_time)) return;
+		
+		string caster;
+		if (!params.saferead_string(caster)) return;
+
+		if (isClient())
+		{
+			Ping@ ping = Ping(pos, type, end_time, fadeout_time, caster, team);
+			pings.push_back(ping);
+			printf(""+pings.size());
+		}
+	}
 }

@@ -31,6 +31,16 @@ void onInit(CRules@ this)
 
 	//also restart stuff
 	onRestart(this);
+
+	// for some reason you can not use same font source, otherwise first load is duplicated in all other fonts
+	string font1 = CFileMatcher("KdamThmorPro-Regular.ttf").getFirst();
+	GUI::LoadFont("score-big", font1, 26, true);
+
+	string font2 = CFileMatcher("KdamThmorPro-Medium.ttf").getFirst();
+	GUI::LoadFont("score-medium", font2, 22, true);
+
+	string font3 = CFileMatcher("KdamThmorPro-Small.ttf").getFirst();
+	GUI::LoadFont("score-small", font3, 12, true);
 }
 
 bool need_sky_check = true;
