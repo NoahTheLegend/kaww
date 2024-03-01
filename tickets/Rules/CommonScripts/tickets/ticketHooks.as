@@ -97,23 +97,36 @@ void onRestart(CRules@ this){
 	reset(this);
 }
 
-void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData){
+void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
+{
+	if (!isClient()) return;
+	int vTeamNum=victim.getTeamNum();
+	int kTeamNum=vTeamNum;
+	int lTeamNum=-1;
+	if (killer !is null) kTeamNum = killer.getTeamNum();
+	if (getLocalPlayer() !is null) lTeamNum = getLocalPlayer().getTeamNum();
+	checkGameOver(this, vTeamNum);
 
-	int teamNum=victim.getTeamNum();
-	checkGameOver(this, teamNum);
-
-	if(this.isMatchRunning()){
+	if(this.isMatchRunning() && vTeamNum == lTeamNum)
+	{
 		int numTickets=0;
 
-		if(teamNum==0){
+		if (vTeamNum==0)
+		{
 			numTickets=this.get_s16("teamRightTickets");
-		}else{
+		}
+		else
+		{
 			numTickets=this.get_s16("teamLeftTickets");
 		}
-		if(numTickets<=0){          //play sound if running/run out of tickets
+
+		if (numTickets <= 0)
+		{          //play sound if running/run out of tickets
 			Sound::Play("/depleted.ogg");
 			return;
-		}else if(numTickets<=5){
+		}
+		else if (numTickets <= 5)
+		{
 			Sound::Play("/depleting.ogg");
 			return;
 		}
