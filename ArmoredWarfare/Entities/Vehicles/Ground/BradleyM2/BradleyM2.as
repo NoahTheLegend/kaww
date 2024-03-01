@@ -3,6 +3,11 @@
 #include "Hitters.as"
 #include "MakeDirtParticles.as"
 #include "TracksHandler.as"
+#include "ProgressBar.as";
+#include "TeamColorCollections.as";
+
+const int trap_cooldown = 10*30;
+const u8 traps_amount = 3;
 
 void onInit(CBlob@ this)
 {
@@ -11,12 +16,15 @@ void onInit(CBlob@ this)
 	this.Tag("deal_bunker_dmg");
 	this.Tag("ignore fall");
 
+	this.set_u32("traps_endtime", trap_cooldown);
+	this.set_f32("traps_time", trap_cooldown); // load immediately
+	this.addCommandID("release traps");
+
 	this.set_u32("next_shoot", 0);
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;
-
 
 	this.inventoryButtonPos = Vec2f(-8.0f, -12.0f);
 
@@ -172,9 +180,45 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
+
+	this.add_f32("traps_time", 1);
+
+	if (this.get_f32("traps_time") > this.get_u32("traps_endtime")+15)
+	{
+		this.Untag("no_more_traps");
+	}
 	
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
+		AttachmentPoint@[] aps;
+		this.getAttachmentPoints(@aps);
+
+		for (int a = 0; a < aps.length; a++)
+		{
+			AttachmentPoint@ ap = aps[a];
+			if (ap !is null)
+			{
+				CBlob@ hooman = ap.getOccupied();
+				if (hooman !is null && hooman.isMyPlayer())
+				{
+					if (ap.name == "DRIVER")
+					{
+						// javelin traps
+						if (!this.hasTag("no_more_traps") && ap.isKeyPressed(key_action1) && this.get_f32("traps_time") > this.get_u32("traps_endtime"))
+						{
+							if (hooman.isMyPlayer())
+							{
+								ReleaseTraps(this);
+							}
+
+							if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.0f, 0.5f + XORRandom(15) * 0.01f);
+							this.Tag("no_more_traps");
+						}
+					}
+				}
+			}
+		}
+
 		if (getGameTime()%30==0)
 		{
 			AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
@@ -257,6 +301,12 @@ void onTick(CBlob@ this)
 	}
 }
 
+void ReleaseTraps(CBlob@ this)
+{
+	CBitStream params;
+	this.SendCommand(this.getCommandID("release traps"), params);
+}
+
 // Blow up
 void onDie(CBlob@ this)
 {
@@ -326,6 +376,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return Vehicle_doesCollideWithBlob_ground(this, blob);
 	}
 }
+
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
 	if (attached.hasTag("player")) attached.Tag("covered");
@@ -347,6 +398,51 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 		return;
 	}
 	Vehicle_onDetach(this, v, detached, attachedPoint);
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
+{
+	if (cmd == this.getCommandID("release traps"))
+	{
+		if (this.get_f32("traps_time") <= this.get_u32("traps_endtime")) return;
+		this.set_f32("traps_time", 0);
+
+		Bar@ bars;
+		if (!this.get("Bar", @bars))
+		{
+			Bar setbars;
+    		setbars.gap = 20.0f;
+    		this.set("Bar", setbars);
+		}
+		if (this.get("Bar", @bars))
+		{
+			if (!hasBar(bars, "traps"))
+			{
+				SColor team_front = getNeonColor(this.getTeamNum(), 0);
+				ProgressBar setbar;
+				setbar.Set(this.getNetworkID(), "traps", Vec2f(80.0f, 16.0f), false, Vec2f(0, 56), Vec2f(2, 2), back, team_front,
+					"traps_time", this.get_u32("traps_endtime"), 0.33f, 5, 5, false, "");
+
+    			bars.AddBar(this.getNetworkID(), setbar, true);
+			}
+		}
+		
+		if (getNet().isServer())
+		{
+			for (u8 i = 0; i < traps_amount; i++)
+			{
+				CBlob@ proj = server_CreateBlob("missiletrap", this.getTeamNum(), this.getPosition()+Vec2f(XORRandom(8)-4, 0));
+				if (proj is null) return;
+
+				proj.set_u16("heli_id", this.getNetworkID());
+	
+				Vec2f vel = Vec2f(-XORRandom(11)*0.1f-2.0f, 0).RotateBy(45 + 90/(traps_amount-1)*i);
+				proj.setVelocity(vel);
+				proj.getShape().SetGravityScale(0.025f);
+				proj.server_SetTimeToDie(10.0f);
+			}
+		} 
+	}
 }
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}

@@ -28,8 +28,8 @@ const Vec2f miniGun_offset = Vec2f(-40,5);
 const u8 shootDelay = 2;
 const f32 projDamage = 0.275f;
 
-const int trap_cooldown = 20*30;
-const u8 traps_amount = 6;
+const int trap_cooldown = 30*30;
+const u8 traps_amount = 7;
 
 void onInit(CBlob@ this)
 {
@@ -218,7 +218,7 @@ void onTick(CBlob@ this)
 		
 		CSpriteLayer@ blade = sprite.getSpriteLayer("blade");
 		CSpriteLayer@ tailrotor = sprite.getSpriteLayer("tailrotor");
-		for(int a = 0; a < aps.length; a++)
+		for (int a = 0; a < aps.length; a++)
 		{
 			AttachmentPoint@ ap = aps[a];
 			if (ap !is null)

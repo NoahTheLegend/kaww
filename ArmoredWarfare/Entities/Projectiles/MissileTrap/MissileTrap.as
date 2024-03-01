@@ -3,7 +3,7 @@
 #include "HittersAW.as";
 #include "MakeDustParticle.as";
 
-const f32 distance = 384.0f; // 48 tiles
+const f32 distance = 320.0f; // 40 tiles
 
 void onInit(CBlob@ this)
 {
@@ -58,7 +58,7 @@ void onTick(CBlob@ this)
 	
 	if (!isServer()) return;
 	if (getGameTime() % 5 != 0) return;
-	if (XORRandom(15) != 0) return;
+	if (XORRandom(30) != 0) return;
 
 	if (this.isOnGround()) this.server_Die();
 	CBlob@[] missiles;
