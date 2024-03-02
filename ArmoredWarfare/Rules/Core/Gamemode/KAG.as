@@ -37,10 +37,13 @@ void onInit(CRules@ this)
 	GUI::LoadFont("score-big", font1, 26, true);
 
 	string font2 = CFileMatcher("KdamThmorPro-Medium.ttf").getFirst();
-	GUI::LoadFont("score-medium", font2, 22, true);
+	GUI::LoadFont("score-medium", font2, 18, true);
 
 	string font3 = CFileMatcher("KdamThmorPro-Small.ttf").getFirst();
-	GUI::LoadFont("score-small", font3, 12, true);
+	GUI::LoadFont("score-small", font3, 14, true);
+
+	string font4 = CFileMatcher("KdamThmorPro-Smaller.ttf").getFirst();
+	GUI::LoadFont("score-smaller", font4, 12, true);
 }
 
 bool need_sky_check = true;

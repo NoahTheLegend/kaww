@@ -78,9 +78,9 @@ void reset(CRules@ this)
 }
 
 void onInit(CRules@ this) {
-    if (!GUI::isFontLoaded("big score font"))
+    if (!GUI::isFontLoaded("score-big"))
 	{
-        GUI::LoadFont("big score font",
+        GUI::LoadFont("score-big",
                       "GUI/Fonts/AveriaSerif-Bold.ttf", 
                       FONT_SIZE,
                       true);

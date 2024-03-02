@@ -58,7 +58,7 @@ void onRender(CSprite@ this)
 	if (mouseOnBlob && !isOpen(blob))
 	{
 		Vec2f dimensions;
-		GUI::SetFont("AveriaSerif-Bold_32");
+		GUI::SetFont("score-big");
 
 		string mytext = "Unlock for $" + blob.get_u16("openCost");
 

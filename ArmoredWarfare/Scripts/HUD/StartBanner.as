@@ -8,10 +8,10 @@ const f32 maxTime = 1.2f;
 
 void onInit(CRules@ this)
 {
-    if (!GUI::isFontLoaded("AveriaSerif-Bold_32"))
+    if (!GUI::isFontLoaded("score-big"))
     {
         string AveriaSerif = CFileMatcher("AveriaSerif-Bold.ttf").getFirst();
-        GUI::LoadFont("AveriaSerif-Bold_32", AveriaSerif, 32, true);
+        GUI::LoadFont("score-big", AveriaSerif, 32, true);
     }
 
     onRestart(this);
@@ -101,7 +101,7 @@ void onRender(CRules@ this)
 
 void DrawBanner(Vec2f center, CRules@ this)
 {
-    GUI::SetFont("AveriaSerif-Bold_32");
+    GUI::SetFont("score-big");
 
     string text = "";
     text = this.get_string("bannertext");

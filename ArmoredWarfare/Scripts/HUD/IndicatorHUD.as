@@ -189,6 +189,7 @@ void handlePlayers(CPlayer@ p)
 void onRender(CRules@ this)
 {
 	if (g_videorecording) return;
+	renderPings(this);
 
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
@@ -476,7 +477,7 @@ void onRender(CRules@ this)
 			GUI::DrawIcon("indicator_sheet_small.png", player_frames[i], Vec2f(16, 25), player_indicator_pos[i], 1.0f, player_teams[i]);
 			if (my_player && getLocalPlayerBlob() !is null)
 			{
-				GUI::SetFont("score-small");
+				GUI::SetFont("score-smaller");
 				//f32 sc = getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos()).x;
 				f32 sc = getLocalPlayerBlob().getPosition().x;
 				int tile_dist = sc/8 - map.tilemapwidth/2;
@@ -582,9 +583,15 @@ u8 getIndicatorFrame(int hash)
 	return frame;
 }
 
+void onInit(CRules@ this)
+{
+	onRestart(this);
+}
+
 void onRestart(CRules@ this)
 {
     this.Untag("animateGameOver");
+	this.addCommandID("ping");
 }
 
 void onStateChange(CRules@ this, const u8 oldState)
@@ -791,9 +798,10 @@ void renderPings(CRules@ this)
 		}
 
 		// don't draw if ping out of bounds
-		if (ping.pos.x <= stl.x || ping.pos.y <= stl.y
-			|| ping.pos.x >= sbr.x || ping.pos.y >= sbr.y)
+		if (ping.screen_pos.x <= stl.x || ping.screen_pos.y <= stl.y
+			|| ping.screen_pos.x >= sbr.x || ping.screen_pos.y >= sbr.y)
 		{
+
 			continue;
 		}
 
@@ -833,7 +841,8 @@ void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 		{
 			Ping@ ping = Ping(pos, type, end_time, fadeout_time, caster, team);
 			pings.push_back(ping);
-			printf(""+pings.size());
+
+			Sound::Play("PopIn", pos, 1.0f, 1.0f);
 		}
 	}
 }

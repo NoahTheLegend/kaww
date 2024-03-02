@@ -1,8 +1,8 @@
 
 const SColor[] PingColors = {
-	SColor(255,25,255,50),
+	SColor(255,255,225,35),
 	SColor(255,55,95,225),
-	SColor(255,225,185,15),
+	SColor(255,25,255,50),
 	SColor(255,255,55,55),
 	SColor(255,185,75,225)
 };
@@ -15,31 +15,33 @@ const string[] PingCategories = {
 	"NOTIFY"
 };
 
-enum PingList {
-	// movement
-	attention = 0,
-	goto,
-	danger,
-	// tactic
-	retreat,
-	attack,
-	hold,
-	// action
-	take,
-	capture,
-	leave,
-	// enemy
-	incoming,
-	chase,
-	fireat,
-	// alert
-	what,
-	yes,
-	no,
-	ammo,
-	// other
-	total
+const string[] PingList = {
+    // movement
+    "Go there",
+	"Attention!",
+    "Danger!",
+    // tactic
+    "Retreat!",
+    "Attack!",
+    "Hold",
+    // action
+    "Take",
+    "Capture",
+    "Leave",
+    // enemy
+    "Incoming!",
+    "Chase!",
+    "Fire at!",
+    // alert
+    "What?",
+    "Yes",
+    "No",
+    // other
+    "total"
 };
+
+const int ping_time = 90;
+const int ping_fadeout_time = 10;
 
 class Ping {
 	Vec2f pos;
@@ -56,7 +58,7 @@ class Ping {
 	{
 		pos = _pos;
 		type = _type;
-		end_time = _end_time;
+		end_time = getGameTime() + _end_time;
 		fadeout_time = _fadeout_time;
 		caster = _caster;
 		team = _team;
@@ -66,6 +68,7 @@ class Ping {
 
 	void render()
 	{
+		screen_pos = getDriver().getScreenPosFromWorldPos(pos);
 		GUI::DrawText("hi amogus :33333", screen_pos, SColor(255,255,255,0));
 	}
 };

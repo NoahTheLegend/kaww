@@ -160,7 +160,7 @@ void onInit(CSprite@ this)
 	this.getCurrentScript().runFlags |= Script::tick_myplayer;
 	this.getCurrentScript().removeIfTag = "dead";
 
-	if (!GUI::isFontLoaded("AveriaSerif-Bold_32"))
+	if (!GUI::isFontLoaded("score-big"))
     {
         string AveriaSerif = CFileMatcher("AveriaSerif-Regular.ttf").getFirst();
         GUI::LoadFont("AveriaSerif-Regular_32", AveriaSerif, 32, true);

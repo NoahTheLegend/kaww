@@ -100,7 +100,7 @@ void onRender(CRules@ this)
 		
 		Vec2f introSize;
 		GUI::GetTextDimensions(intro, introSize);
-		GUI::SetFont("AveriaSerif-Bold_32");
+		GUI::SetFont("score-big");
 		GUI::DrawTextCentered(intro, Vec2f(sMid, tlBox.y + 15), tipsColor);
         GUI::SetFont("menu");
         GUI::DrawTextCentered("Mod is developed with big effort by Blav (Yeti5000707) and salty Snek (NoahTheLegend)", Vec2f(sMid, tlBox.y + 60), SColor(255, 255, 255, 0));
