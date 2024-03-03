@@ -65,7 +65,8 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	topleft.y += stepheight * 1.5;
 
 	const int accolades_start = 700;
-	bool same_team = teamnum == localplayer.getTeamNum();
+	int local_team = localplayer.getTeamNum();
+	bool same_team = teamnum == local_team || local_team == getRules().getSpectatorTeamNum();
 
 	//draw player table header
 	GUI::DrawText(getTranslatedString("Player"), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
@@ -186,7 +187,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			teamIndex = b.get_s32("head team");
 		}
 
-		f32 hidden_offset_x = same_team ? 0 : 16;
+		f32 hidden_offset_x = same_team ? 0 : 20;
 
 		if (headTexture != "")
 		{
@@ -208,7 +209,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		if (clantag != "")
 		{
 			GUI::GetTextDimensions(clantag, clantag_actualsize);
-			GUI::DrawText(clantag, topleft + Vec2f(name_buffer, 0), SColor(0xff888888));
+			GUI::DrawText(clantag, topleft + Vec2f(name_buffer - hidden_offset_x, 0), SColor(0xff888888));
 			//draw name alongside
 			GUI::DrawText(playername, topleft + Vec2f(name_buffer + clantag_actualsize.x + 8 - hidden_offset_x, 0), namecolour);
 		}
