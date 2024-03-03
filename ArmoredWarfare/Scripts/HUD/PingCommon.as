@@ -36,7 +36,7 @@ const string[] PingList = {
     "Leave",
     // enemy
     "Incoming",
-    "Chase",
+    "Help",
     "Fire",
     // alert
     "What",
