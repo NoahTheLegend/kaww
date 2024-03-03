@@ -176,8 +176,8 @@ shared class PerkWealthy : PerkStats {
         super();
         name = "Wealthy";
         id = 6;
-        kill_coins = 6;
-        coins_income = 2;
+        kill_coins = 15;
+        //coins_income = 2;
     }
 };
 
@@ -238,6 +238,9 @@ shared class PerkMason : PerkStats {
         super();
         name = "Mason";
         id = 11;
+
+        regen_amount = 0.1f;
+        heal_factor = 1.25f;
     }
 };
 
