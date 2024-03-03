@@ -167,8 +167,7 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Wealthy", "$6_class_icon$", "Wealthy",
 						"Wealthy:\n\n"+"$6_class_icon$"+"Highroller"
-						+"\n                   - Extra money income"
-						+"\n                   - Kills give you 6 coins"
+						+"\n                   - Kills give you 15 coins"
 						+"\n\n                  Health Insurance"
 						+"\n                   - Lose 33% of all money on death          "
 						);	
@@ -223,9 +222,12 @@ void InitClasses(CBlob@ this)
 						);
 	
 	addPlayerPerk(this, "Mason", "$11_class_icon$", "Mason",
-						"Mason:\n\n"+"$11_class_icon$"+"Building hammer"
+						"Mason:\n\n"+"$11_class_icon$"+"Mighty"
+						+"\n                   - "
+						+"\n                   - Get 125% of other heal"
+						+"\n\n                Building hammer"
 						+"\n                   - Build pre-designed"
-						+"\n                     cheaper structures"
+						+"\n                     for 50% of cost!"
 						+"\n                   - Stand near green"
 						+"\n                     tiles to build!"
 						+"\n                   - Requires materials!"
@@ -235,6 +237,8 @@ void InitClasses(CBlob@ this)
 						+"\n$shift$              "
 						+"\n             $and$ Build-list"
 						+"\n$space$              "
+						+"\n					 "
+						+"\n					 "
 						);
 						
 }
