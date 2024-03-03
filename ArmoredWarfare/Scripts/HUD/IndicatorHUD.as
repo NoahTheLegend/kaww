@@ -826,7 +826,7 @@ void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 		if (!params.saferead_Vec2f(pos)) return;
 
 		u8 type;
-		if (!params.saferead_u8(team)) return;
+		if (!params.saferead_u8(type)) return;
 
 		u32 end_time;
 		if (!params.saferead_u32(end_time)) return;

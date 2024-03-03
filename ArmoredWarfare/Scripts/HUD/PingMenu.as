@@ -1,4 +1,7 @@
 #define CLIENT_ONLY
+// whole script is running only by our local player
+// check IndicatorHUD.as for handling ping logic
+// todo: add pings to indicator map
 
 #include "PingCommon.as";
 #include "TeamColorCollections.as";
@@ -9,26 +12,46 @@ const int sh = getDriver().getScreenHeight();
 s8 ping_pointer_frame = 0;
 u8 ping_pointer_framerate = 6;
 
-Vec2f keypress_pos = Vec2f_zero;
-Vec2f keypress_worldpos = Vec2f_zero;
+Vec2f keypress_pos = Vec2f_zero; // screen pos
+Vec2f keypress_worldpos = Vec2f_zero; // world pos
 
-const int radius = 100.0f;
-const f32 blind_area_range = 8.0f;
+const int radius = 80.0f; // how far from keypress_pos
+const f32 blind_area_range = 8.0f; // category selection blind area
 
+const f32 subsection_radius = 72.0f; // how far from category_name
+const f32 subsection_angle = 360.0f/(PingCategories.size()+2);
+const f32 endpoint = radius+subsection_radius/1.1f; // limit radius for cursor inside circle
+
+int cooldown = 0; // time during that we cant ping
+const int cooldown_time = 15*30;
+int load = 0; // current load
+const int load_max = 100; // limit w/o cooldown
+int ping_cost = 30; // per one
+int load_holdtime = 0;
+const int load_holdtime_max = 30; // wait time before decreasing
+
+const f32 lerp = 0.3f;
+const f32 lerp_fast = 0.5f;
+
+// dont change these
 s8 selected_section = -1;
 s8 selected_ping = -1;
-
-const f32 subsection_radius = 72.0f;
-const f32 subsection_angle = 360.0f/(PingCategories.size()+2);
-const f32 subsection_size = 3;
-const f32 subsection_select_radius = 24.0f;
-const f32 endpoint = radius+subsection_radius-subsection_select_radius/2; // limit radius for cursor inside circle
-
+f32 lerp_section = 0;
 f32 lerp_subsection = 0;
 
 void onTick(CBlob@ this)
 {
 	if (!this.isMyPlayer()) return;
+
+	if (cooldown > 0)
+	{
+		cooldown--;
+	}
+	else
+	{
+		if (load_holdtime > 0) load_holdtime--;
+		else if (load > 0) load--;
+	}
 
 	if (getGameTime()%ping_pointer_framerate==0)
 	{
@@ -49,9 +72,10 @@ void onRender(CSprite@ this)
     if (controls is null) return;
 
 	if (blob.isKeyPressed(key_taunts))
-	{
-		//Vec2f sc = getDriver().getScreenCenterPos();
+	{ // render menu
+		lerp_section = Maths::Lerp(lerp_section, 1.0f, lerp);
 
+		// save origin pos
         Vec2f mpos = controls.getMouseScreenPos();
         if (blob.isKeyJustPressed(key_taunts))
 		{
@@ -59,41 +83,39 @@ void onRender(CSprite@ this)
 			keypress_worldpos = getDriver().getWorldPosFromScreenPos(keypress_pos);
 		}
 		
+		// clamp mouse pos in bounds
 		Vec2f impos = controls.getInterpMouseScreenPos(); // tor
 		Vec2f mvec = (impos-keypress_pos);
-		if (mvec.Length() > endpoint)
+
+		if (Maths::Floor(mvec.Length()) > endpoint)
 		{
-			controls.setMousePosition(keypress_pos + Vec2f(endpoint, 0).RotateBy(-mvec.Angle()));
+			f32 angle = Maths::ATan2(mvec.y, mvec.x) * (180.0 / 3.14159265); // getAngle() snaps angle to int if its == 90 || == 270
+			controls.setMousePosition(keypress_pos + Vec2f(endpoint, 0).RotateBy(angle));
 		}
 
-		DrawPointer(keypress_worldpos);
+		// draw
+		//DrawPointer(keypress_worldpos, Maths::Abs(ping_pointer_frame), getNeonColor(blob.getTeamNum(), 0));
 		DrawCategories(mpos);
+		if (load != 0 || cooldown > 0) DrawLoad(keypress_pos);
 	}
-	else if (blob.isKeyJustReleased(key_taunts) && selected_section >= 0 && selected_ping >= 0)
-	{
+	else if (blob.isKeyJustReleased(key_taunts) && cooldown == 0 && selected_section >= 0 && selected_ping >= 0)
+	{ // send ping
 		if (!blob.hasTag("send_ping"))
 		{
 			blob.Tag("send_ping");
 			SendPing(blob, keypress_worldpos, selected_section, selected_ping);
 		}
 	}
-    else
+    else // reset
     {
 		blob.Untag("send_ping");
 
+		lerp_section = Maths::Lerp(lerp_section, 0.0f, lerp);
         keypress_pos = Vec2f_zero;
 		keypress_worldpos = Vec2f_zero;
         selected_section = -1;
 		selected_ping = -1;
     }
-}
-
-void DrawPointer(Vec2f worldpos)
-{
-	if (getLocalPlayer() is null) return;
-
-	GUI::DrawIcon("PingPointer", Maths::Abs(ping_pointer_frame), Vec2f(16,16),
-		getDriver().getScreenPosFromWorldPos(worldpos-Vec2f(10,10)), 1.5f, getNeonColor(getLocalPlayer().getTeamNum(), 0));
 }
 
 void DrawCategories(Vec2f mpos)
@@ -102,49 +124,61 @@ void DrawCategories(Vec2f mpos)
 
     u8 total = PingCategories.size();
 	bool was_selected = false;
+	bool inactive = cooldown > 0;
 	
     for (u8 i = 0; i < total; i++)
     {
+		// calculate part's angle
         f32 part = 360/total;
         f32 angle = i * part;
 
-        Vec2f drawpos = keypress_pos + Vec2f(0, -radius).RotateBy(angle);
-        f32 mangle = -(mpos-keypress_pos).Angle() + 90;
+        Vec2f drawpos = keypress_pos + Vec2f(0, -radius*lerp_section).RotateBy(angle);
+        f32 mangle = -(mpos-keypress_pos).Angle() + 90; // (center -> mouse) vector angle
         
         f32 min = (90+angle - part/2);
         f32 max = (90+angle + part/2);
 
+		SColor section_col = PingColors[i];
+
         bool selected = false;
-        f32 diff = mangle - angle;
-		diff += diff > 180 ? -360 : diff < -180 ? 360 : 0;
-
-        if ((keypress_pos-mpos).Length() > blind_area_range && diff <= part/2 && diff > -part/2) selected = true;
-
-        SColor col = SColor(25,255,255,255);
-        if (selected)
-        	col.setAlpha(75);
-
-        drawCone(min * Maths::Pi/180, max * Maths::Pi/180, col);
-
-		if (selected)
+		f32 diff = mangle - angle;
+		if (!inactive) // not on cooldown
 		{
-			was_selected = true;
-			DrawPings(mpos, drawpos, angle, i);
+			diff += diff > 180 ? -360 : diff < -180 ? 360 : 0;
+       	 	if ((keypress_pos-mpos).Length() > blind_area_range && diff <= part/2 && diff > -part/2) selected = true;
 
-			if (selected_section != i)
+        	SColor col = SColor(50,255,255,255);
+			if (selected)
+        		col.setAlpha(100);
+
+			col.setAlpha(col.getAlpha()*lerp_section);
+        	DrawCone(min * Maths::Pi/180, max * Maths::Pi/180, col);
+
+			if (selected)
 			{
-				Sound::Play("select.ogg", getLocalPlayerBlob().getPosition(), 2.0f, 1.1f);
-			}
+				was_selected = true;
 
-			selected_section = i;
+				if (selected_section != i) // last selected != new selected
+				{
+					lerp_subsection = 0;
+					Sound::Play("select.ogg", getLocalPlayerBlob().getPosition(), 2.0f, 1.1f);
+				}
+
+				DrawPings(mpos, drawpos, angle, i);
+				selected_section = i;
+			}
 		}
+		else section_col = SColor(155,255,255,255);
+		section_col.setAlpha(section_col.getAlpha()*lerp_section);
 
 		GUI::SetFont("score-medium");
-        GUI::DrawTextCentered(PingCategories[i], drawpos, PingColors[i]);
+        GUI::DrawTextCentered(PingCategories[i], drawpos, section_col);
     }
 
-	if (!was_selected)
+	if (was_selected) lerp_subsection = Maths::Lerp(lerp_subsection, 1.0f, lerp_fast);
+	else // reset
 	{
+		lerp_subsection = 0;
 		selected_section = -1;
 		selected_ping = -1;
 	}
@@ -152,40 +186,42 @@ void DrawCategories(Vec2f mpos)
 
 void DrawPings(Vec2f mpos, Vec2f drawpos, f32 angle, u8 section)
 {
-	bool was_selected = false;
+	f32 dist = radius;
+	s8 closest_ping = -1;
 
 	for (u8 i = 0; i < subsection_size; i++)
 	{
-		GUI::SetFont("score-small");
-		Vec2f subpos = drawpos + Vec2f(0, -subsection_radius).RotateBy(angle - (subsection_size*subsection_angle)/subsection_size + i*subsection_angle);
-	
-		if ((subpos - mpos).Length() < subsection_select_radius)
-		{
-			was_selected = true;
-			GUI::SetFont("score-medium");
+		Vec2f subpos = drawpos + Vec2f(0, -subsection_radius*lerp_subsection).RotateBy(angle - (subsection_size*subsection_angle)/subsection_size + i*subsection_angle);
+		f32 len = Maths::Abs((subpos-mpos).Length());
 
-			if (selected_ping != i)
-			{
-				Sound::Play("LoadingTick1.ogg", getLocalPlayerBlob().getPosition(), 1.5f, 1.475f+XORRandom(51)*0.001f);
-			}
-			
-			selected_ping = i;
+		if (len < dist)
+		{
+			closest_ping = i;
+			dist = len;
 		}
+	}
+
+	for (u8 i = 0; i < subsection_size; i++)
+	{
+		if (selected_ping != closest_ping) // last selected != new selected
+		{
+			Sound::Play("LoadingTick1.ogg", getLocalPlayerBlob().getPosition(), 1.5f, 1.475f+XORRandom(51)*0.001f);
+		}
+
+		GUI::SetFont(closest_ping == i ? "score-medium" : "score-small");
+		Vec2f subpos = drawpos + Vec2f(0, -subsection_radius*lerp_subsection).RotateBy(angle - (subsection_size*subsection_angle)/subsection_size + i*subsection_angle);
 		
 		GUI::DrawTextCentered(PingList[section*subsection_size+i], subpos, PingColors[section]);
 	}
 
-	if (!was_selected)
-	{
-		selected_ping = -1;
-	}
+	selected_ping = closest_ping;
 }
 
-void drawCone(f32 min, f32 max, SColor col)
+void DrawCone(f32 min, f32 max, SColor col)
 {
 	Driver@ driver = getDriver();
 	Vec2f origin = keypress_pos;
-	float ray_distance = radius * 2;
+	float ray_distance = radius*2*lerp_section;
 	
 	Vertex[] vertices;
 	// Center vertex
@@ -217,6 +253,16 @@ void drawCone(f32 min, f32 max, SColor col)
 	Render::RawTriangles("pixel", vertices);
 }
 
+const u8 timer_frames = 28;
+void DrawLoad(Vec2f pos)
+{
+	u8 frame = cooldown == 0 ? timer_frames - timer_frames * (f32(load)/load_max) : timer_frames - timer_frames * f32(cooldown)/cooldown_time;
+	f32 scale = 0.75f;
+
+	GUI::DrawIcon("TimerCircle.png", frame, Vec2f(32,32),
+		pos - Vec2f(32,32) * scale, scale, SColor(55,255,255,255));
+}
+
 void SendPing(CBlob@ blob, Vec2f pos, u8 section, u8 ping)
 {
 	CPlayer@ p = blob.getPlayer();
@@ -229,11 +275,25 @@ void SendPing(CBlob@ blob, Vec2f pos, u8 section, u8 ping)
 	params.write_u8(section*subsection_size + ping);
 	params.write_u32(ping_time);
 	params.write_u8(ping_fadeout_time);
-	params.write_string(p.getClantag()+" "+p.getCharacterName());
+
+	string clan = p.getClantag();
+	if (clan != "") clan = clan+" ";
+
+	params.write_string(clan+""+p.getCharacterName());
 	getRules().SendCommand(getRules().getCommandID("ping"), params);
 
 	CControls@ controls = getControls();
 	if (controls is null) return;
-
+	
 	controls.setMousePosition(keypress_pos);
+	load += ping_cost;
+
+	load_holdtime = load_holdtime_max;
+
+	if (load > load_max)
+	{
+		load = 0;
+		load_holdtime = 0;
+		cooldown = cooldown_time;
+	}
 }
