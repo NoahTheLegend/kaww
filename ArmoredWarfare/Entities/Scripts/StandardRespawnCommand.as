@@ -200,7 +200,7 @@ void InitClasses(CBlob@ this)
 						+"\n                     (Hold W while falling)"
 						+"\n                   - Better parachute flight"
 						+"\n\n                  Heavy Load"
-						+"\n                   - Take 50% of damage \n                     while falling"
+						+"\n                   - Take 65% of damage \n                     while falling"
 						+"\n                   - Take 200% fall damage     "
 						);
 
