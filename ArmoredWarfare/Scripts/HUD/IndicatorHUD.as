@@ -772,9 +772,6 @@ void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 
 Ping@[] pings;
 
-const int sw = getDriver().getScreenWidth();
-const int sh = getDriver().getScreenHeight();
-
 void renderPings(CRules@ this)
 {
 	u32 gt = getGameTime();
