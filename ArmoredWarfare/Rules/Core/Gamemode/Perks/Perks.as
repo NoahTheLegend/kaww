@@ -216,7 +216,7 @@ shared class PerkParatrooper : PerkStats {
         super();
         name = "Paratrooper";
         id = 9;
-        para_damage_take_mod = 0.5f;
+        para_damage_take_mod = 0.65f;
         fall_damage_take_mod = 1.5f;
     }
 };
