@@ -92,7 +92,8 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	CBlob@ carrier = blob.getCarriedBlob();
 
-	if (blob.hasTag("turret") && blob.getTeamNum() != this.getTeamNum())
+	if ((blob.hasTag("turret") || blob.hasTag("sandbags"))
+		&& blob.getTeamNum() != this.getTeamNum())
 	{
 		return true;
 	}
