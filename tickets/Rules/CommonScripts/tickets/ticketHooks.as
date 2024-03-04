@@ -109,6 +109,9 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 	int kTeamNum = vTeamNum;
 	int lTeamNum = -1;
 
+	u8 teamleft = this.get_u8("teamleft");
+	u8 teamright = this.get_u8("teamright");
+
 	if (killer !is null) kTeamNum = killer.getTeamNum();
 	if (getLocalPlayer() !is null) lTeamNum = getLocalPlayer().getTeamNum();
 
@@ -128,17 +131,16 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 		decrementTickets(this, vTeamNum);
 
 		if (!isClient()) return;
-		if(vTeamNum == lTeamNum)
+		if (vTeamNum == teamleft)
 		{
 			int numTickets=0;
-
-			if (vTeamNum==0)
-			{
-				numTickets=this.get_s16("teamRightTickets");
-			}
-			else
+			if (vTeamNum == teamleft && lTeamNum == teamleft)
 			{
 				numTickets=this.get_s16("teamLeftTickets");
+			}
+			else if (vTeamNum == teamright && lTeamNum == teamright)
+			{
+				numTickets=this.get_s16("teamRightTickets");
 			}
 
 			if (numTickets <= 0)
