@@ -101,6 +101,17 @@ void onRestart(CRules@ this)
 	reset(this);
 }
 
+void onTick(CRules@ this)
+{
+	// if many people go spectator, only one ticket will be consumed, needs a proper solution later
+	s8 prop = this.get_s8("decrement_ticket_by_team");
+	if (prop != -1)
+	{
+		decrementTickets(this, prop);
+		this.set_s8("decrement_ticket_by_team", -1);
+	}
+}
+
 void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 {
 	if (victim is null) return;

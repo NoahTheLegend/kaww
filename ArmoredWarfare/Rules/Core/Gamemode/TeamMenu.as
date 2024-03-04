@@ -95,6 +95,34 @@ void ReadChangeTeam(CRules@ this, CBitStream @params)
 
 void ChangeTeam(CPlayer@ player, u8 team)
 {
+	if (player.getBlob() !is null && getRules().isMatchRunning())
+	{
+		int ptnum = player.getTeamNum();
+		
+		CBlob@[] overlapping;
+		player.getBlob().getOverlapping(overlapping);
+		
+		bool skip = false;
+		for (u8 i = 0; i < overlapping.size(); i++)
+		{
+			CBlob@ b = overlapping[i];
+			if (b is null) continue;
+			if (b.hasTag("respawn") && b.getTeamNum() == ptnum)
+			{
+				skip = true;
+				break;
+			}
+		}
+
+		if (!skip)
+		{
+			if (ptnum != getRules().getSpectatorTeamNum())
+			{
+				getRules().set_s8("decrement_ticket_by_team", ptnum);
+			}
+		}
+	}
+
 	player.client_ChangeTeam(team);
 	getHUD().ClearMenus();
 }
