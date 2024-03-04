@@ -258,7 +258,7 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
-	if (attached !is null && attached.hasTag("player"))
+	if (attached !is null && attached.hasTag("player") && attachedPoint.name == "GUNNER")
 	{
 		attached.Tag("machinegunner");
 		attached.Tag("distant_view");
@@ -268,7 +268,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
-	if (detached !is null && detached.hasTag("player"))
+	if (detached !is null && detached.hasTag("player") && attachedPoint.name == "GUNNER")
 	{
 		detached.Untag("machinegunner");
 		detached.Untag("distant_view");
