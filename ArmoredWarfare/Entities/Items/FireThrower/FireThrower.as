@@ -97,7 +97,10 @@ void onInit(CBlob@ this)
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
-	attached.Tag("machinegunner");
+	if (attachedPoint.name == "GUNNER")
+	{
+		attached.Tag("machinegunner");
+	}
 	if (!attached.hasTag("has mount")) return;
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
 	if (cage !is null)
@@ -108,7 +111,10 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 {
-	detached.Untag("machinegunner");
+	if (attachedPoint.name == "GUNNER")
+	{
+		detached.Untag("machinegunner");
+	}
 	if (detached.getSprite() !is null && detached !is this && detached.getPlayer() !is null)
 	{
 		detached.getSprite().ResetTransform();
