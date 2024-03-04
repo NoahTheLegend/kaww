@@ -41,8 +41,12 @@ void onTick(CBlob@ this)
 	if (!this.isMyPlayer()) return;
 	CControls@ controls = getControls();
 	if (controls is null) return;
-	DrawStateTick(this, controls);
 
+	if (this.hasTag("drawing_ping"))
+	{
+		DrawStateTick(this, controls);
+	}
+	
 	if (cooldown > 0)
 	{
 		cooldown--;
@@ -73,12 +77,9 @@ void onRender(CSprite@ this)
 
 	bool reset = false;
 
-	if (blob.isKeyJustPressed(key_action1) || blob.isKeyJustPressed(key_action2))
-		blob.Untag("drawing_ping");
-
 	if (blob.hasTag("drawing_ping"))
 	{
-		DrawState(blob);
+		DrawState(blob, controls);
 	}
 	else
 	{
@@ -312,7 +313,7 @@ void SetDrawState(CBlob@ blob, Vec2f pos, u8 section, u8 ping_type)
 	Canvas@ new = shapes[ping_type];
 	if (new is null) return;
 
-	new.SetPingProps(pos, ping_type, ping_time, ping_fadeout_time, getFullCharacterName(blob.getPlayer()), blob.getTeamNum());
+	new.SetPingProps(pos, ping_type, canvas_ping_time, canvas_ping_fadeout_time, getFullCharacterName(blob.getPlayer()), blob.getTeamNum());
 	new.vertices = array<Vec2f>();
 	new.vertices.push_back(pos);
 	blob.set("ping_canvas", @new);
@@ -326,18 +327,12 @@ void DrawStateTick(CBlob@ this, CControls@ controls)
 	canvas.tick(this, controls);
 }
 
-void DrawState(CBlob@ blob)
+void DrawState(CBlob@ blob, CControls@ controls)
 {
-	if (blob is null)
-	{
-		blob.Untag("drawing_ping");
-		return;
-	}
-	
 	Canvas@ canvas;
 	if (!blob.get("ping_canvas", @canvas) || canvas is null) return;
 
-	canvas.render();
+	canvas.render(blob, controls);
 }
 
 void SendPing(CBlob@ blob, Vec2f pos, u8 section, u8 ping_type)
@@ -371,4 +366,31 @@ void SendPing(CBlob@ blob, Vec2f pos, u8 section, u8 ping_type)
 		load_holdtime = 0;
 		cooldown = cooldown_time;
 	}
+}
+
+void SendPathCanvas(CBlob@ blob, u8 shape, Vec2f[] vertices, u8 team, u32 ping_time, u8 ping_fadeout_time)
+{
+	blob.Untag("drawing_ping");
+
+	CPlayer@ p = blob.getPlayer();
+	if (p is null) return;
+
+	CBitStream params;
+	params.write_u8(shape);
+	params.write_u8(team);
+	params.write_u32(ping_time);
+	params.write_u8(ping_fadeout_time);
+	params.write_string(getFullCharacterName(p));
+
+	u8 vsize = vertices.size();
+	params.write_u8(vsize);
+	for (u8 i = 0; i < vsize; i++)
+	{
+		params.write_Vec2f(vertices[i]);
+	}
+
+	getRules().SendCommand(getRules().getCommandID("ping_path"), params);
+
+	CControls@ controls = getControls();
+	if (controls is null) return;
 }

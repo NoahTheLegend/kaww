@@ -48,10 +48,17 @@ const string[] PingList = {
 	"draw_Timer"
 };
 
+const int render_margin = 64.0f; // extra area for rendering out of screen
 const f32 subsection_size = 3;
+
 const int ping_time = 120;
 const int ping_fadeout_time = 10;
 const f32 ping_slidein_dist = 24.0f;
+
+const int canvas_ping_time = 240;
+const int canvas_ping_fadeout_time = 10;
+
+const u8 max_path_segments = 6;
 
 void DrawPointer(Vec2f worldpos, u8 frame, SColor col)
 {
@@ -62,10 +69,10 @@ void DrawPointer(Vec2f worldpos, u8 frame, SColor col)
 		getDriver().getScreenPosFromWorldPos(worldpos-Vec2f(10,10) / getCamera().targetDistance), 1.5f, col);
 }
 
-bool isOnScreen(Vec2f pos)
+bool isOnScreen(Vec2f pos, f32 dist = 1)
 {
 	pos = getDriver().getScreenPosFromWorldPos(pos);
-	return pos.x >= 0 && pos.y >= 0 && pos.x < sw && pos.y < sh;
+	return pos.x >= -render_margin - (dist * sw) && pos.y >= -render_margin - (dist * sh) && pos.x < (sw + render_margin) * dist && pos.y < (sh + render_margin) * dist;
 }
 
 string getFullCharacterName(CPlayer@ p)
@@ -149,6 +156,7 @@ class Ping {
 
 class Canvas : Ping {
 	u8 shape;
+	bool static;
 	Vec2f[] vertices;
 
 	Canvas(u8 _shape)
@@ -164,52 +172,113 @@ class Canvas : Ping {
 		this.fadeout_time = _fadeout_time;
 		this.caster = _caster;
 		this.team = _team;
+		this.static = false;
 
 		this.screen_pos = getDriver().getScreenPosFromWorldPos(this.pos);
 	}
 
 	void tick(CBlob@ blob, CControls@ controls) {}
-	void render() override {}
+	void render(CBlob@ blob, CControls@ controls) {}
 };
 
 class Path : Canvas {
+	f32 max_node_length;
+
 	Path()
 	{
+		this.max_node_length = 128.0f;
 		super(Shapes::path);
 	}
 
 	void tick(CBlob@ blob, CControls@ controls)
 	{
+		bool send = false;
+
 		if (blob.isKeyJustPressed(key_taunts))
 		{
 			Vec2f mpos = controls.getMouseWorldPos();
+			if (this.vertices.size() > 0)
+			{
+				Vec2f origin = this.vertices[this.vertices.size()-1];
+				Vec2f vec = mpos-origin;
+				if (vec.Length() > this.max_node_length)
+				{
+					f32 angle = -vec.Angle();
+					mpos = origin + Vec2f(this.max_node_length, 0).RotateBy(angle);
+				}
+			}
+
+			Sound::Play("snes_coin.ogg", mpos, 1.0f, 1.15f + XORRandom(51) * 0.001f);
 			this.vertices.push_back(mpos);
+
+			if (this.vertices.size() >= max_path_segments)
+			{
+				blob.Untag("drawing_ping");
+				send = true;
+			}
+		}
+
+		if (controls.isKeyJustPressed(KEY_LBUTTON) || controls.isKeyJustPressed(KEY_RBUTTON))
+		{
+			send = true;
+		}
+
+		if (send)
+		{
+			SendPathCanvas(blob, this.shape, this.vertices, this.team, this.end_time, this.fadeout_time);
 		}
 	}
 
-	void render() override
+	void render(CBlob@ blob, CControls@ controls) override
 	{
 		Driver@ driver = getDriver();
 		this.screen_pos = driver.getScreenPosFromWorldPos(this.pos);
 
-		SColor col = color_white;
-		col.setAlpha(155);
+		SColor col = getNeonColor(this.team, 0);
+		col.setAlpha(135);
+		
+		f32 cam = getCamera().targetDistance;
+		f32 scale = 0.33f * cam;
+		Vec2f icon_offset = Vec2f(32,32)*scale;
+		Vec2f impos = controls.getInterpMouseScreenPos();
 
 		for (u8 i = 0; i < this.vertices.size(); i++)
 		{
 			Vec2f current = this.vertices[i];
 			bool has_next = i < int(this.vertices.size())-1;
-			
-			if (has_next)
-			{
-				Vec2f next = this.vertices[i+1];
-				f32 angle = -(next-current).Angle();
+			Vec2f next = Vec2f_zero;
 
-				Vec2f offset = Vec2f(0,-8).RotateBy(angle);
+			if (has_next)
+				next = this.vertices[i+1];
+			else if (!this.static)
+				next = getDriver().getWorldPosFromScreenPos(impos);
+
+			f32 angle = -(next-current).Angle();
+			f32 d = 1.0f * scale + 7.0f;
+
+			if (!has_next && !this.static)
+			{
+				Vec2f vec = next-current;
+				if (vec.Length() > this.max_node_length)
+					next = current + Vec2f(this.max_node_length, 0).RotateBy(angle);
+
+				Vec2f screen_next_pos = getDriver().getScreenPosFromWorldPos(next);
+				GUI::SetFont("score-smaller");
+				GUI::DrawTextCentered("DRAWING", screen_next_pos + Vec2f(-2, 24), SColor(33,255,255,255));
+				GUI::DrawTextCentered("RMB - SEND", screen_next_pos + Vec2f(-2, 40), SColor(33,255,255,255));
+				GUI::DrawIcon("PathNode.png", 0, Vec2f(32,32), screen_next_pos-icon_offset, scale, col);
+			}
+
+			if (next != Vec2f_zero)
+			{
+				Vec2f offset = Vec2f(d/2, 1.0f).RotateBy(angle);
+				Vec2f edge = Vec2f(d, 0).RotateBy(angle);
+
 				Vertex[] vertexes;
-				// Center vertex
+				// first triangle (outcome)
+				// third is height
 				vertexes.push_back(Vertex(
-					current-offset,
+					current-offset+edge,
 					0.0f,
 					Vec2f(0.0f, 0.0f),
     			    col
@@ -226,13 +295,32 @@ class Path : Canvas {
 					Vec2f(0.0f, 0.0f),
     			    col
 				));
-				
+				// second triangle (income)
+				vertexes.push_back(Vertex(
+					next-offset,
+					0.0f,
+					Vec2f(0.0f, 0.0f),
+    			    col
+				));
+				vertexes.push_back(Vertex(
+					next+offset-edge,
+					0.0f,
+					Vec2f(0.0f, 0.0f),
+    			    col
+				));
+				vertexes.push_back(Vertex(
+					current+offset,
+					0.0f,
+					Vec2f(0.0f, 0.0f),
+    			    col
+				));
 
 				Render::RawTriangles("pixel", vertexes);
 			}
 
-			GUI::SetFont("score-medium");
-			GUI::DrawTextCentered(""+i, driver.getScreenPosFromWorldPos(current), SColor(255,255,255,0));
+			GUI::DrawIcon("PathNode.png", 0, Vec2f(32,32),
+				getDriver().getScreenPosFromWorldPos(current)-icon_offset,
+					scale, col);
 		}
 	}
 };
