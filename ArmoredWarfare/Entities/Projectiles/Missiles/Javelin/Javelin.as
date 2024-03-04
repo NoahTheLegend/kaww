@@ -144,18 +144,17 @@ void onTick(CBlob@ this)
 	bAccelNorm.Normalize();
 	this.set_Vec2f(lastRelativeVelString, bVel);
 
-	
 	float turnAngle = 0.0f;
 
 	switch (this.get_s8(navigationPhaseString))
 	{
 		case 0:
 		{
-			Vec2f risingPos = targetPos + Vec2f(0, -2000.0f);
+			Vec2f risingPos = this.get_Vec2f("risingPos");
 			turnAngle = (risingPos-thisPos).getAngleDegrees();
 			
 			if (this.get_f32(robotechHeightString) > 32 ?
-				thisPos.y < this.get_f32(robotechHeightString) : Maths::Abs(thisPos.x - targetPos.x) < 8.0f)
+				thisPos.y < this.get_f32(robotechHeightString) || thisPos.y <= 4.0f : Maths::Abs(thisPos.x - targetPos.x) < 8.0f)
 			{
 				this.set_s8(navigationPhaseString, 1);
 			}
