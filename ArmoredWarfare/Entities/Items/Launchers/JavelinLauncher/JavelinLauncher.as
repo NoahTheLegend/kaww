@@ -2,6 +2,7 @@
 #include "OrdnanceCommon.as"
 
 const u8 searchRadius = 32.0f;
+const f32 jav_angle = 25.0f;
 
 void onInit(CBlob@ this)
 {
@@ -209,7 +210,8 @@ void onTick(CBlob@ this)
 	this.set_f32(robotechHeightString, robotechHeight);
 
 	Vec2f robotechPos = Vec2f(0, -robotechHeight * 2.0f);
-	robotechPos.RotateByDegrees(ownerBlob.isFacingLeft() ? -45.0f : 45.0f); 
+	f32 angle = jav_angle;
+	robotechPos.RotateByDegrees(ownerBlob.isFacingLeft() ? -angle : angle); 
 	robotechPos += ownerPos; // join with thispos
 	if (robotechPos.y < 14.0f) robotechPos.y = 14.0f;
 
@@ -233,6 +235,7 @@ void onTick(CBlob@ this)
 			CBitStream params;
 			params.write_u16(curTargetNetID);
 			params.write_f32(robotechHeight);
+			params.write_Vec2f(robotechPos);
 			this.SendCommandOnlyServer(this.getCommandID(launchOrdnanceIDString), params);
 
 			if (!heli_launcher)
@@ -286,9 +289,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		u16 curTargetNetID = 0;
 		float robotechHeight = 64.0f;
+		Vec2f robotechPos = Vec2f_zero;
 
 		if (!params.saferead_u16(curTargetNetID)) return;
 		if (!params.saferead_f32(robotechHeight)) return;
+		if (!params.saferead_Vec2f(robotechPos)) return;
 
 		CBlob@ targetBlob = getBlobByNetworkID(curTargetNetID);
 		if (curTargetNetID == 0 || targetBlob == null) return;
@@ -307,12 +312,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		if (heli_launcher && ownerBlob.get_u32("next_shoot") >= getGameTime()) return;
 
-		Vec2f launchVec = Vec2f(ownerBlob.isFacingLeft() ? -1 : 1, -1.05f);
 		Vec2f thisPos = this.getPosition();
+		Vec2f launchVec = robotechPos - thisPos;
+		launchVec.Normalize();
+		launchVec *= 1.5f;
+		launchVec.RotateBy(ownerBlob.isFacingLeft() ? jav_angle : -jav_angle);
 
 		CBlob@ blob = server_CreateBlob("missile_javelin", ownerBlob.getTeamNum(), thisPos - Vec2f(0,3));
 		if (blob != null)
 		{
+			blob.set_Vec2f("risingPos", robotechPos);
 			blob.setVelocity(launchVec * 3.0f);
 			blob.IgnoreCollisionWhileOverlapped(this, 20);
 			if (this.get_bool("manual"))
