@@ -49,7 +49,7 @@ void onInit(CBlob@ this)
 				btn.text = "Δ ";
             	btn.callback_command = "angle_up";
 				btn.send_if_held = true;
-				btn.press_delay = 15;
+				btn.press_delay = 20;
 				break;
 
 			case 2:
