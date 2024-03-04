@@ -9,6 +9,7 @@ void onInit(CBlob@ this)
     this.Tag("destructable");
 	this.Tag("bunker");
 	this.Tag("structure");
+	this.Tag("sandbags");
 
 	this.Tag("builder always hit");
 	this.Tag("builder urgent hit");
@@ -79,14 +80,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (hitterBlob.getName() == "ballista_bolt")
 	{
 		Sound::Play("/BulletSandbag", this.getPosition(), 1.55f, 0.85f + XORRandom(40) * 0.01f);
-		MakeDustParticle((hitterBlob.getPosition() + this.getPosition())/2, "/dust2.png");
+		if (!v_fastrender) MakeDustParticle((hitterBlob.getPosition() + this.getPosition())/2, "/dust2.png");
 
-		return damage / 6;
+		return damage / 10;
 	}
 	if (hitterBlob.hasTag("atgrenade"))
 	{
-		MakeDustParticle((hitterBlob.getPosition() + this.getPosition())/2, "/dust2.png");
-		return damage / 7.5f;
+		if (!v_fastrender) MakeDustParticle((hitterBlob.getPosition() + this.getPosition())/2, "/dust2.png");
+		return damage / 10.0f;
 	}
 	return damage;
 }
