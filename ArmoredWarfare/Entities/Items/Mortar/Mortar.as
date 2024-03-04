@@ -61,7 +61,7 @@ void onInit(CBlob@ this)
 				btn.text = "∇ ";
 				btn.callback_command = "angle_down";
 				btn.send_if_held = true;
-				btn.press_delay = 15;
+				btn.press_delay = 20;
 				break;
         }
 
