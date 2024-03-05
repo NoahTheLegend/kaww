@@ -1521,5 +1521,8 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 
 void onRender(CSprite@ this)
 {
-	visualTimerRender(this);
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+
+	if (!blob.hasTag("override_timer_render")) visualTimerRender(this);
 }
