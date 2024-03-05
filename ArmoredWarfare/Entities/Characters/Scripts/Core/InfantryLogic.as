@@ -508,6 +508,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 					//	item.server_RemoveFromInventories();
 					//}
 					//else //if (!this.hasBlob("aceofspades", 1))  // theres no item in the last slot
+					if (item is null)
 					{
 						// give ace
 						CBlob@ b = server_CreateBlob("aceofspades", -1, this.getPosition());
