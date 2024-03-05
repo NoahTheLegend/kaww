@@ -63,6 +63,9 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shop offset", Vec2f_zero);
 	this.set_Vec2f("shop menu size", Vec2f(3, 1));
 	this.set_string("shop description", "Construct Augments");
+	
+	AddIconToken("$welder_icon$", "Welder.png", Vec2f(24, 16), 0);
+
 	this.set_u8("shop icon", 25);
 	{
 		ShopItem@ s = addShopItem(this, "Claw Augment", "$claw$", "claw", "Grabs items, has a tension limit.\n\nDisabled on-hit.\n[SPACEBAR]", false);
@@ -73,7 +76,7 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Welder Augment", "$welder$", "welder", "Repairs friendly vehicles and structures.\n\nUnlimited uses.\n[SPACEBAR]", false);
+		ShopItem@ s = addShopItem(this, "Welder Augment", "$welder_icon$", "welder", "Repairs friendly vehicles and structures.\n\nUnlimited uses.\n[SPACEBAR]", false);
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 	}
 }
