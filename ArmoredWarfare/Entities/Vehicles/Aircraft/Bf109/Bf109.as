@@ -603,10 +603,10 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		}
 
 		if (blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck"))
-		&& this.getVelocity().Length() > 4.0f)
+		&& this.getVelocity().Length() > 2.0f)
 		{
-			f32 mod_self = 1.25f;
-			f32 mod_target = 3.0f;
+			f32 mod_self = 15.0f;
+			f32 mod_target = 4.0f;
 			blob.server_Hit(this, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_self, Hitters::fall);
 			this.server_Hit(blob, this.getPosition(), this.getVelocity(), this.getVelocity().getLength()*mod_target, Hitters::fall);
 		}

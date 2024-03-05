@@ -490,9 +490,9 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	}
 
 	if (blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck"))
-	&& this.getVelocity().Length() > 4.0f)
+	&& this.getVelocity().Length() > 2.0f)
 	{
-		f32 mod_self = 1.5f;
+		f32 mod_self = 15.0f;
 		f32 mod_target = 6.0f;
 
 		f32 dmgself = this.getVelocity().getLength()*mod_self;
