@@ -117,7 +117,6 @@ void InitSnow()
 // Snow
 void DrawSnow(CBlob@ this, int id)
 {
-	printf("draw");
 	if (v_fastrender) return;
 	InitSnow();
 
