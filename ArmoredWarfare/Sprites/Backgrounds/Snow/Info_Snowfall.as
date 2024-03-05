@@ -4,8 +4,8 @@ const int present_interval = 30 * 60 * 10; // 10 minutes
 const int gifts_per_hoho = 3;
 
 // Snow stuff
-bool _snow_ready = false;
 Vertex[] Verts;
+bool _snow_ready = false;
 SColor snow_col(0xffffffff);
 f64 frameTime = 0;
 
@@ -14,9 +14,10 @@ void onInit(CBlob@ this)
 	if (isClient())
 		this.set_s16("snow_render_id", 0);
 
+	_snow_ready = false;
+
 	this.addCommandID("xmas sound");
 
-	_snow_ready = false;
 	this.set_s32("present timer", present_interval);
 	frameTime = 0;
 	
@@ -34,11 +35,13 @@ void onInit(CBlob@ this)
 
 		#endif
 	}
+
+	this.set_s16("snow_render_id", cb_id);
 }
 
 void onTick(CBlob@ this)
 {
-	//if (getGameTime()%150 == 0) this.set_s32("present timer", 0);
+	/*//if (getGameTime()%150 == 0) this.set_s32("present timer", 0);
 	if (!isServer() || getRules().isWarmup())
 		return;
 
@@ -71,7 +74,7 @@ void onTick(CBlob@ this)
 	else
 	{
 		this.sub_s32("present timer", 1);
-	}
+	}*/
 }
 
 CBlob@ spawnPresent(Vec2f spawnpos, u8 team)
@@ -86,8 +89,6 @@ void onCommand( CBlob@ this, u8 cmd, CBitStream @params )
 		Sound::Play("Christmas.ogg");
 	}
 }
-
-// Snow
 
 void InitSnow()
 {
@@ -113,12 +114,15 @@ void InitSnow()
 	}
 }
 
+// Snow
 void DrawSnow(CBlob@ this, int id)
 {
+	printf("draw");
 	if (v_fastrender) return;
 	InitSnow();
+
 	frameTime += getRenderApproximateCorrectionFactor();
-	
+
 	float[] trnsfm;
 	for(int i = 0; i < 3; i++)
 	{
