@@ -73,14 +73,14 @@ void ReadChangeTeam(CRules@ this, CBitStream @params)
 	CPlayer@ player = getPlayerByNetworkId(params.read_u16());
 	u8 team = params.read_u8();
 
+	u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
+	
+	if (team == 0) team = teamleft;
+	else if (team == 1) team = teamright;
+
 	if (player is getLocalPlayer())
 	{
-		u8 teamleft = getRules().get_u8("teamleft");
-		u8 teamright = getRules().get_u8("teamright");
-
-		if (team == 0) team = teamleft;
-		else if (team == 1) team = teamright;
-
 		if (CanSwitchFromSpec(this, player, team))
 		{
 			ChangeTeam(player, team);
@@ -91,38 +91,42 @@ void ReadChangeTeam(CRules@ this, CBitStream @params)
 			Sound::Play("NoAmmo.ogg");
 		}
 	}
+
+	if (isServer() && player.getBlob() !is null && this.isMatchRunning())
+	{
+		int btnum = player.getBlob().getTeamNum();
+		int ptnum = player.getTeamNum();
+
+		if (btnum != team) // disables switch team ticket consumption
+		{
+			CBlob@[] overlapping;
+			player.getBlob().getOverlapping(overlapping);
+
+			bool skip = false;
+			for (u8 i = 0; i < overlapping.size(); i++)
+			{
+				CBlob@ b = overlapping[i];
+				if (b is null) continue;
+				if (b.hasTag("respawn") && b.getTeamNum() == ptnum)
+				{
+					skip = true;
+					break;
+				}
+			}
+
+			if (!skip)
+			{
+				if (ptnum != getRules().getSpectatorTeamNum())
+				{
+					getRules().set_s8("decrement_ticket_by_team", ptnum);
+				}
+			}
+		}
+	}
 }
 
 void ChangeTeam(CPlayer@ player, u8 team)
 {
-	if (player.getBlob() !is null && getRules().isMatchRunning())
-	{
-		int ptnum = player.getTeamNum();
-		
-		CBlob@[] overlapping;
-		player.getBlob().getOverlapping(overlapping);
-		
-		bool skip = false;
-		for (u8 i = 0; i < overlapping.size(); i++)
-		{
-			CBlob@ b = overlapping[i];
-			if (b is null) continue;
-			if (b.hasTag("respawn") && b.getTeamNum() == ptnum)
-			{
-				skip = true;
-				break;
-			}
-		}
-
-		if (!skip)
-		{
-			if (ptnum != getRules().getSpectatorTeamNum())
-			{
-				getRules().set_s8("decrement_ticket_by_team", ptnum);
-			}
-		}
-	}
-
 	player.client_ChangeTeam(team);
 	getHUD().ClearMenus();
 }
