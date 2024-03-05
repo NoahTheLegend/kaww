@@ -166,14 +166,14 @@ namespace ShotgunParams
 {
 	const ::string CLASSNAME 			= "Shotgun"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.333f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.375f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.3f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.35f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 1.0f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.9f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 1.15f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 2.75f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 1.075f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.65f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 0.95f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 20.0f; // x shake (20)
@@ -196,7 +196,7 @@ namespace ShotgunParams
 	const ::u8 INACCURACY_CAP 			= 100; // max amount of inaccuracy
 	const ::u8 INACCURACY_PER_SHOT 		= 50; // aim inaccuracy  (+3 per shot)
 	const ::u8 INACCURACY_MIDAIR        = 8;
-	const ::u8 INACCURACY_HIT  		    = 20;
+	const ::u8 INACCURACY_HIT  		    = 35;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
@@ -205,7 +205,7 @@ namespace ShotgunParams
 	const ::s16 RELOAD_TIME 			= 60; // time to reload
 	const ::u8 NORELOADTIMER 			= 15; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 4; // max bullets in mag
-	const ::u8 DELAYAFTERFIRE 			= 15; // time between shots
+	const ::u8 DELAYAFTERFIRE 			= 20; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 15.0f; // speed that bullets fly
 	const ::u32 BULLET_LIFETIME 		= 15; // in ticks, time for bullet to die
