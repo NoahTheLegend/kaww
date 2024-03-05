@@ -12,23 +12,28 @@ u8 ping_pointer_framerate = 6;
 Vec2f keypress_pos = Vec2f_zero; // screen pos
 Vec2f keypress_worldpos = Vec2f_zero; // world pos
 
+// section wheel
 const int radius = 80.0f; // how far from keypress_pos
 const f32 blind_area_range = 16.0f; // category selection blind area
 
+// subsection ping list
 const f32 subsection_radius = 96.0f; // how far from category_name
-const f32 subsection_angle = 180.0f/(PingCategories.size()-1);
+const f32 subsection_angle = 180.0f/(PingCategories.size()-1); // spread angle
 const f32 endpoint = radius+subsection_radius/1.1f; // limit radius for cursor inside circle
 
+// cooldown props
 int cooldown = 0; // time during that we cant ping
 const int cooldown_time = 15*30;
 int load = 0; // current load
 const int load_max = 200; // limit w/o cooldown
-int ping_cost = 60; // per one
+const int ping_cost = 75; // per one
 int load_holdtime = 0;
 const int load_holdtime_max = 60; // wait time before decreasing
+const int draw_cost = 400;
 
-const f32 lerp = 0.3f;
-const f32 lerp_fast = 0.5f;
+// slide out lerp factor
+const f32 lerp = 0.3f; // sections
+const f32 lerp_fast = 0.5f; // ping list
 
 // dont change these
 s8 selected_section = -1;
@@ -67,6 +72,8 @@ void onTick(CBlob@ this)
 	}
 }
 
+bool drawing = true;
+
 void onRender(CSprite@ this)
 {
 	CBlob@ blob = this.getBlob();
@@ -76,14 +83,18 @@ void onRender(CSprite@ this)
     if (controls is null) return;
 
 	bool reset = false;
+	bool open_menu = blob.isKeyPressed(key_taunts);
 
 	if (blob.hasTag("drawing_ping"))
 	{
 		DrawState(blob, controls);
+		drawing = true;
 	}
-	else
+	else if (open_menu ? !drawing : true)
 	{
-		if (blob.isKeyPressed(key_taunts))
+		drawing = false;
+
+		if (open_menu)
 		{ // render menu
 			lerp_section = Maths::Lerp(lerp_section, 1.0f, lerp);
 
@@ -218,9 +229,19 @@ void DrawPings(Vec2f mpos, Vec2f drawpos, f32 angle, u8 section)
 	f32 dist = radius;
 	s8 closest_ping = -1;
 
+	u8 section_pos = section*subsection_size;
+	string[] subsection;
+
 	for (u8 i = 0; i < subsection_size; i++)
 	{
-		Vec2f subpos = drawpos + Vec2f(0, -subsection_radius*lerp_subsection).RotateBy(angle - (subsection_size*subsection_angle)/subsection_size + i*subsection_angle);
+		string ping = PingList[section_pos+i];
+		if (ping != "") subsection.push_back(ping);
+	}
+
+	if (subsection.size() % 2 == 0) angle += subsection_angle/subsection_size;
+	for (u8 i = 0; i < subsection.size(); i++)
+	{
+		Vec2f subpos = drawpos + Vec2f(0, -subsection_radius*lerp_subsection).RotateBy(angle - (subsection.size()*subsection_angle)/subsection_size + i*subsection_angle);
 		f32 len = Maths::Abs((subpos-mpos).Length());
 
 		if (len < dist)
@@ -356,21 +377,13 @@ void SendPing(CBlob@ blob, Vec2f pos, u8 section, u8 ping_type)
 	if (controls is null) return;
 	
 	controls.setMousePosition(keypress_pos);
-	load += ping_cost;
-
-	load_holdtime = load_holdtime_max;
-
-	if (load > load_max)
-	{
-		load = 0;
-		load_holdtime = 0;
-		cooldown = cooldown_time;
-	}
+	Load(ping_cost);
 }
 
 void SendPathCanvas(CBlob@ blob, u8 shape, Vec2f[] vertices, u8 team, u32 ping_time, u8 ping_fadeout_time)
 {
 	blob.Untag("drawing_ping");
+	if (vertices.size() <= 1) return;
 
 	CPlayer@ p = blob.getPlayer();
 	if (p is null) return;
@@ -390,7 +403,46 @@ void SendPathCanvas(CBlob@ blob, u8 shape, Vec2f[] vertices, u8 team, u32 ping_t
 	}
 
 	getRules().SendCommand(getRules().getCommandID("ping_path"), params);
+	Load(draw_cost);
+}
 
-	CControls@ controls = getControls();
-	if (controls is null) return;
+void SendRectangleCanvas(CBlob@ blob, u8 shape, Vec2f[] vertices, u8 team, u32 ping_time, u8 ping_fadeout_time)
+{
+	blob.Untag("drawing_ping");
+	if (vertices.size() <= 1) return;
+
+	CPlayer@ p = blob.getPlayer();
+	if (p is null) return;
+
+	CBitStream params;
+	params.write_u8(shape);
+	params.write_u8(team);
+	params.write_u32(ping_time);
+	params.write_u8(ping_fadeout_time);
+	params.write_string(getFullCharacterName(p));
+
+	u8 vsize = vertices.size();
+	params.write_u8(vsize);
+	for (u8 i = 0; i < vsize; i++)
+	{
+		params.write_Vec2f(vertices[i]);
+	}
+
+	getRules().SendCommand(getRules().getCommandID("ping_rectangle"), params);
+	Load(draw_cost);
+}
+
+void Load(f32 cost)
+{
+	if (isServer()) return; // local test
+
+	load += cost;
+	load_holdtime = load_holdtime_max;
+	
+	if (load >= load_max)
+	{
+		load = 0;
+		load_holdtime = 0;
+		cooldown = cooldown_time;
+	}
 }

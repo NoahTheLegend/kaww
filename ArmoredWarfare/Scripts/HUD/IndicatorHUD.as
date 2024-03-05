@@ -585,21 +585,26 @@ u8 getIndicatorFrame(int hash)
 
 void onInit(CRules@ this)
 {
-	onRestart(this);
+	Reset(this);
 }
 
 void onRestart(CRules@ this)
 {
-    this.Untag("animateGameOver");
-	this.addCommandID("ping");
-	this.addCommandID("ping_rectangle");
-	this.addCommandID("ping_path");
-	this.addCommandID("ping_timer");
+	Reset(this);
 
 	Ping@[] p_empty;
 	Canvas@[] c_empty;
 	pings = p_empty;
 	canvass = c_empty;
+}
+
+void Reset(CRules@ this)
+{
+	this.Untag("animateGameOver");
+	this.addCommandID("ping");
+	this.addCommandID("ping_rectangle");
+	this.addCommandID("ping_path");
+	this.addCommandID("ping_timer");
 }
 
 void onStateChange(CRules@ this, const u8 oldState)
@@ -816,12 +821,11 @@ void renderPings(CRules@ this)
 	if (blob is null) return;
 	CControls@ controls = getControls();
 	if (controls is null) return;
-	
+
 	for (int i = 0; i < canvass.size(); i++)
 	{
 		Canvas@ canvas = canvass[i];
 
-		//printf(""+canvas.end_time);
 		if (canvas is null || gt > canvas.end_time)
 		{
 			canvass.removeAt(i);
@@ -833,7 +837,7 @@ void renderPings(CRules@ this)
 		{
 			continue;
 		}
-
+		
 		canvas.render(blob, controls);
 	}
 }
@@ -922,7 +926,61 @@ void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 			Sound::Play("PopIn", vertices[0], 1.5f, 1.0f);
 		}
 	}
+	else if (cmd == this.getCommandID("ping_rectangle"))
+	{
+		u8 shape;
+		if (!params.saferead_u8(shape)) return;
+
+		u8 team;
+		if (!params.saferead_u8(team)) return;
+
+		if (isClient()) // ignore if enemy team
+		{
+			CPlayer@ local = getLocalPlayer();
+			if (local is null || local.getTeamNum() != team) return;
+		}
+
+		u32 end_time;
+		if (!params.saferead_u32(end_time)) return;
+
+		u8 fadeout_time;
+		if (!params.saferead_u8(fadeout_time)) return;
+		
+		string caster;
+		if (!params.saferead_string(caster)) return;
+
+		u8 vsize;
+		if (!params.saferead_u8(vsize)) return;
+
+		Vec2f[] vertices;
+		for (u8 i = 0; i < vsize; i++)
+		{
+			Vec2f current;
+			if (!params.saferead_Vec2f(current)) continue;
+
+			vertices.push_back(current);
+		}
+		
+		if (vertices.size() != 2) return;
+
+		if (isClient())
+		{
+			Rectangle rect = Rectangle();
+			rect.SetPingProps(vertices[0], shape, end_time, fadeout_time, caster, team);
+			rect.vertices = vertices;
+			rect.static = true;
+			canvass.push_back(@rect);
+
+			Sound::Play("PopIn", vertices[0], 1.5f, 1.0f);
+		}
+	}
 }
 
 void SendPathCanvas(CBlob@ blob, u8 shape, Vec2f[] vertices, u8 team, u8 ping_time, u8 ping_fadeout_time)
+{}
+
+void SendRectangleCanvas(CBlob@ blob, u8 shape, Vec2f[] vertices, u8 team, u8 ping_time, u8 ping_fadeout_time)
+{}
+
+void SendTimerCanvas(CBlob@ blob, u8 shape, u8 team, u8 ping_time, u8 ping_fadeout_time)
 {}
