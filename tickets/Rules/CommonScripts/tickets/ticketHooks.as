@@ -140,6 +140,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 	if (this.isMatchRunning() && getGameTime() >= 300)
 	{
 		decrementTickets(this, vTeamNum);
+		
 		/*
 		if (!isClient()) return;
 		if (vTeamNum == teamleft)
