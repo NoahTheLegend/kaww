@@ -7,14 +7,14 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(50);
 
-	SetChannel(this, "FanfareArabic");
-
 	this.addCommandID("static_sound");
+	this.addCommandID("switch");
 	
-	u8 radio_channel = this.exists("radio channel") ? this.get_u8("radio channel") : 0;
+	u8 radio_channel = this.exists("radio channel") ? this.get_u8("radio channel") : XORRandom(radio_channels.size());
 	this.set_u8("radio channel", radio_channel);
 	this.set_u32("switch channel time", 0);
 	this.set_u16("in water ticks", 0);
+	this.set_bool("enabled", true);
 
 	SetChannel(this, radio_channels[radio_channel]);
 
@@ -48,14 +48,17 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	if (!canSeeButtons(this, caller) || this.hasTag("drowned")) return;
 
 	CButton@ button = caller.CreateGenericButton(8, Vec2f(0, 0), this, this.getCommandID("static_sound"), getTranslatedString("Switch Channel"));
-	button.enableRadius = 20.0f;
+	if (button !is null) button.enableRadius = 20.0f;
+	
+	CButton@ button_disable = caller.CreateGenericButton(7, Vec2f(0, -10), this, this.getCommandID("switch"), getTranslatedString("Turn "+(this.get_bool("enabled") ? "off" : "on")));
+	if (button_disable !is null) button_disable.enableRadius = 40.0f;
 }
 
 void onTick(CBlob@ this)
 {
 	// drown in water
 	bool in_water_not_in_inventory = this.isInWater() && !this.isInInventory();
-	bool jump = this.isOnGround() && this.get_u32("switch channel time") < getGameTime();
+	bool jump = this.isOnGround() && this.get_bool("enabled") && this.get_u32("switch channel time") < getGameTime();
 	
 	if ((in_water_not_in_inventory || this.hasTag("drowned")) && !this.hasTag("broken quiet"))
 	{
@@ -127,9 +130,32 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u8("radio channel", next_radio_channel);
 		
 		SetChannel(this, "BoomboxStatic");
+		this.set_bool("enabled", true);
 
 		this.set_u32("switch channel time", getGameTime() + 15 + XORRandom(25));
 		this.Tag("should switch channel");
+	}
+	else if (cmd == this.getCommandID("switch"))
+	{
+		bool state = this.get_bool("enabled");
+		this.set_bool("enabled", !state);
+
+		this.set_u32("switch channel time", getGameTime() + 15 + XORRandom(25));
+
+		if (!isClient()) return;
+		CSprite@ sprite = this.getSprite();
+
+		if (sprite !is null)
+		{
+			Animation@ anim = sprite.getAnimation("default");
+
+			if (anim !is null)
+			{
+				anim.loop = !state;
+			}
+
+			sprite.SetEmitSoundPaused(state);
+		}
 	}
 }
 
