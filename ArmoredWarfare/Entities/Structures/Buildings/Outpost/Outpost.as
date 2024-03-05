@@ -170,3 +170,21 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 {
 	return (forBlob.getTeamNum() == this.getTeamNum() && forBlob.isOverlapping(this) && canSeeButtons(this, forBlob));
 }
+
+void onChangeTeam(CBlob@ this, const int oldTeam)
+{
+	if (!isServer()) return;
+	CMap@ map = getMap();
+	if (map is null) return;
+
+	CBlob@[] doors;
+	map.getBlobsInRadius(this.getPosition(), 32.0f, @doors);
+
+	for (u16 i = 0; i < doors.size(); i++)
+	{
+		CBlob@ b = doors[i];
+		if (b is null || !b.hasTag("door") || b.getTeamNum() != oldTeam) continue;
+
+		b.server_setTeamNum(this.getTeamNum());
+	}
+}
