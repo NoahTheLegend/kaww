@@ -6,8 +6,8 @@
 #include "ProgressBar.as";
 #include "TeamColorCollections.as";
 
-const int trap_cooldown = 10*30;
-const u8 traps_amount = 3;
+const int trap_cooldown = 20*30;
+const u8 traps_amount = 4;
 
 void onInit(CBlob@ this)
 {
@@ -21,6 +21,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("release traps");
 
 	this.set_u32("next_shoot", 0);
+	this.Tag("override_timer_render");
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
@@ -446,5 +447,21 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 }
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
-
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}
+
+
+void onRender(CSprite@ this)
+{
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+
+	AttachmentPoint@ pilot = blob.getAttachments().getAttachmentPointByName("DRIVER");
+	if (pilot !is null && pilot.getOccupied() !is null)
+	{
+		CBlob@ driver_blob = pilot.getOccupied();
+		if (driver_blob.isMyPlayer())
+		{
+			visualTimerRender(this);
+		}
+	}
+}
