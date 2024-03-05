@@ -310,14 +310,6 @@ void onTick(CBlob@ this)
 
 				if (sprint)
 				{
-					CBlob@ carried = this.getCarriedBlob();
-					if (!this.hasTag("sprinting") && (carried is null || !carried.hasTag("very heavy weight")))
-					{
-						if (isClient())
-						{
-							ParticleAnimated("DustSmall.png", this.getPosition()-Vec2f(0, -3.75f), Vec2f(this.isFacingLeft() ? 1.0f : -1.0f, -0.1f), 0.0f, 0.75f, 2, XORRandom(70) * -0.00005f, true);
-						}
-					}
 					this.Tag("sprinting");
 				}
 				else
