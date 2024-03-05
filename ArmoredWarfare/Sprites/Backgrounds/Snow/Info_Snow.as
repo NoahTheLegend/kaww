@@ -8,6 +8,10 @@ void onInit(CBlob@ this)
 	this.getShape().SetStatic(true);
 	
 	getRules().set_u8("map_type", MapType::snow);
+	if (isServer())
+	{
+		server_CreateBlob("info_snowfall");
+	}
 
 	if (isClient())
 	{
@@ -20,13 +24,5 @@ void onInit(CBlob@ this)
 
 		map.AddBackground("Backgrounds/Snow_BackgroundPlains.png", Vec2f(0.0f, -38.0f), Vec2f(0.2f, 0.2f), color_white);
 		map.AddBackground("Backgrounds/Snow_BackgroundTrees.png", Vec2f(0.0f,  -35.0f), Vec2f(0.4f, 0.4f), color_white);
-	}
-}
-
-void onTick(CBlob@ this)
-{
-	if (this.getTickSinceCreated() == 1)
-	{
-		getRules().set_s16("snow_render_id", Render::addScript(Render::layer_floodlayers, "Christmas.as", "DrawSnow", 0));
 	}
 }
