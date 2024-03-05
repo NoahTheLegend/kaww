@@ -238,7 +238,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			Sound::Play("/Pinpull.ogg", this.getPosition(), 0.8f, 1.0f);
 		}
 
-    	if (isServer())
+    	if (isServer() && !this.hasTag("dead"))
     	{
 			AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
     	    if (point !is null)
@@ -248,6 +248,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				if (holder !is null && this !is null && !this.hasTag("activated"))
 				{
 					CBlob@ blob = server_CreateBlob(prop, this.getTeamNum(), this.getPosition());
+					this.Tag("dead");
 					holder.server_Pickup(blob);
 					this.server_Die();
 
