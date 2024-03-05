@@ -198,7 +198,7 @@ void onTick(CBlob@ this)
 
 	// rotate arm 2
 	diff = aimangle - new_target_angle2 - new_angle1;
-	if (a2 && Maths::Abs(diff) > 2)
+	if (a2 && Maths::Abs(diff) > 2 && Maths::Abs(diff%360) < 358)
 	{
 	    if (diff > 180.0f)	 	 diff -= 360.0f;
 	    else if (diff < -180.0f) diff += 360.0f;
@@ -209,10 +209,14 @@ void onTick(CBlob@ this)
 	{new_angle2 -= 360.0f;new_target_angle2 -= 360.0f;}
 	else if (new_angle2 < -360.0f)
 	{new_angle2 += 360.0f;new_target_angle2 += 360.0f;}
+
 	// return if stuck
 	Vec2f checkpos2 = this.get_Vec2f("attach_pos");
 	TileType t2 = map.getTile(checkpos2).type;
-	if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
+
+	Vec2f arm2_pos_temp = (pos_end1 - pos).RotateBy(new_angle2, Vec2f(0, -arm_length).RotateBy(new_angle1));
+	if (map.isTileSolid(t2) || isTileCustomSolid(t2) ||
+		map.rayCastSolidNoBlobs(checkpos1, arm2_pos_temp) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
 	{
 		f32 backwards = new_target_angle2 - new_angle2;
 		new_target_angle2 -= backwards*2;
