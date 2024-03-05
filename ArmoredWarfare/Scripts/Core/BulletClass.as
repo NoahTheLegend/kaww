@@ -773,7 +773,12 @@ class BulletObj
 	
 	bool recountPenetrationsWeak()
 	{
-		if (this.remainingPenWeak == 0) return true;
+		if (this.remainingPenWeak == 0)
+		{
+			TimeLeft = 0;
+			return true;
+		}
+		
 		onPenetrate();
 		return false;
 	}
