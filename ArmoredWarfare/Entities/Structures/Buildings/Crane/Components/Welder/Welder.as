@@ -18,9 +18,8 @@ void onTick(CBlob@ this)
 	bool timing = (getGameTime()+this.getNetworkID())%repair_rate==0;
 
 	CSprite@ sprite = this.getSprite();
-	if (sprite is null) return;
 
-	if (isClient())
+	if (isClient() && sprite !is null)
 	{
 		sprite.SetRelativeZ(attached ? -55.0f : 0.0f);
 		f32 t = this.get_f32("anim_time");
@@ -83,7 +82,7 @@ void onTick(CBlob@ this)
 							repair_amount *= blob.getInitialHealth()/5;
 						}
 
-						if (isClient())
+						if (isClient() && sprite !is null)
 						{
 							Vec2f offset = Vec2f(-8,0).RotateBy(this.getAngleDegrees());
 							ParticleAnimated("LargeSmokeGray", this.getPosition() + offset, Vec2f(XORRandom(11)*0.01f, 0).RotateBy(XORRandom(360)), 0, 0.25f + XORRandom(31) * 0.01f, 2 + XORRandom(3), -0.0031f, true);
@@ -112,7 +111,8 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-	this.setAngleDegrees(this.get_f32("angle"));
+	
+	if (isServer()) this.setAngleDegrees(this.get_f32("angle"));
 }
 
 void sparks(Vec2f at, f32 angle, f32 speed, SColor color)
