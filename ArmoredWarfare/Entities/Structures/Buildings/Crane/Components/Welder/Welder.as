@@ -4,9 +4,12 @@
 void onInit(CBlob@ this)
 {
 	CSprite@ sprite = this.getSprite();
+	this.set_f32("anim_time", 0);
 }
 
 const u8 repair_rate = 22;
+const u8 anim_max_speed = 10;
+const u8 anim_min_speed = 2;
 
 void onTick(CBlob@ this)
 {
@@ -14,30 +17,32 @@ void onTick(CBlob@ this)
 	bool attached = this.hasTag("attached");
 	bool timing = (getGameTime()+this.getNetworkID())%repair_rate==0;
 
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+
 	if (isClient())
 	{
-		CSprite@ sprite = this.getSprite();
-		if (sprite is null) return;
-
 		sprite.SetRelativeZ(attached ? -55.0f : 0.0f);
+		f32 t = this.get_f32("anim_time");
 
 		if (active)
 		{
-			if (XORRandom(5)==0) ParticleAnimated("LargeSmokeGray", this.getPosition(), Vec2f(XORRandom(11)*0.01f, 0).RotateBy(XORRandom(360)), 0, 0.25f + XORRandom(31) * 0.01f, 2 + XORRandom(3), -0.0031f, true);
-			if (getGameTime()%4==0) sprite.PlaySound("welder_loop.ogg", 0.5f, 1.0f+XORRandom(6)*0.01f);
+			t = Maths::Lerp(t, anim_max_speed, 0.1f);
+			if (getGameTime()%4 == 0) sprite.PlaySound("welder_loop.ogg", 0.5f, 1.0f+XORRandom(6)*0.01f);
+		}
+		else
+		{
+			t = Maths::Lerp(t, 0, 0.025f);
+		}
 
-			if (timing)
-			{
-				sprite.PlaySound("welder_use.ogg", 1.0f, 0.75f+XORRandom(21)*0.01f);
-				for (u8 i = 0; i < 10+XORRandom(10); i++)
-				{
-					sparks(this.getPosition()-Vec2f(4,4)+Vec2f(XORRandom(8),XORRandom(8)), XORRandom(360), 1.0f+XORRandom(51)*0.01f, SColor(255, 255, 255, XORRandom(125)));
-				}
-			}
+		this.set_f32("anim_time", t);
+
+		if (sprite.animation !is null)
+		{
+			sprite.animation.time = Maths::Floor(t) == 0 ? 0 : anim_min_speed + anim_max_speed - t;
 		}
 	}
 
-	if (!isServer()) return;
 	if (active && timing)
 	{
 		u8 team = this.getTeamNum();
@@ -78,16 +83,30 @@ void onTick(CBlob@ this)
 							repair_amount *= blob.getInitialHealth()/5;
 						}
 
-						if (blob.getHealth() + repair_amount <= blob.getInitialHealth())
-			            {
-			                blob.server_SetHealth(blob.getHealth() + repair_amount);//Add the repair amount.
+						if (isClient())
+						{
+							Vec2f offset = Vec2f(-8,0).RotateBy(this.getAngleDegrees());
+							ParticleAnimated("LargeSmokeGray", this.getPosition() + offset, Vec2f(XORRandom(11)*0.01f, 0).RotateBy(XORRandom(360)), 0, 0.25f + XORRandom(31) * 0.01f, 2 + XORRandom(3), -0.0031f, true);
+							sprite.PlaySound("welder_use.ogg", 1.0f, 0.75f+XORRandom(21)*0.01f);
 
-							break;
-			            }
-			            else //Repair amount would go above the inital health (max health). 
-			            {
-			                blob.server_SetHealth(blob.getInitialHealth());//Set health to the inital health (max health)
-			            }
+							for (u8 i = 0; i < 10+XORRandom(10); i++)
+							{
+								sparks(this.getPosition()-Vec2f(4,4)+Vec2f(XORRandom(8),XORRandom(8)) + offset, XORRandom(360), 1.0f+XORRandom(51)*0.01f, SColor(255, 255, 255, XORRandom(125)));
+							}
+						}
+						if (isServer())
+						{
+							if (blob.getHealth() + repair_amount <= blob.getInitialHealth())
+			            	{
+			            	    blob.server_SetHealth(blob.getHealth() + repair_amount);//Add the repair amount.
+
+								break;
+			            	}
+			            	else //Repair amount would go above the inital health (max health). 
+			            	{
+			            	    blob.server_SetHealth(blob.getInitialHealth());//Set health to the inital health (max health)
+			            	}
+						}
 			    	}
 			    }
 			}
