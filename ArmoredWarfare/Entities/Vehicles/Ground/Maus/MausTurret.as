@@ -227,7 +227,7 @@ void onTick(CBlob@ this)
 				{
 					if (this.hasBlob("ammo", 1))
 					{
-						f32 spread = XORRandom(5)-2.5f;
+						f32 spread = XORRandom(5);
 						Vec2f shootpos = Vec2f(26*flip_factor,-2);
 						shootVehicleGun(hooman.getNetworkID(), this.getNetworkID(),
 							angle+spread, this.getPosition()+shootpos.RotateBy(this.getAngleDegrees()),
