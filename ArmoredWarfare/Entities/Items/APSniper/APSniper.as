@@ -66,7 +66,7 @@ f32 getAimAngle(CBlob@ this)
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		Vec2f aim_vec = (this.getPosition()) - gunner.getAimPos();
+		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 		f32 deg = this.getAngleDegrees();
 		aim_vec.RotateBy(-deg);
 		//aim_vec.RotateBy(-this.getAngleDegrees());
@@ -163,11 +163,15 @@ void onFire(CBlob@ this, Vec2f vel)
 	Vec2f pos = this.getPosition()+arm_offset;
 
 	f32 angle = this.isFacingLeft()?-anglereal:anglereal+180;
-	Vec2f particlevel = this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/4;
+	Vec2f particlevel = this.getShape().getVelocity() + (getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/4) * (this.isFacingLeft()?1:-1);
 
 	for (int i = 0; i < 3; i++)
 	{
-		ParticleAnimated("LargeSmokeGray", pos + Vec2f(-24,-2).RotateBy(angle), particlevel.RotateBy(angle-90), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2 + XORRandom(2), -0.0031f, true);
+		CParticle@ p = ParticleAnimated("LargeSmokeGray", pos + Vec2f(-24,this.isFacingLeft()?-4:4).RotateBy(angle), particlevel.RotateBy(angle-90), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2 + XORRandom(2), -0.0031f, true);
+		if (p !is null)
+		{
+			p.Z = 110.0f;
+		}
 	}
 
 	float _angle = this.isFacingLeft() ? -anglereal+180 : anglereal; // on turret spawn it works wrong otherwise
@@ -221,7 +225,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.TakeBlob("specammo", fire_cost);
 
 			shootVehicleGun(blob.getNetworkID(), this.getNetworkID(),
-				angle, this.getPosition(),
+				angle, this.getPosition()-Vec2f(0,this.isFacingLeft()?-4:4).RotateBy(angle),
 				aimPos, 0, 1, 4, this.get_f32("damage_body"), this.get_f32("damage_head"), 6,
 					this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));
 
