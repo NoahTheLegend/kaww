@@ -53,7 +53,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			sparks(this.getPosition(), 1, 0.25f);
 		}
 		
-        if(isServer())
+        if(isServer() && !this.hasTag("dead"))
         {
     		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
             if (point !is null)
@@ -83,6 +83,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					CBlob@ blob = server_CreateBlob("molotov", this.getTeamNum(), this.getPosition());
 					if (blob !is null)
 					{
+						this.Tag("dead");
 						blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
 						//blob.setVelocity(this.getVelocity());
 					}
