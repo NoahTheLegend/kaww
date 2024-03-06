@@ -4,6 +4,7 @@
 #include "Hitters.as"
 
 const string target_player_id = "target_player_id";
+const u8 fire_rate = 7;
 
 void onInit(CBlob@ this)
 {
@@ -31,10 +32,23 @@ void onInit(CBlob@ this)
 	if (arm !is null)
 	{
 		Animation@ anim = arm.addAnimation("defaultarm", 0, false);
+		anim.AddFrame(0);
+		anim.AddFrame(1);
+
 		arm.SetOffset(Vec2f(-8.0f, -8.0f));
 		arm.SetRelativeZ(50.0f);
 
-		arm.animation.frame = 2;
+		arm.animation.frame = 0;
+	}
+
+	CSpriteLayer@ barrel = sprite.addSpriteLayer("barrel", "DefenseTurret_gun", 48, 32);
+	if (barrel !is null)
+	{
+		Animation@ anim = barrel.addAnimation("default", 0, false);
+		anim.AddFrame(2);
+
+		barrel.SetOffset(Vec2f(-8.0f, -8.0f));
+		barrel.SetRelativeZ(49.0f);
 	}
 
 	CSpriteLayer@ shield = sprite.addSpriteLayer("shield", "DefenseTurret", 32, 32);
@@ -92,6 +106,7 @@ void onTick(CBlob@ this)
 				if (this.get_u32("next shot") < getGameTime())
 				{
 					ClientFire(this);
+
 					if (isServer())
 					{
 						f32 angle = (targetblob.getPosition()-this.getPosition()+Vec2f(0, 8)).Angle();
@@ -112,7 +127,7 @@ void onTick(CBlob@ this)
 								this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));
 					}
 
-					this.set_u32("next shot", getGameTime() + 7);			
+					this.set_u32("next shot", getGameTime() + fire_rate);			
 				}
 			}
 
@@ -130,9 +145,12 @@ void onTick(CBlob@ this)
 	//angle
 	f32 angle = getAimAngle(this);
 	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
 
-	if (arm !is null)
+	f32 diff = 1.0f - (this.get_u32("next shot") > getGameTime() ? f32(this.get_u32("next shot") - getGameTime()) / fire_rate : 0.0f);
+
+	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+	CSpriteLayer@ barrel = sprite.getSpriteLayer("barrel");
+	if (arm !is null && barrel !is null)
 	{
 		bool facing_left = sprite.isFacingLeft();
 		//f32 rotation = angle * (facing_left ? -1 : 1);
@@ -140,17 +158,30 @@ void onTick(CBlob@ this)
 		arm.ResetTransform();
 		arm.SetFacingLeft(facing_left);
 		arm.RotateBy(angle, Vec2f(facing_left ? -9.0f : 8.0f, 7.0f));
+
+		barrel.ResetTransform();
+		barrel.SetFacingLeft(facing_left);
+		Vec2f offset = Vec2f(facing_left ? -9.0f : 8.0f, 7.0f);
+		barrel.RotateBy(angle, offset);
+		barrel.SetOffset(Vec2f(-4 - 4*diff, -8).RotateBy(facing_left ? angle : -angle, Vec2f(facing_left ? offset.x : -offset.x, facing_left ? -offset.y : -offset.y)));
+		//barrel.SetOffset(Vec2f(barrel.getOffset().x, -8));
 	}
 }
 
 void ClientFire(CBlob@ this)
 {
+	if (!isClient()) return;
+
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+
+	sprite.animation.frame += 1;
+	if (sprite.animation.frame >= 2) sprite.animation.frame = 0;
+
 	Vec2f pos_2 = this.getPosition()-Vec2f(0.0f, 7.0f);
 	f32 angle = getAimAngle(this);
 	angle += ((XORRandom(512) - 256) / 76.0f);
 	Vec2f vel = Vec2f(490.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
-
-	this.SendCommand(this.getCommandID("shoot"));
 
 	makeGibParticle(
 		"EmptyShellSmall",               // file name
@@ -163,6 +194,9 @@ void ClientFire(CBlob@ this)
 		0,                                  // ?
 		"ShellCasing",                      // sound
 		this.get_u8("team_color"));         // team number
+	
+
+	sprite.PlaySound("DefenseTurretShoot.ogg", 1.1f, 1.0f + XORRandom(11) * 0.01f);
 	ParticleAnimated("SmallExplosion3", this.getPosition() + Vec2f(this.isFacingLeft() ? -32.0f : 32.0f, -6.0f).RotateBy(angle), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.75f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 }
 
