@@ -341,6 +341,8 @@ namespace map_colors
 		red_uh1                = 0xff113cce,
 		blue_ah1               = 0xff1338a9,
 		red_ah1                = 0xffa13cce,
+		blue_mi24              = 0xff2838a9,
+		red_mi24               = 0xffbe3cce,
 
 		blue_outpost           = 0xffff6f98,
 		red_outpost            = 0xff980fff,

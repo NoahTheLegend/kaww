@@ -38,6 +38,7 @@ enum EntityHash
 	_jourcop = 1406825361,
 	_uh1 = -2084182629,
 	_ah1 = -265313785,
+	_mi24 = -1338861323,
 	
 	_techtruck = -4555140,
 	_motorcycle = -1537538612,
