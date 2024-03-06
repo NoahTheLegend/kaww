@@ -296,7 +296,7 @@ void onRender(CSprite@ this)
 		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 30);
 		Vec2f dim = Vec2f(24, 8);
 		const f32 y = blob.getHeight() * 2.4f;
-		const f32 perc = blob.get_s16(fuel_prop)/1000.0f ;
+		const f32 perc = blob.get_s16(fuel_prop)/max_fuel;
 		
 		GUI::DrawRectangle(Vec2f(pos2d.x - dim.x - 2, pos2d.y + y - 2), Vec2f(pos2d.x + dim.x + 2, pos2d.y + y + dim.y + 2));
 		GUI::DrawRectangle(Vec2f(pos2d.x - dim.x + 2, pos2d.y + y + 2), Vec2f(pos2d.x - dim.x + perc * 2.0f * dim.x - 2, pos2d.y + y + dim.y - 2), SColor(0xff8bbc7e));
