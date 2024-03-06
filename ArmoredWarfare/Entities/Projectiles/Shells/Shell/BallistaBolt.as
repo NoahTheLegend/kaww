@@ -74,13 +74,14 @@ void onTick(CBlob@ this)
 
 			if (this.getTickSinceCreated() > 0)
 			{
-				CParticle@ p = ParticleAnimated("LargeSmoke", pos - this.getVelocity(), this.getVelocity() * -0.1f, -this.getVelocity().Angle()-90, 0.4f + XORRandom(40) * 0.01f, 1 + XORRandom(21) * 0.1f, XORRandom(70) * -0.00005f, true);
+				CParticle@ p = ParticleAnimated("LargeSmoke", pos - this.getVelocity(), this.getVelocity() * -0.1f, -this.getVelocity().Angle()-90 + XORRandom(11)-10, 0.4f + XORRandom(40) * 0.01f, 3 + XORRandom(21) * 0.1f, XORRandom(70) * -0.00005f, true);
 				if (p !is null)
 				{
 					p.collides = false;
 					p.fastcollision = true;
 					p.growth = -0.01f;
-					p.damping = 0.95f;
+					p.damping = 0.85f;
+					p.frame = 5;
 				}
 			}
 			else
@@ -90,7 +91,7 @@ void onTick(CBlob@ this)
 					if (XORRandom(4) == 0) continue;
 
 					f32 rangle = XORRandom(51)-25;
-					CParticle@ p = ParticleAnimated("DustSmall1r.png", pos - this.getVelocity() - Vec2f(-4,4).RotateBy(this.getAngleDegrees()), this.getVelocity().RotateBy(rangle) * 0.33f, this.getVelocity().Angle() + rangle, 0.5f + XORRandom(51) * 0.01f, 4 + XORRandom(3), 0, false);
+					CParticle@ p = ParticleAnimated("DustSmallDark.png", pos - this.getVelocity() - Vec2f(-4,4).RotateBy(this.getAngleDegrees()), this.getVelocity().RotateBy(rangle) * 0.33f, this.getVelocity().Angle() + rangle, 0.5f + XORRandom(51) * 0.01f, 4 + XORRandom(3), 0, false);
 					if (p !is null)
 					{
 						p.damping = 0.75f;

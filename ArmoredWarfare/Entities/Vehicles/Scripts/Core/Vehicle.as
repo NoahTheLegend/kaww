@@ -136,6 +136,7 @@ void onInit(CBlob@ this)
 		case _heavygun: // MG
 		case _firethrower: // MG
 		case _ah1: // cobra
+		case _mi24:
 		armorRating = 3; break;
 
 		case _transporttruck: // vanilla truck?
@@ -215,6 +216,7 @@ void onInit(CBlob@ this)
 		}
 		case _uh1: // heli
 		case _ah1:
+		case _mi24:
 		{
 			weaponRating = 1;
 			break;
@@ -275,6 +277,7 @@ void onInit(CBlob@ this)
 
 		case _uh1: // heli
 		case _ah1:
+		case _mi24:
 		backsideOffset = 32.0f; break;
 
 		case _bf109: // plane
@@ -1076,6 +1079,7 @@ void onDie(CBlob@ this)
 				break;
 			}
 			case _ah1:
+			case _mi24:
 			{
 				scrap_amount = 17+XORRandom(9);
 				explosion_radius = 92.0f;

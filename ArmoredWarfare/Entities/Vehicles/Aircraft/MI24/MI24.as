@@ -8,23 +8,23 @@
 #include "GunStandard.as"
 #include "PerksCommon.as";
 
-const Vec2f upVelo = Vec2f(0.00f, -0.05f);
-const Vec2f downVelo = Vec2f(0.00f, 0.01f);
-const Vec2f leftVelo = Vec2f(-0.03f, 0.00f);
-const Vec2f rightVelo = Vec2f(0.03f, 0.00f);
+const Vec2f upVelo = Vec2f(0.00f, -0.033f);
+const Vec2f downVelo = Vec2f(0.00f, 0.0085f);
+const Vec2f leftVelo = Vec2f(-0.025f, 0.00f);
+const Vec2f rightVelo = Vec2f(0.025f, 0.00f);
 
-const Vec2f minClampVelocity = Vec2f(-0.50f, -0.80f);
-const Vec2f maxClampVelocity = Vec2f( 0.475f, 0.00f);
+const Vec2f minClampVelocity = Vec2f(-0.50f, -0.85f);
+const Vec2f maxClampVelocity = Vec2f(0.5f, 0.5f);
 
 const f32 thrust = 1020.00f;
 
-const u8 cooldown_time = 15;//210;
+const u8 cooldown_time = 22;//210;
 const u8 recoil = 0;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 const Vec2f gun_clampAngle = Vec2f(-180, 180);
-const Vec2f miniGun_offset = Vec2f(-40,5);
+const Vec2f miniGun_offset = Vec2f(-42,8);
 const u8 shootDelay = 2;
 const f32 projDamage = 0.275f;
 
@@ -121,7 +121,8 @@ void onInit(CSprite@ this)
 		int[] frames = {1, 2, 3, 2};
 		anim.AddFrames(frames);
 		
-		blade.SetOffset(Vec2f(-5.5, -27));
+		blade.SetOffset(Vec2f(-5.0f, -24));
+		blade.ScaleBy(Vec2f(1.15f, 1));
 		blade.SetRelativeZ(20.0f);
 		blade.SetVisible(true);
 	}
@@ -134,7 +135,7 @@ void onInit(CSprite@ this)
 		anim.AddFrames(frames);
 		
 		tailrotor.ScaleBy(Vec2f(1.25f,1.25f));
-		tailrotor.SetOffset(Vec2f(58.0, -5));
+		tailrotor.SetOffset(Vec2f(61.0, -13));
 		tailrotor.SetRelativeZ(20.0f);
 		tailrotor.SetVisible(true);
 	}
@@ -145,8 +146,20 @@ void onInit(CSprite@ this)
 		mini.SetRelativeZ(-50.0f);
 		mini.SetVisible(true);
 	}
+	CSpriteLayer@ tracks = this.addSpriteLayer("tracks", "MI24_tracks.png", 32, 16);
+	if (tracks !is null)
+	{
+		tracks.SetOffset(Vec2f(-12.0f, 12.0f));
+		tracks.SetRelativeZ(-51.0f);
 
-	this.SetEmitSound("Eurokopter_Loop.ogg");
+		Animation@ anim = tracks.addAnimation("default", 0, false);
+		int[] frames = {0,1,2,3,4};
+		anim.AddFrames(frames);
+
+		tracks.SetAnimation(anim);
+	}
+
+	this.SetEmitSound("Heavycopter_Loop.ogg");
 	this.SetEmitSoundSpeed(0.01f);
 	this.SetEmitSoundPaused(false);
 }
@@ -215,6 +228,28 @@ void onTick(CBlob@ this)
 
 		AttachmentPoint@[] aps;
 		this.getAttachmentPoints(@aps);
+
+		u8 tt = this.get_u8("tracks_timer");
+		if (tt > 0) tt--;
+		if (tt == 0)
+		{
+			CSpriteLayer@ tracks = sprite.getSpriteLayer("tracks");
+			if (tracks !is null && tracks.animation !is null)
+			{
+				int f = tracks.animation.frame;
+				if (!this.isOnGround() && f < 4)
+				{
+					tracks.animation.frame = tracks.animation.frame + 1;
+					tt = 3;
+				}
+				else if (this.isOnGround() && f > 0)
+				{
+					tracks.animation.frame = tracks.animation.frame - 1;
+					tt = 2;
+				}
+			}
+		}
+		this.set_u8("tracks_timer", tt);
 		
 		CSpriteLayer@ blade = sprite.getSpriteLayer("blade");
 		CSpriteLayer@ tailrotor = sprite.getSpriteLayer("tailrotor");
@@ -256,7 +291,7 @@ void onTick(CBlob@ this)
 								{
 									f32 rot = 1.0f;
 									if (this.isFacingLeft()) rot = -1.0f;
-									ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
+									ShootBullet(this, this.getPosition()+Vec2f(42.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 26.5f);
 								}
 								this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
 								this.set_u32("next_shoot", getGameTime()+cooldown_time);
@@ -448,6 +483,7 @@ void onTick(CBlob@ this)
 		blade.ResetTransform();
 		blade.SetOffset(Vec2f(-5.5, -27));
 		blade.animation.time = anim_time_formula;
+		blade.ScaleBy(Vec2f(1.15f, 1));
 		if (blade.animation.time == 0)
 		{
 			blade.SetOffset(Vec2f(-6.5, -27));
@@ -469,8 +505,8 @@ void onTick(CBlob@ this)
 			tailrotor.SetFrameIndex(1);
 		}
 
-		f32 volume = (Maths::Log(4.5)*(resultForce.getLength()+0.2)+2)/4;
-		sprite.SetEmitSoundVolume(Maths::Min(volume*1.5, 1.5f));
+		f32 volume = (Maths::Log(4.0)*(resultForce.getLength()+0.2)+2)/4;
+		sprite.SetEmitSoundVolume(Maths::Min(volume*1.5f, 1.5f));
 		sprite.SetEmitSoundSpeed(Maths::Min(0.0075f + Maths::Abs(resultForce.getLength() * 4.00f), 1.33f) * volume + (this.getVelocity().Length() > 1.0f ? Maths::Max(resultForce.y + 0.25f, 0) : 0));
 		if (this.hasTag("falling")) sprite.SetEmitSoundSpeed(Maths::Min(0.000075f + Maths::Abs(this.get_Vec2f("result_force").getLength() * 1.00f), 0.85f) * 1.55);
 
@@ -479,7 +515,7 @@ void onTick(CBlob@ this)
 		if (this.hasTag("falling"))
 		{
 			if (getGameTime()%8==0)
-				this.getSprite().PlaySound("FallingAlarm.ogg", 1.0f, 1.3f);
+				this.getSprite().PlaySound("FallingAlarm.ogg", 1.0f, 1.15f);
 
 			this.setAngleDegrees(this.getAngleDegrees() + (Maths::Sin(getGameTime() / 5.0f) * 8.5f));
 		}

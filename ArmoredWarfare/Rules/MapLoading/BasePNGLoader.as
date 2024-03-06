@@ -501,6 +501,7 @@ class PNGLoader
 			case map_colors::blue_bomberplane:         autotile(offset); spawnVehicle(map, "bomberplane",   offset, teamleft); break;
 			case map_colors::blue_uh1:       autotile(offset); spawnVehicle(map, "uh1",   offset, teamleft); break;
 			case map_colors::blue_ah1:       autotile(offset); spawnVehicle(map, "ah1",   offset, teamleft); break;
+			case map_colors::blue_mi24:       autotile(offset); spawnVehicle(map, "mi24",   offset, teamleft); break;
 			case map_colors::blue_tanktrap:    autotile(offset); spawnVehicle(map, "tanktrap",   offset, teamleft); break;
 			case map_colors::blue_cruiser:     autotile(offset); spawnVehicle(map, "cruiser",   offset, teamleft); break;
 			case map_colors::blue_scoutboat:     autotile(offset); spawnVehicle(map, "scoutboat",   offset, teamleft); break;
@@ -515,6 +516,7 @@ class PNGLoader
 			case map_colors::red_bomberplane:        autotile(offset); spawnVehicle(map, "bomberplane",   offset, teamright); break;
 			case map_colors::red_uh1:          autotile(offset); spawnVehicle(map, "uh1",   offset, teamright); break;
 			case map_colors::red_ah1:          autotile(offset); spawnVehicle(map, "ah1",   offset, teamright); break;
+			case map_colors::red_mi24:          autotile(offset); spawnVehicle(map, "mi24",   offset, teamright); break;
 			case map_colors::blue_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, teamleft); break;
 			case map_colors::red_outpost:          autotile(offset); spawnVehicle(map, "outpost",   offset, teamright); break;
 			case map_colors::blue_armory:          autotile(offset); spawnVehicle(map, "armory",   offset, teamleft); break;
