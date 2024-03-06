@@ -66,11 +66,54 @@ void onTick(CBlob@ this)
 		this.setVelocity(this.getOldVelocity());
 	}
 
-	if (isClient())
+	if (isClient() && !v_fastrender)
 	{
 		if (this.hasTag("rpg"))
 		{
-			ParticleAnimated("LargeSmoke", this.getPosition(), this.getVelocity() * -0.4f + getRandomVelocity(0.0f, XORRandom(80) * 0.01f, 90), float(XORRandom(360)), 0.4f + XORRandom(40) * 0.01f, 1, XORRandom(70) * -0.00005f, true);
+			Vec2f pos = this.getPosition();
+
+			if (this.getTickSinceCreated() > 0)
+			{
+				CParticle@ p = ParticleAnimated("LargeSmoke", pos - this.getVelocity(), this.getVelocity() * -0.1f, -this.getVelocity().Angle()-90, 0.4f + XORRandom(40) * 0.01f, 1 + XORRandom(21) * 0.1f, XORRandom(70) * -0.00005f, true);
+				if (p !is null)
+				{
+					p.collides = false;
+					p.fastcollision = true;
+					p.growth = -0.01f;
+					p.damping = 0.95f;
+				}
+			}
+			else
+			{
+				for (u8 i = 0; i < 10; i++)
+				{
+					if (XORRandom(4) == 0) continue;
+
+					f32 rangle = XORRandom(51)-25;
+					CParticle@ p = ParticleAnimated("DustSmall1r.png", pos - this.getVelocity() - Vec2f(-4,4).RotateBy(this.getAngleDegrees()), this.getVelocity().RotateBy(rangle) * 0.33f, this.getVelocity().Angle() + rangle, 0.5f + XORRandom(51) * 0.01f, 4 + XORRandom(3), 0, false);
+					if (p !is null)
+					{
+						p.damping = 0.75f;
+						p.collides = false;
+						p.fastcollision = true;
+						p.growth = -0.025f;
+						p.frame = 3;
+					}
+				}
+			}
+
+			if (this.getTickSinceCreated() < 5)
+			{
+				CParticle@ p1 = ParticleAnimated("DustSmallDark.png", pos - this.getVelocity(), this.getVelocity()*XORRandom(4)*0.005f, this.getVelocity().Angle(), 1.0f, 5 + XORRandom(2), 0, false);
+				if (p1 !is null)
+				{
+					p1.collides = false;
+					p1.fastcollision = true;
+					p1.growth = -0.01f;
+					p1.scale = 0.75f + (XORRandom(11)-5) * 0.1f;
+					p1.deadeffect = -1;
+				}
+			}
 		}
 	}
 
