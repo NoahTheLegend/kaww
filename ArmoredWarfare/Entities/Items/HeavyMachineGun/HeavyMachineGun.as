@@ -19,6 +19,7 @@ void onInit(CBlob@ this)
 	this.set_u8("TTL", 60);
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 20);
+	this.set_u16("gui_mat_icon", 31);
 	
 	Vehicle_Setup(this,
 	              0.0f, // move speed

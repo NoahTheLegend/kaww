@@ -642,7 +642,7 @@ void onRender(CSprite@ this)
 		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
 
 		GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
-		GUI::DrawIcon("Materials.png", 58, Vec2f(16,16), pos2d+Vec2f(-42, 48.0f), 0.75f, 1.0f);
+		GUI::DrawIcon("Materials.png", 50, Vec2f(16,16), pos2d+Vec2f(-42, 48.0f), 0.75f, 1.0f);
 		GUI::SetFont("menu");
 		if (blob.getInventory() !is null)
 			GUI::DrawTextCentered(""+blob.getInventory().getCount("mat_smallbomb"), pos2d+Vec2f(-6, 58.0f), SColor(255, 255, 255, 0));
