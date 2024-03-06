@@ -5,7 +5,7 @@
 const u16 c_moto = 5;
 const u16 c_amoto = 7;
 const u16 c_truck = 12;
-const u16 c_truckbig = 20;
+const u16 c_truckbig = 30;
 const u16 c_pszh = 15;
 const u16 c_btr = 25;
 const u16 c_bradley = 40;
