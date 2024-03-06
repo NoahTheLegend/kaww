@@ -31,6 +31,9 @@ void onInit(CBlob@ this)
 		{
 			this.set_u16("arm2_id", arm2.getNetworkID());
 		}
+		
+		this.Sync("arm1_id", true);
+		this.Sync("arm2_id", true);
 	}
 
 	this.set_f32("arm1_angle", 0);
@@ -43,15 +46,6 @@ void onInit(CBlob@ this)
 	this.addCommandID("grab");
 	this.addCommandID("rotate");
 	this.addCommandID("add_mount");
-
-	CSprite@ sprite = this.getSprite();
-
-	if (!this.hasTag("vehicle"))
-	{
-		sprite.SetEmitSound("crane_rotary_loop.ogg");
-		sprite.SetEmitSoundSpeed(1.0f);
-		sprite.SetRelativeZ(75.0f);
-	}
 
 	this.set_u8("playsound", 0);
 	this.set_f32("volume", 0);
@@ -87,6 +81,9 @@ const f32 volume_kick = 0.1f;
 
 void onTick(CBlob@ this)
 {
+	CBlob@ arm1 = getBlobByNetworkID(this.get_u16("arm1_id"));
+	CBlob@ arm2 = getBlobByNetworkID(this.get_u16("arm2_id"));
+
 	if (isClient())
 	{
 		CSprite@ sprite = this.getSprite();
@@ -109,10 +106,13 @@ void onTick(CBlob@ this)
 			this.add_f32("volume", -volume_kick);
 		}
 		
-		if (!this.hasTag("vehicle"))
+		if (arm1 !is null)
 		{
-			sprite.SetEmitSoundPaused(play_sound_remain == 0);
-			sprite.SetEmitSoundVolume(Maths::Min(this.get_f32("volume"), max_volume * play_sound_remain / playsound_fadeout_time));
+			CSprite@ armsprite = arm1.getSprite();
+			armsprite.SetRelativeZ(-200.0f);
+
+			armsprite.SetEmitSoundPaused(play_sound_remain == 0);
+			armsprite.SetEmitSoundVolume(Maths::Min(this.get_f32("volume"), max_volume * play_sound_remain / playsound_fadeout_time));
 		}
 
 		if (play_sound_remain > 0) this.add_u8("playsound", -1);
@@ -121,9 +121,6 @@ void onTick(CBlob@ this)
 	if (!isServer()) return;
 	CMap@ map = getMap();
 	if (map is null) return;
-
-	CBlob@ arm1 = getBlobByNetworkID(this.get_u16("arm1_id"));
-	CBlob@ arm2 = getBlobByNetworkID(this.get_u16("arm2_id"));
 
 	if (arm1 is null || arm2 is null) return;
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PASSENGER");
@@ -329,7 +326,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		{
 			f32 diff = params.read_f32();
 
-			CSprite@ sprite = this.getSprite();
+			CBlob@ arm1 = getBlobByNetworkID(this.get_u16("arm1_id"));
+			if (arm1 is null) return;
+
+			CSprite@ sprite = arm1.getSprite();
 			if (!this.hasTag("vehicle"))
 			{
 				sprite.SetEmitSoundSpeed(1.0f + diff * 0.01f);
