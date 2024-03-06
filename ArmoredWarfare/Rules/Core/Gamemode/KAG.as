@@ -44,6 +44,12 @@ void onInit(CRules@ this)
 
 	string font4 = CFileMatcher("KdamThmorPro-Smaller.ttf").getFirst();
 	GUI::LoadFont("score-smaller", font4, 12, true);
+
+	string font5 = CFileMatcher("Editia.ttf").getFirst();
+	GUI::LoadFont("title", font5, 20);
+
+	string font6 = CFileMatcher("Editia-Small.ttf").getFirst();
+	GUI::LoadFont("title-small", font6, 14);
 }
 
 bool need_sky_check = true;
