@@ -362,7 +362,7 @@ void onTick(CBlob@ this)
 								return;
 							}
 
-							Vec2f aimvector = GunAimPos - this.getPosition()+Vec2f(this.isFacingLeft() ? 42 : -42, -10).RotateBy(this.getAngleDegrees());
+							Vec2f aimvector = GunAimPos - this.getPosition()+Vec2f(this.isFacingLeft() ? 42 : -42, -5).RotateBy(this.getAngleDegrees());
 
 							const f32 angle = constrainAngle(-aimvector.Angle() + (flip ? 180 : 0)) * flip_factor;
 							const f32 clampedAngle = (Maths::Clamp(angle, gun_clampAngle.x, gun_clampAngle.y) * flip_factor);
