@@ -198,9 +198,18 @@ void buildT3ShopCombined(CBlob@ this)
 
 	{string[] params = {n_uh1,t_uh1,bn_uh1,d_uh1,b,s,ds};
 	makeShopItem(this,params,c_uh1-10);}
-
-	{string[] params = {n_ah1,t_ah1,bn_ah1,d_ah1,b,s,ds};
-	makeShopItem(this,params,c_ah1);}
+	
+	u8 tn = this.getTeamNum();
+	if (tn >= 1 && tn <= 4)
+	{
+		{string[] params = {n_mi24,t_mi24,bn_mi24,d_mi24,b,s,ds};
+		makeShopItem(this,params,c_mi24);}
+	}
+	else
+	{
+		{string[] params = {n_ah1,t_ah1,bn_ah1,d_ah1,b,s,ds};
+		makeShopItem(this,params,c_ah1);}
+	}
 }
 
 void buildT1ShopGround(CBlob@ this)
@@ -412,6 +421,15 @@ void buildT2ShopAir(CBlob@ this)
 	{string[] params = {n_uh1,t_uh1,bn_uh1,d_uh1,b,s,ds};
 	makeShopItem(this,params,c_uh1-10);}
 
-	{string[] params = {n_ah1,t_ah1,bn_ah1,d_ah1,b,s,ds};
-	makeShopItem(this,params,c_ah1);}
+	u8 tn = this.getTeamNum();
+	if (tn >= 1 && tn <= 4)
+	{
+		{string[] params = {n_mi24,t_mi24,bn_mi24,d_mi24,b,s,ds};
+		makeShopItem(this,params,c_mi24);}
+	}
+	else
+	{
+		{string[] params = {n_ah1,t_ah1,bn_ah1,d_ah1,b,s,ds};
+		makeShopItem(this,params,c_ah1);}
+	}
 }
