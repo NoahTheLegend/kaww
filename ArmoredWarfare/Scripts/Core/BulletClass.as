@@ -193,7 +193,7 @@ class BulletObj
 
 		if (same_team && blob.hasTag("friendly_bullet_pass")) return false;
 
-		if (is_young && (blob.hasTag("vehicle") || blob.getName() == "sandbags")) return false;
+		if (is_young && ((blob.hasTag("vehicle") && !blob.hasTag("structure")) || blob.getName() == "sandbags")) return false;
 
 		if (blob.hasTag("vehicle"))
 		{

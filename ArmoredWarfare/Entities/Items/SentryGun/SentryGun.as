@@ -4,6 +4,7 @@
 #include "GunStandard.as"
 
 const string target_player_id = "target_player_id";
+const u8 fire_rate = 6;
 
 void onInit(CBlob@ this)
 {
@@ -42,6 +43,16 @@ void onInit(CBlob@ this)
 		arm.animation.frame = 0;
 	}
 
+	CSpriteLayer@ barrel = sprite.addSpriteLayer("barrel", "SentryGun_gun", 32, 16);
+	if (barrel !is null)
+	{
+		Animation@ anim = barrel.addAnimation("default", 0, false);
+		anim.AddFrame(2);
+
+		barrel.SetOffset(Vec2f(-6.0f, -5.0f));
+		barrel.SetRelativeZ(24.0f);
+	}
+
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
 	bool facing_left = this.getTeamNum() == teamright ;
@@ -60,7 +71,7 @@ void onTick(CBlob@ this)
 
 	CBlob@ targetblob = getBlobByNetworkID(this.get_u16(target_player_id)); //target's blob
 
-	this.getCurrentScript().tickFrequency = 6;
+	this.getCurrentScript().tickFrequency = 4;
 
 	if (this.get_u16(target_player_id) == 0) // don't have a target
 	{		
@@ -98,12 +109,12 @@ void onTick(CBlob@ this)
 							has_owner = true;
 							
 						shootVehicleGun(has_owner ? p.getBlob().getNetworkID() : this.getNetworkID(), this.getNetworkID(),
-							true_angle, this.getPosition()+Vec2f(0,this.isFacingLeft()?8:-6).RotateBy(true_angle),
+							true_angle, this.getPosition()+Vec2f(0,this.isFacingLeft()?8:-4).RotateBy(true_angle),
 							targetblob.getPosition(), bulletSpread, 1, 0, 0.2f, 0.3f, 2,
 								this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));		
 					}
 
-					this.set_u32("next shot", getGameTime() + 10);			
+					this.set_u32("next shot", getGameTime() + fire_rate);			
 				}
 			}
 
@@ -121,7 +132,6 @@ void onTick(CBlob@ this)
 	//angle
 	f32 angle = getAimAngle(this);
 	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
 
 	if (this.get_u16(target_player_id) == 0)
 	{
@@ -129,7 +139,12 @@ void onTick(CBlob@ this)
 		angle += Maths::Round(Maths::Sin(getGameTime()*0.066f)*7.5f);
 	}
 
-	if (arm !is null)
+	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+	CSpriteLayer@ barrel = sprite.getSpriteLayer("barrel");
+
+	f32 diff = 1.0f - (this.get_u32("next shot") > getGameTime() ? f32(this.get_u32("next shot") - getGameTime()) / fire_rate : 0.0f);
+
+	if (arm !is null && barrel !is null)
 	{
 		bool facing_left = sprite.isFacingLeft();
 		//f32 rotation = angle * (facing_left ? -1 : 1);
@@ -137,17 +152,29 @@ void onTick(CBlob@ this)
 		arm.ResetTransform();
 		arm.SetFacingLeft(facing_left);
 		arm.RotateBy(angle, Vec2f(facing_left ? -6.0f : 6.0f, 6.0f));
+
+		barrel.ResetTransform();
+		barrel.SetFacingLeft(facing_left);
+		Vec2f offset = Vec2f(facing_left ? -9.0f : 8.0f, 7.0f);
+		barrel.RotateBy(angle, offset);
+		barrel.SetOffset(Vec2f(-2 - 4*diff, -5).RotateBy(facing_left ? angle : -angle, Vec2f(facing_left ? offset.x : -offset.x, facing_left ? -offset.y : -offset.y)));
 	}
 }
 
 void ClientFire(CBlob@ this)
 {
-	Vec2f pos_2 = this.getPosition()-Vec2f(0.0f, 7.0f);
+	if (!isClient()) return;
+
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+
+	sprite.animation.frame += 1;
+	if (sprite.animation.frame >= 2) sprite.animation.frame = 0;
+
+	Vec2f pos_2 = this.getPosition()-Vec2f(0.0f, 4.0f);
 	f32 angle = getAimAngle(this);
 	angle += ((XORRandom(512) - 256) / 76.0f);
 	Vec2f vel = Vec2f(490.0f / 16.5f * (this.isFacingLeft() ? -1 : 1), 0.0f).RotateBy(angle);
-
-	this.SendCommand(this.getCommandID("shoot"));
 
 	makeGibParticle(
 		"EmptyShellSmall",               // file name
@@ -161,12 +188,9 @@ void ClientFire(CBlob@ this)
 		"ShellCasing",                      // sound
 		this.get_u8("team_color"));         // team number
 
-	if (isClient())
-	{
-		this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.1f, 1.35f + XORRandom(20) * 0.1f);
 
-		ParticleAnimated("SmallExplosion3", (pos_2)+Vec2f(0, 2.0f) + vel*0.8, getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
-	}
+	this.getSprite().PlaySound("DefenseTurretShoot.ogg", 1.1f, 1.25f + XORRandom(11) * 0.01f);
+	ParticleAnimated("SmallExplosion3", (pos_2)+Vec2f(0, 2.0f) + vel*0.8, getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 }
 
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
