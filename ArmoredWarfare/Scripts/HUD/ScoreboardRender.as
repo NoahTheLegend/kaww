@@ -34,7 +34,11 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	f32 padheight = 7;
 	f32 stepheight = lineheight + padheight;
 	Vec2f bottomright(Maths::Min(getScreenWidth() - 100, screenMidX+maxMenuWidth), topleft.y + (players.length + 5.5) * stepheight);
-	GUI::DrawPane(topleft, bottomright, team.color);
+
+	SColor col = team.color;
+	col.setAlpha(155);
+	GUI::DrawPane(topleft, bottomright, col);
+	GUI::DrawFramedPane(topleft-Vec2f(4,4), Vec2f(bottomright.x+4, topleft.y+8));
 
 	CControls@ controls = getControls();
 	Vec2f mousePos = controls.getMouseScreenPos();
@@ -47,20 +51,24 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::SetFont("menu");
 
 	//draw team info
+	GUI::SetFont("title");
 	GUI::DrawText(team.getName(), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
+	GUI::SetFont("menu");
+
 	Vec2f dim;
 	if (rules.get_bool("enable_powers"))
 	{
-		GUI::GetTextDimensions(team.getName(), dim);
-		GUI::DrawIcon("FractionIcons.png", teamnum, Vec2f(64,64), Vec2f(topleft.x + 20 + dim.x, topleft.y - 10), 0.5f, teamnum);
-		
 		if (mousePos.x >= topleft.x && mousePos.y >= topleft.y
 			&& mousePos.x <= bottomright.x && mousePos.y <= bottomright.y)
 		{
-			GUI::DrawText(descriptions[teamnum], Vec2f(topleft.x + 100 + dim.x, topleft.y), SColor(0xffffffff));
+			GUI::SetFont("title-small");
+			GUI::GetTextDimensions(team.getName(), dim);
+			GUI::DrawIcon("FractionIcons.png", teamnum, Vec2f(64,64), Vec2f(topleft.x + 64 + dim.x, topleft.y - 10), 0.5f, teamnum);
+			GUI::DrawText(descriptions[teamnum], Vec2f(topleft.x + 140 + dim.x, topleft.y + 4), SColor(0xffffffff));
 		}
 	}
-	GUI::DrawText(getTranslatedString("Players: {PLAYERCOUNT}").replace("{PLAYERCOUNT}", "" + players.length), Vec2f(bottomright.x - 92, topleft.y), SColor(0xffffffff));
+
+	GUI::DrawText(getTranslatedString("Soldiers: {PLAYERCOUNT}").replace("{PLAYERCOUNT}", "" + players.length), Vec2f(bottomright.x - 92, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 1.5;
 
@@ -69,14 +77,12 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	bool same_team = teamnum == local_team || local_team == getRules().getSpectatorTeamNum();
 
 	//draw player table header
-	GUI::DrawText(getTranslatedString("Player"), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
-	GUI::DrawText(getTranslatedString("Username"), Vec2f(bottomright.x - 470, topleft.y), SColor(0xffffffff));
-	GUI::DrawText(getTranslatedString("Ping"), Vec2f(bottomright.x - 330, topleft.y), SColor(0xffffffff));
-	GUI::DrawText(getTranslatedString("Kills"), Vec2f(bottomright.x - 260, topleft.y), SColor(0xffffffff));
-	GUI::DrawText(getTranslatedString("Deaths"), Vec2f(bottomright.x - 190, topleft.y), SColor(0xffffffff));
-	GUI::DrawText(getTranslatedString("Assists"), Vec2f(bottomright.x - 120, topleft.y), SColor(0xffffffff));
-	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 50, topleft.y), SColor(0xffffffff));
-	GUI::DrawText(getTranslatedString("Accolades"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
+	GUI::SetFont("menu");
+	GUI::DrawText(getTranslatedString("Soldier"), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(getTranslatedString("Username"), Vec2f(bottomright.x - 330, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(getTranslatedString("Ping"), Vec2f(bottomright.x - 150, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 60, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(getTranslatedString("Merits"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 92, topleft.y), SColor(0xffffffff));
 	if (same_team) GUI::DrawText(getTranslatedString("Perk"), Vec2f(bottomright.x - accolades_start - 140, topleft.y), SColor(0xffffffff));
 
@@ -365,13 +371,13 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			}
 		}
 
+		string stats = p.getKills()+" | "+p.getDeaths()+" | "+formatFloat(getKDR(p), "", 0, 2);
+		Vec2f stats_dim;
+		GUI::GetTextDimensions(stats, stats_dim);
+		GUI::DrawText("" + username, Vec2f(bottomright.x - 330, topleft.y), usernamecolour);
+		GUI::DrawText("" + ping_in_ms+"ms", Vec2f(bottomright.x - 150, topleft.y), SColor(0xffffffff));
 
-		GUI::DrawText("" + username, Vec2f(bottomright.x - 470, topleft.y), usernamecolour);
-		GUI::DrawText("" + ping_in_ms, Vec2f(bottomright.x - 330, topleft.y), SColor(0xffffffff));
-		GUI::DrawText("" + p.getKills(), Vec2f(bottomright.x - 260, topleft.y), SColor(0xffffffff));
-		GUI::DrawText("" + p.getDeaths(), Vec2f(bottomright.x - 190, topleft.y), SColor(0xffffffff));
-		GUI::DrawText("" + p.getAssists(), Vec2f(bottomright.x - 120, topleft.y), SColor(0xffffffff));
-		GUI::DrawText("" + formatFloat(getKDR(p), "", 0, 2), Vec2f(bottomright.x - 50, topleft.y), SColor(0xffffffff));
+		GUI::DrawText(stats, Vec2f(bottomright.x - stats_dim.x - 10, topleft.y), SColor(0xffffffff));
 	}
 
 	// username copied text, goes at bottom to overlay above everything else
@@ -479,9 +485,11 @@ void onRenderScoreboard(CRules@ this)
 	{
 		//draw spectators
 		f32 stepheight = 16;
-		Vec2f bottomright(Maths::Min(getScreenWidth() - 100, screenMidX+maxMenuWidth), topleft.y + stepheight * 2);
-		f32 specy = topleft.y + stepheight * 0.5;
-		GUI::DrawPane(topleft, bottomright, SColor(0xffc0c0c0));
+		Vec2f bottomright(Maths::Min(getScreenWidth() - 100, screenMidX+maxMenuWidth), topleft.y + 6 + stepheight * 2);
+		f32 specy = topleft.y + 5 + stepheight * 0.5;
+
+		GUI::DrawPane(topleft, bottomright, SColor(125, 255, 255, 255));
+		GUI::DrawFramedPane(topleft-Vec2f(4,4), Vec2f(bottomright.x+4, topleft.y+8));
 
 		Vec2f textdim;
 		string s = getTranslatedString("Spectators:");
@@ -571,7 +579,7 @@ void drawHoverExplanation(int hovered_accolade, int hovered_rank, Vec2f centre_t
 	tl -= expand;
 	br += expand;
 
-	GUI::DrawPane(tl, br + Vec2f(4,0), SColor(0xffffffff));
+	GUI::DrawFramedPane(tl, br + Vec2f(4,0));
 	GUI::DrawText(desc, tl + expand, SColor(0xffffffff));
 }
 
