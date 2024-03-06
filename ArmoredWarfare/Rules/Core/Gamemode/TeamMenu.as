@@ -22,7 +22,6 @@ void ShowTeamMenu(CRules@ this)
 	}
 
 	getHUD().ClearMenus(true);
-
 	CGridMenu@ menu = CreateGridMenu(getDriver().getScreenCenterPos(), null, Vec2f((2 + 0.5f) * BUTTON_SIZE, BUTTON_SIZE), "Change team");
 
 	if (menu !is null)
@@ -39,10 +38,19 @@ void ShowTeamMenu(CRules@ this)
 			params.write_u16(getLocalPlayer().getNetworkID());
 			params.write_u8(i);
 
+			u8 teamleft = getRules().get_u8("teamleft");
+			u8 teamright = getRules().get_u8("teamright");
+			u8 local_team = getLocalPlayer().getTeamNum();
+
+			bool disabled = false;
+			s32 s = BUTTON_SIZE;
+
 			if (i == 0)
 			{
 				icon = "$BLUE_TEAM$";
 				name = "Left Team";
+
+				disabled = local_team == teamleft;
 			}
 			else if (i == 1)
 			{
@@ -51,17 +59,27 @@ void ShowTeamMenu(CRules@ this)
 					CBitStream params;
 					params.write_u16(getLocalPlayer().getNetworkID());
 					params.write_u8(this.getSpectatorTeamNum());
+
+					s = 2;
+					disabled = local_team == this.getSpectatorTeamNum();
+
 					CGridButton@ button2 = menu.AddButton("$SPECTATOR$", getTranslatedString("Spectator"), this.getCommandID("pick teams"), Vec2f(BUTTON_SIZE / 2, BUTTON_SIZE), params);
+					if (button2 !is null) button2.SetEnabled(!disabled);
 				}
+
+				s = 4;
 				icon = "$RED_TEAM$";
 				name = "Right Team";
+
+				disabled = local_team == teamright;
 			}
 			else
 			{
 				continue;
 			}
 
-			CGridButton@ button =  menu.AddButton(icon, getTranslatedString(name), this.getCommandID("pick teams"), Vec2f(BUTTON_SIZE, BUTTON_SIZE), params);
+			CGridButton@ button =  menu.AddButton(icon, getTranslatedString(name), this.getCommandID("pick teams"), Vec2f(s, BUTTON_SIZE), params);
+			if (button !is null) button.SetEnabled(!disabled);
 		}
 	}
 }
