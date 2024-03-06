@@ -157,7 +157,7 @@ void onRender(CSprite@ this)
 
 		Vec2f oldpos = blob.getOldPosition();
 		Vec2f pos = blob.getPosition();
-		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
+		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) + Vec2f(0, 2);
 		if (blob.hasTag("machinegun"))
 		{
 			f32 overheat = blob.get_f32("overheat");
@@ -170,10 +170,10 @@ void onRender(CSprite@ this)
 			SColor color = SColor(255, 200+55*percent, 125-100*percent, 75-75*percent);
 
 			// Border
-			GUI::DrawRectangle(Vec2f(pos2d.x - dim.x - 2,                        pos2d.y + y - 4),
+			GUI::DrawSunkenPane(Vec2f(pos2d.x - dim.x - 2,                        pos2d.y + y - 4),
 							   Vec2f(pos2d.x + dim.x + 2,                        pos2d.y + y + dim.y + 4));
 
-			GUI::DrawRectangle(Vec2f(pos2d.x - heatdim.x + 2,                    pos2d.y + y + 0),
+			GUI::DrawRectangle(Vec2f(pos2d.x - heatdim.x + 2,                    pos2d.y + y + 1),
 							   Vec2f(pos2d.x + heatdim.x - 1,                    pos2d.y + y + heatdim.y - 1), color);
 
 			if (blob.isAttached())
@@ -182,7 +182,7 @@ void onRender(CSprite@ this)
 				if (blob.getHealth() == blob.getInitialHealth()) GUI::DrawTextCentered("Hold RMB to hide", pos2d+Vec2f(0, y+24), SColor(100, 255,255,255));
 			}
 		}
-		else if (!blob.hasTag("machinegun"))
+		else
 		{
 			f32 angleWithNormal = blob.get_f32("gunelevation");
 			
@@ -242,16 +242,21 @@ void drawAmmoCount(CBlob@ blob, VehicleInfo@ v)
 
 	u8 numDigits = reqsText.length();
 
-	upperleft -= Vec2f((float(numDigits) * 2.5f), 0);
-	lowerright += Vec2f((float(numDigits) * 2.5f), 0);
+	upperleft -= Vec2f((float(numDigits) * 2.5f), 0) - Vec2f(2,2);
+	lowerright += Vec2f((float(numDigits) * 2.5f), 0) - Vec2f(2,-1);
 
-	GUI::DrawSunkenPane(upperleft, lowerright + Vec2f(39,0));
+	GUI::DrawSunkenPane(upperleft-Vec2f(4,4), lowerright + Vec2f(43,4));
+	GUI::DrawPane(upperleft, lowerright + Vec2f(39,0), SColor(255, 155, 155, 155));
 	GUI::SetFont("menu");
 	GUI::DrawText(reqsText, upperleft + Vec2f(2, 1), color_white);
 
 	u8 icon = 63;
-	if (blob.getName()=="heavygun") icon = 31;
-	GUI::DrawIcon("Materials", icon, Vec2f(16, 16), upperleft + Vec2f(-4,-15));
+	icon = blob.get_u16("gui_mat_icon");
+
+	if (blob.hasTag("tank")) icon = 6;
+	else if (blob.hasTag("apc")) icon = 40;
+	
+	GUI::DrawIcon("Materials", icon, Vec2f(16, 16), upperleft + Vec2f(-4,-12));
 }
 
 void drawCooldownBar(CBlob@ blob, VehicleInfo@ v)

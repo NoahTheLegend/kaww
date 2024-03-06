@@ -30,6 +30,7 @@ void onInit(CBlob@ this)
 	this.Tag("fireshe");
 	this.Tag("pass_60sec");
 	this.Tag("artillery");
+	this.set_u16("gui_mat_icon", 50);
 
 	this.set_f32("damage_modifier", damage_modifier);
 
