@@ -154,6 +154,26 @@ void onTick(CBlob@ this)
 	}
 	ManageCamera(this);
 
+	if (isServer())
+	{
+		CBlob@ carried = this.getCarriedBlob();
+		if (carried !is null && carried.hasTag("hand_rotation"))
+		{
+			Vec2f aimdir = this.getAimPos()-this.getPosition();
+			aimdir.Normalize();
+
+			f32 angle = -aimdir.Angle() + (this.isFacingLeft()?-180:0);
+			if (angle < -180) angle += 180;
+			else if (angle > -180) angle -= 180;
+
+			angle += 180;
+			f32 damp = 0.33f;
+			angle = (Maths::Lerp(angle, angle < 0 ? -360 : 360, 1.0f - damp) + 360 + (angle < 0 ? -360*damp : 360*damp)) % 360;
+
+			carried.set_f32("hand_angle", angle);
+		}
+	}
+
 	CControls@ controls = getControls();
 
 	// use menu
@@ -175,9 +195,6 @@ void onTick(CBlob@ this)
 
 		this.ClearButtons();
 	}
-
-	CBlob @carryBlob = this.getCarriedBlob();
-
 
 	// bubble menu
 
