@@ -23,10 +23,14 @@ Structure[] structures = {
     Structure(0, "Square (stone)", "structure_stone_bg_square.png"),
     Structure(0, "Room (stone)", "structure_stone_room.png"),
     Structure(0, "Reinforced Brick", "structure_reinforced_brick.png"),
-    Structure(0, "Free Armor", "structure_free_armor.png"),
-    Structure(0, "Free Armor Cell Left", "structure_free_armor_cell_left.png"),
-    Structure(0, "Free Armor Cell Right", "structure_free_armor_cell_right.png"),
-    Structure(0, "Free Armor Upper", "structure_free_armor_upper.png"),
+    Structure(0, "Cheap Armor", "structure_free_armor.png"),
+    Structure(0, "Pit", "structure_pit.png"),
+    Structure(0, "Tunnel (horizontal)", "structure_tunnel.png"),
+    Structure(0, "Tunnel (vertical)", "structure_tunnel_vertical.png"),
+    Structure(0, "Up Armor", "structure_up_armor.png"),
+    Structure(0, "Cheap Armor Cell Left", "structure_free_armor_cell_left.png"),
+    Structure(0, "Cheap Armor Cell Right", "structure_free_armor_cell_right.png"),
+    Structure(0, "Cheap Armor Upper", "structure_free_armor_upper.png"),
     Structure(0, "Cell", "structure_cell.png"),
     Structure(0, "Heavy Cell Left", "structure_heavy_cell_left.png"),
     Structure(0, "Heavy Cell Right", "structure_heavy_cell_right.png"),
@@ -38,11 +42,7 @@ Structure[] structures = {
     Structure(0, "Station Left", "structure_station_left.png"),
     Structure(0, "Station Right", "structure_station_right.png"),
     Structure(0, "Upper Bunker Left", "structure_upper_bunker_left.png"),
-    Structure(0, "Upper Bunker Right", "structure_upper_bunker_right.png"),
-    Structure(0, "Up Armor", "structure_up_armor.png"),
-    Structure(0, "Pit", "structure_pit.png"),
-    Structure(0, "Tunnel (horizontal)", "structure_tunnel.png"),
-    Structure(0, "Tunnel (vertical)", "structure_tunnel_vertical.png")
+    Structure(0, "Upper Bunker Right", "structure_upper_bunker_right.png")
 };
 
 const int menu_grid_width = 8;
