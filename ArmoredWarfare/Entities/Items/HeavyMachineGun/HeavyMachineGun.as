@@ -308,6 +308,21 @@ void onTick(CBlob@ this)
 	}
 
 	Vehicle_StandardControls(this, v);
+
+	if (arm !is null)
+	{
+		AttachmentPoint@ pickup = this.getAttachments().getAttachmentPointByName("PICKUP");
+		if (pickup is null) return;
+    	CBlob@ holder = pickup.getOccupied();
+		if (holder is null) return;
+
+		if (holder.getPlayer() !is null)
+		{
+			arm.SetRelativeZ(-100.0f);
+			arm.RotateBy(this.isFacingLeft() ? 90 : -90, Vec2f_zero);
+		}
+		else arm.SetRelativeZ(100.0f);
+	}
 }
 
 void MakeParticle(CBlob@ this, const Vec2f vel, VehicleInfo@ v, const string filename = "SmallSteam")
