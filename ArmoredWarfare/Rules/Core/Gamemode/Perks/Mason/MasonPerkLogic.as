@@ -34,6 +34,7 @@ void onTick(CBlob@ this)
     if (removeAfterThis)
     {
         sprite.RemoveScript("MasonPerkGUI.as");
+        sprite.RemoveScript("MasonPerkLogic.as");
         this.RemoveScript("MasonPerkLogic.as");
     }
 }
@@ -338,7 +339,7 @@ void RunSelectListener(CBlob@ this)
 
     int tile_size = 48;
     aimpos.x += (dim.x % 2 == 1 ? tile_size/2 : 0);
-    aimpos.y += (dim.y % 2 == 0 ? tile_size/2 : 0);
+    aimpos.y += (dim.y % 2 == 1 ? tile_size : 0);
 
     Vec2f dir = (aimpos-pos);
     selected = Maths::Floor(dim.x/2) + (dir.x) / tile_size + Maths::Floor(((dir.y+tile_size*1.5f) / tile_size))*menu_grid_width;
@@ -385,3 +386,19 @@ void openMasonMenu(CBlob@ this, CBlob@ caller)
 //
 //    return damage;
 //}
+
+void onRender(CSprite@ this)
+{
+    CBlob@ blob = this.getBlob();
+    if (blob is null) return;
+    if (!blob.isMyPlayer()) return;
+    CControls@ controls = getControls();
+    if (controls is null) return;
+    if (getHUD() !is null && !getHUD().hasMenus()) return;
+
+    if(selected >= 0 && selected < structures.size())
+    {
+        f32 scale = 3;
+        GUI::DrawIcon(structures[selected].filename, 0, Vec2f(24,24), Vec2f( getDriver().getScreenCenterPos().x + (-24 * scale), getDriver().getScreenHeight() * 0.7f), scale);
+    }
+}
