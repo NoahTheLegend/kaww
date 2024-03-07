@@ -113,6 +113,7 @@ void addPerk(CPlayer@ player, u8 perk)
                 if (player.isMyPlayer() || isServer())
                 {
                     local.AddScript("MasonPerkLogic.as");
+                    sprite.AddScript("MasonPerkLogic.as");
                     sprite.AddScript("MasonPerkGUI.as");
                 }
 

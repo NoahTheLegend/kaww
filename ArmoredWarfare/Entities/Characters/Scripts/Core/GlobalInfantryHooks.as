@@ -385,6 +385,7 @@ void InitPerk(CBlob@ this, CPlayer@ player)
    		if (player.isMyPlayer() || isServer())
    		{
    		    this.AddScript("MasonPerkLogic.as");
+			sprite.AddScript("MasonPerkLogic.as");
    		    sprite.AddScript("MasonPerkGUI.as");
 
 			this.set_u32("place_structure_delay", 0);
