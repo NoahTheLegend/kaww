@@ -15,7 +15,8 @@ shared string[] getPatreonMembers()
 		"MasterOfCockFights",
 		"Froghead48",
 		"kongo73",
-		"shadowguy"
+		"shadowguy",
+		"gusblatnoj"
 	};
 	return patreonMembers;
 }

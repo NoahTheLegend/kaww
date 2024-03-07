@@ -15,6 +15,30 @@ f32 getKDR(CPlayer@ p)
 	return p.getKills() / Maths::Max(f32(p.getDeaths()), 1.0f);
 }
 
+const int[] unique = {
+	"NoahTheLegend".getHash(), // dev
+	"gusblatnoj".getHash() // boosty
+};
+
+const SColor[] colors_unique = {
+	SColor(0xff66ff66),
+	SColor(255,128,64,48)
+};
+
+const int[] rainbow = {
+	//"NoahTheLegend".getHash(), // dev
+	"Nevrotik".getHash(), // helper
+	"Yeti5000707".getHash(), // creator
+	"MasterOfCockFights".getHash(), // patreon
+	"Froghead48".getHash(), // patreon
+	"kongo73".getHash()
+};
+
+const int[] shadow = {
+	//"NoahTheLegend".getHash(), // dev
+	"LorderPlay".getHash() // spriter
+};
+
 SColor getNameColour(CPlayer@ p)
 {
 	SColor c;
@@ -33,52 +57,27 @@ SColor getNameColour(CPlayer@ p)
 		c = SColor(0xffffffff); //normal
 	}
 
-	string[] shadow = {
-		"NoahTheLegend", // dev
-		"LorderPlay" // spriter
-	};
+	int hash = p.getUsername().getHash();
+	int found = unique.find(hash);
 
-	string[] rainbow = {
-		//"NoahTheLegend", // dev
-		"Nevrotik", // helper
-		"Yeti5000707", // creator
-		"MasterOfCockFights", // patreon
-		"Froghead48", // patreon
-		"kongo73"
-	};
+	if (found != -1)
+		c = colors_unique[found];
 	
-	for (u16 i = 0; i < rainbow.length; i++)
+	if (rainbow.find(hash) != -1)
+		c = rgb(p.getNetworkID());
+	
+	if (shadow.find(hash) != -1)
 	{
-		if (p.getUsername() == rainbow[i])
-		{
-			c = rgb(p.getNetworkID());
-		}
-	}
+		f32 grayscale = Maths::Clamp(0, 255, Maths::Sin((getGameTime()+p.getNetworkID())*0.1f)*(Maths::Cos(getGameTime()*0.025f)*250.0f));
+		SColor temp = SColor(255, 255, 255, 255);
+		temp.setRed(grayscale);
+		temp.setGreen(grayscale);
+		temp.setBlue(grayscale);
 
-	for (u16 i = 0; i < shadow.length; i++)
-	{
-		if (p.getUsername() == shadow[i])
-		{
-			if (i == 0) // kept it here for optimization
-			{
-				c = SColor(0xff66ff66);
-				continue;
-			}
-
-			f32 grayscale = Maths::Clamp(0, 255, Maths::Sin((getGameTime()+p.getNetworkID())*0.1f)*(Maths::Cos(getGameTime()*0.025f)*250.0f));
-			SColor temp = SColor(255, 255, 255, 255);
-			temp.setRed(grayscale);
-			temp.setGreen(grayscale);
-			temp.setBlue(grayscale);
-
-			//printf(""+grayscale);
-			//printf("("+temp.getRed()+","+temp.getGreen()+","+temp.getBlue()+")");
-
-			c = temp;
-		}
+		c = temp;
 	}
 	
-	if(p.getBlob() is null && p.getTeamNum() != getRules().getSpectatorTeamNum())
+	if (p.getBlob() is null && p.getTeamNum() != getRules().getSpectatorTeamNum())
 	{
 		uint b = c.getBlue();
 		uint g = c.getGreen();
