@@ -382,22 +382,10 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 
 	f32 zoom_target = 1.0f;
 
-	if (zoomModifier) {
-		switch (zoomModifierLevel) {
-			//case 0: zoom_target = 0.5f; zoomLevel = 0; break;
-			//case 1: zoom_target = 0.5625f; zoomLevel = 0; break;
-			//case 2: zoom_target = 0.625f; zoomLevel = 0; break;
-			//case 3: zoom_target = 0.75f; zoomLevel = 0; break;
-			case 4: zoom_target = 1.0f; zoomLevel = 1; break;
-			case 5: zoom_target = 1.5f; zoomLevel = 1; break;
-			case 6: zoom_target = 2.0f; zoomLevel = 2; break;
-		}
-	} else {
-		switch (zoomLevel) {
-			//case 0: zoom_target = 0.5f; zoomModifierLevel = 0; break;
-			case 1: zoom_target = 1.0f; zoomModifierLevel = 4; break;
-			case 2:	zoom_target = 2.0f; zoomModifierLevel = 6; break;
-		}
+	switch (zoomLevel)
+	{
+		case 1: zoom_target = 1.0f; zoomModifierLevel = 4; break;
+		case 2:	zoom_target = 2.0f; zoomModifierLevel = 6; break;
 	}
 
 	bool javelin = false;
@@ -416,6 +404,14 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 		zoom_target = 0.66f;
 	}
 
+	if (stun_factor > 0.0f)
+	{
+		f32 cos = Maths::Cos(getGameTime()*0.5f)*2;
+		zoom_target = 2.0f + Maths::Sin(getGameTime() * (6 + cos)) / (8 + cos) * stun_factor;
+		zoom = zoom_target;
+		zoomLevel = 2;
+	}
+
 	if (zoom > zoom_target)
 	{
 		zoom = Maths::Max(zoom_target, zoom - zoomSpeed);
@@ -425,10 +421,10 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 		zoom = Maths::Min(zoom_target, zoom + zoomSpeed);
 	}
 
-	
-
 	camera.targetDistance = zoom;
 }
+
+f32 stun_factor = 0.0f;
 
 void ManageCamera(CBlob@ this)
 {
@@ -523,6 +519,15 @@ void ManageCamera(CBlob@ this)
 		{
 			extra += stats.additional_vision_distance;
 			camera.mouseFactor += stats.additional_vision_distance;
+
+			if (stats.id == Perks::bull && this.exists("used medkit"))
+			{
+				u32 med_use_time = this.get_u32("used medkit");
+				u32 diff = getGameTime()-med_use_time;
+
+				stun_factor = 1.0f - Maths::Clamp(f32(diff) / stats.kill_bonus_time, 0.25f, 1.0f);
+				if (stun_factor > 0.0f) this.set_u32("next_med", getGameTime()+1);
+			}
 		}
 
 		// camera

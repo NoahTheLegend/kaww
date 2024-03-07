@@ -12,6 +12,8 @@ void onInit(CBlob@ this)
 	this.set_string("cmd_heal", cmd_heal);
 	this.Tag("change team on pickup");
 	this.Tag("take eat food");
+
+	this.Tag("medium weight");
 }
 
 void onInit(CSprite@ this)
@@ -28,14 +30,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (caller is null) return;
 	if (caller.exists("next_med") && caller.get_u32("next_med") >= getGameTime()) return;
-
-	bool stats_loaded = false;
-    PerkStats@ stats = getPerkStats(caller, stats_loaded);
-
-	if (stats_loaded && stats.id == Perks::bull)
-	{
-		return;
-	}
 
 	if (caller.getHealth() < caller.getInitialHealth()-0.1f)
 	{
@@ -57,12 +51,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 		CBlob@ blob = getBlobByNetworkID(blob_id);
 
+		bool stats_loaded = false;
+   		PerkStats@ stats = getPerkStats(blob, stats_loaded);
+
 		if (blob !is null)
 		{
 			if (blob.get_u32("next_med") >= getGameTime()) return;
 			blob.set_u32("next_med", getGameTime()+15);
 		}
 
+		blob.set_u32("used medkit", getGameTime());
 		this.getSprite().PlaySound("Heart.ogg");
 
 		if (isServer())
