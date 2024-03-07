@@ -87,9 +87,9 @@ void handleVehicles()
 		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
 		
 		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
-		Vec2f custom_offset = Vec2f(0,16);
+		Vec2f custom_offset = Vec2f(0, 20);
 		if (frame == 10 || frame == 11) custom_offset = Vec2f(0, -48);
-		else if (frame == 12) custom_offset = Vec2f(0, 30);
+		else if (frame == 12) custom_offset = Vec2f(0, 34);
 
 		u16 id = 0;
 		if (curVehicle.hasTag("importantarmory")) // importantarmory HP
@@ -509,6 +509,43 @@ void onRender(CRules@ this)
 			GUI::DrawIcon("indicator_sheet.png", vehicle_frames[i], Vec2f(16, 25), vehicle_indicator_pos[i], 1.0f, vehicle_teams[i]);
 		}
 	}
+
+	for (u16 i = 0; i < map_pings.size(); i++)
+	{
+		Ping@ ping = map_pings[i];
+		if (ping is null || getGameTime() > ping.end_time)
+		{
+			map_pings.removeAt(i);
+			i--;
+			continue;	
+		}
+
+		Vec2f custom_offset = Vec2f(-7, 7);
+		f32 x_pos = ping.pos.x;
+		f32 indicatorProgress = x_pos / mapWidth;
+		f32 indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight) + custom_offset;
+
+		bool e = ((ping.end_time-getGameTime())/10+1)%2==0;
+
+		ping.calculateFade();
+		SColor col = getNeonColor(ping.team, 0);
+		col.setAlpha(200 * ping.fadeout);
+		SColor col_white = SColor(255,255,255,255);
+		col_white.setAlpha(200 * ping.fadeout);
+
+		GUI::DrawIcon("PingPointer.png", e?2:3, Vec2f(16,16), indicatorPos+Vec2f(1,0), 1, 1, ping.team, col);
+		GUI::DrawRectangle(indicatorPos+Vec2f(16, 24), indicatorPos+Vec2f(17, 24 + 14 * ping.fadeout), col_white);
+
+		CControls@ controls = getControls();
+		
+		Vec2f text_pos = indicatorPos + Vec2f(15, 44);
+		string text = controls.getInterpMouseScreenPos().y < timelineHeight + 104
+			? "" + int(x_pos/8 - map.tilemapwidth/2) : ping.caster;
+		
+		GUI::SetFont("score-smaller");
+		GUI::DrawTextCentered(text, text_pos, col_white);
+	}
 }
 
 u8 getIndicatorFrame(int hash)
@@ -786,6 +823,7 @@ void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
 }
 
+Ping@[] map_pings;
 Ping@[] pings;
 Canvas@[] canvass;
 
@@ -876,7 +914,17 @@ void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 		if (isClient())
 		{
 			Ping@ ping = Ping(pos, type, end_time, fadeout_time, caster, team);
-			pings.push_back(ping);
+			if (PingList[type].find("map_") != -1)
+			{
+				ping.end_time = getGameTime() + map_ping_time;
+				ping.fadeout_time = map_ping_fadeout_time;
+				ping.fadeout = 0;
+				map_pings.push_back(ping);
+			}
+			else
+			{
+				pings.push_back(ping);
+			}
 
 			Sound::Play("PopIn", pos, 1.0f, 1.0f);
 		}

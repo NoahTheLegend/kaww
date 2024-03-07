@@ -45,12 +45,12 @@ const string[] PingList = {
 	// draw
 	"draw_Path", // keep order relative to Canvas@[] shapes array!
 	"draw_Rectangle",
-	""
+	"map_Map" // shows on indicator hud
 };
 
 const Canvas@[] shapes = {
 	Path(),
-	Rectangle(),
+	Rectangle()
 };
 
 const int render_margin = 64.0f; // extra area for rendering out of screen
@@ -62,6 +62,8 @@ const int ping_fadeout_time = 10; // doesn't add up to lifetime
 const f32 ping_slidein_dist = 24.0f;
 
 // specific pings
+const int map_ping_time = 300;
+const int map_ping_fadeout_time = 30;
 const int canvas_ping_time = 240;
 const int canvas_ping_fadeout_time = 15;
 
@@ -69,7 +71,7 @@ const int canvas_ping_fadeout_time = 15;
 const f32 max_rect_perimeter = 256.0f;
 
 // path ping
-const u8 max_path_segments = 6;
+const u8 max_path_segments = 8;
 const f32 max_path_segment_length = 128.0f;
 
 void DrawPointer(Vec2f worldpos, u8 frame, SColor col)
