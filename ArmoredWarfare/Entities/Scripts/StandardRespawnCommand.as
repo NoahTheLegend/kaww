@@ -185,11 +185,13 @@ void InitClasses(CBlob@ this)
 						"Bull:\n\n"+"$8_class_icon$"+"Physical Strength"
 						+"\n                   - Better walk, jump, sprint     "
 						+"\n                   - 25% Faster reload"
-						+"\n                   - 66% Non-bullet resistance"
+						+"\n                   - Take 66% of damage"
+						+"\n                      that is not bullet"
 						+"\n\n                  Restlessness"
 						+"\n                   - Agility boost on kill"
 						+"\n                   - Can't use vehicles"
-						+"\n                   - Can't use medkits"
+						+"\n                   - Using medkits applies"
+						+"\n                      movement penalty"
 						);
 	
 		

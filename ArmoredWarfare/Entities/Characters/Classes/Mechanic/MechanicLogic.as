@@ -286,26 +286,45 @@ void onTick(CBlob@ this)
 		{
 			if (p !is null)
 			{
-				float walkStat = 1.1f;
-				float airwalkStat = 2.2f;
-				float jumpStat = 0.95f;
+				float walkStat = 1.0f;
+				float airwalkStat = 2.33f;
+				float jumpStat = 1.0f;
 
-				bool sprint = (stats_loaded ? stats.sprint : true) && this.getHealth() == this.getInitialHealth() && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
+				f32 hp_ratio = 1.0f;
+				if (stats_loaded && stats.id == Perks::bull) hp_ratio = 0.5f;
 
+				bool sprint = (stats_loaded ? stats.sprint : true) && this.getHealth() >= this.getInitialHealth() * hp_ratio && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 0.1f || this.getVelocity().x < -0.1f);
+				
 				// operators move slower than normal
 				if (stats_loaded)
 				{
-					if (stats.id == Perks::bull) sprint = stats.sprint && this.getHealth() >= this.getInitialHealth()*0.5f && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 1.0f || this.getVelocity().x < -1.0f);
-					
-					walkStat 	*= stats.walk_factor;
-					airwalkStat *= stats.walk_factor_air;
-					jumpStat 	*= stats.jump_factor;
+					getMovementStats(this.getName().getHash(), sprint, walkStat, airwalkStat, jumpStat);
 
-					if (stats.id == Perks::bull && this.get_u32("bull_boost") != 0 && this.get_u32("bull_boost") > getGameTime())
+					f32 vel_factor = 1.0f;
+
+					if (stats.id == Perks::bull)
 					{
-						walkStat 	*= stats.walk_extra_factor;
-						airwalkStat *= stats.walk_extra_factor_air;
-						jumpStat 	*= stats.jump_extra_factor;
+						if (this.exists("used medkit"))
+						{
+							u32 med_use_time = this.get_u32("used medkit");
+							u32 diff = getGameTime()-med_use_time;
+
+							vel_factor = Maths::Clamp(f32(diff) / stats.kill_bonus_time, 0.25f, 1.0f);
+						}
+					}
+
+					walkStat 	*= vel_factor * stats.walk_factor;
+					airwalkStat *= vel_factor * stats.walk_factor_air;
+					jumpStat 	*= vel_factor * stats.jump_factor;
+
+					if (stats.id == Perks::bull)
+					{
+						if (this.get_u32("bull_boost") != 0 && this.get_u32("bull_boost") > getGameTime())
+						{
+							walkStat 	*= stats.walk_extra_factor;
+							airwalkStat *= stats.walk_extra_factor_air;
+							jumpStat 	*= stats.jump_extra_factor;
+						}
 					}
 				}
 
