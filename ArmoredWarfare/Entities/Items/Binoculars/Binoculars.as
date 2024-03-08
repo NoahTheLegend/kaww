@@ -29,7 +29,7 @@ void onTick(CBlob@ this)
 
 			if (b.isMyPlayer())
 			{
-				b.set_u32("dont_change_zoom", getGameTime()+1);
+				b.set_u32("far_zoom", getGameTime()+1);
 				b.Tag("binoculars");
 			}
 		}

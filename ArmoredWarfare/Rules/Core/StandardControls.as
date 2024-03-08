@@ -534,7 +534,7 @@ void ManageCamera(CBlob@ this)
 		}
 
 		// camera
-		if (localblob.get_u32("dont_change_zoom") < getGameTime() && !lock_zoom)
+		if (localblob.get_u32("far_zoom") < getGameTime() && !lock_zoom)
 		{
 			localblob.Untag("binoculars");
 			if (getLocalPlayer() !is null)

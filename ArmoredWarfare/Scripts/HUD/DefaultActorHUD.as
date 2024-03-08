@@ -21,10 +21,10 @@ void onTick(CBlob@ this)
 {
 	const f32 initialHealth = this.getInitialHealth();
 
-	if (this.isAttachedToPoint("DRIVER"))
+	if (this.isAttachedToPoint("DRIVER") || this.isAttachedToPoint("GUNNER")	)
 	{
 		this.Tag("driver_vision");
-		this.set_u32("dont_change_zoom", getGameTime()+1);
+		this.set_u32("far_zoom", getGameTime()+1);
 	}
 
 	// match to real hp
