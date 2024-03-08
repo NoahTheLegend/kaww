@@ -56,7 +56,6 @@ void onTick(CBlob@ this)
 	}
 
     Vec2f aimpos = this.getAimPos();
-	f32 damp = 0.45f;
 	/* // doesnt work?
 	if (att && exposed)
 	{
@@ -101,7 +100,8 @@ void onTick(CBlob@ this)
 		}
 	}
 	
-	f32 lerp_head = 0.75f * stun_factor;
+	f32 lerp_head = 0.66f * stun_factor;
+	f32 damp = 0.4f;
 
 	f32 angle_head = -aimdir.Angle() + (this.isFacingLeft()?-180:0);
 	if (angle_head < -180) angle_head += 180;
