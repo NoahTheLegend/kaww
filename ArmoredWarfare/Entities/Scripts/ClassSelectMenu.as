@@ -72,7 +72,7 @@ void addClassesToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 	{
 		AddIconToken("$locked_class_icon$", "ClassIcon.png", Vec2f(48, 48), 10);
 
-		for (uint i = 0 ; i < classes.length; i++)
+		for (uint i = 0; i < classes.length; i++)
 		{
 			CBlob@ callerblob = getBlobByNetworkID(callerID);
 			CPlayer@ player = callerblob.getPlayer();
@@ -89,7 +89,7 @@ void addClassesToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 			string rank = RANKS[0];
 
 			// Calculate the exp required to reach each level
-			for (int i = 1; i <= RANKS.length; i++)
+			for (int i = 0; i < RANKS.length; i++)
 			{
 				if (exp >= getExpToNextLevel(level))
 				{
@@ -103,7 +103,7 @@ void addClassesToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 				}
 			}
 
-			if (level > -1 + i) //(isClient() && isServer()) || 
+			if (level > i-1) //(isClient() && isServer()) || 
 			{
 				PlayerClass @pclass = classes[i];
 
@@ -121,7 +121,7 @@ void addClassesToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 				write_classchange(params, callerID, pclass.configFilename);
 
 				CGridButton@ button = menu.AddButton("$locked_class_icon$", getTranslatedString("LOCKED"), SpawnCmd::lockedItem, Vec2f(CLASS_BUTTON_SIZE, CLASS_BUTTON_SIZE), params);
-				button.SetHoverText(pclass.name + "\n\nYou need to unlock this class first." + "\n\nUnlocks at: " + getRankName(i) + "\n");
+				button.SetHoverText(pclass.name + "\n\nYou need to unlock this class first." + "\n\nUnlocks at: " + getRankName(i-1) + "\n");
 			}
 		}
 	}
@@ -200,7 +200,7 @@ void addPerksToMenu(CBlob@ this, CGridMenu@ menu, u16 callerID)
 				write_perkchange(params, callerID, i, pperk.configFilename);
 
 				CGridButton@ button = menu.AddButton("$locked_perk_icon$", getTranslatedString("LOCKED"), SpawnCmd::lockedItem, Vec2f(PERK_BUTTON_SIZE, PERK_BUTTON_SIZE), params);
-				button.SetHoverText(pperk.name + "\n\nYou need to unlock this perk first. " + "\n\nUnlocks at: " + getRankName((i+3)) + "\n");
+				button.SetHoverText(pperk.name + "\n\nYou need to unlock this perk first. " + "\n\nUnlocks at: " + getRankName((i+2)) + "\n");
 			}
 		}
 	}
