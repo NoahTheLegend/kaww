@@ -232,7 +232,7 @@ void onTick(CBlob@ this)
 	{
 		CBlob@ local = getLocalPlayerBlob();
 		if (local !is null && local.isAttachedTo(targetBlob))
-			Sound::Play("MissileLock.ogg", targetPos, 1.0f, 2.0f + (targetBlob.getNetworkID()%3)*0.2f);
+			Sound::Play("MissileLock.ogg", targetPos, 0.9f, 2.0f + (targetBlob.getNetworkID()%3)*0.2f);
 	}
 	makeTargetSquare(targetPos-thisVel, targetSquareAngle, Vec2f(2.5f, 2.5f), 2.0f, 1.0f, redConsoleColor); //target acquired square
 }
@@ -369,7 +369,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 	if (blob is null && solid)
 	{
-		makeMissileEffect(this.getPosition());
+		makeMissileEffect(this);
 		DoExplosion(this, this.get_Vec2f("target_vec"));
 
 		this.Tag("dead");
@@ -388,7 +388,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		return;
 	}
 
-	makeMissileEffect(this.getPosition());
+	makeMissileEffect(this);
 	DoExplosion(this, this.get_Vec2f("target_vec"));
 
 	this.Tag("dead");
@@ -398,9 +398,8 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 void onDie(CBlob@ this)
 {
 	if (this.hasTag("dead")) return;
-	Vec2f thisPos = this.getPosition();
 
-	makeMissileEffect(thisPos);
+	makeMissileEffect(this);
 	DoExplosion(this, this.get_Vec2f("target_vec"));
 
 	this.Tag("dead");
