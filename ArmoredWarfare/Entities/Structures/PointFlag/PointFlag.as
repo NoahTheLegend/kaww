@@ -641,11 +641,11 @@ namespace Products
 	const ::u16 time_wood = 1350;
 	const ::u16 time_stone = 2700;
 	const ::u16 time_gold = 2700;
-	const ::u16 time_helmet = 1350;
-	const ::u16 time_wrench = 2250;
-	const ::u16 time_14mm = 1800;
-	const ::u16 time_105mm = 2250;
-	const ::u16 time_heat = 2700;
+	const ::u16 time_helmet = 900;
+	const ::u16 time_wrench = 1800;
+	const ::u16 time_14mm = 900;
+	const ::u16 time_105mm = 1350;
+	const ::u16 time_heat = 1800;
 }
 
 void SetProduct(CBlob@ this, string name, u8 id)
