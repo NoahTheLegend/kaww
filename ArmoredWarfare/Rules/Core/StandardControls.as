@@ -167,10 +167,10 @@ void onTick(CBlob@ this)
 			else if (angle > -180) angle -= 180;
 
 			angle += 180;
-			f32 damp = 0.33f;
+			f32 damp = carried.exists("hand_rotation_damp") ? carried.get_f32("hand_rotation_damp") : 0.375f;
 			angle = (Maths::Lerp(angle, angle < 0 ? -360 : 360, 1.0f - damp) + 360 + (angle < 0 ? -360*damp : 360*damp)) % 360;
 
-			carried.set_f32("hand_angle", angle);
+			carried.setAngleDegrees(angle);
 		}
 	}
 
