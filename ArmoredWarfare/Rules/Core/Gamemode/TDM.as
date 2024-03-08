@@ -1919,3 +1919,13 @@ const string[] WaterMaps = {
 	"SiegeBeachWater_v2.png",
 	"HamburgerHillWater.png"
 };
+
+const string[] GroundMaps = {
+	"Flattening.png",
+	"FragFest.png",
+	"SkeletalTowers.png",
+	"SmallClassic.png",
+	"SerenityHills.png",
+	"Syria.png",
+	"PlainHills.png"
+};
