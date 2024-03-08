@@ -452,6 +452,7 @@ void onTick(CSprite@ this)
 	// get the angle of aiming with mouse
 	Vec2f vec = aimpos - pos;
 	f32 angle = vec.Angle();
+	const bool fl = blob.isFacingLeft();
 
 	if (!blob.hasTag("show_gun") && (isStabbing || isReloading || blob.isAttached()))
 	{
@@ -529,7 +530,13 @@ void onTick(CSprite@ this)
 		else if ((left || right) ||
 		         (blob.isOnLadder() && (up || down)))
 		{
-			if (blob.hasTag("sprinting"))
+			if ((left && !fl)
+				|| (right && fl))
+			{
+				// anim doesnt reset after this
+				this.SetAnimation("run_backwards");
+			}
+			else if (blob.hasTag("sprinting"))
 			{
 				this.SetAnimation("sprint");
 			}
