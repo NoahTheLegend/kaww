@@ -46,7 +46,7 @@ void onTick(CBlob@ this)
 
     Vec2f aimpos = this.getAimPos();
 	f32 damp = 0.45f;
-
+	/* // doesnt work?
 	if (att && exposed)
 	{
 		AttachmentPoint@[] ats;
@@ -64,7 +64,7 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-
+	*/
 	Vec2f aimdir = aimpos - this.getPosition();
 	aimdir.Normalize();
 
