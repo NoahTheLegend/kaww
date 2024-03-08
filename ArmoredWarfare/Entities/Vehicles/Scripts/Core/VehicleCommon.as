@@ -647,67 +647,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						const f32 engine_topspeed_reverse = v.turn_speed;
 
 						moveForce *= Maths::Clamp(this.get_f32("engine_RPM"), 0, engine_topspeed) / 4500;
-
-						/*if (space && this.getName() != "bradley")
-						{
-							AttachmentPoint@[] aps;
-							this.getAttachmentPoints(@aps);
-							for (u8 i = 0; i < aps.length; i++)
-							{
-								AttachmentPoint@ ape = aps[i];
-								if (ape !is null)
-								{
-									if (ape.name == "DRIVER") continue;
-									else if (ape.name == "TURRET")
-									{
-										CBlob@ turret = ape.getOccupied();
-										if (turret !is null)
-										{
-										AttachmentPoint@ turape = turret.getAttachments().getAttachmentPointByName("GUNNER");
-										if (turape !is null)
-										{
-											CBlob@ gunner = turape.getOccupied();
-											if (gunner !is null)
-											{
-												CBitStream params;
-												gunner.SendCommand(gunner.getCommandID("bootout"), params);
-											}
-										}
-										AttachmentPoint@ bowape = turret.getAttachments().getAttachmentPointByName("BOW");
-										if (bowape !is null)
-										{
-										CBlob@ bow = bowape.getOccupied();
-										if (bow !is null)
-										{
-											AttachmentPoint@ bowap = bow.getAttachments().getAttachmentPointByName("GUNNER");
-											if (bowap !is null)
-											{
-												CBlob@ mgunner = bowap.getOccupied();
-												if (mgunner !is null)
-												{
-													CBitStream params;
-													mgunner.SendCommand(mgunner.getCommandID("bootout"), params);
-												}
-											}
-										}
-										}
-										}
-									}
-									else
-									{
-										CBlob@ pasape = ape.getOccupied();
-										if (pasape !is null && pasape.hasTag("player"))
-										{
-											CBitStream params;
-											pasape.SendCommand(pasape.getCommandID("bootout"), params);
-										}
-									}
-								}
-							}
-						}*/
-
 						bool slopeangle = (angle > 15 && angle < 345 && this.isOnMap());
-
 						Vec2f pos = this.getPosition();
 
 						if (!left && !right) //no input

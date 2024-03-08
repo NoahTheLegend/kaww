@@ -50,7 +50,7 @@ void onTick(CBlob@ this)
 	{ return; }
 	
 	// binoculars effect
-	ownerBlob.set_u32("dont_change_zoom", getGameTime()+3);
+	ownerBlob.set_u32("far_zoom", getGameTime()+3);
 	CCamera@ camera = getCamera();
 	if (camera !is null)
 	{
