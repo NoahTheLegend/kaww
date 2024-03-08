@@ -84,7 +84,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 60, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Merits"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 92, topleft.y), SColor(0xffffffff));
-	if (same_team) GUI::DrawText(getTranslatedString("Perk"), Vec2f(bottomright.x - accolades_start - 140, topleft.y), SColor(0xffffffff));
+	if (same_team) GUI::DrawText(getTranslatedString("Perk"), Vec2f(bottomright.x - accolades_start - 142, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 0.5f;
 
