@@ -10,6 +10,7 @@ void onInit(CBlob@ this)
 	this.Tag("weapon");
 	this.getSprite().SetRelativeZ(1.0f); //background
 	this.getShape().SetRotationsAllowed(true);
+	this.set_f32("hand_rotation_damp", 0.2f);
 }
 
 bool canBePickedUp(CBlob@ this, CBlob@ blob)

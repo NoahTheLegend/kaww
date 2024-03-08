@@ -112,7 +112,7 @@ void onTick(CBlob@ this)
 		}
 	}
 	
-	if (isServer()) this.setAngleDegrees(this.get_f32("angle"));
+	if (isServer() && attached) this.setAngleDegrees(this.get_f32("angle"));
 }
 
 void sparks(Vec2f at, f32 angle, f32 speed, SColor color)

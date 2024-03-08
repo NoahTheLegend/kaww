@@ -16,6 +16,8 @@ void onInit(CBlob@ this)
 	this.Tag("firethrower");
 	this.Tag("very heavy weight");
 	this.Tag("weapon");
+
+	this.set_f32("hand_rotation_damp", 0.15f);
 	
 	Vehicle_Setup(this,
 	              0.0f, // move speed
