@@ -13,8 +13,8 @@ const Vec2f downVelo = Vec2f(0.00f, 0.0085f);
 const Vec2f leftVelo = Vec2f(-0.025f, 0.00f);
 const Vec2f rightVelo = Vec2f(0.025f, 0.00f);
 
-const Vec2f minClampVelocity = Vec2f(-0.50f, -0.8f);
-const Vec2f maxClampVelocity = Vec2f(0.5f, 0.5f);
+const Vec2f minClampVelocity = Vec2f(-0.50f, -0.80f);
+const Vec2f maxClampVelocity = Vec2f(0.475f, 0.00f);
 
 const f32 thrust = 1020.00f;
 
@@ -505,8 +505,8 @@ void onTick(CBlob@ this)
 			tailrotor.SetFrameIndex(1);
 		}
 
-		f32 volume = (Maths::Log(4.0)*(resultForce.getLength()+0.2)+2)/4;
-		sprite.SetEmitSoundVolume(Maths::Min(volume*1.5f, 1.5f));
+		f32 volume = (Maths::Log(4.5)*(resultForce.getLength()+0.2)+2)/4;
+		sprite.SetEmitSoundVolume(Maths::Min(volume*1.5, 1.5f));
 		sprite.SetEmitSoundSpeed(Maths::Min(0.0075f + Maths::Abs(resultForce.getLength() * 4.00f), 1.33f) * volume + (this.getVelocity().Length() > 1.0f ? Maths::Max(resultForce.y + 0.25f, 0) : 0));
 		if (this.hasTag("falling")) sprite.SetEmitSoundSpeed(Maths::Min(0.000075f + Maths::Abs(this.get_Vec2f("result_force").getLength() * 1.00f), 0.85f) * 1.55);
 
