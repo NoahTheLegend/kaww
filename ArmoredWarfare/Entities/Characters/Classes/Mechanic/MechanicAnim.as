@@ -134,6 +134,7 @@ void onTick(CSprite@ this)
 	{
 		CSpriteLayer@ camo = this.getSpriteLayer("camo");
 		CSpriteLayer@ helmet = this.getSpriteLayer("helmet");
+		const bool exposed = blob.hasTag("machinegunner") || blob.hasTag("collidewithbullets") || blob.hasTag("can_shoot_if_attached");
 
 		if (camo !is null)
 		{
@@ -229,7 +230,7 @@ void onTick(CSprite@ this)
 					blob.Untag("bushy");
 					blob.set_u32("become_a_bush", 0);
 					this.SetVisible(true);
-					camo.SetVisible(!blob.isAttached());
+					camo.SetVisible(!blob.isAttached() || exposed);
 					this.RemoveSpriteLayer("bush");
 				}
 			}

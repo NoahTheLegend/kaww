@@ -27,7 +27,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		isIgniteHitter(customData) ||		// Fire arrows
 		(this.isOverlapping(hitterBlob) && hitterBlob.isInFlames() && !this.isInFlames())) 	// Flaming enemy
 	{
-		bool exposed = this.hasTag("machinegunner") || this.hasTag("collidewithbullets");
+		bool exposed = this.hasTag("machinegunner") || this.hasTag("collidewithbullets") || this.hasTag("can_shoot_if_attached");
 		bool mg_attached = false;
 		if (exposed)
 		{
@@ -86,7 +86,7 @@ void onTick(CBlob@ this)
 	//check if we should be getting set on fire or put out
 	if (burn_time < (burn_thresh / fire_wait_ticks) && this.isInFlames() && !this.hasTag("invincible"))
 	{
-		bool exposed = this.hasTag("machinegunner") || this.hasTag("collidewithbullets");
+		bool exposed = this.hasTag("machinegunner") || this.hasTag("collidewithbullets") || this.hasTag("can_shoot_if_attached");
 		bool mg_attached = false;
 		if (exposed)
 		{

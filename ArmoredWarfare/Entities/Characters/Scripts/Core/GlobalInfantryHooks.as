@@ -21,7 +21,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		damage *= extra_amount;
 	}
 
-	bool exposed = this.hasTag("machinegunner") || this.hasTag("collidewithbullets");
+	bool exposed = this.hasTag("machinegunner") || this.hasTag("collidewithbullets") || this.hasTag("can_shoot_if_attached");
 	bool mg_attached = false;
 	if (exposed)
 	{
