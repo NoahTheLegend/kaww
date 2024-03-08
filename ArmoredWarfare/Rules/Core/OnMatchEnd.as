@@ -44,7 +44,7 @@ void onStateChange( CRules@ this, const u8 oldState )
 							if (cont) continue;
 
 							// give exp to winners
-							int exp_reward = 50; // death incarnate does not apply here
+							int exp_reward = 10 * getPlayersCount();
 							this.add_u32(player.getUsername() + "_exp", exp_reward);	
 							this.Sync(player.getUsername() + "_exp", true);
 							had_bonus.push_back(player.getUsername());
