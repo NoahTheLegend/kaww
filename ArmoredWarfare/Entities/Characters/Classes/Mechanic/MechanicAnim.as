@@ -129,6 +129,8 @@ void onTick(CSprite@ this)
 		return;
 	}
 
+	const bool fl = blob.isFacingLeft();
+
 	// camo netting
 	if (blob.getPlayer() !is null)
 	{
@@ -385,7 +387,11 @@ void onTick(CSprite@ this)
 		else if ((left || right) ||
 		         (blob.isOnLadder() && (up || down)))
 		{
-			this.SetAnimation("run");
+			if ((left && !fl)
+				|| (right && fl))
+				this.SetAnimation("run_backwards");
+			else
+				this.SetAnimation("run");
 		}
 		else
 		{
