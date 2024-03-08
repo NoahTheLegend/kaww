@@ -1923,7 +1923,6 @@ const string[] WaterMaps = {
 
 const string[] GroundMaps = {
 	"Flattening.png",
-	"FragFest.png",
 	"SkeletalTowers.png",
 	"SmallClassic.png",
 	"SerenityHills.png",
