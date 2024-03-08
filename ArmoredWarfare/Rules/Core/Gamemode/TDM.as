@@ -1797,6 +1797,7 @@ void onInit(CRules@ this)
 	this.set("maptypes-truck", TruckMaps);
 	this.set("maptypes-tdm", TdmMaps);
 	this.set("maptypes-water", WaterMaps);
+	this.set("maptypes-ground", GroundMaps);
 }
 
 const string[] ClassicMaps = {
