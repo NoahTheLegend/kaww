@@ -80,7 +80,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	GUI::SetFont("menu");
 	GUI::DrawText(getTranslatedString("Soldier"), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Username"), Vec2f(bottomright.x - 330, topleft.y), SColor(0xffffffff));
-	GUI::DrawText(getTranslatedString("Ping"), Vec2f(bottomright.x - 150, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(getTranslatedString("Ping"), Vec2f(bottomright.x - 171, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 60, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Merits"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 92, topleft.y), SColor(0xffffffff));
@@ -375,7 +375,20 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		Vec2f stats_dim;
 		GUI::GetTextDimensions(stats, stats_dim);
 		GUI::DrawText("" + username, Vec2f(bottomright.x - 330, topleft.y), usernamecolour);
-		GUI::DrawText("" + ping_in_ms+"ms", Vec2f(bottomright.x - 150, topleft.y), SColor(0xffffffff));
+
+		Vec2f tl = Vec2f(bottomright.x - 170, topleft.y-17);
+		Vec2f tl_ping = tl + Vec2f(8, 18);
+		Vec2f br_ping = tl_ping + Vec2f(16,13);
+
+		int ping_frame = Maths::Min(ping_in_ms/100, 3);
+		if (ping_in_ms >= 1000) ping_frame = 4;
+		GUI::DrawIcon("ConnectionIcons.png", ping_frame, Vec2f(16,16), tl, 1.0f, SColor(225,255,255,255));
+		
+		if (mousePos.x >= topleft.x && mousePos.y >= tl_ping.y
+			&& mousePos.x <= bottomright.x && mousePos.y <= br_ping.y) 
+		{
+			GUI::DrawText("" + ping_in_ms +" ms", Vec2f(bottomright.x - 140, topleft.y), SColor(0xffffffff));
+		}
 
 		GUI::DrawText(stats, Vec2f(bottomright.x - stats_dim.x - 10, topleft.y), SColor(0xffffffff));
 	}
