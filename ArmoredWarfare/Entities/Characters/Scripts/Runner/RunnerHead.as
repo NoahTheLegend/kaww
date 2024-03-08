@@ -274,12 +274,14 @@ void onTick(CSprite@ this)
 		int layer = 0;
 		Vec2f head_offset = getHeadOffset(blob, -1, layer);
 
+		const bool exposed = blob.hasTag("machinegunner") || blob.hasTag("collidewithbullets") || blob.hasTag("can_shoot_if_attached");
+
 		bool has_camo = false;
 		PerkStats@ stats;
 		if (blob.getPlayer() !is null && blob.getPlayer().get("PerkStats", @stats))
 			has_camo = stats.ghillie;
 
-		if (blob.hasTag("hide_head") || (layer == 0 || ((!blob.isAttached() || blob.hasTag("dead")) && has_camo)))
+		if (blob.hasTag("hide_head") || (layer == 0 || ((!blob.isAttached() || exposed || blob.hasTag("dead")) && has_camo)))
 		{
 			head.SetVisible(false);
 		}

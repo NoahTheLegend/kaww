@@ -909,7 +909,7 @@ bool canHit(CBlob@ this, CBlob@ b, Vec2f tpos, bool extra = true)
 
 	if (b.isAttached())
 	{
-		bool exposed = b.hasTag("machinegunner") || b.hasTag("collidewithbullets");
+		bool exposed = b.hasTag("machinegunner") || b.hasTag("collidewithbullets") || b.hasTag("can_shoot_if_attached");
 		return exposed;
 	}
 

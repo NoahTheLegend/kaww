@@ -20,7 +20,7 @@ void onTick(CBlob@ this)
 			Vec2f dir = b.getAimPos() - b.getPosition();
 			f32 angle = dir.Angle();
 
-			bool exposed = b.hasTag("machinegunner") || b.hasTag("collidewithbullets");
+			bool exposed = b.hasTag("machinegunner") || b.hasTag("collidewithbullets") || b.hasTag("can_shoot_if_attached");
 			s8 ff = (this.isFacingLeft()?-1:1);
 
 			sprite.SetOffset(Vec2f(-1,-3).RotateBy(-angle*ff)*ff);
