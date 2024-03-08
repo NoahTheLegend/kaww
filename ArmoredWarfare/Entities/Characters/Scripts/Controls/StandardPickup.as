@@ -210,7 +210,6 @@ void onTick(CBlob@ this)
 								float maxDist = Maths::Max(this.getRadius() + b.getRadius() + 20.0f, 36.0f);
 								float dist = (this.getPosition() - b.getPosition()).Length();
 								float factor = dist / maxDist;
-
 								float score = getPriorityPickupScale(this, b, factor);
 
 								if (score < closestScore || selectedOption.priority > highestPriority)
@@ -511,6 +510,13 @@ CBlob@ getClosestBlob(CBlob@ this)
 bool canBlobBePickedUp(CBlob@ this, CBlob@ blob)
 {
 	float maxDist = Maths::Max(this.getRadius() + blob.getRadius() + 20.0f, 36.0f);
+
+	if (blob.hasTag("very heavy weight"))
+		maxDist *= 0.35f;
+	else if (blob.hasTag("heavy weight"))
+		maxDist *= 0.45f;
+	else if (blob.hasTag("medium weight"))
+		maxDist *= 0.6f;
 
 	Vec2f pos = this.getPosition() + Vec2f(0.0f, -this.getRadius() * 0.9f);
 	Vec2f pos2 = blob.getPosition();
