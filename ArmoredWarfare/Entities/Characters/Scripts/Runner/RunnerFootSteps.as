@@ -17,6 +17,7 @@ void onTick(CSprite@ this)
 	const bool right	= blob.isKeyPressed(key_right);
 	const bool up		= blob.isKeyPressed(key_up);
 	const bool down		= blob.isKeyPressed(key_down);
+	const bool fl       = blob.isFacingLeft();
 
 	if (
 		(blob.isOnGround() && (left || right)) ||
@@ -27,7 +28,7 @@ void onTick(CSprite@ this)
 		{
 			return;
 		}
-		if ((blob.getNetworkID() + getGameTime()) % (moveVars.walkFactor < 1.0f ? 14 : 8) == 0)
+		if ((blob.getNetworkID() + getGameTime()) % (moveVars.walkFactor < 1.0f ? 14 : (left && fl) || (right && !fl) ? (blob.hasTag("sprinting") ? 7 : 8) : 9) == 0)
 		{
 			f32 volume = Maths::Min(0.1f + blob.getShape().vellen * 0.1f, 1.0f);
 			TileType tile = blob.getMap().getTile(blob.getPosition() + Vec2f(0.0f, blob.getRadius() + 4.0f)).type;
