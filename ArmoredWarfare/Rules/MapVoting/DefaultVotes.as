@@ -374,6 +374,15 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
+					case 8:
+					{
+						string[]@ GroundMaps;
+						getRules().get("maptypes-ground", @GroundMaps);
+
+						LoadMap(GroundMaps[XORRandom(GroundMaps.length)]);
+					}
+					break;
+
 					// If the maptype is invalid or set to default, 
 					// load next map like before
 					default:
@@ -407,8 +416,8 @@ VoteObject@ Create_VoteNextmap(CPlayer@ byplayer, string reason, u8 maptype)
 	@vote.onvotepassed = VoteNextmapFunctor(byplayer, maptype);
 	@vote.canvote = VoteNextmapCheckFunctor();
 
-	vote.title = "Load new map\nVote pass: 65%";
-	vote.maptype = TypeToString[maptype % 8];
+	vote.title = "Load new map\nVote pass: 70%";
+	vote.maptype = TypeToString[maptype % 9];
 	vote.reason = reason;
 	vote.byuser = byplayer.getUsername();
 	vote.forcePassFeature = "nextmap";
@@ -882,6 +891,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			CContextMenu@ truck_map_menu = Menu::addContextMenu(mapmenu,  "Trucks Map");
 			CContextMenu@ tdm_map_menu = Menu::addContextMenu(mapmenu,  "TDM Map");
 			CContextMenu@ water_map_menu = Menu::addContextMenu(mapmenu,  "Water Map");
+			CContextMenu@ ground_map_menu = Menu::addContextMenu(mapmenu,  "Land Map");
 
 			for (uint i = 0 ; i < nextmap_reason_count; ++i)
 			{
@@ -937,6 +947,14 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 				params.write_u8(i);
 				params.write_u8(7);
 				Menu::addContextItemWithParams(water_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
+			}
+
+			for (uint i = 0 ; i < nextmap_reason_count; ++i)
+			{
+				CBitStream params;
+				params.write_u8(i);
+				params.write_u8(8);
+				Menu::addContextItemWithParams(ground_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
 			}
 		}
 	}
@@ -1441,5 +1459,6 @@ const string[] TypeToString = {
 	"CTF",
 	"DTT",
 	"TDM",
-	"Watered"
+	"Watered",
+	"Land-only"
 };
