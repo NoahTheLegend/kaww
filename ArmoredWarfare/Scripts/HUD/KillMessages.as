@@ -305,16 +305,35 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customdata)
 				{
 					PerkStats@ stats;
 					// give exp
-					int exp_reward = 5+XORRandom(6); // 5 - 10
+
+					bool isCTF = getBlobByName("pointflag") !is null || getBlobByName("pointflagt2") !is null;
+					bool isDTT = getBlobByName("importantarmory") !is null || getBlobByName("importantarmoryt2") !is null;
+
+					u8 base = 15;
+					u8 rnd = 5;
+
+					if (isCTF || isDTT)
+					{
+						base = 6;
+						rnd = 4;
+					}
+					
+					int exp_reward = base+XORRandom(rnd+1);
+
+					f32 killer_exp = rules.get_u32(killer.getUsername() + "_exp");
+					f32 victim_exp = rules.get_u32(victim.getUsername() + "_exp");
+					f32 diff = Maths::Clamp(victim_exp/(killer_exp+1), 0.5f, 1.5f);
+					exp_reward *= diff;
+					
 					if (killer.get("PerkStats", @stats))
 					{
 						exp_reward *= stats.exp;
 					}
 
-					if (victim.isBot())
-					{
-						exp_reward = 1;
-					}
+					//if (victim.isBot())
+					//{
+					//	exp_reward = 1;
+					//}
 
 					rules.add_u32(killer.getUsername() + "_exp", exp_reward);
 					rules.Sync(killer.getUsername() + "_exp", true);
