@@ -8,10 +8,10 @@
 #include "GunStandard.as"
 #include "PerksCommon.as";
 
-const Vec2f upVelo = Vec2f(0.00f, -0.033f);
+const Vec2f upVelo = Vec2f(0.00f, -0.025f);
 const Vec2f downVelo = Vec2f(0.00f, 0.0085f);
-const Vec2f leftVelo = Vec2f(-0.025f, 0.00f);
-const Vec2f rightVelo = Vec2f(0.025f, 0.00f);
+const Vec2f leftVelo = Vec2f(-0.0225f, 0.00f);
+const Vec2f rightVelo = Vec2f(0.0225f, 0.00f);
 
 const Vec2f minClampVelocity = Vec2f(-0.50f, -0.80f);
 const Vec2f maxClampVelocity = Vec2f(0.475f, 0.00f);
