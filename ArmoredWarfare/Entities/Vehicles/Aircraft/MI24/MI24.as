@@ -231,18 +231,22 @@ void onTick(CBlob@ this)
 
 		u8 tt = this.get_u8("tracks_timer");
 		if (tt > 0) tt--;
+
+		bool onground = this.isOnGround();
+		if (onground) this.set_u32("was_on_ground", getGameTime());
+
 		if (tt == 0)
 		{
 			CSpriteLayer@ tracks = sprite.getSpriteLayer("tracks");
 			if (tracks !is null && tracks.animation !is null)
 			{
 				int f = tracks.animation.frame;
-				if (!this.isOnGround() && f < 4)
+				if (this.get_u32("was_on_ground")+30 < getGameTime() && f < 4)
 				{
 					tracks.animation.frame = tracks.animation.frame + 1;
 					tt = 3;
 				}
-				else if (this.isOnGround() && f > 0)
+				else if (onground && f > 0)
 				{
 					tracks.animation.frame = tracks.animation.frame - 1;
 					tt = 2;
