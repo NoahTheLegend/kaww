@@ -8,7 +8,8 @@ void onInit(CBlob@ this)
 }
 
 const f32 lean_mod = 2.0f; // body lean mod
-const f32 lean_air_mod = 1.5f;
+const f32 lean_mid_sprint_additional = 0.25f;
+const f32 lean_air_mod = 1.75f;
 const f32 max_vel = 4; // max lean vel
 
 void onTick(CBlob@ this)
@@ -17,6 +18,12 @@ void onTick(CBlob@ this)
     CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 	if (!this.isOnScreen()) return;
+
+	if (isKnocked(this))
+	{
+		ResetDegrees(this);
+		return;
+	}
 
 	const bool att = this.isAttached();
 	bool exposed = this.hasTag("machinegunner") || this.hasTag("collidewithbullets") || this.hasTag("can_shoot_if_attached");
@@ -89,7 +96,7 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-
+	
 	f32 lerp_head = 0.75f * stun_factor;
 
 	f32 angle_head = -aimdir.Angle() + (this.isFacingLeft()?-180:0);
@@ -110,7 +117,8 @@ void onTick(CBlob@ this)
 	angle_body += 180;
 
 	// calculate movement lean
-	f32 lean_walk = (vel.x < 0 ? Maths::Max(-max_vel, vel.x) : Maths::Min(max_vel, vel.x)) * (onground ? lean_mod : lean_air_mod);
+	f32 lean_walk = (vel.x < 0 ? Maths::Max(-max_vel, vel.x) : Maths::Min(max_vel, vel.x))
+		* (onground ? lean_mod + (this.hasTag("sprinting") ? lean_mid_sprint_additional : 0) : lean_air_mod);
 
 	// decrease lean if going backwards
 	if ((vel.x > 0 && this.isFacingLeft())
