@@ -27,6 +27,9 @@ void onInit(CBlob@ this)
 	this.set_bool("map_damage_raycast", true);
 	this.set_string("custom_explosion_sound", "MineExplosion.ogg");
 	this.set_s32("custom_hitter", Hitters::mine);
+	this.set_f32("hand_rotation_damp", 0.15f);
+
+	this.Tag("medium weight");
 
 	this.Tag("trap");
 	this.Tag("weapon");

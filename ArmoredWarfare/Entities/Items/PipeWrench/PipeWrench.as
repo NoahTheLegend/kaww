@@ -8,6 +8,7 @@ void onInit(CBlob@ this)
 	this.Tag("ignore fall");
 	this.set_u32("next repair", 0);
 	this.Tag("trap");
+	this.set_f32("hand_rotation_damp", 0.5f);
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)
@@ -53,7 +54,7 @@ void onTick(CBlob@ this)
 		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
 		CBlob@ holder = point.getOccupied();
 
-		UpdateAngle(this);
+		//UpdateAngle(this);
 		
 		if (holder is null) return;
 		if (holder.isAttached()) return;

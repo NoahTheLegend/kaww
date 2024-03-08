@@ -21,6 +21,7 @@ void onInit(CBlob@ this)
 	this.getCurrentScript().tickFrequency = 5;
 
 	this.Tag("trap");
+	this.set_f32("hand_rotation_damp", 0.3f);
 }
 
 bool onReceiveCreateData(CBlob@ this, CBitStream@ stream)

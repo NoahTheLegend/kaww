@@ -2,18 +2,40 @@ void onInit(CBlob@ this)
 {
 	this.Tag("medium weight");
 	this.Tag("trap"); // so bullets pass
+	this.set_f32("hand_rotation_damp", 0.6f);
 }
 
 void onTick(CBlob@ this)
 {
+	if (!isClient()) return;
 	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (point !is null)
 	{
+		CSprite@ sprite = this.getSprite();
+		if (sprite is null) return;
+		
 		CBlob@ b = point.getOccupied();
-		if (b !is null && b.isMyPlayer())
+		if (b !is null)
 		{
-			b.set_u32("dont_change_zoom", getGameTime()+1);
-			b.Tag("binoculars");
+			Vec2f dir = b.getAimPos() - b.getPosition();
+			f32 angle = dir.Angle();
+
+			bool exposed = b.hasTag("machinegunner") || b.hasTag("collidewithbullets");
+			s8 ff = (this.isFacingLeft()?-1:1);
+
+			sprite.SetOffset(Vec2f(-1,-3).RotateBy(-angle*ff)*ff);
+			sprite.SetVisible(!b.isAttached() || exposed);
+
+			if (b.isMyPlayer())
+			{
+				b.set_u32("dont_change_zoom", getGameTime()+1);
+				b.Tag("binoculars");
+			}
+		}
+		else
+		{
+			sprite.SetOffset(Vec2f_zero);
+			sprite.SetVisible(true);
 		}
 	}
 }

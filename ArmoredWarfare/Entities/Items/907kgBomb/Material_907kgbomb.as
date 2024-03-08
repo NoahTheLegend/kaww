@@ -20,6 +20,7 @@ void onInit(CBlob@ this)
 	this.Tag("bomber ammo");
 	this.Tag("no_armory_pickup");
 	this.Tag("weapon");
+	this.set_f32("hand_rotation_damp", 0.15f);
 
 	this.addCommandID("force_explode");
 	this.maxQuantity = 1;
@@ -64,6 +65,10 @@ void DoExplosion(CBlob@ this, Vec2f velocity)
 
 void onTick(CBlob@ this)
 {
+	if (isClient())
+	{
+		this.getSprite().SetRelativeZ(this.isAttached() ? -50 : 0);
+	}
 	if (isServer() && this.isAttached())
 	{
 		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");

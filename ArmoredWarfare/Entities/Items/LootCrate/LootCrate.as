@@ -138,7 +138,7 @@ void onDie(CBlob@ this)
         1,
         1,
         50+(XORRandom(2)==0?50:0),
-        15,
+        16,
         4,
         1
     };

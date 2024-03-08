@@ -15,6 +15,8 @@ void onInit(CBlob@ this)
 	this.set_u8("TTL", 30);
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 40);
+
+	this.set_f32("hand_rotation_damp", 0.15f);
 					   
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
@@ -152,8 +154,10 @@ void onTick(CBlob@ this)
 		}
 		else if (this.isAttached())
 		{
+			arm.SetRelativeZ(-100.0f);
 			arm.RotateBy(this.isFacingLeft() ? 90 : -90, Vec2f_zero);
 		}
+		else arm.SetRelativeZ(100.0f);
 	}
 }
 

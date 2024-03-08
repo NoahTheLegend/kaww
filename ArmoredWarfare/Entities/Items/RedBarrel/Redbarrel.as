@@ -10,6 +10,7 @@ void onInit(CBlob@ this)
 
 	this.getSprite().SetZ(-20.0f);
 	this.Tag("heavy weight");
+	this.set_f32("hand_rotation_damp", 0.3f);
 }
 
 void onTick(CBlob@ this)
