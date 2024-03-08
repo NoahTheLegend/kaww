@@ -94,11 +94,11 @@ void onInit(CBlob@ this)
 			AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Buy wood (250)", "$mat_wood$", "mat_wood", "Purchase 400 wood.", false);
+			ShopItem@ s = addShopItem(this, "Buy wood (400)", "$mat_wood$", "mat_wood", "Purchase 400 wood.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 15);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Buy stone (250)", "$mat_stone$", "mat_stone", "Purchase 300 stone.", false);
+			ShopItem@ s = addShopItem(this, "Buy stone (300)", "$mat_stone$", "mat_stone", "Purchase 300 stone.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		}
 	}

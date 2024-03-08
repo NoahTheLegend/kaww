@@ -542,7 +542,7 @@ class PNGLoader
 				if (boombox !is null)
 				{
 					boombox.set_u8("radio channel", 1);
-					boombox.setPosition(getLocalPlayerBlob().getPosition());
+					boombox.setPosition(map.getTileWorldPosition(offset));
 					boombox.Init();
 				}
 			}

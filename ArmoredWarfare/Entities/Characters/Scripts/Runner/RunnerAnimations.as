@@ -27,7 +27,11 @@ void onTick(CBlob@ this)
 
 	const bool att = this.isAttached();
 	bool exposed = this.hasTag("machinegunner") || this.hasTag("collidewithbullets") || this.hasTag("can_shoot_if_attached");
-	if (att && !exposed) return;
+	if (att && !exposed)
+	{
+		ResetDegrees(this);
+		return;
+	}
 
 	const bool left		= this.isKeyPressed(key_left);
 	const bool right	= this.isKeyPressed(key_right);
@@ -154,5 +158,12 @@ void onTick(CBlob@ this)
 
 void ResetDegrees(CBlob@ this)
 {
+	CSprite@ sprite = this.getSprite();
+	CSpriteLayer@ head = sprite.getSpriteLayer("head");
+    if (head !is null)
+    {
+		head.ResetTransform();
+    }
+
 	this.setAngleDegrees(0);
 }
