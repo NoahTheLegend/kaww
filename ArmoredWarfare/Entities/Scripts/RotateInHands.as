@@ -1,11 +1,11 @@
-#define SERVER_ONLY
+const string init_rot_string = "hand_rotations_allowed_by_intial";
 
-void onTick(CBlob@ this)
+void onInit(CBlob@ this)
 {
-    if (!this.hasTag("hand_rotation")) return;
+    CShape@ shape = this.getShape();
+    if (shape is null) return;
 
-	f32 hand_angle_offset = this.get_f32("hand_angle");
-	this.setAngleDegrees(hand_angle_offset);
+    this.set_bool(init_rot_string, shape.isRotationsAllowed());
 }
 
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ ap)
@@ -13,11 +13,24 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ ap)
     this.Tag("hand_rotation");
     this.set_f32("hand_angle", 0);
 
-    if (!isClient()) return;
-    this.getSprite().ResetTransform();
+    this.setAngleDegrees(0);
+    if (attached !is null && attached.hasScript("CheapFakeRolling.as"))
+    {
+        attached.getSprite().ResetTransform();
+    }
 }
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ ap)
 {
     this.Untag("hand_rotation");
+
+    CShape@ shape = this.getShape();
+    if (shape is null) return;
+
+    bool init_rot = this.get_bool(init_rot_string);
+    shape.SetRotationsAllowed(init_rot);
+    if (!init_rot)
+    {
+        this.setAngleDegrees(0);
+    }
 }
