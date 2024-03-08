@@ -174,7 +174,7 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Death Incarnate", "$7_class_icon$", "Death Incarnate",
 						"I am Death Incarnate!\n\n"+"$7_class_icon$"+"Bring em' on!"
-						+"\n                   - 500% more XP for kills "
+						+"\n                   - 250% more XP for kills "
 						+"\n                   - 50% chance to save a ticket "
 						+"\n                   - Suicide wont waste tickets"
 						+"\n\n                 Hardcore Soldier     "

@@ -188,7 +188,7 @@ shared class PerkDeathIncarnate : PerkStats {
         name = "Death Incarnate";
         id = 7;
         damage_take_mod = 2.0f;
-        exp = 5.0f;
+        exp = 2.5f;
     }
 };
 
