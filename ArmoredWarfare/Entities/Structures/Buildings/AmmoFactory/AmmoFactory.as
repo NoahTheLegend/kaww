@@ -262,7 +262,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	else if (cmd == this.getCommandID("14mm"))
 	{
 		this.set_string("prod_blob", "mat_14mmround");
-		this.set_u8("prod_amount", 15);
+		this.set_u8("prod_amount", 16);
 		this.set_u8("prod_time", 5);
 		this.set_u8("cost", 1);
 		this.set_u8("id", 1);

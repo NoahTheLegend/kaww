@@ -1,3 +1,4 @@
+
 void onInit(CBlob@ this)
 {
   if (getNet().isServer())
@@ -5,7 +6,8 @@ void onInit(CBlob@ this)
     this.set_u8("decay step", 2);
   }
 
-  this.maxQuantity = 36;
+  this.Tag("heavy weight");
+  this.maxQuantity = 12;
 
   this.getCurrentScript().runFlags |= Script::remove_after_this;
 }
