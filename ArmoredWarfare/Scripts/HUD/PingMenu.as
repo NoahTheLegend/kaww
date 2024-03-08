@@ -121,7 +121,6 @@ void onRender(CSprite@ this)
 
 				// draw
 				SColor pointer_col = getNeonColor(blob.getTeamNum(), 0);
-				pointer_col.setAlpha(155);
 
 				DrawPointer(keypress_worldpos, Maths::Abs(ping_pointer_frame), pointer_col);
 				DrawCategories(mpos);

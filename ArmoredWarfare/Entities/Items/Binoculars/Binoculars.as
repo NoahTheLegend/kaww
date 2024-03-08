@@ -2,18 +2,19 @@ void onInit(CBlob@ this)
 {
 	this.Tag("medium weight");
 	this.Tag("trap"); // so bullets pass
-	this.set_f32("hand_rotation_damp", 0.6f);
+	this.set_f32("hand_rotation_damp", 0.55f);
 }
 
 void onTick(CBlob@ this)
 {
 	if (!isClient()) return;
+	
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+
 	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (point !is null)
 	{
-		CSprite@ sprite = this.getSprite();
-		if (sprite is null) return;
-		
 		CBlob@ b = point.getOccupied();
 		if (b !is null)
 		{
@@ -23,7 +24,7 @@ void onTick(CBlob@ this)
 			bool exposed = b.hasTag("machinegunner") || b.hasTag("collidewithbullets") || b.hasTag("can_shoot_if_attached");
 			s8 ff = (this.isFacingLeft()?-1:1);
 
-			sprite.SetOffset(Vec2f(-1,-3).RotateBy(-angle*ff)*ff);
+			sprite.SetOffset(Vec2f(-1,-2.5f).RotateBy(-angle*ff)*ff);
 			sprite.SetVisible(!b.isAttached() || exposed);
 
 			if (b.isMyPlayer())
@@ -34,9 +35,14 @@ void onTick(CBlob@ this)
 		}
 		else
 		{
-			sprite.SetOffset(Vec2f_zero);
+			sprite.SetOffset(Vec2f(2,2.5f));
 			sprite.SetVisible(true);
 		}
+	}
+	else
+	{
+		sprite.SetOffset(Vec2f(2,2.5f));
+		sprite.SetVisible(true);
 	}
 }
 
