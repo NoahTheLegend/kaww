@@ -12,7 +12,7 @@ const Vec2f gun_offset = Vec2f(-30, 8.5);
 f32 windage = 4.0f;
 
 const u32 shootDelay = 2; // Ticks
-const f32 projDamage = 0.55f;
+const f32 projDamage = 0.6f;
 
 //ICONS
 //AddIconToken("$bf109$", "Bf109.png", Vec2f(40, 32), 0);

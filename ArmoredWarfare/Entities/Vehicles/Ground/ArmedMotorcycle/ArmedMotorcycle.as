@@ -3,7 +3,7 @@
 #include "Explosion.as";
 
 const u8 shootDelay = 3;
-const f32 projDamage = 0.5f;
+const f32 projDamage = 0.55f;
 
 f32 high_angle = 30.0f; // upper depression limit
 f32 low_angle = 115.0f; // lower depression limit
@@ -428,7 +428,7 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 	if (gunner !is null && gunner.getOccupied() !is null && !gunner.isKeyPressed(key_action2) && !this.hasTag("broken"))
 	{
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos()+Vec2f(0,6);
+		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos()+Vec2f(0,2);
 
 		if ((!facing_left && aim_vec.x < 0) ||
 		        (facing_left && aim_vec.x > 0))
