@@ -154,6 +154,7 @@ void onTick(CBlob@ this)
 	}
 	ManageCamera(this);
 
+	// rotate blobs in hands
 	if (isServer())
 	{
 		CBlob@ carried = this.getCarriedBlob();
@@ -407,9 +408,11 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 	if (stun_factor > 0.0f)
 	{
 		f32 cos = Maths::Cos(getGameTime()*0.5f)*2;
-		zoom_target = 2.0f + Maths::Sin(getGameTime() * (6 + cos)) / (8 + cos) * stun_factor;
+		zoom_target = (2.0f+stun_factor) + Maths::Sin(getGameTime() * (6 + cos)) / (8 + cos) * stun_factor;
 		zoom = zoom_target;
 		zoomLevel = 2;
+
+		SetScreenFlash(55, 255, 50, 50, 1.0f);
 	}
 
 	if (zoom > zoom_target)
