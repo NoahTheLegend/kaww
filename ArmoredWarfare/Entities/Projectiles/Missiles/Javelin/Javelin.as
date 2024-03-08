@@ -13,6 +13,8 @@ const f32 damage = 17.5f;
 
 void onInit(CBlob@ this)
 {
+	warn("CREATED MISSILE: DEBUG");
+	
 	//this.Tag("jav");
 	MissileInfo missile;
 	missile.main_engine_force 			= JavelinParams::main_engine_force;
@@ -225,6 +227,13 @@ void onTick(CBlob@ this)
 	if (hasThrust) doThrustParticles(thisPos, -thrustNorm*2.0f); //exhaust particles
 	
 	//client UI and sounds
+	if (targetBlob.hasTag("aerial")
+		&& (getGameTime()+this.getNetworkID()) % 5 == 0)
+	{
+		CBlob@ local = getLocalPlayerBlob();
+		if (local !is null && local.isAttachedTo(targetBlob))
+			Sound::Play("MissileLock.ogg", targetPos, 1.0f, 2.0f + (targetBlob.getNetworkID()%3)*0.2f);
+	}
 	makeTargetSquare(targetPos-thisVel, targetSquareAngle, Vec2f(2.5f, 2.5f), 2.0f, 1.0f, redConsoleColor); //target acquired square
 }
 
@@ -293,6 +302,8 @@ void doMuzzleFlash(Vec2f thisPos = Vec2f_zero, Vec2f flashVec = Vec2f_zero)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (blob is null) return false;
+
 	int thisTeamNum = this.getTeamNum();
 	int blobTeamNum = blob.getTeamNum();
 
@@ -351,13 +362,24 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	);
 }
 
-void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f collisionPos )
+void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
+	if (this.hasTag("dead")) return;
 	if (this.getTickSinceCreated() <= 3) return;
 
 	if (blob is null && solid)
 	{
+		makeMissileEffect(this.getPosition());
+		DoExplosion(this, this.get_Vec2f("target_vec"));
+
+		this.Tag("dead");
 		this.server_Die();
+		
+		return;
+	}
+
+	if (blob is this)
+	{
 		return;
 	}
 
@@ -366,22 +388,31 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f colli
 		return;
 	}
 
+	makeMissileEffect(this.getPosition());
+	DoExplosion(this, this.get_Vec2f("target_vec"));
+
+	this.Tag("dead");
 	this.server_Die();
 }
 
-void onDie( CBlob@ this )
+void onDie(CBlob@ this)
 {
+	if (this.hasTag("dead")) return;
 	Vec2f thisPos = this.getPosition();
 
+	makeMissileEffect(thisPos);
 	DoExplosion(this, this.get_Vec2f("target_vec"));
 
-	makeMissileEffect(thisPos); //boom effect
+	this.Tag("dead");
 }
 
-void makeMissileEffect(Vec2f thisPos = Vec2f_zero)
+void makeMissileEffect(CBlob@ this)
 {
-	if(!isClient() || thisPos == Vec2f_zero)
+	if(!isClient() || this is null || this.hasTag("dead"))
 	{return;}
+
+	Vec2f thisPos = this.getPosition();
+	if (thisPos == Vec2f_zero) return;
 
 	u16 particleNum = XORRandom(5)+5;
 

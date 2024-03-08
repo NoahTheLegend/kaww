@@ -14,7 +14,7 @@ const Vec2f leftVelo = Vec2f(-0.03f, 0.00f);
 const Vec2f rightVelo = Vec2f(0.03f, 0.00f);
 
 const Vec2f minClampVelocity = Vec2f(-0.50f, -0.80f);
-const Vec2f maxClampVelocity = Vec2f( 0.475f, 0.00f);
+const Vec2f maxClampVelocity = Vec2f(0.475f, 0.00f);
 
 const f32 thrust = 1020.00f;
 
