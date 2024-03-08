@@ -3,7 +3,7 @@
 #include "Explosion.as";
 
 const u8 shootDelay = 3;
-const f32 projDamage = 0.35f;
+const f32 projDamage = 0.5f;
 
 f32 high_angle = 30.0f; // upper depression limit
 f32 low_angle = 115.0f; // lower depression limit
