@@ -23,7 +23,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
     if (this.hasTag("refinery") && blob.hasTag("material"))
     {
         bool die = false;
-        int max = 500;
+        int max = 600;
         int requestedAmount;
         string prop = "stone_level";
         string mat = "mat_stone";
@@ -42,7 +42,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
         else // quarry
         {
             mat = "mat_wood";
-            max = 1000;
+            max = 1600;
             prop = "fuel_level";
             if (blob.getName() != "mat_wood") return;
         }  
