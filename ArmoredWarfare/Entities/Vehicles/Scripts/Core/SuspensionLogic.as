@@ -18,6 +18,7 @@ void onInit(CBlob@ this)
         case _armory:
         case _importantarmory:
         case _importantarmoryt2:
+		case _grad:
         {
             susheight = 2.5f;
             break;

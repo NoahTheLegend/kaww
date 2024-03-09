@@ -137,6 +137,7 @@ void onInit(CBlob@ this)
 		case _firethrower: // MG
 		case _ah1: // cobra
 		case _mi24:
+		case _grad:
 		armorRating = 3; break;
 
 		case _transporttruck: // vanilla truck?
@@ -146,6 +147,7 @@ void onInit(CBlob@ this)
 		case _pszh4: // smol APC
 		case _pszh4turret: // smol APC cannon
 		case _uh1: // heli
+		case _gradturret:
 		armorRating = 2; break;
 
 		case _techtruck: // MG truck
@@ -182,7 +184,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 6;
 			linear_length = 16.0f;
-			scale_damage = 1.5f;
+			scale_damage = 2.0f;
 			break;
 		}
 		case _mausturret: // MAUS Shell cannon
@@ -219,6 +221,13 @@ void onInit(CBlob@ this)
 		case _mi24:
 		{
 			weaponRating = 1;
+			break;
+		}
+		case _gradturret:
+		{
+			weaponRating = -2;
+			linear_length = 0.0f;
+			scale_damage = 5.0f;
 			break;
 		}
 		case _heavygun: // MG
@@ -263,6 +272,7 @@ void onInit(CBlob@ this)
 
 		case _t10: // T10
 		case _bc25t:
+		case _grad:
 		backsideOffset = 24.0f; break;
 		
 		case _m60: // normal tank
@@ -1025,7 +1035,7 @@ void reloadMag(CBlob@ this)
 	{
 		return;
 	}
-
+	
 	v.getCurrentAmmo().fire_delay = this.get_u16("cooldown_time");
 	v.cooldown_time = v.getCurrentAmmo().fire_delay;
 	v.fired_amount = 1;
@@ -1054,7 +1064,7 @@ void onDie(CBlob@ this)
 			case _bc25t:
 			case _m60:
 			{
-				scrap_amount = 8+XORRandom(8);
+				scrap_amount = 12+XORRandom(8);
 				explosion_radius = 64.0f;
 				explosion_map_damage = 0.2f;
 				explosion_damage = 3.0f;
@@ -1062,7 +1072,7 @@ void onDie(CBlob@ this)
 			} // normal tank
 			case _t10:
 			{
-				scrap_amount = 13+XORRandom(8);
+				scrap_amount = 16+XORRandom(8);
 				explosion_radius = 72.0f;
 				explosion_map_damage = 0.25f;
 				explosion_damage = 4.0f;
@@ -1072,7 +1082,7 @@ void onDie(CBlob@ this)
 			case _pinkmaus:
 			case _desertmaus:
 			{
-				scrap_amount = 25+XORRandom(16);
+				scrap_amount = 35+XORRandom(11);
 				explosion_radius = 100.0f;
 				explosion_map_damage = 0.3f;
 				explosion_damage = 7.5f;
@@ -1080,8 +1090,9 @@ void onDie(CBlob@ this)
 			}
 			case _ah1:
 			case _mi24:
+			case _grad:
 			{
-				scrap_amount = 17+XORRandom(9);
+				scrap_amount = 22+XORRandom(9);
 				explosion_radius = 92.0f;
 				explosion_map_damage = 0.3f;
 				explosion_damage = 6.0f;
@@ -1089,7 +1100,7 @@ void onDie(CBlob@ this)
 			} // mouse
 			case _pszh4:
 			{
-				scrap_amount = 3+XORRandom(6);
+				scrap_amount = 4+XORRandom(5);
 				explosion_radius = 32.0f;
 				explosion_map_damage = 0.1f;
 				explosion_damage = 1.5f;
@@ -1097,7 +1108,7 @@ void onDie(CBlob@ this)
 			} // smol APC
 			case _btr82a:
 			{
-				scrap_amount = 7+XORRandom(6);
+				scrap_amount = 9+XORRandom(6);
 				explosion_radius = 48.0f;
 				explosion_map_damage = 0.15f;
 				explosion_damage = 2.25f;
@@ -1105,7 +1116,7 @@ void onDie(CBlob@ this)
 			} // big APC
 			case _bradley:
 			{
-				scrap_amount = 6+XORRandom(8);
+				scrap_amount = 10+XORRandom(8);
 				explosion_radius = 64.0f;
 				explosion_map_damage = 0.175f;
 				explosion_damage = 3.0f;
@@ -1186,6 +1197,7 @@ void onDie(CBlob@ this)
 			case _btrturret:
 			case _bradleyturret:
 			case _m60turret:
+			case _gradturret:
 			case _bc25turret:
 			case _t10turret:
 			case _mausturret:

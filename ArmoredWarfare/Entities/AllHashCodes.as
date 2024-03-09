@@ -32,6 +32,7 @@ enum EntityHash
 	_importantarmory = -1712154697,
 	_importantarmoryt2 = -1269242735,
 	_outpost = 1262542481,
+	_grad = -1617262311,
 	
 	_bf109 = 948257107,
 	_bomberplane = 1220259964, 
@@ -60,7 +61,8 @@ enum EntityHash
 	_heavygun = -153292038,
 	_firethrower = -468829632,
 	_bunker = -1830468768,
-	_heavybunker = -246580451
+	_heavybunker = -246580451,
+	_gradturret = -794220085
 };
 
 // TEMPLATE: GROUND VEHICLES

@@ -616,6 +616,9 @@ u8 getIndicatorFrame(int hash)
 		case _ah1:
 		frame = 15; break;
 
+		case _grad:
+		frame = 16; break;
+
 		case _outpost:
 		frame = 9; break;
 	}
