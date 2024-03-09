@@ -1,12 +1,12 @@
 <h1 align="center"> Armored Warfare </h1>
 Co-op shooter with progression, ranks and abilities
 
-One of the most popular mods in the game, more than 5000 unique players in 1 and half year, tens of contributors and funders!
+The most popular mod in the game, more than 4000 unique players in 1.5 years, tens of contributors
 </br>
 
 <h2 align="center"> Gameplay </h2>
 
-<p align="center">Have you ever wanted Foxhole or Battlefield in 2D? Arcade but dynamic battles, all types of vehicles, different classes, more logistics and blood now with extra spice!</p>
+<p align="center">Have you ever envisioned a 2D rendition of Foxhole or Battlefield? Picture an arcade-style experience featuring dynamic battles, diverse vehicles, various classes, expanded logistical elements, and heightened intensity!</p>
 </br>
 
 
@@ -36,6 +36,6 @@ https://github.com/NoahTheLegend/kaww/assets/76755422/f1712463-2183-465d-9fb5-2a
 
 <h1 align="center"> A great thank to contributors: </h1>
 
-### Blav (dev, creator), Nevrotik (dev, community), GlitchGames (dev), GoldenGuy (host, dev), Skemonde (sprites), PURPLExeno (sprites), Froghead48 (donation, mapping), Dpants (donation), Goldy (mapping), petey5 (sprites), ThinkAbout (miscellaneous), LorderPlay (sprites), Warrior (community), Markoss (community), Alainx277 (bugs), kongo73 (donation), shadowguy (donation), MasterOfCockFights (donation)
+### Blav (dev, creator), Nevrotik (dev, community), GlitchGames (dev), GoldenGuy (host, dev), Skemonde (sprites), PURPLExeno (sprites), Froghead48 (donation, mapping), Dpants (donation), Goldy (mapping), petey5 (sprites), ThinkAbout (miscellaneous), LorderPlay (sprites), Warrior (community), Markoss (community), Alainx277 (bugs), kongo73 (donation), shadowguy (donation), MasterOfCockFights (donation), gusblatnoj (donation)
 
 This mod wouldn't have success without these people
