@@ -314,7 +314,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	//printf(""+projExplosionRadius);
 	//printf(""+length);
 	WarfareExplode(this, projExplosionRadius*1.35, projExplosionDamage);
-	LinearExplosion(this, velocity, projExplosionRadius, length, 2+Maths::Floor(length/6), 0.01f, Hitters::fall); // only for damaging map
+	LinearExplosion(this, velocity, length, projExplosionRadius, 2+Maths::Floor(length/6), 0.01f, Hitters::fall); // only for damaging map
 	
 	if (this.hasTag("rpg"))
 	{
