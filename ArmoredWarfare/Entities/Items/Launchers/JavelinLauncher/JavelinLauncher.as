@@ -76,7 +76,7 @@ void onTick(CBlob@ this)
 	CControls@ controls = ownerBlob.getControls();
 	
 	// binoculars effect
-	ownerBlob.set_u32("dont_change_zoom", getGameTime()+3);
+	ownerBlob.set_u32("far_zoom", getGameTime()+3);
 	ownerBlob.Tag("binoculars");
 	const bool draw_robotech = !heli_launcher && ownerBlob.isMyPlayer();
 
