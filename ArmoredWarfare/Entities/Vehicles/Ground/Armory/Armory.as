@@ -17,6 +17,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 	this.Tag("armory");
 	this.Tag("truck");
+	this.Tag("weak vehicle");
 
 	AddIconToken("$icon_10%$", "Scrap.png", Vec2f(16, 16), 3);
 	AddIconToken("$icon_5%$", "Scrap.png", Vec2f(16, 16), 2);
