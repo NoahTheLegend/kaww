@@ -1104,7 +1104,7 @@ void UpdateWheels(CBlob@ this)
 			f32 wheels_angle;
 
 			//wheels_angle = (Maths::Round(wheel.getWorldTranslation().x * 10) % 360);
-			wheels_angle = (Maths::Round(((wheel.getWorldTranslation().x*8) + (this.get_f32("wheelsTurnAmount")*80))) % 360);
+			wheels_angle = (Maths::Round(((wheel.getWorldTranslation().x*8) + (this.get_f32("wheelsTurnAmount")))) % 360);
 						
 			wheel.ResetTransform();
 			wheel.RotateBy(wheels_angle + i * i * 16.0f, Vec2f_zero);
