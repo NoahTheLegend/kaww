@@ -10,7 +10,7 @@ string[] smoke =
 	"LargeSmoke"
 };
 
-const u16 cooldown_time = 750; // 25 sec cd
+const u16 cooldown_time = 25 * 30; // 22 sec cd
 const f32 damage_modifier = 1.65f;
 
 const s16 init_gunoffset_angle = -2; // up by so many degrees
@@ -112,6 +112,7 @@ void onInit(CBlob@ this)
 	sprite.SetEmitSound("Hydraulics.ogg");
 	sprite.SetEmitSoundPaused(true);
 	sprite.SetEmitSoundVolume(1.25f);
+	sprite.SetEmitSoundSpeed(0.85f);
 }
 
 f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
@@ -161,7 +162,7 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 void onTick(CBlob@ this)
 {
-	s16 currentAngle = this.get_f32("gunelevation");
+	f32 currentAngle = this.get_f32("gunelevation");
 
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v))
@@ -217,7 +218,7 @@ void onTick(CBlob@ this)
 
 		f32 angle = getAngle(this, v.charge, v);
 
-		s16 targetAngle;
+		f32 targetAngle;
 		bool isOperator = false;
 		
 		AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
@@ -252,14 +253,14 @@ void onTick(CBlob@ this)
 		{
 			//if (getGameTime()%2==0)
 			{
-				int factor = 1;
-				if (isOperator) factor = 2;
+				f32 factor = 0.3f;
+				if (isOperator) factor = 0.6f;
 
-				int difference = Maths::Abs(currentAngle - targetAngle);
+				f32 difference = Maths::Abs(currentAngle - targetAngle);
 
 				if (difference >= 1)
 				{
-					int req = Maths::Min(difference, factor);
+					f32 req = Maths::Min(difference, factor);
 
 					if (difference < 180) {
 						if (currentAngle < targetAngle) currentAngle += req;
@@ -316,7 +317,7 @@ void DoExplosion(CBlob@ this)
 		Vec2f pos = this.getPosition();
 		CMap@ map = getMap();
 		
-		for (int i = 0; i < (v_fastrender ? 12 : 32); i++)
+		for (f32 i = 0; i < (v_fastrender ? 12 : 32); i++)
 		{
 			ParticleAnimated(smoke[XORRandom(smoke.length)], (this.getPosition() + Vec2f((this.isFacingLeft() ? -1 : 1)*60.0f, 0.0f)) + Vec2f(XORRandom(36) - 18, XORRandom(36) - 18), getRandomVelocity(0.0f, XORRandom(130) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.16f), float(XORRandom(360)), 0.5f + XORRandom(100) * 0.01f, 9 + XORRandom(5), XORRandom(70) * -0.00005f, true);
 			
@@ -409,6 +410,8 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		Vec2f bullet_pos = this.getPosition()+Vec2f(this.isFacingLeft()?-12.0f:12.0f, -5) + Vec2f((this.isFacingLeft() ? -1 : 1)*16.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
 		Vec2f pos = this.getPosition()+Vec2f(this.isFacingLeft()?-12.0f:12.0f, -5) + Vec2f((this.isFacingLeft() ? -1 : 1)*50.0f, -7.0f).RotateBy((this.isFacingLeft()?angle+90:angle-90));
 		bullet.setPosition(bullet_pos);
+
+		bullet.set_f32("proj_ex_radius", 48.0f);
 		bullet.Tag("rpg"); // effects
 		bullet.Tag("artillery"); // shrapnel
 
@@ -445,13 +448,13 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		if (isClient())
 		{
 			bool facing = this.isFacingLeft();
-			for (int i = 0; i < 16; i++)
+			for (f32 i = 0; i < 16; i++)
 			{
 				ParticleAnimated("LargeSmokeGray", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(10+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2 + XORRandom(2), -0.0031f, true);
 				//ParticleAnimated("LargeSmoke", pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 6 + XORRandom(3), -0.0031f, true);
 			}
 
-			for (int i = 0; i < 6; i++)
+			for (f32 i = 0; i < 6; i++)
 			{
 				float angle = Maths::ATan2(vel.y, vel.x) + 20;
 				ParticleAnimated("LargeSmoke", pos, this.getShape().getVelocity() + Vec2f(Maths::Cos(angle), Maths::Sin(angle))/2, float(XORRandom(360)), 0.8f + XORRandom(75) * 0.01f, 4 + XORRandom(3), -0.0031f, true);

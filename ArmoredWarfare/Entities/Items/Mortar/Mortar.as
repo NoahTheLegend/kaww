@@ -385,11 +385,12 @@ void CreateProjectile(CBlob@ this, Vec2f pos, Vec2f vel)
 
 		proj.set_f32(projDamageString, 1.0f);
 		proj.set_f32(projExplosionRadiusString, 64.0f);
-		proj.set_f32(projExplosionDamageString, 10.0f);
+		proj.set_f32(projExplosionDamageString, 16.0f);
 		proj.set_f32("linear_length", 4.0f);
 
-		proj.set_f32("bullet_damage_body", 1.0f);
-		proj.set_f32("bullet_damage_head", 1.0f);
+		proj.set_f32("proj_ex_radius", 32.0f);
+		proj.set_f32("bullet_damage_body", 3.0f);
+		proj.set_f32("bullet_damage_head", 3.0f);
 		proj.IgnoreCollisionWhileOverlapped(this);
 		proj.server_setTeamNum(this.getTeamNum());
 		proj.setPosition(pos);
@@ -397,7 +398,7 @@ void CreateProjectile(CBlob@ this, Vec2f pos, Vec2f vel)
 		proj.set_s8(penRatingString, 2);
 
 		proj.AddScript("ShrapnelOnDie.as");
-		proj.set_u8("shrapnel_count", 7+XORRandom(5));
+		proj.set_u8("shrapnel_count", 5+XORRandom(4));
 		proj.set_f32("shrapnel_vel", 9.0f+XORRandom(5)*0.1f);
 		proj.set_f32("shrapnel_vel_random", 1.5f+XORRandom(16)*0.1f);
 		proj.set_Vec2f("shrapnel_offset", Vec2f(0,-1));
