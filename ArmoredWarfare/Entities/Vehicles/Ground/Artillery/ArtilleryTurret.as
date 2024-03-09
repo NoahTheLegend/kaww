@@ -17,10 +17,6 @@ const s16 init_gunoffset_angle = -2; // up by so many degrees
 const u8 barrel_compression = 24; // max barrel movement
 const u16 recoil = 180;
 
-// 0 == up, 90 == sideways
-f32 high_angle = 15.0f; // upper depression limit
-f32 low_angle = 70.0f; // lower depression limit
-
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
@@ -31,6 +27,13 @@ void onInit(CBlob@ this)
 	this.Tag("pass_60sec");
 	this.Tag("artillery");
 	this.set_u16("gui_mat_icon", 50);
+
+	u8 h_a = 15;
+	u8 l_a = 70;
+	this.set_u8("init_high_angle", h_a);
+	this.set_u8("init_low_angle", l_a);
+	this.set_u8("high_angle", h_a);
+	this.set_u8("low_angle", l_a);
 
 	this.set_f32("damage_modifier", damage_modifier);
 
@@ -56,7 +59,7 @@ void onInit(CBlob@ this)
 	    Vec2f(-6.0f, -4.0f), // fire position offset
 	    1); // charge time
 
-	Vehicle_SetWeaponAngle(this, low_angle, v);
+	Vehicle_SetWeaponAngle(this, l_a, v);
 
 	this.getShape().SetOffset(Vec2f(3, -10));
 
@@ -85,7 +88,7 @@ void onInit(CBlob@ this)
 
 	if (arm !is null)
 	{
-		f32 angle = low_angle;
+		f32 angle = l_a;
 
 		Animation@ anim = arm.addAnimation("default", 0, false);
 		if (anim !is null)
@@ -105,6 +108,10 @@ void onInit(CBlob@ this)
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
 	this.set_f32("gunelevation", (this.getTeamNum() == teamright ? 270 : 90) - init_gunoffset_angle);
+
+	sprite.SetEmitSound("Hydraulics.ogg");
+	sprite.SetEmitSoundPaused(true);
+	sprite.SetEmitSoundVolume(1.25f);
 }
 
 f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
@@ -123,14 +130,19 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 		        (facing_left && aim_vec.x > 0))
 		{
 			if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
-
 			aim_vec.RotateBy((facing_left ? 1 : -1) * this.getAngleDegrees());
 
+			this.getSprite().SetEmitSoundPaused(false);
+
 			angle = (-(aim_vec).getAngle() + 270.0f);
-			angle = Maths::Max(high_angle , Maths::Min(angle , low_angle));
+			angle = Maths::Max(this.get_u8("high_angle"), Maths::Min(angle, this.get_u8("low_angle")));
 
 			not_found = false;
 		}
+	}
+	else
+	{
+		this.getSprite().SetEmitSoundPaused(true);
 	}
 
 	if (not_found)
@@ -156,6 +168,9 @@ void onTick(CBlob@ this)
 	{
 		return;
 	}
+
+	u8 high_angle = this.get_u8("high_angle");
+	u8 low_angle = this.get_u8("low_angle");
 
 	CSprite@ sprite = this.getSprite();
 	if (this.getTickSinceCreated() == 1 || this.hasTag("pink"))
@@ -215,8 +230,8 @@ void onTick(CBlob@ this)
 			if (p !is null && p.get("PerkStats", @stats))
 			{
 				isOperator = stats.id == Perks::operator;
-				high_angle = 15.0f - stats.top_angle;
-				low_angle =  70.0f + stats.down_angle;
+				this.set_u8("high_angle", this.get_u8("init_high_angle") - stats.top_angle);
+				this.set_u8("low_angle", this.get_u8("init_low_angle") + stats.top_angle);
 			}
 
 			bool facing_left = this.isFacingLeft();
@@ -230,6 +245,8 @@ void onTick(CBlob@ this)
 		{
 			targetAngle = angle;
 		}
+
+		this.getSprite().SetEmitSoundPaused(true);
 
 		if (!this.hasTag("nogunner"))
 		{
@@ -251,6 +268,10 @@ void onTick(CBlob@ this)
 						if (currentAngle < targetAngle) currentAngle += req;
 						else currentAngle += req;
 					}
+
+					this.getSprite().SetEmitSoundPaused(false);
+					this.getSprite().SetEmitSoundVolume(1.25f);
+					
 					this.set_f32("gunelevation", ((currentAngle % 360.0f) + 360.0f) % 360.0f);
 					Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 				}
