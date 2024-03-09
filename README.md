@@ -1,7 +1,7 @@
 <h1 align="center"> Armored Warfare </h1>
 Co-op shooter with progression, ranks and abilities
 
-The most popular mod in the game, more than 4000 unique players in 1.5 years, tens of contributors
+<p align="center">The most popular mod in the game, more than 4000 unique players in 1.5 years, tens of contributors
 </br>
 
 <h2 align="center"> Gameplay </h2>
