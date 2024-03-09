@@ -227,7 +227,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = -2;
 			linear_length = 0.0f;
-			scale_damage = 5.0f;
+			scale_damage = 4.0f;
 			break;
 		}
 		case _heavygun: // MG
