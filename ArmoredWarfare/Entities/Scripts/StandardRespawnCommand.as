@@ -188,7 +188,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Take 66% of damage"
 						+"\n                      that is not bullet"
 						+"\n\n                  Restlessness"
-						+"\n                   - Agility boost on kill"
+						+"\n                   - Agility boost on-kill"
 						+"\n                   - Can't use vehicles"
 						+"\n                   - Using medkits applies"
 						+"\n                      movement penalty"
