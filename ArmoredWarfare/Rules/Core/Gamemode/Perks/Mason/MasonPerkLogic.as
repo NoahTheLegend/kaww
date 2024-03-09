@@ -387,6 +387,7 @@ void openMasonMenu(CBlob@ this, CBlob@ caller)
 //    return damage;
 //}
 
+/*
 void onRender(CSprite@ this)
 {
     CBlob@ blob = this.getBlob();
@@ -402,3 +403,4 @@ void onRender(CSprite@ this)
         GUI::DrawIcon(structures[selected].filename, 0, Vec2f(24,24), Vec2f( getDriver().getScreenCenterPos().x + (-24 * scale), getDriver().getScreenHeight() * 0.7f), scale);
     }
 }
+*/
