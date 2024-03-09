@@ -705,14 +705,15 @@ void onTick(CSprite@ this)
 
 	//arm anims
 	Vec2f armOffset = Vec2f(-1.0f, 4.0f + config_offset);
-	f32 armangle = -angle;
+	f32 deg = blob.getAngleDegrees();
+	f32 armangle = -angle - deg;
 	bool stabbing = blob.get_u32("end_stabbing") > getGameTime();
 
 	if (showgun && !stabbing)
 	{
 		if (this.isFacingLeft())
 		{
-			armangle = 180.0f - angle;
+			armangle = 180.0f - angle - deg;
 		}
 
 		if (!blob.hasTag("armangle_lock") && !blob.get_bool("is_firebringer"))
