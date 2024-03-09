@@ -543,7 +543,7 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32 width,
                      bool should_teamkill = false)
 {
 	if (isClient() && v_fastrender) return;
-	Vec2f pos = this.getPosition();
+	Vec2f pos = this.getPosition()-this.getVelocity();
 	CMap@ map = this.getMap();
 
 	f32 tilesize = map.tilesize;
