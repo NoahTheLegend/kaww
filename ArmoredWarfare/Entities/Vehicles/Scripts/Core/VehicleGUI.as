@@ -292,11 +292,16 @@ void drawRemainingShellsInCassette(CBlob@ blob, VehicleInfo@ v)
 	u8 size = blob.get_u8("cassette_size");
 	if (size == 0) return;
 	int fired = blob.get_u32("fired_amount")-1;
-	for (u8 i = 0; i < size; i++)
+
+	CInventory@ inv = blob.getInventory();
+	if (inv is null) return;
+
+	for (u8 i = 0; i < Maths::Min(inv.getCount(v.getCurrentAmmo().ammo_name), size); i++)
 	{
 		u8 icon = i >= size-fired?0:1;
 		if (v.cooldown_time > 0 && fired == 0) icon = 0;
 		Vec2f drawpos = pos2d + Vec2f(-16 * (size*0.5f) + 16 * i, 0);
+		
 		GUI::DrawIcon("CassetteShell.png", icon, Vec2f(16,16), drawpos, 0.75f);
 		GUI::DrawTextCentered("Shift+R - Reload", pos2d+Vec2f(0,74),SColor(25,255,255,255));
 	}
