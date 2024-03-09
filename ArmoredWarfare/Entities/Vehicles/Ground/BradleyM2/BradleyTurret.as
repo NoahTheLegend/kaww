@@ -13,12 +13,7 @@ string[] smoke =
 const u8 cooldown_time = 105;
 const u8 barrel_compression = 5; // max barrel movement
 const u16 recoil = 180;
-
 const s16 init_gunoffset_angle = -3; // up by so many degrees
-
-// 0 == up, 90 == sideways
-f32 high_angle = 35.0f; // upper depression limit
-f32 low_angle = 101.0f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
@@ -26,6 +21,13 @@ void onInit(CBlob@ this)
 	this.Tag("turret");
 	this.Tag("apc");
 	this.Tag("blocks bullet");
+
+	u8 h_a = 35;
+	u8 l_a = 101;
+	this.set_u8("init_high_angle", h_a);
+	this.set_u8("init_low_angle", l_a);
+	this.set_u8("high_angle", h_a);
+	this.set_u8("low_angle", l_a);
 
 	Vehicle_Setup(this,
 	    0.0f, // move speed
@@ -49,7 +51,7 @@ void onInit(CBlob@ this)
 	    Vec2f(-6.0f, -8.0f), // fire position offset
 	    1); // charge time
 
-	Vehicle_SetWeaponAngle(this, low_angle, v);
+	Vehicle_SetWeaponAngle(this, l_a, v);
 	this.set_string("autograb blob", "mat_14mmround");
 
 	this.getShape().SetOffset(Vec2f(-1, -12));
@@ -76,7 +78,7 @@ void onInit(CBlob@ this)
 	if (arm !is null)
 	{
 		sprite.SetRelativeZ(-2.0f);
-		f32 angle = low_angle;
+		f32 angle = l_a;
 
 		Animation@ anim = arm.addAnimation("default", 0, false);
 		anim.AddFrame(20);
@@ -123,7 +125,7 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 			aim_vec.RotateBy((facing_left ? 1 : -1) * this.getAngleDegrees());
 
 			angle = (-(aim_vec).getAngle() + 270.0f);
-			angle = Maths::Max(high_angle , Maths::Min(angle , low_angle));
+			angle = Maths::Max(this.get_u8("high_angle"), Maths::Min(angle, this.get_u8("low_angle")));
 
 			not_found = false;
 		}
@@ -156,6 +158,9 @@ void onTick(CBlob@ this)
 	{
 		return;
 	}
+
+	u8 high_angle = this.get_u8("high_angle");
+	u8 low_angle = this.get_u8("low_angle");
 
 	if (getGameTime() % 5 == 0)
 	{
@@ -192,8 +197,8 @@ void onTick(CBlob@ this)
 			if (p !is null && p.get("PerkStats", @stats))
 			{
 				isOperator = stats.id == Perks::operator;
-				high_angle = 35.0f - stats.top_angle;
-				low_angle =  101.0f + stats.down_angle;
+				this.set_u8("high_angle", this.get_u8("init_high_angle") - stats.top_angle);
+				this.set_u8("low_angle", this.get_u8("init_low_angle") + stats.top_angle);
 			}
 
 			bool facing_left = this.isFacingLeft();

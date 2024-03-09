@@ -17,12 +17,7 @@ const f32 thrust = 1050.00f;
 
 const u8 cooldown_time = 15;//210;
 const u8 recoil = 0;
-
 const s16 init_gunoffset_angle = -3; // up by so many degrees
-
-// 0 == up, 90 == sideways
-const f32 high_angle = 85.0f; // upper depression limit
-const f32 low_angle = 115.0f; // lower depression limit
 
 void onInit(CBlob@ this)
 {
@@ -97,7 +92,7 @@ void onInit(CBlob@ this)
 
 	if (arm !is null)
 	{
-		f32 angle = low_angle;
+		f32 angle = 0;
 
 		Animation@ anim = arm.addAnimation("default", 0, false);
 		anim.AddFrame(20);

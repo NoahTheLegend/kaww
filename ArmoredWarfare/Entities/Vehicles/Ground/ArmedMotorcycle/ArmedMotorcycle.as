@@ -441,7 +441,7 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 			aim_vec.RotateBy((facing_left ? 1 : -1) * this.getAngleDegrees());
 
 			angle = (-(aim_vec).getAngle() + 270.0f);
-			angle = Maths::Max(high_angle , Maths::Min(angle , low_angle));
+			angle = Maths::Max(this.get_u8("high_angle"), Maths::Min(angle, this.get_u8("low_angle")));
 
 			not_found = false;
 		}
