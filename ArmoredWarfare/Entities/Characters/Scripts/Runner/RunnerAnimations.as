@@ -154,15 +154,27 @@ void onTick(CBlob@ this)
 		head.ResetTransform();
 		head.RotateBy(angle_head, Vec2f(0,4));
     }
+	CSpriteLayer@ helmet = sprite.getSpriteLayer("helmet");
+    if (helmet !is null)
+    {
+		helmet.ResetTransform();
+		helmet.RotateBy(angle_head, Vec2f(0,4));
+    }
 }
 
 void ResetDegrees(CBlob@ this)
 {
 	CSprite@ sprite = this.getSprite();
+
 	CSpriteLayer@ head = sprite.getSpriteLayer("head");
     if (head !is null)
     {
 		head.ResetTransform();
+    }
+	CSpriteLayer@ helmet = sprite.getSpriteLayer("helmet");
+    if (helmet !is null)
+    {
+		helmet.ResetTransform();
     }
 
 	this.setAngleDegrees(0);
