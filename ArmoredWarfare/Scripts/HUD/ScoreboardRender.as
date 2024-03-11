@@ -67,7 +67,8 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			GUI::DrawText(descriptions[teamnum], Vec2f(topleft.x + 140 + dim.x, topleft.y + 4), SColor(0xffffffff));
 		}
 	}
-
+	
+	GUI::SetFont("menu");
 	GUI::DrawText(getTranslatedString("Soldiers: {PLAYERCOUNT}").replace("{PLAYERCOUNT}", "" + players.length), Vec2f(bottomright.x - 92, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 1.5;
@@ -77,7 +78,6 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 	bool same_team = teamnum == local_team || local_team == getRules().getSpectatorTeamNum();
 
 	//draw player table header
-	GUI::SetFont("menu");
 	GUI::DrawText(getTranslatedString("Soldier"), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Username"), Vec2f(bottomright.x - 330, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Ping"), Vec2f(bottomright.x - 171, topleft.y), SColor(0xffffffff));
