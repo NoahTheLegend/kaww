@@ -256,7 +256,7 @@ void onTick(CBlob@ this)
 								{
 									f32 rot = 1.0f;
 									if (this.isFacingLeft()) rot = -1.0f;
-									ShootBullet(this, this.getPosition()+Vec2f(54.0f*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
+									ShootBullet(this, this.getPosition()+Vec2f((this.isFacingLeft()?24.0f:54.0f)*rot, 0).RotateBy(angle), this.getPosition()+Vec2f(64.0f*rot, 0).RotateBy(angle), 30.0f);
 								}
 								this.getSprite().PlaySound("Missile_Launch.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
 								this.set_u32("next_shoot", getGameTime()+cooldown_time);
