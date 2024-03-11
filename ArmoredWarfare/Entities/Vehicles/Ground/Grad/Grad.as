@@ -27,14 +27,14 @@ void onInit(CBlob@ this)
 	                         0.5f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(27.5f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f); }//w.ScaleBy(Vec2f(1.1f, 1.1f));}
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(26.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-10.0f);}//w.ScaleBy(Vec2f(1.1f, 1.1f));}
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(27.5f, 6.5f)); if (w !is null) w.SetRelativeZ(10.0f); }//w.ScaleBy(Vec2f(1.1f, 1.1f));}
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(26.0f, 6.5f)); if (w !is null) w.SetRelativeZ(-10.0f);}//w.ScaleBy(Vec2f(1.1f, 1.1f));}
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(14.5f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f); }//w.ScaleBy(Vec2f(1.1f, 1.1f));}
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(13.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-10.0f);}//w.ScaleBy(Vec2f(1.1f, 1.1f));}
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(14.5f, 6.5f)); if (w !is null) w.SetRelativeZ(10.0f); }//w.ScaleBy(Vec2f(1.1f, 1.1f));}
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(13.0f, 6.5f)); if (w !is null) w.SetRelativeZ(-10.0f);}//w.ScaleBy(Vec2f(1.1f, 1.1f));}
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-16.5f,7.0f)); if (w !is null) w.SetRelativeZ(10.0f); }//w.ScaleBy(Vec2f(1.1f, 1.1f));}
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-18.0f,7.0f)); if (w !is null) w.SetRelativeZ(-10.0f);}//w.ScaleBy(Vec2f(1.1f, 1.1f));}
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-16.5f,6.5f)); if (w !is null) w.SetRelativeZ(10.0f); }//w.ScaleBy(Vec2f(1.1f, 1.1f));}
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-18.0f,6.5f)); if (w !is null) w.SetRelativeZ(-10.0f);}//w.ScaleBy(Vec2f(1.1f, 1.1f));}
 
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
