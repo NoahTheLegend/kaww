@@ -215,11 +215,10 @@ void onTick(CBlob@ this)
 	TileType t2 = map.getTile(checkpos2).type;
 
 	Vec2f arm2_pos_temp = (pos_end1 - pos).RotateBy(new_angle2, Vec2f(0, -arm_length).RotateBy(new_angle1));
-	if (map.isTileSolid(t2) || isTileCustomSolid(t2) ||
-		map.rayCastSolidNoBlobs(checkpos1, arm2_pos_temp) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
+	if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
 	{
 		f32 backwards = new_target_angle2 - new_angle2;
-		new_target_angle2 -= backwards*2;
+		new_target_angle2 -= backwards*2.5f;
 	}
 
 	// recalculate angle arm 2
