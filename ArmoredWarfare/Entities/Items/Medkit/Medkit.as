@@ -50,6 +50,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		if (!params.saferead_u16(blob_id)) return;
 
 		CBlob@ blob = getBlobByNetworkID(blob_id);
+		if (blob is null) return;
 
 		bool stats_loaded = false;
    		PerkStats@ stats = getPerkStats(blob, stats_loaded);
@@ -65,39 +66,36 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 		if (isServer())
 		{
-			if (blob !is null)
+			CPlayer@ p = blob.getPlayer();
+			bool stats_loaded = false;
+			PerkStats@ stats;
+			if (p !is null && p.get("PerkStats", @stats) && stats !is null)
+				stats_loaded = true;
+
+			//if (blob.getHealth() > oldHealth)
 			{
-				CPlayer@ p = blob.getPlayer();
-				bool stats_loaded = false;
-				PerkStats@ stats;
-				if (p !is null && p.get("PerkStats", @stats) && stats !is null)
-					stats_loaded = true;
+				if (stats_loaded && blob.get_bool("has_aos"))
+				{
+					blob.TakeBlob("aceofspades", 1);
+					blob.set_u32("aceofspades_timer", getGameTime()+stats.aos_healed_time);
+				}
+			}
 
-				//if (blob.getHealth() > oldHealth)
-				{
-					if (stats_loaded && blob.get_bool("has_aos"))
-					{
-						blob.TakeBlob("aceofspades", 1);
-						blob.set_u32("aceofspades_timer", getGameTime()+stats.aos_healed_time);
-					}
-				}
-
-				f32 heal_amount = 1.5f; // 1.0f is 50 HP
-				if (stats_loaded)
-				{
-					heal_amount *= stats.heal_factor;
-				}
-				blob.server_Heal(heal_amount);
-				
-				if (this.get_u8("medamount") <= 1) 
-				{
-					this.server_Die();
-				}
-				else
-				{
-					this.set_u8("medamount", this.get_u8("medamount") - 1);
-					this.Sync("medamount", true);
-				}
+			f32 heal_amount = 1.5f; // 1.0f is 50 HP
+			if (stats_loaded)
+			{
+				heal_amount *= stats.heal_factor;
+			}
+			blob.server_Heal(heal_amount);
+			
+			if (this.get_u8("medamount") <= 1) 
+			{
+				this.server_Die();
+			}
+			else
+			{
+				this.set_u8("medamount", this.get_u8("medamount") - 1);
+				this.Sync("medamount", true);
 			}
 		}
 	}
