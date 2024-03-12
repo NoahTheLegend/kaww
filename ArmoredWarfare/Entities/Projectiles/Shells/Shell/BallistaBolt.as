@@ -339,7 +339,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(8) - 4, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(20) * 0.005f, 360), float(XORRandom(360)), 0.75f + XORRandom(40) * 0.01f, 5 + XORRandom(6), XORRandom(30) * -0.0001f, true);
 		}
 
-		for (int i = 0; i < (20 + XORRandom(20)); i++)
+		for (int i = 0; i < (v_fastrender ? 4 + XORRandom (4) : 8 + XORRandom(7)); i++)
 		{
 			makeGibParticle("GenericGibs", pos - Vec2f(0, 2), this.getOldVelocity()/5 + getRandomVelocity((pos + Vec2f(XORRandom(24) - 12, 0.0f)).getAngle(), 1.0f + XORRandom(4), 360.0f) + Vec2f(0.0f, -5.0f),
 	                2, 4 + XORRandom(4), Vec2f(8, 8), 2.0f, 0, "", 0);
