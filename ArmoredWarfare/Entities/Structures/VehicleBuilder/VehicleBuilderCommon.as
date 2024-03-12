@@ -118,7 +118,7 @@ void buildT2ShopCombined(CBlob@ this)
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else
 		{
-			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 20*30 * 60);
+			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 25*30 * 60);
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 350);
 		}
 	}
@@ -314,7 +314,7 @@ void buildT2ShopGround(CBlob@ this)
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else
 		{
-			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 20*30 * 60);
+			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 25*30 * 60);
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 350);
 		}
 	}
