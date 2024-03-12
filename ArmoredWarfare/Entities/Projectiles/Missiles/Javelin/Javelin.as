@@ -13,7 +13,7 @@ const f32 damage = 17.5f;
 
 void onInit(CBlob@ this)
 {
-	warn("CREATED MISSILE: DEBUG");
+	//warn("CREATED MISSILE: DEBUG");
 	
 	//this.Tag("jav");
 	MissileInfo missile;
