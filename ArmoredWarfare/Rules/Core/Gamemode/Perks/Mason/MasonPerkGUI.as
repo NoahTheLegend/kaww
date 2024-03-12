@@ -92,6 +92,9 @@ void DrawSimpleButton(Vec2f tl, Vec2f br, SColor color, SColor bordercolor, bool
         : hover ? SColor(alpha, color.getRed()+hv, color.getGreen()+hv, color.getBlue()+hv) : color);
 }
 
+const int build_rate = 10;
+bool placed = false;
+
 void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u32 timing)
 {
     s32 selected = blob.get_s32("selected_structure");
@@ -174,10 +177,19 @@ void DrawSelected(CSprite@ this, CBlob@ blob, Vec2f mpos, CControls@ controls, u
         }
         else was_pressed_lmb = false;
     }
-    else
+    else if (getGameTime() % build_rate == 0)
     {
-        DrawQTE(this, blob, drawpos, zoom, controls, can_place);
+        if (!placed)
+        {
+            placed = true;
+            sendPlaceBlock(blob, true);
+        }
     }
+    else placed = false;
+    //else
+    //{
+    //    DrawQTE(this, blob, drawpos, zoom, controls, can_place);
+    //}
 
     bool pressed_a2 = (controls.mousePressed2);
     if (pressed_a2 && timing < getGameTime())
