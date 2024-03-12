@@ -231,7 +231,6 @@ void InitClasses(CBlob@ this)
 						+"\n                  other heal"
 						+"\n\n             Building hammer"
 						+"\n               - Build pre-designed"
-						+"\n                  for 50% of cost!"
 						+"\n               - Stand near green"
 						+"\n                  tiles to build!"
 						+"\n               - Requires materials!"
@@ -241,8 +240,6 @@ void InitClasses(CBlob@ this)
 						+"\n$shift$              "
 						+"\n             $and$ Build-list"
 						+"\n$space$              "
-						+"\n					 "
-						+"\n					 "
 						);
 						
 }
