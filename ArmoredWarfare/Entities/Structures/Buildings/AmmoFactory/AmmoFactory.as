@@ -468,32 +468,6 @@ void onRender(CSprite@ this)
 			GUI::DrawRectangle(Vec2f(pos2d.x - dim.x + 2, pos2d.y + y + 2), Vec2f(pos2d.x - dim.x + perc * 2.0f * dim.x - 2, pos2d.y + y + dim.y - 2), SColor(0xff8bbc7e));
 		}
 	}
-
-	u32 time = blob.get_u32("last_prod");
-	f32 req_time = (blob.get_u8("prod_time")+10) * 30;
-	f32 time_left = time + req_time;
-	f32 percent = (time_left - getGameTime()) / req_time;
-
-	//printf("time "+time);
-	//printf("req_time "+req_time);
-	//printf("time_left "+time_left);
-	//printf("getgametime "+getGameTime());
-	//printf("perc "+percent);
-
-	Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 0);
-	const f32 y = blob.getHeight() * 4.15f;
-	Vec2f dim = Vec2f(24, 5); //95
-	Vec2f percdim = Vec2f(Maths::Min(24-24*percent, 24), 5); //95
-
-	u8 teamleft = getRules().get_u8("teamleft");
-	u8 teamright = getRules().get_u8("teamright");
-	SColor color = getNeonColor(blob.getTeamNum(), 0);
-	// Border
-	GUI::DrawRectangle(Vec2f(pos2d.x - dim.x - 2,                        pos2d.y + y - 4),
-						Vec2f(pos2d.x + dim.x + 2,                        pos2d.y + y + dim.y + 4));
-
-	GUI::DrawRectangle(Vec2f(pos2d.x - percdim.x + 2,                    pos2d.y + y + 0),
-						Vec2f(pos2d.x + percdim.x - 1,                    pos2d.y + y + percdim.y - 1), color);
 }
 
 void onDie(CBlob@ this)
