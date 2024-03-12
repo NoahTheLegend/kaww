@@ -176,7 +176,7 @@ shared class PerkWealthy : PerkStats {
         super();
         name = "Wealthy";
         id = 6;
-        kill_coins = 15;
+        kill_coins = 20;
         //coins_income = 2;
     }
 };

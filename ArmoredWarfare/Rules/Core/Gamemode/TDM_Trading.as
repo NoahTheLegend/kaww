@@ -17,7 +17,7 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 				if (killer.get("PerkStats", @stats) && stats !is null)
 					stats_loaded = true;
 
-				int coins = 2;
+				int coins = 4;
 				if (stats_loaded)
 				{
 					coins = stats.kill_coins;
