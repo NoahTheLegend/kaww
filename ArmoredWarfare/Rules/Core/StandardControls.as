@@ -535,6 +535,7 @@ void ManageCamera(CBlob@ this)
 				stun_factor = new_stun_factor;
 				if (stun_factor > 0.0f) this.set_u32("next_med", getGameTime()+1);
 			}
+			else stun_factor = 0.0f;
 		}
 
 		// camera
