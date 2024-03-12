@@ -1719,42 +1719,29 @@ void onTick(CRules@ this)
 		Config(core);
 		this.Tag("synced_time");
 	}
-	if (getGameTime()%150==0) //every 150 ticks give a coin
+	if (getGameTime()%120==0) // give a coin
 	{
-		if (this.get_s16("teamLeftTickets") > 200) 
+		for (u16 i = 0; i < getPlayerCount(); i++)
 		{
-			this.set_s16("teamLeftTickets", 200);
-			this.Sync("teamLeftTickets", true);
-		}
-		if (this.get_s16("teamRightTickets") > 200)
-		{
-			this.set_s16("teamRightTickets", 200);
-			this.Sync("teamRightTickets", true);
-		}
-		if (this.get_string("map_name") != "Abacus")
-		{
-			for (u16 i = 0; i < getPlayerCount(); i++)
+			CPlayer@ player = getPlayer(i);
+			if (player is null || player.getBlob() is null) continue;
+			if (isServer())
 			{
-				CPlayer@ player = getPlayer(i);
-				if (player is null || player.getBlob() is null) continue;
-				if (isServer())
+				bool imperialists_power = getRules().get_bool("enable_powers") && player.getTeamNum() == 5; // team 5 buff
+   				u8 extra_amount = 0;
+   				if (imperialists_power && XORRandom(3)==0)
 				{
-					bool imperialists_power = getRules().get_bool("enable_powers") && player.getTeamNum() == 5; // team 5 buff
-   					u8 extra_amount = 0;
-   					if (imperialists_power && XORRandom(3)==0)
-					{
-						extra_amount = 1;
-					}
-					
-					bool stats_loaded = false;
-					PerkStats@ stats;
-					if (player.get("PerkStats", @stats) && stats !is null)
-						stats_loaded = true;
+					extra_amount = 1;
+				}
+				
+				bool stats_loaded = false;
+				PerkStats@ stats;
+				if (player.get("PerkStats", @stats) && stats !is null)
+					stats_loaded = true;
 
-					if (stats_loaded)
-					{
-						player.server_setCoins(player.getCoins()+stats.coins_income+extra_amount); // double
-					}
+				if (stats_loaded)
+				{
+					player.server_setCoins(player.getCoins()+stats.coins_income+extra_amount); // double
 				}
 			}
 		}
