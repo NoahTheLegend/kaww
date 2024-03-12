@@ -167,7 +167,7 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Wealthy", "$6_class_icon$", "Wealthy",
 						"Wealthy:\n\n"+"$6_class_icon$"+"Highroller"
-						+"\n                   - Kills give you 15 coins"
+						+"\n                   - Kills give you 20 coins"
 						+"\n\n                  Health Insurance"
 						+"\n                   - Lose 33% of all money on death          "
 						);	
