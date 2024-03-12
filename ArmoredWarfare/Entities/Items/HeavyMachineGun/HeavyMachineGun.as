@@ -320,6 +320,7 @@ void onTick(CBlob@ this)
 
 		if (holder.getPlayer() !is null)
 		{
+			arm.ResetTransform();
 			arm.SetRelativeZ(-100.0f);
 			arm.RotateBy(this.isFacingLeft() ? 90 : -90, Vec2f_zero);
 		}
