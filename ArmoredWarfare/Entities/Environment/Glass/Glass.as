@@ -10,6 +10,7 @@ void onInit(CBlob@ this)
 	this.Tag("destructable");
 	this.Tag("weakprop");
 	this.Tag("builder always hit");
+	this.Tag("builder urgent hit");
 	this.Tag("passable");
 	this.Tag("bulletpassable");
 }
