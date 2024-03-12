@@ -4,7 +4,7 @@
 #include "BlockCosts.as";
 #include "PlacementCommon.as";
 
-f32 mat_discount = 2;
+f32 mat_discount = 1;
 
 // command ids are initialized in InfantryLogic.as
 void onTick(CBlob@ this)
@@ -38,6 +38,8 @@ void onTick(CBlob@ this)
         this.RemoveScript("MasonPerkLogic.as");
     }
 }
+
+bool lock_sound = false;
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
@@ -124,7 +126,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
             if (!can_place)
             {
                 sendPlaceBlockClient(this, id, can_place, "NoAmmo.ogg");
-                resetSelection(this);
+                //resetSelection(this);
                 return;
             }
 
@@ -289,10 +291,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
                 
                 map.server_SetTile(match_pos, t);
             }
-            else
-            {
-                resetSelection(this);
-            }
+            //else
+            //{
+            //    resetSelection(this);
+            //}
         }
     }
     else if (cmd == this.getCommandID("mason_place_block_client"))
@@ -315,9 +317,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
         if (sprite !is null)
         {
             if (can_place)
-                sprite.PlaySound(sound, 2.0f, 1.0f + caller.get_f32("build_pitch"));
-            else
+            {
+                sprite.PlaySound(sound, 1.0f, 1.0f + caller.get_f32("build_pitch"));
+                lock_sound = false;
+            }
+            else if (!lock_sound)
+            {
                 sprite.PlaySound("NoAmmo.ogg", 0.75f, 1.0f+XORRandom(31)*0.01f);
+                lock_sound = true;
+            }
         }
     }
 }
