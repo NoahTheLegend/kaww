@@ -50,7 +50,7 @@ void buildT1ShopCombined(CBlob@ this)
 		else
 		{
 			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 10*30 * 60);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 200);
 		}
 	}
 }
@@ -119,7 +119,7 @@ void buildT2ShopCombined(CBlob@ this)
 		else
 		{
 			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 20*30 * 60);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 250);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 350);
 		}
 	}
 }
@@ -256,7 +256,7 @@ void buildT1ShopGround(CBlob@ this)
 		else
 		{
 			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 10*30 * 60);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 100);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 200);
 		}
 	}
 }
@@ -315,7 +315,7 @@ void buildT2ShopGround(CBlob@ this)
 		else
 		{
 			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 20*30 * 60);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 175);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 350);
 		}
 	}
 }
@@ -409,7 +409,7 @@ void buildT1ShopAir(CBlob@ this)
 		else
 		{
 			AddRequirement(s.requirements, "gametime", "", "Unlocks at", 10*30 * 60);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 150);
 		}
 	}
 }
