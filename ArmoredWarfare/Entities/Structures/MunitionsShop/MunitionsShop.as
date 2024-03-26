@@ -28,6 +28,42 @@ void onInit(CBlob@ this)
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
 
+	this.getCurrentScript().tickFrequency = 30;
+
+	this.SetLight(true);
+	this.SetLightRadius(48.0f);
+	this.SetLightColor(SColor(255, 255, 240, 155));
+
+	if (isServer()) InitShopItems(this, this.getTeamNum());
+}
+
+void onTick(CBlob@ this)
+{
+	if (isClient())
+	{
+		u8 rnd = XORRandom(55);
+		this.SetLightColor(SColor(255, 200 + rnd, 200 + rnd/2, 155));
+	}
+}
+
+void onSendCreateData(CBlob@ this, CBitStream@ stream)
+{
+	stream.write_s16(this.getTeamNum());
+}
+
+bool onReceiveCreateData(CBlob@ this, CBitStream@ stream)
+{
+	s16 tn;
+	if (!stream.saferead_s16(tn))
+		InitShopItems(this, this.getTeamNum());
+	else
+		InitShopItems(this, tn);
+	
+	return true;
+}
+
+void InitShopItems(CBlob@ this, s16 tn)
+{
 	bool isTDM = (getMap().tilemapwidth <= 300);
 	if (!isTDM) // normal maps
 	{
@@ -66,7 +102,7 @@ void onInit(CBlob@ this)
 		//	AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
 		//}
 		{
-			bool rebels_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 3; // team 3 buff
+			bool rebels_power = getRules().get_bool("enable_powers") && tn == 3; // team 3 buff
         	u8 extra_amount = 0;
         	if (rebels_power) extra_amount = 5;
 
