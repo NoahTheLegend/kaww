@@ -174,7 +174,7 @@ void onTick(CBlob@ this)
 		if (map.isTileSolid(t1) || isTileCustomSolid(t1) || map.rayCastSolidNoBlobs(pos, checkpos1))
 		{
 			f32 backwards = new_target_angle1 - new_angle1;
-			new_target_angle1 -= backwards*2;
+			new_target_angle1 -= backwards*2.5f;
 		}
 		else
 		{
@@ -183,7 +183,7 @@ void onTick(CBlob@ this)
 			if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
 			{
 				f32 backwards = new_target_angle1 - new_angle1;
-				new_target_angle1 -= backwards*2;
+				new_target_angle1 -= backwards*2.5f;
 			}
 		}
 	}
