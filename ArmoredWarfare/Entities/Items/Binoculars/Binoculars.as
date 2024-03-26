@@ -12,6 +12,14 @@ void onTick(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 
+	bool is_in_inv = this.isInInventory();
+
+	if (is_in_inv)
+	{
+		sprite.SetVisible(!is_in_inv);
+		return;
+	}
+
 	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (point !is null)
 	{
