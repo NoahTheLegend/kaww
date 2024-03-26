@@ -37,10 +37,10 @@ void onInit(CBlob@ this)
 	}
 
 	this.set_f32("arm1_angle", 0);
-	this.set_f32("arm2_angle", 0);
+	this.set_f32("arm2_angle", 180);
 
-	this.set_f32("arm1_target_angle", (this.isFacingLeft()?-1:1) * -25);
-	this.set_f32("arm2_target_angle", (this.isFacingLeft()?-1:1) * 150);
+	this.set_f32("arm1_target_angle", (this.isFacingLeft()?-1:1) * 15);
+	this.set_f32("arm2_target_angle", (this.isFacingLeft()?-1:1) * 155);
 
 	this.addCommandID("sync");
 	this.addCommandID("grab");
@@ -83,6 +83,9 @@ void onTick(CBlob@ this)
 {
 	CBlob@ arm1 = getBlobByNetworkID(this.get_u16("arm1_id"));
 	CBlob@ arm2 = getBlobByNetworkID(this.get_u16("arm2_id"));
+
+	u32 tsc = this.getTickSinceCreated();
+	bool ignore_collisions = tsc < 30;
 
 	if (isClient())
 	{
@@ -165,19 +168,23 @@ void onTick(CBlob@ this)
 	// return if stuck TODO: make a better collision
 	Vec2f checkpos1 = pos + Vec2f(0,-arm_length).RotateBy(new_target_angle1);
 	TileType t1 = map.getTile(checkpos1).type;
-	if (map.isTileSolid(t1) || isTileCustomSolid(t1) || map.rayCastSolidNoBlobs(pos, checkpos1))
+
+	if (!ignore_collisions)
 	{
-		f32 backwards = new_target_angle1 - new_angle1;
-		new_target_angle1 -= backwards*2;
-	}
-	else
-	{
-		Vec2f checkpos2 = this.get_Vec2f("attach_pos");
-		TileType t2 = map.getTile(checkpos2).type;
-		if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
+		if (map.isTileSolid(t1) || isTileCustomSolid(t1) || map.rayCastSolidNoBlobs(pos, checkpos1))
 		{
 			f32 backwards = new_target_angle1 - new_angle1;
 			new_target_angle1 -= backwards*2;
+		}
+		else
+		{
+			Vec2f checkpos2 = this.get_Vec2f("attach_pos");
+			TileType t2 = map.getTile(checkpos2).type;
+			if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
+			{
+				f32 backwards = new_target_angle1 - new_angle1;
+				new_target_angle1 -= backwards*2;
+			}
 		}
 	}
 
@@ -188,7 +195,7 @@ void onTick(CBlob@ this)
 	Vec2f pos_end1 = pos + Vec2f(0,-arm_length*1.5f).RotateBy(new_angle1, Vec2f(0,0));
 	// set position
 	arm1.setPosition(arm1_pos);
-	arm1.setAngleDegrees(new_angle1 + 90);
+	arm1.setAngleDegrees((new_angle1 + 90) % 360);
 
 	Vec2f pos_joint = pos + Vec2f(0,-arm_length).RotateBy(new_angle1, Vec2f(0,0));
 	aimpos = ap.getAimPos()-pos_joint;
@@ -215,10 +222,10 @@ void onTick(CBlob@ this)
 	TileType t2 = map.getTile(checkpos2).type;
 
 	Vec2f arm2_pos_temp = (pos_end1 - pos).RotateBy(new_angle2, Vec2f(0, -arm_length).RotateBy(new_angle1));
-	if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
+	if (!ignore_collisions && (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2)))
 	{
 		f32 backwards = new_target_angle2 - new_angle2;
-		new_target_angle2 -= backwards*2.5f;
+		new_target_angle2 -= backwards*2;
 	}
 
 	// recalculate angle arm 2
@@ -226,7 +233,7 @@ void onTick(CBlob@ this)
 
 	Vec2f arm2_pos = (pos_end1 - pos).RotateBy(new_angle2, Vec2f(0, -arm_length).RotateBy(new_angle1));
 	arm2.setPosition(pos + arm2_pos);
-	arm2.setAngleDegrees(new_angle2 + new_angle1 + 90);
+	arm2.setAngleDegrees((new_angle2 + new_angle1 + 90) % 360);
 
 	this.set_Vec2f("attach_pos", pos + Vec2f(0,-arm_length*2).RotateBy(new_angle2, Vec2f(0,-arm_length)).RotateBy(new_angle1));
 
@@ -278,7 +285,7 @@ void onTick(CBlob@ this)
 				f32 augment_new_angle = augment_angle + augment_dir_angle+180;
 
 				augment.setPosition(this.get_Vec2f("attach_pos")+Vec2f(-3,0).RotateBy(arm2.getAngleDegrees()));
-				augment.setAngleDegrees(augment_new_angle);
+				augment.setAngleDegrees(augment_new_angle % 360);
 			}
 			else
 			{
