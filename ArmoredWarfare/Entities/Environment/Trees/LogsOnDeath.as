@@ -17,15 +17,16 @@ void onDie(CBlob@ this)
 	this.get("TreeSegments", @segments);
 	if (segments is null)
 		return;
-
-	for (uint i = 0; i < segments.length; i++)
+	
+	f32 log_mod = 0.5f;
+	for (uint i = 0; i < segments.length * log_mod; i++)
 	{
 		TreeSegment@ segment = segments[i];
 
 		if (getNet().isServer())
 		{
-			pos = this.getPosition() + (segment.start_pos + segment.end_pos) / 2.0f;
-			pos.y -= 4.0f; // TODO: fix logs spawning in ground
+			pos = this.getPosition() + (segment.start_pos + segment.end_pos) / 2.0f / log_mod;
+			pos.y -= 4.0f / log_mod; // TODO: fix logs spawning in ground
 			CBlob@ log = server_CreateBlob("log", this.getTeamNum(), pos);
 			if (log !is null)
 			{

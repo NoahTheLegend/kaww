@@ -263,6 +263,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (this.getHealth() <= 0.0f)
 	{
+		this.Tag("falling");
 		DoCollapseWhenBelow(this, 0.0f);
 	}
 

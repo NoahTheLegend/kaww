@@ -225,7 +225,7 @@ void onTick(CBlob@ this)
 	if (!ignore_collisions && (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2)))
 	{
 		f32 backwards = new_target_angle2 - new_angle2;
-		new_target_angle2 -= backwards*2;
+		new_target_angle2 -= backwards*2.5f;
 	}
 
 	// recalculate angle arm 2

@@ -69,9 +69,13 @@ void onTick(CBlob@ this)
 		for (u16 i = 0; i < hit.size(); i++)
 		{
 			CBlob@ blob = hit[i];
-			if (blob is null || blob.getTeamNum() == this.getTeamNum()) continue;
+			if (blob is null || blob.getTeamNum() == this.getTeamNum() || blob.hasTag("falling")) continue;
 
-			if (blob.hasTag("wooden"))
+			if (blob.hasTag("tree"))
+			{
+				this.server_Hit(blob, this.getPosition(), Vec2f(0, 0.01f), 0.75f+XORRandom(76)*0.01f, Hitters::builder, true);
+			}
+			else if (blob.hasTag("wooden"))
 			{
 				this.server_Hit(blob, this.getPosition(), Vec2f(0, 0.01f), 0.5f, Hitters::builder, true);
 				Material::fromBlob(this, blob, 0.5f);
