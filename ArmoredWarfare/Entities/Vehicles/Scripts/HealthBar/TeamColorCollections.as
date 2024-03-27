@@ -1,88 +1,96 @@
+#include "Utilities.as"
+
+u32[][][] colors = {
+	// None
+    {
+        {0xff2cafde, 0xff1d85ab, 0xff1a4e83, 0xff2cafde}, // blue
+        {0xffd5543f, 0xffb73333, 0xff741010, 0xffd5543f}, // red
+        {0xff5dc125, 0xff429720, 0xff295d14, 0xff5dc125}, // green
+        {0xff9152f7, 0xff6f3bc5, 0xff462480, 0xff9152f7}, // purple
+        {0xffe89b45, 0xffaa671e, 0xff643909, 0xffe89b45}, // orange
+        {0xff7ea2a9, 0xff6c969e, 0xff43676d, 0xff7ea2a9}, // cyan
+        {0xff555555, 0xff454545, 0xff252525, 0xff656565}  // black
+    },
+    // Protanopia
+    {
+        {0xff1c87d3, 0xff13679e, 0xff0f456f, 0xff1c87d3}, // blue
+        {0xffad573c, 0xff8f413a, 0xff562828, 0xffad573c}, // red
+        {0xff5aa61f, 0xff3f7b1b, 0xff1e4f0d, 0xff5aa61f}, // green
+        {0xff9569ef, 0xff7b4fb9, 0xff50376e, 0xff9569ef}, // purple
+        {0xffd3a14b, 0xff8f6a27, 0xff5d3d07, 0xffd3a14b}, // orange
+        {0xff869ba1, 0xff748e96, 0xff4d6670, 0xff869ba1}, // cyan
+        {0xff555555, 0xff454545, 0xff252525, 0xff656565}  // black
+    },
+    // Protanomaly
+    {
+        {0xff21b6d9, 0xff1479a6, 0xff0e4477, 0xff21b6d9}, // blue
+        {0xffc0543d, 0xff9f312c, 0xff5d1413, 0xffc0543d}, // red
+        {0xff6db625, 0xff50731f, 0xff284a10, 0xff6db625}, // green
+        {0xffa773f2, 0xff8a5cbf, 0xff5e4076, 0xffa773f2}, // purple
+        {0xfff0b557, 0xffb6802a, 0xff72520b, 0xfff0b557}, // orange
+        {0xff97a8ae, 0xff84999f, 0xff5b7278, 0xff97a8ae}, // cyan
+        {0xff555555, 0xff454545, 0xff252525, 0xff656565}  // black
+    },
+    // Deuteranopia
+    {
+        {0xff2285e1, 0xff146096, 0xff0e4270, 0xff2285e1}, // blue
+        {0xffb84d3c, 0xff923b35, 0xff5d1917, 0xffb84d3c}, // red
+        {0xff5fa822, 0xff457018, 0xff21460e, 0xff5fa822}, // green
+        {0xffa666f6, 0xff8748c2, 0xff57308b, 0xffa666f6}, // purple
+        {0xffeb9e4c, 0xffa97125, 0xff61420c, 0xffeb9e4c}, // orange
+        {0xff8b9fa5, 0xff779297, 0xff50656f, 0xff8b9fa5}, // cyan
+        {0xff555555, 0xff454545, 0xff252525, 0xff656565}  // black
+    },
+    // Deuteranomaly
+    {
+        {0xff2ba9e0, 0xff156a9c, 0xff0d3e6a, 0xff2ba9e0}, // blue
+        {0xffbc4f3d, 0xff993d36, 0xff5e1a18, 0xffbc4f3d}, // red
+        {0xff64ab27, 0xff4b7b20, 0xff28510d, 0xff64ab27}, // green
+        {0xffa678f7, 0xff8b5cc4, 0xff5e3e7c, 0xffa678f7}, // purple
+        {0xffef9f4e, 0xffb77127, 0xff63460d, 0xffef9f4e}, // orange
+        {0xff909ea5, 0xff7c9098, 0xff57746d, 0xff909ea5}, // cyan
+        {0xff555555, 0xff454545, 0xff252525, 0xff656565}  // black
+    },
+    // Tritanopia
+	{
+	    {0xff2b9fdf, 0xff1d76aa, 0xff185384, 0xff2b9fdf}, // blue
+	    {0xffd95640, 0xffb43e39, 0xff782625, 0xffd95640}, // red
+	    {0xff61c221, 0xff4c931e, 0xff306517, 0xff61c221}, // green
+	    {0xffa15ff7, 0xff8d46c2, 0xff66338a, 0xffa15ff7}, // purple
+	    {0xffedac4c, 0xffbc7c28, 0xff8b4e09, 0xffedac4c}, // orange
+	    {0xff7fa3a9, 0xff6c8e94, 0xff435f67, 0xff7fa3a9}, // cyan
+	    {0xff555555, 0xff454545, 0xff252525, 0xff656565}  // black
+	},
+	// Tritanomaly
+	{
+	    {0xff2ca2dd, 0xff1c6f9f, 0xff134575, 0xff2ca2dd}, // blue
+	    {0xffd85341, 0xffb33b3a, 0xff772725, 0xffd85341}, // red
+	    {0xff61bd22, 0xff4a8f1f, 0xff2e6316, 0xff61bd22}, // green
+	    {0xffa063f5, 0xff8c43c2, 0xff65318b, 0xffa063f5}, // purple
+	    {0xffeda94c, 0xffbc7828, 0xff8c4e09, 0xffeda94c}, // orange
+	    {0xff7e9fa6, 0xff6c8b92, 0xff436268, 0xff7e9fa6}, // cyan
+	    {0xff555555, 0xff454545, 0xff252525, 0xff656565}  // black
+	}
+};
+
+uint[] default_colors = {
+	0xffd8d8d8,
+	0xff989898,
+	0xff555555,
+	0xffc8c8c8
+};
+
 SColor getNeonColor(u8 team, u8 darkness)
 {
-    SColor color_light = 0xffd8d8d8;
-    SColor color_mid = 0xff989898;
-    SColor color_dark = 0xff555555;
-	SColor color_pane = 0xffc8c8c8; // much lighter and less contrasted
-
-    switch (team)
+	u8 color_type = 0;
+	ClientVars@ vars = getVars();
+	if (vars !is null)
 	{
-		case 0: // blue
-		{
-			color_light = 0xff2cafde;
-			color_mid	= 0xff1d85ab;
-			color_dark	= 0xff1a4e83;
-			color_pane  = 0xff2cafde;
-			break;
-		}
-		case 1: // red
-		{
-			color_light = 0xffd5543f;
-			color_mid	= 0xffb73333;
-			color_dark	= 0xff741010;
-			color_pane  = 0xffd5543f;
-			break;
-		}
-		case 2: // green
-		{
-			color_light = 0xff5dc125;
-			color_mid	= 0xff429720;
-			color_dark	= 0xff295d14;
-			color_pane  = 0xff5dc125;
-			break;
-		}
-		case 3: // purple
-		{
-			color_light = 0xff9152f7;
-			color_mid	= 0xff6f3bc5;
-			color_dark	= 0xff462480;
-			color_pane  = 0xff9152f7;
-			break;
-		}
-		case 4: // orange
-		{
-			color_light = 0xffe89b45;
-			color_mid	= 0xffaa671e;
-			color_dark	= 0xff643909;
-			color_pane  = 0xffe89b45;
-			break;
-		}
-		case 5: // cyan
-		{
-			color_light = 0xff7ea2a9;
-			color_mid	= 0xff6c969e;
-			color_dark	= 0xff43676d;
-			color_pane  = 0xff7ea2a9;
-			break;
-		}
-		case 6: // violet (changed to black)
-		{
-			color_light = 0xff555555;
-			color_mid	= 0xff454545;
-			color_dark	= 0xff252525;
-			color_pane  = 0xff656565;
-			break;
-		}
+		color_type = vars.colorblind_type;
 	}
 
-    switch (darkness)
-    {
-        case 0:
-        {
-            return color_light;
-        }
-        case 1:
-        {
-            return color_mid;
-        }
-        case 2:
-        {
-            return color_dark;
-        }
-		case 3:
-		{
-			return color_pane;
-		}
-    }
-    return color_mid;
+	if (team <= 6)
+		return colors[color_type][team][darkness];
+	else
+		return default_colors[darkness];
 }
