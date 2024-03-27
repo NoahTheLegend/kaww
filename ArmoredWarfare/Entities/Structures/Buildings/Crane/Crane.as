@@ -174,6 +174,7 @@ void onTick(CBlob@ this)
 		if (map.isTileSolid(t1) || isTileCustomSolid(t1) || map.rayCastSolidNoBlobs(pos, checkpos1))
 		{
 			f32 backwards = new_target_angle1 - new_angle1;
+			if (Maths::Abs(backwards) > 5.0f) backwards *= 0.5f;
 			new_target_angle1 -= backwards*2.5f;
 		}
 		else
@@ -183,6 +184,7 @@ void onTick(CBlob@ this)
 			if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
 			{
 				f32 backwards = new_target_angle1 - new_angle1;
+				if (Maths::Abs(backwards) > 5.0f) backwards *= 0.5f;
 				new_target_angle1 -= backwards*2.5f;
 			}
 		}
@@ -225,6 +227,7 @@ void onTick(CBlob@ this)
 	if (!ignore_collisions && (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2)))
 	{
 		f32 backwards = new_target_angle2 - new_angle2;
+		if (Maths::Abs(backwards) > 5.0f) backwards *= 0.5f;
 		new_target_angle2 -= backwards*2.5f;
 	}
 
