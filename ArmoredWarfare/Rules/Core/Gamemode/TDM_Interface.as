@@ -59,7 +59,7 @@ void onRender(CRules@ this)
 
 	CBitStream serialised_team_hud;
 	this.get_CBitStream("tdm_serialised_team_hud", serialised_team_hud);
-
+	/*
 	if (serialised_team_hud.getBytesUsed() > 10)
 	{
 		serialised_team_hud.Reset();
@@ -113,6 +113,7 @@ void onRender(CRules@ this)
 
 		serialised_team_hud.Reset();
 	}
+	*/
 
 	string propname = "tdm spawn time " + p.getUsername();
 	if (p.getBlob() is null && this.exists(propname))
