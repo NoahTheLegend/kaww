@@ -169,27 +169,6 @@ void onTick(CBlob@ this)
 	Vec2f checkpos1 = pos + Vec2f(0,-arm_length).RotateBy(new_target_angle1);
 	TileType t1 = map.getTile(checkpos1).type;
 
-	if (!ignore_collisions)
-	{
-		if (map.isTileSolid(t1) || isTileCustomSolid(t1) || map.rayCastSolidNoBlobs(pos, checkpos1))
-		{
-			f32 backwards = new_target_angle1 - new_angle1;
-			if (Maths::Abs(backwards) > 25.0f) backwards *= 0.1f;
-			new_target_angle1 -= backwards*2.5f;
-		}
-		else
-		{
-			Vec2f checkpos2 = this.get_Vec2f("attach_pos");
-			TileType t2 = map.getTile(checkpos2).type;
-			if (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2))
-			{
-				f32 backwards = new_target_angle1 - new_angle1;
-				if (Maths::Abs(backwards) > 25.0f) backwards *= 0.1f;
-				new_target_angle1 -= backwards*2.5f;
-			}
-		}
-	}
-
 	// recalculate angle arm 1
 	new_angle1 = Maths::Lerp(new_angle1, new_target_angle1, 0.25f);
 
@@ -224,13 +203,6 @@ void onTick(CBlob@ this)
 	TileType t2 = map.getTile(checkpos2).type;
 
 	Vec2f arm2_pos_temp = (pos_end1 - pos).RotateBy(new_angle2, Vec2f(0, -arm_length).RotateBy(new_angle1));
-	if (!ignore_collisions && (map.isTileSolid(t2) || isTileCustomSolid(t2) || map.rayCastSolidNoBlobs(checkpos1, checkpos2)))
-	{
-		f32 backwards = new_target_angle2 - new_angle2;
-		if (Maths::Abs(backwards) > 25.0f) backwards *= 0.1f;
-		new_target_angle2 -= backwards*2.5f;
-	}
-
 	// recalculate angle arm 2
 	new_angle2 = Maths::Lerp(new_angle2, new_target_angle2, 0.2f);
 
