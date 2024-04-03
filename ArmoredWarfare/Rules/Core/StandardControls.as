@@ -155,8 +155,7 @@ void onTick(CBlob@ this)
 	ManageCamera(this);
 
 	// rotate blobs in hands
-	//if (isServer())
-	{
+	/*{
 		CBlob@ carried = this.getCarriedBlob();
 		if (carried !is null && carried.hasTag("hand_rotation"))
 		{
@@ -173,7 +172,7 @@ void onTick(CBlob@ this)
 
 			carried.setAngleDegrees(angle);
 		}
-	}
+	}*/
 
 	CControls@ controls = getControls();
 
