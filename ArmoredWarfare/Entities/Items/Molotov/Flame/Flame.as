@@ -53,7 +53,9 @@ void onTick(CBlob@ this)
 		for (u16 i = 0; i < blobs.length; i++)
 		{
 			CBlob@ b = blobs[i];
-			if (b is null) return;
+			if (b is null) continue;
+			if (map.rayCastSolidNoBlobs(this.getPosition(), b.getPosition())) continue;
+			
 			if (b.getName() == "mat_molotov" && !b.get_bool("active") && !b.isAttached() && !b.isInInventory())
 			{
 				CBitStream params;
