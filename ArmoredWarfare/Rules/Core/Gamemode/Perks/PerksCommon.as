@@ -48,6 +48,8 @@ void addPerk(CPlayer@ player, u8 perk)
 {
     if (player is null) return;
 
+    getRules().set_string(player.getUsername()+"_perk", perks[perk]);
+
     PerkStats reset();
     if (perk > 0)
     {
