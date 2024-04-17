@@ -629,6 +629,11 @@ u8 getIndicatorFrame(int hash)
 void onInit(CRules@ this)
 {
 	Reset(this);
+
+	this.addCommandID("ping");
+	this.addCommandID("ping_rectangle");
+	this.addCommandID("ping_path");
+	this.addCommandID("ping_timer");
 }
 
 void onRestart(CRules@ this)
@@ -644,10 +649,6 @@ void onRestart(CRules@ this)
 void Reset(CRules@ this)
 {
 	this.Untag("animateGameOver");
-	this.addCommandID("ping");
-	this.addCommandID("ping_rectangle");
-	this.addCommandID("ping_path");
-	this.addCommandID("ping_timer");
 }
 
 void onStateChange(CRules@ this, const u8 oldState)
