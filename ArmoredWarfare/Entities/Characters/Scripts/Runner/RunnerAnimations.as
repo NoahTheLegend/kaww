@@ -109,7 +109,7 @@ void onTick(CBlob@ this)
 
 	angle_head += 180;
 	f32 angle_head_target = (Maths::Lerp(angle_head, angle_head < 0 ? -360 : 360, 1.0f - damp) + 360 + (angle_head < 0 ? -360*damp : 360*damp)) % 360;
-	angle_head = Maths::Lerp(this.get_f32("angle_head"), angle_head_target, lerp_head);
+	angle_head = Maths::Clamp(Maths::Lerp(this.get_f32("angle_head"), angle_head_target, lerp_head), -360.0f, 360.0f);
 	this.set_f32("angle_head", angle_head);
 
 	// calculate aim dir body lean
@@ -119,6 +119,7 @@ void onTick(CBlob@ this)
 	if (angle_body < -180) angle_body += 180;
 	else if (angle_body > -180) angle_body -= 180;
 	angle_body += 180;
+	
 
 	// calculate movement lean
 	f32 lean_walk = (vel.x < 0 ? Maths::Max(-max_vel, vel.x) : Maths::Min(max_vel, vel.x))
@@ -135,7 +136,8 @@ void onTick(CBlob@ this)
 	f32 lean = 0.1f * (1.0f - Maths::Abs(vel.x) / max_vel);
 
 	f32 angle_body_target = (Maths::Lerp(angle_body, angle_body < 0 ? -360 : 360, 1.0f - lean) + 360 + (angle_body < 0 ? -360*lean : 360*lean)) % 360;
-	angle_body = Maths::Lerp(this.get_f32("angle_body"), !onground ? 0 : angle_body_target, lerp_body);
+	angle_body = Maths::Clamp(Maths::Lerp(this.get_f32("angle_body"), !onground ? 0 : angle_body_target, lerp_body), -360.0f, 360.0f);
+
 	this.set_f32("angle_body", angle_body);
 
 	// disable aim dir lean if we are moving
