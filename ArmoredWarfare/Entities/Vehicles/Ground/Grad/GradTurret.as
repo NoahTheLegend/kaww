@@ -1,15 +1,3 @@
-#include "GenericButtonCommon.as";
-#include "Explosion.as"
-#include "Hitters.as"
-#include "PerksCommon.as";
-
-const u16 cooldown_time = 60 * 30;
-const u16 cycle_cooldown = 10;
-const u8 barrel_compression = 0; // max barrel movement
-const u16 recoil = 10;
-const u8 cassette_size = 24;
-const s16 init_gunoffset_angle = -3; // up by so many degrees
-
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");

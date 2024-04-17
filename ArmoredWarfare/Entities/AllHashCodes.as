@@ -14,6 +14,7 @@ enum EntityHash
 
 	//vehicles
 	_m60 = 505863822,
+	_leopard1 = -1002969015,
 	_bc25t = -880830399,
 	_t10 = -360649198,
 	_maus = -544849061,
@@ -52,6 +53,7 @@ enum EntityHash
 	_btrturret = 2047864813,
 	_bradleyturret = 1562236592,
 	_m60turret = -627481976,
+	_leopard1turret = 38248539,
 	_bc25turret = 590831001,
 	_t10turret = -616940740,
 	_mausturret = 56012293,

@@ -1,8 +1,5 @@
 #include "VehicleCommon.as";
-#include "GenericButtonCommon.as";
-#include "Explosion.as";
 #include "Hitters.as"
-#include "PerksCommon.as";
 
 const u8 shootDelay = 3;
 const f32 projDamage = 0.35f;
