@@ -71,10 +71,11 @@ class T10Turret : TurretStats
         super();
 
         name = "t10turret"; hash = _t10turret;
-        cooldown_time = 280; high_angle = 75; low_angle = 97;
+        cooldown_time = 280; high_angle = 75; low_angle = 97; muzzle_offset = -24.0f;
         arm_offset = Vec2f(-19.0f, -27.0f); arm_z = -50.0f; barrel_compression = 11; init_gun_angle = -3;
         mg = "heavygun";
         recoil_force = 850;
+        elevation_speed = 0.85f;
     }
 };
 
@@ -177,6 +178,22 @@ class MausTurret : TurretStats
         // haha shit bitch code
         cooldown_time = 360; high_angle = 77; low_angle = 99; arm_joint_offset = Vec2f(-0.5f, 10.0f);
         arm_offset = Vec2f(-16.0f, -11.0f); arm_z = -50.0f; barrel_compression = 12; init_gun_angle = -2;
-        recoil_force = 500;
+        recoil_force = 500; elevation_speed = 0.75f;
+        shape_offset = Vec2f(-4, -2); recoil_force = 0;
+    }
+};
+
+class Leopard1Turret : TurretStats
+{
+    Leopard1Turret()
+    {
+        super();
+
+        name = "leopard1turret"; hash = _leopard1turret;
+        cooldown_time = 210; high_angle = 72; low_angle = 100; arm_joint_offset = Vec2f(-0.5f, 16.5f);
+        arm_offset = Vec2f(-15.5f, -29.0f); arm_z = -50.0f; barrel_compression = 9; init_gun_angle = -3; muzzle_offset = -26.0f;
+        mg = "heavygun";
+        recoil_force = 750;
+        projectile_vel = -32.5f; elevation_speed = 1.1f;
     }
 };

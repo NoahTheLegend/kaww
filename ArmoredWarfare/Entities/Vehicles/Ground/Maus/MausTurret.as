@@ -1,5 +1,5 @@
 #include "VehicleCommon.as";
-#include "Hitters.as"
+#include "HittersAW.as"
 
 const u8 shootDelay = 3;
 const f32 projDamage = 0.35f;

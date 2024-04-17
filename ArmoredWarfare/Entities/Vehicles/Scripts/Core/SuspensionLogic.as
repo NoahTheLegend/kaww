@@ -34,6 +34,7 @@ void onInit(CBlob@ this)
             break;
         }
         case _m60:
+		case _leopard1:
         case _maus:
         case _pinkmaus:
         case _desertmaus:

@@ -86,7 +86,7 @@ void onTick(CBlob@ this)
     if (stats.mg != "") ManageMG(this, fl);
 
     CShape@ shape = this.getShape();
-    if (shape !is null) shape.SetOffset(Vec2f(fl ? -stats.shape_offset.x : stats.shape_offset.x, -12));
+    if (shape !is null) shape.SetOffset(Vec2f(fl ? -stats.shape_offset.x : stats.shape_offset.x, stats.shape_offset.y));
 
 	f32 currentAngle = this.get_f32("gunelevation");
 	u8 high_angle = this.get_u8("high_angle");
