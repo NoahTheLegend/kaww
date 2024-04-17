@@ -12,10 +12,9 @@ void onInit(CBlob@ this)
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;
-	shape.SetRotationsAllowed(false);
 
 	Vehicle_Setup(this,
-	    2500.0f, // move speed 125
+	    3500.0f, // move speed 125
 	    1.1f,  // turn speed
 	    Vec2f(0.0f, 0.56f), // jump out velocity
 	    false);  // inventory access
