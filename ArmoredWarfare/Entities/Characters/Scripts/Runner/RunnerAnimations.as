@@ -1,3 +1,5 @@
+#define CLIENT_ONLY
+
 #include "KnockedCommon.as";
 #include "PerksCommon.as";
 #include "Perks.as";
@@ -14,7 +16,6 @@ const f32 max_vel = 4; // max lean vel
 
 void onTick(CBlob@ this)
 {
-	if (!isClient()) return;
     CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 	if (!this.isOnScreen()) return;
