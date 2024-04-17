@@ -12,14 +12,6 @@ void onTick(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 
-	bool is_in_inv = this.isInInventory();
-
-	if (is_in_inv)
-	{
-		sprite.SetVisible(!is_in_inv);
-		return;
-	}
-
 	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (point !is null)
 	{
@@ -33,7 +25,6 @@ void onTick(CBlob@ this)
 			s8 ff = (this.isFacingLeft()?-1:1);
 
 			sprite.SetOffset(Vec2f(-1,-2.5f).RotateBy(-angle*ff)*ff);
-			sprite.SetVisible(!b.isAttached() || exposed);
 
 			if (b.isMyPlayer())
 			{
@@ -44,13 +35,11 @@ void onTick(CBlob@ this)
 		else
 		{
 			sprite.SetOffset(Vec2f(2,2.5f));
-			sprite.SetVisible(true);
 		}
 	}
 	else
 	{
 		sprite.SetOffset(Vec2f(2,2.5f));
-		sprite.SetVisible(true);
 	}
 }
 
@@ -59,9 +48,24 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 	return (!blob.hasTag("flesh") && !blob.hasTag("dead") && !blob.hasTag("vehicle") && blob.isCollidable()) || (blob.hasTag("door") && blob.getShape().getConsts().collidable);
 }
 
-
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (this.isAttached()) return 0;
 	return damage;
+}
+
+void onThisAddToInventory(CBlob@ this, CBlob@ inventoryBlob)
+{
+	if (!isClient()) return;
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+	sprite.SetVisible(false);
+}
+
+void onThisRemoveFromInventory(CBlob@ this, CBlob@ inventoryBlob)
+{
+	if (!isClient()) return;
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+	sprite.SetVisible(true);
 }
