@@ -1,8 +1,3 @@
-#include "GenericButtonCommon.as";
-#include "Explosion.as";
-#include "Hitters.as"
-#include "PerksCommon.as";
-
 void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
