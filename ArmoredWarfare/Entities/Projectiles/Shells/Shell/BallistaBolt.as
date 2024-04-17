@@ -13,7 +13,7 @@ void onInit(CBlob@ this)
 	this.Tag("projectile");
 
 	f32 damage_mod = 1.0f;
-	if (this.exists("damage_modifier") && this.get_f32("damage_modifier") > 0.05f) damage_mod = this.get_f32("damage_modifier");
+	if (this.exists("scale_impact_damage") && this.get_f32("scale_impact_damage") > 0.05f) damage_mod = this.get_f32("scale_impact_damage");
 	this.set_f32(projDamageString, 1.0f);
 	this.set_f32(projExplosionRadiusString, 20.0f);
 	this.set_f32(projExplosionDamageString, 15.0f*damage_mod);
@@ -91,10 +91,14 @@ void onTick(CBlob@ this)
 					if (XORRandom(4) == 0) continue;
 
 					f32 rangle = XORRandom(51)-25;
-					CParticle@ p = ParticleAnimated("DustSmallDark.png", pos - this.getVelocity() - Vec2f(-4,4).RotateBy(this.getAngleDegrees()), this.getVelocity().RotateBy(rangle) * 0.33f, this.getVelocity().Angle() + rangle, 0.5f + XORRandom(51) * 0.01f, 4 + XORRandom(3), 0, false);
+					CParticle@ p = ParticleAnimated("DustSmallDark.png",
+						pos - this.getVelocity() - Vec2f(-4,0).RotateBy(this.getAngleDegrees()),
+							-this.getVelocity().RotateBy(rangle) * 0.33f,
+								this.getVelocity().Angle() + rangle,
+									0.5f + XORRandom(51) * 0.01f, 4 + XORRandom(3), 0, false);
 					if (p !is null)
 					{
-						p.damping = 0.75f;
+						p.damping = 0.5f;
 						p.collides = false;
 						p.fastcollision = true;
 						p.growth = -0.025f;
@@ -105,7 +109,7 @@ void onTick(CBlob@ this)
 
 			if (this.getTickSinceCreated() < 5)
 			{
-				CParticle@ p1 = ParticleAnimated("DustSmallDark.png", pos - this.getVelocity(), this.getVelocity()*XORRandom(4)*0.005f, this.getVelocity().Angle(), 1.0f, 5 + XORRandom(2), 0, false);
+				CParticle@ p1 = ParticleAnimated("DustSmallDark.png", pos - this.getVelocity(), -this.getVelocity()*XORRandom(4)*0.005f, this.getVelocity().Angle(), 1.0f, 5 + XORRandom(2), 0, false);
 				if (p1 !is null)
 				{
 					p1.collides = false;

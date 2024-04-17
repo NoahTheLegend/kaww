@@ -127,6 +127,8 @@ void onInit(CBlob@ this)
 		armorRating = 4; break;
 			
 		case _m60: // normal tank
+		case _leopard1:
+		case _leopard1turret:
 		case _bc25t:
 		case _bc25turret:
 		case _artillery:
@@ -176,7 +178,8 @@ void onInit(CBlob@ this)
 
 	s8 weaponRating = 0; // penetration rating
 	f32 linear_length = 4.0f; // explosion depth
-	f32 scale_damage = 1.0f; // damage modifier
+	f32 scale_impact_damage = 1.0f; // direct damage modifier
+	f32 scale_explosion_damage = 1.0f; // explosion damage modifier
 
 	switch(blobHash) // weapon rating and length of linear (map) and circled explosion damage
 	{
@@ -184,7 +187,8 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 6;
 			linear_length = 16.0f;
-			scale_damage = 2.0f;
+			scale_explosion_damage = 2.0f;
+			scale_impact_damage = 2.0f;
 			break;
 		}
 		case _mausturret: // MAUS Shell cannon
@@ -193,28 +197,33 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 5;
 			linear_length = 16.0f;
-			scale_damage = 2.5f;
+			scale_explosion_damage = 2.5f;
+			scale_impact_damage = 1.65f;
 			break;
 		}
 		case _t10turret: // T10 Shell cannon
 		{
 			weaponRating = 4;
 			linear_length = 14.0f;
-			scale_damage = 2.0f;
+			scale_explosion_damage = 2.0f;
+			scale_impact_damage = 1.35f;
 			break;
 		}
 		case _m60turret: // M60 Shell cannon
+		case _leopard1turret:
 		{
 			weaponRating = 3;
 			linear_length = 10.0f;
-			scale_damage = 1.75f;
+			scale_impact_damage = 1.15f;
+			scale_explosion_damage = 1.75f;
 			break;
 		}
 		case _bc25turret:
 		{
 			weaponRating = 2;
 			linear_length = 2.0f;
-			scale_damage = 0.75f;
+			scale_impact_damage = 2.0f;
+			scale_explosion_damage = 0.75f;
 		}
 		case _uh1: // heli
 		case _ah1:
@@ -227,7 +236,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = -2;
 			linear_length = 0.0f;
-			scale_damage = 4.0f;
+			scale_explosion_damage = 4.0f;
 			break;
 		}
 		case _heavygun: // MG
@@ -239,26 +248,22 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 1;
 			linear_length = 2.0f;
-			scale_damage = 1.2f;
+			scale_impact_damage = 0.75f;
+			scale_explosion_damage = 1.2f;
 			break;
 		}
+		case _bradleyturret:
 		case _btrturret: // big APC cannon
 		{
 			weaponRating = 1;
 			linear_length = 2.0f;
-			scale_damage = 1.33f;
-			break;
-		}
-		case _bradleyturret:
-		{
-			weaponRating = -1;
-			linear_length = 8.0f;
-			scale_damage = 1.4f;
+			scale_impact_damage = 0.75f;
+			scale_explosion_damage = 1.33f;
 			break;
 		}
 	}
 	this.set_f32("linear_length", linear_length);
-	this.set_f32("explosion_damage_scale", scale_damage);
+	this.set_f32("explosion_damage_scale", scale_explosion_damage);
 
 	// vulnerabilities
 	float backsideOffset = -1.0f;
@@ -276,6 +281,7 @@ void onInit(CBlob@ this)
 		backsideOffset = 24.0f; break;
 		
 		case _m60: // normal tank
+		case _leopard1:
 		case _btr82a: // big APC
 		case _bradley:
 		case _artillery:
@@ -1063,6 +1069,7 @@ void onDie(CBlob@ this)
 		{
 			case _bc25t:
 			case _m60:
+			case _leopard1:
 			{
 				scrap_amount = 12+XORRandom(8);
 				explosion_radius = 64.0f;
@@ -1193,19 +1200,6 @@ void onDie(CBlob@ this)
 				explosion_damage = 0.5f;
 				break;
 			} // car
-			case _pszh4turret:
-			case _btrturret:
-			case _bradleyturret:
-			case _m60turret:
-			case _gradturret:
-			case _bc25turret:
-			case _t10turret:
-			case _mausturret:
-			case _pinkmausturret:
-			case _desertmausturret:
-			case _bunker:
-			case _heavybunker:
-				break;
 		}
 
 		if (explosion_damage > 0.0f) // explode if damage set 

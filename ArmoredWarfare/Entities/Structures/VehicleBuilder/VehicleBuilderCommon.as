@@ -145,8 +145,16 @@ void buildT3ShopCombined(CBlob@ this)
 	{string[] params = {n_btr,t_btr,bn_btr,d_btr,b,s,ds};
 	makeShopItem(this,params,c_btr-10);}
 
-	{string[] params = {n_bradley,t_bradley,bn_bradley,d_bradley,b,s,ds};
-	makeShopItem(this,params,c_bradley);}
+	if (this.getTeamNum() == 2 || this.getTeamNum() >= 5)
+	{
+		{string[] params = {n_leopard1,t_leopard1,bn_leopard1,d_leopard1,b,s,ds};
+		makeShopItem(this,params,c_leopard1);}
+	}
+	else
+	{
+		{string[] params = {n_bradley,t_bradley,bn_bradley,d_bradley,b,s,ds};
+		makeShopItem(this,params,c_bradley);}
+	}
 
 	{string[] params = {n_m60,t_m60,bn_m60,d_m60,b,s,ds};
 	makeShopItem(this,params,c_m60-10);}
@@ -340,8 +348,16 @@ void buildT3ShopGround(CBlob@ this)
 	{string[] params = {n_btr,t_btr,bn_btr,d_btr,b,s,ds};
 	makeShopItem(this,params,c_btr-10);}
 
-	{string[] params = {n_bradley,t_bradley,bn_bradley,d_bradley,b,s,ds};
-	makeShopItem(this,params,c_bradley);}
+	if (this.getTeamNum() == 2 || this.getTeamNum() >= 5)
+	{
+		{string[] params = {n_leopard1,t_leopard1,bn_leopard1,d_leopard1,b,s,ds};
+		makeShopItem(this,params,c_leopard1);}
+	}
+	else
+	{
+		{string[] params = {n_bradley,t_bradley,bn_bradley,d_bradley,b,s,ds};
+		makeShopItem(this,params,c_bradley);}
+	}
 
 	{string[] params = {n_m60,t_m60,bn_m60,d_m60,b,s,ds};
 	makeShopItem(this,params,c_m60-10);}
