@@ -456,8 +456,9 @@ bool canBePutInInventory(CBlob@ inventoryBlob)
 	return false;
 }
 
-bool doesCollideWithBlob( CBlob@ this, CBlob@ blob )
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (blob is null) return false;
 	if (blob.getName() == "bf109" || blob.getName() == "bomberplane") return false;
 	if (!blob.isCollidable() || blob.isAttached()){
 		return false;
@@ -486,7 +487,6 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		f32 dmg = Maths::Sqrt(impact)*(impact/2);
 		if (isServer()) this.server_Hit(this, this.getPosition(), Vec2f(0, 0), dmg, 0, true);
 		this.set_u32("collision_dmg_delay", getGameTime()+30);
-		if (dmg >= this.getHealth()) ExplodeInventory(this);
 	}
 
 	if (blob !is null && (blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck"))
@@ -496,7 +496,6 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		f32 mod_target = 6.0f;
 
 		f32 dmgself = this.getVelocity().getLength()*mod_self;
-		if (dmgself >= this.getHealth()) ExplodeInventory(this);
 		if (isServer())
 		{
 			blob.server_Hit(this, this.getPosition(), this.getVelocity(), dmgself, Hitters::fall);
