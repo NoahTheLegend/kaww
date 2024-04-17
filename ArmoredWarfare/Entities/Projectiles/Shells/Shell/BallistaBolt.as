@@ -74,7 +74,7 @@ void onTick(CBlob@ this)
 
 			if (this.getTickSinceCreated() > 0)
 			{
-				CParticle@ p = ParticleAnimated("LargeSmoke", pos - this.getVelocity(), this.getVelocity() * -0.1f, -this.getVelocity().Angle()-90 + XORRandom(11)-10, 0.4f + XORRandom(40) * 0.01f, 3 + XORRandom(21) * 0.1f, XORRandom(70) * -0.00005f, true);
+				CParticle@ p = ParticleAnimated("LargeSmoke", pos - this.getVelocity(), this.getVelocity() * -0.1f, 180 + -this.getVelocity().Angle()-90 + XORRandom(11)-10, 0.4f + XORRandom(40) * 0.01f, 3 + XORRandom(21) * 0.1f, XORRandom(70) * -0.00005f, true);
 				if (p !is null)
 				{
 					p.collides = false;
