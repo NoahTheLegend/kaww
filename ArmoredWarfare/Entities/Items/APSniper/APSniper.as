@@ -231,7 +231,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.TakeBlob("specammo", fire_cost);
 
 			shootVehicleGun(blob.getNetworkID(), this.getNetworkID(),
-				angle, this.getPosition()-Vec2f(0,this.isFacingLeft()?-4:4).RotateBy(angle),
+				angle, this.getPosition()-Vec2f(0,this.isFacingLeft()?-1:1).RotateBy(angle),
 				aimPos, 0, 1, 4, this.get_f32("damage_body"), this.get_f32("damage_head"), 6,
 					this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));
 
