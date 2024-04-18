@@ -1366,8 +1366,9 @@ void ClientFire(CBlob@ this, PerkStats@ stats, const s16 charge_time, InfantryIn
 
 		if (this.isMyPlayer())
 		{
-			ShakeScreen((Vec2f(infantry.recoil_x - XORRandom(infantry.recoil_x*4) + 1, -infantry.recoil_y + XORRandom(infantry.recoil_y) + 6)), infantry.recoil_length*2, this.getInterpolatedPosition());
-			ShakeScreen(48, 28, thispos);
+			Vec2f spos = getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos());
+			ShakeScreen((Vec2f(infantry.recoil_x - XORRandom(infantry.recoil_x*4) + 1, -infantry.recoil_y + XORRandom(infantry.recoil_y) + 6)), infantry.recoil_length*2, spos);
+			ShakeScreen(48, 28, spos);
 		}
 	}
 	else
@@ -1394,10 +1395,11 @@ void ClientFire(CBlob@ this, PerkStats@ stats, const s16 charge_time, InfantryIn
 				f32 mod = 0.5; // make some smart stuff here?
 				if (this.isKeyPressed(key_action2) && this.isOnGround()) mod *= 0.25;
 
+				Vec2f spos = getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos());
 				float recoilX = infantry.recoil_x;
 				float recoilY = infantry.recoil_y;
-				ShakeScreen((Vec2f(recoilX - XORRandom(recoilX*2) + 1, -recoilY + XORRandom(recoilY) + 1) * mod), infantry.recoil_length*mod, this.getInterpolatedPosition());
-				ShakeScreen(28, 10, pos);
+				ShakeScreen((Vec2f(recoilX - XORRandom(recoilX*1.5f) + 1, -recoilY + XORRandom(recoilY*0.5f) + 1) * mod), infantry.recoil_length*mod, spos);
+				ShakeScreen(5, 5, spos);
 
 				this.set_u8("inaccuracy", Maths::Min(infantry.inaccuracy_cap, this.get_u8("inaccuracy") + infantry.inaccuracy_pershot * (this.hasTag("sprinting")?2.0f:1.0f)));
 
@@ -1432,7 +1434,8 @@ void ShootRPG(CBlob @this, Vec2f arrowPos, Vec2f aimPos, f32 arrowspeed)
 		this.SendCommand(this.getCommandID("shoot rpg"), params);
 	}
 
-	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
+	Vec2f spos = getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos());
+	if (this.isMyPlayer()) ShakeScreen(28, 8, spos);
 }
 
 void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, float bulletSpread, u8 burstSize, s16 type)
@@ -1452,7 +1455,8 @@ void ShootBullet( CBlob@ this, Vec2f arrowPos, Vec2f aimPos, float arrowspeed, f
 		}
 	}
 
-	if (this.isMyPlayer()) ShakeScreen(28, 8, this.getPosition());
+	Vec2f spos = getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos());
+	if (this.isMyPlayer()) ShakeScreen(5, 5, spos);
 }
 
 const f32 _fire_length_raw = 64.0f;

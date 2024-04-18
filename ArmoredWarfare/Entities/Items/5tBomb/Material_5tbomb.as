@@ -27,7 +27,7 @@ void onInit(CBlob@ this)
 
 void DoExplosion(CBlob@ this, Vec2f velocity)
 {
-	ShakeScreen(512, 64, this.getPosition());
+	ShakeScreen(1080, 128, this.getPosition());
 	f32 modifier = this.get_u8("boom_start") / 3.0f;
 	
 	this.set_f32("map_damage_radius", 14.0f * this.get_u8("boom_start"));
