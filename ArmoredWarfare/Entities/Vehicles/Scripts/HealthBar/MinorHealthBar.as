@@ -66,13 +66,15 @@ void onRender(CSprite@ this)
 	if (inGround)
 		{ return; }
 
-	const f32 renderRadius = (blob.getRadius()) * 1.95f;
+	const f32 renderRadius = (blob.getRadius()) * 3.0f;
 	bool mouseOnBlob = (mouseWorld - center).getLength() < renderRadius;
 	
 	const f32 perc  = blob.getHealth() / initialHealth;
 	const f32 perc2 = blob.get_f32(linadj_hp) / initialHealth;
 
-	if (mouseOnBlob || Maths::Abs(perc - perc2) > 0.03)
+	CBlob@ localblob = getLocalPlayerBlob();
+
+	if (mouseOnBlob && (localblob is null || (localblob !is null && localblob.getDistanceTo(blob) < 312.0f)))
 	{
 		if (initialHealth > 0.0f)
 		{
