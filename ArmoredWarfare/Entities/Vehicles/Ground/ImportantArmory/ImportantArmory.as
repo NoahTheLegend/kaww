@@ -665,6 +665,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (customData == Hitters::builder && hitterBlob.getTeamNum() == this.getTeamNum()) return 0;
 	if (hitterBlob.hasTag("plane")) return damage*0.075f;
 
 	if (customData == Hitters::fire) return damage / 4;
