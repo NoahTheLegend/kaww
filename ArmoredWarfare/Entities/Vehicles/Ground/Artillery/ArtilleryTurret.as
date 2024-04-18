@@ -7,6 +7,7 @@ void onInit(CBlob@ this)
 	this.Tag("fireshe");
 	this.Tag("pass_60sec");
 	this.Tag("artillery");
+	this.Tag("no turn");
 	this.set_u16("gui_mat_icon", 50);
 
 	CSprite@ sprite = this.getSprite();
