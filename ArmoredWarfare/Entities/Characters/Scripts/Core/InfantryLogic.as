@@ -1331,7 +1331,7 @@ bool canSend( CBlob@ this )
 void ClientFire(CBlob@ this, PerkStats@ stats, const s16 charge_time, InfantryInfo@ infantry, Vec2f pos)
 {
 	if (this.hasTag("had_menus") || this.getTickSinceCreated() <= 5) return;
-	Vec2f thisAimPos = this.getAimPos() - Vec2f(0,4);
+	Vec2f thisAimPos = this.getAimPos();
 
 	float angle = Maths::ATan2(thisAimPos.y - pos.y, thisAimPos.x - pos.x) * 180 / 3.14159;
 	angle += -0.099f + (XORRandom(2) * 0.01f);
@@ -1360,13 +1360,15 @@ void ClientFire(CBlob@ this, PerkStats@ stats, const s16 charge_time, InfantryIn
 		targetFactor = targetDistance / 367.0f;
 		f32 mod = this.isKeyPressed(key_action2) && this.isOnGround() ? 0.1f : 0.3f;
 
-		ShootRPG(this, thispos - Vec2f(-24,0).RotateBy(angle), this.getAimPos() + Vec2f(-(1 + this.get_u8("inaccuracy")) + XORRandom((180 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, -(3 + this.get_u8("inaccuracy")) + XORRandom(180 + this.get_u8("inaccuracy")) - 50)*mod * targetFactor, 8.0f * infantry.bullet_velocity);
-	
+		f32 inaccuracy = (float(this.get_u8("inaccuracy")))/perk_mod;
+		f32 spread = (inaccuracy/infantry.inaccuracy_cap) * 45.0f;
+
+		ShootRPG(this, thispos, this.getAimPos(), 8.0f * infantry.bullet_velocity, spread);
 		ParticleAnimated("SmallExplosion3", pos + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -2.0f).RotateBy(this.isFacingLeft()?angle+180:angle), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.75f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 	}
 	else
 	{
-		ShootBullet(this, thispos - Vec2f(0,1), thisAimPos, infantry.bullet_velocity,
+		ShootBullet(this, thispos - Vec2f(0,2), thisAimPos, infantry.bullet_velocity,
 			bulletSpread*targetFactor, infantry.burst_size, this.get_s16("bullet_type"));
 	}
 
@@ -1406,7 +1408,7 @@ void ClientFire(CBlob@ this, PerkStats@ stats, const s16 charge_time, InfantryIn
 	}
 }
 
-void ShootRPG(CBlob @this, Vec2f arrowPos, Vec2f aimPos, f32 arrowspeed)
+void ShootRPG(CBlob @this, Vec2f arrowPos, Vec2f aimPos, f32 arrowspeed, f32 spread)
 {
 	if (canSend(this))
 	{
@@ -1414,8 +1416,9 @@ void ShootRPG(CBlob @this, Vec2f arrowPos, Vec2f aimPos, f32 arrowspeed)
 		arrowVel.Normalize();
 		arrowVel *= arrowspeed;
 		CBitStream params;
-		params.write_Vec2f(arrowPos);
+		params.write_Vec2f(arrowPos - Vec2f(0,4));
 		params.write_Vec2f(arrowVel);
+		params.write_f32(spread);
 
 		this.SendCommand(this.getCommandID("shoot rpg"), params);
 	}
@@ -1625,6 +1628,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (!params.saferead_Vec2f(arrowPos)) return;
 		Vec2f arrowVel;
 		if (!params.saferead_Vec2f(arrowVel)) return;
+		f32 spread;
+		if (!params.saferead_f32(spread)) return;
+
 		ArcherInfo@ archer;
 		if (!this.get("archerInfo", @archer)) return;
 
@@ -1636,7 +1642,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		if (getNet().isServer())
 		{
-			CBlob@ proj = CreateRPGProj(this, arrowPos, arrowVel);
+			spread *= 10.0f;
+			CBlob@ proj = CreateRPGProj(this, arrowPos, arrowVel.RotateBy((XORRandom(spread)-spread/2)/10.0f));
 			proj.server_SetTimeToDie(3);
 		}
 

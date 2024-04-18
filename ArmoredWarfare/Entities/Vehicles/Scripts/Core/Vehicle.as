@@ -187,7 +187,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 6;
 			linear_length = 16.0f;
-			scale_explosion_damage = 2.0f;
+			scale_explosion_damage = 6.0f;
 			scale_impact_damage = 2.0f;
 			break;
 		}
@@ -263,7 +263,7 @@ void onInit(CBlob@ this)
 		}
 	}
 	this.set_f32("linear_length", linear_length);
-	this.set_f32("explosion_damage_scale", scale_explosion_damage);
+	this.set_f32("infantry_damage_scale", scale_explosion_damage);
 
 	// vulnerabilities
 	float backsideOffset = -1.0f;

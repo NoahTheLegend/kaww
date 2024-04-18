@@ -81,7 +81,7 @@ void onTick(CBlob@ this)
 				trail.fastcollision = true;
 				trail.setRenderStyle(RenderStyle::additive);
 				trail.gravity = Vec2f_zero;
-				trail.damping = 0.9f + XORRandom(50)*0.001f;
+				trail.damping = 0.9f + XORRandom(51)*0.001f;
 				trail.timeout = 5+XORRandom(6);
 			}
 		}
@@ -230,7 +230,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 	Vec2f position = this.getPosition();
 	Vec2f tip_position = position + direction * 13.0f;
 	Vec2f middle_position = position + direction * 6.0f;
-	Vec2f tail_position = position - direction * 12.0f;
+	Vec2f tail_position = position - direction * 8.0f;
 
 	Vec2f[] positions =
 	{

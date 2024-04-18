@@ -505,7 +505,7 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 							bullet.server_setTeamNum(team);
 							bullet.set_f32("scale_impact_damage", this.get_f32("scale_impact_damage"));
 							bullet.set_f32("linear_length", this.get_f32("linear_length"));
-							bullet.set_f32("explosion_damage_scale", this.get_f32("explosion_damage_scale"));
+							bullet.set_f32("infantry_damage_scale", this.get_f32("infantry_damage_scale"));
 							if (this.hasTag("apc")) bullet.Tag("small_bolt");
 							if (this.hasTag("fireshe")) bullet.Tag("HE_shell");
 							bullet.SetDamageOwnerPlayer(caller.getPlayer());
