@@ -54,6 +54,8 @@ void onInit(CBlob@ this)
 	sprite.SetEmitSound("Hydraulics.ogg");
 	sprite.SetEmitSoundPaused(true);
 	sprite.SetEmitSoundVolume(1.25f);
+
+	this.set_bool("turned", false);
 }
 
 void onChangeTeam(CBlob@ this, const int oldTeam)
@@ -122,10 +124,11 @@ void onTick(CBlob@ this)
 	if ((!was_fl && fl) || (was_fl && !fl))
 		currentAngle = 360 - currentAngle;
 	this.set_f32("gunelevation", currentAngle);
-
+	
 	u8 high_angle = this.get_u8("high_angle");
 	u8 low_angle = this.get_u8("low_angle");
 	this.set_bool("fl", fl);
+	bool turned = this.get_bool("turned");
 
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
@@ -140,22 +143,44 @@ void onTick(CBlob@ this)
 		f32 angle = getAngle(this, v.charge, stats, v);
 		f32 targetAngle;
 		bool isOperator = false;
+		f32 deg = this.getAngleDegrees();
 		
 		CSprite@ sprite = this.getSprite();
 
-		AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
-		if (gunner !is null && gunner.getOccupied() !is null && !broken)
+		AttachmentPoint@ vehicle = this.getAttachments().getAttachmentPointByName("TURRET");
+		if (vehicle !is null && vehicle.getOccupied() !is null)
 		{
-			Vec2f startpos = gunner.getPosition();
-			Vec2f aim_vec = startpos - gunner.getAimPos();
-			
-			CPlayer@ p = gunner.getOccupied().getPlayer();
-			PerkStats@ stats;
-			if (p !is null && p.get("PerkStats", @stats))
+			CBlob@ vb = vehicle.getOccupied();
+			bool vbfl = vb.isFacingLeft();
+
+			AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
+			if (gunner !is null && gunner.getOccupied() !is null && !broken)
 			{
-				isOperator = stats.id == Perks::operator;
-				this.set_u8("high_angle", this.get_u8("init_high_angle") - stats.top_angle);
-				this.set_u8("low_angle", this.get_u8("init_low_angle") + stats.top_angle);
+				Vec2f startpos = gunner.getPosition();
+				Vec2f aim_vec = startpos - gunner.getAimPos();
+
+				//todo: fix turret blob not rotating sometimes & reverse low and high angles when turned
+				//if (!this.hasTag("no turn"))
+				//{
+				//	Vec2f rel_vec = aim_vec;
+				//	rel_vec.RotateBy(-deg);
+				//	this.SetFacingLeft(rel_vec.x > 0);
+				//	this.set_bool("turned", vbfl ? rel_vec.x < 0 : rel_vec.x > 0);
+				//	turned = this.get_bool("turned");
+				//}
+
+				CPlayer@ p = gunner.getOccupied().getPlayer();
+				PerkStats@ stats;
+				if (p !is null && p.get("PerkStats", @stats))
+				{
+					isOperator = stats.id == Perks::operator;
+					this.set_u8("high_angle", this.get_u8("init_high_angle") - stats.top_angle);
+					this.set_u8("low_angle", this.get_u8("init_low_angle") + stats.top_angle);
+				}
+			}
+			else
+			{
+				this.SetFacingLeft(turned ? !vbfl : vbfl);
 			}
 		}
 
@@ -201,9 +226,6 @@ void onTick(CBlob@ this)
 				}
 			}
 		}
-
-		if (fl) this.set_f32("gunelevation", Maths::Min(360.0f-high_angle, Maths::Max(this.get_f32("gunelevation") , 360.0f-low_angle)));
-		else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
 	}
 
 	if (fl) this.set_f32("gunelevation", Maths::Min(360.0f-high_angle, Maths::Max(this.get_f32("gunelevation") , 360.0f-low_angle)));
@@ -214,8 +236,9 @@ void onTick(CBlob@ this)
 	if (arm !is null)
 	{
 		arm.ResetTransform();
-		arm.RotateBy(this.get_f32("gunelevation"), stats.arm_joint_offset);
-		arm.SetOffset(stats.arm_offset + (fl ? Vec2f(-1, -1) : Vec2f(0,0)));
+		u8 turn = turned ? 180 : 0;
+		arm.RotateBy(this.get_f32("gunelevation") + turn, stats.arm_joint_offset);
+		arm.SetOffset(stats.arm_offset + (fl || turned ? Vec2f(-1, -1) : Vec2f(0,0)));
         arm.SetRelativeZ(-50.0f);
 
 		if (this.getName() == "bc25turret")
@@ -288,10 +311,12 @@ f32 getAngle(CBlob@ this, const u8 charge, TurretStats@ stats, VehicleInfo@ v)
 	AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
 
 	bool not_found = true;
+	bool turned = this.get_bool("turned");
 
 	if (gunner !is null && gunner.getOccupied() !is null && !gunner.isKeyPressed(key_action2) && !this.hasTag("broken"))
 	{
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+		if (turned) aim_vec.RotateBy(180);
 
 		if ((!fl && aim_vec.x < 0) ||
 		        (fl && aim_vec.x > 0))

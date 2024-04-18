@@ -185,6 +185,8 @@ void onRender(CSprite@ this)
 		else
 		{
 			f32 angleWithNormal = blob.get_f32("gunelevation");
+			bool turned = blob.get_bool("turned");
+			if (turned) angleWithNormal += 180;
 			
 			f32 offset = 90.0f;
 			if (blob.isFacingLeft()) offset = 270.0f;
