@@ -88,6 +88,7 @@ void onInit(CBlob@ this)
 		case _pinkmaus:
 		case _desertmaus:
 		case _t10:
+		case _m103:
 		{
 			this.set_string("engine_start", "HeavyEngineStart_tank");
 			break;
@@ -124,6 +125,8 @@ void onInit(CBlob@ this)
 		case _importantarmory:
 		case _importantarmoryt2:
 		case _m60turret: // M60 Shell cannon
+		case _m103:
+		case _m103turret:
 		armorRating = 4; break;
 			
 		case _m60: // normal tank
@@ -209,6 +212,7 @@ void onInit(CBlob@ this)
 			scale_impact_damage = 1.35f;
 			break;
 		}
+		case _m103turret:
 		case _m60turret: // M60 Shell cannon
 		case _leopard1turret:
 		{
@@ -273,6 +277,7 @@ void onInit(CBlob@ this)
 		case _maus: // maus
 		case _pinkmaus:
 		case _desertmaus:
+		case _m103:
 		backsideOffset = 32.0f; break;
 
 		case _t10: // T10
@@ -315,9 +320,11 @@ void onInit(CBlob@ this)
 		case _desertmaus:
 		intake = -50.0f; break;
 
+		case _m103:
+		intake = -40.0f; break;
+
 		case _t10: // T10
-		intake = -25.0f;
-		break;
+		intake = -25.0f; break;
 
 		case _bc25t: // normal tank
 		intake = -50.0f; break;
@@ -1078,6 +1085,7 @@ void onDie(CBlob@ this)
 				break;
 			} // normal tank
 			case _t10:
+			case _m103:
 			{
 				scrap_amount = 16+XORRandom(8);
 				explosion_radius = 72.0f;

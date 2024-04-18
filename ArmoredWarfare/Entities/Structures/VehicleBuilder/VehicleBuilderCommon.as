@@ -24,6 +24,10 @@ void buildT1ShopCombined(CBlob@ this)
 	{string[] params = {n_m60,t_m60,bn_m60,d_m60,b,s,ds};
 	makeShopItem(this,params,c_m60);}
 	
+	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
+	{string[] params = {n_m103,t_m103,bn_m103,d_m103,b,s,ds};
+	makeShopItem(this,params,c_m103);}
+	else
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10);}
 
@@ -82,6 +86,10 @@ void buildT2ShopCombined(CBlob@ this)
 	{string[] params = {n_bc25t,t_bc25t,bn_bc25t,d_bc25t,b,s,ds};
 	makeShopItem(this,params,c_bc25t);}
 
+	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
+	{string[] params = {n_m103,t_m103,bn_m103,d_m103,b,s,ds};
+	makeShopItem(this,params,c_m103-5);}
+	else
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-5);}
 
@@ -162,6 +170,10 @@ void buildT3ShopCombined(CBlob@ this)
 	{string[] params = {n_bc25t,t_bc25t,bn_bc25t,d_bc25t,b,s,ds};
 	makeShopItem(this,params,c_bc25t-5);}
 
+	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
+	{string[] params = {n_m103,t_m103,bn_m103,d_m103,b,s,ds};
+	makeShopItem(this,params,c_m103-10);}
+	else
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-10);}
 
@@ -242,6 +254,10 @@ void buildT1ShopGround(CBlob@ this)
 	{string[] params = {n_m60,t_m60,bn_m60,d_m60,b,s,ds};
 	makeShopItem(this,params,c_m60);}
 	
+	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
+	{string[] params = {n_m103,t_m103,bn_m103,d_m103,b,s,ds};
+	makeShopItem(this,params,c_m103);}
+	else
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10);}
 
@@ -295,6 +311,10 @@ void buildT2ShopGround(CBlob@ this)
 	{string[] params = {n_bc25t,t_bc25t,bn_bc25t,d_bc25t,b,s,ds};
 	makeShopItem(this,params,c_bc25t);}
 
+	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
+	{string[] params = {n_m103,t_m103,bn_m103,d_m103,b,s,ds};
+	makeShopItem(this,params,c_m103-5);}
+	else
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-5);}
 
@@ -365,6 +385,10 @@ void buildT3ShopGround(CBlob@ this)
 	{string[] params = {n_bc25t,t_bc25t,bn_bc25t,d_bc25t,b,s,ds};
 	makeShopItem(this,params,c_bc25t-5);}
 
+	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
+	{string[] params = {n_m103,t_m103,bn_m103,d_m103,b,s,ds};
+	makeShopItem(this,params,c_m103-10);}
+	else
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-10);}
 

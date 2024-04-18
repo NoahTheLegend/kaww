@@ -208,3 +208,21 @@ class Leopard1Turret : TurretStats
         bullet_pos_offset = Vec2f(0,-2.5f);
     }
 };
+
+class M103Turret : TurretStats
+{
+    M103Turret()
+    {
+        super();
+
+        name = "m103turret"; hash = _m103turret;
+        cooldown_time = 180; high_angle = 72; low_angle = 105;
+        arm_offset = Vec2f(-19.0f, -29.0f); arm_z = -50.0f; barrel_compression = 10; init_gun_angle = -3;
+        mg = "heavygun";
+        recoil_force = 650;
+        ammo_quantity = 24;
+        muzzle_offset = -24.0f;
+        bullet_pos_offset = Vec2f(0,-7.5f);
+        elevation_speed = 0.65f;
+    }
+};
