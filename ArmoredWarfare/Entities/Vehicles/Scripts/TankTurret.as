@@ -88,9 +88,15 @@ void onTick(CBlob@ this)
     CShape@ shape = this.getShape();
     if (shape !is null) shape.SetOffset(Vec2f(fl ? -stats.shape_offset.x : stats.shape_offset.x, stats.shape_offset.y));
 
+	bool was_fl = this.get_bool("fl");
 	f32 currentAngle = this.get_f32("gunelevation");
+	if ((!was_fl && fl) || (was_fl && !fl))
+		currentAngle = 360 - currentAngle;
+	this.set_f32("gunelevation", currentAngle);
+
 	u8 high_angle = this.get_u8("high_angle");
 	u8 low_angle = this.get_u8("low_angle");
+	this.set_bool("fl", fl);
 
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
