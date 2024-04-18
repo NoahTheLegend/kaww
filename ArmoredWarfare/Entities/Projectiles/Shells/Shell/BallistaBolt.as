@@ -68,10 +68,26 @@ void onTick(CBlob@ this)
 
 	if (isClient() && !v_fastrender)
 	{
+		Vec2f pos = this.getPosition();
+
+		for (u8 i = 0; i < 3; i++)
+		{
+			CParticle@ trail = ParticlePixelUnlimited(pos+Vec2f(XORRandom(12)-6,
+				XORRandom(4)-2)-this.getVelocity(), this.getVelocity()/2, SColor(255,255,175+XORRandom(75),0), false);
+			if (trail !is null)
+			{
+				trail.deadeffect = -1;
+				trail.collides = false;
+				trail.fastcollision = true;
+				trail.setRenderStyle(RenderStyle::additive);
+				trail.gravity = Vec2f_zero;
+				trail.damping = 0.9f + XORRandom(50)*0.001f;
+				trail.timeout = 5+XORRandom(6);
+			}
+		}
+
 		if (this.hasTag("rpg"))
 		{
-			Vec2f pos = this.getPosition();
-
 			if (this.getTickSinceCreated() > 0)
 			{
 				CParticle@ p = ParticleAnimated("LargeSmoke", pos - this.getVelocity(), this.getVelocity() * -0.1f, 180 + -this.getVelocity().Angle()-90 + XORRandom(11)-10, 0.4f + XORRandom(40) * 0.01f, 3 + XORRandom(21) * 0.1f, XORRandom(70) * -0.00005f, true);
