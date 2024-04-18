@@ -173,34 +173,23 @@ void ManageMG(CBlob@ this, bool fl)
 	}
 }
 
-void ArtilleryFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge)
+void ArtilleryFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge, Vec2f bullet_pos)
 {
 	TurretStats@ stats;
     if (!this.get("TurretStats", @stats)) return;
 
-	this.getSprite().PlayRandomSound(v.getCurrentAmmo().fire_sound, 1.75f, 0.8f);
+	this.getSprite().PlayRandomSound(v.getCurrentAmmo().fire_sound);
 	if (bullet !is null)
 	{
-		bullet.Tag("shell");
-		u8 charge_prop = _charge;
-
-        Vec2f pos = this.getPosition();
+		Vec2f pos = this.getPosition();
         bool fl = this.isFacingLeft();
         s8 ff = fl ? -1 : 1;
 
         f32 deg = this.getAngleDegrees();
 		f32 angle = this.get_f32("gunelevation") + deg;
 		Vec2f vel = Vec2f(0.0f, stats.projectile_vel+XORRandom(16)*0.1f).RotateBy(angle);
-		bullet.setVelocity(vel);
-
-		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
-        if (arm is null)
-        {
-            bullet.server_Die();
-            return;
-        }
 		
-		Vec2f bullet_pos = arm.getWorldTranslation().RotateBy(deg, this.getPosition()) + Vec2f(ff * stats.arm_height, stats.muzzle_offset).RotateBy(angle);
+		bullet.setVelocity(vel);
 		bullet.setPosition(bullet_pos);
 
 		bullet.set_f32("proj_ex_radius", 48.0f);
@@ -269,7 +258,7 @@ void ArtilleryFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge)
 	CalculateCooldown(this, stats, v, _charge);
 }
 
-void GradFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge)
+void GradFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge, Vec2f bullet_pos)
 {
 	TurretStats@ stats;
     if (!this.get("TurretStats", @stats)) return;
@@ -283,17 +272,9 @@ void GradFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge)
 
         f32 deg = this.getAngleDegrees();
 		f32 angle = this.get_f32("gunelevation") + deg;
-		Vec2f vel = Vec2f(0.0f, stats.projectile_vel+XORRandom(16)*0.1f).RotateBy(angle);
-		bullet.setVelocity(vel);
+		Vec2f vel = Vec2f(0.0f, stats.projectile_vel+XORRandom(11)*0.1f).RotateBy(angle);
 
-		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
-        if (arm is null)
-        {
-            bullet.server_Die();
-            return;
-        }
-		
-		Vec2f bullet_pos = arm.getWorldTranslation().RotateBy(deg, this.getPosition()) + Vec2f(ff * stats.arm_height, stats.muzzle_offset).RotateBy(angle);
+		bullet.setVelocity(vel);
 		bullet.setPosition(bullet_pos);
 
 		bullet.set_f32("map_damage_radius", 8);
