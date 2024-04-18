@@ -125,8 +125,8 @@ void onInit(CBlob@ this)
 		case _importantarmory:
 		case _importantarmoryt2:
 		case _m60turret: // M60 Shell cannon
-		case _m103:
 		case _m103turret:
+		case _m103:
 		armorRating = 4; break;
 			
 		case _m60: // normal tank
@@ -213,6 +213,13 @@ void onInit(CBlob@ this)
 			break;
 		}
 		case _m103turret:
+		{
+			weaponRating = 3;
+			linear_length = 12.0f;
+			scale_explosion_damage = 1.35f;
+			scale_impact_damage = 1.2f;
+			break;
+		}
 		case _m60turret: // M60 Shell cannon
 		case _leopard1turret:
 		{
@@ -277,7 +284,6 @@ void onInit(CBlob@ this)
 		case _maus: // maus
 		case _pinkmaus:
 		case _desertmaus:
-		case _m103:
 		backsideOffset = 32.0f; break;
 
 		case _t10: // T10
@@ -291,6 +297,7 @@ void onInit(CBlob@ this)
 		case _bradley:
 		case _artillery:
 		case _barge:
+		case _m103:
 		backsideOffset = 20.0f; break;
 
 		case _pszh4: // smol APC
