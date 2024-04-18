@@ -142,7 +142,7 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos()+Vec2f(0,8);
+		Vec2f aim_vec = this.getPosition() - gunner.getAimPos();
 		//aim_vec.RotateBy(-this.getAngleDegrees());
 
 		if (this.isAttached())
