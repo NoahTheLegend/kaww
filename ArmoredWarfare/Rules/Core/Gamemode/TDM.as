@@ -10,8 +10,8 @@
 #include "Perks.as";
 
 const u32 min_gametime_to_increment = 20 * 30*60;
-const int max_matches_before_restart = 5; // change this in TDM_interface.as too
-const u16 restart_delay = 450; // this too
+const int max_matches_before_restart = 5; // change this in TDM_interface.as
+const u16 restart_delay = 450; // also this
 const u8 MAX_BOTS = 8; // fills while server's pop is lesser than value
 const bool autorestart = false;
 

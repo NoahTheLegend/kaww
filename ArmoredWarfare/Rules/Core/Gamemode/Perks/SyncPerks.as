@@ -49,7 +49,7 @@ void onInit(CRules@ this)
     }
 }*/
 
-/*
+
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
     if (!isServer()) return;
@@ -84,7 +84,7 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
     {
         this.SendCommand(this.getCommandID("sync_perks_to_player"), params, player);
     }
-}*/
+}
 
 void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 {
