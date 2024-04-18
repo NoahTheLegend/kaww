@@ -5,7 +5,7 @@ void onInit(CRules@ this)
     this.addCommandID("sync_perks_to_player");
 }
 
-void onTick(CRules@ this)
+/*void onTick(CRules@ this)
 {
     if (!isServer()) return;
 
@@ -47,7 +47,7 @@ void onTick(CRules@ this)
             this.SendCommand(this.getCommandID("sync_perks_to_player"), params, player);
         }
     }
-}
+}*/
 
 /*
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
