@@ -75,6 +75,12 @@ void LoadStats(CBlob@ this)
 			stats = override_stats;
 			break;
 		}
+		case _m103turret:
+		{
+			M103Turret override_stats;
+			stats = override_stats;
+			break;
+		}
     }
 
 	this.set("TurretStats", @stats);
