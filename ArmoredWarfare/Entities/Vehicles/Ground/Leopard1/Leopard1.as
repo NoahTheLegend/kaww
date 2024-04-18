@@ -3,6 +3,11 @@
 #include "Hitters.as"
 #include "MakeDirtParticles.as"
 #include "TracksHandler.as"
+#include "TeamColorCollections.as";
+#include "ProgressBar.as";
+
+const int smoke_cooldown = 1*30;
+const u8 smoke_amount = 32;
 
 void onInit(CBlob@ this)
 {
@@ -10,6 +15,10 @@ void onInit(CBlob@ this)
 	this.Tag("tank");
 	this.Tag("deal_bunker_dmg");
 	this.Tag("engine_can_get_stuck");
+
+	this.set_u32("smoke_endtime", smoke_cooldown);
+	this.set_f32("smoke_time", smoke_cooldown); // load immediately
+	this.addCommandID("release smoke");
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
@@ -120,6 +129,65 @@ void onInit(CBlob@ this)
 	}	
 }
 
+void ReleaseSmoke(CBlob@ this)
+{
+	CBitStream params;
+	this.SendCommand(this.getCommandID("release smoke"), params);
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
+{
+	if (cmd == this.getCommandID("release smoke"))
+	{
+		if (this.get_f32("smoke_time") <= this.get_u32("smoke_endtime")) return;
+		this.set_f32("smoke_time", 0);
+
+		Bar@ bars;
+		if (!this.get("Bar", @bars))
+		{
+			Bar setbars;
+    		setbars.gap = 20.0f;
+    		this.set("Bar", setbars);
+		}
+		if (this.get("Bar", @bars))
+		{
+			if (!hasBar(bars, "smoke"))
+			{
+				SColor team_front = getNeonColor(this.getTeamNum(), 0);
+				ProgressBar setbar;
+				setbar.Set(this.getNetworkID(), "smoke", Vec2f(80.0f, 16.0f), false, Vec2f(0, 56), Vec2f(2, 2), back, team_front,
+					"smoke_time", this.get_u32("smoke_endtime"), 0.33f, 5, 5, false, "");
+
+    			bars.AddBar(this.getNetworkID(), setbar, true);
+			}
+		}
+		
+		if (getNet().isServer())
+		{
+			for (u8 i = 0; i < smoke_amount; i++)
+			{
+				Vec2f vel = Vec2f(12.5f+i, 0).RotateBy(XORRandom(180)+180);
+				vel.y *= 0.66f;
+				CParticle@ p = ParticleAnimated("LargeSmokeWhite.png",
+					this.getPosition(),
+						vel,
+							XORRandom(360),
+								5.5f+XORRandom(26)*0.1f, 35 + XORRandom(11), 0.0025f+XORRandom(125)*0.0001f, false);
+				if (p !is null)
+				{
+					p.collides = true;
+					p.Z = 550.0f;
+					p.fastcollision = true;
+					p.deadeffect = -1;
+					p.damping = 0.8f+XORRandom(51)*0.001f;
+					p.bounce = 0.1f;
+					p.lighting_delay = 30;
+				}
+			}
+		} 
+	}
+}
+
 void onTick(CBlob@ this)
 {
 	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
@@ -135,6 +203,8 @@ void onTick(CBlob@ this)
 		}
 	}	
 
+	this.add_f32("smoke_time", 1);
+
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		if (getGameTime()%30==0)
@@ -143,6 +213,31 @@ void onTick(CBlob@ this)
 			{
 				CBlob@ tur = point.getOccupied();
 				if (isServer() && tur !is null) tur.server_setTeamNum(this.getTeamNum());
+			}
+		}
+
+		AttachmentPoint@[] aps;
+		this.getAttachmentPoints(@aps);
+
+		for (int a = 0; a < aps.length; a++)
+		{
+			AttachmentPoint@ ap = aps[a];
+			if (ap !is null)
+			{
+				CBlob@ hooman = ap.getOccupied();
+				if (hooman !is null && hooman.isMyPlayer())
+				{
+					if (ap.name == "DRIVER")
+					{
+						if (!this.hasTag("no_more_smoke") && ap.isKeyPressed(key_action1) && this.get_f32("smoke_time") > this.get_u32("smoke_endtime"))
+						{
+							ReleaseSmoke(this);
+
+							if (!this.hasTag("no_more_smoke")) this.getSprite().PlaySound("smoke_release.ogg", 1.0f, 1.0f + XORRandom(15) * 0.01f);
+							this.Tag("no_more_smoke");
+						}
+					}
+				}
 			}
 		}
 
@@ -155,6 +250,11 @@ void onTick(CBlob@ this)
 		Vehicle_StandardControls(this, v);
 
 		ManageTracks(this);
+	}
+
+	if (this.get_f32("smoke_time") > this.get_u32("smoke_endtime")+15)
+	{
+		this.Untag("no_more_smoke");
 	}
 
 	Vehicle_LevelOutInAir(this);

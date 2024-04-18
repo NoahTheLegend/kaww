@@ -212,7 +212,7 @@ void onTick(CBlob@ this)
 								ReleaseTraps(this);
 							}
 
-							if (!this.hasTag("no_more_shooting")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.0f, 0.5f + XORRandom(15) * 0.01f);
+							if (!this.hasTag("no_more_traps")) this.getSprite().PlaySound("Missile_Launch.ogg", 1.0f, 0.5f + XORRandom(15) * 0.01f);
 							this.Tag("no_more_traps");
 						}
 					}
