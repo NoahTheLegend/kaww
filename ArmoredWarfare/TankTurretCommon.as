@@ -192,7 +192,7 @@ void ArtilleryFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge,
 		bullet.setVelocity(vel);
 		bullet.setPosition(bullet_pos);
 
-		bullet.set_f32("proj_ex_radius", 48.0f);
+		bullet.set_f32("proj_ex_radius", 96.0f);
 		bullet.Tag("rpg"); // effects
 		bullet.Tag("artillery"); // shrapnel
 
