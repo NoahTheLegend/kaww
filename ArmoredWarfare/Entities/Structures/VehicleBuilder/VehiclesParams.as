@@ -88,7 +88,7 @@ const string d_mgun = "Heavy machinegun.\nCan be attached to and detached from s
 const string d_ftw = "Fire thrower.\nCan be attached to and detached from some vehicles.\n\nUses Special Ammunition.";
 const string d_c4 = "A strong explosive, very effective against blocks and doors.\n\nTakes some time after activation to explode.\nYou can deactivate it as well.";
 const string d_jav = "Homing Missile launcher.";
-const string d_apsniper = "Armor-Penetrating Sniper Rifle.\nPenetrates non-solid blocks and flesh. Can reach tank crew through armor.\n\nUses Special Ammunition.";
+const string d_apsniper = "Armor-Penetrating Sniper Rifle.\nPenetrates non-solid blocks and flesh. Can penetrate tank armor.\n\nUses Special Ammunition.";
 // blobnames
 const string bn_moto = "motorcycle";
 const string bn_amoto = "armedmotorcycle";
