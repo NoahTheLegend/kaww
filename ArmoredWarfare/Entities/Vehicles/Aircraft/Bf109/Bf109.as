@@ -682,6 +682,16 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 	else return true;
 }
 
+void onHealthChange(CBlob@ this, f32 oldHealth)
+{
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+	if (oldHealth > this.getInitialHealth()/2 && this.getHealth() <= this.getInitialHealth()/2)
+		sprite.SetAnimation("damaged");
+	else if (oldHealth < this.getInitialHealth()/2 && this.getHealth() >= this.getInitialHealth()/2)
+		sprite.SetAnimation("default");
+}
+
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (this.hasTag("ignore damage")) return 0;
