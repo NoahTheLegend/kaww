@@ -6,7 +6,7 @@
 #include "TeamColorCollections.as";
 #include "ProgressBar.as";
 
-const int smoke_cooldown = 45*30;
+const int smoke_cooldown = 60*30;
 const u8 smoke_amount = 32;
 
 void onInit(CBlob@ this)
@@ -15,6 +15,7 @@ void onInit(CBlob@ this)
 	this.Tag("tank");
 	this.Tag("deal_bunker_dmg");
 	this.Tag("engine_can_get_stuck");
+	this.Tag("override_timer_render");
 
 	this.set_u32("smoke_endtime", smoke_cooldown);
 	this.set_f32("smoke_time", smoke_cooldown); // load immediately
@@ -25,7 +26,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    6650.0f, // move speed
+	    6750.0f, // move speed
 	    1.0f,  // turn speed
 	    Vec2f(0.0f, -2.5f), // jump out velocity
 	    false);  // inventory access
@@ -367,3 +368,19 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
 
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}
+
+void onRender(CSprite@ this)
+{
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+
+	AttachmentPoint@ pilot = blob.getAttachments().getAttachmentPointByName("DRIVER");
+	if (pilot !is null && pilot.getOccupied() !is null)
+	{
+		CBlob@ driver_blob = pilot.getOccupied();
+		if (driver_blob.isMyPlayer())
+		{
+			visualTimerRender(this);
+		}
+	}
+}
