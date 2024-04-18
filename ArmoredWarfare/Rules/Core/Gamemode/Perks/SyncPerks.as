@@ -8,7 +8,7 @@ void onInit(CRules@ this)
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
     if (!isServer()) return;
-    if (player is null) return;
+    if (player is null || player.isBot()) return;
     
     CBitStream params;
     params.write_u16(player.getNetworkID());
