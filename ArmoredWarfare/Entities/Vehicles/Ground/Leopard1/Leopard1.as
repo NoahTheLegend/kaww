@@ -6,7 +6,7 @@
 #include "TeamColorCollections.as";
 #include "ProgressBar.as";
 
-const int smoke_cooldown = 1*30;
+const int smoke_cooldown = 45*30;
 const u8 smoke_amount = 32;
 
 void onInit(CBlob@ this)
