@@ -57,6 +57,9 @@ void onRender(CSprite@ this)
 	const f32 initialHealth = blob.getInitialHealth();
 	Vec2f dim = Vec2f((initialHealth*1.5)+60, 23); //95
 
+	const f32 renderRadius = (blob.getRadius()) * 1.95f;
+	bool mouseOnBlob = (mouseWorld - center).getLength() < renderRadius;
+
 	CMap@ map = getMap();
 	bool inGround = map.isTileSolid(blob.getPosition());
 
@@ -66,7 +69,9 @@ void onRender(CSprite@ this)
 	if (inGround)
 		{ return; }
 
-	if (initialHealth > 0.0f)
+	CBlob@ localblob = getLocalPlayerBlob();
+
+	if (mouseOnBlob && (localblob is null || (localblob !is null && localblob.getDistanceTo(blob) < 312.0f)))
 	{
 		const f32 perc  = blob.getHealth() / initialHealth;
 		const f32 perc2 = blob.get_f32(linadj_hp) / initialHealth;
