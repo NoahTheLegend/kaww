@@ -67,6 +67,16 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("direction", Vec2f(0, 0));
 }
 
+void onHealthChange(CBlob@ this, f32 oldHealth)
+{
+	CSprite@ sprite = this.getSprite();
+	if (sprite is null) return;
+	if (oldHealth > this.getInitialHealth()/2 && this.getHealth() <= this.getInitialHealth()/2)
+		sprite.SetAnimation("damaged");
+	else if (oldHealth < this.getInitialHealth()/2 && this.getHealth() >= this.getInitialHealth()/2)
+		sprite.SetAnimation("default");
+}
+
 void onInit(CSprite@ this)
 {
 	this.RemoveSpriteLayer("tracer");
