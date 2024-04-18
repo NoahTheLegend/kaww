@@ -81,6 +81,35 @@ void onTick(CBlob@ this)
     {
         return;
     }
+	//debug
+	/*
+	{
+		if (getControls().isKeyJustPressed(KEY_KEY_S)) LoadStats(this);
+
+		Vec2f pos = this.getPosition();
+        bool fl = this.isFacingLeft();
+        s8 ff = fl ? -1 : 1;
+
+        f32 deg = this.getAngleDegrees();
+		f32 angle = this.get_f32("gunelevation") + deg;
+		
+        CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
+
+		Vec2f shape_offset = this.getShape().getOffset();
+		Vec2f arm_offset = Vec2f(-ff*arm.getOffset().x, arm.getOffset().y) - Vec2f(0, stats.muzzle_offset) + stats.bullet_pos_offset;
+		arm_offset.RotateBy(deg);
+		Vec2f bullet_pos = pos + arm_offset + Vec2f(0,stats.muzzle_offset*2).RotateBy(angle);
+
+		//Vec2f bullet_pos = arm.getWorldTranslation().RotateBy(deg, this.getPosition())
+		//	+ Vec2f(ff * stats.arm_height, stats.muzzle_offset).RotateBy(angle);
+
+		ParticleAnimated("LargeSmokeGray", bullet_pos, Vec2f_zero, float(XORRandom(360)), 0.5f, 1, -0.0031f, true);
+		CParticle@ p = ParticleAnimated("SmallSteam", pos+arm_offset, Vec2f_zero, float(XORRandom(360)), 0.5f, 1, -0.0031f, true);
+		if (p !is null) p.deadeffect = -1;
+		CParticle@ p1 = ParticleAnimated("SmallSteam", pos+arm_offset, Vec2f_zero, float(XORRandom(360)), 0.25f, 1, -0.0031f, true);
+		if (p1 !is null) p1.deadeffect = -1;
+	}
+	*/
 
     bool fl = this.isFacingLeft();
     if (stats.mg != "") ManageMG(this, fl);
@@ -330,17 +359,6 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
     TurretStats@ stats;
     if (!this.get("TurretStats", @stats)) return;
 
-	if (this.hasTag("artillery"))
-	{
-		ArtilleryFire(this, v, bullet, _charge);
-		return;
-	}
-	else if (this.hasTag("grad"))
-	{
-		GradFire(this, v, bullet, _charge);
-		return;
-	}
-
 	this.getSprite().PlayRandomSound(v.getCurrentAmmo().fire_sound);
 
 	if (bullet !is null)
@@ -355,7 +373,6 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
         f32 deg = this.getAngleDegrees();
 		f32 angle = this.get_f32("gunelevation") + deg;
 		Vec2f vel = Vec2f(0.0f, stats.projectile_vel).RotateBy(angle);
-		bullet.setVelocity(vel);
         
         CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
         if (arm is null)
@@ -363,9 +380,25 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
             bullet.server_Die();
             return;
         }
+		
+		Vec2f shape_offset = this.getShape().getOffset();
+		Vec2f arm_offset = Vec2f(-ff*arm.getOffset().x, arm.getOffset().y) - Vec2f(0, stats.muzzle_offset) + stats.bullet_pos_offset;
+		arm_offset.RotateBy(deg);
+		Vec2f bullet_pos = pos + arm_offset + Vec2f(0,stats.muzzle_offset*2).RotateBy(angle) - Vec2f(0,ff*1);
 
-		Vec2f bullet_pos = arm.getWorldTranslation().RotateBy(deg, this.getPosition()) + Vec2f(ff * stats.arm_height, stats.muzzle_offset).RotateBy(angle);
+		bullet.setVelocity(vel);
 		bullet.setPosition(bullet_pos);
+
+		if (this.hasTag("artillery"))
+		{
+			ArtilleryFire(this, v, bullet, _charge, bullet_pos);
+			return;
+		}
+		else if (this.hasTag("grad"))
+		{
+			GradFire(this, v, bullet, _charge, bullet_pos);
+			return;
+		}
 
 		CBlob@ hull = getBlobByNetworkID(this.get_u16("tankid"));
 		bool not_found = true;
