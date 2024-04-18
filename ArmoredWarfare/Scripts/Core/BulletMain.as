@@ -360,7 +360,11 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 							const float recoily = 50;
 							const float recoillength = 40; // how long to recoil (?)
 	
-							if (local.isAttachedTo(gun)) ShakeScreen(28, 5, pos);
+							if (local.isAttachedTo(gun))
+							{
+								Vec2f spos = getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos());
+								ShakeScreen(15, 5, spos);
+							}
 	
 							makeGibParticle(
 							"EmptyShellSmall",               // file name

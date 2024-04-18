@@ -694,7 +694,7 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 										ParticleAnimated("Smoke", this.getPosition() + Vec2f_lengthdir(this.isFacingLeft() ? 35 : -35, this.getAngleDegrees()), velocity.RotateBy(this.getAngleDegrees()) + getRandomVelocity(0.0f, XORRandom(125) * 0.01f, 360), 45 + float(XORRandom(90)), 0.3f + XORRandom(50) * 0.01f, 1 + XORRandom(2), -0.02 - XORRandom(30) * -0.0005f, false );
 									}
 								}
-
+								
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
 							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.9f));
@@ -769,8 +769,6 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 								ShakeScreen(32.0f, 32, this.getPosition());
 							}
 							this.set_f32("engine_throttle", Maths::Lerp(this.get_f32("engine_throttle"), 0.5f, 0.9f));
-
-							
 							
 							if (onground && groundNormal.y < -0.4f && groundNormal.x < -0.05f && vel.x > -1.0f && slopeangle)   // put more force when going up
 							{

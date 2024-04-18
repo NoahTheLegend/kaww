@@ -490,7 +490,8 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 					const float recoily = 50;
 					const float recoillength = 40; // how long to recoil (?)
 	
-					if (local.isAttachedTo(this)) ShakeScreen(28, 5, pos);
+					Vec2f spos = getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos());
+					if (local.isAttachedTo(this)) ShakeScreen(28, 5, spos);
 
 					makeGibParticle(
 					"EmptyShellSmall",               // file name

@@ -189,10 +189,12 @@ void onFire(CBlob@ this, Vec2f vel)
 		AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
 		if (gunner !is null && gunner.getOccupied() !is null && gunner.getOccupied().isMyPlayer())
 		{
-			const float recoilx = 200;
-			const float recoily = 150;
+			const float recoilx = 40;
+			const float recoily = 100;
 			const float recoillength = 10; // how long to recoil (?)
-			ShakeScreen(recoilx, recoillength, pos);
+
+			Vec2f spos = getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos());
+			ShakeScreen(recoilx, recoillength, spos);
 		}
 	}
 }
