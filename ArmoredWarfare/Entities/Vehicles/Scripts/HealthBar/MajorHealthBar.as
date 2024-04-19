@@ -73,7 +73,7 @@ void onRender(CSprite@ this)
 
 	CBlob@ localblob = getLocalPlayerBlob();
 
-	if (mouseOnBlob && (localblob is null || localblob.isOverlapping(blob) || (localblob !is null && localblob.getDistanceTo(blob) < 312.0f)))
+	if ((mouseOnBlob || (localblob !is null && localblob.getDistanceTo(blob) < 48.0f)) && (localblob is null || (localblob !is null && localblob.getDistanceTo(blob) < 312.0f)))
 	{
 		const f32 perc  = blob.getHealth() / initialHealth;
 		const f32 perc2 = blob.get_f32(linadj_hp) / initialHealth;
