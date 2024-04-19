@@ -6,7 +6,7 @@
 #include "TeamColorCollections.as";
 #include "ProgressBar.as";
 
-const int smoke_cooldown = 60*30;
+const int smoke_cooldown = 90*30;
 const u8 smoke_amount = 32;
 
 void onInit(CBlob@ this)
@@ -163,29 +163,26 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			}
 		}
 		
-		if (getNet().isServer())
+		for (u8 i = 0; i < smoke_amount; i++)
 		{
-			for (u8 i = 0; i < smoke_amount; i++)
+			Vec2f vel = Vec2f(12.5f+i, 0).RotateBy(XORRandom(180)+180);
+			vel.y *= 0.66f;
+			CParticle@ p = ParticleAnimated("LargeSmokeWhite.png",
+				this.getPosition(),
+					vel,
+						XORRandom(360),
+							5.5f+XORRandom(26)*0.1f, 35 + XORRandom(11), 0.0025f+XORRandom(125)*0.0001f, false);
+			if (p !is null)
 			{
-				Vec2f vel = Vec2f(12.5f+i, 0).RotateBy(XORRandom(180)+180);
-				vel.y *= 0.66f;
-				CParticle@ p = ParticleAnimated("LargeSmokeWhite.png",
-					this.getPosition(),
-						vel,
-							XORRandom(360),
-								5.5f+XORRandom(26)*0.1f, 35 + XORRandom(11), 0.0025f+XORRandom(125)*0.0001f, false);
-				if (p !is null)
-				{
-					p.collides = true;
-					p.Z = 550.0f;
-					p.fastcollision = true;
-					p.deadeffect = -1;
-					p.damping = 0.8f+XORRandom(51)*0.001f;
-					p.bounce = 0.1f;
-					p.lighting_delay = 30;
-				}
+				p.collides = true;
+				p.Z = 550.0f;
+				p.fastcollision = true;
+				p.deadeffect = -1;
+				p.damping = 0.8f+XORRandom(51)*0.001f;
+				p.bounce = 0.1f;
+				p.lighting_delay = 30;
 			}
-		} 
+		}
 	}
 }
 
