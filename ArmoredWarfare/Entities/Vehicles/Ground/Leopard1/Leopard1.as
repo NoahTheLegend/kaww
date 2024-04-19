@@ -171,7 +171,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				this.getPosition(),
 					vel,
 						XORRandom(360),
-							5.5f+XORRandom(26)*0.1f, 35 + XORRandom(11), 0.0025f+XORRandom(75)*0.0001f, false);
+							5.5f+XORRandom(26)*0.1f, 45 + XORRandom(16), 0.0025f+XORRandom(75)*0.0001f, false);
 			if (p !is null)
 			{
 				p.collides = true;
