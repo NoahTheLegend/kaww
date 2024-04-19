@@ -1334,7 +1334,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (this.hasTag("aerial")) damage *= 4.0f;
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) damage *= 1.5f;
 
-		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/8.0f);
+		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/16.0f);
 		if (blocks_between > 5) damage /= 1.0f-(5.0f-blocks_between);
 		return (this.getName() == "maus" || armorRating > 4 ? damage*0.9f : damage * (1.5f+XORRandom(21)*0.01f));
 	}
