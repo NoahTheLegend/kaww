@@ -209,9 +209,9 @@ void onInit(CBlob@ this)
 		case _is7turret:
 		{
 			weaponRating = 5;
-			linear_length = 16.0f;
-			scale_explosion_damage = 2.5f;
-			scale_impact_damage = 1.65f;
+			linear_length = 20.0f;
+			scale_explosion_damage = 4.0f;
+			scale_impact_damage = 1.75f;
 			break;
 		}
 		case _t10turret: // T10 Shell cannon
