@@ -93,8 +93,12 @@ void buildT2ShopCombined(CBlob@ this)
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-5);}
 
+	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
 	{string[] params = {n_maus,t_maus,bn_maus,d_maus,b,s,ds};
 	makeShopItem(this,params,c_maus);}
+	else
+	{string[] params = {n_is7,t_is7,bn_is7,d_is7,b,s,ds};
+	makeShopItem(this,params,c_is7);}
 
 	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
 	makeShopItem(this,params,c_armory-5);}
@@ -177,8 +181,12 @@ void buildT3ShopCombined(CBlob@ this)
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-10);}
 
+	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
 	{string[] params = {n_maus,t_maus,bn_maus,d_maus,b,s,ds};
 	makeShopItem(this,params,c_maus-10);}
+	else
+	{string[] params = {n_is7,t_is7,bn_is7,d_is7,b,s,ds};
+	makeShopItem(this,params,c_is7-10);}
 
 	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
 	makeShopItem(this,params,c_armory-10);}
@@ -318,8 +326,12 @@ void buildT2ShopGround(CBlob@ this)
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-5);}
 
+	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
 	{string[] params = {n_maus,t_maus,bn_maus,d_maus,b,s,ds};
 	makeShopItem(this,params,c_maus);}
+	else
+	{string[] params = {n_is7,t_is7,bn_is7,d_is7,b,s,ds};
+	makeShopItem(this,params,c_is7);}
 
 	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
 	makeShopItem(this,params,c_armory-5);}
@@ -392,8 +404,12 @@ void buildT3ShopGround(CBlob@ this)
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
 	makeShopItem(this,params,c_t10-10);}
 
+	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
 	{string[] params = {n_maus,t_maus,bn_maus,d_maus,b,s,ds};
 	makeShopItem(this,params,c_maus-10);}
+	else
+	{string[] params = {n_is7,t_is7,bn_is7,d_is7,b,s,ds};
+	makeShopItem(this,params,c_is7-10);}
 
 	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
 	makeShopItem(this,params,c_armory-10);}

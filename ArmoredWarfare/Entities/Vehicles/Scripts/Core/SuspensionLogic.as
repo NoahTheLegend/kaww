@@ -45,6 +45,7 @@ void onInit(CBlob@ this)
             break;
         }
 		case _t10:
+		case _is7:
 		case _bradley:
         {
             susheight = 1.0f;

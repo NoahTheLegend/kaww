@@ -17,12 +17,12 @@ enum EntityHash
 	_leopard1 = -1002969015,
 	_bc25t = -880830399,
 	_t10 = -360649198,
+	_is7 = 1158238854,
 	_m103 = 2064681974,
 	_maus = -544849061,
 	_pinkmaus = -1517006893,
 	_desertmaus = 1575278158,
 	_artillery = 1028704049,
-	_artilleryturret = 1853414531,
 	_techbigtruck = 351403048,
 	_barge = -2029400058,
 
@@ -57,7 +57,9 @@ enum EntityHash
 	_leopard1turret = 38248539,
 	_bc25turret = 590831001,
 	_t10turret = -616940740,
+	_is7turret = 822556544,
 	_m103turret = 889340560,
+	_artilleryturret = 1853414531,
 	_mausturret = 56012293,
 	_pinkmausturret = 625290237,
 	_desertmausturret = -531825848,
@@ -68,35 +70,3 @@ enum EntityHash
 	_heavybunker = -246580451,
 	_gradturret = -794220085
 };
-
-// TEMPLATE: GROUND VEHICLES
-/*
-    int blobHash = this.getName().getHash();
-    
-    switch (blobHash)
-    {
-        case _motorcycle:
-		case __armedmotorcycle
-        case _techtruck:
-        case _techbigtruck:
-        case _armory:
-        case _importantarmory:
-        case _importantarmoryt2:
-        case _transporttruck:
-        case _civcar:
-		case _lada:
-        case _pszh4:
-        case _btr82a:
-        case _bradley:
-        case _m60:
-		case _bc25t:
-        case _t10:
-        case _maus:
-		case _pinkmaus:
-		case _desertmaus:
-        case _artillery:
-        {
-            break;
-        }
-    }
-*/

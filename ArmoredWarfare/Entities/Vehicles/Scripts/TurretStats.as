@@ -187,9 +187,10 @@ class MausTurret : TurretStats
         // haha shit bitch code
         cooldown_time = 360; high_angle = 77; low_angle = 99; arm_joint_offset = Vec2f(-0.5f, 10.0f);
         arm_offset = Vec2f(-16.0f, -11.0f); arm_z = -50.0f; barrel_compression = 12; init_gun_angle = -2;
-        recoil_force = 500; elevation_speed = 0.75f;
+        recoil_force = 500; elevation_speed = 0.5f;
         shape_offset = Vec2f(-4, -2); recoil_force = 0;
         bullet_pos_offset = Vec2f(0,-6);
+        fire_sound = "sound_128mm";
     }
 };
 
@@ -224,5 +225,24 @@ class M103Turret : TurretStats
         muzzle_offset = -24.0f;
         bullet_pos_offset = Vec2f(0,-7.5f);
         elevation_speed = 0.65f;
+    }
+};
+
+class IS7Turret : TurretStats
+{
+    IS7Turret()
+    {
+        super();
+
+        name = "is7turret"; hash = _is7turret;
+        cooldown_time = 405; high_angle = 78; low_angle = 95; muzzle_offset = -22.0f;
+        arm_offset = Vec2f(-25.0f, -34.0f); arm_z = -50.0f; barrel_compression = 12; init_gun_angle = -3;
+        arm_joint_offset = Vec2f(-0.5f, 22.5f);
+        mg = "heavygun";
+        recoil_force = 850;
+        elevation_speed = 0.5f;
+        bullet_pos_offset = Vec2f(0,0);
+        fire_sound = "sound_128mm";
+        shape_offset = Vec2f(5, -13);
     }
 };
