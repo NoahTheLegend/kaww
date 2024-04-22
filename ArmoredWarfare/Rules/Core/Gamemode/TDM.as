@@ -1829,6 +1829,7 @@ const string[] LargeMaps = {
 };
 
 const string[] AverageMaps = {
+	"Abyss.png",
 	"SmallCity.png",
 	"SmallClassic.png",
 	"SmallDesert.png",
@@ -1837,18 +1838,7 @@ const string[] AverageMaps = {
 	"SmallMortaring.png",
 	"SmallTouge.png",
 	"PlainHills.png",
-	"BloodGulch.png",
-	"SoldiercombatTDM.png",
-	"TheSmallCityTDM.png",
-	"BridgeTDM.png",
-	"KingslyCastleTDM.png",
-	"TesfoMineTDM.png",
-	"Airplane.png",
-	"Battleship.png",
-	"KnollTDM.png",
-	"LandscapingTDM.png",
-	"SoldiercombatTDM.png",
-	"TheCityTDM.png"
+	"BloodGulch.png"
 };
 
 const string[] FlagMaps = {
