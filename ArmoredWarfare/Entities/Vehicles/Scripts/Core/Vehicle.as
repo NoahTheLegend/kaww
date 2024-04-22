@@ -88,6 +88,7 @@ void onInit(CBlob@ this)
 		case _pinkmaus:
 		case _desertmaus:
 		case _t10:
+		case _is7:
 		case _m103:
 		{
 			this.set_string("engine_start", "HeavyEngineStart_tank");
@@ -107,13 +108,21 @@ void onInit(CBlob@ this)
 
 	switch(blobHash)
 	{
+		case _is7turret:
+		{
+			armorRating = 6;
+			hardShelled = true;
+			break;
+		}
 		case _barge:
 		case _mausturret: // MAUS Shell cannon
 		case _pinkmausturret:
 		case _desertmausturret:
+		case _is7:
 		{
 			armorRating = 5;
 			hardShelled = true;
+			break;
 		}
 		case _maus: // maus
 		case _pinkmaus:
@@ -184,7 +193,7 @@ void onInit(CBlob@ this)
 	f32 scale_impact_damage = 1.0f; // direct damage modifier
 	f32 scale_explosion_damage = 1.0f; // explosion damage modifier
 
-	switch(blobHash) // weapon rating and length of linear (map) and circled explosion damage
+	switch(blobHash) // weapon rating and length of linear (map) and explosion damage in radius
 	{
 		case _artilleryturret:
 		{
@@ -197,6 +206,7 @@ void onInit(CBlob@ this)
 		case _mausturret: // MAUS Shell cannon
 		case _pinkmausturret:
 		case _desertmausturret:
+		case _is7turret:
 		{
 			weaponRating = 5;
 			linear_length = 16.0f;
@@ -306,6 +316,7 @@ void onInit(CBlob@ this)
 		case _uh1: // heli
 		case _ah1:
 		case _mi24:
+		case _is7:
 		backsideOffset = 32.0f; break;
 
 		case _bf109: // plane
@@ -322,6 +333,10 @@ void onInit(CBlob@ this)
 	f32 intake = 0.0f;
 	switch(blobHash)
 	{
+		// min is -75
+		case _is7:
+		intake = -75.0f; break;
+
 		case _maus: // maus
 		case _pinkmaus:
 		case _desertmaus:
@@ -1103,6 +1118,7 @@ void onDie(CBlob@ this)
 			case _maus:
 			case _pinkmaus:
 			case _desertmaus:
+			case _is7:
 			{
 				scrap_amount = 35+XORRandom(11);
 				explosion_radius = 100.0f;
