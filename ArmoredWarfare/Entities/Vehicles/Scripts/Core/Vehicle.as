@@ -110,7 +110,7 @@ void onInit(CBlob@ this)
 	{
 		case _is7turret:
 		{
-			armorRating = 6;
+			armorRating = 7;
 			hardShelled = true;
 			break;
 		}
@@ -1396,10 +1396,12 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			if (is_explosive && damage != 0) damage += 1.5f; // suffer bonus base damage (you just got your entire vehicle burned)
 			damage *= 1.5f;
+			break;
 		}
 		case -1:
 		{
 			damage *= 1.25f;
+			break;
 		}
 		break;
 
@@ -1408,21 +1410,28 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		case 4:
 		{
 			damage *= 0.5f;
+			break;
 		}
 		case 3:
 		{
-			damage *= 0.75f;
+			damage *= 0.65f;
+			break;
 		}
 		case 2:
 		{
-			damage *= 1.0f;
+			damage *= 0.8f;
+			break;
 		}
 		case 1:
 		{
-			damageNegation += 0.2f; // reduction to final damage, for negating small bullets
-			damage = Maths::Max(damage - damageNegation, 0.0f); // nullification happens here
+			damage *= 0.9f;
+			break;
 		}
-		break;
+		case 0:
+		{
+			damage *= 1.0f;
+			break;
+		}
 	}
 
 	//printf("finalrating " + finalRating);
