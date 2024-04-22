@@ -110,10 +110,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (!this.get_bool("booming")) ExplosionEffects(this);
 		this.set_bool("booming", true);
 	}
-	if (hitterBlob !is null && hitterBlob.getTeamNum() == this.getTeamNum())
+	if (isExplosionHitter(customData) && damage > 1.0f)
+	{
+		if (!this.get_bool("booming")) ExplosionEffects(this);
+		this.set_bool("booming", true);
+		return 0;
+	}
+	else if (hitterBlob !is null && hitterBlob.getTeamNum() == this.getTeamNum())
 	{
 		damage *= 0.1f;
 	}
+	
 	this.add_f32("damage", damage);
 	return damage;
 }
