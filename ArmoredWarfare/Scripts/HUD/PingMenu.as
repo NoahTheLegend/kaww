@@ -23,7 +23,7 @@ const f32 endpoint = radius+subsection_radius/1.1f; // limit radius for cursor i
 
 // cooldown props
 int cooldown = 0; // time during that we cant ping
-const int cooldown_time = 15*30;
+const int cooldown_time = 5*30;
 int load = 0; // current load
 const int load_max = 200; // limit w/o cooldown
 const int ping_cost = 75; // per one
