@@ -8,7 +8,7 @@ void onInit(CBlob@ this)
 		this.set_string("eat sound", "/Eat.ogg");
 	}
 
-	this.addCommandID(heal_id);
+	this.addCommandID("heal command");
 
 	this.Tag("pushedByDoor");
 	this.Tag("trap");
@@ -17,7 +17,7 @@ void onInit(CBlob@ this)
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
-	if (cmd == this.getCommandID(heal_id))
+	if (cmd == this.getCommandID("heal command"))
 	{
 		this.getSprite().PlaySound(this.get_string("eat sound"));
 
