@@ -531,54 +531,62 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 	if (cmd == this.getCommandID("placeBlob"))
 	{
-		CBlob @carryBlob = getBlobByNetworkID(params.read_u16());
-		if (carryBlob !is null)
-		{
-			Vec2f pos = params.read_Vec2f();
+		u16 block_id;
+		if (!params.saferead_u16(block_id)) return;
+		CBlob @carryBlob = getBlobByNetworkID(block_id);
+		if (carryBlob is null) return;
+
+		Vec2f aimpos;
+		if (!params.saferead_Vec2f(aimpos)) return;
 			
-			if (PlaceBlob(this, carryBlob, pos))
-			{
-				SendGameplayEvent(createBuiltBlobEvent(this.getPlayer(), carryBlob.getName()));
-			}
+		if (PlaceBlob(this, carryBlob, aimpos))
+		{
+			CPlayer@ p = this.getPlayer();
+            if (p !is null)
+            {
+                GE_BuildBlob(p.getNetworkID(), carryBlob.getName()); // gameplay event for coins
+            }
 		}
 	}
-	if (cmd == this.getCommandID("repairBlob"))
+	else if (cmd == this.getCommandID("repairBlob"))
 	{
-		CBlob @carryBlob = getBlobByNetworkID(params.read_u16());
-		Vec2f pos = params.read_Vec2f();
+		u16 block_id;
+		if (!params.saferead_u16(block_id)) return;
+		CBlob @carryBlob = getBlobByNetworkID(block_id);
+		if (carryBlob is null) return;
 
-		CBlob @repairBlob = getBlobByNetworkID(params.read_u16());
+		Vec2f aimpos;
+		if (!params.saferead_Vec2f(aimpos)) return;
 
-		if (carryBlob !is null)
+		u16 repair_id;
+		if (!params.saferead_u16(repair_id)) return;
+		CBlob @repairBlob = getBlobByNetworkID(repair_id);
+		if (repairBlob is null) return;
+
+		// the getHealth() is here because apparently a blob isn't null for a tick (?) after being destroyed
+		bool repairing = (repairBlob !is null && repairBlob.getHealth() > 0);
+
+		if (repairing) // is there a blobtile here?
 		{
-			// the getHealth() is here because apparently a blob isn't null for a tick (?) after being destroyed
-			bool repairing = (repairBlob !is null && repairBlob.getHealth() > 0);
-
-			if (repairing) // is there a blobtile here?
+			if (PlaceBlob(this, carryBlob, aimpos, true, repairBlob))
 			{
-				if (PlaceBlob(this, carryBlob, pos, true, repairBlob))
+				CPlayer@ p = this.getPlayer();
+				if (p !is null)
 				{
-					SendGameplayEvent(createBuiltBlobEvent(this.getPlayer(), repairBlob.getName()));
-				}
-			}
-			else // there's nothing here so we can place a new one
-			{
-				if (PlaceBlob(this, carryBlob, pos))
-				{
-					SendGameplayEvent(createBuiltBlobEvent(this.getPlayer(), carryBlob.getName()));
-				}
+					GE_BuildBlob(p.getNetworkID(), carryBlob.getName()); // gameplay event for coins
+                }
 			}
 		}
-	}
-	else if (cmd == this.getCommandID("settleLadder"))
-	{
-		CBlob @carryBlob = getBlobByNetworkID(params.read_u16());
-		Vec2f pos = params.read_Vec2f();
-		if (carryBlob !is null)
+		else // there's nothing here so we can place a new one
 		{
-			carryBlob.Tag("temp blob placed");
-			carryBlob.server_DetachFrom(this);
-			carryBlob.getShape().SetStatic(true);
+			if (PlaceBlob(this, carryBlob, aimpos))
+			{
+				CPlayer@ p = this.getPlayer();
+				if (p !is null)
+				{
+					GE_BuildBlob(p.getNetworkID(), carryBlob.getName()); // gameplay event for coins
+				}
+			}
 		}
 	}
 }
