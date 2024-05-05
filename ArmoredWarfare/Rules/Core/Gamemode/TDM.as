@@ -1350,7 +1350,7 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 			getRules().set_u32(player.getUsername() + "_exp", 2500+XORRandom(1250));
 		}
 	}
-
+	/*
 	int localtime = Time_Local();
 	int regtime = player.getRegistrationTime();
 
@@ -1383,9 +1383,9 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 			printf("|");
 			printf("|");
 			BanPlayer(player, 60*100);
-		}
-		
+		}	
 	}
+	*/
 
 	this.Sync("oldteamleft", true);
 	this.Sync("oldteamright", true);
