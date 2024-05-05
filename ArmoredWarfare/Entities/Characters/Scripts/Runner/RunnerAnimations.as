@@ -7,6 +7,7 @@
 void onInit(CBlob@ this)
 {
     this.set_f32("angle_head", 0);
+	this.set_f32("angle_body", 0);
 }
 
 const f32 lean_mod = 2.0f; // body lean mod
