@@ -11,9 +11,6 @@ const u8 wallrun_length = 3;
 void onInit(CMovement@ this)
 {
 	this.getCurrentScript().removeIfTag = "dead";
-	
-	if (this.getBlob() !is null && this.getBlob().getName() != "rpg")
-		this.getCurrentScript().runFlags |= Script::tick_not_attached;
 }
 
 void onTick(CMovement@ this)
