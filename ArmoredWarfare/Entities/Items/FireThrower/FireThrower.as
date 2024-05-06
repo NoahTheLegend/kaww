@@ -16,6 +16,7 @@ void onInit(CBlob@ this)
 	this.Tag("firethrower");
 	this.Tag("very heavy weight");
 	this.Tag("weapon");
+	this.Tag("lag_ondie");
 
 	this.set_f32("hand_rotation_damp", 0.15f);
 	
@@ -560,17 +561,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			quantity += item.getQuantity();
 		}
 
-		if (isServer())
-		{
-			for (int i = 0; i < Maths::Clamp(Maths::Abs(quantity/50), 1, 15); i++)
-			{
-				CBlob@ blob = server_CreateBlob("flame", -1, this.getPosition());
-				blob.setVelocity(Vec2f(XORRandom(5) - 2, -XORRandom(5)));
-				blob.server_SetTimeToDie(10 + XORRandom(5));
-			}
-		}
-
-		DoExplosion(this);
 		this.server_Die();
 	}
 
@@ -742,41 +732,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 }
 
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused) {}
-
-void DoExplosion(CBlob@ this)
-{
-	if (this.hasTag("exploded")) return;
-
-	f32 random = XORRandom(40);
-	f32 modifier = 1 + Maths::Log(this.getQuantity());
-	f32 angle = -this.get_f32("bomb angle");
-	// print("Modifier: " + modifier + "; Quantity: " + this.getQuantity());
-
-	this.set_f32("map_damage_radius", (30.0f + random) * modifier);
-	this.set_f32("map_damage_ratio", 0.50f);
-	
-	Explode(this, 30.0f + random, 32.0f);
-	
-	for (int i = 0; i < 10 * modifier; i++) 
-	{
-		Vec2f dir = getRandomVelocity(angle, 1, 120);
-		dir.x *= 2;
-		dir.Normalize();
-		
-		LinearExplosion(this, dir, 16.0f + XORRandom(16) + (modifier * 8), 16 + XORRandom(24), 3, 2.00f, Hitters::explosion);
-	}
-	
-	Vec2f pos = this.getPosition();
-	CMap@ map = getMap();
-
-	for (int i = 0; i < (v_fastrender ? 10 : 35); i++)
-	{
-		MakeParticle(this, Vec2f( XORRandom(64) - 32, XORRandom(80) - 60), getRandomVelocity(-angle, XORRandom(220) * 0.01f, 90), particles[XORRandom(particles.length)]);
-	}
-	
-	this.Tag("exploded");
-	if (!v_fastrender) this.getSprite().Gib();
-}
 
 string[] particles = 
 {

@@ -17,6 +17,7 @@ void onInit(CBlob@ this)
 
 	this.set_u8("stack size", 1);
 	this.set_f32("bomb angle", 90);
+	this.Tag("lag_ondie");
 
 	this.set_u8("shrapnel_count", 2+XORRandom(3));
 	this.set_f32("shrapnel_vel", 8.0f+XORRandom(5)*0.1f);
@@ -42,6 +43,25 @@ void onInit(CBlob@ this)
 
 void onDie(CBlob@ this)
 {
+	CMap@ map = getMap();
+	if (map is null) return;
+
+	CBlob@[] bs;
+	map.getBlobsInRadius(this.getPosition(), 64.0f, @bs);
+
+	int laggy_count = 0;
+	for (int i = 0; i < bs.size(); i++)
+	{
+		if (bs[i] !is null && bs[i].hasTag("lag_ondie"))
+			laggy_count++;
+	}
+
+	if (laggy_count > 25)
+	{
+		this.Tag("remove_shrapnel");
+		return;
+	}
+
 	if (this.hasTag("DoExplode"))
 	{
 		DoExplosion(this);

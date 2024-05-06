@@ -47,6 +47,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("aos_effects");
 	this.addCommandID("sync_mag");
 	this.addCommandID("reload_mag");
+	this.Tag("lag_ondie");
 
 	//vehicle common
 	this.addCommandID("fire");

@@ -3,6 +3,7 @@ void onDie(CBlob@ this)
 {
     if (isServer())
     {
+        if (this.hasTag("remove_shrapnel")) return;
         if (this.get_string("shrapnel_iftag") != "" && !this.hasTag(this.get_string("shrapnel_iftag")))
             return;
         //common
