@@ -1,1 +1,2 @@
-// Archer brain
+void onInit(CBrain@ this)
+{}

@@ -1,1 +1,2 @@
-// Knight brain
+void onInit(CBrain@ this)
+{}
