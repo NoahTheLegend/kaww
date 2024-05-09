@@ -59,7 +59,7 @@ void deathEffects(CBlob@ this)
 }
 
 // CLOSEST TARGET
-CBlob@ @getClosestTarget(Vec2f pos, float radius)
+CBlob@ getClosestTarget(Vec2f pos, float radius)
 {
 	CBlob@[] possible_targets;
 	getBlobsByTag("player", @possible_targets);
