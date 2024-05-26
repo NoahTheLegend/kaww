@@ -87,6 +87,8 @@ void onTick(CBlob@ this)
 							if (blob.hasTag("vehicle") || blob.hasTag("machinegun") || blob.hasTag("bunker") || blob.hasTag("structure") || blob.hasTag("door") || blob.hasTag("repairable"))
 							{
 								if (blob.hasTag("respawn") || blob.hasTag("never_repair")) continue; // dont repair outposts
+								if (blob.get_u32("no_heal") > getGameTime()) continue; 
+								
 								if (team == blob.getTeamNum() || blob.getTeamNum() >= 7)
 								{
 									float repair_amount = 0.35f;

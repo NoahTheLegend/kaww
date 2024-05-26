@@ -54,7 +54,7 @@ void onTick(CBlob@ this)
 			if (blob.getHealth()/blob.getInitialHealth() >= weakest) continue;
 			if (blob.hasTag("never_repair")) continue;
 			if (blob.getHealth() == blob.getInitialHealth()) continue;
-			if (blob.get_u32("no_heal") > getGameTime()) continue; 
+			if (blob.get_u32("no_heal") > getGameTime()) continue;
             
 			weakest = blob.getHealth()/blob.getInitialHealth();
 			blobid = blob.getNetworkID();
