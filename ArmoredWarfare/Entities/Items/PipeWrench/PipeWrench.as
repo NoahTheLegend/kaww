@@ -175,3 +175,8 @@ void onTick(CBlob@ this)
 		}
 	}
 }
+
+void onThisRemoveFromInventory(CBlob@ this, CBlob@ inventoryBlob)
+{
+	this.set_u32("next repair", getGameTime() + 30);
+}
