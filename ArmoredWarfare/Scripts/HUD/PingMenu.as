@@ -83,7 +83,7 @@ void onRender(CSprite@ this)
     if (controls is null) return;
 
 	bool reset = false;
-	bool open_menu = blob.isKeyPressed(key_taunts);
+	bool open_menu = blob.isKeyPressed(key_taunts) && !controls.isKeyPressed(KEY_LSHIFT);
 
 	if (blob.hasTag("drawing_ping"))
 	{

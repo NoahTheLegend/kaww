@@ -31,7 +31,7 @@ void onRender(CSprite@ this)
 
     Vec2f mpos = controls.getMouseScreenPos();
     bool hover = isInArea(tl, br, mpos);
-    bool a3 = blob.isKeyPressed(key_action3);
+    bool a3 = blob.isKeyPressed(key_taunts);
     bool pressed = (hover && a3) || (a3 && controls.isKeyPressed(KEY_LSHIFT)); //(controls.mousePressed1 || controls.mousePressed2);
     u8 alpha = pressed ? 200 : hover ? 125 : 35;
 
@@ -61,7 +61,7 @@ void onRender(CSprite@ this)
     
     GUI::DrawIcon("MasonIcons.png", 0, Vec2f(32,32), tl+Vec2f(-4,-4), 1.0f, SColor(Maths::Min(255, alpha*2),255,255,255));
     GUI::DrawIcon("MasonIcons.png", 1, Vec2f(32,32), tl+Vec2f(48,0), 0.75f, SColor(Maths::Min(255, alpha*2),255,255,255));
-    if (hover) GUI::DrawTextCentered("[SHIFT+SPACE]", tl + Vec2f(size.x/2-2, size.y + 9), SColor(50,255,255,255));
+    if (hover) GUI::DrawTextCentered("[SHIFT+TAUNT KEY]", tl + Vec2f(size.x/2-2, size.y + 9), SColor(50,255,255,255));
 }
 
 
