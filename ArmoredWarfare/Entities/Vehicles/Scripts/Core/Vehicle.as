@@ -28,7 +28,8 @@ string[] smokes =
 	"SmallSmoke2.png"
 };
 
-const u8 BASE_NOHEAL_TIME_AFTERHIT = 10; // seconds
+const u8 BASE_NOHEAL_TIME_AFTERHIT = 2; // seconds
+const u8 MAX_NOHEAL_TIME_AFTERHIT = 30;
 
 const string wheelsTurnAmountString = "wheelsTurnAmount";
 const string engineRPMString = "engine_RPM";
@@ -1340,20 +1341,20 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	if (hitterBlob.hasTag("grenade"))
 	{
-		if (!hitterBlob.hasTag("atgrenade")) damage *= Maths::Max(0.1f, (0.5f-0.2f*finalRating));
+		if (!hitterBlob.hasTag("atgrenade"))
+			damage *= Maths::Max(0.1f, (0.5f-0.2f*finalRating));
 
 		if (this.hasTag("truck") && !this.hasTag("importantarmory"))
-		{
 			damage *= 1.5f;
-		}
-		else damage *= 1.0f+(XORRandom(26)*0.01f);
+		else
+			damage *= 1.0f+(XORRandom(26)*0.01f);
 		
 		if (this.hasTag("aerial")) damage *= 4.0f;
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) damage *= 1.5f;
 
 		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/16.0f);
-		if (blocks_between > 5) damage /= 1.0f-(5.0f-blocks_between);
-		return (this.getName() == "maus" || armorRating > 4 ? damage*0.9f : damage * (1.5f+XORRandom(21)*0.01f));
+		if (blocks_between > this.getRadius()/8)
+			damage /= 1.0f-(5.0f-blocks_between);
 	}
 
 	if (this.hasTag("tank") && hitterBlob.getName() == "missile_javelin")
@@ -1435,6 +1436,32 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 	}
 
+	// if damage is not insignificant, prevent repairs for a time
+	if (damage > 0.25f)
+	{
+		f32 extra = this.exists("extra_no_heal") ? this.get_u16("extra_no_heal") : 0;
+		int time = ((BASE_NOHEAL_TIME_AFTERHIT+extra) * damage) * 30;
+		int no_heal_time_old = this.get_u32("no_heal");
+		if (no_heal_time_old > getGameTime())
+			time += no_heal_time_old-getGameTime();
+		if (time > MAX_NOHEAL_TIME_AFTERHIT*30)
+			time = MAX_NOHEAL_TIME_AFTERHIT*30;
+
+		print(this.getName()+" "+time);
+
+		this.set_u32("no_heal", getGameTime()+time);
+
+		if (isClient())
+		{
+			CSprite@ thisSprite = this.getSprite();
+			if (thisSprite != null && customData == Hitters::ballista && armorRating > 1)
+			{
+				if (this.hasTag("turret")) thisSprite.PlaySound("BigDamage", 2.5f, 0.85f + XORRandom(40)*0.01f); 
+				thisSprite.PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f);
+			}
+		}
+	}
+
 	//printf("finalrating " + finalRating);
 	//print ("finalDamage: "+damage);
 
@@ -1481,22 +1508,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 						}
 					}
 				}
-			}
-		}
-	}
-
-	// if damage is not insignificant, prevent repairs for a time
-	if (hitterBlob.getTeamNum() == this.getTeamNum() ? damage > 0.5f : damage > 0.15f)
-	{
-		this.set_u32("no_heal", getGameTime()+(BASE_NOHEAL_TIME_AFTERHIT+(this.exists("extra_no_heal") ? this.get_u16("extra_no_heal") : 0))*30);
-
-		if (isClient())
-		{
-			CSprite@ thisSprite = this.getSprite();
-			if (thisSprite != null && customData == Hitters::ballista && armorRating > 1)
-			{
-				if (this.hasTag("turret")) thisSprite.PlaySound("BigDamage", 2.5f, 0.85f + XORRandom(40)*0.01f); 
-				thisSprite.PlaySound("shell_Hit", 3.5f, 0.85f + XORRandom(40)*0.01f);
 			}
 		}
 	}
