@@ -29,7 +29,7 @@ string[] smokes =
 };
 
 const u8 BASE_NOHEAL_TIME_AFTERHIT = 2; // seconds
-const u8 MAX_NOHEAL_TIME_AFTERHIT = 30;
+const u8 MAX_NOHEAL_TIME_AFTERHIT = 25;
 
 const string wheelsTurnAmountString = "wheelsTurnAmount";
 const string engineRPMString = "engine_RPM";
@@ -1354,7 +1354,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 		u16 blocks_between = Maths::Round((hitterBlobPos - thisPos).Length()/16.0f);
 		if (blocks_between > this.getRadius()/8)
-			damage /= 1.0f-(5.0f-blocks_between);
+			damage /= Maths::Max(0.1f, 1.0f-(this.getRadius()/8-blocks_between));
 	}
 
 	if (this.hasTag("tank") && hitterBlob.getName() == "missile_javelin")
@@ -1446,8 +1446,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			time += no_heal_time_old-getGameTime();
 		if (time > MAX_NOHEAL_TIME_AFTERHIT*30)
 			time = MAX_NOHEAL_TIME_AFTERHIT*30;
-
-		print(this.getName()+" "+time);
 
 		this.set_u32("no_heal", getGameTime()+time);
 
