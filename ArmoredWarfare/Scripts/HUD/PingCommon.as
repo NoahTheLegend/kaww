@@ -218,7 +218,6 @@ class Path : Canvas {
 	void tick(CBlob@ blob, CControls@ controls)
 	{
 		bool send = false;
-
 		if (blob.isKeyJustPressed(key_taunts))
 		{
 			Vec2f mpos = controls.getMouseWorldPos();

@@ -41,15 +41,17 @@ s8 selected_ping = -1;
 f32 lerp_section = 0;
 f32 lerp_subsection = 0;
 
-void onTick(CBlob@ this)
+void onTick(CRules@ this)
 {
-	if (!this.isMyPlayer()) return;
+	CBlob@ blob = getLocalPlayerBlob();
+	if (blob is null) return;
+
 	CControls@ controls = getControls();
 	if (controls is null) return;
 
-	if (this.hasTag("drawing_ping"))
+	if (blob.hasTag("drawing_ping"))
 	{
-		DrawStateTick(this, controls);
+		DrawStateTick(blob, controls);
 	}
 	
 	if (cooldown > 0)
@@ -74,10 +76,10 @@ void onTick(CBlob@ this)
 
 bool drawing = true;
 
-void onRender(CSprite@ this)
+void onRender(CRules@ this)
 {
-	CBlob@ blob = this.getBlob();
-	if (blob is null || !blob.isMyPlayer()) return;
+	CBlob@ blob = getLocalPlayerBlob();
+	if (blob is null) return;
 
 	CControls@ controls = getControls();
     if (controls is null) return;
