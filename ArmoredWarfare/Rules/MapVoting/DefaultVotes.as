@@ -12,7 +12,7 @@ s32 g_lastExtendtimeCounter = 5;
 const float required_minutes_nextmap = 10; //global nextmap vote cooldown
 const float required_minutes_extendtime = 5;
 
-const s32 VoteKickTime = 30; //minutes (30min default)
+const s32 VoteKickTime = 60*h; //6h
 
 //kicking related globals and enums
 enum kick_reason
@@ -128,7 +128,7 @@ class VoteKickFunctor : VoteFunctor
 
 			if (getNet().isServer())
 			{
-				getSecurity().ban(kickplayer, VoteKickTime, "Voted off"); //30 minutes ban
+				getSecurity().ban(kickplayer, VoteKickTime, "You've been kicked by your team. If vote was malicious, ping NoahTheLegend on Naso Inc or KAG discord.");
 			}
 		}
 	}
