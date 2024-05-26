@@ -1,5 +1,5 @@
 bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 {
-    CShape@ shape = this.getShape();
-	return shape !is null && shape.vellen < 2.0f;
+    f32 vellen = this.getVelocity().Length();
+	return vellen <= 2.5f || this.isOnGround();
 }
