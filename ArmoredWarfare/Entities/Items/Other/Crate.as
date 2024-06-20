@@ -282,6 +282,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	}
 	else if (hasSomethingPacked(this))
 	{
+		if (this.get_string("packed name") == "Barge" && !this.isInWater()) return;
 		caller.CreateGenericButton(12, buttonpos, this, this.getCommandID("unpack"), getTranslatedString("Unpack {ITEM}").replace("{ITEM}", getTranslatedString(this.get_string("packed name"))));
 	}
 	/*else if (caller.getCarriedBlob() is this)
