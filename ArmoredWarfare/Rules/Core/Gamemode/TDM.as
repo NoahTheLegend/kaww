@@ -819,7 +819,7 @@ shared class TDMCore : RulesCore
 					CTeam@ teamis = rules.getTeam(team_won);
 					rules.SetTeamWon(team_won);   //game over!
 					rules.SetCurrentState(GAME_OVER);
-					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game!\nWell done. Loading next map..." );
+					if (teamis !is null) rules.SetGlobalMessage("Team \""teamis.getName() + "\" wins the game!\nWell done. Loading next map..." );
 				}
 				else
 				{
@@ -836,28 +836,17 @@ shared class TDMCore : RulesCore
 			{
 				u8 teamleft = getRules().get_u8("teamleft");
 				u8 teamright = getRules().get_u8("teamright");
-				//u16 teamleft_kills = getRules().get_u16("teamleft_kills");
-				//u16 teamright_kills = getRules().get_u16("teamright_kills");
-//
-				//if (teamright_kills != teamleft_kills)
-				//{
-				//	u8 team_won = (teamright_kills > teamleft_kills ? 1 : 0);
-				//	team_wins_on_end = team_won;
-				//	CTeam@ teamis = rules.getTeam(team_won);
-				//	rules.SetTeamWon(team_won);   //game over!
-				//	rules.SetCurrentState(GAME_OVER);
-				//	if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );
-				//}
 
 				u16 teamleft_tickets = getRules().get_s16("teamLeftTickets");
 				u16 teamright_tickets = getRules().get_s16("teamRightTickets");
+
 				if (teamleft_tickets > teamright_tickets)
 				{
 					team_wins_on_end = 0;
 					CTeam@ teamis = rules.getTeam(teamleft);
 					rules.SetTeamWon(teamleft);   //game over!
 					rules.SetCurrentState(GAME_OVER);
-					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );		
+					if (teamis !is null) rules.SetGlobalMessage("Team \""teamis.getName() + "\" wins the game! They have more kills!" );		
 				}
 				else if (teamleft_tickets < teamright_tickets)
 				{
@@ -865,7 +854,7 @@ shared class TDMCore : RulesCore
 					CTeam@ teamis = rules.getTeam(teamright);
 					rules.SetTeamWon(teamright);   //game over!
 					rules.SetCurrentState(GAME_OVER);
-					if (teamis !is null) rules.SetGlobalMessage(teamis.getName() + " wins the game! They have more kills!" );		
+					if (teamis !is null) rules.SetGlobalMessage("Team \""teamis.getName() + "\" wins the game! They have more kills!" );		
 				}
 				else
 				{
@@ -964,7 +953,7 @@ shared class TDMCore : RulesCore
 			{
 				rules.SetTeamWon(winteamIndex);   //game over!
 				rules.SetCurrentState(GAME_OVER);
-				rules.SetGlobalMessage("{WINNING_TEAM} wins the game!\n\nWell done. Loading next map..." );
+				rules.SetGlobalMessage("Team \"{WINNING_TEAM}\" wins the game!\n\nWell done. Loading next map..." );
 				rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.name);
 				SetCorrectMapTypeShared();
 			}
@@ -1519,7 +1508,7 @@ void RunCTF(CRules@ this)
 		this.SetTeamWon(team_won); //game over!
 		this.SetCurrentState(GAME_OVER);
 		if (this.getTeam(team_won) !is null)
-			this.SetGlobalMessage("\n\n\n\n\n"+this.getTeam(team_won).getName() + " wins the game!\n\nWell done. Loading next map...");
+			this.SetGlobalMessage("\n\n\n\n\n Team\""+this.getTeam(team_won).getName() + "\" wins the game!\n\nWell done. Loading next map...");
 	}
 }
 
