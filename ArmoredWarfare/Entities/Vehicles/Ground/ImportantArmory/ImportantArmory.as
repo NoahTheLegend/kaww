@@ -436,11 +436,37 @@ void onDie(CBlob@ this)
 	{
 		u8 teamleft = getRules().get_u8("teamleft");
 		u8 teamright = getRules().get_u8("teamright");
+
+		bool draw = true;
+		if (getRules().getCurrentState() != GAME_OVER)
+		{
+			CBlob@[] armories;
+			getBlobsByTag("importantarmory", @armories);
+			for (u8 i = 0; i < armories.size(); i++)
+			{
+				CBlob@ armory = armories[i];
+				if (armory is null) continue;
+
+				if (armory.getTeamNum() == this.getTeamNum()) return; // there are armories remaining, keep playing
+				else draw = false; // there are enemy armories remaining, set their team won
+				// else draw
+			}
+		}
+
 		u8 team = (this.getTeamNum() == teamleft ? teamright : teamleft);
+		if (draw)
+		{
+			team = -1;
+			getRules().SetGlobalMessage("Draw!\n\nLoading next map..." );
+		}
+		else
+		{
+			CTeam@ teamis = getRules().getTeam(team);
+			if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " destroyed the enemy Truck!\n\nLoading next map..." );
+		}
+
 		getRules().SetTeamWon(team);
 		getRules().SetCurrentState(GAME_OVER);
-		CTeam@ teamis = getRules().getTeam(team);
-		if (teamis !is null) getRules().SetGlobalMessage(teamis.getName() + " destroyed the enemy Truck!\n\nLoading next map..." );
 	}
 }
 
