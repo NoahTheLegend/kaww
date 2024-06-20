@@ -186,7 +186,7 @@ namespace ShotgunParams
 	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
 	// MOVEMENT (extra)
-	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.55f;
+	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.75f;
 	const ::f32 RELOAD_JUMPHEIGHT_FACTOR= 1.0f;
 	const ::f32 STAB_WALKSPEED_FACTOR   = 0.65f;
 	const ::f32 STAB_JUMPHEIGHT_FACTOR  = 0.85f;
