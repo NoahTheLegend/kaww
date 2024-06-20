@@ -5,8 +5,10 @@ const string bucketAmountString = "medic_ability_bucket";
 const u8 bucket_Max_Charges = 4; // MUST be in line with the hud sprite. If you change this, also change the sprite.
 const f32 medkit_heal_amount = 0.5f;
 
-const u8 food_heal_times = 8;
-const u8 heart_heal_times = 4;
+const u8 food_heal_temp = 7;
+const u8 heart_heal_temp = 4;
+const u8 food_heal_time = 180;
+const u8 heart_heal_time = 120;
 const f32 food_heal_amount = 0.33f;
 const f32 heart_heal_amount = 0.1f;
 
