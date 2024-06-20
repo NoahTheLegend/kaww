@@ -522,6 +522,10 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 		}
 	}
 
+	bool a1 = this.isKeyPressed(key_action1);
+	bool a2 = this.isKeyPressed(key_action2);
+	bool a3 = this.isKeyPressed(key_action3);
+
 	CControls@ controls = this.getControls();
 	CSprite@ sprite = this.getSprite();
 	s32 charge_time = this.get_s32("my_chargetime");
@@ -531,6 +535,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 	{
 		archer.isStabbing = true;
 	}
+	
 	bool isStabbing = archer.isStabbing;
 	bool isReloading = this.get_bool("isReloading") || this.get_s32("my_reloadtime") > 0;
 	u8 charge_state = archer.charge_state;
@@ -541,7 +546,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 	bool is_rpg = this.getName() == "is_rpg";
 
 	just_action1 = reload_time <= 0 && (this.get_bool("just_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyJustPressed(key_action1));
-	is_action1 = reload_time <= 0 && (this.get_bool("is_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && this.isKeyPressed(key_action1));
+	is_action1 = reload_time <= 0 && (this.get_bool("is_a1") && this.hasTag("can_shoot_if_attached")) || (!this.isAttached() && a1);
 	bool was_action1 = reload_time <= 0 && this.wasKeyPressed(key_action1);
 	bool hidegun = false;
 
@@ -581,7 +586,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 	}
 
 	bool lock_stab = false;
-	if (this.get_u32("turret_delay") < getGameTime() && this.isKeyPressed(key_action3) && this.isKeyPressed(key_down) && !hidegun && !isReloading && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
+	if (this.get_u32("turret_delay") < getGameTime() && a3 && this.isKeyPressed(key_down) && !hidegun && !isReloading && this.isOnGround() && this.getVelocity().Length() <= 1.0f)
 	{
 		if (this.hasBlob("mat_scrap", 1) && this.getPlayer() !is null && stats.id == Perks::fieldengineer)
 		{
@@ -656,7 +661,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 		if (this.exists("stab time")) time = this.get_u8("stab time");
 		if (this.exists("stab timing")) timing = this.get_u8("stab timing");
 		if (this.exists("stab damage")) damage = this.get_f32("stab damage");
-		if (this.isKeyPressed(key_action3) && !this.hasTag("no_knife") && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime()+6 && no_medkit)
+		if (a3 && !this.hasTag("no_knife") && !hidegun && !isReloading && this.get_u32("end_stabbing") < getGameTime()+6 && no_medkit)
 		{
 			if (canStab(this) && !lock_stab)
 			{
@@ -684,7 +689,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 		}
 	}
 	
-	const bool pressed_action2 = this.isKeyPressed(key_action2) && this.isOnGround();
+	const bool pressed_action2 = a2 && this.isOnGround();
 	bool menuopen = getHUD().hasButtons();
 	Vec2f pos = this.getPosition();
 
@@ -692,7 +697,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 	
 	InAirLogic(this, inaccuracyCap);
 
-	if (this.isKeyPressed(key_action2))
+	if (a2)
 	{
 		this.Untag("scopedin");
 
@@ -909,7 +914,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 				f32 hp_ratio = 1.0f;
 				if (stats_loaded && stats.id == Perks::bull) hp_ratio = 0.5f;
 
-				bool sprint = (stats_loaded ? stats.sprint : true) && this.getHealth() >= this.getInitialHealth() * hp_ratio && this.isOnGround() && !this.isKeyPressed(key_action2) && (this.getVelocity().x > 0.1f || this.getVelocity().x < -0.1f);
+				bool sprint = (stats_loaded ? stats.sprint : true) && this.getHealth() >= this.getInitialHealth() * hp_ratio && this.isOnGround() && !a2 && (this.getVelocity().x > 0.1f || this.getVelocity().x < -0.1f);
 				
 				// operators move slower than normal
 				if (stats_loaded)
@@ -990,7 +995,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 
 			if (this.get_u8("inaccuracy") == 0)
 			{
-				if (this.isKeyPressed(key_action2))
+				if (a2)
 				{
 					getHUD().SetCursorFrame(0);
 				}
@@ -1233,7 +1238,7 @@ void onTick(CBlob@ this)
 	if (sprite is null) return;
 
 	InfantryInfo@ infantry;
-	if (!this.get( "infantryInfo", @infantry )) return;
+	if (!this.get("infantryInfo", @infantry)) return;
 
 	ArcherInfo@ archer;
 	if (!this.get("archerInfo", @archer)) return;
@@ -1250,6 +1255,10 @@ void onTick(CBlob@ this)
 
 	ManageFirebringerLogic(this);
 	ManageParachute(this, stats);
+
+	bool a1 = this.isKeyPressed(key_action1);
+	bool a2 = this.isKeyPressed(key_action2);
+	bool a3 = this.isKeyPressed(key_action3);
 
 	if (this.isBot() && this.getTickSinceCreated() == 1 && isClient()) 
 	{
@@ -1352,13 +1361,15 @@ void ClientFire(CBlob@ this, PerkStats@ stats, const s16 charge_time, InfantryIn
 	this.set_u32("accuracy_delay", getGameTime()+3);
 	Vec2f thispos = this.getPosition();
 
+	bool a2 = this.isKeyPressed(key_action2);
+
 	float bulletSpread = getBulletSpread(infantry.class_hash) + (float(this.get_u8("inaccuracy")))/perk_mod;
 	if (this.get_bool("is_rpg"))
 	{
 		targetVector = this.getAimPos() - thispos;
 		targetDistance = targetVector.Length();
 		targetFactor = targetDistance / 367.0f;
-		f32 mod = this.isKeyPressed(key_action2) && this.isOnGround() ? 0.1f : 0.3f;
+		f32 mod = a2 && this.isOnGround() ? 0.1f : 0.3f;
 
 		f32 inaccuracy = (float(this.get_u8("inaccuracy")))/perk_mod;
 		f32 spread = (inaccuracy/infantry.inaccuracy_cap) * 45.0f;
@@ -1388,7 +1399,7 @@ void ClientFire(CBlob@ this, PerkStats@ stats, const s16 charge_time, InfantryIn
 			if (is_local)
 			{
 				f32 mod = 0.5; // make some smart stuff here?
-				if (this.isKeyPressed(key_action2) && this.isOnGround()) mod *= 0.25;
+				if (a2 && this.isOnGround()) mod *= 0.25;
 				this.set_u8("inaccuracy", Maths::Min(infantry.inaccuracy_cap, this.get_u8("inaccuracy") + infantry.inaccuracy_pershot * (this.hasTag("sprinting")?2.0f:1.0f)));
 
 				if (infantry.emptyshellonfire)
