@@ -4,6 +4,9 @@
 #include "Slider.as";
 #include "CheckBox.as";
 
+bool was_a1 = false;
+bool was_a2 = false;
+
 class ConfigMenu {
     Vec2f pos;
     Vec2f dim;
@@ -68,9 +71,13 @@ class ConfigMenu {
         Vec2f btn_dim = Vec2f(32,32);
         bool hovering = hover(mpos, tl, tl+btn_dim);
 
+        bool a1 = controls.isKeyPressed(KEY_LBUTTON);
+        bool a2 = controls.isKeyPressed(KEY_RBUTTON);
+
         if (state == 0)
         {
-            if (hovering && (controls.isKeyPressed(KEY_LBUTTON) || controls.isKeyPressed(KEY_RBUTTON)))
+            if (hovering
+                && ((a1 && !was_a1)  || (a2 && !was_a2)))
             {
                 state = 1;
             }
@@ -126,7 +133,7 @@ class ConfigMenu {
         {
             GUI::DrawPane(tl, br, SColor(155,255,255,255));
 
-            if (hovering && (controls.isKeyPressed(KEY_LBUTTON) || controls.isKeyPressed(KEY_RBUTTON)))
+            if (hovering && ((a1 && !was_a1) || (a2 && !was_a2)))
                 state = 3;
 
             global_alpha = Maths::Min(255, global_alpha+25);
@@ -136,6 +143,8 @@ class ConfigMenu {
             }
         }
 
+        was_a1 = a1;
+        was_a2 = a2;
         GUI::DrawIcon("SettingsMenuIcon.png", 0, btn_dim, tl, 0.5f, 0.5f, SColor(hovering?200:100,255,255,255));
     }
 };
@@ -175,7 +184,6 @@ class Section {
         SColor col_white = SColor(alpha,255,255,255);
         SColor col_grey = SColor(alpha,235,235,235);
 
-        GUI::DrawPane(tl, br, SColor(55,255,255,255));
         {
             GUI::SetFont("score-small");
             GUI::DrawText(title, pos + Vec2f(title_dim.x + padding.x/2, padding.y), col_white);
