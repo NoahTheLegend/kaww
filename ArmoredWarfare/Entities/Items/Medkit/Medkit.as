@@ -65,6 +65,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		blob.set_u32("used medkit", getGameTime());
 		this.getSprite().PlaySound("Heart.ogg");
 
+		if (!isServer()) // not localhost
+		{
+			this.set_u8("medamount", this.get_u8("medamount") - 1);
+			this.setInventoryName("Medkit ("+(this.get_u8("medamount")+1)+")");
+		}
 		if (isServer())
 		{
 			CPlayer@ p = blob.getPlayer();
