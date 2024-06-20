@@ -15,7 +15,7 @@ bool disable_line = false;
 
 float scoreboardMargin = 52.0f;
 float scrollOffset = 0.0f;
-float scrollSpeed = 5.0f;
+float scrollSpeed = 10.0f;
 float maxMenuWidth = 600;
 float screenMidX = getScreenWidth()/2;
 
