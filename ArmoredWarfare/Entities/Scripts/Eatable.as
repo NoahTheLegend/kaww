@@ -54,14 +54,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 				if (is_burger)
 				{
-					theBlob.set_u32("regen", extra + getGameTime()+150);
-					theBlob.set_u8("step_max_temp", food_heal_times);
+					theBlob.set_u32("regen", extra + getGameTime()+food_heal_time);
+					theBlob.set_u8("step_max_temp", food_heal_temp);
 					theBlob.set_f32("regen_amount", food_heal_amount);
 				}
 				else
 				{
-					theBlob.set_u32("regen", extra + getGameTime()+90);
-					theBlob.set_u8("step_max_temp", heart_heal_times);
+					theBlob.set_u32("regen", extra + getGameTime()+heart_heal_time);
+					theBlob.set_u8("step_max_temp", heart_heal_temp);
 					theBlob.set_f32("regen_amount", heart_heal_amount);
 				}
 
