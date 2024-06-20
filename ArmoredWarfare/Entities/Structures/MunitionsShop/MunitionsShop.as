@@ -86,7 +86,7 @@ void InitShopItems(CBlob@ this, s16 tn)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas a small explosion radius.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 45);
+			AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press SPACE while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
