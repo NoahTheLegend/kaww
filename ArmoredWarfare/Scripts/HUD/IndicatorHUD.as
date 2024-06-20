@@ -225,7 +225,8 @@ void onRender(CRules@ this)
 		s16 rdiff = teamRightTickets-teamLeftTickets;
 
 		Vec2f diff_offset = Vec2f(ldiff > rdiff ? -48 : 48, hide_indicator ? 40 : 125);
-		if (getGameTime() > 450) GUI::DrawTextCentered(ldiff!=rdiff?"-"+Maths::Max(ldiff, rdiff):"||", Vec2f(screenWidth/2-7, diff_offset.y), getNeonColor(ldiff==rdiff?7:ldiff<rdiff?teamleft:teamright, 0));
+		GUI::SetFont("score-medium");
+		if (getGameTime() > 450) GUI::DrawTextCentered(ldiff!=rdiff?"-"+Maths::Max(ldiff, rdiff):"||", Vec2f(screenWidth/2-7, diff_offset.y-16), getNeonColor(ldiff==rdiff?7:ldiff<rdiff?teamleft:teamright, 0));
 	}
 
 	f32 points_target = this.get_f32("ctf_points_target");
