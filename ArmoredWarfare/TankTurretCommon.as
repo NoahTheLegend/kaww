@@ -142,6 +142,8 @@ void CreateMachineGun(CBlob@ this, TurretStats@ stats)
 
 void Restock(CBlob@ this, TurretStats@ stats, u16 quantity)
 {
+	if (!isServer()) return;
+	
     CBlob@ ammo = server_CreateBlob(stats.ammo);
 	if (ammo !is null)
 	{
