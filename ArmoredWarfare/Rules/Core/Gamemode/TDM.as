@@ -977,9 +977,13 @@ shared class TDMCore : RulesCore
 			CBlob@[] blobsInRadius;
 			CMap@ map = getMap();
 			bool found = false;
-			if (!blob.hasBlob("ammo", 1))
+			CInventory@ inv = blob.getInventory();
+			s8 ammo_count = 100;
+			if (inv !is null) ammo_count = inv.getCount("ammo");
+
+			if (ammo_count < 100)
 			{
-				if (map.getBlobsInRadius(blob.getPosition(), 164.0f, @blobsInRadius))
+				if (map.getBlobsInRadius(blob.getPosition(), 48.0f, @blobsInRadius))
 				{
 					for (uint i = 0; i < blobsInRadius.length; i++)
 					{
@@ -1003,6 +1007,7 @@ shared class TDMCore : RulesCore
 					CBlob@ mat = server_CreateBlob("ammo");
 					if (mat !is null)
 					{
+						mat.server_SetQuantity(100-ammo_count);
 						if (!blob.server_PutInInventory(mat))
 						{
 							mat.setPosition(blob.getPosition());
