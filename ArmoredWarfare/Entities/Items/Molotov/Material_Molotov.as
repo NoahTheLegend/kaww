@@ -15,11 +15,17 @@ void onInit(CBlob@ this)
 	this.Tag("collideswithglass");
 	this.Tag("weapon");
 
+	this.set_u32("activate_delay", 0);
 }
 
 bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)
 {
 	return true;
+}
+
+void onThisRemoveFromInventory(CBlob@ this, CBlob@ blob)
+{
+	this.set_u32("activate_delay", getGameTime()+2);
 }
 
 void onTick(CBlob@ this)
@@ -47,6 +53,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
     if (cmd == this.getCommandID("activate"))
     {
+		if (this.get_u32("activate_delay") > getGameTime()) return;
+
 		if (isClient() && !this.hasTag("activated"))
 		{
 			this.getSprite().PlaySound("Lighter_Use", 1.00f, 0.90f + (XORRandom(100) * 0.30f));
