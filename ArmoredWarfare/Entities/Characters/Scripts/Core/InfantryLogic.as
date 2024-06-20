@@ -1231,6 +1231,8 @@ void Jet(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
+	bool onscreen = isClient() && this.isOnScreen();
+
 	visualTimerTick(this);
 	HandleOther(this);
 
