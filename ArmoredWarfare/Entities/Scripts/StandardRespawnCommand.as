@@ -43,31 +43,31 @@ void InitClasses(CBlob@ this)
 							"---- Mechanic ----\n\nBuild and break.\n\nHP: 200\nLMB: Build\nRMB: Mine");
 
 		addPlayerClass(this, "---- Python ----", "$crewman_class_icon$", "revolver",
-							"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 350\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
+							"---- Python ----\n\nGreat headshot damage and HP.\n\nHP: 300\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
 
 		addPlayerClass(this, "---- AK-47 ----", "$ranger_class_icon$", "ranger",
-							"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Buttstock");
+							"---- AK-47 ----\n\nExcellent rate of fire.\n\nHP: 200\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Buttstock");
 
 		addPlayerClass(this, "---- Shotgun ----", "$shotgun_class_icon$", "shotgun",
-							"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 275\nLMB: Shoot | 4 Ammo per shot\nRMB: Aim\nSPACEBAR: Dig");
+							"---- Shotgun ----\n\nDeadly at close range.\n\nHP: 230\nLMB: Shoot | 4 Ammo per shot\nRMB: Aim\nSPACEBAR: Dig");
 
 		addPlayerClass(this, "---- Sniper ----", "$sniper_class_icon$", "sniper",
-						"---- Sniper ----\n\nLong range sniper.\n\nHP: 200\nLMB: Shoot | 3 Ammo per shot\nRMB: Scope in\nSPACEBAR: Knife");
+						"---- Sniper ----\n\nLong range sniper.\n\nHP: 150\nLMB: Shoot | 3 Ammo per shot\nRMB: Scope in\nSPACEBAR: Knife");
 
 		addPlayerClass(this, "---- RPG ----", "$rpg_class_icon$", "rpg",
-							"---- RPG ----\n\nArmed with a powerful RPG launcher.\n\nHP: 250.\nLMB: RPG | 1 HEAT rocket per shot\nRMB: Aim\nSPACEBAR: Knife");
+							"---- RPG ----\n\nArmed with a powerful RPG launcher.\n\nHP: 220.\nLMB: RPG | 1 HEAT rocket per shot\nRMB: Aim\nSPACEBAR: Knife");
 
 		addPlayerClass(this, "---- MP5 ----", "$medic_class_icon$", "mp5",
-							"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half self healing\n\nHP: 200\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
+							"---- MP5 ----\n\nSpecializes in healing teammates.\nReceives only half self healing\n\nHP: 150\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Heal pack");
 
 		addPlayerClass(this, "---- Shielder ----", "$shielder_class_icon$", "shielder",
-							"---- Shielder ----\n\nCarries a shield that is able to block insignificant damage.\n\nHP: 300\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
+							"---- Shielder ----\n\nCarries a shield that is able to block insignificant damage.\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Shield");
 
 		addPlayerClass(this, "---- Firebringer ----", "$firebringer_class_icon$", "firebringer",
-							"---- Firebringer ----\n\nOwns a portative yet heavy flamethrower.\n\nHP: 250\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
+							"---- Firebringer ----\n\nOwns a portative yet heavy flamethrower.\n\nHP: 200\nLMB: Shoot | 1 Special Ammo per shot\nRMB: Aim\nSPACEBAR: Shovel");
 
 		addPlayerClass(this, "---- LMG ----", "$lmg_class_icon$", "lmg",
-						"---- LMG ----\n\nExtended magazine capacity but slower reload.\n\nHP: 300\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
+						"---- LMG ----\n\nExtended magazine capacity but slower reload.\n\nHP: 250\nLMB: Shoot | 1 Ammo per shot\nRMB: Aim\nSPACEBAR: Knife");
 	}
 	else
 	{
