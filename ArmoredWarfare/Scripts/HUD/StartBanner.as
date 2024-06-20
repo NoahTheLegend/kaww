@@ -64,7 +64,7 @@ void onTick(CRules@ this)
             else if (flags.length > 0)
             {
                 // capture the flag
-                this.set_string("bannertext", (flags.size() <= 2 ? "Capture all the flags to win!" : "         Capture all the flags,\nor collect enough points to win!"));
+                this.set_string("bannertext", (flags.size() <= 2 ? "Capture all the flags to win!" : "         Collect enough control points to win!"));
                 bannerDest += Vec2f(0, 100);
             }
             else
