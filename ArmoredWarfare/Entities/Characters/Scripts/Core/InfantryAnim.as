@@ -734,12 +734,12 @@ void onTick(CSprite@ this)
 			}
 		}
 
-		if (armangle > 180.0f)
+		while (armangle > 180.0f)
 		{
 			armangle -= 360.0f;
 		}
 
-		if (armangle < -180.0f)
+		while (armangle < -180.0f)
 		{
 			armangle += 360.0f;
 		}
