@@ -44,7 +44,7 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return false;
+	return blob.isCollidable() && !blob.hasTag("flesh");
 }
 
 void DoExplosion(CBlob@ this)
