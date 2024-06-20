@@ -4,8 +4,8 @@ void onInit(CBlob@ this)
 	this.Tag("turret");
 	this.Tag("tank");
 	this.Tag("autoturret");
-	this.Tag("grad");
 	this.Tag("blocks bullet");
+	this.Tag("mlrs");
 
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
