@@ -526,8 +526,8 @@ namespace FirebringerParams
 	const ::f32 DAMAGE_BODY 			= 0.333f; // damage dealt to body
 	const ::f32 DAMAGE_HEAD 			= 0.333f; // damage dealt on headshot
 	// MOVEMENT
-	const ::f32 WALK_STAT 				= 0.915f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.4f; // airwalk
+	const ::f32 WALK_STAT 				= 0.9f; // walk
+	const ::f32 AIRWALK_STAT 			= 2.35f; // airwalk
 	const ::f32 JUMP_STAT 				= 1.0f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 1.0f; // walk (sprint)
 	const ::f32 AIRWALK_STAT_SPRINT 	= 2.65f; // airwalk (sprint)
@@ -561,7 +561,7 @@ namespace FirebringerParams
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
 	const ::s16 RELOAD_TIME 			= 105; // time to reload
 	const ::u8 NORELOADTIMER 			= 5; // time after each shot to prevent reloading
-	const ::u32 MAG_SIZE 				= 50; // max bullets in mag
+	const ::u32 MAG_SIZE 				= 25; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 3.35f; // speed that bullets fly
