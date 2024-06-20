@@ -476,7 +476,7 @@ class VoteSurrenderFunctor : VoteFunctor
 				rules.SetTeamWon(teamWonNum);
 				rules.SetCurrentState(GAME_OVER);
 
-				rules.SetGlobalMessage("{LOSING_TEAM} Surrendered! {WINNING_TEAM} wins the Game!");
+				rules.SetGlobalMessage("{LOSING_TEAM} Surrendered! Team \"{WINNING_TEAM}\" wins the Game!");
 				rules.AddGlobalMessageReplacement("LOSING_TEAM", teamLost.getName());
 				rules.AddGlobalMessageReplacement("WINNING_TEAM", teamWon.getName());
 			}

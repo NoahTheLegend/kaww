@@ -280,7 +280,7 @@ bool checkGameOver(CRules@ this, int teamNum)
 
 			this.SetTeamWon(teamright); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage(this.getTeam(teamright).getName() + " wins the game!\n\nWell done. Loading next map...");
+			this.SetGlobalMessage("Team \"" + this.getTeam(teamright).getName() + "\" wins the game!\n\nWell done. Loading next map...");
 
 			return true;
 		}
@@ -292,7 +292,7 @@ bool checkGameOver(CRules@ this, int teamNum)
 
 			this.SetTeamWon(teamleft); //game over!
 			this.SetCurrentState(GAME_OVER);
-			this.SetGlobalMessage(this.getTeam(teamleft).getName() + " wins the game!\n\nWell done. Loading next map...");
+			this.SetGlobalMessage("Team \"" + this.getTeam(teamleft).getName() + "\" wins the game!\n\nWell done. Loading next map...");
 
 			return true;
 		}

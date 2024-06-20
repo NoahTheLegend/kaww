@@ -504,7 +504,7 @@ void CheckTeamWon(CBlob@ this, const int oldTeam)
 		getRules().SetTeamWon(team);
 		getRules().SetCurrentState(GAME_OVER);
 		CTeam@ teamis = getRules().getTeam(team);
-		if (teamis !is null) getRules().SetGlobalMessage("\n\n\n\n\n"+teamis.getName() + " wins the game!\n\nWell done. Loading next map..." );
+		if (teamis !is null) getRules().SetGlobalMessage("\n\n\n\n\n Team \""+teamis.getName() + "\" wins the game!\n\nWell done. Loading next map..." );
 	}
 }
 

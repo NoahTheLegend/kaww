@@ -87,7 +87,7 @@ void onTick(CRules@ this)
 			if (teamWon !is null)
 			{
 				hasWinner = true;
-				this.SetGlobalMessage("Time is up!\n" + teamWon.getName() + " wins the game!\nWell done. Loading next map..." );
+				this.SetGlobalMessage("Time is up!\nTeam \"" + teamWon.getName() + "\" wins the game!\nWell done. Loading next map..." );
 			}
 		}
 
