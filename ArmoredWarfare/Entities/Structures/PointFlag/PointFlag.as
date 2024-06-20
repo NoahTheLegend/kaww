@@ -11,12 +11,13 @@
 
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
-const f32 capture_time = 3600;
+const f32 capture_time = 30*120;
 const Vec2f startpos = Vec2f(9.0f, -51.0f);
 
 void onInit(CBlob@ this)
 {
 	this.Tag("pointflag");
+	this.Tag(SHOP_AUTOCLOSE);
 	this.getShape().getConsts().mapCollisions = false;
 
 	this.set_f32(capture_prop, 0);
@@ -67,6 +68,7 @@ void onInit(CBlob@ this)
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 2;
+
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Wood", "$mat_wood$", "mat_wood", "$mat_wood$"+"\n\nOrder Wood");
@@ -528,9 +530,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 		if (caller !is null)
 		{
-
-			if (name == "upgrade")
+			if (name == "upgrade" && !this.hasTag("dead"))
 			{
+				this.Tag("dead");
+
 				if (isClient())
 				{
 					this.getSprite().PlaySound("PowerUp.ogg", 2.0f, 1.0f);
