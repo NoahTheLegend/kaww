@@ -15,6 +15,7 @@ void onInit(CBlob@ this)
 	this.set_u32("switch channel time", 0);
 	this.set_u16("in water ticks", 0);
 	this.set_bool("enabled", true);
+	this.Tag("repairable");
 
 	SetChannel(this, radio_channels[radio_channel]);
 
