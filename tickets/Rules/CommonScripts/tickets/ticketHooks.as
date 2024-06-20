@@ -26,6 +26,9 @@ const u32 TICKETS_PER_PLAYER = 12;
 
 void reset(CRules@ this)
 {
+	this.set_s16("check_teamwon_again", -1);
+	this.set_u32("check_teamwon_timing", 0);
+
 	if (getNet().isServer())
 	{
 		u8 teamleft = getRules().get_u8("oldteamleft");
@@ -69,7 +72,6 @@ void reset(CRules@ this)
 		teamLeftTickets+=(ticketsPerPlayerInTeam0*players_in_team_count);
 		teamRightTickets+=(ticketsPerPlayerInTeam0*players_in_team_count);	
 
-
 		this.set_s16("teamRightTickets", teamRightTickets);
 		this.set_s16("teamLeftTickets", teamLeftTickets);;
 		this.Sync("teamRightTickets", true);
@@ -78,14 +80,6 @@ void reset(CRules@ this)
 }
 
 void onInit(CRules@ this) {
-    if (!GUI::isFontLoaded("score-big"))
-	{
-        GUI::LoadFont("score-big",
-                      "GUI/Fonts/AveriaSerif-Bold.ttf", 
-                      FONT_SIZE,
-                      true);
-					  reset(this);
-    }
 	if (!GUI::isFontLoaded("small score font"))
 	{
         GUI::LoadFont("small score font",
@@ -95,7 +89,7 @@ void onInit(CRules@ this) {
 					  reset(this);
     }
 
-	this.set_s16("check_teamwon_again", -1);
+	reset(this);
 }
 
 void onRestart(CRules@ this)
@@ -113,13 +107,15 @@ void onTick(CRules@ this)
 		this.set_s8("decrement_ticket_by_team", -1);
 	}
 
-	u8 check_teamwon_again = this.get_s16("check_teamwon_again");
-	if (check_teamwon_again != -1)
+	s16 check_teamwon_again = this.get_s16("check_teamwon_again");
+	if (check_teamwon_again != -1 && getGameTime() > this.get_u32("check_teamwon_timing"))
 	{
 		this.set_s16("check_teamwon_again", -1);
 		
 		if (check_teamwon_again < 7)
+		{
 			checkGameOver(this, check_teamwon_again);
+		}
 	}
 }
 
