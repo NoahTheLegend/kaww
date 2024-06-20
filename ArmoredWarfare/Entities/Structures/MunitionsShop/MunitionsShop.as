@@ -114,7 +114,7 @@ void InitShopItems(CBlob@ this, s16 tn)
 			AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue millitary helmet, blocks a small amount of bullet damage, occasionally blocks bullets.!", false);
+			ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue millitary helmet, blocks a moderate amount of headshot damage.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 25);
 		}
 		{
