@@ -34,7 +34,11 @@ void onTick(CRules@ this)
 	{
 		CPlayer@ player = getPlayer(i);
 		CBlob@ blob = player.getBlob();
+		
 		if(blob is null || blob is my_blob)
+			continue;
+
+		if (blob.hasTag("bushy") && blob.getTeamNum() != team)
 			continue;
 
 		Vec2f bpos = blob.getPosition();
