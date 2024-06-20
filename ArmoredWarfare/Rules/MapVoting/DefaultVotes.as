@@ -129,6 +129,7 @@ class VoteKickFunctor : VoteFunctor
 			if (getNet().isServer())
 			{
 				getRules().set_s16("check_teamwon_again", kickplayer.getTeamNum());
+				getRules().set_u32("check_teamwon_timing", getGameTime() + 90);
 				getSecurity().ban(kickplayer, VoteKickTime, "You've been kicked by your team. If vote was malicious, ping NoahTheLegend on Naso Inc or KAG discord.");
 			}
 		}
@@ -189,6 +190,7 @@ class VoteKickLeaveFunctor : VotePlayerLeaveFunctor
 			if (getNet().isServer())
 			{
 				getRules().set_s16("check_teamwon_again", kickplayer.getTeamNum());
+				getRules().set_u32("check_teamwon_timing", getGameTime() + 90);
 				getSecurity().ban(player, VoteKickTime, "Ran from vote");
 			}
 
