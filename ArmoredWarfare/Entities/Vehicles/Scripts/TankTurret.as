@@ -359,7 +359,7 @@ bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool was
 	bool hasammo = v.getCurrentAmmo().loaded_ammo > 0;
 
 	f32 currentAngle = this.get_f32("gunelevation");
-    if (this.hasTag("grad") && (this.isFacingLeft() ? currentAngle < 270+10 : currentAngle > 90-10)) return false;
+    if (this.hasTag("mlrs") && (this.isFacingLeft() ? currentAngle < 270+10 : currentAngle > 90-10)) return false;
 
 	u8 charge = v.charge;
 	if ((charge > 0 || isActionPressed) && hasammo)
@@ -419,7 +419,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 			ArtilleryFire(this, v, bullet, _charge, bullet_pos);
 			return;
 		}
-		else if (this.hasTag("grad"))
+		else if (this.hasTag("mlrs"))
 		{
 			GradFire(this, v, bullet, _charge, bullet_pos);
 			return;

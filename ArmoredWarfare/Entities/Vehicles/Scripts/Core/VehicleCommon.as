@@ -1270,7 +1270,7 @@ void Vehicle_onAttach(CBlob@ this, VehicleInfo@ v, CBlob@ attached, AttachmentPo
 			server_LoadAmmo(this, attached, v.getCurrentAmmo().fire_amount, v);
 		}
 	}
-	if (this.hasTag("turret") && !this.hasTag("apc") && attached !is null && attached.hasTag("player"))
+	if (this.hasTag("turret") && !this.hasTag("apc") && !this.hasTag("mlrs") && attached !is null && attached.hasTag("player"))
 	{
 		const u8 mod_delay_onattach = 3;
 		u32 delay = getRemainingFireDelay(this, v);

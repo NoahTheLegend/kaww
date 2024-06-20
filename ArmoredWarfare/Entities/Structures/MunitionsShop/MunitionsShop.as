@@ -119,7 +119,7 @@ void InitShopItems(CBlob@ this, s16 tn)
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Mechanics can detach machineguns from vehicles using this. Limited uses.", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 40);
+			AddRequirement(s.requirements, "coin", "", "Coins", 30);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total. Bonus: allows medics to perform healing faster.", false);
