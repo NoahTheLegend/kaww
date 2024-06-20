@@ -246,9 +246,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				this.getSprite().PlaySound("NoAmmo.ogg", 0.75f, 1.25f);
 			}
 
-			if (isClient() && this.get_u8("ammo") == 0)
+			if (isClient())
 			{
-				this.getSprite().PlaySound(this.get_u32("cooldown") > getGameTime() ? "mortar_reload_quick" : "mortar_reload", 1.0f, 1.0f);
+				this.getSprite().PlaySound(this.get_u32("cooldown") > getGameTime() ? "mortar_reload_quick" : "mortar_reload", 1.5f, 1.0f);
 			}
 			
 			if (isServer())
