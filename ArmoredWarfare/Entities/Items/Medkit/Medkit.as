@@ -1,4 +1,5 @@
 #include "PerksCommon.as";
+#include "MedicisCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -81,7 +82,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				}
 			}
 
-			f32 heal_amount = 1.5f; // 1.0f is 50 HP
+			f32 heal_amount = 1.0f; // 1.0f is 50 HP
 			if (stats_loaded)
 			{
 				heal_amount *= stats.heal_factor;

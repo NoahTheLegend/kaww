@@ -1,5 +1,6 @@
 #include "EatCommon.as";
 #include "PerksCommon.as";
+#include "MedicisCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -54,14 +55,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				if (is_burger)
 				{
 					theBlob.set_u32("regen", extra + getGameTime()+150);
-					theBlob.set_u8("step_max_temp", 8);
-					theBlob.set_f32("regen_amount", 0.5f);
+					theBlob.set_u8("step_max_temp", food_heal_times);
+					theBlob.set_f32("regen_amount", food_heal_amount);
 				}
 				else
 				{
 					theBlob.set_u32("regen", extra + getGameTime()+90);
-					theBlob.set_u8("step_max_temp", 4);
-					theBlob.set_f32("regen_amount", 0.125f);
+					theBlob.set_u8("step_max_temp", heart_heal_times);
+					theBlob.set_f32("regen_amount", heart_heal_amount);
 				}
 
 				CBitStream params;

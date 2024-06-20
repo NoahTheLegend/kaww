@@ -2,10 +2,16 @@ const string medicCallingBoolString = "is_calling_medic";
 const string medicTagString = "medic_tag"; // add this tag per-basis, in the character logic onInit()
 
 const string bucketAmountString = "medic_ability_bucket";
-const u8 bucket_Max_Charges = 5; // MUST be in line with the hud sprite. If you change this, also change the sprite.
+const u8 bucket_Max_Charges = 4; // MUST be in line with the hud sprite. If you change this, also change the sprite.
+const f32 medkit_heal_amount = 0.5f;
+
+const u8 food_heal_times = 8;
+const u8 heart_heal_times = 4;
+const f32 food_heal_amount = 0.33f;
+const f32 heart_heal_amount = 0.1f;
 
 const string bucketSyncIDString = "bucket_sync_ID";
-const f32 max_heal_radius = 96.0f; // 12 blocks
+const f32 max_heal_radius = 80.0f; // 10 blocks
 
 void drawBucketHud(float bucketAmount, float bucketCost)
 {

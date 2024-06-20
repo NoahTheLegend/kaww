@@ -71,7 +71,7 @@ shared class PerkStats {
         //
         reload_time = 1.0f; accuracy = 1.0f; additional_vision_distance = 0; damage_body = 1.0f; damage_head = 1.0f;
         //
-        regen_amount = 0.05f; heal_factor = 1.0f; kill_heal = 0;
+        regen_amount = 0.04f; heal_factor = 1.0f; kill_heal = 0;
         //
         demontage_time = 150; sprint = true; mg_overheat = 1.0f; ftw_overheat = 1.0f; wrench_repair_time = 30;
             heli_velo = Vec2f(0,0); plane_velo = 0; top_angle = 0; down_angle = 0;
@@ -239,7 +239,7 @@ shared class PerkMason : PerkStats {
         name = "Mason";
         id = 11;
 
-        regen_amount = 0.1f;
+        regen_amount = 0.08f;
         heal_factor = 1.25f;
     }
 };

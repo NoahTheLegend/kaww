@@ -59,7 +59,7 @@ void onTick(CBlob@ this)
 							}
 						}
 
-						RestoreHealth(player_found, player_found is this ? 0.25f : 0.5f);
+						RestoreHealth(player_found, player_found is this ? medkit_heal_amount/2 : medkit_heal_amount);
 
 						CBitStream params;
 						params.write_u16(player_found.getNetworkID());
