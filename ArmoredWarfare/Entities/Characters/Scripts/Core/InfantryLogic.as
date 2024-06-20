@@ -424,6 +424,8 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 
 			if (b !is null) // blob
 			{
+				if (b.hasTag("door") && b.getShape().getConsts().collidable) break;
+				
 				const bool large = b.hasTag("blocks sword") && !b.isAttached() && b.isCollidable();
 				if (b.hasTag("ignore sword")) continue;
 				if (b.getTeamNum() == this.getTeamNum()) continue;
@@ -432,11 +434,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 				if (b.hasTag("door")) damage *= 2.5f;
 
 				//big things block attacks
-				{
-					this.server_Hit(b, hi.hitpos, Vec2f(0,0), damage, type, false); 
-					if (b.hasTag("door") && b.getShape().getConsts().collidable) break;
-					// end hitting if we hit something solid, don't if its flesh
-				}
+				this.server_Hit(b, hi.hitpos, Vec2f(0,0), damage, type, false); 
 			}
 
 			if (!dontHitMore && can_dig)
