@@ -94,6 +94,8 @@ void onInit(CRules@ this) {
                       true);
 					  reset(this);
     }
+
+	this.set_s16("check_teamwon_again", -1);
 }
 
 void onRestart(CRules@ this)
@@ -109,6 +111,15 @@ void onTick(CRules@ this)
 	{
 		decrementTickets(this, prop);
 		this.set_s8("decrement_ticket_by_team", -1);
+	}
+
+	u8 check_teamwon_again = this.get_s16("check_teamwon_again");
+	if (check_teamwon_again != -1)
+	{
+		this.set_s16("check_teamwon_again", -1);
+		
+		if (check_teamwon_again < 7)
+			checkGameOver(this, check_teamwon_again);
 	}
 }
 

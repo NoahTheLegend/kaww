@@ -819,7 +819,7 @@ shared class TDMCore : RulesCore
 					CTeam@ teamis = rules.getTeam(team_won);
 					rules.SetTeamWon(team_won);   //game over!
 					rules.SetCurrentState(GAME_OVER);
-					if (teamis !is null) rules.SetGlobalMessage("Team \""teamis.getName() + "\" wins the game!\nWell done. Loading next map..." );
+					if (teamis !is null) rules.SetGlobalMessage("Team \"" + teamis.getName() + "\" wins the game!\nWell done. Loading next map..." );
 				}
 				else
 				{
@@ -846,7 +846,7 @@ shared class TDMCore : RulesCore
 					CTeam@ teamis = rules.getTeam(teamleft);
 					rules.SetTeamWon(teamleft);   //game over!
 					rules.SetCurrentState(GAME_OVER);
-					if (teamis !is null) rules.SetGlobalMessage("Team \""teamis.getName() + "\" wins the game! They have more kills!" );		
+					if (teamis !is null) rules.SetGlobalMessage("Team \"" + teamis.getName() + "\" wins the game! They have more kills!" );		
 				}
 				else if (teamleft_tickets < teamright_tickets)
 				{
@@ -854,7 +854,7 @@ shared class TDMCore : RulesCore
 					CTeam@ teamis = rules.getTeam(teamright);
 					rules.SetTeamWon(teamright);   //game over!
 					rules.SetCurrentState(GAME_OVER);
-					if (teamis !is null) rules.SetGlobalMessage("Team \""teamis.getName() + "\" wins the game! They have more kills!" );		
+					if (teamis !is null) rules.SetGlobalMessage("Team \"" + teamis.getName() + "\" wins the game! They have more kills!" );		
 				}
 				else
 				{
