@@ -39,7 +39,7 @@ void onInit(CBlob@ this)
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-12.0f, 4.5f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-19.0f, 4.5f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-26.0f, 4.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-34.0f, 3.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-34.0f, 2.0f)); if (w !is null) w.SetRelativeZ(20.0f); w.ScaleBy(Vec2f(0.9f, 0.9f));}
 
 	this.getShape().SetOffset(Vec2f(0, 2));
 
