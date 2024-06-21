@@ -82,7 +82,7 @@ void onTick(CBlob@ this)
 			}
 			else if (blob.hasTag("flesh"))
 			{
-				this.server_Hit(blob, this.getPosition(), Vec2f(0, 0.01f), 0.5f, Hitters::sword, true);
+				this.server_Hit(blob, this.getPosition(), Vec2f(0, 0.01f), 1.0f, Hitters::sword, true);
 			}
 			else if (blob.hasTag("weak vehicle") || blob.hasTag("truck"))
 			{
