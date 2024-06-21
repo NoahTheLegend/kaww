@@ -511,7 +511,7 @@ bool canBlobBePickedUp(CBlob@ this, CBlob@ blob)
 {
 	float maxDist = Maths::Max(this.getRadius() + blob.getRadius() + 20.0f, 36.0f);
 
-	if (blob.hasTag("very heavy weight"))
+	if (blob.hasTag("heavy weight"))
 		maxDist *= 0.35f;
 	else if (blob.hasTag("heavy weight"))
 		maxDist *= 0.45f;
