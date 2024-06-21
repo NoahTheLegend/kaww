@@ -214,6 +214,8 @@ void InitClasses(CBlob@ this)
 						+"\n                      you down lesser"
 						+"\n                   - Barbed wire doesn't"
 						+"\n                      stun you"
+						+"\n                   - Increased binoculars"
+						+"\n                      zoom"
 						+"\n\n                  Sentry Package"
 						+"\n                   - Deploy a sentry gun,"
 						+"\n                      hold DOWN+SPACEBAR"
@@ -239,7 +241,7 @@ void InitClasses(CBlob@ this)
 						+"\n                     "
 						+"\n$shift$              "
 						+"\n             $and$ Build-list"
-						+"\n$space$              "
+						+"\n\nTAUNTS_KEY              "
 						);
 						
 }

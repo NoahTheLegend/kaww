@@ -498,10 +498,20 @@ void ManageCamera(CBlob@ this)
 		f32 extra = 0;
 
 		bool lock_zoom = false;
+
+		bool stats_loaded = false;
+		PerkStats@ stats;
+		if (local.get("PerkStats", @stats) && stats !is null)
+			stats_loaded = true;
 		
 		if (localblob.hasTag("binoculars"))
 		{
-			camera.mouseFactor = 0.65f;
+			f32 extra = 1.0f;
+			if (stats_loaded)
+			{
+				extra = stats.binoculars_distance;
+			}
+			camera.mouseFactor = 0.65f * extra;
 		}
 		else if (localblob.hasTag("distant_view"))
 		{
@@ -512,11 +522,6 @@ void ManageCamera(CBlob@ this)
 		{
 			camera.mouseFactor = 0.55f;
 		}
-		
-		bool stats_loaded = false;
-		PerkStats@ stats;
-		if (local.get("PerkStats", @stats) && stats !is null)
-			stats_loaded = true;
 
 		if (stats_loaded)
 		{

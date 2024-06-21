@@ -60,6 +60,7 @@ shared class PerkStats {
 
     // Field Engineer
     bool parachute;
+    f32 binoculars_distance;
 
     PerkStats()
     {
@@ -88,6 +89,7 @@ shared class PerkStats {
             walk_extra_factor = 1.0f; walk_extra_factor_air = 1.0f; jump_extra_factor = 1.0f; kill_bonus_time = 0;
         //
         parachute = true;
+        binoculars_distance = 1.0f;
     }
 };
 
@@ -229,6 +231,7 @@ shared class PerkFieldEngineer : PerkStats {
         id = 10;
 
         parachute = false;
+        binoculars_distance = 1.25f;
     }
 };
 
