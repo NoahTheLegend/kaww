@@ -202,7 +202,7 @@ namespace ShotgunParams
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 7; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 			= 60; // time to reload
+	const ::s16 RELOAD_TIME 			= 75; // time to reload
 	const ::u8 NORELOADTIMER 			= 15; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 4; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 20; // time between shots
@@ -406,7 +406,7 @@ namespace RevolverParams
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 			= 50; // time to reload
+	const ::s16 RELOAD_TIME 			= 55; // time to reload
 	const ::u8 NORELOADTIMER 			= 3; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 7; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 5; // time between shots
