@@ -313,12 +313,12 @@ void onInit(CBlob@ this)
 		backsideOffset = 20.0f; break;
 
 		case _pszh4: // smol APC
+		case _is7:
 		backsideOffset = 16.0f; break;
 
 		case _uh1: // heli
 		case _ah1:
 		case _mi24:
-		case _is7:
 		backsideOffset = 32.0f; break;
 
 		case _bf109: // plane
@@ -1381,7 +1381,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 
 	// reduce damage if it hits turret (for maus)
-	if (this.hasTag("reduce_upper_dmg") && hitterBlob.getPosition().y < thisPos.y && hitterBlob.getPosition().y > thisPos.y-24.0f)
+	if ((this.hasTag("reduce_upper_dmg") || (this.hasTag("reduce_upper_dmg_only_front") && !isHitBackside))
+		&& hitterBlob.getPosition().y < thisPos.y && hitterBlob.getPosition().y > thisPos.y-24.0f)
 	{
 		damage *= 0.5f;
 	}

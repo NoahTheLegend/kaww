@@ -11,7 +11,7 @@ void onInit(CBlob@ this)
 	this.Tag("deal_bunker_dmg");
 	this.Tag("engine_can_get_stuck");
 	this.Tag("heavy");
-	this.Tag("reduce_upper_dmg");
+	this.Tag("reduce_upper_dmg_only_front");
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
