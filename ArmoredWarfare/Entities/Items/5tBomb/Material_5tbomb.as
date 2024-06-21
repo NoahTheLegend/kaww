@@ -9,7 +9,7 @@ void onInit(CBlob@ this)
 	this.getShape().SetRotationsAllowed(true);
 	this.set_u8("boom_start", 0);
 	this.set_bool("booming", false);
-	this.Tag("very heavy weight");
+	this.Tag("heavy weight");
 		
 	this.set_f32("map_damage_ratio", 0.5f);
 	this.getCurrentScript().tickFrequency = 5;

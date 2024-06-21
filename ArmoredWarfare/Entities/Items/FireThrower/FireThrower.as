@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 	this.Tag("gun");
 	this.Tag("machinegun");
 	this.Tag("firethrower");
-	this.Tag("very heavy weight");
+	this.Tag("heavy weight");
 	this.Tag("weapon");
 	this.Tag("lag_ondie");
 

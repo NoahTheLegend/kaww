@@ -107,7 +107,7 @@ void DoThrow(CBlob@ this, CBlob@ carried, Vec2f pos, Vec2f vector, Vec2f selfVel
 	}
 
 	Vec2f vel = getThrowVelocity(this, vector, selfVelocity, ourvelscale);
-
+	printf(""+(carried is null));
 	if (carried !is null)
 	{
 		if (carried.hasTag("medium weight"))
@@ -117,10 +117,6 @@ void DoThrow(CBlob@ this, CBlob@ carried, Vec2f pos, Vec2f vector, Vec2f selfVel
 		else if (carried.hasTag("heavy weight"))
 		{
 			vel *= 0.3f;
-		}
-        else if (carried.hasTag("very heavy weight"))
-		{
-			vel *= 0.2f;
 		}
 
 		if (carried.server_DetachFrom(this))

@@ -13,7 +13,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("gun");
 	this.Tag("machinegun");
-	this.Tag("very heavy weight");
+	this.Tag("heavy weight");
 	this.Tag("weapon");
 
 	this.set_u8("TTL", 60);
