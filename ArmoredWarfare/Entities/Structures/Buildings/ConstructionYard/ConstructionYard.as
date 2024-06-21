@@ -49,15 +49,15 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Bunker", "$bunker$", "bunker", "A tough encampment, great for holding important areas.", false, false, false);
-		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 200);
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 250);
 		s.customButton = true;
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Heavy Bunker", "$heavybunker$", "heavybunker", "A terrifying reinforcement, ideal for holding landmarks.", false, false, false);
-		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 300);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
+		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 350);
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
 		s.customButton = true;
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
