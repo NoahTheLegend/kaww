@@ -43,10 +43,14 @@ void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
         error("Client config or vars could not load");
 
 		cfg.add_f32("colorblind", 0);
+        cfg.add_bool("head_rotation", true);
+        cfg.add_bool("body_rotation", true);
 	}
     else if (vars !is null)
     {
-        vars.colorblind = cfg.read_f32("colorblind");
+        vars.colorblind = cfg.read_f32("colorblind", 0);
+        vars.head_rotation = cfg.read_bool("head_rotation", true);
+        vars.body_rotation = cfg.read_bool("body_rotation", true);
     }
 }
 
@@ -61,11 +65,14 @@ void SetupUI(CRules@ this) // add options here
     if (vars !is null)
     {
         Vec2f section_pos = menu_pos;
-        Section special("Special", section_pos, Vec2f(menu_dim.x/2, menu_pos.y + 150));
+        const f32 section_offset = 50;
+        const f32 option_offset = 30;
 
-        // slider increases every build up from initializing, pls fix 
+        ///////////////////////////////////////////////////////////////////////////////////////////////
 
-        Option colorblind("Color blindness", section_pos+special.padding+Vec2f(0,35), true, false);
+        Section special("     Special", section_pos, Vec2f(menu_dim.x/2, menu_dim.y/2));
+
+        Option colorblind("Color blindness", special.pos+special.padding+Vec2f(0,option_offset + special.padding.y), true, false);
         colorblind.setSliderPos(vars.colorblind);
         colorblind.slider.mode = 2;
         string[] descriptions = {"None", "Protanopia", "Deuteranopia", "Tritanopia", "Protanomaly", "Deuteranomaly", "Tritanomaly"};
@@ -74,6 +81,24 @@ void SetupUI(CRules@ this) // add options here
         special.addOption(colorblind);
 
         setmenu.addSection(special);
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+
+        Section preference("Preference", Vec2f(menu_pos.x, colorblind.pos.y)+Vec2f(0,section_offset), Vec2f(menu_dim.x/2, menu_dim.y/2));
+
+        Option head_rotation("Head rotation", preference.pos+preference.padding+Vec2f(0,option_offset + preference.padding.y), false, true);
+        head_rotation.check.state = vars.head_rotation;
+        preference.addOption(head_rotation);
+
+        Option body_rotation("Body rotation", head_rotation.pos+Vec2f(0,option_offset), false, true);
+        body_rotation.check.state = vars.body_rotation;
+        preference.addOption(body_rotation);  
+
+        setmenu.addSection(preference);
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
     }
     else error("Could not setup config UI, clientvars do not exist");
 
@@ -103,6 +128,16 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
                 vars.colorblind_type    = Maths::Round(colorblind.slider.snap_points * colorblind.slider.scrolled);
             }
 
+            if (menu.sections[1].options.size() != 0)
+            {
+                // section 1
+                Option head_rotation    = menu.sections[1].options[0];
+                vars.head_rotation      = head_rotation.check.state;
+                
+                Option body_rotation    = menu.sections[1].options[1];
+                vars.body_rotation      = body_rotation.check.state;
+            }
+
             //====================================================
             ConfigFile cfg = ConfigFile();
 	        if (cfg.loadFile("../Cache/AW/clientconfig.cfg"))
@@ -110,6 +145,8 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
                 // write config
                 //====================================================
                 cfg.add_f32("colorblind", vars.colorblind);
+                cfg.add_bool("head_rotation", vars.head_rotation);
+                cfg.add_bool("body_rotation", vars.body_rotation);
                 //====================================================
                 // save config
 	        	cfg.saveFile("AW/clientconfig.cfg");
@@ -122,6 +159,8 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
                 error("Loading default preset");
                 //====================================================
                 cfg.add_f32("colorblind", vars.colorblind);
+                cfg.add_bool("head_rotation", vars.head_rotation);
+                cfg.add_bool("body_rotation", vars.body_rotation);
                 //====================================================
 		        cfg.saveFile("AW/clientconfig.cfg");
             }
