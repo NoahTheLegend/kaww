@@ -3,15 +3,15 @@
 #include "HittersAW.as"
 
 const Vec2f arm_offset = Vec2f(-2, 0);
-const u32 fire_rate = 120;
-const u8 fire_cost = 3;
+const u32 fire_rate = 90;
+const u8 fire_cost = 5;
 
 void onInit(CBlob@ this)
 {
 	this.Tag("heavy weight");
 
 	this.set_f32("damage_body", 2.5f);
-	this.set_f32("damage_head", 3.5f);
+	this.set_f32("damage_head", 4.0f);
 	this.set_u8("TTL", 30);
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 40);
