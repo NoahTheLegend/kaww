@@ -46,11 +46,11 @@ class CheckBox {
             }
             else capture = false;
         }
-            
-        if (!state || alpha != 255) // active
-            GUI::DrawPane(tl, br, SColor(alpha,255,255,255));
-        else
-            GUI::DrawSunkenPane(tl, br);
+
+        GUI::SetFont("menu");
+        GUI::DrawPane(tl, br, SColor(alpha,255,255,255));
+        if (state)
+            GUI::DrawTextCentered("✓", tl+dim/2-Vec2f(1.5f,0), color_white);
     }
 
     bool hover(Vec2f mpos)

@@ -3,6 +3,7 @@
 #include "KnockedCommon.as";
 #include "PerksCommon.as";
 #include "Perks.as";
+#include "ClientVars.as";
 
 void onInit(CBlob@ this)
 {
@@ -20,6 +21,26 @@ void onTick(CBlob@ this)
     CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 	if (!this.isOnScreen()) return;
+
+	bool body_rotation = true;
+	bool head_rotation = true;
+
+	ClientVars@ vars;
+    if (getRules().get("ClientVars", @vars))
+	{
+		body_rotation = vars.body_rotation;
+		head_rotation = vars.head_rotation;
+	}
+
+	if (!body_rotation || !head_rotation)
+	{
+		ResetDegrees(this, !body_rotation, !head_rotation);
+	}
+
+	if (!body_rotation && !head_rotation)
+	{
+		return;
+	}
 
 	if (isKnocked(this))
 	{
@@ -102,84 +123,95 @@ void onTick(CBlob@ this)
 		}
 	}
 	
-	f32 lerp_head = 0.66f * stun_factor;
-	f32 damp = 0.4f;
+	if (head_rotation)
+	{
+		f32 lerp_head = 0.66f * stun_factor;
+		f32 damp = 0.4f;
 
-	f32 angle_head = -aimdir.Angle() + (this.isFacingLeft()?-180:0);
-	if (angle_head < -180) angle_head += 180;
-	else if (angle_head > -180) angle_head -= 180;
+		f32 angle_head = -aimdir.Angle() + (this.isFacingLeft()?-180:0);
+		if (angle_head < -180) angle_head += 180;
+		else if (angle_head > -180) angle_head -= 180;
 
-	angle_head += 180;
-	f32 angle_head_target = (Maths::Lerp(angle_head, angle_head < 0 ? -360 : 360, 1.0f - damp) + 360 + (angle_head < 0 ? -360*damp : 360*damp)) % 360;
-	angle_head = Maths::Clamp(Maths::Lerp(this.get_f32("angle_head"), angle_head_target, lerp_head), -360.0f, 360.0f);
-	this.set_f32("angle_head", angle_head);
+		angle_head += 180;
+		f32 angle_head_target = (Maths::Lerp(angle_head, angle_head < 0 ? -360 : 360, 1.0f - damp) + 360 + (angle_head < 0 ? -360*damp : 360*damp)) % 360;
+		angle_head = Maths::Clamp(Maths::Lerp(this.get_f32("angle_head"), angle_head_target, lerp_head), -360.0f, 360.0f);
+		this.set_f32("angle_head", angle_head);
 
-	// calculate aim dir body lean
-	f32 lerp_body = 0.5f * stun_factor;
-
-	f32 angle_body = -aimdir.Angle() + (this.isFacingLeft()?-180:0);
-	if (angle_body < -180) angle_body += 180;
-	else if (angle_body > -180) angle_body -= 180;
-	angle_body += 180;
+		CSpriteLayer@ head = sprite.getSpriteLayer("head");
+    	if (head !is null)
+    	{
+			head.ResetTransform();
+			head.RotateBy(angle_head, Vec2f(0,4));
+    	}
+		CSpriteLayer@ helmet = sprite.getSpriteLayer("helmet");
+    	if (helmet !is null)
+    	{
+			helmet.ResetTransform();
+			helmet.RotateBy(angle_head, Vec2f(0,4));
+    	}
+	}
 	
-
-	// calculate movement lean
-	f32 lean_walk = (vel.x < 0 ? Maths::Max(-max_vel, vel.x) : Maths::Min(max_vel, vel.x))
-		* (onground ? lean_mod + (this.hasTag("sprinting") ? lean_mid_sprint_additional : 0) : lean_air_mod);
-
-	// decrease lean if going backwards
-	if ((vel.x > 0 && this.isFacingLeft())
-		|| (vel.x < 0 && !this.isFacingLeft()))
+	if (body_rotation)
 	{
-		lean_walk *= 0.75f;
+		// calculate aim dir body lean
+		f32 lerp_body = 0.5f * stun_factor;
+
+		f32 angle_body = -aimdir.Angle() + (this.isFacingLeft()?-180:0);
+		if (angle_body < -180) angle_body += 180;
+		else if (angle_body > -180) angle_body -= 180;
+		angle_body += 180;
+
+		// calculate movement lean
+		f32 lean_walk = (vel.x < 0 ? Maths::Max(-max_vel, vel.x) : Maths::Min(max_vel, vel.x))
+			* (onground ? lean_mod + (this.hasTag("sprinting") ? lean_mid_sprint_additional : 0) : lean_air_mod);
+
+		// decrease lean if going backwards
+		if ((vel.x > 0 && this.isFacingLeft())
+			|| (vel.x < 0 && !this.isFacingLeft()))
+		{
+			lean_walk *= 0.75f;
+		}
+
+		// recalculate body lean
+		f32 lean = 0.1f * (1.0f - Maths::Abs(vel.x) / max_vel);
+
+		f32 angle_body_target = (Maths::Lerp(angle_body, angle_body < 0 ? -360 : 360, 1.0f - lean) + 360 + (angle_body < 0 ? -360*lean : 360*lean)) % 360;
+		angle_body = Maths::Clamp(Maths::Lerp(this.get_f32("angle_body"), !onground ? 0 : angle_body_target, lerp_body), -360.0f, 360.0f);
+
+		this.set_f32("angle_body", angle_body);
+
+		// disable aim dir lean if we are moving
+		if (!onground || ((vel.x < -1.0f && lean_walk < vel.x)
+			|| (vel.x > 1.0f && lean_walk > vel.x)))
+		{
+			angle_body = lean_walk;
+		}
+
+		// rotate
+		this.setAngleDegrees(angle_body);
 	}
-
-	// recalculate body lean
-	f32 lean = 0.1f * (1.0f - Maths::Abs(vel.x) / max_vel);
-
-	f32 angle_body_target = (Maths::Lerp(angle_body, angle_body < 0 ? -360 : 360, 1.0f - lean) + 360 + (angle_body < 0 ? -360*lean : 360*lean)) % 360;
-	angle_body = Maths::Clamp(Maths::Lerp(this.get_f32("angle_body"), !onground ? 0 : angle_body_target, lerp_body), -360.0f, 360.0f);
-
-	this.set_f32("angle_body", angle_body);
-
-	// disable aim dir lean if we are moving
-	if (!onground || ((vel.x < -1.0f && lean_walk < vel.x)
-		|| (vel.x > 1.0f && lean_walk > vel.x)))
-	{
-		angle_body = lean_walk;
-	}
-
-	// rotate
-	this.setAngleDegrees(angle_body);
-
-	CSpriteLayer@ head = sprite.getSpriteLayer("head");
-    if (head !is null)
-    {
-		head.ResetTransform();
-		head.RotateBy(angle_head, Vec2f(0,4));
-    }
-	CSpriteLayer@ helmet = sprite.getSpriteLayer("helmet");
-    if (helmet !is null)
-    {
-		helmet.ResetTransform();
-		helmet.RotateBy(angle_head, Vec2f(0,4));
-    }
 }
 
-void ResetDegrees(CBlob@ this)
+void ResetDegrees(CBlob@ this, bool body = true, bool head = true)
 {
 	CSprite@ sprite = this.getSprite();
 
-	CSpriteLayer@ head = sprite.getSpriteLayer("head");
-    if (head !is null)
-    {
-		head.ResetTransform();
-    }
-	CSpriteLayer@ helmet = sprite.getSpriteLayer("helmet");
-    if (helmet !is null)
-    {
-		helmet.ResetTransform();
-    }
+	if (body)
+	{
+		this.setAngleDegrees(0);
+	}
+	if (head)
+	{
+		CSpriteLayer@ head = sprite.getSpriteLayer("head");
+    	if (head !is null)
+    	{
+			head.ResetTransform();
+    	}
 
-	this.setAngleDegrees(0);
+		CSpriteLayer@ helmet = sprite.getSpriteLayer("helmet");
+    	if (helmet !is null)
+    	{
+			helmet.ResetTransform();
+    	}
+	}
 }
