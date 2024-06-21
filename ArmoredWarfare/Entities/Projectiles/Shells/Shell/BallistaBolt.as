@@ -57,6 +57,16 @@ void onTick(CBlob@ this)
 			return;
 		}
 	}
+
+	CMap@ map = getMap();
+	if (map !is null)
+	{
+		if (this.getPosition().y + this.getVelocity().y >= map.tilemapheight * 8
+			&& this.getPlayer() !is null)
+		{
+			ResetPlayer(this);
+		}
+	}
 	
 	//this.setPosition(Vec2f(this.getPosition().x, this.getOldPosition().y)); // useful for debugging
 	f32 angle = 0;
