@@ -232,6 +232,7 @@ void onInit(CBlob@ this)
 	{
 		case _revolver:
 		{
+			this.Tag("cycle_mag"); // reload faster when mag is not fully empty
 			this.set_u8("stab time", 24);
 			this.set_u8("stab timing", 16);
 			this.Tag("no bulletgib on shot");
@@ -284,6 +285,7 @@ void onInit(CBlob@ this)
 		}
 		case _shotgun:
 		{
+			this.Tag("cycle_mag");
 			this.set_u8("stab time", 28);
 			this.set_u8("stab timing", 19);
 			this.set_s16("bullet_type", -1);
@@ -731,8 +733,13 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 			if (anim !is null && stats_loaded)
 			{
 				u8 time = anim.time;
-				reloadTime = infantry.reload_time * stats.reload_time;
-				anim.time = Maths::Round(this.get_u8("initial_reloadanim_time") * stats.reload_time);
+
+				f32 bonus = stats.reload_time;
+				if (this.hasTag("cycle_mag"))
+					bonus *= 1.0f - (f32(this.get_u32("mag_bullets")) / f32(this.get_u32("mag_bullets_max")) / 2);
+
+				reloadTime = infantry.reload_time * bonus;
+				anim.time = Maths::Round(this.get_u8("initial_reloadanim_time") * bonus);
 			}
 		}
 		
