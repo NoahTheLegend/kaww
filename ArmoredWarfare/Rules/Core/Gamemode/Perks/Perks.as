@@ -167,8 +167,8 @@ shared class PerkLucky : PerkStats {
         name = "Lucky";
         id = 5;
         aos_taken_time = 30;
-        aos_healed_time = 180;
-        aos_invulnerability_time = 15;
+        aos_healed_time = 150;
+        aos_invulnerability_time = 30;
     }
 };
 
