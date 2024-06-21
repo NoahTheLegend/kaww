@@ -855,6 +855,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 					charge_time = infantry.delayafterfire + XORRandom(infantry.randdelay);
 					charge_state = ArcherParams::fired;
 
+
 					if (this.get_u8("inaccuracy")/infantry.inaccuracy_cap > 0.33f || is_shotgun || is_rpg)
 					{
 						float recoilForce = infantry.recoil_force;
@@ -1372,7 +1373,8 @@ void ClientFire(CBlob@ this, PerkStats@ stats, const s16 charge_time, InfantryIn
 		f32 mod = a2 && this.isOnGround() ? 0.1f : 0.3f;
 
 		f32 inaccuracy = (float(this.get_u8("inaccuracy")))/perk_mod;
-		f32 spread = (inaccuracy/infantry.inaccuracy_cap) * 45.0f;
+		f32 angle = 25; // different inaccuracy: from 0.0 to 1.0 multiplied by angle
+		f32 spread = (inaccuracy/infantry.inaccuracy_cap) * angle;
 
 		ShootRPG(this, thispos, this.getAimPos(), 8.0f * infantry.bullet_velocity, spread);
 		ParticleAnimated("SmallExplosion3", pos + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -2.0f).RotateBy(this.isFacingLeft()?angle+180:angle), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.75f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
