@@ -174,7 +174,8 @@ bool canBePickedUp(CBlob@ this, CBlob@ byBlob)
 
 bool canBePutInInventory( CBlob@ this, CBlob@ inventoryBlob )
 {
-	return this.getInventory() !is null && this.getInventory().getItemsCount() == 0;
+	return this.getInventory() !is null && this.getInventory().getItemsCount() == 0
+		&& inventoryBlob !is null && !inventoryBlob.hasTag("player");
 }
 
 bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
@@ -282,7 +283,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	}
 	else if (hasSomethingPacked(this))
 	{
-		if (this.get_string("packed name") == "Barge" && !this.isInWater()) return;
 		caller.CreateGenericButton(12, buttonpos, this, this.getCommandID("unpack"), getTranslatedString("Unpack {ITEM}").replace("{ITEM}", getTranslatedString(this.get_string("packed name"))));
 	}
 	/*else if (caller.getCarriedBlob() is this)
@@ -416,7 +416,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 void Unpack(CBlob@ this)
 {
 	if (!getNet().isServer()) return;
-
 	CBlob@ blob = server_CreateBlob(this.get_string("packed"), this.getTeamNum(), Vec2f_zero);
 
 	// put on ground if not in water
@@ -612,7 +611,7 @@ void onDie(CBlob@ this)
 
 bool canUnpackHere(CBlob@ this)
 {
-	return true;
+	return !this.isInInventory() && (this.get_string("packed name") != "Barge" || this.isInWater());
 }
 
 Vec2f crate_getOffsetPos(CBlob@ blob, CMap@ map)
