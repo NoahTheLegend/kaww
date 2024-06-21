@@ -72,6 +72,15 @@ void onTick(CBlob@ this)
             this.AddScript("IgnoreDamage.as");
         this.Tag("bedrockcheck");
     }
+    
+    if (!isServer()) return;
+	CShape@ shape = this.getShape();
+	if (shape is null) return;
+
+	if (!shape.isOverlappingTileBackground(true) && !shape.isOverlappingTileSolid(true))
+	{
+		this.server_Die();
+	}
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)

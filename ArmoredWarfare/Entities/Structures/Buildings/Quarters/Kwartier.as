@@ -116,7 +116,7 @@ void onInit(CBlob@ this)
 
 
 	this.addCommandID("rest");
-	this.getCurrentScript().runFlags |= Script::tick_hasattached;
+	//this.getCurrentScript().runFlags |= Script::tick_hasattached;
 
 	//INIT COSTS
 	InitCosts();
@@ -237,6 +237,16 @@ void onTick(CBlob@ this)
 				}
 			}
 		}
+	}
+
+	if (!isServer) return;
+	if ((getGameTime()+this.getNetworkID()) % 60 != 0 || this.getTickSinceCreated() < 30) return;
+	CShape@ shape = this.getShape();
+	if (shape is null) return;
+	
+	if (!shape.isOverlappingTileBackground(true) && !shape.isOverlappingTileSolid(true))
+	{
+		this.server_Hit(this, this.getPosition(), Vec2f_zero, 3.0f, 0, true);
 	}
 }
 

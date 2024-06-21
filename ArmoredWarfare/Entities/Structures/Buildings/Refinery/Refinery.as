@@ -180,17 +180,30 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	CSprite@ sprite = this.getSprite();
-	if (sprite.getEmitSoundPaused())
+	if (isClient())
 	{
-		if (this.get_bool(working_prop))
+		CSprite@ sprite = this.getSprite();
+		if (sprite.getEmitSoundPaused())
 		{
-			sprite.SetEmitSoundPaused(false);
+			if (this.get_bool(working_prop))
+			{
+				sprite.SetEmitSoundPaused(false);
+			}
+		}
+		else if (!this.get_bool(working_prop))
+		{
+			sprite.SetEmitSoundPaused(true);
 		}
 	}
-	else if (!this.get_bool(working_prop))
+
+	if (!isServer()) return;
+	if ((getGameTime()+this.getNetworkID()) % 60 != 0 || this.getTickSinceCreated() < 30) return;
+	CShape@ shape = this.getShape();
+	if (shape is null) return;
+	
+	if (!shape.isOverlappingTileBackground(true) && !shape.isOverlappingTileSolid(true))
 	{
-		sprite.SetEmitSoundPaused(true);
+		this.server_Hit(this, this.getPosition(), Vec2f_zero, 25.0f, 0, true);
 	}
 }
 
