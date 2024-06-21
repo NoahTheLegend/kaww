@@ -21,17 +21,17 @@ void onInit(CBlob@ this)
     CSprite@ sprite = this.getSprite();
     sprite.ScaleBy(0.9f, 0.9f);
 
-	bool separatists_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 4; // team 4 buff
+	//bool separatists_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 4; // team 4 buff
    	f32 extra_amount = 0;
 	f32 extra_damage = 0;
-    if (separatists_power)
-	{
-		extra_amount = 16.0f;
-		extra_damage = 1.0f;
-	}
+    //if (separatists_power)
+	//{
+	//	extra_amount = 16.0f;
+	//	extra_damage = 1.0f;
+	//}
 
 	this.set_f32(projExplosionRadiusString, 64.0f+extra_amount);
-	this.set_f32(projExplosionDamageString, 14.0f+extra_damage);
+	this.set_f32(projExplosionDamageString, 13.0f+extra_damage);
 
 	this.set_bool("map_damage_raycast", true);
 	this.set_bool("explosive_teamkill", true);
