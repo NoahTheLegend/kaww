@@ -26,6 +26,7 @@ void onInit(CBlob@ this)
 	}
 
 	this.Tag("wooden");
+	this.Tag("tree");
 
 	this.server_setTeamNum(-1);
 	TreeVars vars;
