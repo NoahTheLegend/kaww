@@ -9,7 +9,7 @@
 // const u32 fuel_timer_max = 30 * 600;
 const f32 SPEED_MAX = 61.5;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
-f32 windage = 4.0f;
+f32 windage = 2.0f;
 
 const u32 shootDelay = 2; // Ticks
 const f32 projDamage = 0.6f;
