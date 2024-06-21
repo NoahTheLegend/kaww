@@ -45,6 +45,9 @@ void onRender(CSprite@ this)
 
 				if (stats_loaded)
 					reload_mod = stats.reload_time;
+
+				if (blob.hasTag("cycle_mag"))
+					reload_mod *= 1.0f - (f32(blob.get_u32("mag_bullets")) / f32(blob.get_u32("mag_bullets_max")) / 2);
 				
 				f32 end = blob.get_u32("reset_reloadtime");
 				f32 reloadtime = infantry.reload_time;

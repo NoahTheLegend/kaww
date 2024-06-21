@@ -1437,8 +1437,14 @@ float getBulletSpread( int blobNameHash )
 
 void onRevolverReload(CBlob@ this)
 {
-	this.getSprite().PlaySound("Revolver_reload.ogg", 0.8);
-	for (uint i = 0; i < 7; i++)
+	f32 mag = this.get_u32("mag_bullets");
+	f32 max_mag = this.get_u32("mag_bullets_max");
+
+	s8 diff = max_mag - mag;
+	f32 soundspeed_factor = mag / max_mag;
+
+	this.getSprite().PlaySound("Revolver_reload.ogg", 0.8, 1.0f + (0.15f * soundspeed_factor));
+	for (uint i = 0; i < max_mag - mag; i++)
 	{
 		makeGibParticle(
 		"EmptyShellSmall",      		            // file name
@@ -1547,8 +1553,14 @@ void onMp5Reload(CBlob@ this)
 
 void onShotgunReload(CBlob@ this)
 {
-	this.getSprite().PlaySound("Shotgun_reload.ogg", 0.8f);
-	for (uint i = 0; i < 4; i++)
+	f32 mag = this.get_u32("mag_bullets");
+	f32 max_mag = this.get_u32("mag_bullets_max");
+
+	s8 diff = max_mag - mag;
+	f32 soundspeed_factor = mag / max_mag;
+
+	this.getSprite().PlaySound("Shotgun_reload.ogg", 0.8f, 1.0f + (0.33f * soundspeed_factor));
+	for (uint i = 0; i < diff; i++)
 	{
 		makeGibParticle(
 		"EmptyShellSmallBuckshot",      		            // file name
