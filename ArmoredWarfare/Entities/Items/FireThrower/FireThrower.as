@@ -58,7 +58,7 @@ void onInit(CBlob@ this)
 		anim.AddFrame(4);
 		anim.AddFrame(5);
 		arm.SetOffset(Vec2f(this.isAttached()?4:0,0)+arm_offset);
-		arm.SetRelativeZ(100.0f);
+		arm.SetRelativeZ(101.0f);
 
 		arm.animation.frame = 1;
 	}
@@ -70,7 +70,7 @@ void onInit(CBlob@ this)
 		Animation@ anim = cage.addAnimation("default", 0, false);
 		anim.AddFrame(0);
 		cage.SetOffset(sprite.getOffset());
-		cage.SetRelativeZ(20.0f);
+		cage.SetRelativeZ(21.0f);
 	}
 
 	this.getShape().SetRotationsAllowed(false);
