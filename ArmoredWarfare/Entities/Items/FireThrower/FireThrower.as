@@ -17,6 +17,7 @@ void onInit(CBlob@ this)
 	this.Tag("heavy weight");
 	this.Tag("weapon");
 	this.Tag("lag_ondie");
+	this.set_u16("gui_mat_icon", 59);
 
 	this.set_f32("hand_rotation_damp", 0.15f);
 	
