@@ -225,7 +225,7 @@ void onTick(CBlob@ this)
 					}
 				}
 
-				this.set_f32("gunelevation", flip_factor * Maths::Max(high_angle, Maths::Min(flip_factor * getAngle(this, 0, v), low_angle)));
+				this.set_f32("gunelevation", getAngle(this, 0, v));
 			}
 			else this.set_f32("gunelevation", flip_factor * 90);
 		}
@@ -428,27 +428,12 @@ f32 getAngle(CBlob@ this, const u8 charge, VehicleInfo@ v)
 
 	if (gunner !is null && gunner.getOccupied() !is null && !gunner.isKeyPressed(key_action2) && !this.hasTag("broken"))
 	{
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos()+Vec2f(0,2);
+		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos()+Vec2f(0, 8);
+		if (facing_left) { aim_vec.x = -aim_vec.x; }
 
-		if ((!facing_left && aim_vec.x < 0) ||
-		        (facing_left && aim_vec.x > 0))
-		{
-			this.getSprite().SetEmitSoundPaused(false);
-			this.getSprite().SetEmitSoundVolume(1.25f);
-
-			if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
-
-			aim_vec.RotateBy((facing_left ? 1 : -1) * this.getAngleDegrees());
-
-			angle = (-(aim_vec).getAngle() + 270.0f);
-			angle = Maths::Max(this.get_u8("high_angle"), Maths::Min(angle, this.get_u8("low_angle")));
-
-			not_found = false;
-		}
-		else
-		{
-			this.getSprite().SetEmitSoundPaused(true);
-		}
+		aim_vec.RotateBy((facing_left ? 1 : -1) * this.getAngleDegrees());
+		angle = (-(aim_vec).getAngle() + 270.0f);
+		not_found = false;
 	}
 
 	if (not_found)
