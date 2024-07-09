@@ -56,7 +56,7 @@ void LoadSprites(CSprite@ this)
 			camogunFrame = 57;
 		}
 
-		if (blob.getName() == "rpg")
+		if (blob.get_bool("is_rpg"))
 		{
 			camogunFrame = 48;
 			camogunNoArrowFrame = 49;
@@ -69,14 +69,19 @@ void LoadSprites(CSprite@ this)
 
 		Animation@ animcharge = frontarm.addAnimation("default", 0, false);
 		animcharge.AddFrame(defaultFrame);
+		
 		Animation@ animshoot = frontarm.addAnimation("fired", 0, false);
 		animshoot.AddFrame(firedFrame);
+
 		Animation@ camogun = frontarm.addAnimation("camogun", 0, false);
 		camogun.AddFrame(camogunFrame);
+
 		Animation@ animnoarrow = frontarm.addAnimation("no_arrow", 0, false);
 		animnoarrow.AddFrame(noArrowFrame);
+
 		Animation@ camogunnoarrow = frontarm.addAnimation("camogunno_arrow", 0, false);
 		camogunnoarrow.AddFrame(camogunNoArrowFrame);
+
 		frontarm.SetOffset(Vec2f(-1.0f, 5.0f + config_offset));
 		frontarm.SetAnimation("fired");
 		frontarm.SetVisible(false);
@@ -172,7 +177,6 @@ void onTick(CSprite@ this)
 {
 	// store some vars for ease and speed
 	CBlob@ blob = this.getBlob();
-	bool isCamo = false;
 	bool hide_frontarm = false;
 
 	if (blob !is null && blob.hasTag("reload_sprite"))
@@ -187,7 +191,6 @@ void onTick(CSprite@ this)
 		}
 
 		CSpriteLayer@ camo = this.getSpriteLayer("camo");
-
 		if (camo !is null)
 		{
 			camo.SetFrameIndex(0);
@@ -195,8 +198,7 @@ void onTick(CSprite@ this)
 			camo.SetVisible(true);
 			camo.SetRelativeZ(0.31f);
 		}
-
-		if (blob.getPlayer() !is null) getRules().set_string(blob.getPlayer().getUsername() + "_perk", "Camouflage");
+		
 		blob.Untag("reload_sprite");
 		return;
 	}
@@ -250,8 +252,17 @@ void onTick(CSprite@ this)
 	}
 	else blob.Untag("had_timed_particle");
 
+	bool isCamo = false;
 	if (blob.getPlayer() !is null)
-	{
+	{ 
+		bool stats_loaded = false;
+		PerkStats@ stats;
+		if (blob.getPlayer() !is null && blob.getPlayer().get("PerkStats", @stats) && stats !is null)
+		{
+			stats_loaded = true;
+			isCamo = stats.ghillie;
+		}
+
 		CSpriteLayer@ camo = this.getSpriteLayer("camo");
 		CSpriteLayer@ frontarm = this.getSpriteLayer("frontarm");
 		CSpriteLayer@ helmet = this.getSpriteLayer("helmet");
@@ -259,8 +270,7 @@ void onTick(CSprite@ this)
 
 		if (camo !is null && frontarm !is null)
 		{
-			PerkStats@ stats;
-			if (blob.getPlayer() !is null && blob.getPlayer().get("PerkStats", @stats) && stats !is null && stats.ghillie)
+			if (blob.getPlayer() !is null && stats_loaded && isCamo)
 			{
 				if (helmet !is null) helmet.SetVisible(false);
 
@@ -627,7 +637,7 @@ void onTick(CSprite@ this)
 	}
 
 	// anti tank has 2 different states
-	if (blob.getName() == "rpg")
+	if (blob.get_bool("is_rpg"))
 	{
 		CSpriteLayer@ frontarm = this.getSpriteLayer("frontarm");
 		if (frontarm !is null)

@@ -432,7 +432,6 @@ void onRespawnCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				CPlayer@ callerPlayer = caller.getPlayer();
 				if (callerPlayer !is null)
 				{
-					//getRules().set_string(caller.getPlayer().getUsername() + "_perk", perkconfig);
 					addPerk(caller.getPlayer(), perknum);
 					
 					if (getNet().isServer())
