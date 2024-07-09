@@ -10,7 +10,6 @@ u16 savetime = 0;
 
 void onInit(CRules@ this)
 {
-    // init
     ClientVars setvars();
 	this.set("ClientVars", @setvars);
 
@@ -43,16 +42,20 @@ void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
         error("Client config or vars could not load");
 
 		cfg.add_f32("colorblind", 0);
+        cfg.add_u16("ammo_autopickup", 100);
         cfg.add_bool("head_rotation", true);
         cfg.add_bool("body_rotation", true);
 	}
     else if (vars !is null)
     {
         vars.colorblind = cfg.read_f32("colorblind", 0);
+        vars.ammo_autopickup = cfg.read_u16("ammo_autopickup", 100);
         vars.head_rotation = cfg.read_bool("head_rotation", true);
         vars.body_rotation = cfg.read_bool("body_rotation", true);
     }
 }
+
+const int step_mod_ammo = 50;
 
 void SetupUI(CRules@ this) // add options here
 {
@@ -80,11 +83,18 @@ void SetupUI(CRules@ this) // add options here
         colorblind.slider.descriptions = descriptions;
         special.addOption(colorblind);
 
+        Option ammo_autopickup("Ammo autopickup", colorblind.pos + Vec2f(0, option_offset * 2), true, false);
+        ammo_autopickup.setSliderPos(f32(vars.ammo_autopickup / max_ammo_autopickup));
+        ammo_autopickup.slider.setSnap(max_ammo_autopickup/step_mod_ammo+1); // +1 so 0 is also an option
+        ammo_autopickup.slider.description_step_mod = step_mod_ammo;
+        ammo_autopickup.slider.mode = 1;
+        special.addOption(ammo_autopickup);
+
         setmenu.addSection(special);
 
         ///////////////////////////////////////////////////////////////////////////////////////////////
 
-        Section preference("Preference", Vec2f(menu_pos.x, colorblind.pos.y)+Vec2f(0,section_offset), Vec2f(menu_dim.x/2, menu_dim.y/2));
+        Section preference("Preference", Vec2f(menu_pos.x, ammo_autopickup.pos.y)+Vec2f(0,section_offset), Vec2f(menu_dim.x/2, menu_dim.y/2));
 
         Option head_rotation("Head rotation", preference.pos+preference.padding+Vec2f(0,option_offset + preference.padding.y), false, true);
         head_rotation.check.state = vars.head_rotation;
@@ -97,8 +107,6 @@ void SetupUI(CRules@ this) // add options here
         setmenu.addSection(preference);
 
         ///////////////////////////////////////////////////////////////////////////////////////////////
-
-
     }
     else error("Could not setup config UI, clientvars do not exist");
 
@@ -125,7 +133,11 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
                 // section 0
                 Option colorblind       = menu.sections[0].options[0];
                 vars.colorblind         = colorblind.slider.scrolled;
-                vars.colorblind_type    = Maths::Round(colorblind.slider.snap_points * colorblind.slider.scrolled);
+                vars.colorblind_type    = Maths::Clamp(Maths::Round(colorblind.slider.snap_points * colorblind.slider.scrolled), 0, 6);
+
+                Option ammo_autopickup  = menu.sections[0].options[1];
+                f32 ammo_rounder        = max_ammo_autopickup / step_mod_ammo;
+                vars.ammo_autopickup    = Maths::Ceil(ammo_autopickup.slider.scrolled * ammo_rounder) / ammo_rounder * max_ammo_autopickup;
             }
 
             if (menu.sections[1].options.size() != 0)
@@ -145,6 +157,7 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
                 // write config
                 //====================================================
                 cfg.add_f32("colorblind", vars.colorblind);
+                cfg.add_u16("ammo_autopickup", vars.ammo_autopickup);
                 cfg.add_bool("head_rotation", vars.head_rotation);
                 cfg.add_bool("body_rotation", vars.body_rotation);
                 //====================================================
@@ -158,9 +171,10 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
                 error("Could not load config to save vars code 1");
                 error("Loading default preset");
                 //====================================================
-                cfg.add_f32("colorblind", vars.colorblind);
-                cfg.add_bool("head_rotation", vars.head_rotation);
-                cfg.add_bool("body_rotation", vars.body_rotation);
+                cfg.add_f32("colorblind", 0);
+                cfg.add_u16("ammo_autopickup", 100);
+                cfg.add_bool("head_rotation", true);
+                cfg.add_bool("body_rotation", true);
                 //====================================================
 		        cfg.saveFile("AW/clientconfig.cfg");
             }
@@ -190,9 +204,11 @@ void onRender(CRules@ this) // renderer for class, saves config if class throws 
     }
 }
 
+uint timer = 0;
 void onTick(CRules@ this)
 {
-    bool need_update = this.hasTag("update_clientvars");
+    timer++;
+    bool need_update = this.hasTag("update_clientvars") || timer == 30;
     
     ConfigMenu@ menu;
     if (this.get("ConfigMenu", @menu))
@@ -206,6 +222,14 @@ void onTick(CRules@ this)
             }
 
             WriteConfig(this, menu);
+
+            if (getLocalPlayer() !is null && getGameTime() != 0)
+            {
+                CBitStream params;
+                params.write_u16(getLocalPlayer().getNetworkID());
+                params.write_u32(vars.ammo_autopickup);
+                this.SendCommand(this.getCommandID("sync_clientconfig"), params);
+            }
         }
     }
 }

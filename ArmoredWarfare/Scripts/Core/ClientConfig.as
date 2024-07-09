@@ -176,6 +176,7 @@ class Section {
 
     void addOption(Option@ option)
     {
+        option.parent_dim = this.dim;
         options.push_back(option);
     }
 
@@ -203,21 +204,23 @@ class Option {
     bool has_slider;
     f32 slider_startpos;
     bool has_check;
+    Vec2f parent_dim;
 
     Slider slider;
     CheckBox check;
 
     Option(string _text, Vec2f _pos, bool _has_slider, bool _has_check)
     {
-        text = _text;
-        pos = _pos;
-        has_slider = _has_slider;
-        has_check = _has_check;
-        slider_startpos = 0.5f;
+        this.text = _text;
+        this.pos = _pos;
+        this.has_slider = _has_slider;
+        this.has_check = _has_check;
+        this.slider_startpos = 0.5f;
+        this.parent_dim = Vec2f(150, 150);
 
         if (has_slider)
         {
-            slider = Slider("option_slider", pos+Vec2f(0,23), Vec2f(100,15), Vec2f(15,15), Vec2f(8,8), slider_startpos, 0);
+            slider = Slider("option_slider", pos+Vec2f(0,23), Vec2f(this.parent_dim.x,15), Vec2f(15,15), Vec2f(8,8), slider_startpos, 0);
         }
         if (has_check)
             check = CheckBox(false, pos+Vec2f(0,1), Vec2f(18,18));
@@ -247,9 +250,11 @@ class Option {
             slider.render(alpha);
             string text = Maths::Round(slider.scrolled*100)+"%";
             if (slider.mode == 1)
-                text = ""+Maths::Abs(Maths::Clamp(slider.step.x+1,1,slider.snap_points+1));
+                text = ""+(Maths::Abs(Maths::Clamp(slider.step.x+1,1,slider.snap_points+1)) * slider.description_step_mod - slider.description_step_mod);
             else if (slider.mode == 2)
                 text = slider.descriptions[slider.getSnapPoint()];
+            else if (slider.mode == 3)
+                text = "";
 
             GUI::DrawText(text, slider.pos+Vec2f(0, slider.dim.y), SColor(255,255,235,120));
         }
