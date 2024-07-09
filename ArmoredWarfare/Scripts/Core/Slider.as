@@ -12,6 +12,7 @@ class Slider
     u8 mode;
     string description;
     string[] descriptions;
+    int description_step_mod; // multiplies text output if mode == 1
 
     bool captured;
     f32 scrolled;
@@ -31,6 +32,7 @@ class Slider
         step = Vec2f(0,0);
         mode = 0; // 0 - shows %, 1 - shows snapped point, 2 - shows descriptions[]
         description = "";
+        description_step_mod = 1;
 
         captured = false;
 
@@ -117,7 +119,7 @@ class Slider
 
     f32 adjust(f32 x, f32 a, f32 b, f32 n, int&out interval_pos) 
     {
-        f32 interval = (b - a) / n + 0.5f;
+        f32 interval = (Maths::Min(b, this.dim.x) - a) / n + 0.5f;
         f32 nearest_anchor = a + interval * int((x - a) / interval + 0.5f);
         interval_pos = Maths::Round((nearest_anchor - a) / interval);
 
