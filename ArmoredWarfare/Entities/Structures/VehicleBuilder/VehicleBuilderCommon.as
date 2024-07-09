@@ -6,7 +6,7 @@
 //Combined
 void buildT1ShopCombined(CBlob@ this)
 {
-    this.set_Vec2f("shop menu size", Vec2f(10, 4));
+    this.set_Vec2f("shop menu size", Vec2f(9, 4));
 	//title, $icon_token$, blobname, description, type (blob\coins), matname (mat_scrap), mat description
 
 	{string[] params = {n_moto,t_moto,bn_moto,d_moto,b,s,ds};
@@ -23,13 +23,6 @@ void buildT1ShopCombined(CBlob@ this)
 
 	{string[] params = {n_m60,t_m60,bn_m60,d_m60,b,s,ds};
 	makeShopItem(this,params,c_m60);}
-	
-	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
-	{string[] params = {n_m103,t_m103,bn_m103,d_m103,b,s,ds};
-	makeShopItem(this,params,c_m103);}
-	else
-	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
-	makeShopItem(this,params,c_t10);}
 
 	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
 	makeShopItem(this,params,c_armory);}
@@ -47,8 +40,8 @@ void buildT1ShopCombined(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 - Vehicle builder.\n\nUnlocks stronger ground vehicles and aircraft.", false, false);
 		s.customButton = true;
-		s.buttonwidth = 2;
-		s.buttonheight = 1;
+		s.buttonwidth = 1;
+		s.buttonheight = 2;
 		
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else
@@ -88,20 +81,16 @@ void buildT2ShopCombined(CBlob@ this)
 
 	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
 	{string[] params = {n_m103,t_m103,bn_m103,d_m103,b,s,ds};
-	makeShopItem(this,params,c_m103-5);}
+	makeShopItem(this,params,c_m103);}
 	else
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
-	makeShopItem(this,params,c_t10-5);}
-
-	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
-	{string[] params = {n_maus,t_maus,bn_maus,d_maus,b,s,ds};
-	makeShopItem(this,params,c_maus);}
-	else
-	{string[] params = {n_is7,t_is7,bn_is7,d_is7,b,s,ds};
-	makeShopItem(this,params,c_is7);}
+	makeShopItem(this,params,c_t10);}
 
 	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
 	makeShopItem(this,params,c_armory-5);}
+
+	{string[] params = {n_harti,t_harti,bn_harti,d_harti,b,s,ds};
+	makeShopItem(this,params,c_harti,Vec2f(2,2));}
 
 	{string[] params = {n_barge,t_barge,bn_barge,d_barge,b,s,ds};
 	makeShopItem(this,params,c_barge, Vec2f(3,2), false, true);}
@@ -176,17 +165,17 @@ void buildT3ShopCombined(CBlob@ this)
 
 	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
 	{string[] params = {n_m103,t_m103,bn_m103,d_m103,b,s,ds};
-	makeShopItem(this,params,c_m103-10);}
+	makeShopItem(this,params,c_m103-5);}
 	else
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
-	makeShopItem(this,params,c_t10-10);}
+	makeShopItem(this,params,c_t10-5);}
 
 	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
 	{string[] params = {n_maus,t_maus,bn_maus,d_maus,b,s,ds};
-	makeShopItem(this,params,c_maus-10);}
+	makeShopItem(this,params,c_maus);}
 	else
 	{string[] params = {n_is7,t_is7,bn_is7,d_is7,b,s,ds};
-	makeShopItem(this,params,c_is7-10);}
+	makeShopItem(this,params,c_is7);}
 
 	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
 	makeShopItem(this,params,c_armory-10);}
@@ -195,7 +184,7 @@ void buildT3ShopCombined(CBlob@ this)
 	makeShopItem(this,params,c_truckbig,Vec2f(3,2));}
 
 	{string[] params = {n_harti,t_harti,bn_harti,d_harti,b,s,ds};
-	makeShopItem(this,params,c_harti,Vec2f(2,2));}
+	makeShopItem(this,params,c_harti-5,Vec2f(2,2));}
 
 	{string[] params = {n_arti,t_arti,bn_arti,d_arti,b,s,ds};
 	makeShopItem(this,params,c_arti,Vec2f(2,2));}
@@ -245,7 +234,7 @@ void buildT3ShopCombined(CBlob@ this)
 
 void buildT1ShopGround(CBlob@ this)
 {
-    this.set_Vec2f("shop menu size", Vec2f(8, 4));
+    this.set_Vec2f("shop menu size", Vec2f(7, 4));
 
 	{string[] params = {n_moto,t_moto,bn_moto,d_moto,b,s,ds};
 	makeShopItem(this,params,c_moto);}
@@ -261,13 +250,6 @@ void buildT1ShopGround(CBlob@ this)
 
 	{string[] params = {n_m60,t_m60,bn_m60,d_m60,b,s,ds};
 	makeShopItem(this,params,c_m60);}
-	
-	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
-	{string[] params = {n_m103,t_m103,bn_m103,d_m103,b,s,ds};
-	makeShopItem(this,params,c_m103);}
-	else
-	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
-	makeShopItem(this,params,c_t10);}
 
 	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
 	makeShopItem(this,params,c_armory);}
@@ -281,8 +263,8 @@ void buildT1ShopGround(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2ground", "Tier 2 - Vehicle builder.\n\nUnlocks stronger ground vehicles.", false, false);
 		s.customButton = true;
-		s.buttonwidth = 2;
-		s.buttonheight = 1;
+		s.buttonwidth = 1;
+		s.buttonheight = 2;
 		
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else
@@ -297,7 +279,7 @@ void buildT1ShopGround(CBlob@ this)
 
 void buildT2ShopGround(CBlob@ this)
 {
-    this.set_Vec2f("shop menu size", Vec2f(13, 4));
+    this.set_Vec2f("shop menu size", Vec2f(12, 4));
 	{string[] params = {n_moto,t_moto,bn_moto,d_moto,b,s,ds};
 	makeShopItem(this,params,c_moto-1);}
 
@@ -321,20 +303,16 @@ void buildT2ShopGround(CBlob@ this)
 
 	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
 	{string[] params = {n_m103,t_m103,bn_m103,d_m103,b,s,ds};
-	makeShopItem(this,params,c_m103-5);}
+	makeShopItem(this,params,c_m103);}
 	else
 	{string[] params = {n_t10,t_t10,bn_t10,d_t10,b,s,ds};
-	makeShopItem(this,params,c_t10-5);}
-
-	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
-	{string[] params = {n_maus,t_maus,bn_maus,d_maus,b,s,ds};
-	makeShopItem(this,params,c_maus);}
-	else
-	{string[] params = {n_is7,t_is7,bn_is7,d_is7,b,s,ds};
-	makeShopItem(this,params,c_is7);}
+	makeShopItem(this,params,c_t10);}
 
 	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
 	makeShopItem(this,params,c_armory-5);}
+
+	{string[] params = {n_barge,t_barge,bn_barge,d_barge,b,s,ds};
+	makeShopItem(this,params,c_barge, Vec2f(4,2), false, true);}
 
 	{string[] params = {n_mgun,t_mgun,bn_mgun,d_mgun,b,s,ds};
 	makeShopItem(this,params,c_mgun-1, Vec2f(1,1), false, true);}
@@ -342,14 +320,11 @@ void buildT2ShopGround(CBlob@ this)
 	{string[] params = {n_jav,t_jav,bn_jav,d_jav,b,s,ds};
 	makeShopItem(this,params,c_jav-3, Vec2f(1,1), true, false);}
 
-	{string[] params = {n_barge,t_barge,bn_barge,d_barge,b,s,ds};
-	makeShopItem(this,params,c_barge, Vec2f(4,2), false, true);}
-
 	{
 		ShopItem@ s = addShopItem(this, "Upgrade to Tier 3", "$vehiclebuildert3$", "vehiclebuildert3ground", "Tier 3 - Ground Vehicle builder.\n\nUnlocks more specific vehicles for late-game.", false, false);
 		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 2;
+		s.buttonwidth = 2;
+		s.buttonheight = 1;
 		
 		if (this.getName().findLast("const", -1) != -1) AddRequirement(s.requirements, "blob", "chest", "You can't upgrade it on this map!\n", 1);
 		else
@@ -406,10 +381,10 @@ void buildT3ShopGround(CBlob@ this)
 
 	if (this.getTeamNum() == 0 || this.getTeamNum() >= 5)
 	{string[] params = {n_maus,t_maus,bn_maus,d_maus,b,s,ds};
-	makeShopItem(this,params,c_maus-10);}
+	makeShopItem(this,params,c_maus-5);}
 	else
 	{string[] params = {n_is7,t_is7,bn_is7,d_is7,b,s,ds};
-	makeShopItem(this,params,c_is7-10);}
+	makeShopItem(this,params,c_is7-5);}
 
 	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
 	makeShopItem(this,params,c_armory-10);}
