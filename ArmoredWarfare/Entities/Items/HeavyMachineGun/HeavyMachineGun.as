@@ -5,7 +5,7 @@
 
 const Vec2f arm_offset = Vec2f(-2, 0);
 const f32 MAX_OVERHEAT = 2.0f;
-const f32 OVERHEAT_PER_SHOT = 0.089f;
+const f32 OVERHEAT_PER_SHOT = 0.04f;
 const f32 COOLDOWN_RATE = 0.065f;
 const u8 COOLDOWN_TICKRATE = 5;
 
@@ -225,7 +225,8 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	if ((!v.firing || this.get_bool("overheated")) && getGameTime() % COOLDOWN_TICKRATE == 0)
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+	if (((ap !is null && !ap.isKeyPressed(key_action1)) || this.get_bool("overheated")) && getGameTime() % COOLDOWN_TICKRATE == 0)
 	{
 		if (this.get_f32("overheat") > COOLDOWN_RATE)
 		{
@@ -256,7 +257,6 @@ void onTick(CBlob@ this)
 
 	if (is_attached)
 	{
-		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
 		if (ap !is null && ap.getOccupied() !is null)
 		{
 			CBlob@ gunner = ap.getOccupied();
