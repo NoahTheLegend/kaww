@@ -3,6 +3,7 @@
 #include "EmotesCommon.as"
 #include "StandardControlsCommon.as"
 #include "PerksCommon.as";
+#include "KnockedCommon.as";
 
 bool zoomModifier = false; // decides whether to use the 3 zoom system or not
 int zoomModifierLevel = 4; // for the extra zoom levels when pressing the modifier key
@@ -23,9 +24,12 @@ void onInit(CBlob@ this)
 	this.addCommandID("cycle");
 	this.addCommandID("switch");
 	this.addCommandID("tap inventory key");
+	this.addCommandID("drop_inventory");
 
 	this.getCurrentScript().runFlags |= Script::tick_myplayer;
 	this.getCurrentScript().removeIfTag = "dead";
+
+	AddIconToken("$icon_drop_mats$", "DropMats.png", Vec2f(16, 16), 0);
 
 	//add to the sprite
 	CSprite@ sprite = this.getSprite();
@@ -83,6 +87,26 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.getInventoryBlob().server_PutOutInventory(this);
 		}
 	}
+	else if (cmd == this.getCommandID("drop_inventory"))
+	{
+		if (!canDropMats(this)) return;
+
+		CInventory@ inv = this.getInventory();
+		if (inv is null) return;
+
+		for (u16 i = 0; i < 50; i++) // getItemsCount() is bullshit
+		{
+			CBlob@ item = inv.getItem(0);
+			if (item is null) break;
+
+			this.server_PutOutInventory(item);
+		}
+	}
+}
+
+bool canDropMats(CBlob@ this)
+{
+	return !this.isInInventory() && !isKnocked(this);
 }
 
 bool putInHeld(CBlob@ owner)
@@ -261,6 +285,23 @@ void onTick(CBlob@ this)
 			else
 			{
 				this.CreateInventoryMenu(center);
+			}
+
+			CInventory@ inv = this.getInventory();
+			Vec2f inv_slots();
+			if (inv !is null) inv_slots = inv.getInventorySlots();
+			u16 bsize = 24 + f32(inv_slots.x) * 24;
+
+			CGridMenu@ drop_mats = CreateGridMenu(center + this.get_Vec2f("inventory offset") - Vec2f(bsize, f32(inv_slots.y) / 2 * 24), this, Vec2f(1, 1), "");
+			if (drop_mats !is null)
+			{
+				drop_mats.SetCaptionEnabled(false);
+				CGridButton@ b = drop_mats.AddButton("$icon_drop_mats$", "Drop inventory", this.getCommandID("drop_inventory"));
+				if (b !is null)
+				{
+					if (!canDropMats(this))
+						b.SetEnabled(false);
+				}
 			}
 
 			//controls.setMousePosition( center );
