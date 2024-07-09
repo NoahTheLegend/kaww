@@ -42,6 +42,7 @@ void onInit(CBlob@ this)
 	sprite.SetFrame(0);
 	sprite.getConsts().accurateLighting = true;
 	sprite.SetFacingLeft(!sprite.isFacingLeft());
+	sprite.setRenderStyle(RenderStyle::additive);
 
 	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_left | CBlob::map_collide_right);
 }
@@ -108,6 +109,7 @@ void onTick(CBlob@ this)
 					p.growth = -0.01f;
 					p.damping = 0.85f;
 					p.frame = 5;
+					p.Z = 550.0f;
 				}
 			}
 			else
@@ -129,6 +131,7 @@ void onTick(CBlob@ this)
 						p.fastcollision = true;
 						p.growth = -0.025f;
 						p.frame = 3;
+						p.Z = 550.0f;
 					}
 				}
 			}
@@ -143,6 +146,7 @@ void onTick(CBlob@ this)
 					p1.growth = -0.01f;
 					p1.scale = 0.75f + (XORRandom(11)-5) * 0.1f;
 					p1.deadeffect = -1;
+					p1.Z = 550.0f;
 				}
 			}
 		}
@@ -362,11 +366,13 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	{
 		for (int i = 0; i < 8; i++)
 		{
-			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(16) - 8, XORRandom(12) - 6), getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + Vec2f(0.0f, -0.8f), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 3 + XORRandom(4), XORRandom(45) * -0.00005f, true);
+			CParticle@ p = ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(16) - 8, XORRandom(12) - 6), getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + Vec2f(0.0f, -0.8f), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 3 + XORRandom(4), XORRandom(45) * -0.00005f, true);
+			if (p !is null) p.Z = 550.0f;
 		}
 		for (int i = 0; i < 4; i++)
 		{
-			ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(8) - 4, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(20) * 0.005f, 360), float(XORRandom(360)), 0.75f + XORRandom(40) * 0.01f, 5 + XORRandom(6), XORRandom(30) * -0.0001f, true);
+			CParticle@ p = ParticleAnimated("LargeSmoke", pos + Vec2f(XORRandom(8) - 4, XORRandom(8) - 4), getRandomVelocity(0.0f, XORRandom(20) * 0.005f, 360), float(XORRandom(360)), 0.75f + XORRandom(40) * 0.01f, 5 + XORRandom(6), XORRandom(30) * -0.0001f, true);
+			if (p !is null) p.Z = 550.0f;
 		}
 
 		for (int i = 0; i < (v_fastrender ? 4 + XORRandom (4) : 8 + XORRandom(7)); i++)
