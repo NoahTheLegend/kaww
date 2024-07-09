@@ -85,6 +85,11 @@ void DoExplosion(CBlob@ this)
 				if (blob !is null) blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
 				Vec2f nv = Vec2f((XORRandom(100) * 0.01f * vel.x * 1.30f), -(XORRandom(100) * 0.01f * 3.00f));
 				
+				if (Maths::Abs(nv.x) < 1.0f)
+				{
+					nv.x = XORRandom(nv.Length() * 2 * 100)/100;
+					if (XORRandom(100) < 50) nv.x *= -1;
+				}
 				blob.setVelocity(nv);
 				blob.server_SetTimeToDie(5 + XORRandom(6) + extra_amount);
 			}
