@@ -176,6 +176,40 @@ class Ping {
 	}
 };
 
+class TextPing : Ping {
+	string text;
+
+	TextPing(Vec2f _pos, string _text, u32 _end_time, u8 _fadeout_time, string _caster, u8 _team)
+	{
+		pos = _pos;
+		text = _text;
+		end_time = getGameTime() + _end_time;
+		fadeout_time = _fadeout_time;
+		caster = _caster;
+		team = _team;
+		
+		set();
+	}
+
+	void render()
+	{
+		calculateFade();
+		updateScreenPos();
+		
+		SColor type_col = PingColors[Maths::Floor(type/3)];
+		SColor team_col = getNeonColor(team, 0);
+		type_col.setAlpha(225 * fadeout);
+
+		Vec2f text_pos = screen_pos - Vec2f(2, 80 - ping_slidein_dist * fadeout);
+
+		GUI::SetFont("score-big");
+		GUI::DrawTextCentered(text, text_pos, type_col);
+
+		DrawCaster(text_pos + Vec2f(0,24));
+		DrawPointer(pos, (diff/15)%2==0?2:3, type_col);
+	}
+};
+
 enum Shapes {
 	path = 0,
 	rectangle,
