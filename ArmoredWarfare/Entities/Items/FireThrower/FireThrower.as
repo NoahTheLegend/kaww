@@ -5,7 +5,7 @@
 
 const Vec2f arm_offset = Vec2f(4, 0);
 const f32 MAX_OVERHEAT = 25.0f;
-const f32 OVERHEAT_PER_SHOT = 0.35f;
+const f32 OVERHEAT_PER_SHOT = 0.25f;
 const f32 COOLDOWN_RATE = 0.5f;
 const u8 COOLDOWN_TICKRATE = 5;
 
@@ -215,33 +215,7 @@ void onTick(CBlob@ this)
 
 	this.set_f32("timer", Maths::Max(0, this.get_f32("timer")-1));
 	bool not_null = false;
-
-	if (is_attached)
-	{
-		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
-		if (ap !is null && ap.getOccupied() !is null)
-		{
-			CBlob@ gunner = ap.getOccupied();
-			CSprite@ gsprite = gunner.getSprite();
-			f32 perc = (gunner.get_u8("mg_hidelevel")*0.8f) / 4.0f;
-
-			if (gsprite !is null)
-			{
-				gsprite.ResetTransform();
-				gsprite.SetOffset(Vec2f(0, -4.0f*perc));
-			}
-			if (ap.isKeyPressed(key_action2))
-			{
-				if (gunner.get_u8("mg_hidelevel") > 0) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") - 1);
-			}
-			else if (gunner.get_u8("mg_hidelevel") < 5) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") + 1);
-			if (gunner.get_u8("mg_hidelevel") < 5)
-			{
-				this.set_f32("scale", 0);
-				return;
-			}
-		}
-	}
+	bool can_fire = false;
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
 	if (ap !is null)
@@ -259,11 +233,13 @@ void onTick(CBlob@ this)
 					overheat_mod = stats.ftw_overheat;
 			}
 
-			if (ap.isKeyPressed(key_action1) && gunner.get_u8("mg_hidelevel") < getGameTime()
+			if (ap.isKeyPressed(key_action1) && gunner.get_u8("mg_hidelevel") > 0
 				&& !this.get_bool("overheated"))
 			{
 				if (v.getCurrentAmmo().loaded_ammo != 0)
 				{
+					can_fire = true;
+
 					if (this.getInventory() !is null)
 					{
 						v.getCurrentAmmo().ammo_stocked = this.getInventory().getCount("specammo");
@@ -352,7 +328,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	if ((!v.firing || this.get_bool("overheated")) && getGameTime() % COOLDOWN_TICKRATE == 0)
+	if (((ap !is null && !ap.isKeyPressed(key_action1)) || this.get_bool("overheated")) && getGameTime() % COOLDOWN_TICKRATE == 0)
 	{
 		if (this.get_f32("overheat") > COOLDOWN_RATE)
 		{
@@ -379,6 +355,32 @@ void onTick(CBlob@ this)
 			else if (getGameTime() % 3 + XORRandom(2) == 0) this.getSprite().PlaySound("Steam.ogg", 0.85f, 1.075f);
 		}
 		MakeParticle(this, Vec2f(0, -0.5), v);
+	}
+
+	if (is_attached)
+	{
+		if (ap !is null && ap.getOccupied() !is null)
+		{
+			CBlob@ gunner = ap.getOccupied();
+			CSprite@ gsprite = gunner.getSprite();
+			f32 perc = (gunner.get_u8("mg_hidelevel")*0.8f) / 4.0f;
+
+			if (gsprite !is null)
+			{
+				gsprite.ResetTransform();
+				gsprite.SetOffset(Vec2f(0, -4.0f*perc));
+			}
+			if (ap.isKeyPressed(key_action2))
+			{
+				if (gunner.get_u8("mg_hidelevel") > 0) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") - 1);
+			}
+			else if (gunner.get_u8("mg_hidelevel") < 5) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") + 1);
+			if (gunner.get_u8("mg_hidelevel") < 5)
+			{
+				this.set_f32("scale", 0);
+				return;
+			}
+		}
 	}
 
 	Vehicle_SetWeaponAngle(this, angle, v);
