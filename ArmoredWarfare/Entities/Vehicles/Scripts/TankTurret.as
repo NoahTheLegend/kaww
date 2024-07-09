@@ -217,7 +217,7 @@ void onTick(CBlob@ this)
 					}
 					this.getSprite().SetEmitSoundPaused(false);
 					this.getSprite().SetEmitSoundVolume(1.25f);
-					this.set_f32("gunelevation", ((currentAngle % 360.0f) + 360.0f) % 360.0f);
+					this.set_f32("gunelevation", ((currentAngle % 360.0f) + 360.0f) % 360.0f); // wtf is this?
 					Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 				}
 				else if (difference <= factor)
@@ -228,8 +228,15 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	if (fl) this.set_f32("gunelevation", Maths::Min(360.0f-high_angle, Maths::Max(this.get_f32("gunelevation") , 360.0f-low_angle)));
-	else this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation") , low_angle)));
+	if (fl)
+	{
+		this.set_f32("gunelevation", Maths::Min(360.0f-high_angle,
+			Maths::Max(this.get_f32("gunelevation"), 360.0f-low_angle)));
+	}
+	else
+	{
+		this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation"), low_angle)));
+	}
 
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
@@ -316,20 +323,31 @@ f32 getAngle(CBlob@ this, const u8 charge, TurretStats@ stats, VehicleInfo@ v)
 	if (gunner !is null && gunner.getOccupied() !is null && !gunner.isKeyPressed(key_action2) && !this.hasTag("broken"))
 	{
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
-		if (turned) aim_vec.RotateBy(180);
 
-		if ((!fl && aim_vec.x < 0) ||
-		        (fl && aim_vec.x > 0))
+		if (turned) aim_vec.x *= -1;
+		bool facing = (!fl && aim_vec.x < 0) || (fl && aim_vec.x > 0);
+
+		if (facing)
 		{
 			this.getSprite().SetEmitSoundPaused(false);
 			this.getSprite().SetEmitSoundVolume(stats.emitsound_volume);
 
 			if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
 
-			aim_vec.RotateBy((fl ? 1 : -1) * this.getAngleDegrees());
+			f32 ff = (fl ? 1 : -1);
+
+			u8 high_angle = this.get_u8("high_angle");
+			u8 low_angle = this.get_u8("low_angle");
+			//if (turned)
+			//{
+			//	f32 temp = low_angle;
+			//	low_angle = high_angle;
+			//	high_angle = temp;
+			//}
+			aim_vec.RotateBy(ff * this.getAngleDegrees());
 
 			angle = (-(aim_vec).getAngle() + 270.0f);
-			angle = Maths::Max(this.get_u8("high_angle"), Maths::Min(angle, this.get_u8("low_angle")));
+			angle = Maths::Max(high_angle, Maths::Min(angle, low_angle));
 
 			not_found = false;
 		}
@@ -349,7 +367,7 @@ f32 getAngle(CBlob@ this, const u8 charge, TurretStats@ stats, VehicleInfo@ v)
 	this.Untag("nogunner");
 
 	if (fl) { angle *= -1; }
-
+	
 	return angle;
 }
 
