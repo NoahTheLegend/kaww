@@ -1382,8 +1382,9 @@ void ClientFire(CBlob@ this, PerkStats@ stats, const s16 charge_time, InfantryIn
 		f32 inaccuracy = (float(this.get_u8("inaccuracy")))/perk_mod;
 		f32 angle = 25; // different inaccuracy: from 0.0 to 1.0 multiplied by angle
 		f32 spread = (inaccuracy/infantry.inaccuracy_cap) * angle;
-
-		ShootRPG(this, thispos, this.getAimPos(), 8.0f * infantry.bullet_velocity, spread);
+		
+		targetVector.Normalize();
+		ShootRPG(this, thispos + targetVector * 8, this.getAimPos(), 8.0f * infantry.bullet_velocity, spread);
 		ParticleAnimated("SmallExplosion3", pos + Vec2f(this.isFacingLeft() ? -8.0f : 8.0f, -2.0f).RotateBy(this.isFacingLeft()?angle+180:angle), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.75f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
 	}
 	else
