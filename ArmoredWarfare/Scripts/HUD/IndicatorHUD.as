@@ -1041,10 +1041,10 @@ void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 		u8 team;
 		if (!params.saferead_u8(team)) return;
 
-		if (isClient()) // ignore if enemy team
+		if (isClient()) // DO NOT ignore if enemy team
 		{
 			CPlayer@ local = getLocalPlayer();
-			if (local is null || local.getTeamNum() != team) return;
+			if (local is null) return;
 		}
 
 		Vec2f pos;
