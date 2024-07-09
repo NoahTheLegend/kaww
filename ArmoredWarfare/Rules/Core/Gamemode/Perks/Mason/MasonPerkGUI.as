@@ -32,7 +32,7 @@ void onRender(CSprite@ this)
     Vec2f mpos = controls.getMouseScreenPos();
     bool hover = isInArea(tl, br, mpos);
     bool a3 = blob.isKeyPressed(key_taunts);
-    bool pressed = (hover && a3) || (a3 && controls.isKeyPressed(KEY_LSHIFT)); //(controls.mousePressed1 || controls.mousePressed2);
+    bool pressed = (a3 && controls.isKeyPressed(KEY_LSHIFT)); //(controls.mousePressed1 || controls.mousePressed2);
     u8 alpha = pressed ? 200 : hover ? 125 : 35;
 
     if (hover)
