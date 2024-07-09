@@ -105,7 +105,7 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 				int maxhp = Maths::Ceil(blob.getInitialHealth()*100);
 
 				GUI::SetFont("menu");
-				GUI::DrawShadowedTextCentered(""+hp, Vec2f(heartpos.x - dim.x - 13, heartpos.y + 12), hp < maxhp / 3 ? SColor(0xff9c1010) : (hp == maxhp ? SColor(0xffc2feb1) : SColor(0xffffffff)));
+				GUI::DrawTextCentered(""+hp, Vec2f(heartpos.x - dim.x - 13, heartpos.y + 12), hp < maxhp / 3 ? SColor(0xff9c1010) : (hp == maxhp ? SColor(0xffc2feb1) : SColor(0xffffffff)));
 			}
 		}
 	}
