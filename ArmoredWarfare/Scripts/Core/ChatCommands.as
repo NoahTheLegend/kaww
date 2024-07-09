@@ -128,9 +128,28 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 					f32 time = parseFloat(sub[1]);
 					this.add_u32("game_end_time", time);
 				}
-				else if (sub[0]=="!time")
+				else if (sub[0] == "!time")
 				{
 					getMap().SetDayTime(parseFloat(sub[1]));
+					return false;
+				}
+				else if (sub[0] == "!msg")
+				{
+					string text = "";
+					for (u8 i = 1; i < sub.size(); i++)
+					{
+						text += sub[i]+" ";
+					}
+				
+					CBitStream params;
+					params.write_u8(player.getTeamNum());
+					params.write_Vec2f(blob.getAimPos());
+					params.write_string(text);
+					params.write_u32(90 + text.size() * 3);
+					params.write_u8(30);
+					params.write_string(player.getCharacterName());
+					this.SendCommand(getRules().getCommandID("ping_textonly"), params);
+
 					return false;
 				}
 				else if (sub[0] == "!teamwon")
