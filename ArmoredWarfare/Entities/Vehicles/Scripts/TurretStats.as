@@ -24,6 +24,7 @@ class TurretStats
     s16 init_gun_angle;
     s16 arm_height;
     Vec2f arm_joint_offset;
+    //
 
     string projectile;
     string ammo;
@@ -35,6 +36,7 @@ class TurretStats
 
     string mg;
     bool javelin;
+    bool fixed; // can't rotate
 
     Vec2f shape_offset;
     s16 recoil_force;
@@ -49,6 +51,7 @@ class TurretStats
         projectile = "ballista_bolt"; ammo = "mat_bolts"; ammo_description = "105mm Shells"; ammo_quantity = 0; projectile_vel = -27.5f;
         mg = ""; javelin = false; bullet_pos_offset = Vec2f(0,0);
         shape_offset = Vec2f(5, -12); recoil_force = 0;
+        fixed = false;
     }
 };
 
@@ -95,6 +98,7 @@ class PSZH4Turret : TurretStats
         shape_offset = Vec2f(0, -10); arm_height = -3.5f; muzzle_offset = -8;
         ammo = "mat_14mmround"; ammo_description = "14mm Rounds";
         bullet_pos_offset = Vec2f(0,5);
+        fixed = true;
     }
 };
 
@@ -127,6 +131,7 @@ class ArtilleryTurret : TurretStats
         ammo = "mat_smallbomb"; ammo_description = "Small Bombs";
         elevation_speed = 0.5f;
         bullet_pos_offset = Vec2f(0,-4);
+        fixed = true;
     }
 };
 
@@ -161,6 +166,7 @@ class GradTurret : TurretStats
         elevation_speed = 0.25f;
         bullet_pos_offset = Vec2f(0,-2);
         muzzle_offset = -12.0f;
+        fixed = true;
     }
 };
 
