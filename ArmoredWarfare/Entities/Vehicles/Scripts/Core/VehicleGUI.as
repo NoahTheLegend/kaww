@@ -186,16 +186,21 @@ void onRender(CSprite@ this)
 		{
 			f32 angleWithNormal = blob.get_f32("gunelevation");
 			bool turned = blob.get_bool("turned");
-			if (turned) angleWithNormal += 180;
+			
+			bool fl = blob.isFacingLeft();
+			if (turned) angleWithNormal += fl ? 180 : -180;
 			
 			f32 offset = 90.0f;
-			if (blob.isFacingLeft()) offset = 270.0f;
+			if (fl) offset = 270.0f;
 
 			f32 sign = -1.0f;
-			if (blob.isFacingLeft()) sign = 1.0f;
+			if (fl) sign = 1.0f;
 			
 			f32 angleWithHorizon = (angleWithNormal - offset) * sign;
-
+			//printf("o "+angleWithHorizon);
+			while (angleWithHorizon >= 360.0f) angleWithHorizon -= 360.0f;
+			while (angleWithHorizon <= -360.0f) angleWithHorizon += 360.0f;
+			//printf("n "+angleWithHorizon);
 			Vec2f cursor_pos;
 			AttachmentPoint@ gunner = blob.getAttachments().getAttachmentPointByName("GUNNER");
 			if (gunner !is null && gunner.getOccupied() !is null && gunner.getOccupied().getControls() !is null)

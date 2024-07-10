@@ -89,6 +89,9 @@ void LoadStats(CBlob@ this)
 		}
     }
 
+	if (stats.fixed)
+		this.Tag("no turn");
+
 	this.set("TurretStats", @stats);
 }
 

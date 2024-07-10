@@ -119,19 +119,30 @@ void onTick(CBlob@ this)
     CShape@ shape = this.getShape();
     if (shape !is null) shape.SetOffset(Vec2f(fl ? -stats.shape_offset.x : stats.shape_offset.x, stats.shape_offset.y));
 
+	bool just_rotated = false;
 	bool was_fl = this.get_bool("fl");
 	f32 currentAngle = this.get_f32("gunelevation");
 	if ((!was_fl && fl) || (was_fl && !fl))
+	{
+		just_rotated = true;
 		currentAngle = 360 - currentAngle;
+	}
+
+	bool turned = this.get_bool("turned");
 	this.set_f32("gunelevation", currentAngle);
 	
 	u8 high_angle = this.get_u8("high_angle");
 	u8 low_angle = this.get_u8("low_angle");
 	this.set_bool("fl", fl);
-	bool turned = this.get_bool("turned");
 
-	if (this.hasAttached() || this.getTickSinceCreated() < 30)
+	// this is a cheap hack to optimize, the other way this.SetFacingLeft()
+	// won't update correctly when driver rotates the tank (thus also turret) without gunner
+	// if you find out how to refactor the general logic, please make an issue on github
+	if (this.hasAttached() || this.getTickSinceCreated() < 30
+		|| this.hasTag("update seats") || turned) 
 	{
+		if (this.hasTag("update seats")) this.Untag("update seats");
+
 		bool broken = this.hasTag("broken");
 		if (!broken) Vehicle_StandardControls(this, v);
 
@@ -160,14 +171,21 @@ void onTick(CBlob@ this)
 				Vec2f aim_vec = startpos - gunner.getAimPos();
 
 				//todo: fix turret blob not rotating sometimes & reverse low and high angles when turned
-				//if (!this.hasTag("no turn"))
-				//{
-				//	Vec2f rel_vec = aim_vec;
-				//	rel_vec.RotateBy(-deg);
-				//	this.SetFacingLeft(rel_vec.x > 0);
-				//	this.set_bool("turned", vbfl ? rel_vec.x < 0 : rel_vec.x > 0);
-				//	turned = this.get_bool("turned");
-				//}
+				if (!this.hasTag("no turn"))
+				{
+					Vec2f rel_vec = aim_vec;
+					rel_vec.RotateBy(-deg);
+					this.SetFacingLeft(rel_vec.x > 0);
+					this.set_bool("turned", vbfl ? rel_vec.x < 0 : rel_vec.x > 0);
+					turned = this.get_bool("turned");
+					
+					f32 limited_angle = currentAngle - 270;
+					if ((!was_fl && fl) || (was_fl && !fl))
+					{
+
+						currentAngle = -limited_angle + 270;
+					}
+				}
 
 				CPlayer@ p = gunner.getOccupied().getPlayer();
 				PerkStats@ stats;
@@ -180,10 +198,10 @@ void onTick(CBlob@ this)
 			}
 			else
 			{
-				this.SetFacingLeft(turned ? !vbfl : vbfl);
+				this.SetFacingLeft(turned ? !vbfl : vbfl);	
 			}
 		}
-
+		
 		if (angle < 0)
 		{
 			targetAngle = 360 + angle; // facing left
@@ -215,8 +233,10 @@ void onTick(CBlob@ this)
 						if (currentAngle < targetAngle) currentAngle += req;
 						else currentAngle += req;
 					}
+
 					this.getSprite().SetEmitSoundPaused(false);
 					this.getSprite().SetEmitSoundVolume(1.25f);
+					
 					this.set_f32("gunelevation", ((currentAngle % 360.0f) + 360.0f) % 360.0f); // wtf is this?
 					Vehicle_SetWeaponAngle(this, this.get_f32("gunelevation"), v);
 				}
@@ -226,6 +246,15 @@ void onTick(CBlob@ this)
 				}
 			}
 		}
+	}
+
+	if (turned)
+	{
+		f32 low_diff = 90.0f-low_angle;
+		f32 high_diff = 90.0f-high_angle;
+
+		low_angle = 90+high_diff;
+		high_angle = 90+low_diff;
 	}
 
 	if (fl)
@@ -324,7 +353,7 @@ f32 getAngle(CBlob@ this, const u8 charge, TurretStats@ stats, VehicleInfo@ v)
 	{
 		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 
-		if (turned) aim_vec.x *= -1;
+		if (turned) aim_vec.RotateBy(180);
 		bool facing = (!fl && aim_vec.x < 0) || (fl && aim_vec.x > 0);
 
 		if (facing)
@@ -338,17 +367,20 @@ f32 getAngle(CBlob@ this, const u8 charge, TurretStats@ stats, VehicleInfo@ v)
 
 			u8 high_angle = this.get_u8("high_angle");
 			u8 low_angle = this.get_u8("low_angle");
-			//if (turned)
-			//{
-			//	f32 temp = low_angle;
-			//	low_angle = high_angle;
-			//	high_angle = temp;
-			//}
+			if (turned)
+			{
+				f32 low_diff = 90.0f-low_angle;
+				f32 high_diff = 90.0f-high_angle;
+				//printf("dl "+low_diff+" dh "+high_diff);
+				low_angle = 90+high_diff;
+				high_angle = 90+low_diff;
+			}
 			aim_vec.RotateBy(ff * this.getAngleDegrees());
-
+			//printf("l "+low_angle+" h "+high_angle);
 			angle = (-(aim_vec).getAngle() + 270.0f);
+			//printf('ng '+angle);
 			angle = Maths::Max(high_angle, Maths::Min(angle, low_angle));
-
+			//printf("og "+angle);	
 			not_found = false;
 		}
 		else
@@ -534,6 +566,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	{
 		return;
 	}
+	this.Tag("update seats");
 	this.getShape().SetStatic(false);
 	Vehicle_onDetach(this, v, detached, attachedPoint);
 }
