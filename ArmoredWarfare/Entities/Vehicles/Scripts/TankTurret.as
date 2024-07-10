@@ -171,21 +171,21 @@ void onTick(CBlob@ this)
 				Vec2f aim_vec = startpos - gunner.getAimPos();
 
 				//todo: fix turret blob not rotating sometimes & reverse low and high angles when turned
-				if (!this.hasTag("no turn"))
-				{
-					Vec2f rel_vec = aim_vec;
-					rel_vec.RotateBy(-deg);
-					this.SetFacingLeft(rel_vec.x > 0);
-					this.set_bool("turned", vbfl ? rel_vec.x < 0 : rel_vec.x > 0);
-					turned = this.get_bool("turned");
-					
-					f32 limited_angle = currentAngle - 270;
-					if ((!was_fl && fl) || (was_fl && !fl))
-					{
-
-						currentAngle = -limited_angle + 270;
-					}
-				}
+				//if (!this.hasTag("no turn"))
+				//{
+				//	Vec2f rel_vec = aim_vec;
+				//	rel_vec.RotateBy(-deg);
+				//	this.SetFacingLeft(rel_vec.x > 0);
+				//	this.set_bool("turned", vbfl ? rel_vec.x < 0 : rel_vec.x > 0);
+				//	turned = this.get_bool("turned");
+				//	
+				//	f32 limited_angle = currentAngle - 270;
+				//	if ((!was_fl && fl) || (was_fl && !fl))
+				//	{
+//
+				//		currentAngle = -limited_angle + 270;
+				//	}
+				//}
 
 				CPlayer@ p = gunner.getOccupied().getPlayer();
 				PerkStats@ stats;
