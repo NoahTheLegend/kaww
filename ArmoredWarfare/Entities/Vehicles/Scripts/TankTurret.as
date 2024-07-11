@@ -83,41 +83,16 @@ void onTick(CBlob@ this)
     {
         return;
     }
-	//debug
-	/*
-	{
-		if (getControls().isKeyJustPressed(KEY_KEY_S)) LoadStats(this);
-
-		Vec2f pos = this.getPosition();
-        bool fl = this.isFacingLeft();
-        s8 ff = fl ? -1 : 1;
-
-        f32 deg = this.getAngleDegrees();
-		f32 angle = this.get_f32("gunelevation") + deg;
-		
-        CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
-
-		Vec2f shape_offset = this.getShape().getOffset();
-		Vec2f arm_offset = Vec2f(-ff*arm.getOffset().x, arm.getOffset().y) - Vec2f(0, stats.muzzle_offset) + stats.bullet_pos_offset;
-		arm_offset.RotateBy(deg);
-		Vec2f bullet_pos = pos + arm_offset + Vec2f(0,stats.muzzle_offset*2).RotateBy(angle);
-
-		//Vec2f bullet_pos = arm.getWorldTranslation().RotateBy(deg, this.getPosition())
-		//	+ Vec2f(ff * stats.arm_height, stats.muzzle_offset).RotateBy(angle);
-
-		ParticleAnimated("LargeSmokeGray", bullet_pos, Vec2f_zero, float(XORRandom(360)), 0.5f, 1, -0.0031f, true);
-		CParticle@ p = ParticleAnimated("SmallSteam", pos+arm_offset, Vec2f_zero, float(XORRandom(360)), 0.5f, 1, -0.0031f, true);
-		if (p !is null) p.deadeffect = -1;
-		CParticle@ p1 = ParticleAnimated("SmallSteam", pos+arm_offset, Vec2f_zero, float(XORRandom(360)), 0.25f, 1, -0.0031f, true);
-		if (p1 !is null) p1.deadeffect = -1;
-	}
-	*/
 
     bool fl = this.isFacingLeft();
+	bool turned = this.get_bool("turned");
     if (stats.mg != "") ManageMG(this, fl);
 
     CShape@ shape = this.getShape();
-    if (shape !is null) shape.SetOffset(Vec2f(fl ? -stats.shape_offset.x : stats.shape_offset.x, stats.shape_offset.y));
+    if (shape !is null)
+	{
+		shape.SetOffset(Vec2f((turned ? -1 : 1) * (fl ? -stats.shape_offset.x : stats.shape_offset.x), stats.shape_offset.y));
+	}
 
 	bool just_rotated = false;
 	bool was_fl = this.get_bool("fl");
@@ -128,7 +103,6 @@ void onTick(CBlob@ this)
 		currentAngle = 360 - currentAngle;
 	}
 
-	bool turned = this.get_bool("turned");
 	this.set_f32("gunelevation", currentAngle);
 	
 	u8 high_angle = this.get_u8("high_angle");
@@ -171,21 +145,31 @@ void onTick(CBlob@ this)
 				Vec2f aim_vec = startpos - gunner.getAimPos();
 
 				//todo: fix turret blob not rotating sometimes & reverse low and high angles when turned
-				//if (!this.hasTag("no turn"))
-				//{
-				//	Vec2f rel_vec = aim_vec;
-				//	rel_vec.RotateBy(-deg);
-				//	this.SetFacingLeft(rel_vec.x > 0);
-				//	this.set_bool("turned", vbfl ? rel_vec.x < 0 : rel_vec.x > 0);
-				//	turned = this.get_bool("turned");
-				//	
-				//	f32 limited_angle = currentAngle - 270;
-				//	if ((!was_fl && fl) || (was_fl && !fl))
-				//	{
-//
-				//		currentAngle = -limited_angle + 270;
-				//	}
-				//}
+				if (!this.hasTag("no turn"))
+				{
+					Vec2f rel_vec = aim_vec;
+					rel_vec.RotateBy(-deg);
+					this.SetFacingLeft(rel_vec.x > 0);
+
+					this.set_bool("turned", vbfl ? rel_vec.x < 0 : rel_vec.x > 0);
+					bool temp_turn = this.get_bool("turned");
+					if ((!turned && temp_turn) || (turned && !temp_turn))
+					{
+						if (!vbfl)
+						{
+							f32 limited_angle = currentAngle - 180;
+							currentAngle = -limited_angle;
+						}
+						else
+						{
+							f32 limited_angle = currentAngle - 180;
+							currentAngle = 360 - limited_angle;
+						}
+
+						this.set_f32("gunelevation", currentAngle);
+					}
+					turned = this.get_bool("turned");
+				}
 
 				CPlayer@ p = gunner.getOccupied().getPlayer();
 				PerkStats@ stats;
@@ -303,6 +287,36 @@ void onTick(CBlob@ this)
         //compression
 		arm.SetOffset(arm.getOffset() - Vec2f(-stats.barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, stats.barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
 	}
+
+	//debug
+	/*
+	{
+		if (getControls().isKeyJustPressed(KEY_KEY_S)) LoadStats(this);
+
+		Vec2f pos = this.getPosition();
+        bool fl = this.isFacingLeft();
+        s8 ff = fl ? -1 : 1;
+
+        f32 deg = this.getAngleDegrees();
+		f32 angle = this.get_f32("gunelevation") + deg;
+		
+        CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
+
+		Vec2f shape_offset = this.getShape().getOffset();
+		Vec2f arm_offset = Vec2f(-ff*arm.getOffset().x, arm.getOffset().y) - Vec2f(0, stats.muzzle_offset) + stats.bullet_pos_offset;
+		arm_offset.RotateBy(deg);
+		Vec2f bullet_pos = pos + arm_offset + Vec2f(0,stats.muzzle_offset*2).RotateBy(angle + (turned ? 180 : 0));
+
+		//Vec2f bullet_pos = arm.getWorldTranslation().RotateBy(deg, this.getPosition())
+		//	+ Vec2f(ff * stats.arm_height, stats.muzzle_offset).RotateBy(angle);
+
+		ParticleAnimated("LargeSmokeGray", bullet_pos, Vec2f_zero, float(XORRandom(360)), 0.5f, 1, -0.0031f, true);
+		CParticle@ p = ParticleAnimated("SmallSteam", pos+arm_offset, Vec2f_zero, float(XORRandom(360)), 0.5f, 1, -0.0031f, true);
+		if (p !is null) p.deadeffect = -1;
+		CParticle@ p1 = ParticleAnimated("SmallSteam", pos+arm_offset, Vec2f_zero, float(XORRandom(360)), 0.25f, 1, -0.0031f, true);
+		if (p1 !is null) p1.deadeffect = -1;
+	}
+	*/
 }
 
 // Blow up
@@ -371,16 +385,13 @@ f32 getAngle(CBlob@ this, const u8 charge, TurretStats@ stats, VehicleInfo@ v)
 			{
 				f32 low_diff = 90.0f-low_angle;
 				f32 high_diff = 90.0f-high_angle;
-				//printf("dl "+low_diff+" dh "+high_diff);
+
 				low_angle = 90+high_diff;
 				high_angle = 90+low_diff;
 			}
 			aim_vec.RotateBy(ff * this.getAngleDegrees());
-			//printf("l "+low_angle+" h "+high_angle);
 			angle = (-(aim_vec).getAngle() + 270.0f);
-			//printf('ng '+angle);
 			angle = Maths::Max(high_angle, Maths::Min(angle, low_angle));
-			//printf("og "+angle);	
 			not_found = false;
 		}
 		else
@@ -438,15 +449,18 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 	if (bullet !is null)
 	{
+		bool turned = this.get_bool("turned");
+
 		bullet.Tag("shell");
 		u8 charge_prop = _charge;
 
         Vec2f pos = this.getPosition();
         bool fl = this.isFacingLeft();
         s8 ff = fl ? -1 : 1;
+		s8 tf = turned ? -1 : 1;
 
         f32 deg = this.getAngleDegrees();
-		f32 angle = this.get_f32("gunelevation") + deg;
+		f32 angle = this.get_f32("gunelevation") + deg + (turned ? 180 : 0);
 		Vec2f vel = Vec2f(0.0f, stats.projectile_vel).RotateBy(angle);
         
         CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
@@ -459,7 +473,8 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		Vec2f shape_offset = this.getShape().getOffset();
 		Vec2f arm_offset = Vec2f(-ff*arm.getOffset().x, arm.getOffset().y) - Vec2f(0, stats.muzzle_offset) + stats.bullet_pos_offset;
 		arm_offset.RotateBy(deg);
-		Vec2f bullet_pos = pos + arm_offset + Vec2f(0,stats.muzzle_offset*2).RotateBy(angle) - Vec2f(0,ff*1);
+		Vec2f bullet_pos = pos + Vec2f(arm_offset.x * tf, arm_offset.y)
+						       + Vec2f(0,stats.muzzle_offset*2).RotateBy(angle) - Vec2f(0,ff*1*tf);
 
 		bullet.setVelocity(vel);
 		bullet.setPosition(bullet_pos);
