@@ -72,21 +72,6 @@ void onInit(CBlob@ this)
 	//	front.SetOffset(Vec2f(0.0f, 3.0f));
 	//}
 
-	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "BradleyM2_Launcher", 16, 16);
-
-	if (arm !is null)
-	{
-		Animation@ anim = arm.addAnimation("default", 0, false);
-		anim.AddFrame(20);
-
-		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
-		if (arm !is null)
-		{
-			arm.SetRelativeZ(5.5f);
-			arm.SetOffset(Vec2f(8.0f, -17.0f));
-		}
-	}
-
 	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", sprite.getConsts().filename, 80, 80);
 	if (tracks !is null)
 	{
@@ -120,8 +105,6 @@ void onInit(CBlob@ this)
 				launcher.server_setTeamNum(this.getTeamNum());
 				this.server_AttachTo(launcher, "JAVLAUNCHER");
 				this.set_u16("launcherid", launcher.getNetworkID());
-
-				launcher.SetFacingLeft(this.isFacingLeft());
 			}
 		}
 
@@ -175,9 +158,15 @@ void onTick(CBlob@ this)
 		if (point !is null)
 		{
 			CBlob@ tur = point.getOccupied();
-			if (isServer())
+			if (tur is null) this.server_Die();
+			else
 			{
-				if (tur is null) this.server_Die();
+				AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("JAVLAUNCHER");
+				CBlob@ launcher = ap.getOccupied();
+				if (launcher !is null)
+				{
+					launcher.SetFacingLeft(tur.isFacingLeft());
+				}
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 #include "VehicleCommon.as";
-#include "HittersAW.as"
+#include "HittersAW.as";
+#include "TurretStats.as";
 
 const u8 shootDelay = 3;
 const f32 projDamage = 0.35f;
@@ -38,6 +39,7 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 
+	sprite.SetOffset(Vec2f(-1,0));
 	sprite.RemoveSpriteLayer("arm");
 
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "Maus.png", 16, 48);
@@ -76,11 +78,16 @@ void onTick(CBlob@ this)
 			CBlob@ hooman = gunner.getOccupied();
 			Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
 
+			TurretStats@ stats;
+    		if (!this.get("TurretStats", @stats)) return;
+			bool turned = this.get_bool("turned");
+
 			bool flip = this.isFacingLeft();
 			CBlob@ realPlayer = getLocalPlayerBlob();
 			const bool pressed_m3 = gunner.isKeyPressed(key_action3);
 			const f32 flip_factor = flip ? -1 : 1;
-			f32 angle = this.get_f32("gunelevation")-90+this.getAngleDegrees();
+			f32 angle = this.get_f32("gunelevation") - 90 + this.getAngleDegrees() + (turned ? 180 : 0);
+			Vec2f shootpos = this.getPosition()-Vec2f(stats.secondary_gun_offset).RotateBy(angle)-Vec2f(flip?8:-8,flip?-8:-4);
 
 			if (pressed_m3)
 			{
@@ -89,9 +96,8 @@ void onTick(CBlob@ this)
 					if (this.hasBlob("ammo", 1))
 					{
 						f32 spread = XORRandom(5);
-						Vec2f shootpos = Vec2f(26*flip_factor,-2);
 						shootVehicleGun(hooman.getNetworkID(), this.getNetworkID(),
-							angle+spread, this.getPosition()+shootpos.RotateBy(flip ? angle+180 : angle),
+							angle+spread, shootpos,
 								gunner.getAimPos(), 0.0f, 1, 0, 0.4f, 0.6f, 2,
 									this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));	
 

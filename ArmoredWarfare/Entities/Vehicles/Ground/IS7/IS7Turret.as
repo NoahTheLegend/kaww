@@ -10,6 +10,7 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 
+	sprite.SetOffset(Vec2f(-3,0));
 	sprite.RemoveSpriteLayer("arm");
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 32, 64);
 	if (arm !is null)

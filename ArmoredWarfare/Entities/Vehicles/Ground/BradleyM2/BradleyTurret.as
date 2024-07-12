@@ -6,4 +6,6 @@ void onInit(CBlob@ this)
 	this.Tag("turret");
 	this.Tag("apc");
 	this.Tag("blocks bullet");
+
+	this.getSprite().SetOffset(Vec2f(-4,0));
 }
