@@ -11,9 +11,9 @@ void onInit(CBlob@ this)
 
 	sprite.RemoveSpriteLayer("arm");
 	sprite.RemoveSpriteLayer("turret");
+	sprite.SetRelativeZ(4.0f);
 
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 32, 80);
-
 	if (arm !is null)
 	{
 		Animation@ anim = arm.addAnimation("default", 0, false);
@@ -22,7 +22,7 @@ void onInit(CBlob@ this)
 		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
 		if (arm !is null)
 		{
-			arm.SetRelativeZ(2.5f);
+			arm.SetRelativeZ(2.0f);
 		}
 	}
 
@@ -35,7 +35,7 @@ void onInit(CBlob@ this)
 		CSpriteLayer@ tur = this.getSprite().getSpriteLayer("tur");
 		if (tur !is null)
 		{
-			tur.SetRelativeZ(2.6f);
+			tur.SetRelativeZ(3.0f);
 		}
 	}
 

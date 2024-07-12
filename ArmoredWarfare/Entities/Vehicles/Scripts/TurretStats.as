@@ -18,7 +18,6 @@ class TurretStats
     string fire_sound;
 
     // only spritelayers! offsets for bullet are calculated differently
-    Vec2f arm_offset;
     f32 arm_z;
     u8 barrel_compression; // gun recoil effect
     s16 init_gun_angle;
@@ -33,6 +32,8 @@ class TurretStats
     f32 projectile_vel;
     Vec2f bullet_pos_offset;
     s16 muzzle_offset;
+    Vec2f arm_offset;
+    Vec2f secondary_gun_offset;
 
     string mg;
     bool javelin;
@@ -52,6 +53,7 @@ class TurretStats
         mg = ""; javelin = false; bullet_pos_offset = Vec2f(0,0);
         shape_offset = Vec2f(0, -12); recoil_force = 0;
         fixed = false;
+        secondary_gun_offset = Vec2f_zero;
     }
 };
 
@@ -77,7 +79,7 @@ class T10Turret : TurretStats
 
         name = "t10turret"; hash = _t10turret;
         cooldown_time = 280; high_angle = 75; low_angle = 97; muzzle_offset = -22.0f;
-        arm_offset = Vec2f(-19.0f, -27.0f); arm_z = -50.0f; barrel_compression = 11; init_gun_angle = -3;
+        arm_offset = Vec2f(-13.0f, -27.0f); arm_z = -50.0f; barrel_compression = 11; init_gun_angle = -3;
         mg = "heavygun";
         recoil_force = 850;
         elevation_speed = 0.85f;
@@ -143,9 +145,9 @@ class BradleyTurret : TurretStats
 
         name = "bradleyturret"; hash = _bradleyturret;
         cooldown_time = 105; high_angle = 35; low_angle = 100;
-        arm_offset = Vec2f(-12.0f, -27.0f); arm_z = -50.0f; barrel_compression = 5; init_gun_angle = -3;
+        arm_offset = Vec2f(-12.0f, -30.0f); arm_z = -50.0f; barrel_compression = 5; init_gun_angle = -3;
         recoil_force = 350; fire_sound = "sound_14mm";
-        shape_offset = Vec2f(0, -12); arm_height = -1.0f;
+        shape_offset = Vec2f(0, -13.5f); arm_height = -1.0f;
         ammo = "mat_14mmround"; ammo_description = "14mm Rounds";
         bullet_pos_offset = Vec2f(0,1);
     }
@@ -190,13 +192,13 @@ class MausTurret : TurretStats
     {
         super();
 
-        // haha shit bitch code
         cooldown_time = 420; high_angle = 77; low_angle = 99; arm_joint_offset = Vec2f(-0.5f, 10.0f);
-        arm_offset = Vec2f(-16.0f, -11.0f); arm_z = -50.0f; barrel_compression = 12; init_gun_angle = -2;
+        arm_offset = Vec2f(-20.0f, -5.0f); arm_z = -50.0f; barrel_compression = 12; init_gun_angle = -2;
         recoil_force = 500; elevation_speed = 0.5f;
-        shape_offset = Vec2f(0, -2); recoil_force = 0;
+        shape_offset = Vec2f(0, 2); recoil_force = 0;
         bullet_pos_offset = Vec2f(0,-6);
         fire_sound = "sound_128mm";
+        secondary_gun_offset = Vec2f(-19, -2);
     }
 };
 
@@ -208,7 +210,7 @@ class Leopard1Turret : TurretStats
 
         name = "leopard1turret"; hash = _leopard1turret;
         cooldown_time = 210; high_angle = 72; low_angle = 100; arm_joint_offset = Vec2f(-0.5f, 16.5f);
-        arm_offset = Vec2f(-15.5f, -29.0f); arm_z = -50.0f; barrel_compression = 9; init_gun_angle = -3; muzzle_offset = -22.0f;
+        arm_offset = Vec2f(-11.5f, -29.0f); arm_z = -50.0f; barrel_compression = 9; init_gun_angle = -3; muzzle_offset = -22.0f;
         mg = "heavygun";
         recoil_force = 750;
         projectile_vel = -32.5f; elevation_speed = 1.1f;
@@ -224,7 +226,7 @@ class M103Turret : TurretStats
 
         name = "m103turret"; hash = _m103turret;
         cooldown_time = 180; high_angle = 72; low_angle = 105;
-        arm_offset = Vec2f(-19.0f, -29.0f); arm_z = -50.0f; barrel_compression = 10; init_gun_angle = -3;
+        arm_offset = Vec2f(-14.0f, -28.0f); arm_z = -50.0f; barrel_compression = 10; init_gun_angle = -3;
         mg = "heavygun";
         recoil_force = 650;
         ammo_quantity = 24;
@@ -242,13 +244,13 @@ class IS7Turret : TurretStats
 
         name = "is7turret"; hash = _is7turret;
         cooldown_time = 390; high_angle = 78; low_angle = 95; muzzle_offset = -22.0f;
-        arm_offset = Vec2f(-25.0f, -34.0f); arm_z = -50.0f; barrel_compression = 12; init_gun_angle = -3;
+        arm_offset = Vec2f(-21.0f, -34.0f); arm_z = -50.0f; barrel_compression = 12; init_gun_angle = -3;
         arm_joint_offset = Vec2f(-0.5f, 22.5f);
         mg = "heavygun";
         recoil_force = 850;
         elevation_speed = 0.5f;
         bullet_pos_offset = Vec2f(0,0);
         fire_sound = "sound_128mm";
-        shape_offset = Vec2f(0, -13);
+        shape_offset = Vec2f(3, -13);
     }
 };
