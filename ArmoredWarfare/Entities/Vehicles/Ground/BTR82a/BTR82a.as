@@ -71,7 +71,7 @@ void onInit(CBlob@ this)
 	// turret
 	if (getNet().isServer())
 	{
-		CBlob@ turret = server_CreateBlob("btrturret");	
+		CBlob@ turret = server_CreateBlob("btrturret", this.getTeamNum(), this.getPosition());	
 
 		if (turret !is null)
 		{

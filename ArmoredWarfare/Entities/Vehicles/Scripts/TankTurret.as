@@ -153,7 +153,7 @@ void onTick(CBlob@ this)
 
 					this.set_bool("turned", vbfl ? rel_vec.x < 0 : rel_vec.x > 0);
 					bool temp_turn = this.get_bool("turned");
-					if ((!turned && temp_turn) || (turned && !temp_turn))
+					if ((!turned && temp_turn) || (turned && !temp_turn)) // just turned
 					{
 						if (!vbfl)
 						{
@@ -251,6 +251,7 @@ void onTick(CBlob@ this)
 		this.set_f32("gunelevation", Maths::Max(high_angle, Maths::Min(this.get_f32("gunelevation"), low_angle)));
 	}
 
+	s8 tf = turned ? -1 : 1;
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
 	if (arm !is null)
@@ -258,7 +259,7 @@ void onTick(CBlob@ this)
 		arm.ResetTransform();
 		u8 turn = turned ? 180 : 0;
 		arm.RotateBy(this.get_f32("gunelevation") + turn, stats.arm_joint_offset);
-		arm.SetOffset(stats.arm_offset + (fl || turned ? Vec2f(-1, -1) : Vec2f(0,0)));
+		arm.SetOffset(stats.arm_offset + (fl ? turned ? Vec2f_zero : Vec2f(-1, -1) : turned ? Vec2f(-1,-1) : Vec2f_zero));
         arm.SetRelativeZ(-50.0f);
 
 		if (this.getName() == "bc25turret")
@@ -285,7 +286,7 @@ void onTick(CBlob@ this)
 		}
 
         //compression
-		arm.SetOffset(arm.getOffset() - Vec2f(-stats.barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, stats.barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")));
+		arm.SetOffset(arm.getOffset() - Vec2f(-stats.barrel_compression + Maths::Min(v.getCurrentAmmo().fire_delay - v.cooldown_time, stats.barrel_compression), 0).RotateBy(this.isFacingLeft() ? 90+this.get_f32("gunelevation") : 90-this.get_f32("gunelevation")) * (turned ? -1 : 1));
 	}
 
 	//debug
