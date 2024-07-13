@@ -102,8 +102,8 @@ void onTick(CBlob@ this)
 				CBlob@ b = pass.getOccupied();
 				if (b !is null)
 				{
-					if (b.getAimPos().x < b.getPosition().x) b.SetFacingLeft(true);
-					else b.SetFacingLeft(false);
+					b.SetFacingLeft(b.getAimPos().x < b.getPosition().x);
+					
 					//if (!pass.getOccupied().hasTag("show_gun"))
 					{
 						if (pass.isKeyPressed(key_action1)) b.set_bool("is_a1", true);

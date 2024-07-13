@@ -20,7 +20,7 @@ void onInit(CBlob@ this)
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
-	consts.net_threshold_multiplier = 2.0f;
+	consts.net_threshold_multiplier = 1.0f;
 
 	Vehicle_Setup(this,
 	              6500.0f, // move speed
@@ -120,8 +120,7 @@ void onTick(CBlob@ this)
 
 				//if (b.isKeyPressed(key_action1)) printf("e");
 
-				if (b.getAimPos().x < b.getPosition().x) b.SetFacingLeft(true);
-				else b.SetFacingLeft(false);
+				b.SetFacingLeft(b.getAimPos().x < b.getPosition().x);
 			}
 		}
 
