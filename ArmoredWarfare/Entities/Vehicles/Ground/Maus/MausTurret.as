@@ -51,7 +51,7 @@ void onInit(CBlob@ this)
 			anim.AddFrame(10 + this.get_u8("type"));
 		}
 	}
-
+	
 	CSpriteLayer@ mg = sprite.addSpriteLayer("mg", "Maus.png", 16, 48);
 	if (mg !is null)
 	{
@@ -84,10 +84,13 @@ void onTick(CBlob@ this)
 
 			bool flip = this.isFacingLeft();
 			CBlob@ realPlayer = getLocalPlayerBlob();
+
 			const bool pressed_m3 = gunner.isKeyPressed(key_action3);
 			const f32 flip_factor = flip ? -1 : 1;
 			f32 angle = this.get_f32("gunelevation") - 90 + this.getAngleDegrees() + (turned ? 180 : 0);
-			Vec2f shootpos = this.getPosition()-Vec2f(stats.secondary_gun_offset).RotateBy(angle)-Vec2f(flip?8:-8,flip?-8:-4);
+
+			Vec2f offset = stats.secondary_gun_offset;
+			Vec2f shootpos = this.getPosition()-offset.RotateBy(angle)-Vec2f(flip?8:-8,flip?-8:-4);
 
 			if (pressed_m3)
 			{

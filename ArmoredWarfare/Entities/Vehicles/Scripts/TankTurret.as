@@ -143,14 +143,16 @@ void onTick(CBlob@ this)
 			AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
 			if (gunner !is null && gunner.getOccupied() !is null && !broken)
 			{
-				Vec2f startpos = gunner.getPosition();
-				Vec2f aim_vec = startpos - gunner.getAimPos();
+				Vec2f gpos = gunner.getPosition() + (fl ? Vec2f(12,0) : Vec2f(-12,0));
+				Vec2f aimpos = gunner.getAimPos();
+				Vec2f aim_vec = gpos - aimpos;
 
 				//todo: fix turret blob not rotating sometimes & reverse low and high angles when turned
 				if (!this.hasTag("no turn"))
 				{
 					Vec2f rel_vec = aim_vec;
 					rel_vec.RotateBy(-deg);
+
 					this.SetFacingLeft(rel_vec.x > 0);
 
 					this.set_bool("turned", vbfl ? rel_vec.x < 0 : rel_vec.x > 0);
@@ -259,6 +261,7 @@ void onTick(CBlob@ this)
 	{
 		arm.ResetTransform();
 		u8 turn = turned ? 180 : 0;
+		printf(""+this.get_f32('gunelevation'));
 		arm.RotateBy(this.get_f32("gunelevation") + turn, stats.arm_joint_offset);
 		arm.SetOffset(stats.arm_offset + (fl ? turned ? Vec2f_zero : Vec2f(-1, -1) : turned ? Vec2f(-1,-1) : Vec2f_zero));
         arm.SetRelativeZ(-50.0f);
@@ -279,9 +282,10 @@ void onTick(CBlob@ this)
 			CSpriteLayer@ mg = sprite.getSpriteLayer("mg");
 			if (mg !is null)
 			{
+				Vec2f offset = stats.secondary_gun_offset;
 				mg.ResetTransform();
 				mg.RotateBy(this.get_f32("gunelevation") + turn, Vec2f(-0.5f, 8.0f));
-				mg.SetOffset(stats.secondary_gun_offset + (turned ? Vec2f(-1, -1) : Vec2f_zero));
+				mg.SetOffset(offset + (turned ? Vec2f(-1, -1) : Vec2f_zero));
 				mg.SetRelativeZ(-19.0f);
 			}
 		}
@@ -364,10 +368,11 @@ f32 getAngle(CBlob@ this, const u8 charge, TurretStats@ stats, VehicleInfo@ v)
 
 	if (gunner !is null && gunner.getOccupied() !is null && !gunner.isKeyPressed(key_action2) && !this.hasTag("broken"))
 	{
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+		Vec2f gpos = gunner.getPosition() + (fl ? Vec2f(12,0) : Vec2f(-12,0));
+		Vec2f aim_vec = gpos - gunner.getAimPos();
 
 		if (turned) aim_vec.RotateBy(180);
-		bool facing = (!fl && aim_vec.x < 0) || (fl && aim_vec.x > 0);
+		bool facing = turned ? (!fl && aim_vec.x > 0) || (fl && aim_vec.x < 0) : (!fl && aim_vec.x < 0) || (fl && aim_vec.x > 0);
 
 		if (facing)
 		{

@@ -182,8 +182,7 @@ void onTick(CBlob@ this)
 				b.Tag("show_gun");
 				b.Tag("can_shoot_if_attached");
 
-				if (b.getAimPos().x < b.getPosition().x) b.SetFacingLeft(true);
-				else b.SetFacingLeft(false);
+				b.SetFacingLeft(b.getAimPos().x < b.getPosition().x);
 			}
 		}
 
