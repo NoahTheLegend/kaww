@@ -375,13 +375,14 @@ f32 getAngle(CBlob@ this, const u8 charge, TurretStats@ stats, VehicleInfo@ v)
 
 	bool not_found = true;
 	bool turned = this.get_bool("turned");
+	f32 deg = this.getAngleDegrees();
 
 	if (gunner !is null && gunner.getOccupied() !is null && !gunner.isKeyPressed(key_action2) && !this.hasTag("broken"))
 	{
 		Vec2f gpos = gunner.getPosition();
 		Vec2f aim_vec = gpos - gunner.getAimPos();
-
 		if (turned) aim_vec.RotateBy(180);
+
 		bool facing = turned ? (!fl && aim_vec.x > 0) || (fl && aim_vec.x < 0) : (!fl && aim_vec.x < 0) || (fl && aim_vec.x > 0);
 
 		if (facing)
@@ -391,7 +392,8 @@ f32 getAngle(CBlob@ this, const u8 charge, TurretStats@ stats, VehicleInfo@ v)
 
 			if (aim_vec.x > 0) { aim_vec.x = -aim_vec.x; }
 
-			f32 ff = (fl ? 1 : -1);
+			s8 ff = (fl ? 1 : -1);
+			s8 tf = (turned ? -1 : 1);
 
 			u8 high_angle = this.get_u8("high_angle");
 			u8 low_angle = this.get_u8("low_angle");
@@ -404,7 +406,7 @@ f32 getAngle(CBlob@ this, const u8 charge, TurretStats@ stats, VehicleInfo@ v)
 				low_angle = 90+high_diff;
 				high_angle = 90+low_diff;
 			}
-			aim_vec.RotateBy(ff * this.getAngleDegrees());
+			aim_vec.RotateBy(ff * tf * deg);
 			angle = (-(aim_vec).getAngle() + 270.0f);
 			angle = Maths::Max(high_angle, Maths::Min(angle, low_angle));
 			not_found = false;
