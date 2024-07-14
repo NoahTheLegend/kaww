@@ -154,7 +154,7 @@ void onTick(CBlob@ this)
 					Vec2f rel_vec = aim_vec;
 					rel_vec.RotateBy(-deg);
 
-					this.SetFacingLeft(rel_vec.x > 0);
+					if (isServer()) this.SetFacingLeft(rel_vec.x > 0);
 
 					this.set_bool("turned", vbfl ? rel_vec.x < 0 : rel_vec.x > 0);
 					bool temp_turn = this.get_bool("turned");
@@ -187,7 +187,7 @@ void onTick(CBlob@ this)
 					this.set_u8("low_angle", this.get_u8("init_low_angle") + stats.top_angle);
 				}
 			}
-			else
+			else if (isServer())
 			{
 				this.SetFacingLeft(turned ? !vbfl : vbfl);	
 			}
