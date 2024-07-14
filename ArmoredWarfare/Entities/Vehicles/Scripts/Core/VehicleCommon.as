@@ -613,6 +613,9 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 						right = false;
 					}
 
+					bool fl = this.isFacingLeft();
+					bool just_turned = false;
+
 					// left / right
 					if (angle < 80 || angle > 290)
 					{
@@ -722,11 +725,13 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								if (vel.x < -turnSpeed)
 								{
+									if (!fl) just_turned = true;
 									this.SetFacingLeft(true);
 								}
 
 								if (right && vel.x > turnSpeed && getGameTime() % 4 == 0)
 								{
+									if (fl) just_turned = true;
 									this.SetFacingLeft(false);
 								}
 							}
@@ -794,11 +799,13 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							{
 								if (vel.x > turnSpeed)
 								{
+									if (fl) just_turned = true;
 									this.SetFacingLeft(false);
 								}
 
 								if (left && vel.x < -turnSpeed && getGameTime() % 4 == 0)
 								{
+									if (!fl) just_turned = true;
 									this.SetFacingLeft(true);
 								}
 							}
@@ -876,6 +883,16 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 					else
 					{
 						this.set_f32("engine_RPMtarget", 2000); // let engine idle
+					}
+
+					if (just_turned)
+					{
+						AttachmentPoint@ tur = this.getAttachments().getAttachmentPointByName("TURRET");
+						if (tur !is null && tur.getOccupied() !is null)
+						{
+							CBlob@ tur_blob = tur.getOccupied();
+							tur_blob.SetFacingLeft(!tur_blob.isFacingLeft());
+						}
 					}
 					
 				}  // driver

@@ -99,10 +99,13 @@ void InitGun(CBlob@ this, TurretStats@ stats, VehicleInfo@ v)
 {
     u8 h_a = stats.high_angle;
 	u8 l_a = stats.low_angle;
+	u8 l_a_b = stats.low_angle_back;
 	this.set_u8("init_high_angle", h_a);
 	this.set_u8("init_low_angle", l_a);
+	this.set_u8("init_low_angle_back", l_a_b);
 	this.set_u8("high_angle", h_a);
 	this.set_u8("low_angle", l_a);
+	this.set_u8("low_angle_back", l_a_b);
 
 	this.set_u8("cassette_size", stats.cassette_size);
 
