@@ -42,7 +42,9 @@ void onInit(CBlob@ this)
 	sprite.SetFrame(0);
 	sprite.getConsts().accurateLighting = true;
 	sprite.SetFacingLeft(!sprite.isFacingLeft());
+	#ifdef STAGING
 	sprite.setRenderStyle(RenderStyle::additive);
+	#endif
 
 	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_left | CBlob::map_collide_right);
 }
