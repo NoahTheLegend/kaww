@@ -910,7 +910,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (tur !is null && tur.getOccupied() !is null)
 		{
 			CBlob@ tur_blob = tur.getOccupied();
-			tur_blob.SetFacingLeft(!tur_blob.isFacingLeft());
+
+			AttachmentPoint@ tur_gunner = tur_blob.getAttachments().getAttachmentPointByName("GUNNER");
+			if (tur_gunner !is null && tur_gunner.getOccupied() is null)
+			{
+				tur_blob.SetFacingLeft(!tur_blob.isFacingLeft());
+			}
 		}
 		this.SetFacingLeft(!this.isFacingLeft());
 	}
