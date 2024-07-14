@@ -32,10 +32,14 @@ void onTick(CBlob@ this)
 			if (ap.socket)
 			{
 				CBlob@ occBlob = ap.getOccupied();
-				if (occBlob !is null && !occBlob.hasTag("machinegun")
-                    && (!occBlob.hasTag("turret") || occBlob.hasTag("no turn")))
+				if (occBlob !is null)
 				{
-					occBlob.SetFacingLeft(facing);
+					if (!occBlob.hasTag("machinegun")
+                   		&& (!occBlob.hasTag("turret") || occBlob.hasTag("no turn")))
+					{
+						occBlob.SetFacingLeft(facing);
+					}
+					
 					occBlob.setAngleDegrees(angle);
 				}
 			}

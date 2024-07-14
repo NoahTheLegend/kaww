@@ -22,7 +22,7 @@ void onInit(CBlob@ this)
 		CSpriteLayer@ arm = this.getSprite().getSpriteLayer("arm");
 		if (arm !is null)
 		{
-			arm.SetRelativeZ(2.0f);
+			arm.SetRelativeZ(-2.0f);
 		}
 	}
 

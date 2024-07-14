@@ -905,6 +905,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_u32("flipping_endtime", 0);
 		this.set_f32("flipping_time", 0);
 		this.setAngleDegrees(this.getAngleDegrees()+180);
+
+		AttachmentPoint@ tur = this.getAttachments().getAttachmentPointByName("TURRET");
+		if (tur !is null && tur.getOccupied() !is null)
+		{
+			CBlob@ tur_blob = tur.getOccupied();
+			tur_blob.SetFacingLeft(!tur_blob.isFacingLeft());
+		}
 		this.SetFacingLeft(!this.isFacingLeft());
 	}
 	// SWAP AMMO

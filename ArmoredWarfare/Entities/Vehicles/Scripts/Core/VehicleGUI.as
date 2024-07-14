@@ -188,7 +188,6 @@ void onRender(CSprite@ this)
 			bool turned = blob.get_bool("turned");
 			
 			bool fl = blob.isFacingLeft();
-			if (turned) angleWithNormal += fl ? 180 : -180;
 			
 			f32 offset = 90.0f;
 			if (fl) offset = 270.0f;
@@ -197,6 +196,8 @@ void onRender(CSprite@ this)
 			if (fl) sign = 1.0f;
 			
 			f32 angleWithHorizon = (angleWithNormal - offset) * sign;
+			if (turned) angleWithHorizon = fl ? -angleWithHorizon : -angleWithHorizon;
+
 			//printf("o "+angleWithHorizon);
 			while (angleWithHorizon >= 360.0f) angleWithHorizon -= 360.0f;
 			while (angleWithHorizon <= -360.0f) angleWithHorizon += 360.0f;

@@ -8,6 +8,7 @@ class TurretStats
     u16 cooldown_time;
     u8 high_angle;
     u8 low_angle;
+    u8 low_angle_back;
     f32 elevation_speed;
 
     u8 cassette_size;
@@ -45,7 +46,7 @@ class TurretStats
     TurretStats()
     {
         name = ""; hash = 0;
-        cooldown_time = 90; high_angle = 90; low_angle = 90; elevation_speed = 1.0f;
+        cooldown_time = 90; high_angle = 90; low_angle = 90; low_angle_back = 90; elevation_speed = 1.0f;
         cassette_size = 1; cycle_cooldown = 1;
         emitsound = "Hydraulics.ogg"; emitsound_volume = 1.0f; fire_sound = "sound_105mm";
         arm_offset = Vec2f_zero; arm_z = 0; barrel_compression = 0; init_gun_angle = 0; muzzle_offset = -16.0f; arm_height = 0.0f; arm_joint_offset = Vec2f(-0.5f, 15.5f);
@@ -64,7 +65,7 @@ class M60Turret : TurretStats
         super();
 
         name = "m60turret"; hash = _m60turret;
-        cooldown_time = 210; high_angle = 70; low_angle = 102;
+        cooldown_time = 210; high_angle = 70; low_angle = 102; low_angle_back = 93;
         arm_offset = Vec2f(-15.0f, -29.0f); arm_z = -50.0f; barrel_compression = 9; init_gun_angle = -3;
         mg = "heavygun";
         recoil_force = 750;
@@ -78,7 +79,7 @@ class T10Turret : TurretStats
         super();
 
         name = "t10turret"; hash = _t10turret;
-        cooldown_time = 280; high_angle = 75; low_angle = 97; muzzle_offset = -22.0f;
+        cooldown_time = 280; high_angle = 75; low_angle = 97; low_angle_back = 92; muzzle_offset = -22.0f;
         arm_offset = Vec2f(-13.0f, -27.0f); arm_z = -50.0f; barrel_compression = 11; init_gun_angle = -3;
         mg = "heavygun";
         recoil_force = 850;
@@ -111,7 +112,7 @@ class BTRTurret : TurretStats
         super();
 
         name = "btrturret"; hash = _btrturret;
-        cooldown_time = 90; high_angle = 35; low_angle = 95;
+        cooldown_time = 90; high_angle = 35; low_angle = 95; low_angle_back = 85;
         arm_offset = Vec2f(-1.0f, -22.5f); arm_z = -50.0f; barrel_compression = 6; init_gun_angle = -3;
         recoil_force = 300; fire_sound = "sound_14mm";
         shape_offset = Vec2f(0, -12); arm_height = -3.5f;
@@ -144,7 +145,7 @@ class BradleyTurret : TurretStats
         super();
 
         name = "bradleyturret"; hash = _bradleyturret;
-        cooldown_time = 105; high_angle = 35; low_angle = 100;
+        cooldown_time = 105; high_angle = 35; low_angle = 100; low_angle_back = 92;
         arm_offset = Vec2f(-12.0f, -30.0f); arm_z = -50.0f; barrel_compression = 5; init_gun_angle = -3;
         recoil_force = 350; fire_sound = "sound_14mm";
         shape_offset = Vec2f(0, -13.5f); arm_height = -1.0f;
@@ -178,7 +179,7 @@ class BC25Turret : TurretStats
     {
         super();
         name = "bc25turret"; hash = _bc25turret;
-        cooldown_time = 660; high_angle = 68; low_angle = 105;
+        cooldown_time = 660; high_angle = 68; low_angle = 105; low_angle_back = 110;
         cassette_size = 5; cycle_cooldown = 60; ammo_quantity = 24; muzzle_offset = -26.0f;
         arm_offset = Vec2f(-4.0f, -31.0f); arm_z = -50.0f; barrel_compression = 9; init_gun_angle = -3;
         recoil_force = 375;
@@ -192,7 +193,7 @@ class MausTurret : TurretStats
     {
         super();
 
-        cooldown_time = 420; high_angle = 77; low_angle = 99; arm_joint_offset = Vec2f(-0.5f, 10.0f);
+        cooldown_time = 420; high_angle = 77; low_angle = 99; low_angle_back = 99; arm_joint_offset = Vec2f(-0.5f, 10.0f);
         arm_offset = Vec2f(-20.0f, -5.0f); arm_z = -50.0f; barrel_compression = 12; init_gun_angle = -2;
         recoil_force = 500; elevation_speed = 0.5f;
         shape_offset = Vec2f(0, 2); recoil_force = 0;
@@ -209,7 +210,7 @@ class Leopard1Turret : TurretStats
         super();
 
         name = "leopard1turret"; hash = _leopard1turret;
-        cooldown_time = 210; high_angle = 72; low_angle = 100; arm_joint_offset = Vec2f(-0.5f, 16.5f);
+        cooldown_time = 210; high_angle = 72; low_angle = 100; low_angle_back = 92; arm_joint_offset = Vec2f(-0.5f, 16.5f);
         arm_offset = Vec2f(-11.5f, -29.0f); arm_z = -50.0f; barrel_compression = 9; init_gun_angle = -3; muzzle_offset = -22.0f;
         mg = "heavygun";
         recoil_force = 750;
@@ -225,7 +226,7 @@ class M103Turret : TurretStats
         super();
 
         name = "m103turret"; hash = _m103turret;
-        cooldown_time = 180; high_angle = 72; low_angle = 105;
+        cooldown_time = 180; high_angle = 77; low_angle = 99; low_angle_back = 99;
         arm_offset = Vec2f(-14.0f, -28.0f); arm_z = -50.0f; barrel_compression = 10; init_gun_angle = -3;
         mg = "heavygun";
         recoil_force = 650;
@@ -243,7 +244,7 @@ class IS7Turret : TurretStats
         super();
 
         name = "is7turret"; hash = _is7turret;
-        cooldown_time = 390; high_angle = 78; low_angle = 95; muzzle_offset = -22.0f;
+        cooldown_time = 390; high_angle = 78; low_angle = 95; low_angle_back = 94; muzzle_offset = -22.0f;
         arm_offset = Vec2f(-21.0f, -34.0f); arm_z = -50.0f; barrel_compression = 12; init_gun_angle = -3;
         arm_joint_offset = Vec2f(-0.5f, 22.5f);
         mg = "heavygun";

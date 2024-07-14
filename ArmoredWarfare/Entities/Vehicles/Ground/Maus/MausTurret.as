@@ -87,7 +87,8 @@ void onTick(CBlob@ this)
 
 			const bool pressed_m3 = gunner.isKeyPressed(key_action3);
 			const f32 flip_factor = flip ? -1 : 1;
-			f32 angle = this.get_f32("gunelevation") - 90 + this.getAngleDegrees() + (turned ? 180 : 0);
+			f32 angle = this.get_f32("gunelevation") - 90 + this.getAngleDegrees();
+			if (turned) angle *= -1;;
 
 			Vec2f offset = stats.secondary_gun_offset;
 			Vec2f shootpos = this.getPosition()-offset.RotateBy(angle)-Vec2f(flip?8:-8,flip?-8:-4);
