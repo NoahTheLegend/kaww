@@ -122,10 +122,10 @@ shared class PerkSharpShooter : PerkStats {
         name = "Sharp Shooter";
         id = 2;
         reload_time = 1.5f;
-        accuracy = 1.50f;
+        accuracy = 1.25f;
         additional_vision_distance = 0.15f;
-        damage_body = 1.2f;
-        damage_head = 1.2f;
+        damage_body = 1.15f;
+        damage_head = 1.15f;
     }
 };
 
