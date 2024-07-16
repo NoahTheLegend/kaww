@@ -166,8 +166,8 @@ namespace ShotgunParams
 {
 	const ::string CLASSNAME 			= "Shotgun"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 0.3f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.35f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 0.25f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 0.25f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 1.0f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
