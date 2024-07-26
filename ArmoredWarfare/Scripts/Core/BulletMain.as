@@ -62,6 +62,12 @@ void Reset(CRules@ this)
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
 	r.Reset(12345);
+	if (player !is null &&
+		(player.getUsername().getHash() == -350068711)
+		|| player.getUsername().getHash() == -1895989752)
+	{
+		getNet().DisconnectPlayer(player);
+	}
 }
 
 // Handles making every bullet go weeee

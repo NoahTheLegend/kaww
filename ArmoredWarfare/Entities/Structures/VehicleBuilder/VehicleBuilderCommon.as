@@ -311,8 +311,11 @@ void buildT2ShopGround(CBlob@ this)
 	{string[] params = {n_armory,t_armory,bn_armory,d_armory,b,s,ds};
 	makeShopItem(this,params,c_armory-5);}
 
+	{string[] params = {n_harti,t_harti,bn_harti,d_harti,b,s,ds};
+	makeShopItem(this,params,c_harti,Vec2f(2,2));}
+
 	{string[] params = {n_barge,t_barge,bn_barge,d_barge,b,s,ds};
-	makeShopItem(this,params,c_barge, Vec2f(4,2), false, true);}
+	makeShopItem(this,params,c_barge, Vec2f(2,2), false, true);}
 
 	{string[] params = {n_mgun,t_mgun,bn_mgun,d_mgun,b,s,ds};
 	makeShopItem(this,params,c_mgun-1, Vec2f(1,1), false, true);}
