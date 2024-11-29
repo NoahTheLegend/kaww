@@ -196,7 +196,6 @@ void onTick(CBlob@ this)
 						{
 							heal_amount *= stats.heal_factor;
 						}
-						printf(""+heal_amount+" "+power_factor);
 
 						if (patient.isMyPlayer())
 						{
