@@ -483,7 +483,7 @@ void ManageCamera(CBlob@ this)
 			zoomModifier = controls.isKeyPressed(KEY_LCONTROL);
 
 			zoomModifierLevel = Maths::Max(0, zoomModifierLevel - 1);
-			zoomLevel = Maths::Max(0, zoomLevel - 1);
+			zoomLevel = Maths::Max(1, zoomLevel - 1);
 
 			Tap(this);
 		}
