@@ -195,7 +195,7 @@ void onTick(CSprite@ this)
 		{
 			camo.SetFrameIndex(0);
 			camo.SetAnimation("movement");
-			camo.SetVisible(true);
+			camo.SetVisible(this.isVisible());
 			camo.SetRelativeZ(0.31f);
 		}
 		
@@ -267,7 +267,8 @@ void onTick(CSprite@ this)
 		CSpriteLayer@ frontarm = this.getSpriteLayer("frontarm");
 		CSpriteLayer@ helmet = this.getSpriteLayer("helmet");
 		const bool exposed = blob.hasTag("machinegunner") || blob.hasTag("collidewithbullets") || blob.hasTag("can_shoot_if_attached");
-
+		const bool sleeping = blob.isAttachedToPoint("BED") || blob.isAttachedToPoint("BED2");
+		
 		if (camo !is null && frontarm !is null)
 		{
 			if (blob.getPlayer() !is null && stats_loaded && isCamo)
@@ -287,7 +288,7 @@ void onTick(CSprite@ this)
 					camo.SetAnimation("default");
 				}
 				
-				camo.SetVisible(true);
+				camo.SetVisible(this.isVisible());
 				if (blob.get_bool("isReloading"))
 				{
 					camo.SetOffset(this.getOffset());
@@ -367,7 +368,7 @@ void onTick(CSprite@ this)
 					blob.Untag("bushy");
 					blob.set_u32("become_a_bush", 0);
 					this.SetVisible(true);
-					camo.SetVisible(!blob.isAttached() || exposed);
+					camo.SetVisible(!blob.isAttached() || (exposed && !sleeping));
 					frontarm.SetVisible(true);
 					this.RemoveSpriteLayer("bush");
 				}

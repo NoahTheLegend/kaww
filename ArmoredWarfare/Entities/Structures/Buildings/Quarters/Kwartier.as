@@ -181,11 +181,11 @@ void onTick(CBlob@ this)
 				{
 					if (requiresTreatment(this, patient))
 					{
-						bool federation_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 1;
+						bool federation_power = getRules().get_bool("enable_powers") && patient.getTeamNum() == 1;
 						f32 power_factor = federation_power ? 1.1f : 1.0f;
 
 						f32 heal_amount = heal_amount_base * power_factor;
-
+						
 						CPlayer@ p = patient.getPlayer();
 						bool stats_loaded = false;
 						PerkStats@ stats;
@@ -196,6 +196,7 @@ void onTick(CBlob@ this)
 						{
 							heal_amount *= stats.heal_factor;
 						}
+						printf(""+heal_amount+" "+power_factor);
 
 						if (patient.isMyPlayer())
 						{
@@ -235,7 +236,7 @@ void onTick(CBlob@ this)
 				{
 					if (requiresTreatment(this, patient))
 					{
-						bool federation_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 1;
+						bool federation_power = getRules().get_bool("enable_powers") && patient.getTeamNum() == 1;
 						f32 power_factor = federation_power ? 1.1f : 1.0f;
 
 						f32 heal_amount = heal_amount_base * power_factor;
