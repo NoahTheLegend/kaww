@@ -243,8 +243,8 @@ shared class PerkMason : PerkStats {
         name = "Mason";
         id = 11;
 
-        regen_amount = 0.08f;
-        heal_factor = 1.25f;
+        regen_amount = 0.075f;
+        heal_factor = 1.15f;
     }
 };
 
