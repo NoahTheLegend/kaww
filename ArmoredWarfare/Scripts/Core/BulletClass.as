@@ -380,7 +380,7 @@ class BulletObj
 										CBlob@ pblob = p.getBlob();
 										if (pblob !is null)
 										{
-											f32 mod = 0.2f + Rng.NextRanged(11)*0.01f;
+											f32 mod = stats.damage_heal;
 											f32 amount = DamageBody * mod;
 											if (shooter.getHealth() + amount >= shooter.getInitialHealth())
 											{
