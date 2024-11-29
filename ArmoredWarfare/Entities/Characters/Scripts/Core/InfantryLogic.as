@@ -1477,7 +1477,7 @@ bool solidHit(CBlob@ this, CBlob@ blob)
 			|| blob.hasTag("door") || blob.hasTag("flesh") || blob.hasTag("vehicle")));
 }
 
-bool canDamage(CBlob@ this, CBlob@ blob)
+bool canFireDamage(CBlob@ this, CBlob@ blob)
 {
 	return blob.get_u32("firehit_delay") < getGameTime()
 			&& blob.getTeamNum() != this.getTeamNum() && (blob.hasTag("apc")
@@ -1581,7 +1581,7 @@ void ThrowFire(CBlob@ this, Vec2f pos, f32 angle)
 						endpoint = Maths::Min(max_endpoint, info.distance/shorten);
 						doContinue = true;
 					}
-					if (isServer() && canDamage(this, info.blob))
+					if (isServer() && canFireDamage(this, info.blob))
 					{
 						this.server_Hit(info.blob, info.blob.getPosition(), Vec2f(0, 0.35f), fire_damage, Hitters::fire, true);
 						info.blob.set_u32("firehit_delay", getGameTime()+firehit_delay);
