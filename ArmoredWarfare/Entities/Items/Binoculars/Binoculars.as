@@ -21,8 +21,9 @@ void onTick(CBlob@ this)
 			Vec2f dir = b.getAimPos() - b.getPosition();
 			f32 angle = dir.Angle();
 
-			bool exposed = !b.hasTag("bush") && (!b.isAttached() || b.hasTag("machinegunner")
+			bool exposed = !b.hasTag("bushy") && (!b.isAttached() || b.hasTag("machinegunner")
 				|| b.hasTag("collidewithbullets") || b.hasTag("can_shoot_if_attached"));
+				
 			this.getSprite().SetVisible(exposed);
 
 			s8 ff = (this.isFacingLeft()?-1:1);
