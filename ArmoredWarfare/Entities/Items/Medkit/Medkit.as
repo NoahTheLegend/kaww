@@ -87,7 +87,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 				}
 			}
 
-			f32 heal_amount = 1.0f; // 1.0f is 50 HP
+			bool federation_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 1;
+			f32 power_factor = federation_power ? 1.1f : 1.0f;
+
+			f32 heal_amount = 1.0f * power_factor; // 1.0f is 50 HP
 			if (stats_loaded)
 			{
 				heal_amount *= stats.heal_factor;
