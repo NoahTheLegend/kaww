@@ -3,7 +3,7 @@
 #include "HittersAW.as"
 #include "PerksCommon.as";
 
-const Vec2f arm_offset = Vec2f(-2, 0);
+const Vec2f arm_offset = Vec2f(0, -2);
 const f32 MAX_OVERHEAT = 2.0f;
 const f32 OVERHEAT_PER_SHOT = 0.04f;
 const f32 COOLDOWN_RATE = 0.065f;
