@@ -2,6 +2,7 @@
 #include "TeamColour.as";
 #include "Hitters.as";
 #include "PerksCommon.as";
+#include "GamemodeCheck.as";
 
 int teamRightTicketsLeft;
 int teamLeftTicketsLeft;
@@ -147,6 +148,13 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ killer, u8 customData)
 	if (this.isMatchRunning() && getGameTime() >= 300)
 	{
 		decrementTickets(this, vTeamNum);
+		if (isCTF())
+		{
+			if (victim.getTeamNum() == teamleft)
+				this.add_f32("ctf_points_left", -2);
+			else if (victim.getTeamNum() == teamright)
+				this.add_f32("ctf_points_left", 2);
+		}
 		
 		/*
 		if (!isClient()) return;

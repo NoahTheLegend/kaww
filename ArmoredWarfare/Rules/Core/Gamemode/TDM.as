@@ -8,6 +8,8 @@
 #include "PlayerRankInfo.as";
 #include "PerksCommon.as";
 #include "Perks.as";
+#include "SaveExp.as";
+#include "GamemodeCheck.as";
 
 const u32 min_gametime_to_increment = 20 * 30*60;
 const int max_matches_before_restart = 5; // change this in TDM_interface.as
@@ -489,8 +491,8 @@ shared class TDMCore : RulesCore
 
 		RulesCore::Update(); //update respawns
 
-		bool isCTF = getBlobByName("pointflag") !is null || getBlobByName("pointflagt2") !is null;
-		if (getPlayersCount() >= 6 && !isCTF) CheckTeamWon();
+		bool ctf = isCTFshared();
+		if (getPlayersCount() >= 6 && !ctf) CheckTeamWon();
 	}
 
 	void updateHUD()
