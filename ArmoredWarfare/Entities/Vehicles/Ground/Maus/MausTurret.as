@@ -87,11 +87,11 @@ void onTick(CBlob@ this)
 
 			const bool pressed_m3 = gunner.isKeyPressed(key_action3);
 			const f32 flip_factor = flip ? -1 : 1;
-			f32 angle = this.get_f32("gunelevation") - 90 + this.getAngleDegrees();
-			if (turned) angle *= -1;;
+			f32 angle = (turned ? -this.get_f32("gunelevation") + 180 : this.get_f32("gunelevation")) + this.getAngleDegrees() - 90;
 
 			Vec2f offset = stats.secondary_gun_offset;
-			Vec2f shootpos = this.getPosition()-offset.RotateBy(angle)-Vec2f(flip?8:-8,flip?-8:-4);
+			if (flip) offset.y *= -1;
+			Vec2f shootpos = this.getPosition() + offset.RotateBy(angle + 180);
 
 			if (pressed_m3)
 			{
@@ -107,7 +107,7 @@ void onTick(CBlob@ this)
 
 						CBitStream params;
 						params.write_s32(this.get_f32("gunelevation")-90);
-						params.write_Vec2f(this.getPosition()+(shootpos-Vec2f(6*flip_factor,0)));
+						params.write_Vec2f(shootpos);
 
 						this.SendCommand(this.getCommandID("shoot"), params);
 						this.set_u32("fireDelayGun", getGameTime() + (shootDelay));
