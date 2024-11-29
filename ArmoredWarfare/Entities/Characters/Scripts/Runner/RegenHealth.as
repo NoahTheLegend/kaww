@@ -47,6 +47,11 @@ void onTick(CBlob@ this)
 			}
 		}
 
+		bool federation_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 1;
+		f32 power_factor = federation_power ? 1.1f : 1.0f;
+
+		factor *= power_factor;
+
 		if (this.getHealth() > this.getInitialHealth() * 0.33f || do_regen) // regen health when its above 33%
 			this.server_Heal((amount + (do_regen ? this.get_f32("regen_amount") : 0)) * factor);
 	}
