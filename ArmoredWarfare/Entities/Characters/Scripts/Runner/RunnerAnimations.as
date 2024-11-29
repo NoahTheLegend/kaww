@@ -157,9 +157,9 @@ void onTick(CBlob@ this)
 		f32 lerp_body = 0.5f * stun_factor;
 
 		f32 angle_body = -aimdir.Angle() + (this.isFacingLeft()?-180:0);
-		if (angle_body < -180) angle_body += 180;
-		else if (angle_body > -180) angle_body -= 180;
-		angle_body += 180;
+		while (angle_body < -180) angle_body += 360;
+		while (angle_body > -180) angle_body -= 360;
+		angle_body += 360;
 
 		// calculate movement lean
 		f32 lean_walk = (vel.x < 0 ? Maths::Max(-max_vel, vel.x) : Maths::Min(max_vel, vel.x))
@@ -175,8 +175,8 @@ void onTick(CBlob@ this)
 		// recalculate body lean
 		f32 lean = 0.1f * (1.0f - Maths::Abs(vel.x) / max_vel);
 
-		f32 angle_body_target = Maths::Lerp(this.get_f32("angle_body"), angle_body, lean);
-		angle_body = Maths::Lerp(this.get_f32("angle_body"), !onground ? 0 : angle_body_target, lerp_body);
+		f32 angle_body_target = (Maths::Lerp(angle_body, angle_body < 0 ? -360 : 360, 1.0f - lean) + 360 + (angle_body < 0 ? -360*lean : 360*lean)) % 360;
+		angle_body = Maths::Clamp(Maths::Lerp(this.get_f32("angle_body"), !onground ? 0 : angle_body_target, lerp_body), -360.0f, 360.0f);
 
 		this.set_f32("angle_body", angle_body);
 
