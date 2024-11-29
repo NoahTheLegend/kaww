@@ -124,7 +124,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Allows you to climb trees     "
 						+"\n\n                   Flammable"
 						+"\n                   - Fire is more deadly   "
-						+"\n                   - Molotovs may light you   "
+						+"\n                   - Molotovs may ignite you   "
 						);	
 
 	addPlayerPerk(this, "Sharp Shooter", "$2_class_icon$", "Sharp Shooter",
@@ -137,12 +137,13 @@ void InitClasses(CBlob@ this)
 						);
 
 	addPlayerPerk(this, "Bloodthirst", "$3_class_icon$", "Bloodthirsty",
-						"Bloodthirst:\n\n"+"$3_class_icon$"+"Vampirism"
+						"Vampirism:\n\n"+"$3_class_icon$"+"Vampirism"
 						+"\n                   - Regenerate health when killing     "
 						+"\n                   - Gain only 50% of other heal     "
 						+"\n                   - Can't regenerate passively     "					
 						+"\n\n                  Leech"
-						+"\n                   - Bullets restore health on hit"
+						+"\n                   - Bullets restore you 33% health"
+						+"\n                     of damage dealt"
 						);
 
 	addPlayerPerk(this, "Operator", "$4_class_icon$", "Operator",
