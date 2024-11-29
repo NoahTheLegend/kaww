@@ -418,6 +418,8 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 	if (map.getHitInfosFromArc(blobPos, -exact_aimangle, angle, radius + attack_distance, this, @hitMapInfos))
 	{
 		bool dontHitMore = false;
+
+		u16[] hitblobs;
 		
 		for (uint i = 0; i < hitMapInfos.length; i++)
 		{
@@ -428,7 +430,10 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 			{
 				if (b.hasTag("door") && b.getShape().getConsts().collidable) break;
 				
+				const u16 bnetid = b.getNetworkID();
 				const bool large = b.hasTag("blocks sword") && !b.isAttached() && b.isCollidable();
+				if (hitblobs.find(bnetid) != -1) continue;
+
 				if (b.hasTag("ignore sword")) continue;
 				if (b.getTeamNum() == this.getTeamNum()) continue;
 				if (b.hasTag("machinegunner") && b.get_u8("mg_hidelevel") <= 1) continue;
@@ -437,6 +442,7 @@ void DoAttack(CBlob@ this, f32 damage, f32 aimangle, f32 arcdegrees, u8 type)
 
 				//big things block attacks
 				this.server_Hit(b, hi.hitpos, Vec2f(0,0), damage, type, false); 
+				hitblobs.push_back(bnetid);
 			}
 
 			if (!dontHitMore && can_dig)
