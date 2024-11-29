@@ -199,7 +199,7 @@ class MausTurret : TurretStats
         shape_offset = Vec2f(0, 2); recoil_force = 0;
         bullet_pos_offset = Vec2f(0,-6);
         fire_sound = "sound_128mm";
-        secondary_gun_offset = Vec2f(-19, -2);
+        secondary_gun_offset = Vec2f(-20, -5);
     }
 };
 
