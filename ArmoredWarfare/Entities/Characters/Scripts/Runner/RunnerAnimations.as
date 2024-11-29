@@ -175,8 +175,8 @@ void onTick(CBlob@ this)
 		// recalculate body lean
 		f32 lean = 0.1f * (1.0f - Maths::Abs(vel.x) / max_vel);
 
-		f32 angle_body_target = (Maths::Lerp(angle_body, angle_body < 0 ? -360 : 360, 1.0f - lean) + 360 + (angle_body < 0 ? -360*lean : 360*lean)) % 360;
-		angle_body = Maths::Clamp(Maths::Lerp(this.get_f32("angle_body"), !onground ? 0 : angle_body_target, lerp_body), -360.0f, 360.0f);
+		f32 angle_body_target = Maths::Lerp(this.get_f32("angle_body"), angle_body, lean);
+		angle_body = Maths::Lerp(this.get_f32("angle_body"), !onground ? 0 : angle_body_target, lerp_body);
 
 		this.set_f32("angle_body", angle_body);
 
