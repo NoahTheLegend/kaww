@@ -99,7 +99,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 		return false;
 	if (blob.getRadius() > this.getRadius() ||
 	        (blob.getTeamNum() != this.getTeamNum() && blob.hasTag("player") && this.getShape().vellen > 1.0f) ||
-	        (blob.getShape().isStatic()) || blob.hasTag("projectile") || blob.hasTag("atgrenade") || blob.getName() == "c4")
+	        (blob.getShape().isStatic()) || blob.hasTag("projectile") || blob.hasTag("grenade") || blob.getName() == "c4")
 	{
 		return true;
 	}
