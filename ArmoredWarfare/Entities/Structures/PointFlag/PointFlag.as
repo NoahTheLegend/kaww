@@ -149,7 +149,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 const f32 pole_height = 100.0f;
 void onTick(CBlob@ this)
 {
-	if (isClient() && this.getTickSinceCreated() >= 1 && !this.hasTag("init_spritelayers"))
+	if (isClient() && getLocalPlayer() !is null && this.getTickSinceCreated() >= 30 && !this.hasTag("init_spritelayers"))
 	{
 		CSprite@ sprite = this.getSprite();
 		if (sprite is null) return;
