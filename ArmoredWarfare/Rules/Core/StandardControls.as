@@ -106,7 +106,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 bool canDropMats(CBlob@ this)
 {
-	return !this.isInInventory() && !isKnocked(this);
+	return !this.isInInventory() && !isKnocked(this) && !this.isAttached();
 }
 
 bool putInHeld(CBlob@ owner)
