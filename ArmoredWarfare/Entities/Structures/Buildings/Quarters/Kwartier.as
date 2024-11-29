@@ -8,8 +8,8 @@
 #include "StandardControlsCommon.as"
 
 const f32 beer_amount = 1.0f;
-const f32 heal_amount = 0.5f;
-const u8 heal_rate = 45;
+const f32 heal_amount_base = 0.5f;
+const u8 heal_rate_base = 45;
 
 void onInit(CSprite@ this)
 {
@@ -218,6 +218,22 @@ void onTick(CBlob@ this)
 				{
 					if (requiresTreatment(this, patient))
 					{
+						bool federation_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 1;
+						f32 power_factor = federation_power ? 1.1f : 1.0f;
+
+						f32 heal_amount = heal_amount_base * power_factor;
+
+						CPlayer@ p = patient.getPlayer();
+						bool stats_loaded = false;
+						PerkStats@ stats;
+						if (p !is null && p.get("PerkStats", @stats) && stats !is null)
+							stats_loaded = true;
+
+						if (stats_loaded)
+						{
+							heal_amount *= stats.heal_factor;
+						}
+
 						if (patient.isMyPlayer())
 						{
 							Sound::Play("Heart.ogg", patient.getPosition());
