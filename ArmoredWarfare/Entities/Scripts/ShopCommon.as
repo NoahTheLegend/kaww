@@ -15,6 +15,7 @@ shared class ShopItem
 	bool spawnNothing;
 	bool enabled;
 	int crate_icon;
+	f32 buy_time;
 	// production
 	u32 ticksToMake;
 	u32 timeCreated;
@@ -31,7 +32,7 @@ shared class ShopItem
 	u8 buttonwidth;
 	u8 buttonheight;
 
-	void Setup(string _name, string _iconName, string _blobName, string _description, bool _spawnToInventory, bool _spawnInCrate, bool _instant)
+	void Setup(string _name, string _iconName, string _blobName, string _description, bool _spawnToInventory, bool _spawnInCrate, bool _instant, f32 _buy_time)
 	{
 		name = _name;
 		iconName = _iconName;
@@ -40,6 +41,8 @@ shared class ShopItem
 		spawnToInventory = _spawnToInventory;
 		spawnInCrate = _spawnInCrate;
         instant = _instant;
+		buy_time = _buy_time;
+
 		crate_icon = 0;
 		enabled = true;
 
@@ -57,7 +60,7 @@ shared class ShopItem
 
 	ShopItem()
 	{
-		Setup("", "", "", "", false, false, true);
+		Setup("", "", "", "", false, false, true, 0);
 	}
 
 	ShopItem(CBitStream @bt)
@@ -83,6 +86,7 @@ shared class ShopItem
 		stream.write_u32(timeCreated);
 		stream.write_CBitStream(requirements);
 		stream.write_bool(producing);
+		stream.write_f32(buy_time);
 		stream.write_u8(customData);
 
 		stream.write_bool(customButton);
@@ -107,6 +111,7 @@ shared class ShopItem
 		if (!stream.saferead_u32(timeCreated)) return false;
 		if (!stream.saferead_CBitStream(requirements)) return false;
 		if (!stream.saferead_bool(producing)) return false;
+		if (!stream.saferead_f32(buy_time)) return false;
 		if (!stream.saferead_u8(customData)) return false;
 
 		if (!stream.saferead_bool(customButton)) return false;
@@ -147,7 +152,12 @@ ShopItem@ addShopItem(CBlob@ this, const string &in name, const string &in  icon
 	return addShopItem(this, SHOP_ARRAY, name, iconName, blobName, description, spawnToInventory, spawnInCrate, instant);
 }
 
-ShopItem@ addShopItem(CBlob@ this, const string &in shopArray, const string &in name, const string &in iconName, const string &in blobName, const string &in description, bool spawnToInventory, bool spawnInCrate, const bool instant = true)
+ShopItem@ addShopItem(CBlob@ this, const string &in name, const string &in  iconName, const string &in  blobName, const string &in description, bool spawnToInventory, bool spawnInCrate, bool instant, f32 buy_time)
+{
+	return addShopItem(this, SHOP_ARRAY, name, iconName, blobName, description, spawnToInventory, spawnInCrate, instant, buy_time);
+}
+
+ShopItem@ addShopItem(CBlob@ this, const string &in shopArray, const string &in name, const string &in iconName, const string &in blobName, const string &in description, bool spawnToInventory, bool spawnInCrate, const bool instant = true, f32 buy_time = 0)
 {
 	if (!this.exists(shopArray))
 	{
@@ -171,6 +181,7 @@ ShopItem@ addShopItem(CBlob@ this, const string &in shopArray, const string &in 
 				item.spawnToInventory = spawnToInventory;
 				item.spawnInCrate = spawnInCrate;
                 item.instant = instant;
+				item.buy_time = buy_time;
 				return item;
 			}
 		}
@@ -178,7 +189,7 @@ ShopItem@ addShopItem(CBlob@ this, const string &in shopArray, const string &in 
 
 	// create a new one
 	ShopItem p;
-	p.Setup(name, iconName, blobName, description, spawnToInventory, spawnInCrate, instant);
+	p.Setup(name, iconName, blobName, description, spawnToInventory, spawnInCrate, instant, buy_time);
 
 	this.push(shopArray, p);
 	ShopItem@ p_ref;
