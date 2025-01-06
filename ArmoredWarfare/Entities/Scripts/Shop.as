@@ -11,8 +11,6 @@
 #include "ProgressBar.as";
 #include "TeamColorCollections.as";
 
-const u32 construct_endtime = 3*30;
-
 void onInit(CBlob@ this)
 {
 	this.addCommandID("shop buy");
@@ -20,8 +18,8 @@ void onInit(CBlob@ this)
 	this.addCommandID("construct");
 	this.addCommandID("constructed");
 
-	this.set_f32("construct_time", 0);
-	this.set_u32("construct_endtime", construct_endtime);
+	this.set_f32("buy_time", 0);
+	this.set_f32("buy_endtime", 0);
 
 	if (!this.exists("shop available"))
 		this.set_bool("shop available", true);
@@ -360,6 +358,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		bool spawnInCrate = params.read_bool();
 		bool instant = params.read_bool();
 		bool producing = params.read_bool();
+		f32 buy_time = params.read_f32();
 		u8 s_index = params.read_u8();
 		bool hotkey = params.read_bool();
 
@@ -386,33 +385,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.set_s8("constructing_index", s_index);
 			this.set_bool("constructing", true);
 
-			u32 endtime = this.get_u32("construct_endtime");
-			if (s.blobName == "bunker")
-				endtime = 7.5f*30;
-			else if (s.blobName == "heavybunker")
-				endtime = 10.0f*30;
-			else if (s.blobName == "quarters")
-			{
-				endtime = 1.0f*30;
-			}
-			else if (s.blobName == "crane")
-			{
-				endtime = 15.0f*30;
-			}
-			else
-			{
-				endtime = construct_endtime;
-			}
-
 			bool liberals_power = getRules().get_bool("enable_powers") && caller.getTeamNum() == 2; // team 2 buff
         	f32 extra_amount = 0.0f;
         	if (liberals_power)
 			{
 				extra_amount = 0.8f;
-				endtime *= extra_amount;
+				buy_time *= extra_amount;
 			}
 
-			this.set_u32("construct_endtime", endtime);
+			this.set_f32("construct_time", buy_time);
 
 			Bar@ bars;
 			if (!this.get("Bar", @bars))
@@ -433,7 +414,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					SColor team_front = getNeonColor(caller.getTeamNum(), 0);
 					ProgressBar setbar;
 					setbar.Set(this.getNetworkID(), "construct", Vec2f(64.0f, 16.0f), true, Vec2f(0, 48), Vec2f(2, 2), back, team_front,
-						"construct_time", this.get_u32("construct_endtime"), 0.25f, 5, 5, false, "constructed");
+						"construct_time", this.get_f32("buy_time"), 0.25f, 5, 5, false, "constructed");
 
     				bars.AddBar(this.getNetworkID(), setbar, true);
 				}
@@ -452,6 +433,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			stream.write_bool(false);
 			stream.write_bool(true);
 			stream.write_bool(false);
+			stream.write_f32(0);
 			stream.write_s8(this.get_s8("constructing_index"));
 			stream.write_bool(false);
 			//printf("sent");
