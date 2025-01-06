@@ -117,7 +117,7 @@ void onInit(CBlob@ this)
 			break;
 		}
 		case _barge:
-		case _mausturret: // MAUS Shell cannon
+		case _mausturret:
 		case _pinkmausturret:
 		case _desertmausturret:
 		case _is7:
@@ -126,59 +126,61 @@ void onInit(CBlob@ this)
 			hardShelled = true;
 			break;
 		}
-		case _maus: // maus
+		case _maus:
 		case _pinkmaus:
 		case _desertmaus:
-		case _t10turret: // T10 Shell cannon
+		case _t10turret:
 		armorRating = 5; break;
 		
-		case _t10: // T10
+		case _t10:
 		case _importantarmory:
 		case _importantarmoryt2:
-		case _m60turret: // M60 Shell cannon
+		case _m60turret:
+		case _e50turret:
 		case _m103turret:
 		case _m103:
 		armorRating = 4; break;
 			
-		case _m60: // normal tank
+		case _m60:
+		case _e50:
 		case _leopard1:
 		case _leopard1turret:
 		case _bc25t:
 		case _bc25turret:
 		case _artillery:
 		case _artilleryturret:
-		case _bradley: // bradley
+		case _bradley:
 		case _bradleyturret:
-		case _heavygun: // MG
-		case _firethrower: // MG
-		case _ah1: // cobra
+		case _heavygun:
+		case _firethrower:
+		case _ah1:
 		case _mi24:
 		case _grad:
 		armorRating = 3; break;
 
-		case _transporttruck: // vanilla truck?
-		case _armory: // shop truck
-		case _btr82a: // big APC
-		case _btrturret: // big APC cannon
-		case _pszh4: // smol APC
-		case _pszh4turret: // smol APC cannon
-		case _uh1: // heli
+		case _transporttruck:
+		case _armory:
+		case _btr82a:
+		case _btrturret: 
+		case _pszh4:
+		case _pszh4turret:
+		case _uh1:
 		case _gradturret:
 		armorRating = 2; break;
 
-		case _techtruck: // MG truck
-		case _gun: // light MG
+		case _techtruck:
+		case _gun:
 		case _techbigtruck:
 		armorRating = 1; break;
 
-		case _bf109: // plane
+		case _bf109:
 		case _bomberplane:
-		case _civcar: // car
+		case _civcar:
 		case _armedmotorcycle:
 		armorRating = 0; break;
 
-		case _motorcycle: // bike
-		case _jourcop: // journalist
+		case _motorcycle:
+		case _jourcop:
 		armorRating = -1; break;
 
 		default:
@@ -195,7 +197,7 @@ void onInit(CBlob@ this)
 	f32 scale_impact_damage = 1.0f; // direct damage modifier
 	f32 scale_explosion_damage = 1.0f; // explosion damage modifier
 
-	switch(blobHash) // weapon rating and length of linear (map) and explosion damage in radius
+	switch (blobHash) // weapon rating and length of linear (map) and explosion damage in radius
 	{
 		case _artilleryturret:
 		{
@@ -205,7 +207,7 @@ void onInit(CBlob@ this)
 			scale_impact_damage = 2.0f;
 			break;
 		}
-		case _mausturret: // MAUS Shell cannon
+		case _mausturret:
 		case _pinkmausturret:
 		case _desertmausturret:
 		case _is7turret:
@@ -216,7 +218,7 @@ void onInit(CBlob@ this)
 			scale_impact_damage = 1.75f;
 			break;
 		}
-		case _t10turret: // T10 Shell cannon
+		case _t10turret:
 		{
 			weaponRating = 4;
 			linear_length = 14.0f;
@@ -232,7 +234,8 @@ void onInit(CBlob@ this)
 			scale_impact_damage = 1.2f;
 			break;
 		}
-		case _m60turret: // M60 Shell cannon
+		case _m60turret:
+		case _e50turret:
 		case _leopard1turret:
 		{
 			weaponRating = 3;
@@ -248,7 +251,7 @@ void onInit(CBlob@ this)
 			scale_impact_damage = 2.0f;
 			scale_explosion_damage = 0.75f;
 		}
-		case _uh1: // heli
+		case _uh1:
 		case _ah1:
 		case _mi24:
 		{
@@ -262,7 +265,7 @@ void onInit(CBlob@ this)
 			scale_explosion_damage = 4.0f;
 			break;
 		}
-		case _heavygun: // MG
+		case _heavygun:
 		{
 			weaponRating = 1;
 			break;
@@ -291,40 +294,41 @@ void onInit(CBlob@ this)
 	// vulnerabilities
 	float backsideOffset = -1.0f;
 
-	switch(blobHash) // backside
+	switch (blobHash) // backside
 	{
-		case _maus: // maus
+		case _maus:
 		case _pinkmaus:
 		case _desertmaus:
 		backsideOffset = 32.0f; break;
 
-		case _t10: // T10
+		case _t10:
 		case _bc25t:
 		case _grad:
 		backsideOffset = 24.0f; break;
 		
-		case _m60: // normal tank
+		case _m60:
+		case _e50:
 		case _leopard1:
-		case _btr82a: // big APC
+		case _btr82a:
 		case _bradley:
 		case _artillery:
 		case _barge:
 		case _m103:
 		backsideOffset = 20.0f; break;
 
-		case _pszh4: // smol APC
+		case _pszh4:
 		case _is7:
 		backsideOffset = 16.0f; break;
 
-		case _uh1: // heli
+		case _uh1:
 		case _ah1:
 		case _mi24:
 		backsideOffset = 32.0f; break;
 
-		case _bf109: // plane
+		case _bf109:
 		backsideOffset = 16.0f; break;
 
-		case _bomberplane: // plane
+		case _bomberplane:
 		backsideOffset = 16.0f; break;
 
 		case _techbigtruck:
@@ -339,7 +343,7 @@ void onInit(CBlob@ this)
 		case _is7:
 		intake = -75.0f; break;
 
-		case _maus: // maus
+		case _maus:
 		case _pinkmaus:
 		case _desertmaus:
 		intake = -50.0f; break;
@@ -347,34 +351,37 @@ void onInit(CBlob@ this)
 		case _m103:
 		intake = -40.0f; break;
 
-		case _t10: // T10
+		case _t10:
 		intake = -25.0f; break;
 
-		case _bc25t: // normal tank
+		case _bc25t:
 		intake = -50.0f; break;
+		
+		case _e50:
+		intake = 15.0f; break;
 
-		case _m60: // normal tank
+		case _m60:
 		intake = 50.0f; break;
 
-		case _btr82a: // big APC
+		case _btr82a:
 		intake = 75.0f; break;
 
-		case _pszh4: // smol APC
+		case _pszh4:
 		case _bradley:
 		intake = 100.0f; break;
 
-		case _techtruck: // truck
+		case _techtruck:
 		case _techbigtruck:
 		intake = 150.0f; break;
 
-		case _armory: // armory
+		case _armory:
 		case _importantarmory:
 		case _importantarmoryt2:
 		case _civcar:
 		case _armedmotorcycle:
 		intake = 100.0f; break;
 
-		case _motorcycle: // bike
+		case _motorcycle:
 		case _artillery:
 		intake = 200.0f; break;
 	}
@@ -1112,6 +1119,7 @@ void onDie(CBlob@ this)
 		{
 			case _bc25t:
 			case _m60:
+			case _e50:
 			case _leopard1:
 			{
 				scrap_amount = 12+XORRandom(8);
