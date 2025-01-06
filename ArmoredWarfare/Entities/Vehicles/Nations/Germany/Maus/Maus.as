@@ -10,6 +10,7 @@ void onInit(CBlob@ this)
 	this.Tag("deal_bunker_dmg");
 	this.Tag("reduce_upper_dmg");
 	this.Tag("engine_can_get_stuck");
+	this.Tag("blocks bullet");
 	this.Tag("heavy");
 
 	this.set_u8("type", this.getName() == "maus" ? 0 : this.getName() == "pinkmaus" ? 1 : 2);
