@@ -155,8 +155,8 @@ void onRender(CSprite@ this)
 
 		//drawShellTrajectory(blob, v, gunner.getOccupied());
 
-		Vec2f oldpos = blob.getOldPosition();
-		Vec2f pos = blob.getPosition();
+		Vec2f oldpos = blob.getOldPosition() + Vec2f(0,8);
+		Vec2f pos = blob.getPosition() + Vec2f(0,8);
 		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) + Vec2f(0, 2);
 		if (blob.hasTag("machinegun"))
 		{

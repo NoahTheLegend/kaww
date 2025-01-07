@@ -90,6 +90,7 @@ void onInit(CBlob@ this)
 		case _pinkmaus:
 		case _desertmaus:
 		case _t10:
+		case _kingtiger:
 		case _is7:
 		case _m103:
 		{
@@ -133,12 +134,14 @@ void onInit(CBlob@ this)
 		armorRating = 5; break;
 		
 		case _t10:
+		case _kingtiger:
 		case _importantarmory:
 		case _importantarmoryt2:
 		case _m60turret:
 		case _e50turret:
 		case _m103turret:
 		case _m103:
+		case _kingtigerturret:
 		armorRating = 4; break;
 			
 		case _m60:
@@ -215,6 +218,14 @@ void onInit(CBlob@ this)
 			weaponRating = 5;
 			linear_length = 20.0f;
 			scale_explosion_damage = 4.0f;
+			scale_impact_damage = 1.75f;
+			break;
+		}
+		case _kingtigerturret:
+		{
+			weaponRating = 5;
+			linear_length = 18.0f;
+			scale_explosion_damage = 2.0f;
 			scale_impact_damage = 1.75f;
 			break;
 		}
@@ -303,17 +314,18 @@ void onInit(CBlob@ this)
 
 		case _t10:
 		case _bc25t:
+		case _e50:
 		case _grad:
 		backsideOffset = 24.0f; break;
 		
 		case _m60:
-		case _e50:
 		case _leopard1:
 		case _btr82a:
 		case _bradley:
 		case _artillery:
 		case _barge:
 		case _m103:
+		case _kingtiger:
 		backsideOffset = 20.0f; break;
 
 		case _pszh4:
@@ -349,6 +361,7 @@ void onInit(CBlob@ this)
 		intake = -50.0f; break;
 
 		case _m103:
+		case _kingtiger:
 		intake = -40.0f; break;
 
 		case _t10:
@@ -358,7 +371,7 @@ void onInit(CBlob@ this)
 		intake = -50.0f; break;
 		
 		case _e50:
-		intake = 15.0f; break;
+		intake = 20.0f; break;
 
 		case _m60:
 		intake = 50.0f; break;
@@ -680,8 +693,6 @@ void onTick(CBlob@ this)
 	}
 
 	this.set_f32("engine_RPM", Maths::Clamp(this.get_f32("engine_RPM"), 0.0f, 30000.0f));
-	//if (this.getName() == "t10" && getGameTime() % 30 == 0 && (isServer() || (getLocalPlayer() !is null && getLocalPlayer().getUsername() == "NoahTheLegend" && getLocalPlayer().isMyPlayer())))
-	//	printf(""+this.get_f32("engine_RPM")); // crashing server?
 
 	// Crippled
 	if (!this.hasTag("turret") && this.getHealth() <= this.getInitialHealth() * 0.3f)
@@ -1127,8 +1138,9 @@ void onDie(CBlob@ this)
 				explosion_map_damage = 0.2f;
 				explosion_damage = 3.0f;
 				break;
-			} // normal tank
+			}
 			case _t10:
+			case _kingtiger:
 			case _m103:
 			{
 				scrap_amount = 16+XORRandom(8);
@@ -1136,7 +1148,7 @@ void onDie(CBlob@ this)
 				explosion_map_damage = 0.25f;
 				explosion_damage = 4.0f;
 				break;
-			} // T10
+			}
 			case _maus:
 			case _pinkmaus:
 			case _desertmaus:
@@ -1157,7 +1169,7 @@ void onDie(CBlob@ this)
 				explosion_map_damage = 0.3f;
 				explosion_damage = 6.0f;
 				break;
-			} // mouse
+			}
 			case _pszh4:
 			{
 				scrap_amount = 4+XORRandom(5);
@@ -1165,7 +1177,7 @@ void onDie(CBlob@ this)
 				explosion_map_damage = 0.1f;
 				explosion_damage = 1.5f;
 				break;
-			} // smol APC
+			}
 			case _btr82a:
 			{
 				scrap_amount = 9+XORRandom(6);
@@ -1173,7 +1185,7 @@ void onDie(CBlob@ this)
 				explosion_map_damage = 0.15f;
 				explosion_damage = 2.25f;
 				break;
-			} // big APC
+			}
 			case _bradley:
 			{
 				scrap_amount = 10+XORRandom(8);
@@ -1181,7 +1193,7 @@ void onDie(CBlob@ this)
 				explosion_map_damage = 0.175f;
 				explosion_damage = 3.0f;
 				break;
-			} // bradley m2
+			}
 			case _transporttruck:
 			{
 				scrap_amount = 4+XORRandom(4);
@@ -1189,7 +1201,7 @@ void onDie(CBlob@ this)
 				explosion_map_damage = 0.15f;
 				explosion_damage = 1.5f;
 				break;
-			} // vanilla truck?
+			}
 			case _armory:
 			{
 				scrap_amount = 5+XORRandom(6);
@@ -1197,27 +1209,27 @@ void onDie(CBlob@ this)
 				explosion_map_damage = 0.15f;
 				explosion_damage = 1.5f;
 				break;
-			} // shop truck
+			}
 			case _importantarmory:
 			{
 				break;
-			} // break the truck truck
+			}
 			case _outpost:
 			{
 				break;
-			} // outpost
+			}
 			case _bf109:
 			{
 				scrap_amount = 5+XORRandom(8);
 				// it already has explosion script in its file
 				break;
-			} // plane
+			}
 			case _bomberplane:
 			{
 				scrap_amount = 10+XORRandom(6);
 				// it already has explosion script in its file
 				break;
-			} // bomberplane
+			}
 			case _jourcop:
 			{
 				break;
@@ -1236,14 +1248,14 @@ void onDie(CBlob@ this)
 				explosion_map_damage = 0.1f;
 				explosion_damage = 1.5f;
 				break;
-			} // MG truck
+			}
 			case _motorcycle:
 			case _barge:
 			{
 				scrap_amount = 1+XORRandom(2);
 				// no explosion, too small
 				break;
-			} // bike
+			}
 			case _civcar:
 			case _armedmotorcycle:
 			{
@@ -1252,7 +1264,7 @@ void onDie(CBlob@ this)
 				explosion_map_damage = 0.1f;
 				explosion_damage = 0.5f;
 				break;
-			} // car
+			}
 		}
 
 		if (explosion_damage > 0.0f) // explode if damage set 
