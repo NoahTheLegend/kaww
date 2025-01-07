@@ -8,19 +8,18 @@ const f32 projDamage = 0.35f;
 void onInit(CBlob@ this)
 {
 	this.addCommandID("shoot");
-	this.set_u8("type", this.getName() == "mausturret" ? 0 : this.getName() == "pinkmausturret" ? 1 : 2);
 
 	this.Tag("vehicle");
 	this.Tag("turret");
 	this.Tag("tank");
-	this.Tag("blocks bullet");
 	this.Tag("fireshe");
+	this.Tag("blocks bullet");
 	this.Tag("secondary gun");
 
 	// machinegun stuff
-	this.set_u8("TTL", 45);
+	this.set_u8("TTL", 35);
 	this.set_Vec2f("KB", Vec2f(0,0));
-	this.set_u8("speed", 18);
+	this.set_u8("speed", 16);
 	this.set_s32("custom_hitter", HittersAW::machinegunbullet);
 
 	// auto-load on creation
@@ -39,18 +38,16 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 
-	sprite.SetOffset(Vec2f(-1,0));
-	sprite.RemoveSpriteLayer("arm");
-
-	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "Maus.png", 16, 48);
-	if (arm !is null)
+	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 24, 80);
+    if (arm !is null)
 	{
 		Animation@ anim = arm.addAnimation("default", 0, false);
-		if (anim !is null)
-		{
-			anim.AddFrame(10 + this.get_u8("type"));
-		}
+		anim.AddFrame(12);
+
+		this.Tag("arm set");
 	}
+
+	sprite.SetOffset(Vec2f(4,0));
 	
 	CSpriteLayer@ mg = sprite.addSpriteLayer("mg", "Maus.png", 16, 48);
 	if (mg !is null)
@@ -91,7 +88,9 @@ void onTick(CBlob@ this)
 
 			Vec2f offset = stats.secondary_gun_offset;
 			if (flip) offset.y *= -1;
-			Vec2f shootpos = this.getPosition() + offset.RotateBy(angle + 180);
+			
+			Vec2f pos = this.getPosition() + Vec2f(0, -32);
+			Vec2f shootpos = pos + offset.RotateBy(angle + 180);
 
 			if (pressed_m3)
 			{
@@ -120,10 +119,6 @@ void onTick(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (hitterBlob.getName() == "missile_javelin")
-	{
-		return damage * 0.9f;
-	}
 	if (customData >= HittersAW::bullet) return 0;
 	return damage;
 }
@@ -140,8 +135,8 @@ void onRender(CSprite@ this)
 		if (!driver_blob.isMyPlayer()) return;
 
 		// draw ammo count
-		Vec2f oldpos = driver_blob.getOldPosition() + Vec2f(0,20);
-		Vec2f pos = driver_blob.getPosition() + Vec2f(0,20);
+		Vec2f oldpos = driver_blob.getOldPosition() + Vec2f(0,26);
+		Vec2f pos = driver_blob.getPosition() + Vec2f(0,26);
 		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) + Vec2f(0, -22);
 
 		GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));

@@ -16,7 +16,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    5500.0f, // move speed
+	    4500.0f, // move speed
 	    1.0f,  // turn speed
 	    Vec2f(0.0f, -2.5f), // jump out velocity
 	    false);  // inventory access
@@ -27,7 +27,7 @@ void onInit(CBlob@ this)
 	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
 	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
-	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(26.0f,   0.5f)); if (w !is null) w.SetRelativeZ(-20.0f); w.ScaleBy(Vec2f(0.75f,0.75f));}
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(30.0f,   0.5f)); if (w !is null) w.SetRelativeZ(-20.0f); w.ScaleBy(Vec2f(0.75f,0.75f));}
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(22.0f,  4.75f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(14.0f,  4.75f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(6.0f,  4.75f)); if (w !is null) w.SetRelativeZ(-10.0f); }
@@ -35,9 +35,8 @@ void onInit(CBlob@ this)
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-10.0f,  4.75f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-18.0f, 4.75f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-26.0f, 4.75f)); if (w !is null) w.SetRelativeZ(-10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-34.0f, 0.0f)); if (w !is null) {w.SetRelativeZ(-20.0f); w.ScaleBy(Vec2f(0.9f,0.9f));}}
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-33.0f, 0.0f)); if (w !is null) {w.SetRelativeZ(-20.0f); w.ScaleBy(Vec2f(0.9f,0.9f));}}
 
-	this.getShape().SetOffset(Vec2f(0, 2));
 
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
@@ -47,17 +46,7 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
 	
-	//CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
-	//if (front !is null)
-	//{
-	//	front.addAnimation("default", 0, false);
-	//	int[] frames = { 0, 1, 2 };
-	//	front.animation.AddFrames(frames);
-	//	front.SetRelativeZ(0.8f);
-	//	front.SetOffset(Vec2f(0.0f, 0.0f));
-	//}
-
-	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", sprite.getConsts().filename, 80, 80);
+	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", sprite.getConsts().filename, 96, 80);
 	if (tracks !is null)
 	{
 		int[] frames = { 15, 16, 17 };
@@ -80,7 +69,7 @@ void onInit(CBlob@ this)
 	// attach turret & machine gun
 	if (getNet().isServer())
 	{
-		CBlob@ turret = server_CreateBlob("e50turret");	
+		CBlob@ turret = server_CreateBlob("kingtigerturret");	
 
 		if (turret !is null)
 		{

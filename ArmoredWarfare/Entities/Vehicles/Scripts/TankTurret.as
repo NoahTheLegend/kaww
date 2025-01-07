@@ -38,11 +38,15 @@ void onInit(CBlob@ this)
 
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 24, 80);
-    if (arm !is null)
+
+	if (sprite.getSpriteLayer("arm") is null && !this.hasTag("arm set"))
 	{
-		Animation@ anim = arm.addAnimation("default", 0, false);
-		anim.AddFrame(20);
+		CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 24, 80);
+    	if (arm !is null)
+		{
+			Animation@ anim = arm.addAnimation("default", 0, false);
+			anim.AddFrame(20);
+		}
 	}
 
 	sprite.SetZ(-100.0f);
@@ -268,7 +272,7 @@ void onTick(CBlob@ this)
 		if (turned) gun_elevation = -gun_elevation + turn;
 
 		arm.RotateBy(gun_elevation, stats.arm_joint_offset);
-		arm.SetOffset(stats.arm_offset + (fl ? turned ? Vec2f(-1, -1) : Vec2f(-1, -1) : turned ? Vec2f(-1,-1) : Vec2f_zero));
+		arm.SetOffset(stats.arm_offset + (fl ? turned ? Vec2f(-1,-1) : Vec2f_zero : turned ? Vec2f(-1,-1) : Vec2f_zero));
         arm.SetRelativeZ(-50.0f);
 
 		if (this.getName() == "bc25turret")
