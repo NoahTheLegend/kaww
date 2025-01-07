@@ -15,7 +15,7 @@ void UpdateScript(CBlob@ this)
     if (helmet !is null)
     {
         helmet.addAnimation("default", 0, true);
-		int[] frames = {0, 1};
+		int[] frames = {0, 1, 2, 3, 4, 5};
 		helmet.animation.AddFrames(frames);
 		
 		helmet.SetVisible(true);
@@ -25,7 +25,11 @@ void UpdateScript(CBlob@ this)
         {
             helmet.SetRelativeZ(head.getRelativeZ()+1.0f);
         }
-        helmet.SetFrameIndex(0);
+
+        int tn = this.getTeamNum();
+        int idx = tn == 0 ? 0 : tn == 1 ? 2 : tn == 2 ? 4 : 0;
+        helmet.SetFrameIndex(idx);
+
         if (this.getPlayer() !is null)
         {
             for (u8 i = 0; i < getPatreonMembers().length; i++)
@@ -33,7 +37,7 @@ void UpdateScript(CBlob@ this)
                 string name = getPatreonMembers()[i];
                 if (name == this.getPlayer().getUsername())
                 {
-                    helmet.SetFrameIndex(1);
+                    helmet.SetFrameIndex(idx + 1);
                 }
             }
         }
