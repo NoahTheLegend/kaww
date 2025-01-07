@@ -58,6 +58,7 @@ shared class PerkStats {
     f32 walk_extra_factor_air;
     f32 jump_extra_factor;
     u16 kill_bonus_time;
+    u16 medkit_use_penalty_time;
 
     // Field Engineer
     bool parachute;
@@ -73,7 +74,7 @@ shared class PerkStats {
         //
         reload_time = 1.0f; accuracy = 1.0f; additional_vision_distance = 0; damage_body = 1.0f; damage_head = 1.0f;
         //
-        regen_amount = 0.04f; heal_factor = 1.0f; kill_heal = 0; damage_heal = 0.33f;
+        regen_amount = 0.04f; heal_factor = 1.0f; kill_heal = 0; damage_heal = 0.0f;
         //
         demontage_time = 150; sprint = true; mg_overheat = 1.0f; ftw_overheat = 1.0f; wrench_repair_time = 30;
             heli_velo = Vec2f(0,0); plane_velo = 0; top_angle = 0; down_angle = 0;
@@ -87,7 +88,8 @@ shared class PerkStats {
         para_damage_take_mod = 1.0f; fall_damage_take_mod = 1.0f;
         //
         sprint_factor = 1.1f; walk_factor = 1.0f; walk_factor_air = 1.0f; jump_factor = 1.0f;
-            walk_extra_factor = 1.0f; walk_extra_factor_air = 1.0f; jump_extra_factor = 1.0f; kill_bonus_time = 0;
+            walk_extra_factor = 1.0f; walk_extra_factor_air = 1.0f; jump_extra_factor = 1.0f;
+            kill_bonus_time = 0; medkit_use_penalty_time = 60;
         //
         parachute = true;
         binoculars_distance = 1.0f;
@@ -137,8 +139,9 @@ shared class PerkBloodthirsty : PerkStats {
         name = "Bloodthirsty";
         id = 3;
         regen_amount = 0;
-        heal_factor = 0.5f;
+        heal_factor = 0.75f;
         kill_heal = 1.5f;
+        damage_heal = 0.35f;
     }
 };
 
@@ -201,7 +204,7 @@ shared class PerkBull : PerkStats {
         super();
         name = "Bull";
         id = 8;
-        damage_take_mod = 0.66f;
+        damage_take_mod = 0.75f;
         walk_factor = 1.05f;
         walk_factor_air = 1.1f;
         jump_factor = 1.3f;
@@ -209,7 +212,7 @@ shared class PerkBull : PerkStats {
         walk_extra_factor_air = 1.1f;
         jump_extra_factor = 1.5f;
         reload_time = 0.75f;
-        kill_bonus_time = 150;
+        kill_bonus_time = 300;
     }
 };
 

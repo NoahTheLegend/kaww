@@ -138,11 +138,12 @@ void InitClasses(CBlob@ this)
 
 	addPlayerPerk(this, "Bloodthirst", "$3_class_icon$", "Bloodthirsty",
 						"Vampirism:\n\n"+"$3_class_icon$"+"Vampirism"
-						+"\n                   - Regenerate health when killing     "
-						+"\n                   - Gain only 50% of other heal     "
+						+"\n                   - Regenerate 150 health     "
+						+"\n                     on kill     "
+						+"\n                   - Gain only 75% of other heal     "
 						+"\n                   - Can't regenerate passively     "					
 						+"\n\n                  Leech"
-						+"\n                   - Bullets restore you 33% health"
+						+"\n                   - Bullets restore you 35% health"
 						+"\n                     of damage dealt"
 						);
 
@@ -186,7 +187,7 @@ void InitClasses(CBlob@ this)
 						"Bull:\n\n"+"$8_class_icon$"+"Physical Strength"
 						+"\n                   - Better walk, jump, sprint     "
 						+"\n                   - 25% Faster reload"
-						+"\n                   - Take 66% of damage"
+						+"\n                   - Take 75% of damage"
 						+"\n                      that is not bullet"
 						+"\n\n                  Restlessness"
 						+"\n                   - Agility boost on-kill"

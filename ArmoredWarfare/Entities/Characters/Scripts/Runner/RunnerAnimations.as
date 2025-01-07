@@ -118,7 +118,7 @@ void onTick(CBlob@ this)
 				u32 med_use_time = this.get_u32("used medkit");
 				u32 diff = getGameTime()-med_use_time;
 
-				stun_factor = Maths::Clamp(f32(diff) / stats.kill_bonus_time, 0.0f, 1.0f);
+				stun_factor = Maths::Clamp(f32(diff) / stats.medkit_use_penalty_time, 0.0f, 1.0f);
 			}
 		}
 	}

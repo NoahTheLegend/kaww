@@ -574,7 +574,7 @@ void ManageCamera(CBlob@ this)
 				u32 med_use_time = this.get_u32("used medkit");
 				u32 diff = getGameTime()-med_use_time;
 
-				f32 new_stun_factor = 1.0f - Maths::Clamp(f32(diff) / stats.kill_bonus_time, 0.25f, 1.0f);
+				f32 new_stun_factor = 1.0f - Maths::Clamp(f32(diff) / stats.medkit_use_penalty_time, 0.25f, 1.0f);
 				if (stun_factor != new_stun_factor && stun_factor == 0.0f)
 					Sound::Play("contusion.ogg", localblob.getPosition(), 0.25f, 0.6f);
 					
