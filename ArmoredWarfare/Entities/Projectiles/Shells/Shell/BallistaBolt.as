@@ -12,11 +12,17 @@ void onInit(CBlob@ this)
 {
 	this.Tag("projectile");
 
-	f32 damage_mod = 1.0f;
-	if (this.exists("scale_impact_damage") && this.get_f32("scale_impact_damage") > 0.05f) damage_mod = this.get_f32("scale_impact_damage");
-	this.set_f32(projDamageString, 1.0f);
-	this.set_f32(projExplosionRadiusString, 20.0f);
-	this.set_f32(projExplosionDamageString, 15.0f*damage_mod);
+	f32 impact_damage_mod = 1.0f;
+	if (this.exists("scale_impact_damage") && this.get_f32("scale_impact_damage") > 0.05f)
+		impact_damage_mod = this.get_f32("scale_impact_damage");
+	
+	f32 impact_radius = -1.0f;
+	if (this.exists("impact_radius") && this.get_f32("impact_radius") > 0.05f)
+		impact_radius = this.get_f32("impact_radius");
+
+	this.set_f32(projDamageString, 1.0f * impact_damage_mod);
+	this.set_f32(projExplosionRadiusString, impact_radius != -1 ? impact_radius : 20.0f);
+	this.set_f32(projExplosionDamageString, 15.0f * impact_damage_mod);
 
 	if (this.hasTag("HE_shell"))
 	{
@@ -26,7 +32,13 @@ void onInit(CBlob@ this)
 	this.set_u8("blocks_pierced", 0);
 	this.set_bool("map_damage_raycast", true);
 
-	this.server_SetTimeToDie(30);
+	bool apc = isAPCProjectile(this);
+	this.server_SetTimeToDie(apc ? 3 : 30);
+
+	if (apc)
+	{
+		this.set_f32("tile_damage", 0.1f);
+	}
 
 	this.getShape().getConsts().mapCollisions = false;
 	this.getShape().getConsts().bullet = true;
@@ -347,8 +359,10 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	if (this.hasTag("weaken")) projExplosionRadius *= 0.75f;
 	float projExplosionDamage = this.get_f32(projExplosionDamageString);
 	f32 length = this.get_f32("linear_length");
+
 	//printf(""+projExplosionRadius);
 	//printf(""+length);
+
 	WarfareExplode(this, projExplosionRadius*1.35, projExplosionDamage);
 	LinearExplosion(this, velocity, length, projExplosionRadius, 2+Maths::Floor(length/6), 0.01f, Hitters::fall); // only for damaging map
 	
@@ -358,13 +372,13 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 			this.getSprite().PlaySound("/RpgExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
 	}
 	else // smaller shell
-	{ // why tf is this not working? sounds are not playing
+	{
 		this.getSprite().PlayRandomSound("/MediumShellExplosion.ogg", 1.0, 0.9f + XORRandom(20) * 0.01f);
 	}
 
 	Vec2f pos = this.getPosition();
 
-	if (isClient() && !this.hasTag("artillery")) // hacked particles cast with createblob, dont play it twice
+	if (isClient() && !isArtilleryProjectile(this) && !isAPCProjectile(this)) // hacked particles cast with createblob, dont play it twice
 	{
 		for (int i = 0; i < 8; i++)
 		{
@@ -393,6 +407,16 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	return true;
 }
 
+bool isArtilleryProjectile(CBlob@ this)
+{
+	return this.hasTag("artillery");
+}
+
+bool isAPCProjectile(CBlob@ this)
+{
+	return this.hasTag("small_bolt");
+}
+
 void BallistaHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, f32 damage, CBlob@ blob, u8 customData)
 {
 	this.server_Hit(blob, hit_position, Vec2f(0,0), damage, Hitters::ballista, true); 
@@ -413,7 +437,7 @@ void BallistaHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, f32 damage
 
 void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f velocity, const f32 damage, u8 customData)
 {
-	if (!this.hasTag("soundplayed"))
+	if (!this.hasTag("soundplayed") && !isAPCProjectile(this))
 	{
 		this.getSprite().PlayRandomSound("/ShellExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
 		this.Tag("soundplayed");
@@ -432,11 +456,11 @@ void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f vel
 		this.getSprite().Gib();
 	}
 	
-	else if (!map.isTileGroundStuff(type))
+	else if (!map.isTileGroundStuff(type) && !isAPCProjectile(this))
 	{
 		if (map.getSectorAtPosition(hit_position, "no build") is null)
 			map.server_DestroyTile(hit_position, 1.0f, this);
-
+		
 		u8 blocks_pierced = this.get_u8("blocks_pierced");
 		const f32 speed = velocity.getLength();
 
@@ -458,6 +482,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 void Boom(CBlob@ this)
 {
+	if (isAPCProjectile(this)) return;
+	
 	if (getNet().isClient()) {
 		// screenshake effect when close to the explosion
 

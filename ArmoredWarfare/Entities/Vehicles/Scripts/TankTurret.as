@@ -521,20 +521,22 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 			hull.AddForce(Vec2f(ff * -stats.recoil_force, 0.0f));
 		}
 
+		bool apc = this.hasTag("apc");
+		f32 pmod = 1.0f;
+		if (apc) pmod = 0.25f;
+
 		if (isClient())
 		{
             CShape@ shape = this.getShape();
             Vec2f shape_vel = shape.getVelocity();
 
-			for (int i = 0; i < 16; i++)
+			for (int i = 0; i < 16 * pmod; i++)
 			{
 				ParticleAnimated("LargeSmokeGray", bullet_pos, shape_vel + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(10+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2 + XORRandom(2), -0.0031f, true);
 				//ParticleAnimated("LargeSmoke", bullet_pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 6 + XORRandom(3), -0.0031f, true);
 			}
 
-			bool apc = this.hasTag("apc");
-
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < 4 * pmod; i++)
 			{
 				if (!apc)
 				{
@@ -556,8 +558,8 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		0,                                  // column
 		0,                                  // row
 		Vec2f(16, 16),                      // frame size
-		0.5f,                               // scale?
-		0,                                  // ?
+		apc ? 0.1f : 0.5f,                               // scale?
+		0,                                  // timeout?
 		"ShellCasing",                      // sound
 		this.get_u8("team_color"));         // team number
 	}	

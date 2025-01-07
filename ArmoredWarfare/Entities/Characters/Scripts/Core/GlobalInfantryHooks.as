@@ -171,8 +171,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (hitterBlob.getName() == "c4") damage *= 10;
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) damage *= 5.0f;
 		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
-		if (hitterBlob.exists("infantry_damage_scale")) damage *= hitterBlob.get_f32("infantry_damage_scale");
-		
+		if (hitterBlob.exists("scale_infantry_damage")) damage *= hitterBlob.get_f32("scale_infantry_damage");
+		//printf(""+damage+" "+customData);
 		if (hitterBlob.getName() == "mat_smallbomb")
 		{
 			damage *= 10;
@@ -206,12 +206,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			}
 			if (at_bunker) return 0;
 		}
-
+		/*
 		u16 dist_blocks = Maths::Floor((pos-hitterBlob.get_Vec2f("from_pos")).Length()/8);
 		// printf(""+dist_blocks);
 		f32 mod = 0.5f;
 		damage = damage * Maths::Min(mod, Maths::Max(0.05f, mod - (0.025f * (dist_blocks))));
 		//printf(""+damage+" dist "+dist_blocks);
+		*/
 	}
 
 	return damage;
