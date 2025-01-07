@@ -9,7 +9,10 @@ void onInit(CBlob@ this)
 void onTick(CBlob@ this)
 {
 	if (this.getSprite() is null) return;
-	if (this.isAttached())
+
+	const bool exposed = this.hasTag("machinegunner") || this.hasTag("collidewithbullets") || this.hasTag("can_shoot_if_attached");
+	const bool sleeping = this.isAttachedToPoint("BED") || this.isAttachedToPoint("BED2");
+	if (this.isAttached() && (!exposed || sleeping))
 	{
 		CSpriteLayer@ helmet = this.getSprite().getSpriteLayer("helmet");
 		if (helmet !is null)
