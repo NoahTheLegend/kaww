@@ -63,13 +63,15 @@ void onTick(CBlob@ this)
 		u8 team = this.getTeamNum();
 		
 		CBlob@[] repair;
-		getMap().getBlobsInRadius(this.getPosition(), this.getRadius() * 2, @repair);
+		getMap().getBlobsInRadius(holder.getAimPos(), this.getRadius() * 1, @repair);
 
 		for (u16 i = 0; i < repair.size(); i++)
 		{
 			CBlob@ blob = repair[i];
 			if (blob !is null)
 			{
+				if (blob.getDistanceTo(this) > 32.0f || getMap().rayCastSolidNoBlobs(holder.getAimPos(), blob.getPosition())) continue;
+
 				if (blob.getHealth() < blob.getInitialHealth()
 				&& (blob.hasTag("vehicle") || blob.hasTag("bunker")
 					|| blob.hasTag("structure") || blob.hasTag("door") || blob.hasTag("repairable")))
