@@ -475,6 +475,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 								drop.server_SetQuantity(amount);
 								if (!blob.server_PutInInventory(drop))
 								{
+									blob.server_AttachTo(drop, "PICKUP");
 									drop.setPosition(this.getPosition());
 								}
 							}
