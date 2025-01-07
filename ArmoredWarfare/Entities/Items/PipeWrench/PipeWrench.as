@@ -15,6 +15,8 @@ void onInit(CBlob@ this)
 	{
 		ap.SetKeysToTake(key_action1 | key_action2);
 	}
+
+	this.Tag("take a1");
 }
 
 void UpdateAngle(CBlob@ this)
@@ -180,4 +182,9 @@ void onTick(CBlob@ this)
 void onThisRemoveFromInventory(CBlob@ this, CBlob@ inventoryBlob)
 {
 	this.set_u32("next repair", getGameTime() + 30);
+}
+
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	return !this.hasTag("attached") && (!blob.hasTag("trap") && !blob.hasTag("flesh") && !blob.hasTag("dead") && !blob.hasTag("vehicle") && blob.isCollidable()) || (blob.hasTag("door") && blob.getShape().getConsts().collidable);
 }
