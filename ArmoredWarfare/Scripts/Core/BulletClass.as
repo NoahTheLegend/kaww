@@ -9,6 +9,7 @@
 #include "CustomBlocks.as";
 #include "WarfareGlobal.as";
 #include "PerksCommon.as";
+#include "HittersAW.as";
 
 const SColor trueWhite = SColor(255,255,255,255);
 Driver@ PDriver = getDriver();
@@ -355,8 +356,8 @@ class BulletObj
 						if (isServer())
 						{
 							f32 vehdmg = (CurrentType == 1 ? 0.75f : CurrentType == -1 ? 0.1f : 0.25f);
-							if (shooterExists) shooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
-							else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, Hitters::builder);
+							if (shooterExists) shooter.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, HittersAW::machinegunbullet);
+							else blob.server_Hit(blob, OldPos, Vec2f(0,0.35f), vehdmg, HittersAW::machinegunbullet);
 							LastHitBlobID = blob.getNetworkID();
 						}
 					}

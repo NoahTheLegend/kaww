@@ -1370,7 +1370,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	float damageNegation = 0.0f;
 	//print ("blob: "+this.getName()+" - damage: "+damage);
 	s8 finalRating = getFinalRating(this, armorRating, penRating, hardShelled, this, hitterBlobPos, isHitUnderside, isHitBackside);
+	
 	bool is_aircraft = customData == HittersAW::aircraftbullet;
+	bool is_bullet = (customData >= HittersAW::bullet && customData <= HittersAW::apbullet-1);
+	bool is_apbullet = customData == HittersAW::apbullet;
 
 	if (this.hasTag("aerial") && hitterBlob.hasTag("shell"))
 	{
@@ -1399,16 +1402,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (damage > 10.0f) damage = 10.0f + 10.0f * 0.33f; // limit damage to thick armor (hack?)
 	}
 	
-	bool is_bullet = (customData >= HittersAW::bullet && customData <= HittersAW::apbullet-1);
-	if (is_bullet)
+	if (is_bullet && !is_apbullet)
 	{
-		if (this.hasTag("tank") && !is_aircraft) damage *= 0.25f;
-		finalRating = getFinalRatingBullet(customData, armorRating, penRating, hardShelled, this, this.getPosition(), isHitUnderside, isHitBackside);
+		if (this.hasTag("tank") && !is_aircraft) damage *= (armorRating > 3 ? 0 : 0.25f);
+		return damage;
 	}
-	if (customData == HittersAW::apbullet)
+	if (is_apbullet)
 	{
 		if (this.hasTag("tank") && !is_aircraft) damage *= 2.0f;
-		finalRating = getFinalRatingBullet(customData, armorRating, penRating, hardShelled, this, this.getPosition(), isHitUnderside, isHitBackside);
 	}
 	//print("finalRating: "+finalRating);
 	// add more damage if hit from below or hit backside of the tank (only hull)
