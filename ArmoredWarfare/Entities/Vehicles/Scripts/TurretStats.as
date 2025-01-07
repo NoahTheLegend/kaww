@@ -108,11 +108,12 @@ class PSZH4Turret : TurretStats
         super();
 
         name = "pszh4turret"; hash = _pszh4turret;
-        cooldown_time = 105; high_angle = 75; low_angle = 98;
-        arm_offset = Vec2f(-2.5f, -24.0f); arm_z = -50.0f; barrel_compression = 6; init_gun_angle = -3;
-        recoil_force = 350; fire_sound = "sound_14mm";
-        shape_offset = Vec2f(0, -10); arm_height = -3.5f; muzzle_offset = -8;
+        cooldown_time = 300; high_angle = 75; low_angle = 98;
+        cassette_size = 8; cycle_cooldown = 10;
         ammo = "mat_14mmround"; ammo_description = "14mm Rounds";
+        arm_offset = Vec2f(-2.5f, -24.0f); arm_z = -50.0f; barrel_compression = 6; init_gun_angle = -3;
+        recoil_force = 50; fire_sound = "sound_14mm";
+        shape_offset = Vec2f(0, -10); arm_height = -3.5f; muzzle_offset = -8;
         bullet_pos_offset = Vec2f(0,5);
         fixed = true;
     }
@@ -125,11 +126,12 @@ class BTRTurret : TurretStats
         super();
 
         name = "btrturret"; hash = _btrturret;
-        cooldown_time = 90; high_angle = 35; low_angle = 95; low_angle_back = 85;
-        arm_offset = Vec2f(-1.0f, -22.5f); arm_z = -50.0f; barrel_compression = 6; init_gun_angle = -3;
-        recoil_force = 300; fire_sound = "sound_14mm";
-        shape_offset = Vec2f(0, -12); arm_height = -3.5f;
+        cooldown_time = 420; high_angle = 35; low_angle = 95; low_angle_back = 90;
+        cassette_size = 12; cycle_cooldown = 10;
         ammo = "mat_14mmround"; ammo_description = "14mm Rounds";
+        arm_offset = Vec2f(-1.0f, -22.5f); arm_z = -50.0f; barrel_compression = 6; init_gun_angle = -3;
+        recoil_force = 50; fire_sound = "sound_14mm";
+        shape_offset = Vec2f(0, -12); arm_height = -3.5f;
         bullet_pos_offset = Vec2f(0,-4);
     }
 };
@@ -158,11 +160,12 @@ class BradleyTurret : TurretStats
         super();
 
         name = "bradleyturret"; hash = _bradleyturret;
-        cooldown_time = 105; high_angle = 35; low_angle = 100; low_angle_back = 92;
+        cooldown_time = 540; high_angle = 35; low_angle = 100; low_angle_back = 92;
+        cassette_size = 18; cycle_cooldown = 15;
         arm_offset = Vec2f(-12.0f, -30.0f); arm_z = -50.0f; barrel_compression = 5; init_gun_angle = -3;
-        recoil_force = 350; fire_sound = "sound_14mm";
-        shape_offset = Vec2f(0, -13.5f); arm_height = -1.0f;
         ammo = "mat_14mmround"; ammo_description = "14mm Rounds";
+        recoil_force = 75; fire_sound = "sound_14mm";
+        shape_offset = Vec2f(0, -13.5f); arm_height = -1.0f;
         bullet_pos_offset = Vec2f(0,1);
     }
 };

@@ -271,9 +271,9 @@ void Explode(CBlob@ this, f32 radius, f32 damage)
 										if (dist >= rad_thresh ||
 										        !canExplosionDestroy(map, tpos, tile))
 										{
-											map.server_DestroyTile(tpos, 1.0f, this);
+											map.server_DestroyTile(tpos, this.exists("tile_damage") ? this.get_f32("tile_damage") : 1.0f, this);
 										}
-										else
+										else if (!this.hasTag("small_bolt"))
 										{
 											map.server_DestroyTile(tpos, 100.0f, this);
 										}
@@ -473,9 +473,9 @@ void WarfareExplode(CBlob@ this, f32 radius, f32 damage)
 										if (dist >= rad_thresh ||
 										        !canExplosionDestroy(map, tpos, tile))
 										{
-											map.server_DestroyTile(tpos, 1.0f, this);
+											map.server_DestroyTile(tpos, this.exists("tile_damage") ? this.get_f32("tile_damage") : 1.0f, this);
 										}
-										else
+										else if (!this.hasTag("small_bolt"))
 										{
 											map.server_DestroyTile(tpos, 100.0f, this);
 										}
@@ -603,7 +603,7 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32 width,
 							damaged = true;
 
 						justhurt = justhurt || !canExplosionDestroy(map, tpos, t);
-						map.server_DestroyTile(tpos, justhurt ? 5.0f : 100.0f, this);
+						map.server_DestroyTile(tpos, justhurt ? this.exists("tile_damage") ? this.get_f32("tile_damage") : 5.0f : 100.0f, this);
 					}
 					else
 					{
