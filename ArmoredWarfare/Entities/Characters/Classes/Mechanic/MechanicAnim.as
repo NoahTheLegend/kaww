@@ -319,6 +319,8 @@ void onTick(CSprite@ this)
 		const bool inair = (!blob.isOnGround() && !blob.isOnLadder());
 		Vec2f pos = blob.getPosition();
 
+		CBlob@ carriedBlob = blob.getCarriedBlob();
+
 		RunnerMoveVars@ moveVars;
 		if (!blob.get("moveVars", @moveVars))
 		{
@@ -348,7 +350,8 @@ void onTick(CSprite@ this)
 		{
 			this.SetAnimation("strike");
 		}
-		else if (action1  || (this.isAnimation("build") && !this.isAnimationEnded()))
+		else if ((action1  || (this.isAnimation("build") && !this.isAnimationEnded()))
+			&& (carriedBlob is null || !carriedBlob.hasTag("take a1")))
 		{
 			this.SetAnimation("build");
 		}
@@ -415,7 +418,18 @@ void onTick(CSprite@ this)
 				direction = 1;
 			}
 
-			defaultIdleAnim(this, blob, direction);
+			if (blob.hasTag("repairing"))
+			{
+				this.SetAnimation("repair");
+				if (this.animation.frame == 7 && blob.hasTag("wield_lighting"))
+				{
+					this.animation.frame = 6;
+
+					blob.Untag("wield_lighting");
+				}
+				else blob.Tag("wield_lighting");
+			}
+			else defaultIdleAnim(this, blob, direction);
 		}
 	}
 
