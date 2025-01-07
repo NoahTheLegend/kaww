@@ -77,13 +77,13 @@ void onInit(CBlob@ this)
 		Animation@ anim = cage.addAnimation("default", 0, false);
 		anim.AddFrame(0);
 		cage.SetOffset(sprite.getOffset());
-		cage.SetRelativeZ(20.0f);
+		cage.SetRelativeZ(-11.0f);
 	}
 
 	this.getShape().SetRotationsAllowed(false);
 	this.set_string("autograb blob", "ammo");
 
-	sprite.SetZ(20.0f);
+	sprite.SetZ(100.0f);
 	this.set_f32("overheat", 0);
 	this.set_f32("max_overheat", MAX_OVERHEAT);
 	this.set_f32("overheat_per_shot", OVERHEAT_PER_SHOT);
@@ -300,6 +300,11 @@ void onTick(CBlob@ this)
 				}
 			}
 
+			if (ap !is null && ap.getOccupied() !is null)
+				arm.SetRelativeZ(-10.0f);
+			else
+				arm.SetRelativeZ(100.0f);
+
 			arm.ResetTransform();
 			arm.SetFacingLeft((rotation > -90 && rotation < 90) ? facing_left : !facing_left);
 			arm.SetOffset(Vec2f(this.isAttached() && (angle > 90 || angle <= -90) ?-2:0,0)+arm_offset);
@@ -321,7 +326,7 @@ void onTick(CBlob@ this)
 		if (holder.getPlayer() !is null)
 		{
 			arm.ResetTransform();
-			arm.SetRelativeZ(-100.0f);
+			arm.SetRelativeZ(-10.0f);
 			arm.RotateBy(this.isFacingLeft() ? 90 : -90, Vec2f_zero);
 		}
 		else arm.SetRelativeZ(100.0f);
