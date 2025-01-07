@@ -942,7 +942,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 							u32 med_use_time = this.get_u32("used medkit");
 							u32 diff = getGameTime()-med_use_time;
 
-							vel_factor = Maths::Clamp(f32(diff) / stats.kill_bonus_time, 0.25f, 1.0f);
+							vel_factor = Maths::Clamp(f32(diff) / stats.medkit_use_penalty_time, 0.25f, 1.0f);
 						}
 					}
 
