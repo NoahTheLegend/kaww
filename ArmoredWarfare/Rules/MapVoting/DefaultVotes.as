@@ -101,6 +101,20 @@ void onTick(CRules@ this)
 	{
 		g_lastExtendtimeCounter++;
 	}
+
+	u8 players = 0;
+	for (u8 i = 0; i < getPlayersCount(); i++)
+	{
+		CPlayer@ p = getPlayer(i);
+		if (p is null) continue;
+
+		if (!p.isBot()) players++;
+	}
+
+	if (players == 1)
+	{
+		g_lastNextmapCounter = 60 * getTicksASecond() * required_minutes_nextmap;
+	}
 }
 
 //VOTE KICK --------------------------------------------------------------------
