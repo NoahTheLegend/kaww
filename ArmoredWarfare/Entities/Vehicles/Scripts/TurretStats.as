@@ -211,7 +211,7 @@ class KingTigerTurret : TurretStats
 
         name = "kingtigerturret"; hash = _kingtigerturret;
         cooldown_time = 420; high_angle = 70; low_angle = 100; low_angle_back = 102;
-        arm_offset = Vec2f(-16.0f, -27.0f); arm_z = -50.0f; barrel_compression = 11; init_gun_angle = -5;
+        arm_offset = Vec2f(-16.0f, -28.0f); arm_z = -50.0f; barrel_compression = 11; init_gun_angle = -5;
         recoil_force = 700;
         fire_sound = "sound_128mm";
         secondary_gun_offset = arm_offset + Vec2f(0,6);
