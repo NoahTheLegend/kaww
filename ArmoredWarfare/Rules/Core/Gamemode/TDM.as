@@ -714,6 +714,7 @@ shared class TDMCore : RulesCore
 		   	"Mortaring.png",
 		   	"Syria.png",
 		   	"Cavern.png",
+			"City26.png",
 		   	"Selfish_goldy.png",
 		   	"Goldy_KAWW_Megalith.png",
 		   	"Valley.png",
@@ -1817,6 +1818,7 @@ const string[] LargeMaps = {
 	"Mortaring.png",
 	"Syria.png",
 	"Cavern.png",
+	"City26.png",
 	"Selfish_goldy.png",
 	"Goldy_KAWW_Megalith.png",
 	//"Valley.png", out of cycle
@@ -1860,7 +1862,8 @@ const string[] AverageMaps = {
 	"SmallMortaring.png",
 	"SmallTouge.png",
 	"PlainHills.png",
-	"BloodGulch.png"
+	"BloodGulch.png",
+	"City26.png"
 };
 
 const string[] FlagMaps = {

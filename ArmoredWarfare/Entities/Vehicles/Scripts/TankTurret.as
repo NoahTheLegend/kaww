@@ -271,7 +271,7 @@ void onTick(CBlob@ this)
 		if (turned) gun_elevation = -gun_elevation + turn;
 
 		arm.RotateBy(gun_elevation, stats.arm_joint_offset);
-		arm.SetOffset(stats.arm_offset + (fl ? turned ? Vec2f(-1,-1) : Vec2f_zero : turned ? Vec2f(-1,-1) : Vec2f_zero));
+		arm.SetOffset(stats.arm_offset + (fl ? Vec2f(-1,-1) : Vec2f_zero));
         arm.SetRelativeZ(-50.0f);
 
 		if (this.getName() == "bc25turret")
