@@ -3,62 +3,22 @@
 #include "HittersAW.as"
 #include "PerksCommon.as";
 
-const Vec2f arm_offset = Vec2f(0, -2);
-const f32 MAX_OVERHEAT = 2.0f;
-const f32 OVERHEAT_PER_SHOT = 0.04f;
-const f32 COOLDOWN_RATE = 0.065f;
-const u8 COOLDOWN_TICKRATE = 5;
-
 void onInit(CBlob@ this)
 {
 	this.Tag("gun");
 	this.Tag("machinegun");
 	this.Tag("heavy weight");
 	this.Tag("weapon");
-
-	this.set_u8("TTL", 60);
-	this.set_Vec2f("KB", Vec2f(0,0));
-	this.set_u8("speed", 20);
-	this.set_u16("gui_mat_icon", 31);
-
-	this.set_f32("hand_rotation_damp", 0.15f);
-	
-	Vehicle_Setup(this,
-	              0.0f, // move speed
-	              0.1f,  // turn speed
-	              Vec2f(0.0f, -1.56f), // jump out velocity
-	              true  // inventory access
-	             );
-	VehicleInfo@ v;
-	if (!this.get("VehicleInfo", @v))
-	{
-		return;
-	}
-
-	this.set_string("shoot sound", "M60fire.ogg");
-
-	Vehicle_AddAmmo(this, v,
-	                    2, // fire delay (ticks), +1 tick on server due to onCommand delay
-	                    1, // fire bullets amount
-	                    1, // fire cost
-	                    "ammo", // bullet ammo config name
-	                    "Ammo", // name for ammo selection
-	                    "arrow", // bullet config name
-	                    "M60fire", // fire sound  
-	                    "EmptyFire", // empty fire sound
-	                    Vehicle_Fire_Style::custom,
-	                    Vec2f(-6.0f, 2.0f), // fire position offset
-	                    0 // charge time
-	                   );
+    this.Tag("builder always hit");
+	this.Tag("destructable_nosoak");
 					   
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 48, 16);
-	this.Tag("builder always hit");
-	this.Tag("destructable_nosoak");
 
 	this.set_s32("custom_hitter", HittersAW::machinegunbullet);
 
+    Vec2f arm_offset = this.get_Vec2f("arm offset");
 	if (arm !is null)
 	{
 		Animation@ anim = arm.addAnimation("default", 0, false);
@@ -81,16 +41,14 @@ void onInit(CBlob@ this)
 	}
 
 	this.getShape().SetRotationsAllowed(false);
-	this.set_string("autograb blob", "ammo");
 
-	sprite.SetZ(100.0f);
-	this.set_f32("overheat", 0);
-	this.set_f32("max_overheat", MAX_OVERHEAT);
-	this.set_f32("overheat_per_shot", OVERHEAT_PER_SHOT);
-	this.set_f32("cooldown_rate", COOLDOWN_RATE);
+	this.set_string("autograb blob", "ammo");
+    this.set_f32("overheat", 0);
 	this.set_bool("overheated", false);
 
-	// auto-load some ammo initially
+	sprite.SetZ(100.0f);
+
+    // auto-load some ammo initially
 	if (getNet().isServer())
 	{
 		for (u8 i = 0; i < 3; i++)
@@ -181,6 +139,11 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 void onTick(CBlob@ this)
 {
 	//if (isServer() && this.getPosition().x <= 8.0f && this.getPosition().y <= 64.0f) this.server_Die();
+
+    f32 MAX_OVERHEAT = this.get_f32("max_overheat");
+    f32 OVERHEAT_PER_SHOT = this.get_f32("overheat_per_shot");
+    f32 COOLDOWN_RATE = this.get_f32("cooldown_rate");
+    u8 COOLDOWN_TICKRATE = this.get_u8("cooldown_tickrate");
 
 	bool is_attached = this.isAttached();
 	if (this.isAttachedToPoint("PICKUP") && this.hasAttached())
@@ -281,6 +244,7 @@ void onTick(CBlob@ this)
 	Vehicle_SetWeaponAngle(this, angle, v);
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
+    Vec2f arm_offset = this.get_Vec2f("arm offset");
 
 	if (arm !is null)
 	{
@@ -428,6 +392,12 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 {
 	if (bullet !is null)
 	{
+        f32 MAX_OVERHEAT = this.get_f32("max_overheat");
+        f32 OVERHEAT_PER_SHOT = this.get_f32("overheat_per_shot");
+        f32 COOLDOWN_RATE = this.get_f32("cooldown_rate");
+        u8 COOLDOWN_TICKRATE = this.get_u8("cooldown_tickrate");
+        Vec2f arm_offset = this.get_Vec2f("arm offset");
+
 		Vec2f pos = this.getPosition();
 
 		u16 charge = v.charge;
@@ -510,7 +480,7 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _unused
 					"ShellCasing",                      // sound
 					this.get_u8("team_color"));         // team number
 
-					this.getSprite().PlaySound("M60fire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
+					this.getSprite().PlaySound("MGfire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
 				}		
 			}
 		}

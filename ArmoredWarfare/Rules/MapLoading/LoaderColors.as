@@ -296,8 +296,10 @@ namespace map_colors
 
 
 
-		heavygun               = 0xff1f11f4,
-		crateheavygun          = 0xff0f00f4,
+		m2browning             = 0xff1f11f4,
+		cratem2browning        = 0xff0f00f4,
+		mg42             	   = 0xff1f11f5,
+		cratemg42              = 0xff0f00f5,
 		ammocrate              = 0xffbda269,
 		arabicspeaker          = 0xffeb2c01,
 		russianspeaker         = 0xffeb4f01,

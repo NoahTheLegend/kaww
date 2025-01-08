@@ -372,7 +372,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 							"ShellCasing",                      // sound
 							gun.get_u8("team_color"));         // team number
 	
-							if (!gun.exists("shoot sound")) gun.getSprite().PlaySound("M60fire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
+							if (!gun.exists("shoot sound")) gun.getSprite().PlaySound("MGfire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
 						}		
 					}
 				}

@@ -542,7 +542,7 @@ void onTick(CMovement@ this)
 			if (p !is null && p.get("PerkStats", @stats))
 				stats_loaded = true;
 
-            if (stats_loaded && stats.id == Perks::fieldengineer && carryBlob.getName() != "heavygun"
+            if (stats_loaded && stats.id == Perks::fieldengineer && !carryBlob.hasTag("machinegun")
             && (carryBlob.hasTag("medium weight") || carryBlob.hasTag("heavy weight")))
             {
                 moveVars.walkFactor *= 0.9f;

@@ -21,7 +21,7 @@ void onInit(CBlob@ this)
 
 	if (getNet().isServer())
 	{
-		CBlob@ bow = server_CreateBlob("heavygun");	
+		CBlob@ bow = server_CreateBlob("m2browning");	
 
 		if (bow !is null)
 		{

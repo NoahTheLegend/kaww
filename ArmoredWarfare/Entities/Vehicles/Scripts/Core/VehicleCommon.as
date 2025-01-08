@@ -356,7 +356,7 @@ bool Vehicle_AddFlipButton(CBlob@ this, CBlob@ caller)
 
 bool MakeLoadAmmoButton(CBlob@ this, CBlob@ caller, Vec2f offset, VehicleInfo@ v)
 {
-	if (this.getName() != "heavygun") return false;
+	if (!this.hasTag("machinegun")) return false;
 	// find ammo in inventory
 	CInventory@ inv = caller.getInventory();
 

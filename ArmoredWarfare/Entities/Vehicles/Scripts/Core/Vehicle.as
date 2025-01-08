@@ -73,7 +73,6 @@ void onInit(CBlob@ this)
 	this.addCommandID("pick_1");
 	this.addCommandID("warn_opposite_team");
 
-	// heavygun
 	this.addCommandID("set detaching");
 	this.addCommandID("set attaching");
 	this.addCommandID("sync overheat");
@@ -154,7 +153,8 @@ void onInit(CBlob@ this)
 		case _artilleryturret:
 		case _bradley:
 		case _bradleyturret:
-		case _heavygun:
+		case _m2browning:
+		case _mg42:
 		case _firethrower:
 		case _ah1:
 		case _mi24:
@@ -276,7 +276,8 @@ void onInit(CBlob@ this)
 			scale_infantry_damage = 4.0f;
 			break;
 		}
-		case _heavygun:
+		case _m2browning:
+		case _mg42:
 		{
 			weaponRating = -1;
 			break;

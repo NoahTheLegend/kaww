@@ -48,7 +48,7 @@ void onInit(CBlob@ this)
 
 	u8 frame = 1;
 	if (packed == "launcher_javelin") frame = 0;
-	else if (packed == "heavygun") frame = 2;
+	else if (packed == "m2browning" || packed == "mg42") frame = 2;
 	else if (packed == "barge") frame = 3;
 	else if (packed == "firethrower") frame = 4;
 
