@@ -900,7 +900,6 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 
 void onRender(CSprite@ this)
 {
-	return;
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
 
