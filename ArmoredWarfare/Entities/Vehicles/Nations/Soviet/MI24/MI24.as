@@ -26,7 +26,7 @@ const s16 init_gunoffset_angle = -3; // up by so many degrees
 const Vec2f gun_clampAngle = Vec2f(-180, 180);
 const Vec2f miniGun_offset = Vec2f(-42,8);
 const u8 shootDelay = 2;
-const f32 projDamage = 0.275f;
+const f32 projDamage = 0.3f;
 
 const int trap_cooldown = 30*30;
 const u8 traps_amount = 7;
@@ -485,12 +485,12 @@ void onTick(CBlob@ this)
 		int anim_time_formula = Maths::Floor(1.00f + (1.00f - Maths::Abs(resultForce.getLength())) * 3) % 4;
 		if (this.hasTag("falling")) anim_time_formula = Maths::Floor(1.00f + (1.00f - Maths::Abs(this.get_Vec2f("result_force").getLength())) * 3) % 4;
 		blade.ResetTransform();
-		blade.SetOffset(Vec2f(-5.5, -27));
+		blade.SetOffset(Vec2f(-6.5f, -27));
 		blade.animation.time = anim_time_formula;
 		blade.ScaleBy(Vec2f(1.15f, 1));
 		if (blade.animation.time == 0)
 		{
-			blade.SetOffset(Vec2f(-6.5, -27));
+			blade.SetOffset(Vec2f(-6.5f, -27));
 			blade.SetFrameIndex(0);
 			blade.RotateBy(180, Vec2f(0.0f,2.0f));
 		}
