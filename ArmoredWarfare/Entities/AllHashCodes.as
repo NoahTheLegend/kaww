@@ -31,6 +31,7 @@ enum EntityHash
 
 	_pszh4 = 1117406230,
 	_btr82a = 1873450872,
+	_bmp = 1824651960,
 	_bradley = -1543244522,
 	_transporttruck = -384075523,
 	_armory = -2000954281,
@@ -56,6 +57,7 @@ enum EntityHash
 
 	_pszh4turret = -561402448,
 	_btrturret = 2047864813,
+	_bmpturret = 1168173522,
 	_bradleyturret = 1562236592,
 	_m60turret = -627481976,
 	_e50turret = 1366711839,

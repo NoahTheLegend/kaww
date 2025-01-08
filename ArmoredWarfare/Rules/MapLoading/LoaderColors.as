@@ -321,6 +321,9 @@ namespace map_colors
 		blue_btr82a            = 0xff7cb12e,
 		red_btr82a             = 0xffb1982e,
 
+		blue_bmp           	   = 0xff7cf12e,
+		red_bmp            	   = 0xffb1f82e,
+
 		blue_t10               = 0xff5fffb7,
 		red_t10                = 0xff8ed264,
 		

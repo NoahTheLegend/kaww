@@ -136,6 +136,23 @@ class BTRTurret : TurretStats
     }
 };
 
+class BMPTurret : TurretStats
+{
+    BMPTurret()
+    {
+        super();
+
+        name = "bmpturret"; hash = _bmpturret;
+        cooldown_time = 480; high_angle = 40; low_angle = 94; low_angle_back = 94;
+        cassette_size = 16; cycle_cooldown = 8;
+        ammo = "mat_14mmround"; ammo_description = "14mm Rounds";
+        arm_offset = Vec2f(-4.0f, -24.0f); arm_z = -50.0f; barrel_compression = 5; init_gun_angle = 0;
+        recoil_force = 50; fire_sound = "sound_14mm";
+        shape_offset = Vec2f(0, -12); arm_height = -3.5f;
+        bullet_pos_offset = Vec2f(0,-4);
+    }
+};
+
 class ArtilleryTurret : TurretStats
 {
     ArtilleryTurret()

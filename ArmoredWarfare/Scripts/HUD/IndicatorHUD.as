@@ -569,6 +569,7 @@ u8 getIndicatorFrame(int hash)
 		case _ranger:
 		case _lmg:
 		case _btr82a:
+		case _bmp:
 		case _bradley:
 		frame = 3; break;
 
