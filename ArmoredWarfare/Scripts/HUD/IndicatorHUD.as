@@ -558,7 +558,6 @@ u8 getIndicatorFrame(int hash)
 		case _m60:
 		case _e50:
 		case _bc25t:
-		case _leopard1:
 		frame = 1; break;
 
 		case _revolver:
@@ -626,6 +625,10 @@ u8 getIndicatorFrame(int hash)
 
 		case _is7:
 		frame = 17; break;
+
+		case _leopard1:
+		case _m1abrams:
+		frame = 18; break;
 
 		case _outpost:
 		frame = 9; break;
