@@ -265,7 +265,7 @@ void onTick(CBlob@ this)
 			}
 
 			if (ap !is null && ap.getOccupied() !is null)
-				arm.SetRelativeZ(-10.0f);
+				arm.SetRelativeZ(100.0f);
 			else
 				arm.SetRelativeZ(100.0f);
 

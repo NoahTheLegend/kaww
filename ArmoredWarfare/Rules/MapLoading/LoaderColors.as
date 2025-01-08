@@ -345,6 +345,9 @@ namespace map_colors
 		blue_e50               = 0xffaddfc4,
 		red_e50                = 0xffcde3ab,
 
+		blue_obj430            = 0xff47af85,
+		red_obj430             = 0xff50a945,
+
 		blue_bc25t             = 0xff47bf89,
 		red_bc25t              = 0xff506941,
 

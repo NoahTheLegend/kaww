@@ -497,6 +497,7 @@ class PNGLoader
 			case map_colors::blue_t10:       autotile(offset); spawnVehicle(map, "t10",   offset, teamleft); break;
 			case map_colors::blue_m60:         autotile(offset); spawnVehicle(map, "m60",   offset, teamleft); break;
 			case map_colors::blue_e50:         autotile(offset); spawnVehicle(map, "e50",   offset, teamleft); break;
+			case map_colors::blue_obj430:		 autotile(offset); spawnVehicle(map, "obj430",   offset, teamleft); break;
 			case map_colors::blue_kingtiger:         autotile(offset); spawnVehicle(map, "kingtiger",   offset, teamleft); break;
 			case map_colors::blue_bc25t:         autotile(offset); spawnVehicle(map, "bc25t",   offset, teamleft); break;
 			case map_colors::blue_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, teamleft); break;
@@ -518,6 +519,7 @@ class PNGLoader
 			case map_colors::red_t10:        autotile(offset); spawnVehicle(map, "t10",   offset, teamright); break;
 			case map_colors::red_m60:          autotile(offset); spawnVehicle(map, "m60",   offset, teamright); break;
 			case map_colors::red_e50:          autotile(offset); spawnVehicle(map, "e50",   offset, teamright); break;
+			case map_colors::red_obj430:          autotile(offset); spawnVehicle(map, "obj430",   offset, teamright); break;
 			case map_colors::red_kingtiger:          autotile(offset); spawnVehicle(map, "kingtiger",   offset, teamright); break;
 			case map_colors::red_bc25t:          autotile(offset); spawnVehicle(map, "bc25t",   offset, teamright); break;
 			case map_colors::red_maus:       autotile(offset); spawnVehicle(map, "maus",   offset, teamright); break;

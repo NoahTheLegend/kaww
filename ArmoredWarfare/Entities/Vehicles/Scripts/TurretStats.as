@@ -85,6 +85,20 @@ class E50Turret : TurretStats
     }
 };
 
+class Obj430Turret : TurretStats
+{
+    Obj430Turret()
+    {
+        super();
+
+        name = "obj430turret"; hash = _obj430turret;
+        cooldown_time = 225; high_angle = 76; low_angle = 96; low_angle_back = 94;
+        arm_offset = Vec2f(-6.0f, -27.5f); arm_z = -50.0f; barrel_compression = 10; init_gun_angle = 0;
+        mg = "m2browning";
+        recoil_force = 750;
+    }
+};
+
 class T10Turret : TurretStats
 {
     T10Turret()
@@ -146,7 +160,7 @@ class BMPTurret : TurretStats
         cooldown_time = 480; high_angle = 40; low_angle = 94; low_angle_back = 94;
         cassette_size = 16; cycle_cooldown = 8;
         ammo = "mat_14mmround"; ammo_description = "14mm Rounds";
-        arm_offset = Vec2f(-4.0f, -24.0f); arm_z = -50.0f; barrel_compression = 5; init_gun_angle = 0;
+        arm_offset = Vec2f(-4.0f, -24.0f); arm_z = -40.0f; barrel_compression = 5; init_gun_angle = 0;
         recoil_force = 50; fire_sound = "sound_14mm";
         shape_offset = Vec2f(0, -12); arm_height = -3.5f;
         bullet_pos_offset = Vec2f(0,-4);
@@ -231,6 +245,7 @@ class KingTigerTurret : TurretStats
         arm_offset = Vec2f(-16.0f, -28.0f); arm_z = -50.0f; barrel_compression = 11; init_gun_angle = -5;
         recoil_force = 700;
         elevation_speed = 0.5f;
+        bullet_pos_offset = Vec2f(0,-2);
         fire_sound = "sound_128mm";
         secondary_gun_offset = arm_offset + Vec2f(0,6);
     }
@@ -318,7 +333,7 @@ class M1AbramsTurret : TurretStats
         mg = "m2browning"; ammo_quantity = 24; fire_sound = "sound_105mm";
         recoil_force = 650; projectile_vel = -32.5f;
         elevation_speed = 0.65f;
-        bullet_pos_offset = Vec2f(0,0);
+        bullet_pos_offset = Vec2f(0,-2);
         shape_offset = Vec2f(0, -15);
         secondary_gun_offset = Vec2f(-7,-22);
     }

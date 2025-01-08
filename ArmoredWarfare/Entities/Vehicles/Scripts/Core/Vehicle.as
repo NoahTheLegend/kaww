@@ -131,6 +131,7 @@ void onInit(CBlob@ this)
 		case _desertmaus:
 		case _t10turret:
 		case _m1abramsturret:
+		case _obj430turret:
 		armorRating = 5; break;
 		
 		case _t10:
@@ -147,6 +148,7 @@ void onInit(CBlob@ this)
 			
 		case _m60:
 		case _e50:
+		case _obj430:
 		case _leopard1:
 		case _leopard1turret:
 		case _bc25t:
@@ -252,11 +254,12 @@ void onInit(CBlob@ this)
 			break;
 		}
 		case _m103turret:
+		case _obj430turret:
 		{
 			weaponRating = 3;
 			linear_length = 12.0f;
-			scale_infantry_damage = 0.1f;
-			scale_impact_damage = 1.3f;
+			scale_infantry_damage = 0.175f;
+			scale_impact_damage = 1.35f;
 			break;
 		}
 		case _m60turret:
@@ -353,6 +356,7 @@ void onInit(CBlob@ this)
 		case _pszh4:
 		case _is7:
 		case _m1abrams:
+		case _obj430:
 		backsideOffset = 16.0f; break;
 
 		case _uh1:
@@ -399,6 +403,7 @@ void onInit(CBlob@ this)
 
 		case _e50:
 		case _bmp:
+		case _obj430:
 		intake = 20.0f; break;
 
 		case _m60:
@@ -1160,6 +1165,7 @@ void onDie(CBlob@ this)
 			case _m60:
 			case _e50:
 			case _leopard1:
+			case _obj430:
 			{
 				scrap_amount = 12+XORRandom(8);
 				explosion_radius = 64.0f;
