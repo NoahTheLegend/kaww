@@ -7,7 +7,6 @@ const f32 projDamage = 0.35f;
 
 void onInit(CBlob@ this)
 {
-	this.addCommandID("shoot");
 	this.set_u8("type", this.getName() == "mausturret" ? 0 : this.getName() == "pinkmausturret" ? 1 : 2);
 
 	this.Tag("vehicle");
@@ -18,6 +17,7 @@ void onInit(CBlob@ this)
 	this.Tag("secondary gun");
 
 	// machinegun stuff
+	this.addCommandID("shoot");
 	this.set_u8("TTL", 45);
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 18);

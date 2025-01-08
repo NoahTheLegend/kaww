@@ -152,7 +152,6 @@ void onTick(CBlob@ this)
 				Vec2f aimpos = gunner.getAimPos();
 				Vec2f aim_vec = gpos - aimpos;
 
-				//todo: fix turret blob not rotating sometimes & reverse low and high angles when turned
 				if (!this.hasTag("no turn"))
 				{
 					Vec2f rel_vec = aim_vec;
@@ -193,7 +192,7 @@ void onTick(CBlob@ this)
 			}
 			else if (isServer())
 			{
-				this.SetFacingLeft(turned ? !vbfl : vbfl);	
+				this.SetFacingLeft(turned ? !vbfl : vbfl);
 			}
 		}
 		
@@ -325,6 +324,7 @@ void onTick(CBlob@ this)
 		Vec2f shape_offset = this.getShape().getOffset();
 		Vec2f arm_offset = Vec2f(-ff * arm.getOffset().x, arm.getOffset().y) - Vec2f(0, stats.muzzle_offset) + stats.bullet_pos_offset;
 		arm_offset.RotateBy(deg);
+		Vec2f secondary_gun_offset = stats.secondary_gun_offset;
 		Vec2f bullet_pos = pos + arm_offset + Vec2f(0,stats.muzzle_offset*2).RotateBy(turned ? -angle + 180 : angle);
 
 		ParticleAnimated("LargeSmokeGray", bullet_pos, Vec2f_zero, float(XORRandom(360)), 0.5f, 1, -0.0031f, true);
@@ -332,6 +332,8 @@ void onTick(CBlob@ this)
 		if (p !is null) p.deadeffect = -1;
 		CParticle@ p1 = ParticleAnimated("SmallSteam", pos+arm_offset, Vec2f_zero, float(XORRandom(360)), 0.25f, 1, -0.0031f, true);
 		if (p1 !is null) p1.deadeffect = -1;
+		CParticle@ p2 = ParticleAnimated("SmallSteam", pos+secondary_gun_offset, Vec2f_zero, float(XORRandom(360)), 0.25f, 1, -0.0031f, true);
+		if (p2 !is null) p2.deadeffect = -1;
 	}
 	*/
 }

@@ -85,25 +85,6 @@ void LoadSprites(CSprite@ this)
 		camo.SetVisible(false);
 		camo.SetRelativeZ(0.31f);
 	}
-
-	CSpriteLayer@ skull = this.addSpriteLayer("skull", "DeathIncarnate.png", 16, 16, 0, 0);
-	if (skull !is null)
-	{
-		skull.SetFrameIndex(1);
-		skull.SetOffset(Vec2f(0.0f, -16.0f));
-		skull.ScaleBy(Vec2f(0.75f,0.75f));
-		skull.SetRelativeZ(-5.0f);
-		skull.SetVisible(false);
-	}
-	CSpriteLayer@ aos = this.addSpriteLayer("aos", "AOS.png", 16, 16, 0, 0);
-	if (aos !is null)
-	{
-		aos.SetFrameIndex(1);
-		aos.SetOffset(Vec2f(0.5f, -18.0f));
-		aos.ScaleBy(Vec2f(0.75f,0.75f));
-		aos.SetRelativeZ(-5.0f);
-		aos.SetVisible(false);
-	}
 }
 
 void onTick(CSprite@ this)
@@ -130,13 +111,14 @@ void onTick(CSprite@ this)
 
 	const bool fl = blob.isFacingLeft();
 
+	const bool exposed = blob.hasTag("machinegunner") || blob.hasTag("collidewithbullets") || blob.hasTag("can_shoot_if_attached");
+	const bool sleeping = blob.isAttachedToPoint("BED") || blob.isAttachedToPoint("BED2");
+		
 	// camo netting
 	if (blob.getPlayer() !is null)
 	{
 		CSpriteLayer@ camo = this.getSpriteLayer("camo");
 		CSpriteLayer@ helmet = this.getSpriteLayer("helmet");
-		const bool exposed = blob.hasTag("machinegunner") || blob.hasTag("collidewithbullets") || blob.hasTag("can_shoot_if_attached");
-		const bool sleeping = blob.isAttachedToPoint("BED") || blob.isAttachedToPoint("BED2");
 		
 		if (camo !is null)
 		{
@@ -250,35 +232,14 @@ void onTick(CSprite@ this)
 		}
 		else if (helmet !is null) helmet.SetVisible(true);
 	}
-
+	
+	//this.SetVisible(!blob.isAttached() || (exposed && !sleeping));
 	u8 perk_id = 0;
 
 	bool stats_loaded = false;
     PerkStats@ stats = getPerkStats(blob, stats_loaded);
 
 	if (stats_loaded) perk_id = stats.id;
-	
-	//CSpriteLayer@ skull = this.getSpriteLayer("skull");
-	//if (skull !is null)
-	//{
-	//	if (perk_id == Perks::deathincarnate)
-	//	{
-	//		skull.SetFacingLeft(false);
-	//		skull.SetVisible(true);
-	//	}
-	//	else if (skull.isVisible()) skull.SetVisible(false);	
-	//}
-
-	//CSpriteLayer@ aos = this.getSpriteLayer("aos");
-	//if (aos !is null)
-	//{
-	//	if (perk_id == Perks::lucky)
-	//	{
-	//		aos.SetFacingLeft(false);
-	//		aos.SetVisible(blob.get_bool("has_aos") && blob.getHealth() > 0.01f);
-	//	}
-	//	else if (aos.isVisible()) aos.SetVisible(false);
-	//}
 
 	if (blob.hasTag("dead"))
 	{
@@ -339,9 +300,9 @@ void onTick(CSprite@ this)
 			}
 		}
 		else if (blob.hasTag("seated"))
-		{
-			this.SetAnimation("test");
-		}
+	{
+		this.SetAnimation("empty");
+	}
 		else if (blob.hasTag("seatez"))
 		{
 			this.SetAnimation("heavy");

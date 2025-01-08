@@ -7,7 +7,7 @@
 #include "ProgressBar.as";
 
 const int smoke_cooldown = 90*30;
-const u8 smoke_amount = 40;
+const u8 smoke_amount = 48;
 
 void onInit(CBlob@ this)
 {
@@ -52,7 +52,7 @@ void onInit(CBlob@ this)
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-26.0f, 4.5f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-33.0f, 2.0f)); if (w !is null) w.SetRelativeZ(-20.0f); w.ScaleBy(Vec2f(0.9f, 0.9f)); }
 
-	this.getShape().SetOffset(Vec2f(0, 2));
+	this.getShape().SetOffset(Vec2f(0, 0));
 
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
@@ -89,7 +89,7 @@ void onInit(CBlob@ this)
 		animstopped.AddFrame(36);
 
 		tracks.SetRelativeZ(-5.0f);
-		tracks.SetOffset(Vec2f(2.0f, 8.0f));
+		tracks.SetOffset(Vec2f(0.0f, 8.0f));
 	}
 
 	// attach turret & machine gun
@@ -156,6 +156,12 @@ void onTick(CBlob@ this)
 				if (tur is null) this.server_Die();
 			}
 		}
+	}
+
+	this.add_f32("smoke_time", 1);
+	if (this.get_f32("smoke_time") > this.get_u32("smoke_endtime")+15)
+	{
+		this.Untag("no_more_smoke");
 	}
 	
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
@@ -341,6 +347,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				SColor team_front = getNeonColor(this.getTeamNum(), 0);
 				ProgressBar setbar;
+
 				setbar.Set(this.getNetworkID(), "smoke", Vec2f(80.0f, 16.0f), false, Vec2f(0, 56), Vec2f(2, 2), back, team_front,
 					"smoke_time", this.get_u32("smoke_endtime"), 0.33f, 5, 5, false, "");
 
@@ -378,5 +385,20 @@ void ReleaseSmoke(CBlob@ this)
 }
 
 bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
-
 void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}
+
+void onRender(CSprite@ this)
+{
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+
+	AttachmentPoint@ pilot = blob.getAttachments().getAttachmentPointByName("DRIVER");
+	if (pilot !is null && pilot.getOccupied() !is null)
+	{
+		CBlob@ driver_blob = pilot.getOccupied();
+		if (driver_blob.isMyPlayer())
+		{
+			visualTimerRender(this);
+		}
+	}
+}
