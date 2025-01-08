@@ -10,6 +10,7 @@ void onInit(CSprite@ this)
 	blob.set_u8("mode", 1);
 	blob.set_f32("lastvel", 0);
 	blob.set_f32("vel", 0);
+	blob.set_u32("heal_delayed", 0);
 }
 
 void onTick(CSprite@ this)
@@ -54,6 +55,38 @@ void onRender(CSprite@ this)
 	if (!blob.get("VehicleInfo", @v))
 	{
 		return;
+	}
+
+	if (blob.hasTag("request heal delay icon"))
+	{
+		blob.Untag("request heal delay icon");
+		blob.set_u32("heal_delayed", getGameTime() + 90);
+	}
+
+	u32 gt = getGameTime();
+	if (!blob.hasTag("turret") && blob.get_u32("heal_delayed") > gt)
+	{
+		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, -128);
+		u32 heal_delayed = blob.get_u32("heal_delayed");
+		u8 alpha = 255;
+
+		if (gt < heal_delayed)
+		{
+			u32 remainingTicks = heal_delayed - gt;
+			if (remainingTicks <= 10)
+			{
+				alpha = Maths::Clamp(remainingTicks * 25, 0, 255);
+			}
+			else if (remainingTicks >= 80)
+			{
+				alpha = Maths::Clamp((90 - remainingTicks) * 25, 0, 255);
+			}
+		}
+
+		GUI::SetFont("menu");
+		GUI::DrawIcon("RepairCooldown.png", 0, Vec2f(32, 32), pos2d - Vec2f(32, 16), 1.0f, SColor(alpha, 255, 255, 255));
+		GUI::DrawTextCentered("Repair delayed: " + Maths::Ceil((blob.get_u32("no_heal") - gt)/30)+"s", pos2d + Vec2f(0, 48), SColor(alpha, 255, 255, 255));
+		GUI::SetFont("default");
 	}
 
 	AttachmentPoint@ driver = blob.getAttachments().getAttachmentPointByName("DRIVER");

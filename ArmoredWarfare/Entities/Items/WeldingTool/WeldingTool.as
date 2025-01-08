@@ -17,7 +17,7 @@ void onInit(CBlob@ this)
 }
 
 const u8 max_repairs = 10;
-const u8 repair_rate = 8;
+const u8 repair_rate = 9;
 const u8 anim_max_speed = 10;
 const u8 anim_min_speed = 2;
 
@@ -79,7 +79,13 @@ void onTick(CBlob@ this)
 					if (blob.hasTag("respawn") || blob.hasTag("never_repair")) continue; // dont repair outposts
 					if (team == blob.getTeamNum() || blob.getTeamNum() >= 7)
 					{
-						if (blob.get_u32("no_heal") > getGameTime()) continue; 
+						if (blob.get_u32("no_heal") > getGameTime())
+						{
+							if (blob.get_u32("heal_delayed") < getGameTime()) blob.Tag("request heal delay icon");
+							else if (blob.get_u32("heal_delayed") - getGameTime() < 45)
+								blob.set_u32("heal_delayed", Maths::Min(blob.get_u32("no_heal"), getGameTime() + 45));
+							continue; 
+						}
 
 						this.add_u8("repairs", 1);
 

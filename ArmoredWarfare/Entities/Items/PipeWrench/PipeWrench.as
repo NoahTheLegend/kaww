@@ -90,8 +90,15 @@ void onTick(CBlob@ this)
 								|| blob.hasTag("structure") || blob.hasTag("door") || blob.hasTag("repairable"))
 							{
 								if (blob.hasTag("respawn") || blob.hasTag("never_repair")) continue; // dont repair outposts
-								if (blob.get_u32("no_heal") > getGameTime()) continue; 
 								
+								if (blob.get_u32("no_heal") > getGameTime())
+								{
+									if (blob.get_u32("heal_delayed") < getGameTime()) blob.Tag("request heal delay icon");
+									else if (blob.get_u32("heal_delayed") - getGameTime() < 45)
+										blob.set_u32("heal_delayed", Maths::Min(blob.get_u32("no_heal"), getGameTime() + 45));
+									continue; 
+								}
+
 								if (team == blob.getTeamNum() || blob.getTeamNum() >= 7)
 								{
 									float repair_amount = 0.35f;

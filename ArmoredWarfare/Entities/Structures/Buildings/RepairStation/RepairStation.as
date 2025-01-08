@@ -54,7 +54,14 @@ void onTick(CBlob@ this)
 			if (blob.getHealth()/blob.getInitialHealth() >= weakest) continue;
 			if (blob.hasTag("never_repair")) continue;
 			if (blob.getHealth() == blob.getInitialHealth()) continue;
-			if (blob.get_u32("no_heal") > getGameTime()) continue;
+
+			if (blob.get_u32("no_heal") > getGameTime())
+			{
+				if (blob.get_u32("heal_delayed") < getGameTime()) blob.Tag("request heal delay icon");
+				else if (blob.get_u32("heal_delayed") - getGameTime() < 45)
+					blob.set_u32("heal_delayed", Maths::Min(blob.get_u32("no_heal"), getGameTime() + 45));
+				continue; 
+			}
             
 			weakest = blob.getHealth()/blob.getInitialHealth();
 			blobid = blob.getNetworkID();
@@ -73,7 +80,7 @@ void onTick(CBlob@ this)
 		if (repair_blob.getHealth() + repair_amount <= repair_blob.getInitialHealth())
         {
 			repair_blob.server_SetHealth(repair_blob.getHealth() + repair_amount); //Add the repair amount.
-			repair_blob.set_u32("no_heal", getGameTime() + 60);
+			
 			if (repair_amount > 2.0f)
 			{
 				this.getSprite().PlayRandomSound("RepairVehicle.ogg", 1.2f, 0.7f + XORRandom(10) * 0.01f);
