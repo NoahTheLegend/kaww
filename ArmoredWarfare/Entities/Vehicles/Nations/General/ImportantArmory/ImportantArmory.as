@@ -170,8 +170,17 @@ void onInit(CBlob@ this)
 	}
 	if (t2)
 	{
+		if (this.getTeamNum() == 2)
 		{
-			ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", d_mgun, false, true);
+			ShopItem@ s = addShopItem(this, "MG42 Machinegun", "$icon_mg$", "mg42", d_mg42, false, true);
+			s.customButton = true;
+			s.buttonwidth = 1;
+			s.buttonheight = 1;
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
+		}
+		else
+		{
+			ShopItem@ s = addShopItem(this, "M2 Browning Machinegun", "$icon_mg$", "m2browning", d_m2, false, true);
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 1;
@@ -184,7 +193,6 @@ void onInit(CBlob@ this)
 			s.buttonheight = 1;
 			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 12);
 		}
-		
 	}
 	if (t2)
 	{
@@ -212,12 +220,21 @@ void onInit(CBlob@ this)
 	}
 	if (t1)
 	{
+		if (this.getTeamNum() == 2)
 		{
-			ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", d_mgun, false, true);
+			ShopItem@ s = addShopItem(this, "MG42", "$icon_mg$", "mg42", "MG42 machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
 			s.customButton = true;
 			s.buttonwidth = 1;
 			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
+		}
+		else
+		{
+			ShopItem@ s = addShopItem(this, "M2 Browning", "$icon_mg$", "m2browning", "M2 Browning machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
+			s.customButton = true;
+			s.buttonwidth = 1;
+			s.buttonheight = 1;
+			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", d_jav, false, true);

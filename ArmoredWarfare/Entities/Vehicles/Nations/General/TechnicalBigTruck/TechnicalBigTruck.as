@@ -55,7 +55,8 @@ void onInit(CBlob@ this)
 	{
 		for (u8 i = 0; i < 3; i++)
 		{
-			CBlob@ bow = server_CreateBlob("heavygun");	
+			string turret = this.getTeamNum() == 2 ? "mg42" : "m2browning";
+			CBlob@ bow = server_CreateBlob(turret);	
 
 			if (bow !is null)
 			{

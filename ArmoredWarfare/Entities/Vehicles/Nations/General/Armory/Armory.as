@@ -186,8 +186,17 @@ void InitShop(CBlob@ this)
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
 	}
+	if (this.getTeamNum() == 2)
 	{
-		ShopItem@ s = addShopItem(this, "Heavy Machinegun", "$icon_mg$", "heavygun", "Heavy machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
+		ShopItem@ s = addShopItem(this, "MG42", "$icon_mg$", "mg42", "MG42 machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
+		s.customButton = true;
+		s.buttonwidth = 1;
+		s.buttonheight = 1;
+		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
+	}
+	else
+	{
+		ShopItem@ s = addShopItem(this, "M2 Browning", "$icon_mg$", "m2browning", "M2 Browning machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
 		s.customButton = true;
 		s.buttonwidth = 1;
 		s.buttonheight = 1;
