@@ -81,7 +81,7 @@ class E50Turret : TurretStats
         name = "e50turret"; hash = _e50turret;
         cooldown_time = 180; high_angle = 70; low_angle = 100; low_angle_back = 102;
         arm_offset = Vec2f(-14.0f, -30.0f); arm_z = -50.0f; barrel_compression = 8; init_gun_angle = -3;
-        recoil_force = 700;
+        recoil_force = 700; projectile_vel = -30.0f;
     }
 };
 
@@ -284,5 +284,22 @@ class IS7Turret : TurretStats
         bullet_pos_offset = Vec2f(0,0);
         fire_sound = "sound_128mm";
         shape_offset = Vec2f(3, -13);
+    }
+};
+
+class M1AbramsTurret : TurretStats
+{
+    M1AbramsTurret()
+    {
+        super();
+
+        name = "m1abramsturret"; hash = _m1abramsturret;
+        cooldown_time = 150; high_angle = 79; low_angle = 95; low_angle_back = 90; muzzle_offset = -22.0f;
+        arm_offset = Vec2f(-12.0f, -35.0f); arm_z = -50.0f; barrel_compression = 11; init_gun_angle = -3;
+        arm_joint_offset = Vec2f(-0.5f, 22.5f);
+        mg = "m2browning"; ammo_quantity = 24; fire_sound = "sound_105mm";
+        recoil_force = 650; projectile_vel = -32.5f;
+        elevation_speed = 0.5f;
+        bullet_pos_offset = Vec2f(0,0);
     }
 };

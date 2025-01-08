@@ -130,6 +130,7 @@ void onInit(CBlob@ this)
 		case _pinkmaus:
 		case _desertmaus:
 		case _t10turret:
+		case _m1abramsturret:
 		armorRating = 5; break;
 		
 		case _t10:
@@ -140,6 +141,7 @@ void onInit(CBlob@ this)
 		case _e50turret:
 		case _m103turret:
 		case _m103:
+		case _m1abrams:
 		case _kingtigerturret:
 		armorRating = 4; break;
 			
@@ -158,6 +160,7 @@ void onInit(CBlob@ this)
 		case _firethrower:
 		case _ah1:
 		case _mi24:
+		case _nh90:
 		case _grad:
 		armorRating = 3; break;
 
@@ -238,6 +241,14 @@ void onInit(CBlob@ this)
 			scale_impact_damage = 1.4f;
 			break;
 		}
+		case _m1abramsturret:
+		{
+			weaponRating = 4;
+			linear_length = 16.0f;
+			scale_infantry_damage = 0.175f;
+			scale_impact_damage = 1.3f;
+			break;
+		}
 		case _m103turret:
 		{
 			weaponRating = 3;
@@ -265,6 +276,7 @@ void onInit(CBlob@ this)
 		case _uh1:
 		case _ah1:
 		case _mi24:
+		case _nh90:
 		{
 			weaponRating = 1;
 			break;
@@ -336,11 +348,13 @@ void onInit(CBlob@ this)
 
 		case _pszh4:
 		case _is7:
+		case _m1abrams:
 		backsideOffset = 16.0f; break;
 
 		case _uh1:
 		case _ah1:
 		case _mi24:
+		case _nh90:
 		backsideOffset = 32.0f; break;
 
 		case _bf109:
@@ -376,6 +390,9 @@ void onInit(CBlob@ this)
 		case _bc25t:
 		intake = -50.0f; break;
 		
+		case _m1abrams:
+		intake = 10.0f; break;
+
 		case _e50:
 		intake = 20.0f; break;
 
@@ -1158,6 +1175,7 @@ void onDie(CBlob@ this)
 			case _maus:
 			case _pinkmaus:
 			case _desertmaus:
+			case _m1abrams:
 			case _is7:
 			{
 				scrap_amount = 35+XORRandom(11);
@@ -1168,6 +1186,7 @@ void onDie(CBlob@ this)
 			}
 			case _ah1:
 			case _mi24:
+			case _nh90:
 			case _grad:
 			{
 				scrap_amount = 22+XORRandom(9);

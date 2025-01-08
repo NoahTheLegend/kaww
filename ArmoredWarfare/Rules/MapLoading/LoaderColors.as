@@ -323,12 +323,24 @@ namespace map_colors
 
 		blue_t10               = 0xff5fffb7,
 		red_t10                = 0xff8ed264,
+		
+		blue_kingtiger         = 0xff9ffff7,
+		red_kingtiger          = 0xffaed2b4,
+
+		blue_m1abrams          = 0xffffffb7,
+		red_m1abrams           = 0xfffed264,
 
 		blue_maus              = 0xff00fecf,
 		red_maus               = 0xff00d2ff,
 
+		blue_is7               = 0xff50feff,
+		red_is7                = 0xff50d2ff,
+
 		blue_m60               = 0xffa3dfc4,
 		red_m60                = 0xffc0e3ab,
+
+		blue_e50               = 0xffaddfc4,
+		red_e50                = 0xffcde3ab,
 
 		blue_bc25t             = 0xff47bf89,
 		red_bc25t              = 0xff506941,
@@ -345,6 +357,8 @@ namespace map_colors
 		red_ah1                = 0xffa13cce,
 		blue_mi24              = 0xff2838a9,
 		red_mi24               = 0xffbe3cce,
+		blue_nh90              = 0xff2a38a9,
+		red_nh90               = 0xffba3cce,
 
 		blue_outpost           = 0xffff6f98,
 		red_outpost            = 0xff980fff,

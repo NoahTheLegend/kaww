@@ -21,6 +21,7 @@ enum EntityHash
 	_kingtiger = 243719897,
 	_is7 = 1158238854,
 	_m103 = 2064681974,
+	_m1abrams = -973692915,
 	_maus = -544849061,
 	_pinkmaus = -1517006893,
 	_desertmaus = 1575278158,
@@ -44,6 +45,7 @@ enum EntityHash
 	_uh1 = -2084182629,
 	_ah1 = -265313785,
 	_mi24 = -1338861323,
+	_nh90 = 892679554,
 	
 	_techtruck = -4555140,
 	_motorcycle = -1537538612,
@@ -63,6 +65,7 @@ enum EntityHash
 	_kingtigerturret = -1072001909,
 	_is7turret = 822556544,
 	_m103turret = 889340560,
+	_m1abramsturret = 980230975,
 	_artilleryturret = 1853414531,
 	_mausturret = 56012293,
 	_pinkmausturret = 625290237,

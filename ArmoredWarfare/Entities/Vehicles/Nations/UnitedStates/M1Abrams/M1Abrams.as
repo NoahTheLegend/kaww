@@ -7,7 +7,7 @@
 #include "ProgressBar.as";
 
 const int smoke_cooldown = 90*30;
-const u8 smoke_amount = 32;
+const u8 smoke_amount = 40;
 
 void onInit(CBlob@ this)
 {
@@ -15,6 +15,9 @@ void onInit(CBlob@ this)
 	this.Tag("tank");
 	this.Tag("deal_bunker_dmg");
 	this.Tag("engine_can_get_stuck");
+	this.Tag("blocks bullet");
+	this.Tag("heavy");
+	this.Tag("reduce_upper_dmg_only_front");
 	this.Tag("override_timer_render");
 
 	this.set_u32("smoke_endtime", smoke_cooldown);
@@ -26,9 +29,9 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    6750.0f, // move speed
+	    7500.0f, // move speed
 	    1.0f,  // turn speed
-	    Vec2f(0.0f, -2.5f), // jump out velocity
+	    Vec2f(0.0f, -1.56f), // jump out velocity
 	    false);  // inventory access
 
 	VehicleInfo@ v; if (!this.get("VehicleInfo", @v)) {return;}
@@ -37,14 +40,17 @@ void onInit(CBlob@ this)
 	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
 	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
-	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(27.0f,   2.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(20.0f,  4.75f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(12.0f,  4.75f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(4.0f,   4.75f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-4.0f,  4.75f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-12.0f, 4.75f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-20.0f, 4.75f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-28.0f, 1.5f)); if (w !is null) {w.SetRelativeZ(20.0f); w.ScaleBy(Vec2f(0.9f,0.9f));}}
+	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(37.0f, 3.0f)); if (w !is null) w.SetRelativeZ(-20.0f); w.ScaleBy(Vec2f(0.9f, 0.9f)); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(30.0f, 4.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(23.0f, 4.5f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(16.0f, 4.5f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(9.0f, 4.5f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(2.0f, 4.5f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-5.0f, 4.5f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-12.0f, 4.5f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-19.0f, 4.5f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-26.0f, 4.5f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-33.0f, 2.0f)); if (w !is null) w.SetRelativeZ(-20.0f); w.ScaleBy(Vec2f(0.9f, 0.9f)); }
 
 	this.getShape().SetOffset(Vec2f(0, 2));
 
@@ -55,7 +61,7 @@ void onInit(CBlob@ this)
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
-	
+
 	//CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
 	//if (front !is null)
 	//{
@@ -66,11 +72,12 @@ void onInit(CBlob@ this)
 	//	front.SetOffset(Vec2f(0.0f, 0.0f));
 	//}
 
-	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", sprite.getConsts().filename, 80, 80);
+	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", sprite.getConsts().filename, 96, 32);
 	if (tracks !is null)
 	{
-		int[] frames = { 15, 16, 17 };
-		int[] frames2 = { 17, 16, 15 };
+		int[] frames = { 36, 37, 38 };
+
+		int[] frames2 = { 38, 37, 36 };
 
 		Animation@ animdefault = tracks.addAnimation("default", 1, true);
 		animdefault.AddFrames(frames);
@@ -79,16 +86,16 @@ void onInit(CBlob@ this)
 		Animation@ animrev = tracks.addAnimation("reverse", 2, true);
 		animrev.AddFrames(frames2);
 		Animation@ animstopped = tracks.addAnimation("stopped", 1, true);
-		animstopped.AddFrame(15);
+		animstopped.AddFrame(36);
 
-		tracks.SetRelativeZ(50.8f);
-		tracks.SetOffset(Vec2f(0.0f, 0.0f));
+		tracks.SetRelativeZ(-5.0f);
+		tracks.SetOffset(Vec2f(2.0f, 8.0f));
 	}
 
 	// attach turret & machine gun
 	if (getNet().isServer())
 	{
-		CBlob@ turret = server_CreateBlob("leopard1turret");	
+		CBlob@ turret = server_CreateBlob("m1abramsturret");	
 
 		if (turret !is null)
 		{
@@ -107,7 +114,10 @@ void onInit(CBlob@ this)
 			if (soundmanager !is null)
 			{
 				soundmanager.set_bool("manager_Type", false);
-				soundmanager.set_f32("custom_pitch", 1.125f);
+				soundmanager.set_string("engine_high", "HeavyEngineRun_high.ogg");
+				soundmanager.set_string("engine_mid", "HeavyEngineRun_mid.ogg");
+				soundmanager.set_string("engine_low", "HeavyEngineRun_low.ogg");
+				soundmanager.set_f32("custom_pitch", 1.0f);
 				soundmanager.Init();
 				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
 
@@ -120,7 +130,10 @@ void onInit(CBlob@ this)
 			if (soundmanager !is null)
 			{
 				soundmanager.set_bool("manager_Type", true);
-				soundmanager.set_f32("custom_pitch", 1.125f);
+				soundmanager.set_string("engine_high", "HeavyEngineRun_high.ogg");
+				soundmanager.set_string("engine_mid", "HeavyEngineRun_mid.ogg");
+				soundmanager.set_string("engine_low", "HeavyEngineRun_low.ogg");
+				soundmanager.set_f32("custom_pitch", 1.0f);
 				soundmanager.Init();
 				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
 				
@@ -130,67 +143,11 @@ void onInit(CBlob@ this)
 	}	
 }
 
-void ReleaseSmoke(CBlob@ this)
-{
-	CBitStream params;
-	this.SendCommand(this.getCommandID("release smoke"), params);
-}
-
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
-	if (cmd == this.getCommandID("release smoke"))
-	{
-		if (this.get_f32("smoke_time") < this.get_u32("smoke_endtime")) return;
-		this.set_f32("smoke_time", 0);
-
-		Bar@ bars;
-		if (!this.get("Bar", @bars))
-		{
-			Bar setbars;
-    		setbars.gap = 20.0f;
-    		this.set("Bar", setbars);
-		}
-		if (this.get("Bar", @bars))
-		{
-			if (!hasBar(bars, "smoke"))
-			{
-				SColor team_front = getNeonColor(this.getTeamNum(), 0);
-				ProgressBar setbar;
-				setbar.Set(this.getNetworkID(), "smoke", Vec2f(80.0f, 16.0f), false, Vec2f(0, 56), Vec2f(2, 2), back, team_front,
-					"smoke_time", this.get_u32("smoke_endtime"), 0.33f, 5, 5, false, "");
-
-    			bars.AddBar(this.getNetworkID(), setbar, true);
-			}
-		}
-		
-		for (u8 i = 0; i < smoke_amount; i++)
-		{
-			Vec2f vel = Vec2f(12.5f+i, 0).RotateBy(XORRandom(180)+180);
-			vel.y *= 0.66f;
-			CParticle@ p = ParticleAnimated("LargeSmokeWhite.png",
-				this.getPosition(),
-					vel,
-						XORRandom(360),
-							5.5f+XORRandom(26)*0.1f, 45 + XORRandom(16), 0.0025f+XORRandom(75)*0.0001f, false);
-			if (p !is null)
-			{
-				p.collides = true;
-				p.Z = 550.0f;
-				p.fastcollision = true;
-				p.deadeffect = -1;
-				p.damping = 0.8f+XORRandom(51)*0.001f;
-				p.bounce = 0.1f;
-				p.lighting_delay = 30;
-			}
-		}
-	}
-}
-
 void onTick(CBlob@ this)
 {
-	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
 	if (this.getTickSinceCreated() > 30)
 	{
+		AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
 		if (point !is null)
 		{
 			CBlob@ tur = point.getOccupied();
@@ -199,14 +156,13 @@ void onTick(CBlob@ this)
 				if (tur is null) this.server_Die();
 			}
 		}
-	}	
-
-	this.add_f32("smoke_time", 1);
-
+	}
+	
 	if (this.hasAttached() || this.getTickSinceCreated() < 30)
 	{
 		if (getGameTime()%30==0)
 		{
+			AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("TURRET");
 			if (point !is null)
 			{
 				CBlob@ tur = point.getOccupied();
@@ -250,11 +206,6 @@ void onTick(CBlob@ this)
 		ManageTracks(this);
 	}
 
-	if (this.get_f32("smoke_time") > this.get_u32("smoke_endtime")+15)
-	{
-		this.Untag("no_more_smoke");
-	}
-
 	Vehicle_LevelOutInAir(this);
 
 	if (this.exists("followid"))
@@ -292,6 +243,14 @@ void onDie(CBlob@ this)
 
 	this.getSprite().PlaySound("/vehicle_die");
 
+	if (this.exists("bowid"))
+	{
+		CBlob@ bow = getBlobByNetworkID(this.get_u16("bowid"));
+		if (bow !is null)
+		{
+			bow.server_Die();
+		}
+	}
 	if (this.exists("followid"))
 	{
 		CBlob@ soundmanager = getBlobByNetworkID(this.get_u16("followid"));
@@ -362,22 +321,62 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	Vehicle_onDetach(this, v, detached, attachedPoint);
 }
 
-bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
-
-void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}
-
-void onRender(CSprite@ this)
+void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-	CBlob@ blob = this.getBlob();
-	if (blob is null) return;
-
-	AttachmentPoint@ pilot = blob.getAttachments().getAttachmentPointByName("DRIVER");
-	if (pilot !is null && pilot.getOccupied() !is null)
+	if (cmd == this.getCommandID("release smoke"))
 	{
-		CBlob@ driver_blob = pilot.getOccupied();
-		if (driver_blob.isMyPlayer())
+		if (this.get_f32("smoke_time") < this.get_u32("smoke_endtime")) return;
+		this.set_f32("smoke_time", 0);
+
+		Bar@ bars;
+		if (!this.get("Bar", @bars))
 		{
-			visualTimerRender(this);
+			Bar setbars;
+    		setbars.gap = 20.0f;
+    		this.set("Bar", setbars);
+		}
+		if (this.get("Bar", @bars))
+		{
+			if (!hasBar(bars, "smoke"))
+			{
+				SColor team_front = getNeonColor(this.getTeamNum(), 0);
+				ProgressBar setbar;
+				setbar.Set(this.getNetworkID(), "smoke", Vec2f(80.0f, 16.0f), false, Vec2f(0, 56), Vec2f(2, 2), back, team_front,
+					"smoke_time", this.get_u32("smoke_endtime"), 0.33f, 5, 5, false, "");
+
+    			bars.AddBar(this.getNetworkID(), setbar, true);
+			}
+		}
+		
+		for (u8 i = 0; i < smoke_amount; i++)
+		{
+			Vec2f vel = Vec2f(15.0f+i, 0).RotateBy(XORRandom(180)+180);
+			vel.y *= 0.66f;
+			CParticle@ p = ParticleAnimated("LargeSmokeWhite.png",
+				this.getPosition(),
+					vel,
+						XORRandom(360),
+							5.5f+XORRandom(26)*0.1f, 45 + XORRandom(16), 0.0025f+XORRandom(75)*0.0001f, false);
+			if (p !is null)
+			{
+				p.collides = true;
+				p.Z = 550.0f;
+				p.fastcollision = true;
+				p.deadeffect = -1;
+				p.damping = 0.8f+XORRandom(51)*0.001f;
+				p.bounce = 0.1f;
+				p.lighting_delay = 30;
+			}
 		}
 	}
 }
+
+void ReleaseSmoke(CBlob@ this)
+{
+	CBitStream params;
+	this.SendCommand(this.getCommandID("release smoke"), params);
+}
+
+bool Vehicle_canFire(CBlob@ this, VehicleInfo@ v, bool isActionPressed, bool wasActionPressed, u8 &out chargeValue) {return false;}
+
+void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge) {}
