@@ -167,7 +167,9 @@ void onInit(CBlob@ this)
 		case _transporttruck:
 		case _armory:
 		case _btr82a:
-		case _btrturret: 
+		case _btrturret:
+		case _bmp:
+		case _bmpturret:
 		case _pszh4:
 		case _pszh4turret:
 		case _uh1:
@@ -294,21 +296,22 @@ void onInit(CBlob@ this)
 			weaponRating = -1;
 			break;
 		}
+		case _bradleyturret:
+		case _btrturret:
+		case _bmpturret:
+		{
+			weaponRating = -2;
+			linear_length = 4.0f;
+			scale_impact_damage = 0.3f;
+			scale_infantry_damage = 0.15f;
+			impact_radius = 8.0f;
+			break;
+		}
 		case _pszh4turret:
 		{
 			weaponRating = -2;
 			linear_length = 4.0f;
 			scale_impact_damage = 0.25f;
-			scale_infantry_damage = 0.15f;
-			impact_radius = 8.0f;
-			break;
-		}
-		case _bradleyturret:
-		case _btrturret: // big APC cannon
-		{
-			weaponRating = -2;
-			linear_length = 4.0f;
-			scale_impact_damage = 0.3f;
 			scale_infantry_damage = 0.15f;
 			impact_radius = 8.0f;
 			break;
@@ -340,6 +343,7 @@ void onInit(CBlob@ this)
 		case _leopard1:
 		case _btr82a:
 		case _bradley:
+		case _bmp:
 		case _artillery:
 		case _barge:
 		case _m103:
@@ -394,6 +398,7 @@ void onInit(CBlob@ this)
 		intake = 10.0f; break;
 
 		case _e50:
+		case _bmp:
 		intake = 20.0f; break;
 
 		case _m60:
@@ -1212,6 +1217,7 @@ void onDie(CBlob@ this)
 				break;
 			}
 			case _bradley:
+			case _bmp:
 			{
 				scrap_amount = 10+XORRandom(8);
 				explosion_radius = 64.0f;

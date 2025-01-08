@@ -49,6 +49,7 @@ void onInit(CBlob@ this)
 		case _t10:
 		case _is7:
 		case _bradley:
+		case _bmp:
 		case _e50:
         {
             susheight = 1.0f;
