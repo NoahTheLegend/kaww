@@ -565,6 +565,7 @@ u8 getIndicatorFrame(int hash)
 		case _shielder:
 		case _techtruck:
 		case _civcar:
+		case _humvee:
 		frame = 2; break;
 
 		case _ranger:
@@ -613,6 +614,7 @@ u8 getIndicatorFrame(int hash)
 		frame = 13; break;
 
 		case _artillery:
+		case _m40:
 		frame = 14; break; 
 
 		case _uh1:

@@ -27,6 +27,7 @@ enum EntityHash
 	_pinkmaus = -1517006893,
 	_desertmaus = 1575278158,
 	_artillery = 1028704049,
+	_m40 = -1843297028,
 	_techbigtruck = 351403048,
 	_barge = -2029400058,
 
@@ -50,6 +51,7 @@ enum EntityHash
 	_nh90 = 892679554,
 	
 	_techtruck = -4555140,
+	_humvee = 1956040479,
 	_motorcycle = -1537538612,
 	_armedmotorcycle = 1914018569,
 
@@ -71,6 +73,7 @@ enum EntityHash
 	_m103turret = 889340560,
 	_m1abramsturret = 980230975,
 	_artilleryturret = 1853414531,
+	_m40turret = 133215878,
 	_mausturret = 56012293,
 	_pinkmausturret = 625290237,
 	_desertmausturret = -531825848,

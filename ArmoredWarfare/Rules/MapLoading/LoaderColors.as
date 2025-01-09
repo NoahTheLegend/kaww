@@ -318,6 +318,9 @@ namespace map_colors
 		blue_techtruck         = 0xfff9d5c2,
 		red_techtruck          = 0xfff9c2cf,
 
+		blue_humvee            = 0xfff1a5c2,
+		red_humvee             = 0xfff1a2cf,
+
 		blue_btr82a            = 0xff7cb12e,
 		red_btr82a             = 0xffb1982e,
 
@@ -350,6 +353,15 @@ namespace map_colors
 
 		blue_bc25t             = 0xff47bf89,
 		red_bc25t              = 0xff506941,
+
+		blue_artillery         = 0xff09f300,
+		red_artillery          = 0xfffff300,
+
+		blue_grad              = 0xff09004e,
+		red_grad               = 0xffff004e,
+
+		blue_m40               = 0xff00f34e,
+		red_m40                = 0xff00f34e,
 
 		blue_bf109             = 0xff09f34e,
 		red_bf109              = 0xfffff34e,
