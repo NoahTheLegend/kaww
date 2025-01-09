@@ -354,14 +354,14 @@ namespace map_colors
 		blue_bc25t             = 0xff47bf89,
 		red_bc25t              = 0xff506941,
 
-		blue_artillery         = 0xff09f300,
+		blue_artillery         = 0xff09f3ff,
 		red_artillery          = 0xfffff300,
 
-		blue_grad              = 0xff09004e,
+		blue_grad              = 0xff0900ff,
 		red_grad               = 0xffff004e,
 
-		blue_m40               = 0xff00f34e,
-		red_m40                = 0xff00f34e,
+		blue_m40               = 0xff00f3ff,
+		red_m40                = 0xfffaf14e,
 
 		blue_bf109             = 0xff09f34e,
 		red_bf109              = 0xfffff34e,
