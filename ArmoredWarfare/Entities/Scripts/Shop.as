@@ -58,6 +58,11 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 		return;
 	}
 
+	if (this.hasTag("team use only") && this.getTeamNum() != caller.getTeamNum())
+	{
+		return;
+	}
+
 	if (shop_items.length > 0 && this.get_bool("shop available") && !this.hasTag("shop disabled"))
 	{
 		CButton@ button = caller.CreateGenericButton(

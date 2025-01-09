@@ -29,6 +29,7 @@ void onInit(CBlob@ this)
 	this.Tag("ignore_arrow");
 	this.Tag("builder always hit");
 	this.Tag("structure");
+	this.Tag("team use only");
 
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_ft$", "IconFT.png", Vec2f(32, 32), 0, 2);
