@@ -45,7 +45,8 @@ void onTick(CBlob@ this)
 
 		bool valid_anim = psprite.animation.name == "repair";
 		bool is_welding = valid_anim && psprite.animation.frame >= 6;
-		if (this.isAttached() && !is_welding && valid_anim && psprite.animation.frame < 6) sprite.animation.frame = 1;
+
+		if (this.isAttached() && valid_anim && psprite.animation.frame < 6) sprite.animation.frame = 1;
 		else sprite.animation.frame = 0;
 
 		if (active && this.get_u8("repairs") < max_repairs && is_welding)
@@ -59,11 +60,6 @@ void onTick(CBlob@ this)
 		}
 
 		this.set_f32("anim_time", t);
-
-		if (sprite.animation !is null)
-		{
-			sprite.animation.time = Maths::Floor(t) == 0 ? 0 : anim_min_speed + anim_max_speed - t;
-		}
 
 		if (active)
 		{
@@ -90,7 +86,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	{
 		u16 hid = params.read_u16();
 		CBlob@ holder = getBlobByNetworkID(hid);
-		
+
 		if (holder is null) return;
 		u8 team = this.getTeamNum();
 
@@ -105,7 +101,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			if (blob !is null)
 			{
 				if (blob.getDistanceTo(this) > 32.0f || getMap().rayCastSolidNoBlobs(holder.getAimPos(), blob.getPosition())) continue;
-
+				
 				if (blob.getHealth() < blob.getInitialHealth()
 				&& (blob.hasTag("vehicle") || blob.hasTag("bunker")
 					|| blob.hasTag("structure") || blob.hasTag("door") || blob.hasTag("repairable")))
