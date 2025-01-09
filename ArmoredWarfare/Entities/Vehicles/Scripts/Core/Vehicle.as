@@ -184,6 +184,7 @@ void onInit(CBlob@ this)
 		case _techtruck:
 		case _gun:
 		case _techbigtruck:
+		case _radarapc:
 		armorRating = 1; break;
 
 		case _bf109:
@@ -362,6 +363,7 @@ void onInit(CBlob@ this)
 		case _m1abrams:
 		case _obj430:
 		case _m40:
+		case _radarapc:
 		backsideOffset = 16.0f; break;
 
 		case _uh1:
@@ -414,6 +416,7 @@ void onInit(CBlob@ this)
 
 		case _m60:
 		case _m40:
+		case _radarapc:
 		intake = 50.0f; break;
 
 		case _btr82a:
@@ -1212,6 +1215,11 @@ void onDie(CBlob@ this)
 				explosion_radius = 92.0f;
 				explosion_map_damage = 0.3f;
 				explosion_damage = 6.0f;
+				break;
+			}
+			case _radarapc:
+			{
+				scrap_amount = 12+XORRandom(7);
 				break;
 			}
 			case _pszh4:

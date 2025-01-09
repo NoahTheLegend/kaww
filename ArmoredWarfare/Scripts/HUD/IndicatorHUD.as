@@ -68,6 +68,7 @@ void handleVehicles()
 	CBlob@[] vehicleList;
 	getBlobsByTag("vehicle", @vehicleList);
 
+	int gt = getGameTime();
 	int vehicleCount = vehicleList.length;
 	for (uint i = 0; i < vehicleCount; i++)
 	{
@@ -76,8 +77,10 @@ void handleVehicles()
 
 		s8 vehicleTeamnum = curVehicle.getTeamNum();
 		if (vehicleTeamnum < 0) continue; // do not show neutral vehicles, it crashes due to negative coloring
-
-		if (!isSpectator && vehicleTeamnum != teamNum) continue; // do not show enemy vehicles unless spectator
+		
+		bool our_team = vehicleTeamnum == teamNum;
+		bool can_show_enemy_vehicle = curVehicle.exists("radar_mark") && curVehicle.get_u32("radar_mark") > gt;
+		if ((!isSpectator && !our_team) && !can_show_enemy_vehicle) continue; // do not show enemy vehicles unless spectator
 
 		u8 frame = getIndicatorFrame(curVehicle.getName().getHash());
 		if (frame == 0) continue;
@@ -633,6 +636,9 @@ u8 getIndicatorFrame(int hash)
 		case _leopard1:
 		case _m1abrams:
 		frame = 18; break;
+
+		case _radarapc:
+		frame = 19; break;
 
 		case _outpost:
 		frame = 9; break;

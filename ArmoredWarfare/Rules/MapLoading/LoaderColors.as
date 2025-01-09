@@ -321,6 +321,9 @@ namespace map_colors
 		blue_humvee            = 0xfff1a5c2,
 		red_humvee             = 0xfff1a2cf,
 
+		blue_radarapc          = 0xff7cb16b,
+		red_radarapc           = 0xff6b982e,
+
 		blue_btr82a            = 0xff7cb12e,
 		red_btr82a             = 0xffb1982e,
 
