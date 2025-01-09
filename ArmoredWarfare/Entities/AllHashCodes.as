@@ -41,6 +41,7 @@ enum EntityHash
 	_importantarmoryt2 = -1269242735,
 	_outpost = 1262542481,
 	_grad = -1617262311,
+	_radarapc = -1565363525,
 	
 	_bf109 = 948257107,
 	_bomberplane = 1220259964, 

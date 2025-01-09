@@ -9,6 +9,7 @@ void onInit(CBlob@ this)
     {
         case _pszh4:
         case _btr82a:
+		case _radarapc:
 		{
 			susheight = 3.0f;
 			break;
