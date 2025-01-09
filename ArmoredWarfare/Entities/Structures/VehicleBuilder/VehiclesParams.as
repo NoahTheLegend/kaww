@@ -25,6 +25,7 @@ const u16 c_abrams = 120;
 const u16 c_maus = 130;
 const u16 c_is7 = 125;
 const u16 c_arti = 60;
+const u16 c_m40 = 70;
 const u16 c_grad = 75;
 const u16 c_harti = 20;
 const u16 c_bf109 = 30;
@@ -47,6 +48,7 @@ const string s = "mat_scrap";
 const string ds = "Scrap";
 // names
 const string n_civcar = "Build a Civilian Car";
+const string n_lada = "Build a Lada";
 const string n_moto = "Build a Motorcycle";
 const string n_amoto = "Build a Motorcycle with machinegun";
 const string n_truck = "Build a Truck";
@@ -92,7 +94,7 @@ const string d_lada = "A civilian car.\n\nCyka blyat.";
 const string d_moto = "Speedy transport.";
 const string d_amoto = "Armed motorcycle.";
 const string d_truck = "Lightweight transport.\n\nUses Ammunition.";
-const string d_truck = "Armored transport.\n\nUses Ammunition.";
+const string d_humvee = "Armored transport.\n\nUses Ammunition.";
 const string d_truckbig = "A modernized heavy truck. Additionally has 2 machineguns mounted.\n\nUses Ammunition.\nYou can construct crane augments in the crane buildings.";
 const string d_pszh = "Scout APC.\n\nVery fast, medium firerate, amphibious\nVery fragile armor, bad elevation angles\n\nUses 14.5mm.";
 const string d_btr = "Medium APC.\n\nFast, good firerate, good engine, amphibious\nWeak armor, bad elevation angles, long reload\n\nUses 14.5mm.";
@@ -204,6 +206,7 @@ const string t_nh90 = "$"+bn_nh90+"$";
 const string t_barge = "$"+bn_barge+"$";
 const string t_armory = "$"+bn_armory+"$";
 const string t_m2 = "$icon_mg$";
+const string t_mg42 = "$icon_mg$";
 const string t_ftw = "$icon_ft$";
 const string t_c4 = "$"+bn_c4+"$";
 const string t_jav = "$icon_jav$";
@@ -234,142 +237,181 @@ void makeShopItem(CBlob@ this, string[] params, int cost, const Vec2f dim = Vec2
 	AddRequirement(s.requirements, params[4], params[5], params[6], cost);
 }
 
-void makeFactionTransport(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+void makeFactionTransport(CBlob@ this, u8 team, const u8 discount = 0, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
 {
+	string[] alt0 = {alternatives[0][0], alternatives[1][0], alternatives[2][0], alternatives[3][0], alternatives[4][0]};
+	string[] alt1 = {alternatives[0][1], alternatives[1][1], alternatives[2][1], alternatives[3][1], alternatives[4][1]};
+	string[] alt2 = {alternatives[0][2], alternatives[1][2], alternatives[2][2], alternatives[3][2], alternatives[4][2]};
+	
 	switch (team)
 	{
 		case 1:
-		{makeShopItem(this, {alternatives[0][1], alternatives[1][1], alternatives[2][1], alternatives[3][1], alternatives[4][1]}, alternatives[5][1], dim, inv, crate);break;}
+		{makeShopItem(this, alt1, parseInt(alternatives[5][1]) - discount, dim, inv, crate);break;}
 		case 2:
-		{makeShopItem(this, {alternatives[0][2], alternatives[1][2], alternatives[2][2], alternatives[3][2], alternatives[4][2]}, alternatives[5][2], dim, inv, crate);break;}
+		{makeShopItem(this, alt2, parseInt(alternatives[5][2]) - discount, dim, inv, crate);break;}
 		case 0:
 		default:
-		{makeShopItem(this, {alternatives[0][0], alternatives[1][0], alternatives[2][0], alternatives[3][0], alternatives[4][0]}, alternatives[5][0], dim, inv, crate);break;}
+		{makeShopItem(this, alt0, parseInt(alternatives[5][0]) - discount, dim, inv, crate);break;}
+	}
+}
+void makeFactionArmedTransport(CBlob@ this, u8 team, const u8 discount = 0, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	string[] alt0 = {alternatives[5][0], alternatives[6][0], alternatives[7][0], alternatives[8][0], alternatives[9][0]};
+	string[] alt1 = {alternatives[5][1], alternatives[6][1], alternatives[7][1], alternatives[8][1], alternatives[9][1]};
+	string[] alt2 = {alternatives[5][2], alternatives[6][2], alternatives[7][2], alternatives[8][2], alternatives[9][2]};
+	
+	switch (team)
+	{
+		case 1:
+		{makeShopItem(this, alt1, parseInt(alternatives[10][1]) - discount, dim, inv, crate);break;}
+		case 2:
+		{makeShopItem(this, alt2, parseInt(alternatives[10][2]) - discount, dim, inv, crate);break;}
+		case 0:
+		default:
+		{makeShopItem(this, alt0, parseInt(alternatives[10][0]) - discount, dim, inv, crate);break;}
 	}
 }
 
-void makeFactionArmedTransport(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+void makeFactionAPC(CBlob@ this, u8 team, const u8 discount = 0, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
 {
+	string[] alt0 = {alternatives[10][0], alternatives[11][0], alternatives[12][0], alternatives[13][0], alternatives[14][0]};
+	string[] alt1 = {alternatives[10][1], alternatives[11][1], alternatives[12][1], alternatives[13][1], alternatives[14][1]};
+	string[] alt2 = {alternatives[10][2], alternatives[11][2], alternatives[12][2], alternatives[13][2], alternatives[14][2]};
+	
 	switch (team)
 	{
 		case 1:
-		{makeShopItem(this, {alternatives[6][1], alternatives[7][1], alternatives[8][1], alternatives[9][1], alternatives[10][1]}, alternatives[11][1], dim, inv, crate);break;}
+		{makeShopItem(this, alt1, parseInt(alternatives[15][1]) - discount, dim, inv, crate);break;}
 		case 2:
-		{makeShopItem(this, {alternatives[6][2], alternatives[7][2], alternatives[8][2], alternatives[9][2], alternatives[10][2]}, alternatives[11][2], dim, inv, crate);break;}
+		{makeShopItem(this, alt2, parseInt(alternatives[15][2]) - discount, dim, inv, crate);break;}
 		case 0:
 		default:
-		{makeShopItem(this, {alternatives[6][0], alternatives[7][0], alternatives[8][0], alternatives[9][0], alternatives[10][0]}, alternatives[11][0], dim, inv, crate);break;}
+		{makeShopItem(this, alt0, parseInt(alternatives[15][0]) - discount, dim, inv, crate);break;}
 	}
 }
 
-void makeFactionAPC(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+void makeFactionMediumTank(CBlob@ this, u8 team, const u8 discount = 0, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
 {
+	string[] alt0 = {alternatives[15][0], alternatives[16][0], alternatives[17][0], alternatives[18][0], alternatives[19][0]};
+	string[] alt1 = {alternatives[15][1], alternatives[16][1], alternatives[17][1], alternatives[18][1], alternatives[19][1]};
+	string[] alt2 = {alternatives[15][2], alternatives[16][2], alternatives[17][2], alternatives[18][2], alternatives[19][2]};
+	
 	switch (team)
 	{
 		case 1:
-		{makeShopItem(this, {alternatives[12][1], alternatives[13][1], alternatives[14][1], alternatives[15][1], alternatives[16][1]}, alternatives[17][1], dim, inv, crate);break;}
+		{makeShopItem(this, alt1, parseInt(alternatives[20][1]) - discount, dim, inv, crate);break;}
 		case 2:
-		{makeShopItem(this, {alternatives[12][2], alternatives[13][2], alternatives[14][2], alternatives[15][2], alternatives[16][2]}, alternatives[17][2], dim, inv, crate);break;}
+		{makeShopItem(this, alt2, parseInt(alternatives[20][2]) - discount, dim, inv, crate);break;}
 		case 0:
 		default:
-		{makeShopItem(this, {alternatives[12][0], alternatives[13][0], alternatives[14][0], alternatives[15][0], alternatives[16][0]}, alternatives[17][0], dim, inv, crate);break;}
+		{makeShopItem(this, alt0, parseInt(alternatives[20][0]) - discount, dim, inv, crate);break;}
 	}
 }
 
-void makeFactionMediumTank(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+void makeFactionHeavyTank(CBlob@ this, u8 team, const u8 discount = 0, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
 {
+	string[] alt0 = {alternatives[20][0], alternatives[21][0], alternatives[22][0], alternatives[23][0], alternatives[24][0]};
+	string[] alt1 = {alternatives[20][1], alternatives[21][1], alternatives[22][1], alternatives[23][1], alternatives[24][1]};
+	string[] alt2 = {alternatives[20][2], alternatives[21][2], alternatives[22][2], alternatives[23][2], alternatives[24][2]};
+	
 	switch (team)
 	{
 		case 1:
-		{makeShopItem(this, {alternatives[18][1], alternatives[19][1], alternatives[20][1], alternatives[21][1], alternatives[22][1]}, alternatives[23][1], dim, inv, crate);break;}
+		{makeShopItem(this, alt1, parseInt(alternatives[25][1]) - discount, dim, inv, crate);break;}
 		case 2:
-		{makeShopItem(this, {alternatives[18][2], alternatives[19][2], alternatives[20][2], alternatives[21][2], alternatives[22][2]}, alternatives[23][2], dim, inv, crate);break;}
+		{makeShopItem(this, alt2, parseInt(alternatives[25][2]) - discount, dim, inv, crate);break;}
 		case 0:
 		default:
-		{makeShopItem(this, {alternatives[18][0], alternatives[19][0], alternatives[20][0], alternatives[21][0], alternatives[22][0]}, alternatives[23][0], dim, inv, crate);break;}
+		{makeShopItem(this, alt0, parseInt(alternatives[25][0]) - discount, dim, inv, crate);break;}
 	}
 }
 
-void makeFactionHeavyTank(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+void makeFactionSuperHeavyTank(CBlob@ this, u8 team, const u8 discount = 0, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
 {
+	string[] alt0 = {alternatives[25][0], alternatives[26][0], alternatives[27][0], alternatives[28][0], alternatives[29][0]};
+	string[] alt1 = {alternatives[25][1], alternatives[26][1], alternatives[27][1], alternatives[28][1], alternatives[29][1]};
+	string[] alt2 = {alternatives[25][2], alternatives[26][2], alternatives[27][2], alternatives[28][2], alternatives[29][2]};
+	
 	switch (team)
 	{
 		case 1:
-		{makeShopItem(this, {alternatives[24][1], alternatives[25][1], alternatives[26][1], alternatives[27][1], alternatives[28][1]}, alternatives[29][1], dim, inv, crate);break;}
+		{makeShopItem(this, alt1, parseInt(alternatives[30][1]) - discount, dim, inv, crate);break;}
 		case 2:
-		{makeShopItem(this, {alternatives[24][2], alternatives[25][2], alternatives[26][2], alternatives[27][2], alternatives[28][2]}, alternatives[29][2], dim, inv, crate);break;}
+		{makeShopItem(this, alt2, parseInt(alternatives[30][2]) - discount, dim, inv, crate);break;}
 		case 0:
 		default:
-		{makeShopItem(this, {alternatives[24][0], alternatives[25][0], alternatives[26][0], alternatives[27][0], alternatives[28][0]}, alternatives[29][0], dim, inv, crate);break;}
+		{makeShopItem(this, alt0, parseInt(alternatives[30][0]) - discount, dim, inv, crate);break;}
 	}
 }
 
-void makeFactionSuperHeavyTank(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+void makeFactionArtillery(CBlob@ this, u8 team, const u8 discount = 0, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
 {
+	string[] alt0 = {alternatives[30][0], alternatives[31][0], alternatives[32][0], alternatives[33][0], alternatives[34][0]};
+	string[] alt1 = {alternatives[30][1], alternatives[31][1], alternatives[32][1], alternatives[33][1], alternatives[34][1]};
+	string[] alt2 = {alternatives[30][2], alternatives[31][2], alternatives[32][2], alternatives[33][2], alternatives[34][2]};
+	
 	switch (team)
 	{
 		case 1:
-		{makeShopItem(this, {alternatives[30][1], alternatives[31][1], alternatives[32][1], alternatives[33][1], alternatives[34][1]}, alternatives[35][1], dim, inv, crate);break;}
+		{makeShopItem(this, alt1, parseInt(alternatives[35][1]) - discount, dim, inv, crate);break;}
 		case 2:
-		{makeShopItem(this, {alternatives[30][2], alternatives[31][2], alternatives[32][2], alternatives[33][2], alternatives[34][2]}, alternatives[35][2], dim, inv, crate);break;}
+		{makeShopItem(this, alt2, parseInt(alternatives[35][2]) - discount, dim, inv, crate);break;}
 		case 0:
 		default:
-		{makeShopItem(this, {alternatives[30][0], alternatives[31][0], alternatives[32][0], alternatives[33][0], alternatives[34][0]}, alternatives[35][0], dim, inv, crate);break;}
+		{makeShopItem(this, alt0, parseInt(alternatives[35][0]) - discount, dim, inv, crate);break;}
 	}
 }
 
-void makeFactionArtillery(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+void makeFactionHelicopter(CBlob@ this, u8 team, const u8 discount = 0, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
 {
+	string[] alt0 = {alternatives[35][0], alternatives[36][0], alternatives[37][0], alternatives[38][0], alternatives[39][0]};
+	string[] alt1 = {alternatives[35][1], alternatives[36][1], alternatives[37][1], alternatives[38][1], alternatives[39][1]};
+	string[] alt2 = {alternatives[35][2], alternatives[36][2], alternatives[37][2], alternatives[38][2], alternatives[39][2]};
+	
 	switch (team)
 	{
 		case 1:
-		{makeShopItem(this, {alternatives[36][1], alternatives[37][1], alternatives[38][1], alternatives[39][1], alternatives[40][1]}, alternatives[41][1], dim, inv, crate);break;}
+		{makeShopItem(this, alt1, parseInt(alternatives[40][1]) - discount, dim, inv, crate);break;}
 		case 2:
-		{makeShopItem(this, {alternatives[36][2], alternatives[37][2], alternatives[38][2], alternatives[39][2], alternatives[40][2]}, alternatives[41][2], dim, inv, crate);break;}
+		{makeShopItem(this, alt2, parseInt(alternatives[40][2]) - discount, dim, inv, crate);break;}
 		case 0:
 		default:
-		{makeShopItem(this, {alternatives[36][0], alternatives[37][0], alternatives[38][0], alternatives[39][0], alternatives[40][0]}, alternatives[41][0], dim, inv, crate);break;}
+		{makeShopItem(this, alt0, parseInt(alternatives[40][0]) - discount, dim, inv, crate);break;}
 	}
 }
 
-void makeFactionHelicopter(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+void makeFactionMachinegun(CBlob@ this, u8 team, const u8 discount = 0, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
 {
+	string[] alt0 = {alternatives[40][0], alternatives[41][0], alternatives[42][0], alternatives[43][0], alternatives[44][0]};
+	string[] alt1 = {alternatives[40][1], alternatives[41][1], alternatives[42][1], alternatives[43][1], alternatives[44][1]};
+	string[] alt2 = {alternatives[40][2], alternatives[41][2], alternatives[42][2], alternatives[43][2], alternatives[44][2]};
+	
 	switch (team)
 	{
 		case 1:
-		{makeShopItem(this, {alternatives[42][1], alternatives[43][1], alternatives[44][1], alternatives[45][1], alternatives[46][1]}, alternatives[47][1], dim, inv, crate);break;}
+		{makeShopItem(this, alt1, parseInt(alternatives[45][1]) - discount, dim, inv, crate);break;}
 		case 2:
-		{makeShopItem(this, {alternatives[42][2], alternatives[43][2], alternatives[44][2], alternatives[45][2], alternatives[46][2]}, alternatives[47][2], dim, inv, crate);break;}
+		{makeShopItem(this, alt2, parseInt(alternatives[45][2]) - discount, dim, inv, crate);break;}
 		case 0:
 		default:
-		{makeShopItem(this, {alternatives[42][0], alternatives[43][0], alternatives[44][0], alternatives[45][0], alternatives[46][0]}, alternatives[47][0], dim, inv, crate);break;}
+		{makeShopItem(this, alt0, parseInt(alternatives[45][0]) - discount, dim, inv, crate);break;}
 	}
 }
 
-void makeFactionMachinegun(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+void makeFactionSpecial(CBlob@ this, u8 team, const u8 discount = 0, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
 {
+	string[] alt0 = {alternatives[45][0], alternatives[46][0], alternatives[47][0], alternatives[48][0], alternatives[49][0]};
+	string[] alt1 = {alternatives[45][1], alternatives[46][1], alternatives[47][1], alternatives[48][1], alternatives[49][1]};
+	string[] alt2 = {alternatives[45][2], alternatives[46][2], alternatives[47][2], alternatives[48][2], alternatives[49][2]};
+	
 	switch (team)
 	{
 		case 1:
-		{makeShopItem(this, {alternatives[48][1], alternatives[49][1], alternatives[50][1], alternatives[51][1], alternatives[52][1]}, alternatives[53][1], dim, inv, crate);break;}
+		{makeShopItem(this, alt1, parseInt(alternatives[50][1]) - discount, dim, inv, crate);break;}
 		case 2:
-		{makeShopItem(this, {alternatives[48][2], alternatives[49][2], alternatives[50][2], alternatives[51][2], alternatives[52][2]}, alternatives[53][2], dim, inv, crate);break;}
+		{makeShopItem(this, alt2, parseInt(alternatives[50][2]) - discount, dim, inv, crate);break;}
 		case 0:
 		default:
-		{makeShopItem(this, {alternatives[48][0], alternatives[49][0], alternatives[50][0], alternatives[51][0], alternatives[52][0]}, alternatives[53][0], dim, inv, crate);break;}
-	}
-}
-
-void makeFactionSpecial(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
-{
-	switch (team)
-	{
-		case 1:
-		{makeShopItem(this, {alternatives[54][1], alternatives[55][1], alternatives[56][1], alternatives[57][1], alternatives[58][1]}, alternatives[59][1], dim, inv, crate);break;}
-		case 2:
-		{makeShopItem(this, {alternatives[54][2], alternatives[55][2], alternatives[56][2], alternatives[57][2], alternatives[58][2]}, alternatives[59][2], dim, inv, crate);break;}
-		case 0:
-		default:
-		{makeShopItem(this, {alternatives[54][0], alternatives[55][0], alternatives[56][0], alternatives[57][0], alternatives[58][0]}, alternatives[59][0], dim, inv, crate);break;}
+		{makeShopItem(this, alt0, parseInt(alternatives[50][0]) - discount, dim, inv, crate);break;}
 	}
 }
