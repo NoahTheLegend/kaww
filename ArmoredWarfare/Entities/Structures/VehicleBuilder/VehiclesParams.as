@@ -209,6 +209,19 @@ const string t_c4 = "$"+bn_c4+"$";
 const string t_jav = "$icon_jav$";
 const string t_apsniper = "$"+bn_apsniper+"$";
 
+const string[][] alternatives = {
+	/*transport*/				{n_civcar, n_lada, n_civcar}, {t_civcar, t_lada, t_civcar}, {bn_civcar, bn_lada, bn_civcar}, {d_civcar, d_lada, d_civcar}, {c_civcar, c_lada, c_civcar},
+	/*armed transport*/			{n_truck, n_truck, n_truck}, {t_truck, t_truck, t_truck}, {bn_truck, bn_truck, bn_truck}, {d_truck, d_truck, d_truck}, {c_truck, c_truck, c_truck}, 	
+	/*apc*/						{n_bradley, n_btr, n_pszh}, {t_bradley, t_btr, t_pszh}, {bn_bradley, bn_btr, bn_pszh}, {d_bradley, d_btr, d_pszh}, {c_bradley, c_btr, c_pszh}, 			
+	/*medium tank*/				{n_m60, n_obj430, n_e50}, {t_m60, t_obj430, t_e50}, {bn_m60, bn_obj430, bn_e50}, {d_m60, d_obj430, d_e50}, {c_m60, c_obj430, c_e50}, 					
+	/*heavy tank*/				{n_m103, n_t10, n_kingtiger}, {t_m103, t_t10, t_kingtiger}, {bn_m103, bn_t10, bn_kingtiger}, {d_m103, d_t10, d_kingtiger}, {c_m103, c_t10, c_kingtiger},
+	/*super heavy tank*/		{n_abrams, n_is7, n_maus}, {t_abrams, t_is7, t_maus}, {bn_abrams, bn_is7, bn_maus}, {d_abrams, d_is7, d_maus}, {c_abrams, c_is7, c_maus}, 				
+	/*artillery*/				{n_m40, n_grad, n_arti}, {t_m40, t_grad, t_arti}, {bn_m40, bn_grad, bn_arti}, {d_m40, d_grad, d_arti}, {c_m40, c_grad, c_arti},							
+	/*helicopter*/				{n_ah1, n_mi24, n_nh90}, {t_ah1, t_mi24, t_nh90}, {bn_ah1, bn_mi24, bn_nh90}, {d_ah1, d_mi24, d_nh90}, {c_ah1, c_mi24, c_nh90},							
+	/*machinegun*/				{n_m2, n_m2, n_mg42}, {t_m2, t_m2, t_mg42}, {bn_m2, bn_m2, bn_mg42}, {d_m2, d_m2, d_mg42}, {c_m2, c_m2, c_mg42}, 										
+	/*special*/					{n_bc25t, n_bmp, n_leopard1}, {t_bc25t, t_bmp, t_leopard1}, {bn_bc25t, bn_bmp, bn_leopard1}, {d_bc25t, d_bmp, d_leopard1}, {c_bc25t, c_bmp, c_leopard1} 
+};
+
 void makeShopItem(CBlob@ this, string[] params, int cost, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
 {
 	ShopItem@ s = addShopItem(this, params[0], params[1], params[2], params[3], inv, crate);
@@ -221,15 +234,142 @@ void makeShopItem(CBlob@ this, string[] params, int cost, const Vec2f dim = Vec2
 	AddRequirement(s.requirements, params[4], params[5], params[6], cost);
 }
 
-const string[][] alternatives = {
-	{bn_civcar, bn_lada, bn_civcar}, // transport
-	{bn_truck, bn_truck, bn_truck}, // armed transport
-	{bn_bradley, bn_btr, bn_pszh}, // apc
-	{bn_m60, bn_obj430, bn_e50}, // medium tank
-	{bn_m103, bn_t10, bn_kingtiger}, // heavy tank
-	{bn_abrams, bn_is7, bn_maus}, // super heavy tank
-	{bn_m40, bn_grad, bn_arti}, // artillery
-	{bn_ah1, bn_mi24, bn_nh90}, // helicopter
-	{bn_m2, bn_m2, bn_mg42}, // machinegun
-	{bn_bc25t, bn_bmp, bn_leopard1} // special
+void makeFactionTransport(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	switch (team)
+	{
+		case 1:
+		{makeShopItem(this, {alternatives[0][1], alternatives[1][1], alternatives[2][1], alternatives[3][1], alternatives[4][1]}, alternatives[5][1], dim, inv, crate);break;}
+		case 2:
+		{makeShopItem(this, {alternatives[0][2], alternatives[1][2], alternatives[2][2], alternatives[3][2], alternatives[4][2]}, alternatives[5][2], dim, inv, crate);break;}
+		case 0:
+		default:
+		{makeShopItem(this, {alternatives[0][0], alternatives[1][0], alternatives[2][0], alternatives[3][0], alternatives[4][0]}, alternatives[5][0], dim, inv, crate);break;}
+	}
+}
+
+void makeFactionArmedTransport(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	switch (team)
+	{
+		case 1:
+		{makeShopItem(this, {alternatives[6][1], alternatives[7][1], alternatives[8][1], alternatives[9][1], alternatives[10][1]}, alternatives[11][1], dim, inv, crate);break;}
+		case 2:
+		{makeShopItem(this, {alternatives[6][2], alternatives[7][2], alternatives[8][2], alternatives[9][2], alternatives[10][2]}, alternatives[11][2], dim, inv, crate);break;}
+		case 0:
+		default:
+		{makeShopItem(this, {alternatives[6][0], alternatives[7][0], alternatives[8][0], alternatives[9][0], alternatives[10][0]}, alternatives[11][0], dim, inv, crate);break;}
+	}
+}
+
+void makeFactionAPC(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	switch (team)
+	{
+		case 1:
+		{makeShopItem(this, {alternatives[12][1], alternatives[13][1], alternatives[14][1], alternatives[15][1], alternatives[16][1]}, alternatives[17][1], dim, inv, crate);break;}
+		case 2:
+		{makeShopItem(this, {alternatives[12][2], alternatives[13][2], alternatives[14][2], alternatives[15][2], alternatives[16][2]}, alternatives[17][2], dim, inv, crate);break;}
+		case 0:
+		default:
+		{makeShopItem(this, {alternatives[12][0], alternatives[13][0], alternatives[14][0], alternatives[15][0], alternatives[16][0]}, alternatives[17][0], dim, inv, crate);break;}
+	}
+}
+
+void makeFactionMediumTank(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	switch (team)
+	{
+		case 1:
+		{makeShopItem(this, {alternatives[18][1], alternatives[19][1], alternatives[20][1], alternatives[21][1], alternatives[22][1]}, alternatives[23][1], dim, inv, crate);break;}
+		case 2:
+		{makeShopItem(this, {alternatives[18][2], alternatives[19][2], alternatives[20][2], alternatives[21][2], alternatives[22][2]}, alternatives[23][2], dim, inv, crate);break;}
+		case 0:
+		default:
+		{makeShopItem(this, {alternatives[18][0], alternatives[19][0], alternatives[20][0], alternatives[21][0], alternatives[22][0]}, alternatives[23][0], dim, inv, crate);break;}
+	}
+}
+
+void makeFactionHeavyTank(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	switch (team)
+	{
+		case 1:
+		{makeShopItem(this, {alternatives[24][1], alternatives[25][1], alternatives[26][1], alternatives[27][1], alternatives[28][1]}, alternatives[29][1], dim, inv, crate);break;}
+		case 2:
+		{makeShopItem(this, {alternatives[24][2], alternatives[25][2], alternatives[26][2], alternatives[27][2], alternatives[28][2]}, alternatives[29][2], dim, inv, crate);break;}
+		case 0:
+		default:
+		{makeShopItem(this, {alternatives[24][0], alternatives[25][0], alternatives[26][0], alternatives[27][0], alternatives[28][0]}, alternatives[29][0], dim, inv, crate);break;}
+	}
+}
+
+void makeFactionSuperHeavyTank(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	switch (team)
+	{
+		case 1:
+		{makeShopItem(this, {alternatives[30][1], alternatives[31][1], alternatives[32][1], alternatives[33][1], alternatives[34][1]}, alternatives[35][1], dim, inv, crate);break;}
+		case 2:
+		{makeShopItem(this, {alternatives[30][2], alternatives[31][2], alternatives[32][2], alternatives[33][2], alternatives[34][2]}, alternatives[35][2], dim, inv, crate);break;}
+		case 0:
+		default:
+		{makeShopItem(this, {alternatives[30][0], alternatives[31][0], alternatives[32][0], alternatives[33][0], alternatives[34][0]}, alternatives[35][0], dim, inv, crate);break;}
+	}
+}
+
+void makeFactionArtillery(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	switch (team)
+	{
+		case 1:
+		{makeShopItem(this, {alternatives[36][1], alternatives[37][1], alternatives[38][1], alternatives[39][1], alternatives[40][1]}, alternatives[41][1], dim, inv, crate);break;}
+		case 2:
+		{makeShopItem(this, {alternatives[36][2], alternatives[37][2], alternatives[38][2], alternatives[39][2], alternatives[40][2]}, alternatives[41][2], dim, inv, crate);break;}
+		case 0:
+		default:
+		{makeShopItem(this, {alternatives[36][0], alternatives[37][0], alternatives[38][0], alternatives[39][0], alternatives[40][0]}, alternatives[41][0], dim, inv, crate);break;}
+	}
+}
+
+void makeFactionHelicopter(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	switch (team)
+	{
+		case 1:
+		{makeShopItem(this, {alternatives[42][1], alternatives[43][1], alternatives[44][1], alternatives[45][1], alternatives[46][1]}, alternatives[47][1], dim, inv, crate);break;}
+		case 2:
+		{makeShopItem(this, {alternatives[42][2], alternatives[43][2], alternatives[44][2], alternatives[45][2], alternatives[46][2]}, alternatives[47][2], dim, inv, crate);break;}
+		case 0:
+		default:
+		{makeShopItem(this, {alternatives[42][0], alternatives[43][0], alternatives[44][0], alternatives[45][0], alternatives[46][0]}, alternatives[47][0], dim, inv, crate);break;}
+	}
+}
+
+void makeFactionMachinegun(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	switch (team)
+	{
+		case 1:
+		{makeShopItem(this, {alternatives[48][1], alternatives[49][1], alternatives[50][1], alternatives[51][1], alternatives[52][1]}, alternatives[53][1], dim, inv, crate);break;}
+		case 2:
+		{makeShopItem(this, {alternatives[48][2], alternatives[49][2], alternatives[50][2], alternatives[51][2], alternatives[52][2]}, alternatives[53][2], dim, inv, crate);break;}
+		case 0:
+		default:
+		{makeShopItem(this, {alternatives[48][0], alternatives[49][0], alternatives[50][0], alternatives[51][0], alternatives[52][0]}, alternatives[53][0], dim, inv, crate);break;}
+	}
+}
+
+void makeFactionSpecial(CBlob@ this, u8 team, const Vec2f dim = Vec2f(1,1), const bool inv = false, const bool crate = false)
+{
+	switch (team)
+	{
+		case 1:
+		{makeShopItem(this, {alternatives[54][1], alternatives[55][1], alternatives[56][1], alternatives[57][1], alternatives[58][1]}, alternatives[59][1], dim, inv, crate);break;}
+		case 2:
+		{makeShopItem(this, {alternatives[54][2], alternatives[55][2], alternatives[56][2], alternatives[57][2], alternatives[58][2]}, alternatives[59][2], dim, inv, crate);break;}
+		case 0:
+		default:
+		{makeShopItem(this, {alternatives[54][0], alternatives[55][0], alternatives[56][0], alternatives[57][0], alternatives[58][0]}, alternatives[59][0], dim, inv, crate);break;}
+	}
 }

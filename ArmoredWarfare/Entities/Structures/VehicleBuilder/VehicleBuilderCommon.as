@@ -14,7 +14,6 @@ void buildT2ShopCombined(CBlob@ this)
 
 void buildT3ShopCombined(CBlob@ this)
 {
-
 }
 
 void buildT1ShopGround(CBlob@ this)
