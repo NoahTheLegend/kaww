@@ -256,10 +256,10 @@ void onInit(CBlob@ this)
 		case _m103turret:
 		case _obj430turret:
 		{
-			weaponRating = 3;
-			linear_length = 12.0f;
-			scale_infantry_damage = 0.175f;
-			scale_impact_damage = 1.35f;
+			weaponRating = 4;
+			linear_length = 10.0f;
+			scale_infantry_damage = 0.2f;
+			scale_impact_damage = 1.2f;
 			break;
 		}
 		case _m60turret:

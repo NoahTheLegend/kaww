@@ -92,7 +92,7 @@ class Obj430Turret : TurretStats
         super();
 
         name = "obj430turret"; hash = _obj430turret;
-        cooldown_time = 225; high_angle = 76; low_angle = 96; low_angle_back = 94;
+        cooldown_time = 240; high_angle = 76; low_angle = 96; low_angle_back = 94;
         arm_offset = Vec2f(-6.0f, -27.5f); arm_z = -50.0f; barrel_compression = 10; init_gun_angle = 0;
         mg = "m2browning";
         recoil_force = 750;
