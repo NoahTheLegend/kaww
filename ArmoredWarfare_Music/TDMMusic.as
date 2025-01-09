@@ -208,13 +208,13 @@ void GameMusicLogic(CBlob@ this, CMixer@ mixer)
 			mixer.FadeInRandom(world_battle , 5.0f);
 		}
 	}
-	else
-	{
-		if (mixer.getPlayingCount() >= 0)
-		{
-			mixer.FadeOutAll(0.0f, 1.0f);
-		}
-	}
+	//else
+	//{
+	//	if (mixer.getPlayingCount() >= 0)
+	//	{
+	//		mixer.FadeOutAll(0.0f, 1.0f);
+	//	}
+	//}
 }
 
 // handle fadeouts / fadeins dynamically

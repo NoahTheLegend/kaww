@@ -43,7 +43,10 @@ void onTick(CBlob@ this)
 		CSprite@ psprite = holder.getSprite();
 		if (psprite is null || psprite.animation is null) return;
 
-		bool is_welding = psprite.animation.name == "repair" && psprite.animation.frame >= 6;
+		bool valid_anim = psprite.animation.name == "repair";
+		bool is_welding = valid_anim && psprite.animation.frame >= 6;
+		if (this.isAttached() && !is_welding && valid_anim && psprite.animation.frame < 6) sprite.animation.frame = 1;
+		else sprite.animation.frame = 0;
 
 		if (active && this.get_u8("repairs") < max_repairs && is_welding)
 		{
