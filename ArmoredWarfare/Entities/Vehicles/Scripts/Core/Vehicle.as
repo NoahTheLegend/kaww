@@ -155,6 +155,8 @@ void onInit(CBlob@ this)
 		case _bc25turret:
 		case _artillery:
 		case _artilleryturret:
+		case _m40:
+		case _m40turret:
 		case _bradley:
 		case _bradleyturret:
 		case _m2browning:
@@ -164,6 +166,7 @@ void onInit(CBlob@ this)
 		case _mi24:
 		case _nh90:
 		case _grad:
+		case _humvee:
 		armorRating = 3; break;
 
 		case _transporttruck:
@@ -211,6 +214,7 @@ void onInit(CBlob@ this)
 	switch (blobHash) // weapon rating and length of linear (map) and explosion damage in radius
 	{
 		case _artilleryturret:
+		case _m40turret:
 		{
 			weaponRating = 6;
 			linear_length = 16.0f;
@@ -357,6 +361,7 @@ void onInit(CBlob@ this)
 		case _is7:
 		case _m1abrams:
 		case _obj430:
+		case _m40:
 		backsideOffset = 16.0f; break;
 
 		case _uh1:
@@ -404,9 +409,11 @@ void onInit(CBlob@ this)
 		case _e50:
 		case _bmp:
 		case _obj430:
+		case _grad:
 		intake = 20.0f; break;
 
 		case _m60:
+		case _m40:
 		intake = 50.0f; break;
 
 		case _btr82a:
@@ -414,6 +421,7 @@ void onInit(CBlob@ this)
 
 		case _pszh4:
 		case _bradley:
+		case _humvee:
 		intake = 100.0f; break;
 
 		case _techtruck:
@@ -1272,13 +1280,26 @@ void onDie(CBlob@ this)
 				break;
 			}
 			case _uh1:
-			case _artillery:
 			{
 				scrap_amount = 10+XORRandom(9);
 				break;
 			}
-			case _techtruck:
+			case _artillery:
+			case _m40:
+			{
+				scrap_amount = 18+XORRandom(9);
+				break;
+			}
 			case _techbigtruck:
+			case _humvee:
+			{
+				scrap_amount = 6+XORRandom(6);
+				explosion_radius = 40.0f;
+				explosion_map_damage = 0.125f;
+				explosion_damage = 2.0f;
+				break;
+			}
+			case _techtruck:
 			{
 				scrap_amount = 4+XORRandom(4);
 				explosion_radius = 32.0f;

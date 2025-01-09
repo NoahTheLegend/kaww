@@ -14,6 +14,7 @@ void onInit(CBlob@ this)
 			break;
 		}
         case _techtruck:
+		case _humvee:
         case _techbigtruck:
         case _armory:
         case _importantarmory:
@@ -42,6 +43,7 @@ void onInit(CBlob@ this)
 		case _armedmotorcycle:
 		case _kingtiger:
 		case _m1abrams:
+		case _m40:
 		case _obj430:
         {
             susheight = 1.5f;

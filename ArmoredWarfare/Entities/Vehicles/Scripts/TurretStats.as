@@ -123,7 +123,7 @@ class PSZH4Turret : TurretStats
 
         name = "pszh4turret"; hash = _pszh4turret;
         cooldown_time = 300; high_angle = 75; low_angle = 98;
-        cassette_size = 8; cycle_cooldown = 10;
+        cassette_size = 8; cycle_cooldown = 8;
         ammo = "mat_14mmround"; ammo_description = "14mm Rounds";
         arm_offset = Vec2f(-2.5f, -24.0f); arm_z = -50.0f; barrel_compression = 6; init_gun_angle = -3;
         recoil_force = 50; fire_sound = "sound_14mm";
@@ -184,6 +184,23 @@ class ArtilleryTurret : TurretStats
     }
 };
 
+class M40Turret : TurretStats
+{
+    M40Turret()
+    {
+        super();
+
+        name = "m40turret"; hash = _m40turret;
+        cooldown_time = 3*30; high_angle = 15; low_angle = 70; projectile_vel = -45.0f;
+        arm_offset = Vec2f(-8.0f, -33.0f); arm_z = -50.0f; barrel_compression = 24; init_gun_angle = -30;
+        recoil_force = 900; fire_sound = "sound_128mm"; muzzle_offset = -28; arm_height = -2.0f; arm_joint_offset = Vec2f(-0.5f, 26.0f);
+        ammo = "mat_smallbomb"; ammo_description = "Small Bombs";
+        elevation_speed = 0.5f;
+        bullet_pos_offset = Vec2f(0,-4);
+        fixed = true;
+    }
+};
+
 class BradleyTurret : TurretStats
 {
     BradleyTurret()
@@ -226,10 +243,10 @@ class BC25Turret : TurretStats
     {
         super();
         name = "bc25turret"; hash = _bc25turret;
-        cooldown_time = 660; high_angle = 68; low_angle = 105; low_angle_back = 110;
+        cooldown_time = 540; high_angle = 68; low_angle = 105; low_angle_back = 110;
         cassette_size = 5; cycle_cooldown = 60; ammo_quantity = 24; muzzle_offset = -26.0f;
         arm_offset = Vec2f(-4.0f, -31.0f); arm_z = -50.0f; barrel_compression = 9; init_gun_angle = -3;
-        recoil_force = 375;
+        recoil_force = 300;
         bullet_pos_offset = Vec2f(0,-11);
     }
 };

@@ -2,9 +2,12 @@
 #include "ShopCommon.as"
 
 // initial costs
+const u16 c_civcar = 5;
+const u16 c_lada = 5;
 const u16 c_moto = 5;
 const u16 c_amoto = 7;
 const u16 c_truck = 12;
+const u16 c_humvee = 25;
 const u16 c_truckbig = 30;
 const u16 c_pszh = 15;
 const u16 c_btr = 25;
@@ -43,9 +46,11 @@ const string b = "blob";
 const string s = "mat_scrap";
 const string ds = "Scrap";
 // names
+const string n_civcar = "Build a Civilian Car";
 const string n_moto = "Build a Motorcycle";
 const string n_amoto = "Build a Motorcycle with machinegun";
 const string n_truck = "Build a Truck";
+const string n_humvee = "Build a Humvee";
 const string n_truckbig = "Build a Cargo Truck";
 const string n_pszh = "Build a PSZH-4 Light APC";
 const string n_btr = "Build a BTR-82A Medium APC";
@@ -63,6 +68,7 @@ const string n_abrams = "Build a M1 Abrams Super Heavy Tank";
 const string n_maus = "Build a Maus Super Heavy Tank";
 const string n_is7 = "Build a IS-7 Super Heavy Tank";
 const string n_arti = "Build an Artillery";
+const string n_m40 = "Build a M40 Artillery";
 const string n_grad = "Build a BM-21 \"Grad\" MLRS";
 const string n_harti = "Build an Infantry Mortar";
 const string n_bf109 = "Build a Fighter plane";
@@ -79,28 +85,33 @@ const string n_ftw = "Construct a Firethrower";
 const string n_c4 = "Construct a C-4 Explosive";
 const string n_jav = "Construct a Javelin Missile launcher";
 const string n_apsniper = "Armor-Penetrating Sniper Rifle.";
+
 // descriptions
+const string d_civcar = "A civilian car.\n\nSpeedy transport.";
+const string d_lada = "A civilian car.\n\nCyka blyat.";
 const string d_moto = "Speedy transport.";
 const string d_amoto = "Armed motorcycle.";
 const string d_truck = "Lightweight transport.\n\nUses Ammunition.";
+const string d_truck = "Armored transport.\n\nUses Ammunition.";
 const string d_truckbig = "A modernized heavy truck. Additionally has 2 machineguns mounted.\n\nUses Ammunition.\nYou can construct crane augments in the crane buildings.";
 const string d_pszh = "Scout APC.\n\nVery fast, medium firerate, amphibious\nVery fragile armor, bad elevation angles\n\nUses 14.5mm.";
 const string d_btr = "Medium APC.\n\nFast, good firerate, good engine, amphibious\nWeak armor, bad elevation angles, long reload\n\nUses 14.5mm.";
 const string d_bmp = "Heavy and armed with a Rocket launcher APC.\n\nBig caliber, good armor, moderately fast, amphibious\nWeak engine, bad elevation angles, long reload\nPress LMB to release Smoke cloud.\n\nUses 14.5mm and optionally HEAT warheads.";
 const string d_bradley = "Heavy and armed with a Rocket launcher APC.\n\nPowerful engine, fast, good elevation angles\nWeak armor\n\nUses 14.5mm and optionally HEAT warheads.";
-const string d_m60 = "Medium tank.\n\nPowerful engine, fast, good elevation angles\nMedium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & 7.62mm.";
+const string d_m60 = "Medium tank.\n\nPowerful engine, fast, good elevation angles\nMedium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & Ammunition.";
 const string d_e50 = "Medium tank.\n\nFast, good elevation angles, fast projectile\nMedium armor, weaker turret armor (weakpoint)\n\nUses 105mm";
-const string d_obj430 = "Medium tank.\n\nBig caliber, great turret armor\nSlow, fragile lower armor plate (weakpoint)\n\nUses 105mm & 7.62mm.";
-const string d_leopard1 = "Medium tank.\n\nFast, good elevation angles, good fire rate, fast projectile\nMedium armor, weak turret armor (weakpoint)\n\nUses 105mm & 7.62mm.";
+const string d_obj430 = "Medium tank.\n\nBig caliber, great turret armor\nSlow, fragile lower armor plate (weakpoint)\n\nUses 105mm & Ammunition.";
+const string d_leopard1 = "Medium tank.\n\nFast, good elevation angles, good fire rate, fast projectile\nMedium armor, weak turret armor (weakpoint)\n\nUses 105mm & Ammunition.";
 const string d_bc25t = "Light tank.\n\nFast, excellent elevation angles, 4 shells in loading cassette\nWeak engine, weak turret armor (weakpoint)\nPress LMB to release Smoke cloud.\n\nUses 105mm";
-const string d_t10 = "Heavy tank.\n\nThick armor, big caliber.\nSlow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses 105mm & 7.62mm.";
-const string d_kingtiger = "Heavy tank.\n\nThick armor, good elevation angles, big caliber.\nVery slow, slow fire rate\n\nUses 105mm & 7.62mm.";
-const string d_m103 = "Heavy tank.\n\nThick armor, good elevation angles, good fire rate.\nVery slow, small damage\n\nUses 105mm & 7.62mm.";
+const string d_t10 = "Heavy tank.\n\nThick armor, big caliber.\nSlow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses 105mm & Ammunition.";
+const string d_kingtiger = "Heavy tank.\n\nThick armor, good elevation angles, big caliber.\nVery slow, slow fire rate\n\nUses 105mm & Ammunition.";
+const string d_m103 = "Heavy tank.\n\nThick armor, good elevation angles, good fire rate.\nVery slow, small damage\n\nUses 105mm & Ammunition.";
 const string d_abrams = "Super heavy tank.\n\nThick armor, good engine, good fire rate\nBad elevation angles, fragile hull from above and back side (weakpoint)\nPress LMB to release Smoke cloud.\n\nUses 105mm";
 const string d_maus = "Super heavy tank.\n\nThick armor, good turret armor, big caliber with high-explosive damage, good elevation angles\nVery slow, slow fire rate, very fragile lower armor plate (weakpoint)\n\nUses 105mm";
 const string d_is7 = "Super heavy tank.\n\nThick armor, best turret armor, big caliber, big max speed.\nVery weak engine, slow fire rate, fragile hull from above (weakpoint).\n\nUses 105mm";
 const string d_arti = "A long-range, slow and fragile artillery.\n\nUses Bombs.";
-const string d_grad = "A short-range, decently mobile but fragile MLRS.\n\nUses 105mm.";
+const string d_m40 = "A medium-range, decently mobile and fragile artillery.\n\nUses Bombs.";
+const string d_grad = "A short-range, mobile but fragile MLRS.\n\nUses 105mm.";
 const string d_harti = "A short-range, less powerful but mobile mortar.\n\nUses Bombs.";
 const string d_bf109 = "Fighter plane.\nUses Ammunition.";
 const string d_bomber = "Heavy Bomber plane.\nUses Bombs.";
@@ -117,9 +128,12 @@ const string d_c4 = "A strong explosive, very effective against blocks and doors
 const string d_jav = "Homing Missile launcher.";
 const string d_apsniper = "Armor-Penetrating Sniper Rifle.\nPenetrates non-solid blocks and flesh. Can penetrate tank armor.\n\nUses Special Ammunition.";
 // blobnames
+const string bn_civcar = "civcar";
+const string bn_lada = "lada";
 const string bn_moto = "motorcycle";
 const string bn_amoto = "armedmotorcycle";
 const string bn_truck = "techtruck";
+const string bn_humvee = "humvee";
 const string bn_truckbig = "techbigtruck";
 const string bn_pszh = "pszh4";
 const string bn_btr = "btr82a";
@@ -137,6 +151,7 @@ const string bn_abrams = "m1abrams";
 const string bn_maus = "maus";
 const string bn_is7 = "is7";
 const string bn_arti = "artillery";
+const string bn_m40 = "m40";
 const string bn_grad = "grad";
 const string bn_harti = "mortar";
 const string bn_bf109 = "bf109";
@@ -154,9 +169,12 @@ const string bn_c4 = "c4";
 const string bn_jav = "launcher_javelin";
 const string bn_apsniper = "apsniper";
 // icon tokens
+const string t_civcar = "$"+bn_civcar+"$";
+const string t_lada = "$"+bn_lada+"$";
 const string t_moto = "$"+bn_moto+"$";
 const string t_amoto = "$"+bn_amoto+"$";
 const string t_truck = "$"+bn_truck+"$";
+const string t_humvee = "$"+bn_humvee+"$";
 const string t_truckbig = "$"+bn_truckbig+"$";
 const string t_pszh = "$"+bn_pszh+"$";
 const string t_btr = "$"+bn_btr+"$";
@@ -174,6 +192,7 @@ const string t_abrams = "$"+bn_abrams+"$";
 const string t_maus = "$"+bn_maus+"$";
 const string t_is7 = "$"+bn_is7+"$";
 const string t_arti = "$"+bn_arti+"$";
+const string t_m40 = "$"+bn_m40+"$";
 const string t_grad = "$"+bn_grad+"$";
 const string t_harti = "$"+bn_harti+"$";
 const string t_bf109 = "$"+bn_bf109+"$";
@@ -200,4 +219,17 @@ void makeShopItem(CBlob@ this, string[] params, int cost, const Vec2f dim = Vec2
 		s.buttonheight = dim.y;
 	}
 	AddRequirement(s.requirements, params[4], params[5], params[6], cost);
+}
+
+const string[][] alternatives = {
+	{bn_civcar, bn_lada, bn_civcar}, // transport
+	{bn_truck, bn_truck, bn_truck}, // armed transport
+	{bn_bradley, bn_btr, bn_pszh}, // apc
+	{bn_m60, bn_obj430, bn_e50}, // medium tank
+	{bn_m103, bn_t10, bn_kingtiger}, // heavy tank
+	{bn_abrams, bn_is7, bn_maus}, // super heavy tank
+	{bn_m40, bn_grad, bn_arti}, // artillery
+	{bn_ah1, bn_mi24, bn_nh90}, // helicopter
+	{bn_m2, bn_m2, bn_mg42}, // machinegun
+	{bn_bc25t, bn_bmp, bn_leopard1} // special
 }

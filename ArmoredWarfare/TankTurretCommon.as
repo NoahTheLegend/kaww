@@ -73,6 +73,12 @@ void LoadStats(CBlob@ this)
 			stats = override_stats;
 			break;
 		}
+		case _m40turret:
+		{
+			M40Turret override_stats;
+			stats = override_stats;
+			break;
+		}
 		case _gradturret:
 		{
 			GradTurret override_stats;
