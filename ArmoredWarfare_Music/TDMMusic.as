@@ -137,7 +137,6 @@ void AddGameMusic(CBlob@ this, CMixer@ mixer)
 	mixer.AddTrack("Kaww_18_theme.ogg", world_intro);
 	mixer.AddTrack("Kaww_18_theme.ogg", world_battle);
 
-
 	mixer.AddTrack("Kaww_timesup_theme.ogg", world_timer);
 }
 
