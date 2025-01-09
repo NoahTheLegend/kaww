@@ -477,6 +477,10 @@ void onTick(CBlob@ this)
 						if (target is null) continue;
 						
 						u16 marked_time = getGameTime() + 3*30 + XORRandom(16)*0.1f*30;
+						if (target.getName() == "radarapc")
+						{
+							this.set_u32("radar_mark", marked_time);
+						}
 						if (target.exists("radar_mark") && target.get_u32("radar_mark") > getGameTime())
 						{
 							target.set_u32("radar_mark", marked_time);
