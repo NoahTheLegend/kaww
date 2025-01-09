@@ -381,16 +381,39 @@ void onTick(CSprite@ this)
 
 			if (blob.hasTag("repairing"))
 			{
-				this.SetAnimation("repair");
-				if (this.animation.frame == 7 && blob.hasTag("wield_lighting"))
+				if (WeldCondition(blob))
 				{
-					this.animation.frame = 6;
-
-					blob.Untag("wield_lighting");
+					this.SetAnimation("repair");
+					if (this.animation.frame == 7 && blob.hasTag("weld_lighting"))
+					{
+						blob.Untag("weld_lighting");
+						this.animation.frame = 6;
+						
+						blob.Tag("was_repairing");
+					}
+					
+					blob.Tag("weld_lighting");
 				}
-				else blob.Tag("wield_lighting");
+				else blob.Untag("repairing");
 			}
 			else defaultIdleAnim(this, blob, direction);
+		}
+		
+		if (blob.hasTag("was_repairing") && !blob.hasTag("repairing"))
+		{
+			makeGibParticle(
+			"MaskGib",      		            // file name
+			blob.getPosition() + Vec2f(blob.isFacingLeft() ? -1.0f : 1.0f, -4.0f), // position
+			Vec2f(blob.isFacingLeft() ? 1.0f+(0.1f * XORRandom(10) - 0.5f) : -1.0f-(0.1f * XORRandom(10) - 0.5f), 0.0f), // velocity
+			0,                                  // column
+			0,                                  // row
+			Vec2f(8, 8),                        // frame size
+			1.0f,                               // scale?
+			0,                                  // ?
+			"ShellCasing",                      // sound
+			blob.getTeamNum());         // team number
+
+			blob.Untag("was_repairing");
 		}
 	}
 
@@ -410,6 +433,12 @@ void onTick(CSprite@ this)
 		blob.Untag("attack head");
 		blob.Untag("dead head");
 	}
+}
+
+bool WeldCondition(CBlob@ this)
+{
+	return this.getVelocity().Length() < 0.05f && !this.isAttached()
+		&& this.getCarriedBlob() !is null && this.getCarriedBlob().getName() == "weldingtool";
 }
 
 void DrawCursorAt(Vec2f position, string& in filename)

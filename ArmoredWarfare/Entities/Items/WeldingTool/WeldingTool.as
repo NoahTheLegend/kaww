@@ -14,10 +14,11 @@ void onInit(CBlob@ this)
 
 	this.set_u8("repairs", 0);
 	this.Tag("take a1");
+	this.addCommandID("repair");
 }
 
 const u8 max_repairs = 10;
-const u8 repair_rate = 9;
+const u8 repair_rate = 8;
 const u8 anim_max_speed = 10;
 const u8 anim_min_speed = 2;
 
@@ -37,10 +38,14 @@ void onTick(CBlob@ this)
 
 	if (isClient() && sprite !is null)
 	{
-		sprite.SetRelativeZ(attached ? -55.0f : 0.0f);
 		f32 t = this.get_f32("anim_time");
 
-		if (active)
+		CSprite@ psprite = holder.getSprite();
+		if (psprite is null || psprite.animation is null) return;
+
+		bool is_welding = psprite.animation.name == "repair" && psprite.animation.frame >= 6;
+
+		if (active && this.get_u8("repairs") < max_repairs && is_welding)
 		{
 			t = Maths::Lerp(t, anim_max_speed, 0.1f);
 			if (getGameTime()%4 == 0) sprite.PlaySound("welder_loop.ogg", 0.5f, 0.95f+XORRandom(11)*0.01f);
@@ -56,11 +61,37 @@ void onTick(CBlob@ this)
 		{
 			sprite.animation.time = Maths::Floor(t) == 0 ? 0 : anim_min_speed + anim_max_speed - t;
 		}
+
+		if (active)
+		{
+			holder.Tag("repairing");
+			if (timing && holder.isMyPlayer())
+			{
+				if (is_welding)
+				{
+					CBitStream params;
+					params.write_u16(holder.getNetworkID());
+					this.SendCommand(this.getCommandID("repair"), params);
+				}
+			}
+		}
+		else holder.Untag("repairing");
 	}
 
-	if (active && timing)
+	if (isServer() && attached) this.setAngleDegrees(this.get_f32("angle"));
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
+{
+	if (cmd == this.getCommandID("repair"))
 	{
+		u16 hid = params.read_u16();
+		CBlob@ holder = getBlobByNetworkID(hid);
+		
+		if (holder is null) return;
 		u8 team = this.getTeamNum();
+
+		CSprite@ sprite = this.getSprite();
 		
 		CBlob@[] repair;
 		getMap().getBlobsInRadius(holder.getAimPos(), this.getRadius() * 1, @repair);
@@ -157,8 +188,6 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-	
-	if (isServer() && attached) this.setAngleDegrees(this.get_f32("angle"));
 }
 
 void sparks(Vec2f at, f32 angle, f32 speed, SColor color)
