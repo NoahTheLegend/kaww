@@ -11,6 +11,8 @@
 #include "ProgressBar.as";
 #include "TeamColorCollections.as";
 
+const u32 construct_endtime = 3*30;
+
 void onInit(CBlob@ this)
 {
 	this.addCommandID("shop buy");
@@ -18,8 +20,8 @@ void onInit(CBlob@ this)
 	this.addCommandID("construct");
 	this.addCommandID("constructed");
 
-	this.set_f32("buy_time", 0);
-	this.set_f32("buy_endtime", 0);
+	this.set_f32("construct_time", 0);
+	this.set_u32("construct_endtime", construct_endtime);
 
 	if (!this.exists("shop available"))
 		this.set_bool("shop available", true);
@@ -54,11 +56,6 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	ShopItem[]@ shop_items;
 	if (!this.get(SHOP_ARRAY, @shop_items))
-	{
-		return;
-	}
-
-	if (this.hasTag("team use only") && this.getTeamNum() != caller.getTeamNum())
 	{
 		return;
 	}
@@ -363,7 +360,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		bool spawnInCrate = params.read_bool();
 		bool instant = params.read_bool();
 		bool producing = params.read_bool();
-		f32 buy_time = params.read_f32();
 		u8 s_index = params.read_u8();
 		bool hotkey = params.read_bool();
 
@@ -390,15 +386,33 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.set_s8("constructing_index", s_index);
 			this.set_bool("constructing", true);
 
+			u32 endtime = this.get_u32("construct_endtime");
+			if (s.blobName == "bunker")
+				endtime = 7.5f*30;
+			else if (s.blobName == "heavybunker")
+				endtime = 10.0f*30;
+			else if (s.blobName == "quarters")
+			{
+				endtime = 1.0f*30;
+			}
+			else if (s.blobName == "crane")
+			{
+				endtime = 15.0f*30;
+			}
+			else
+			{
+				endtime = construct_endtime;
+			}
+
 			bool liberals_power = getRules().get_bool("enable_powers") && caller.getTeamNum() == 2; // team 2 buff
         	f32 extra_amount = 0.0f;
         	if (liberals_power)
 			{
-				extra_amount = 0.66f;
-				buy_time *= extra_amount;
+				extra_amount = 0.8f;
+				endtime *= extra_amount;
 			}
 
-			this.set_f32("construct_time", buy_time);
+			this.set_u32("construct_endtime", endtime);
 
 			Bar@ bars;
 			if (!this.get("Bar", @bars))
@@ -419,7 +433,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					SColor team_front = getNeonColor(caller.getTeamNum(), 0);
 					ProgressBar setbar;
 					setbar.Set(this.getNetworkID(), "construct", Vec2f(64.0f, 16.0f), true, Vec2f(0, 48), Vec2f(2, 2), back, team_front,
-						"construct_time", this.get_f32("buy_time"), 0.25f, 5, 5, false, "constructed");
+						"construct_time", this.get_u32("construct_endtime"), 0.25f, 5, 5, false, "constructed");
 
     				bars.AddBar(this.getNetworkID(), setbar, true);
 				}
@@ -438,7 +452,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			stream.write_bool(false);
 			stream.write_bool(true);
 			stream.write_bool(false);
-			stream.write_f32(0);
 			stream.write_s8(this.get_s8("constructing_index"));
 			stream.write_bool(false);
 			//printf("sent");
@@ -549,9 +562,27 @@ void BuildShopMenu(CBlob@ this, CBlob @caller, string description, Vec2f offset,
 	{
 		if (!this.hasTag(SHOP_AUTOCLOSE))
 			menu.deleteAfterClick = false;
-		
 		addShopItemsToMenu(this, menu, caller);
+		/*
+		//keybinds
+		array<EKEY_CODE> numKeys = { KEY_KEY_1, KEY_KEY_2, KEY_KEY_3, KEY_KEY_4, KEY_KEY_5, KEY_KEY_6, KEY_KEY_7, KEY_KEY_8, KEY_KEY_9, KEY_KEY_0 };
+		uint keybindCount = Maths::Min(shopitems.length(), numKeys.length());
+
+		for (uint i = 0; i < keybindCount; i++)
+		{
+			CBitStream params;
+			params.write_u16(caller.getNetworkID());
+			params.write_bool(shopitems[i].spawnToInventory);
+			params.write_bool(shopitems[i].spawnInCrate);
+			params.write_bool(shopitems[i].producing);
+			params.write_u8(i);
+			params.write_bool(true); //used hotkey?
+
+			menu.AddKeyCommand(numKeys[i], this.getCommandID("shop buy"), params);
+		}
+		*/
 	}
+
 }
 
 void BuildDefaultShopMenu(CBlob@ this, CBlob @caller)
