@@ -13,7 +13,7 @@ void onInit(CBlob@ this)
 	this.Tag("truck");
 
 	Vehicle_Setup(this,
-	              6000.0f, // move speed
+	              6500.0f, // move speed
 	              0.08f,  // turn speed
 	              Vec2f(0.0f, 0.51f), // jump out velocity
 	              false  // inventory access
@@ -29,14 +29,13 @@ void onInit(CBlob@ this)
 	                         0.3f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(20.0f, 3.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-19.0f, 3.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-
-
-	this.getShape().SetOffset(Vec2f(0, 0)); //0,8
-
 	CSprite@ sprite = this.getSprite();
-	sprite.SetZ(-25.0f);
+	sprite.SetZ(-100.0f);
+
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(19.5f, 3.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-19.5f, 3.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(21.0f, 3.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-18.0f, 3.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 }
 
 void onTick(CBlob@ this)

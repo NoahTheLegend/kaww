@@ -190,6 +190,7 @@ void onInit(CBlob@ this)
 		case _bf109:
 		case _bomberplane:
 		case _civcar:
+		case _lada:
 		case _armedmotorcycle:
 		armorRating = 0; break;
 
@@ -435,6 +436,7 @@ void onInit(CBlob@ this)
 		case _importantarmory:
 		case _importantarmoryt2:
 		case _civcar:
+		case _lada:
 		case _armedmotorcycle:
 		intake = 100.0f; break;
 
@@ -1323,6 +1325,7 @@ void onDie(CBlob@ this)
 				break;
 			}
 			case _civcar:
+			case _lada:
 			case _armedmotorcycle:
 			{
 				scrap_amount = 2+XORRandom(2);

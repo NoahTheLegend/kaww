@@ -10,7 +10,7 @@ void onInit(CBlob@ this)
 	this.Tag("vehicle");
 
 	Vehicle_Setup(this,
-	              314.0f, // move speed  //103
+	              6400.0f, // move speed  //103
 	              0.05f,  // turn speed
 	              Vec2f(0.0f, 0.58f), // jump out velocity
 	              false  // inventory access
@@ -26,23 +26,13 @@ void onInit(CBlob@ this)
 	                         2.8f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(18.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-20.5f, 6.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-
-
-	this.getShape().SetOffset(Vec2f(0, 0)); //0,8
-
 	CSprite@ sprite = this.getSprite();
-	sprite.SetZ(-25.0f);
-	//CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
-	//if (front !is null)
-	//{
-	//	front.addAnimation("default", 0, false);
-	//	int[] frames = { 0, 1, 2 };
-	//	front.animation.AddFrames(frames);
-	//	front.SetRelativeZ(0.8f);
-	//	front.SetOffset(Vec2f(0.0f, 0.0f));
-	//}
+	sprite.SetZ(-100.0f);
+
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f( 18.5f, 4.0f)); if (w !is null) { w.SetRelativeZ(10.0f); w.ScaleBy(  Vec2f(0.95f, 0.95f)); } }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-20.0f, 4.0f)); if (w !is null) { w.SetRelativeZ(10.0f); w.ScaleBy( Vec2f(0.95f, 0.95f)); } }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f( 20.0f, 4.0f)); if (w !is null) { w.SetRelativeZ(-10.0f); w.ScaleBy( Vec2f(0.95f, 0.95f)); } }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-18.5f, 4.0f)); if (w !is null) { w.SetRelativeZ(-10.0f); w.ScaleBy(Vec2f(0.95f, 0.95f)); } }
 }
 
 void onTick(CBlob@ this)
