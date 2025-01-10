@@ -8,16 +8,17 @@ void buildT1ShopCombined(CBlob@ this)
 {
     this.set_Vec2f("shop menu size", Vec2f(12, 8));
 
-    makeFactionTransport(this, this.getTeamNum());
-    makeFactionArmedTransport(this, this.getTeamNum());
-    makeFactionAPC(this, this.getTeamNum());
-    makeFactionMediumTank(this, this.getTeamNum());
-    makeFactionHeavyTank(this, this.getTeamNum());
-    makeFactionSuperHeavyTank(this, this.getTeamNum());
-    makeFactionArtillery(this, this.getTeamNum());
-    makeFactionHelicopter(this, this.getTeamNum());
-    makeFactionMachinegun(this, this.getTeamNum());
-    makeFactionSpecial(this, this.getTeamNum());
+	u8 tn = this.getTeamNum();
+	makeFactionVehicle(this, tn, VehicleType::transport, 		0, false, false);
+	makeFactionVehicle(this, tn, VehicleType::armedtransport, 	0, false, false);
+	makeFactionVehicle(this, tn, VehicleType::apc, 				0, false, false);
+	makeFactionVehicle(this, tn, VehicleType::mediumtank, 		0, false, false);
+	makeFactionVehicle(this, tn, VehicleType::heavytank, 		0, false, false);
+	makeFactionVehicle(this, tn, VehicleType::superheavytank, 	0, false, false);
+	makeFactionVehicle(this, tn, VehicleType::artillery, 		0, false, false);
+	makeFactionVehicle(this, tn, VehicleType::helicopter, 		0, false, false);
+	makeFactionVehicle(this, tn, VehicleType::machinegun, 		0, false, true);
+	makeFactionVehicle(this, tn, VehicleType::special, 			0, false, false);
 
     {
 		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 - Vehicle builder.\n\nUnlocks stronger ground vehicles and aircraft.", false, false);

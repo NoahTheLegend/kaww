@@ -223,10 +223,6 @@ void InitShop(CBlob@ this)
 		s.buttonheight = 1;
 		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
 	}
-
-	{string[] params = {n_apsniper,t_apsniper,bn_apsniper,d_apsniper,b,s,ds};
-	makeShopItem(this,params,c_apsniper, Vec2f(3,1), false, false);}
-
 }
 
 void PackerMenu(CBlob@ this, CBlob@ caller)

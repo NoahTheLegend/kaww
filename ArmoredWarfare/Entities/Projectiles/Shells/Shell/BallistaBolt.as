@@ -7,73 +7,85 @@
 #include "CustomBlocks.as";
 
 const f32 MEDIUM_SPEED = 5.0f;
+const f32 linger_time = 2.0f;
 
 void onInit(CBlob@ this)
 {
 	this.Tag("projectile");
 
-	f32 impact_damage_mod = 1.0f;
-	if (this.exists("scale_impact_damage") && this.get_f32("scale_impact_damage") > 0.05f)
-		impact_damage_mod = this.get_f32("scale_impact_damage");
-	
-	f32 impact_radius = -1.0f;
-	if (this.exists("impact_radius") && this.get_f32("impact_radius") > 0.05f)
-		impact_radius = this.get_f32("impact_radius");
+	this.set_u8("blocks_pierced", 0);
+	this.set_bool("map_damage_raycast", true);
 
+	// Set impact damage modifier
+	f32 impact_damage_mod = this.exists("scale_impact_damage") && this.get_f32("scale_impact_damage") > 0.05f 
+							? this.get_f32("scale_impact_damage") 
+							: 1.0f;
+
+	// Set impact radius
+	f32 impact_radius = this.exists("impact_radius") && this.get_f32("impact_radius") > 0.05f 
+						? this.get_f32("impact_radius") 
+						: -1.0f;
+
+	// Set projectile properties
 	this.set_f32(projDamageString, 1.0f * impact_damage_mod);
 	this.set_f32(projExplosionRadiusString, impact_radius != -1 ? impact_radius : 20.0f);
 	this.set_f32(projExplosionDamageString, 15.0f * impact_damage_mod);
 
-	if (this.hasTag("HE_shell"))
-	{
-		this.set_f32(projExplosionRadiusString, 42.0f);
-	}
-
-	this.set_u8("blocks_pierced", 0);
-	this.set_bool("map_damage_raycast", true);
-
+	bool he_shell = isHEProjectile(this);
 	bool apc = isAPCProjectile(this);
-	this.server_SetTimeToDie(apc ? 3 : 30);
+	if (he_shell) this.set_f32(projExplosionRadiusString, 42.0f);
+	if (apc) this.set_f32("tile_damage", 0.1f);
 
-	if (apc)
-	{
-		this.set_f32("tile_damage", 0.1f);
-	}
-
+	// Configure shape properties
 	this.getShape().getConsts().mapCollisions = false;
 	this.getShape().getConsts().bullet = true;
-	this.getShape().getConsts().net_threshold_multiplier = 6.0f;
+	this.getShape().getConsts().net_threshold_multiplier = 2.0f;
 
 	LimitedAttack_setup(this);
 
+	// Initialize offsets array
 	u32[] offsets;
 	this.set("offsets", offsets);
-	// Offsets of the tiles that have been hit.
 
+	// Configure sprite properties
 	CSprite@ sprite = this.getSprite();
 	sprite.SetFrame(0);
 	sprite.getConsts().accurateLighting = true;
 	sprite.SetFacingLeft(!sprite.isFacingLeft());
+
 	#ifdef STAGING
 	sprite.setRenderStyle(RenderStyle::additive);
 	#endif
 
-	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_left | CBlob::map_collide_right);
+	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_right);
+	this.server_SetTimeToDie(apc ? 3 : 30);
 }
 
 void onTick(CBlob@ this)
 {
-	if (isServer() && this.hasTag("artillery"))
-	{
-		if (this.isKeyPressed(key_action1) || this.getHealth() <= 0.0f)
-		{
-			ResetPlayer(this);
-			this.server_Die();
-			return;
-		}
-	}
+	//this.setPosition(Vec2f(this.getPosition().x, this.getOldPosition().y)); // useful for debugging
 
 	CMap@ map = getMap();
+	Vec2f velocity = this.getVelocity();
+
+	f32 angle = 0;
+	angle = velocity.Angle();
+
+	// lingering
+	if (this.hasTag("idle"))
+	{
+		this.setVelocity(Vec2f_zero);
+		this.getSprite().SetVisible(false);
+		this.getShape().SetStatic(true);
+
+		if (this.getTimeToDie() <= linger_time)
+		{
+			ResetPlayer(this);
+		}
+
+		return;
+	}
+	
 	if (map !is null)
 	{
 		if (this.getPosition().y + this.getVelocity().y >= map.tilemapheight * 8
@@ -82,14 +94,9 @@ void onTick(CBlob@ this)
 			ResetPlayer(this);
 		}
 	}
-	
-	//this.setPosition(Vec2f(this.getPosition().x, this.getOldPosition().y)); // useful for debugging
-	f32 angle = 0;
 
-	if (this.getTickSinceCreated() <= 7) // make it fly straight some time before falling
-	{
-		this.setVelocity(this.getOldVelocity());
-	}
+	// fly straight some time
+	if (this.getTickSinceCreated() <= 7) this.setVelocity(this.getOldVelocity());
 
 	if (isClient() && !v_fastrender)
 	{
@@ -111,7 +118,7 @@ void onTick(CBlob@ this)
 			}
 		}
 
-		if (this.hasTag("rpg"))
+		if (this.hasTag("rpg")) // smoke trail
 		{
 			if (this.getTickSinceCreated() > 0)
 			{
@@ -166,22 +173,15 @@ void onTick(CBlob@ this)
 		}
 	}
 
-	Vec2f velocity = this.getVelocity();
-	angle = velocity.Angle();
+	Pierce(this, velocity, angle); // pierce tiles
 
-	Pierce(this, velocity, angle);
-
-	if (this.getTickSinceCreated() == 0) // return 0,0 onInit()
-	{
-		this.set_Vec2f("from_pos", this.getPosition());
-		//printf("x: "+this.get_Vec2f("from_pos").x+" y: "+this.get_Vec2f("from_pos").y);
-	}
-
+	if (this.getTickSinceCreated() == 0) this.set_Vec2f("from_pos", this.getPosition());
 	this.setAngleDegrees(-angle + 180.0f);
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	if (this.hasTag("idle")) return false;
 	CBlob@ carrier = blob.getCarriedBlob();
 
 	if ((blob.hasTag("turret") || blob.hasTag("sandbags"))
@@ -247,6 +247,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 {
+	if (this.hasTag("idle")) return;
 	CMap@ map = this.getMap();
 
 	const f32 speed = velocity.getLength();
@@ -291,8 +292,9 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 			{
 				this.Tag("weaken");
 				DoExplosion(this, this.getVelocity());
+
 				this.Tag("dead");
-				this.server_Die();
+				SetDeath(this);
 			}
 		}
 	}
@@ -340,19 +342,15 @@ void ResetPlayer(CBlob@ this)
 
 void onDie(CBlob@ this)
 {
-	if (isServer() && this.hasTag("artillery"))
+	if (isServer() && !this.hasTag("idle") && this.hasTag("artillery"))
 	{
 		CBlob@ b = server_CreateBlob("cheapfuckparticles_explosion", this.getTeamNum(), this.getPosition());
-	}
-	if (this.getPlayer() !is null)
-	{
-		ResetPlayer(this);
 	}
 }
 
 bool DoExplosion(CBlob@ this, Vec2f velocity)
 {
-	ResetPlayer(this);
+	if (this.hasTag("idle")) return false;
 	if (this.hasTag("dead")) return true;
 
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
@@ -401,10 +399,16 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	Boom(this);
 
 	this.Tag("dead");
-	this.server_Die();
+	SetDeath(this);
+
 	if (!v_fastrender) this.getSprite().Gib();
 
 	return true;
+}
+
+bool isHEProjectile(CBlob@ this)
+{
+	return this.hasTag("HE_shell");
 }
 
 bool isArtilleryProjectile(CBlob@ this)
@@ -435,8 +439,24 @@ void BallistaHitBlob(CBlob@ this, Vec2f hit_position, Vec2f velocity, f32 damage
 	this.setVelocity(velocity * 0.7f);
 }
 
+void SetDeath(CBlob@ this)
+{
+	if (this.getPlayer() !is null)
+	{
+		if (!this.hasTag("idle"))
+		{
+			this.Tag("idle");
+
+			this.server_SetTimeToDie(linger_time + 1);
+		}
+	}
+	else this.server_Die();
+}
+
 void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f velocity, const f32 damage, u8 customData)
 {
+	if (this.hasTag("idle")) return;
+
 	if (!this.hasTag("soundplayed") && !isAPCProjectile(this))
 	{
 		this.getSprite().PlayRandomSound("/ShellExplosion", 1.1, 0.9f + XORRandom(20) * 0.01f);
@@ -452,7 +472,8 @@ void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f vel
 	if (type == CMap::tile_bedrock || isTileCompactedDirt(type) || isTileScrap(type))
 	{
 		this.Tag("weaken");
-		this.server_Die();
+
+		SetDeath(this);
 		this.getSprite().Gib();
 	}
 	
@@ -476,6 +497,8 @@ void BallistaHitMap(CBlob@ this, const u32 offset, Vec2f hit_position, Vec2f vel
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (this.hasTag("idle")) return 0;
+	
 	if (this.getPlayer() !is null && customData == 11) return 0;
 	return damage;
 }

@@ -52,8 +52,15 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 	{
 		SetOccupied(attachedPoint, 1);
 		attached.Tag("seatez");
+
 		string name = attachedPoint.name;
 		name = name.substr(0, name.size()-1);
+		
+		bool keep_head = false;
+		if (this.hasTag("driver_exposed") && name == "DRIVER")
+		{
+			keep_head = true;
+		}
 		if ((name == "PASSENGER" || name == "PASSENGER2" || name == "PASSENGER3" || name == "PASSENGER4") && this.hasTag("armory"))
 		{
 			attached.Tag("hide_head");
@@ -65,7 +72,6 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 			this.SetDamageOwnerPlayer(attached.getPlayer());
 		}
 	}
-	if (this.hasTag("artillery")) attached.Tag("hide_head");
 }
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
@@ -74,8 +80,15 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	{
 		SetOccupied(attachedPoint, 0);
 		detached.Untag("seatez");
+		
 		string name = attachedPoint.name;
 		name = name.substr(0, name.size()-1);
+
+		bool keep_head = false;
+		if (this.hasTag("driver_exposed") && name == "DRIVER")
+		{
+			keep_head = true;
+		}
 		if ((name == "PASSENGER" || name == "PASSENGER2" || name == "PASSENGER3" || name == "PASSENGER4") && this.hasTag("armory"))
 		{
 			detached.Untag("hide_head");
@@ -92,7 +105,6 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 			this.SetDamageOwnerPlayer(null);
 		}
 	}
-	if (this.hasTag("artillery")) detached.Untag("hide_head");
 }
 
 void InitSeatAttachment(AttachmentPoint@ ap)

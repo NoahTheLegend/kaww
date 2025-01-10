@@ -16,7 +16,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	    5700.0f, // move speed
+	    4500.0f, // move speed
 	    1.0f,  // turn speed
 	    Vec2f(0.0f, -2.5f), // jump out velocity
 	    false);  // inventory access
@@ -27,7 +27,7 @@ void onInit(CBlob@ this)
 	    0.3f,   // movement sound volume modifier   0.0f = no manipulation
 	    0.2f); // movement sound pitch modifier     0.0f = no manipulation
 
-	{ CSpriteLayer@ w = Vehicle_addPokeyWheel(this, v, 0, Vec2f(27.0f,   2.0f)); if (w !is null) w.SetRelativeZ(20.0f); }
+	{ CSpriteLayer@ w = Vehicle_addPokeyWheel( this, v, 0, Vec2f(27.0f,  2.0f)); if (w !is null) w.SetRelativeZ(20.0f);  }
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(20.0f,  4.75f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(12.0f,  4.75f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(4.0f,   4.75f)); if (w !is null) w.SetRelativeZ(10.0f); }
@@ -79,7 +79,7 @@ void onInit(CBlob@ this)
 	// attach turret & machine gun
 	if (getNet().isServer())
 	{
-		CBlob@ turret = server_CreateBlob("m60turret");	
+		CBlob@ turret = server_CreateBlob("m40turret");	
 
 		if (turret !is null)
 		{
@@ -98,7 +98,7 @@ void onInit(CBlob@ this)
 			if (soundmanager !is null)
 			{
 				soundmanager.set_bool("manager_Type", false);
-				soundmanager.set_f32("custom_pitch", 1.075f);
+				soundmanager.set_f32("custom_pitch", 0.95f);
 				soundmanager.Init();
 				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
 
@@ -111,7 +111,7 @@ void onInit(CBlob@ this)
 			if (soundmanager !is null)
 			{
 				soundmanager.set_bool("manager_Type", true);
-				soundmanager.set_f32("custom_pitch", 1.075f);
+				soundmanager.set_f32("custom_pitch", 0.95f);
 				soundmanager.Init();
 				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
 				

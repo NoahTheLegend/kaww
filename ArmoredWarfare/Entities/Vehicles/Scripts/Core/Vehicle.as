@@ -220,7 +220,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 6;
 			linear_length = 16.0f;
-			scale_infantry_damage = 0.5f;
+			scale_infantry_damage = 0.2f;
 			scale_impact_damage = 2.0f;
 			break;
 		}
@@ -310,7 +310,7 @@ void onInit(CBlob@ this)
 		case _bmpturret:
 		{
 			weaponRating = -2;
-			linear_length = 4.0f;
+			linear_length = 5.0f;
 			scale_impact_damage = 0.3f;
 			scale_infantry_damage = 0.15f;
 			impact_radius = 8.0f;
