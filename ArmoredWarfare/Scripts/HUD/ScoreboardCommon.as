@@ -1,7 +1,7 @@
 #include "ColoredNameToggleCommon.as"
 
 const string[] descriptions = {
-	"A chance to receive extra ore or wood (+20%, +2)",
+	"A chance to receive extra ore or wood (+33%, +2)",
 	"Shorter respawn time, longer spawn protection, more heal (-1s, +1.5s, +10%)",
 	"Faster constructing, less constraining building (+20%, -50% lock radius)",
 	"Cheaper and stronger molotovs (-25%-33%, more liquid)",
