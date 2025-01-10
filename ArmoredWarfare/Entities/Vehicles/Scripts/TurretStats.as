@@ -333,7 +333,7 @@ class IS7Turret : TurretStats
         elevation_speed = 0.5f;
         bullet_pos_offset = Vec2f(0,0);
         fire_sound = "sound_128mm";
-        shape_offset = Vec2f(3, -13);
+        shape_offset = Vec2f(0, -13);
     }
 };
 
