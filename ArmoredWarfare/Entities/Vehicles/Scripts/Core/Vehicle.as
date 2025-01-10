@@ -421,11 +421,11 @@ void onInit(CBlob@ this)
 		intake = 50.0f; break;
 
 		case _btr82a:
+		case _humvee:
 		intake = 75.0f; break;
 
 		case _pszh4:
 		case _bradley:
-		case _humvee:
 		intake = 100.0f; break;
 
 		case _techtruck:
