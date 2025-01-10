@@ -25,6 +25,7 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shop offset", Vec2f_zero);
 	this.set_string("shop description", "Construct");
 	this.set_u8("shop icon", 15);
+	this.Tag(SHOP_AUTOCLOSE);
 
 	this.Tag("ignore_arrow");
 	this.Tag("builder always hit");
