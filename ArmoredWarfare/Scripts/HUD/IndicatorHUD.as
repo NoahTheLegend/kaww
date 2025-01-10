@@ -579,6 +579,7 @@ u8 getIndicatorFrame(int hash)
 		case _shielder:
 		case _techtruck:
 		case _civcar:
+		case _lada:
 		case _humvee:
 		frame = 2; break;
 
