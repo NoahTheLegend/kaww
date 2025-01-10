@@ -549,27 +549,9 @@ void BuildShopMenu(CBlob@ this, CBlob @caller, string description, Vec2f offset,
 	{
 		if (!this.hasTag(SHOP_AUTOCLOSE))
 			menu.deleteAfterClick = false;
+		
 		addShopItemsToMenu(this, menu, caller);
-		/*
-		//keybinds
-		array<EKEY_CODE> numKeys = { KEY_KEY_1, KEY_KEY_2, KEY_KEY_3, KEY_KEY_4, KEY_KEY_5, KEY_KEY_6, KEY_KEY_7, KEY_KEY_8, KEY_KEY_9, KEY_KEY_0 };
-		uint keybindCount = Maths::Min(shopitems.length(), numKeys.length());
-
-		for (uint i = 0; i < keybindCount; i++)
-		{
-			CBitStream params;
-			params.write_u16(caller.getNetworkID());
-			params.write_bool(shopitems[i].spawnToInventory);
-			params.write_bool(shopitems[i].spawnInCrate);
-			params.write_bool(shopitems[i].producing);
-			params.write_u8(i);
-			params.write_bool(true); //used hotkey?
-
-			menu.AddKeyCommand(numKeys[i], this.getCommandID("shop buy"), params);
-		}
-		*/
 	}
-
 }
 
 void BuildDefaultShopMenu(CBlob@ this, CBlob @caller)
