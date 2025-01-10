@@ -63,7 +63,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		{
 			GUI::SetFont("title-small");
 			GUI::GetTextDimensions(team.getName(), dim);
-			GUI::DrawIcon("FractionIcons.png", teamnum, Vec2f(64,64), Vec2f(topleft.x + 64 + dim.x, topleft.y - 10), 0.5f, teamnum);
+			//GUI::DrawIcon("FractionIcons.png", teamnum, Vec2f(64,64), Vec2f(topleft.x + 64 + dim.x, topleft.y - 10), 0.5f, teamnum);
 			GUI::DrawText(descriptions[teamnum], Vec2f(topleft.x + 140 + dim.x, topleft.y + 4), SColor(0xffffffff));
 		}
 	}
