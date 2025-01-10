@@ -41,7 +41,7 @@ void onInit(CBlob@ this)
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-25.5f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-27.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 
-	this.getShape().SetOffset(Vec2f(4, 2));
+	this.getShape().SetOffset(Vec2f(0, 2));
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
