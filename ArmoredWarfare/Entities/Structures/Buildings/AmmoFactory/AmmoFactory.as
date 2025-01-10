@@ -175,7 +175,7 @@ void spawnMetal(CBlob@ this)
 {
 	if (isServer())
 	{
-		CBlob@ b = server_CreateBlob(this.get_string("prod_blob"), -1, this.getPosition());
+		CBlob@ b = server_CreateBlob(this.get_string("prod_blob"), this.getTeamNum(), this.getPosition());
 		b.server_SetQuantity(this.get_u8("prod_amount"));
 		if (!this.server_PutInInventory(b))
 		{
