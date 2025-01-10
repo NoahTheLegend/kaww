@@ -167,13 +167,13 @@ void onInit(CBlob@ this)
 		case _nh90:
 		case _grad:
 		case _humvee:
+		case _bmp:
+		case _btr82a:
 		armorRating = 3; break;
 
 		case _transporttruck:
 		case _armory:
-		case _btr82a:
 		case _btrturret:
-		case _bmp:
 		case _bmpturret:
 		case _pszh4:
 		case _pszh4turret:
@@ -309,7 +309,7 @@ void onInit(CBlob@ this)
 		case _btrturret:
 		case _bmpturret:
 		{
-			weaponRating = -2;
+			weaponRating = 1;
 			linear_length = 5.0f;
 			scale_impact_damage = 0.3f;
 			scale_infantry_damage = 0.15f;
@@ -318,7 +318,7 @@ void onInit(CBlob@ this)
 		}
 		case _pszh4turret:
 		{
-			weaponRating = -2;
+			weaponRating = 1;
 			linear_length = 4.0f;
 			scale_impact_damage = 0.25f;
 			scale_infantry_damage = 0.15f;
