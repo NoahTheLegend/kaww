@@ -48,15 +48,15 @@ class PNGLoader
 		if (!getRules().hasTag("first init teams")) // first match always sets same teams (6 and 1)
 		{
 			getRules().Tag("first init teams");
-			u8 teamleft = (Time_Local()%(XORRandom(8)+1));
+			u8 teamleft = (Time_Local()%(XORRandom(4)+1));
 			while (teamleft == prevteamleft)
 			{
-				teamleft = (Time_Local()%(XORRandom(8)+1));
+				teamleft = (Time_Local()%(XORRandom(4)+1));
 			}
-			u8 teamright = (Time_Local()%(XORRandom(8)+1));
+			u8 teamright = (Time_Local()%(XORRandom(4)+1));
 			while (teamright == teamleft || teamright == prevteamright)
 			{
-				teamright = (Time_Local()%(XORRandom(8)+1));
+				teamright = (Time_Local()%(XORRandom(4)+1));
 			}
 
 			CRules@ rules = getRules();
