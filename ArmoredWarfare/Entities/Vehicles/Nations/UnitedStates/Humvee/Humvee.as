@@ -19,7 +19,7 @@ void onInit(CBlob@ this)
 	consts.net_threshold_multiplier = 2.0f;
 
 	Vehicle_Setup(this,
-	              7500.0f, // move speed
+	              6500.0f, // move speed
 	              0.87f,  // turn speed
 	              Vec2f(0.0f, 0.56f), // jump out velocity
 	              true  // inventory access
@@ -35,11 +35,11 @@ void onInit(CBlob@ this)
 	                         0.5f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(18.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(16.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(21.0f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(19.5f, 7.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-24.5f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-26.0f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-25.5f, 7.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-27.0f, 7.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
 
 	this.getShape().SetOffset(Vec2f(0, 2));
 	
