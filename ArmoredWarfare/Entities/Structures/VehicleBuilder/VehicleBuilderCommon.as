@@ -6,6 +6,8 @@
 //Combined
 void buildT1ShopCombined(CBlob@ this)
 {
+    this.set_Vec2f("shop size", Vec2f(4, 4));
+    makeFactionArmedTransport(this, this.getTeamNum());
 }
 
 void buildT2ShopCombined(CBlob@ this)
