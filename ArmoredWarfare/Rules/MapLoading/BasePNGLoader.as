@@ -78,15 +78,15 @@ class PNGLoader
 		}
 		else
 		{
-			u8 teamleft = XORRandom(7);
+			u8 teamleft = XORRandom(3);
 			while (teamleft == prevteamleft)
 			{
-				teamleft = XORRandom(7);
+				teamleft = XORRandom(3);
 			}
-			u8 teamright = XORRandom(7);
+			u8 teamright = XORRandom(3);
 			while (teamright == teamleft || teamright == prevteamright)
 			{
-				teamright = XORRandom(7);
+				teamright = XORRandom(3);
 			}
 
 			CRules@ rules = getRules();
