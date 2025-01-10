@@ -394,7 +394,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
         	f32 extra_amount = 0.0f;
         	if (liberals_power)
 			{
-				extra_amount = 0.8f;
+				extra_amount = 0.66f;
 				buy_time *= extra_amount;
 			}
 
