@@ -197,7 +197,9 @@ shared class TDMSpawns : RespawnSystem
 				blob.server_Die();
 			}
 
-			CBlob@ playerBlob = SpawnPlayerIntoWorld(getSpawnLocation(p_info), p_info);
+			CBlob@ spawner; 
+			Vec2f location = getSpawnLocation(p_info, spawner);
+			CBlob@ playerBlob = SpawnPlayerIntoWorld(location, p_info, spawner);
 
 			if (playerBlob !is null)
 			{
@@ -211,13 +213,6 @@ shared class TDMSpawns : RespawnSystem
 
 					CBlob@[] tents;
 					getBlobsByName("tent", @tents);
-
-					//PerkStats@ stats;
-					//if (XORRandom(100) < 50 && player.get("PerkStats", @stats) && stats.id == Perks::deathincarnate)
-					//	return;
-					
-					//if (b is null && tents.length > 0)
-					//	decrementTickets(getRules(), playerBlob.getTeamNum());
 				}
 			}
 		}
@@ -234,7 +229,7 @@ shared class TDMSpawns : RespawnSystem
 		return info.can_spawn_time == 0;
 	}
 
-	Vec2f getSpawnLocation(PlayerInfo@ p_info)
+	Vec2f getSpawnLocation(PlayerInfo@ p_info, CBlob@ &out spawner)
 	{
 		CBlob@[] spawns;
 		CBlob@[] teamspawns;
@@ -258,6 +253,9 @@ shared class TDMSpawns : RespawnSystem
 				b.server_Hit(b, b.getPosition(), Vec2f(0,0), dmg, Hitters::builder);
 			}
 			teamspawns.push_back(b);
+
+			@spawner = @b;
+			//printf("RETURN "+spawner.getNetworkID()+" "+spawner.getName());
 			return b.getPosition();
 		}
 		else if (getBlobsByName("tent", @spawns) || getBlobsByTag("importantarmory", @spawns))
@@ -269,13 +267,14 @@ shared class TDMSpawns : RespawnSystem
 					teamspawns.push_back(spawns[step]);
 				}
 			}
-			//printf("wtf?");
 		}
-		//printf("out");
 
 		if (teamspawns.length > 0)
 		{
 			int spawnindex = XORRandom(997) % teamspawns.length;
+
+			@spawner = @teamspawns[spawnindex];
+			//printf("RETURN "+spawner.getNetworkID()+" "+spawner.getName());
 			return teamspawns[spawnindex].getPosition();
 		}
 

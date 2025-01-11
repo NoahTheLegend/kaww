@@ -596,7 +596,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 		return;
 	}
 	attachedPoint.offsetZ = 1.0f;
-	this.getShape().SetStatic(true);
+
 	Vehicle_onAttach(this, v, attached, attachedPoint);
 }
 
@@ -609,6 +609,6 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 		return;
 	}
 	this.Tag("update seats");
-	this.getShape().SetStatic(false);
+
 	Vehicle_onDetach(this, v, detached, attachedPoint);
 }

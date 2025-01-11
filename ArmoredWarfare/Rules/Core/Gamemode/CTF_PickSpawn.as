@@ -86,7 +86,6 @@ void BuildRespawnMenu(CRules@ this, CPlayer@ player)
                     {
                         button2.SetEnabled(false);
                         button2.SetHoverText(getTranslatedString("respawn is contested"));
-
                     }
 
 					if (LAST_PICK == respawn.getNetworkID())
@@ -136,11 +135,8 @@ void onTick(CRules@ this)
         {
             getHUD().ClearMenus(true);
             return;
-
         }
-
     }
-
 }
 
 //hook after the change has been decided
@@ -171,7 +167,6 @@ void onSetPlayer(CRules@ this, CBlob@ blob, CPlayer@ player)
 
 		MENU_ALREADY = false;
 	}
-
 }
 
 void ReadPickCmd(CRules@ this, CBitStream @params)
@@ -186,7 +181,6 @@ void ReadPickCmd(CRules@ this, CBitStream @params)
         //  the involved player is our own. 
 		LAST_PICK = pick; 
 
-		
 		getHUD().ClearMenus(true);
 		player.client_RequestSpawn(pick);
 

@@ -312,7 +312,7 @@ void onInit(CBlob@ this)
 			weaponRating = 1;
 			linear_length = 5.0f;
 			scale_impact_damage = 0.3f;
-			scale_infantry_damage = 0.15f;
+			scale_infantry_damage = 0.2f;
 			impact_radius = 8.0f;
 			break;
 		}
@@ -398,6 +398,7 @@ void onInit(CBlob@ this)
 
 		case _m103:
 		case _kingtiger:
+		case _m40:
 		intake = -40.0f; break;
 
 		case _t10:
@@ -416,7 +417,6 @@ void onInit(CBlob@ this)
 		intake = 20.0f; break;
 
 		case _m60:
-		case _m40:
 		case _radarapc:
 		intake = 50.0f; break;
 
