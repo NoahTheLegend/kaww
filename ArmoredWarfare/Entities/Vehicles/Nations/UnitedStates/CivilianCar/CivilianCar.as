@@ -11,6 +11,7 @@ void onInit(CBlob@ this)
 	this.Tag("weak vehicle");
 	this.Tag("pass_60sec");
 	this.Tag("truck");
+	this.Tag("respawn_if_crew_present");
 
 	Vehicle_Setup(this,
 	              6500.0f, // move speed

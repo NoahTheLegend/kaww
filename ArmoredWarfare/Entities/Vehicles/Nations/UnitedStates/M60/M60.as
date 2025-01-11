@@ -8,8 +8,10 @@ void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
 	this.Tag("tank");
+	this.Tag("respawn_if_crew_present");
 	this.Tag("deal_bunker_dmg");
 	this.Tag("engine_can_get_stuck");
+	this.Tag("respawn_if_crew_present");
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();

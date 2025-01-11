@@ -12,6 +12,7 @@ void onInit(CBlob@ this)
 	this.Tag("engine_can_get_stuck");
 	this.Tag("friendly_bullet_pass");
 	this.Tag("truck");
+	this.Tag("respawn_if_crew_present");
 
 	this.set_f32("max_angle_diff", 0.5f);
 

@@ -7,6 +7,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("vehicle");
 	this.Tag("apc");
+	this.Tag("respawn_if_crew_present");
 	this.Tag("engine_can_get_stuck");
 	this.Tag("ignore fall");
 	this.Tag("radar");
@@ -100,7 +101,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		else
 		{
 			if (isServer())  this.set_s32("charge", Maths::Max(this.get_s32("charge") - reward, min_charge));
-			if (isClient()) this.getSprite().PlaySound("NoAmmo.ogg", 0.5f, 1.0f);
+			if (isClient() && getLocalPlayerBlob() !is null && getLocalPlayerBlob().isAttachedTo(this)) this.getSprite().PlaySound("NoAmmo.ogg", 0.5f, 1.0f);
 		}
 
 		SyncCharge(this);
@@ -151,6 +152,7 @@ void onRender(CSprite@ this)
 	Vec2f pos = blob.getPosition();
 	Vec2f oldpos = blob.getOldPosition();
 	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor()));
+	bool is_press = controls.mousePressed1;
 
 	GUI::SetFont("menu");
 
@@ -201,7 +203,7 @@ void onRender(CSprite@ this)
 		u8 row = i / cols;
 		Vec2f option_pos = grid_start + Vec2f(col * option_dim.x, row * option_dim.y);
 
-		if (!disable_other && mouseOn(blob, option_pos, option_dim, solutions[i]))
+		if (!disable_other && mouseOn(blob, option_pos, option_dim, solutions[i], is_press))
 		{
 			GUI::DrawPane(option_pos, option_pos + option_dim, SColor(125,255,255,255));
 			disable_other = true;
@@ -228,20 +230,18 @@ void onRender(CSprite@ this)
 	Vec2f progress_end = bar_start + Vec2f(bar_dim.x * progress, bar_dim.y);
 
 	GUI::DrawPane(bar_start, progress_end, SColor(255, 0, 255, 0));
-	
-	mouseWasPressed1 = controls.mousePressed1;
+	mouseWasPressed1 = is_press;
 }
 
 bool mouseWasPressed1 = false;
-bool mouseOn(CBlob@ blob, Vec2f pos, Vec2f dim, string text)
+bool mouseOn(CBlob@ blob, Vec2f pos, Vec2f dim, string text, bool is_press)
 {
 	CControls@ controls = getControls();
 	if (controls is null) return false;
 	
 	Vec2f mouse = getControls().getMouseScreenPos();
 	bool in_area = mouse.x > pos.x && mouse.x < pos.x + dim.x && mouse.y > pos.y && mouse.y < pos.y + dim.y;
-	bool is_press = controls.mousePressed1;
-	
+
 	if (in_area)
 	{
 		if (blob !is null && is_press && !mouseWasPressed1)
