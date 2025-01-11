@@ -124,6 +124,7 @@ void onInit(CBlob@ this)
 void onTick(CBlob@ this)
 {
 	visualTimerTick(this);
+	
 	if (this.get_bool("constructing") && getMap() !is null)
 	{
 		CBlob@[] overlapping;
@@ -165,8 +166,6 @@ void onTick(CBlob@ this)
 				if (this.get_u32("step") > 3) this.set_u32("step", 0);
 
 				if (XORRandom(4)==0) this.set_u32("step", XORRandom(4));
-
-				//this.getSprite().Gib();
 
 				u8 rand = XORRandom(5);
 				for (u8 i = 0; i < rand; i++)

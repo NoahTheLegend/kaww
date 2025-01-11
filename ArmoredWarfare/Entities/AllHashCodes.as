@@ -74,6 +74,7 @@ enum EntityHash
 	_m103turret = 889340560,
 	_m1abramsturret = 980230975,
 	_artilleryturret = 1853414531,
+	_pak38 = 1287737896,
 	_m40turret = 133215878,
 	_mausturret = 56012293,
 	_pinkmausturret = 625290237,

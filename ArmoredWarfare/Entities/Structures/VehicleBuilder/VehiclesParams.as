@@ -42,6 +42,7 @@ const u16 c_ftw = 12;
 const u16 c_c4 = 10;
 const u16 c_jav = 15;
 const u16 c_apsniper = 20;
+const u16 c_pak38 = 30;
 // build time
 const u16 ct_civcar = 30;
 const u16 ct_lada = 30;
@@ -83,6 +84,7 @@ const u16 ct_ftw = 0;
 const u16 ct_c4 = 0;
 const u16 ct_jav = 0;
 const u16 ct_apsniper = 0;
+const u16 ct_pak38 = 0;
 // common
 const string b = "blob";
 const string s = "mat_scrap";
@@ -355,7 +357,7 @@ const VehicleParams[][] vehicles = {
 
 void makeShopItem(CBlob@ this, const VehicleParams@ params, const bool inv = false, const bool crate = false)
 {
-	ShopItem@ item = addShopItem(this, params.name, params.token, params.blobName, params.description, inv, crate, false, 30);
+	ShopItem@ item = addShopItem(this, params.name, params.token, params.blobName, params.description, inv, crate, false, params.buildTime);
 	if (inv || crate || params.dim.x > 1 || params.dim.y > 1)
 	{
 		item.customButton = true;

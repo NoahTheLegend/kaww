@@ -172,7 +172,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) damage *= 5.0f;
 		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage
 		if (hitterBlob.exists("scale_infantry_damage")) damage *= hitterBlob.get_f32("scale_infantry_damage");
-		//printf(""+damage+" "+customData);
+		
+		//printf(""+damage+" "+customData+" "+hitterBlob.get_f32("scale_infantry_damage"));
 		if (hitterBlob.getName() == "mat_smallbomb")
 		{
 			damage *= 10;

@@ -6,7 +6,6 @@ void onInit(CBlob@ this)
 	this.Tag("respawn_if_crew_present");
 	this.Tag("blocks bullet");
 	this.Tag("fireshe");
-	this.Tag("pass_60sec");
 	this.Tag("artillery");
 	this.set_u16("gui_mat_icon", 50);
 }
@@ -17,6 +16,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 	{
 		attached.Tag("covered");
 		attached.Tag("artillery");
+		attached.Tag("increase_max_zoom");
 	}
 }
 
