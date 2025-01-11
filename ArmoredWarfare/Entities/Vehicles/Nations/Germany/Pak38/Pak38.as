@@ -3,6 +3,7 @@
 
 const f32 packing_time = 150;
 const f32 min_health_to_pack = 0.9f;
+const f32 shield_lean_mod = 1.0f;
 
 void onInit(CBlob@ this)
 {
@@ -72,6 +73,35 @@ void onInit(CBlob@ this)
 		Bar setbars;
     	setbars.gap = 20.0f;
     	this.set("Bar", setbars);
+	}
+}
+
+void onTick(CSprite@ this)
+{
+	CBlob@ blob = this.getBlob();
+	if (blob is null) return;
+	
+	f32 gun_angle = blob.get_f32("gunelevation");
+	if (gun_angle < 0) gun_angle += 90;
+	else if (gun_angle > 0) gun_angle -= 90;
+
+	if (blob.isFacingLeft()) gun_angle += 180;
+
+	gun_angle *= shield_lean_mod;
+	f32 angle = gun_angle;
+
+	CSpriteLayer@ shieldfront = this.getSpriteLayer("shieldfront");
+	if (shieldfront !is null)
+	{
+		shieldfront.ResetTransform();
+		shieldfront.RotateBy(angle, Vec2f(0, 0));
+	}
+
+	CSpriteLayer@ shieldback = this.getSpriteLayer("shieldback");
+	if (shieldback !is null)
+	{
+		shieldback.ResetTransform();
+		shieldback.RotateBy(angle, Vec2f(0, 0));
 	}
 }
 
