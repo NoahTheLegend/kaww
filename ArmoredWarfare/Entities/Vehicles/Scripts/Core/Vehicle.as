@@ -192,6 +192,7 @@ void onInit(CBlob@ this)
 		case _civcar:
 		case _lada:
 		case _armedmotorcycle:
+		case _pak38:
 		armorRating = 0; break;
 
 		case _motorcycle:
@@ -278,14 +279,28 @@ void onInit(CBlob@ this)
 			scale_impact_damage = 1.2f;
 			break;
 		}
+		case _pak38:
+		{
+			weaponRating = 1;
+			linear_length = 4.0f;
+			scale_impact_damage = 1.5f;
+			scale_infantry_damage = 0.125f;
+			impact_radius = 8.0f;
+			break;
+		}
 		case _bc25turret:
 		{
 			weaponRating = 2;
-			linear_length = 2.0f;
-			scale_infantry_damage = 0.75f;
+			linear_length = 4.0f;
+			scale_infantry_damage = 1.2f;
+			break;
+		}
+		case _ah1:
+		{
+			weaponRating = 2;
+			break;
 		}
 		case _uh1:
-		case _ah1:
 		case _mi24:
 		case _nh90:
 		{

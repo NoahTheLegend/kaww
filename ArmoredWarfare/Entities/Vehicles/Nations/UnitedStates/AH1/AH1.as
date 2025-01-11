@@ -785,6 +785,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (hitterBlob.getName() == "ballista_bolt")
 	{
+		if (hitterBlob.hasTag("small_bolt")) return damage * 0.33f;
 		return damage * 1.0f;
 	}
 

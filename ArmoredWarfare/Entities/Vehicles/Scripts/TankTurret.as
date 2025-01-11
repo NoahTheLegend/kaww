@@ -34,7 +34,7 @@ void onInit(CBlob@ this)
 	consts.collideWhenAttached = true;
 
 	if (stats.mg != "") CreateMachineGun(this, stats);
-    Restock(this, stats, stats.ammo_quantity);
+    if (stats.ammo_quantity != -1) Restock(this, stats, stats.ammo_quantity);
 
 	// init arm sprites
 	CSprite@ sprite = this.getSprite();
@@ -53,11 +53,14 @@ void onInit(CBlob@ this)
 
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
-	this.set_f32("gunelevation", (this.getTeamNum() == teamright ? 270 : 90) - stats.init_gun_angle);
+	this.set_f32("gunelevation", 90 - stats.init_gun_angle);
 
-	sprite.SetEmitSound("Hydraulics.ogg");
-	sprite.SetEmitSoundPaused(true);
-	sprite.SetEmitSoundVolume(1.25f);
+	if (stats.elevation_sound != "")
+	{
+		sprite.SetEmitSound(stats.elevation_sound);
+		sprite.SetEmitSoundPaused(true);
+		sprite.SetEmitSoundVolume(1.25f);
+	}
 
 	this.set_bool("turned", false);
 }
@@ -272,7 +275,7 @@ void onTick(CBlob@ this)
 
 		arm.RotateBy(gun_elevation, stats.arm_joint_offset);
 		arm.SetOffset(stats.arm_offset + (fl ? Vec2f(-1,-1) : Vec2f_zero));
-        arm.SetRelativeZ(-50.0f);
+        arm.SetRelativeZ(stats.arm_z);
 
 		if (this.getName() == "bc25turret")
 		{
@@ -530,11 +533,18 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 		if (isClient())
 		{
             CShape@ shape = this.getShape();
-            Vec2f shape_vel = shape.getVelocity();
+			
+            Vec2f blob_vel = Vec2f_zero;
+			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("TURRET");
+			if (ap !is null && ap.getOccupied() !is null)
+			{
+				blob_vel = ap.getOccupied().getVelocity();
+			}
+			else blob_vel = this.getVelocity();
 
 			for (int i = 0; i < 16 * pmod; i++)
 			{
-				ParticleAnimated("LargeSmokeGray", bullet_pos, shape_vel + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(10+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2 + XORRandom(2), -0.0031f, true);
+				ParticleAnimated("LargeSmokeGray", bullet_pos, blob_vel + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(10+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2 + XORRandom(2), -0.0031f, true);
 				//ParticleAnimated("LargeSmoke", bullet_pos, this.getShape().getVelocity() + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 6 + XORRandom(3), -0.0031f, true);
 			}
 
@@ -543,13 +553,13 @@ void Vehicle_onFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge
 				if (!apc)
 				{
 					float angle = Maths::ATan2(vel.y, vel.x) + 20;
-					ParticleAnimated("LargeSmoke", bullet_pos, shape_vel + Vec2f(Maths::Cos(angle), Maths::Sin(angle))/2, float(XORRandom(360)), 0.4f + XORRandom(40) * 0.01f, 4 + XORRandom(3), -0.0031f, true);
+					ParticleAnimated("LargeSmoke", bullet_pos, blob_vel + Vec2f(Maths::Cos(angle), Maths::Sin(angle))/2, float(XORRandom(360)), 0.4f + XORRandom(40) * 0.01f, 4 + XORRandom(3), -0.0031f, true);
 					float angle2 = Maths::ATan2(vel.y, vel.x) - 20;
-					ParticleAnimated("LargeSmoke", bullet_pos, shape_vel + Vec2f(Maths::Cos(angle2), Maths::Sin(angle2))/2, float(XORRandom(360)), 0.4f + XORRandom(40) * 0.01f, 4 + XORRandom(3), -0.0031f, true);
+					ParticleAnimated("LargeSmoke", bullet_pos, blob_vel + Vec2f(Maths::Cos(angle2), Maths::Sin(angle2))/2, float(XORRandom(360)), 0.4f + XORRandom(40) * 0.01f, 4 + XORRandom(3), -0.0031f, true);
 				}
 
-				ParticleAnimated("LargeSmokeGray", bullet_pos, shape_vel + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 6 + XORRandom(3), -0.0031f, true);
-				ParticleAnimated("Explosion", bullet_pos, shape_vel + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2, -0.0031f, true);
+				ParticleAnimated("LargeSmokeGray", bullet_pos, blob_vel + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 6 + XORRandom(3), -0.0031f, true);
+				ParticleAnimated("Explosion", bullet_pos, blob_vel + getRandomVelocity(0.0f, XORRandom(45) * 0.005f, 360) + vel/(40+XORRandom(24)), float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2, -0.0031f, true);
 			}
 		}
 

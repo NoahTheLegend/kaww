@@ -1863,6 +1863,7 @@ const string[] LargeMaps = {
 };
 
 const string[] AverageMaps = {
+	"City26.png",
 	"Abyss.png",
 	"SmallCity.png",
 	"SmallClassic.png",
@@ -1872,8 +1873,7 @@ const string[] AverageMaps = {
 	"SmallMortaring.png",
 	"SmallTouge.png",
 	"PlainHills.png",
-	"BloodGulch.png",
-	"City26.png"
+	"BloodGulch.png"
 };
 
 const string[] FlagMaps = {

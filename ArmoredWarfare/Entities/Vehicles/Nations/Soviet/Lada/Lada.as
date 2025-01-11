@@ -22,8 +22,8 @@ void onInit(CBlob@ this)
 	}
 
 	Vehicle_SetupGroundSound(this, v, "TechnicalTruckEngine",  // movement sound
-	                         2.4f, // movement sound volume modifier   0.0f = no manipulation
-	                         2.8f // movement sound pitch modifier     0.0f = no manipulation
+	                         0.5f, // movement sound volume modifier   0.0f = no manipulation
+	                         0.5f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 
 	CSprite@ sprite = this.getSprite();

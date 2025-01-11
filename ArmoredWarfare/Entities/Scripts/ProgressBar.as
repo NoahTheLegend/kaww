@@ -80,11 +80,12 @@ shared class ProgressBar : Bar {
 
         this.write_blob = false; // writes netid of the blob running this into params
         this.callback_command = "";
+        this.write_id = 0;
     }
 
     void Set(u16 _blobid, string _name, Vec2f _dim, bool _reoffset, Vec2f _offset, Vec2f _inherit,
     SColor _color_back, SColor _color_front, string _prop, f32 _max, f32 _lerp,
-    f32 _fadeout_time, f32 _fadeout_delay, bool _write_blob, string _callback_command)
+    f32 _fadeout_time, f32 _fadeout_delay, bool _write_blob, string _callback_command, u16 _write_id = 0)
     {
         this.blobid = _blobid;
         this.name = _name;
@@ -102,6 +103,7 @@ shared class ProgressBar : Bar {
         this.fadeout_delay = _fadeout_delay;
         this.write_blob = _write_blob;
         this.callback_command = _callback_command;
+        this.write_id = _write_id;
     }
     
     void updatebar()
@@ -158,6 +160,7 @@ shared class Bar : BarHandler{
     f32 gap; f32 mod_gap; f32 camera_factor;
     string prop; u32 tick_since_created;
     bool reoffset;
+    u16 write_id;
 
     ProgressBar@ getBar(string name)
     {
@@ -300,7 +303,10 @@ shared class BarHandler {
         {
             CBitStream params;
             if (active.write_blob)
-                params.write_u16(blob.getNetworkID());
+            {
+                if (active.write_id == 0) params.write_u16(blob.getNetworkID());
+                else params.write_u16(active.write_id);
+            }
             blob.SendCommand(blob.getCommandID(active.callback_command), params);
         }
     }

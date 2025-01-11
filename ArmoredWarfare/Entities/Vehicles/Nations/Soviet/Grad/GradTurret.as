@@ -37,3 +37,21 @@ void onInit(CBlob@ this)
 
 	sprite.SetEmitSoundSpeed(0.75f);
 }
+
+void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
+{
+	if (attached.hasTag("player"))
+	{
+		attached.Tag("artillery");
+		attached.Tag("increase_max_zoom");
+	}
+}
+
+void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
+{
+	if (detached.hasTag("player"))
+	{
+		detached.Untag("artillery");
+		detached.Untag("increase_max_zoom");
+	}
+}

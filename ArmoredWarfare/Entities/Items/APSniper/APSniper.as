@@ -3,7 +3,7 @@
 #include "HittersAW.as"
 
 const Vec2f arm_offset = Vec2f(-2, 0);
-const u32 fire_rate = 90;
+const u32 fire_rate = 75;
 const u8 fire_cost = 5;
 
 void onInit(CBlob@ this)

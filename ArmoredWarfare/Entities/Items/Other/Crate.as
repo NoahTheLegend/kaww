@@ -140,8 +140,11 @@ void onTick(CBlob@ this)
 		}
 	}
 	
-	this.SetFacingLeft(false);
-	this.getSprite().SetFacingLeft(false);
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
+	if (ap !is null && ap.getOccupied() !is null)
+	{
+		this.SetFacingLeft(ap.getOccupied().isFacingLeft());
+	}
 }
 
 void Land(CBlob@ this)
@@ -699,9 +702,6 @@ void onRender(CSprite@ this)
 	Vec2f pos2d = blob.getScreenPos();
 	u32 gameTime = getGameTime();
 	u32 unpackTime = blob.get_u32("unpack time");
-
-	blob.SetFacingLeft(false);
-	this.SetFacingLeft(false);
 
 	if (unpackTime > gameTime)
 	{
