@@ -3,7 +3,8 @@
 const string capture_prop = "capture time";
 const string last_capture_prop = "last capture time";
 const string teamcapping = "teamcapping";
-const f32 capture_time = 350/15; // divide by tck frequency
+
+const f32 capture_time_default = 20; // divide by tck frequency
 
 void onInit(CBlob@ this)
 {
@@ -82,6 +83,9 @@ void onTick(CBlob@ this)
     	this.set_s8(teamcapping, -1);
     }
 
+	f32 capture_time = capture_time_default;
+	if (this.exists("capture_time_custom")) capture_time = this.get_f32("capture_time_custom");
+
     if (this.get_f32(capture_prop) >= (this.getTeamNum() == 255 ? capture_time/2 : capture_time))
     {
     	this.set_f32(capture_prop, 0);
@@ -94,6 +98,9 @@ void onRender(CSprite@ this)
 {
 	CBlob@ blob = this.getBlob();
 	if (blob is null || blob.hasTag("no_cap_bar")) return;
+
+	f32 capture_time = capture_time_default;
+	if (blob.exists("capture_time_custom")) capture_time = blob.get_f32("capture_time_custom");
 
 	blob.set_f32(last_capture_prop, Maths::Lerp(blob.get_f32(last_capture_prop), blob.get_f32(capture_prop), 0.1f));
 	f32 returncount = Maths::Min(capture_time, blob.get_f32(last_capture_prop));

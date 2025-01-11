@@ -15,6 +15,8 @@ void onInit(CBlob@ this)
 	this.Tag("heavy");
 	this.Tag("reduce_upper_dmg_only_front");
 
+	this.set_f32("capture_time_custom", 40); // include VehicleCapBar.as tick frequency
+
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
 	consts.net_threshold_multiplier = 2.0f;

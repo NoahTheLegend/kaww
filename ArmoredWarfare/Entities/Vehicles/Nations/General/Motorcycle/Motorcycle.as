@@ -15,6 +15,7 @@ void onInit(CBlob@ this)
 	this.Tag("autoflip");
 
 	this.set_f32("max_angle_diff", 1.25f);
+	this.set_f32("capture_time_custom", 2); // include VehicleCapBar.as tick frequency
 
 	//print("" + this.getName().getHash());
 
