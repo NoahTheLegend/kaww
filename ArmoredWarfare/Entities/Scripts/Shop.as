@@ -11,8 +11,6 @@
 #include "ProgressBar.as";
 #include "TeamColorCollections.as";
 
-const u32 construct_endtime = 3*30;
-
 void onInit(CBlob@ this)
 {
 	this.addCommandID("shop buy");
@@ -21,7 +19,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("constructed");
 
 	this.set_f32("construct_time", 0);
-	this.set_u32("construct_endtime", construct_endtime);
+	this.set_u32("construct_endtime", 0);
 
 	if (!this.exists("shop available"))
 		this.set_bool("shop available", true);
@@ -148,6 +146,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		bool spawnInCrate = params.read_bool();
 		bool instant = params.read_bool();
 		bool producing = params.read_bool();
+		f32 buy_time = params.read_f32();
 		u8 s_index = params.read_u8();
 		bool hotkey = params.read_bool();
 
@@ -351,15 +350,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_string("constructing_name", "");
 		this.set_s8("constructing_index", 0);
 		this.set_bool("constructing", false);
-		//printf("construct");
 
 		u16 callerID;
 		if (!params.saferead_u16(callerID))
 			return;
+			
 		bool spawnToInventory = params.read_bool();
 		bool spawnInCrate = params.read_bool();
 		bool instant = params.read_bool();
 		bool producing = params.read_bool();
+		f32 buy_time = params.read_f32();
 		u8 s_index = params.read_u8();
 		bool hotkey = params.read_bool();
 
@@ -386,23 +386,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.set_s8("constructing_index", s_index);
 			this.set_bool("constructing", true);
 
-			u32 endtime = this.get_u32("construct_endtime");
-			if (s.blobName == "bunker")
-				endtime = 7.5f*30;
-			else if (s.blobName == "heavybunker")
-				endtime = 10.0f*30;
-			else if (s.blobName == "quarters")
-			{
-				endtime = 1.0f*30;
-			}
-			else if (s.blobName == "crane")
-			{
-				endtime = 15.0f*30;
-			}
-			else
-			{
-				endtime = construct_endtime;
-			}
+			u32 endtime = buy_time;
 
 			bool liberals_power = getRules().get_bool("enable_powers") && caller.getTeamNum() == 2; // team 2 buff
         	f32 extra_amount = 0.0f;
@@ -515,6 +499,7 @@ void addShopItemsToMenu(CBlob@ this, CGridMenu@ menu, CBlob@ caller)
 			params.write_bool(s_item.spawnInCrate);
 			params.write_bool(s_item.instant);
 			params.write_bool(s_item.producing);
+			params.write_f32(s_item.buy_time);
 			params.write_u8(u8(i));
 			params.write_bool(false); //used hotkey?
 
