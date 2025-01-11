@@ -21,6 +21,8 @@ void onInit(CBlob@ this)
 	this.Tag("reduce_upper_dmg_only_front");
 	this.Tag("override_timer_render");
 
+	this.set_f32("capture_time_custom", 40); // include VehicleCapBar.as tick frequency
+
 	this.set_u32("smoke_endtime", smoke_cooldown);
 	this.set_f32("smoke_time", smoke_cooldown); // load immediately
 	this.addCommandID("release smoke");

@@ -42,7 +42,8 @@ const u16 c_ftw = 12;
 const u16 c_c4 = 10;
 const u16 c_jav = 15;
 const u16 c_apsniper = 20;
-const u16 c_pak38 = 30;
+const u16 c_pak38 = 25;
+
 // build time
 const u16 ct_civcar = 30;
 const u16 ct_lada = 30;
@@ -85,10 +86,12 @@ const u16 ct_c4 = 0;
 const u16 ct_jav = 0;
 const u16 ct_apsniper = 0;
 const u16 ct_pak38 = 0;
+
 // common
 const string b = "blob";
 const string s = "mat_scrap";
 const string ds = "Scrap";
+
 // names
 const string n_civcar = "Build a Civilian Car";
 const string n_lada = "Build a Lada";
@@ -127,9 +130,10 @@ const string n_armory = "Build an Armory Truck";
 const string n_m2 = "Construct a M2 Browning Machine gun";
 const string n_mg42 = "Construct a MG42 Machine gun";
 const string n_ftw = "Construct a Firethrower";
-const string n_c4 = "Construct a C-4 Explosive";
-const string n_jav = "Construct a Javelin Missile launcher";
-const string n_apsniper = "Armor-Penetrating Sniper Rifle.";
+const string n_c4 = "Craft a C-4 Explosive";
+const string n_jav = "Craft a Javelin Missile launcher";
+const string n_apsniper = "Craft a Armor-Penetrating Sniper Rifle.";
+const string n_pak38 = "Construct a Pak-38 Anti-Tank Cannon";
 
 // descriptions
 const string d_civcar = "A civilian car.\n\nSpeedy transport.";
@@ -170,8 +174,10 @@ const string d_m2 = "M2 Browning machinegun.\nCan be attached to and detached fr
 const string d_mg42 = "MG42 machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.";
 const string d_ftw = "Fire thrower.\nCan be attached to and detached from some vehicles.\n\nUses Special Ammunition.";
 const string d_c4 = "A strong explosive, very effective against blocks and doors.\n\nTakes some time after activation to explode.\nCan be defused.";
-const string d_jav = "Homing Missile launcher.";
-const string d_apsniper = "Armor-Penetrating Sniper Rifle.\nPenetrates non-solid blocks and flesh. Can penetrate tank armor.\n\nUses Special Ammunition.";
+const string d_jav = "Homing Missile launcher.\nSroll mouse wheel to change raising angle.\n\nUses HEAT warheads.";
+const string d_apsniper = "Armor-Penetrating Sniper Rifle.\nPenetrates non-solid blocks and flesh. Designed to penetrate tank armor.\n\nUses Special Ammunition.";
+const string d_pak38 = "Pak-38 Anti-Tank Cannon.\nA lightweight stationary weapon with good fire rate but tough control.\n\nUses 105mm";
+
 // blobnames
 const string bn_civcar = "civcar";
 const string bn_lada = "lada";
@@ -213,6 +219,8 @@ const string bn_ftw = "firethrower";
 const string bn_c4 = "c4";
 const string bn_jav = "launcher_javelin";
 const string bn_apsniper = "apsniper";
+const string bn_pak38 = "pak38";
+
 // icon tokens
 const string t_civcar = "$"+bn_civcar+"$";
 const string t_lada = "$"+bn_lada+"$";
@@ -254,6 +262,7 @@ const string t_ftw = "$icon_ft$";
 const string t_c4 = "$"+bn_c4+"$";
 const string t_jav = "$icon_jav$";
 const string t_apsniper = "$"+bn_apsniper+"$";
+const string t_pak38 = "$"+bn_pak38+"$";
 
 enum VehicleType
 {
@@ -266,7 +275,8 @@ enum VehicleType
 	artillery,
 	helicopter,
 	machinegun,
-	special,
+	weapons1,
+	special1,
 	TOTAL
 };
 
@@ -347,7 +357,13 @@ const VehicleParams[][] vehicles = {
 		VehicleParams(n_m2, t_m2, bn_m2, d_m2, c_m2, ct_m2, Vec2f(1,1)),
 		VehicleParams(n_mg42, t_mg42, bn_mg42, d_mg42, c_mg42, ct_mg42, Vec2f(1,1))
 	},
-	/* Special */
+	/* Weapons 1 */
+	{
+		VehicleParams(n_jav, t_jav, bn_jav, d_jav, c_jav, ct_jav, Vec2f(1,1)),
+		VehicleParams(n_apsniper, t_apsniper, bn_apsniper, d_apsniper, c_apsniper, ct_apsniper, Vec2f(2,1)),
+		VehicleParams(n_pak38, t_pak38, bn_pak38, d_pak38, c_pak38, ct_pak38, Vec2f(3,2))
+	},
+	/* Special 1 */
 	{
 		VehicleParams(n_bc25t, t_bc25t, bn_bc25t, d_bc25t, c_bc25t, ct_bc25t, Vec2f(2,2)),
 		VehicleParams(n_bmp, t_bmp, bn_bmp, d_bmp, c_bmp, ct_bmp, Vec2f(2,2)),
@@ -357,7 +373,7 @@ const VehicleParams[][] vehicles = {
 
 void makeShopItem(CBlob@ this, const VehicleParams@ params, const bool inv = false, const bool crate = false)
 {
-	ShopItem@ item = addShopItem(this, params.name, params.token, params.blobName, params.description, inv, crate, false, params.buildTime);
+	ShopItem@ item = addShopItem(this, params.name, params.token, params.blobName, params.description, inv, crate, params.buildTime == 0, params.buildTime);
 	if (inv || crate || params.dim.x > 1 || params.dim.y > 1)
 	{
 		item.customButton = true;

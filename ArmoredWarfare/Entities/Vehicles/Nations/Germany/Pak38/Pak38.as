@@ -3,7 +3,8 @@
 
 const f32 packing_time = 150;
 const f32 min_health_to_pack = 0.9f;
-const f32 shield_lean_mod = 1.0f;
+const f32 shield_lean_mod = 0.5f;
+const bool can_rotate = false;
 
 void onInit(CBlob@ this)
 {
@@ -122,6 +123,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
+	if (!can_rotate) return;
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
 	if (ap !is null)
 	{

@@ -377,6 +377,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			ShopItem[]@ shop_items;
 			if (!this.get(SHOP_ARRAY, @shop_items)) { return; }
+
 			if (s_index >= shop_items.length) { return; }
 			ShopItem@ s = shop_items[s_index];
 
@@ -427,6 +428,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	else if (cmd == this.getCommandID("constructed"))
 	{
 		if (this.get_f32("construct_time") == 0) return;
+		
 		//printf("constructed");
 		if (getNet().isServer())
 		{
@@ -436,6 +438,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			stream.write_bool(false);
 			stream.write_bool(true);
 			stream.write_bool(false);
+			stream.write_f32(this.get_f32("construct_endtime"));
 			stream.write_s8(this.get_s8("constructing_index"));
 			stream.write_bool(false);
 			//printf("sent");
@@ -560,6 +563,7 @@ void BuildShopMenu(CBlob@ this, CBlob @caller, string description, Vec2f offset,
 			params.write_bool(shopitems[i].spawnToInventory);
 			params.write_bool(shopitems[i].spawnInCrate);
 			params.write_bool(shopitems[i].producing);
+			params.write_f32(shopitems[i].buy_time);
 			params.write_u8(i);
 			params.write_bool(true); //used hotkey?
 

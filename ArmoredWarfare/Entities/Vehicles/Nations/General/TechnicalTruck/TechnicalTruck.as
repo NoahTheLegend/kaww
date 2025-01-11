@@ -13,6 +13,8 @@ void onInit(CBlob@ this)
 	this.Tag("truck");
 	this.Tag("respawn_if_crew_present");
 
+	this.set_f32("capture_time_custom", 8); // include VehicleCapBar.as tick frequency
+
 	this.set_f32("max_angle_diff", 0.5f);
 
 	CShape@ shape = this.getShape();

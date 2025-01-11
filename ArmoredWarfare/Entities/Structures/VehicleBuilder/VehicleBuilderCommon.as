@@ -18,7 +18,8 @@ void buildT1ShopCombined(CBlob@ this)
 	makeFactionVehicle(this, tn, VehicleType::artillery, 		0, false, false);
 	makeFactionVehicle(this, tn, VehicleType::helicopter, 		0, false, false);
 	makeFactionVehicle(this, tn, VehicleType::machinegun, 		0, false, true);
-	makeFactionVehicle(this, tn, VehicleType::special, 			0, false, false);
+	makeFactionVehicle(this, tn, VehicleType::weapons1, 		0, false, true);
+	makeFactionVehicle(this, tn, VehicleType::special1, 		0, false, false);
 
     {
 		ShopItem@ s = addShopItem(this, "Upgrade to Tier 2", "$vehiclebuildert2$", "vehiclebuildert2", "Tier 2 - Vehicle builder.\n\nUnlocks stronger ground vehicles and aircraft.", false, false);

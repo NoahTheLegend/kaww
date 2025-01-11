@@ -116,9 +116,9 @@ void onTick(CBlob@ this)
 			if (isClient() && getGameTime()%25==0)
 			{
 				this.add_u32("step", 1);
-				if (this.get_u32("step") > 3) this.set_u32("step", 0);
+				if (this.get_u32("step") > 2) this.set_u32("step", 0);
 
-				if (XORRandom(4)==0) this.set_u32("step", XORRandom(4));
+				if (XORRandom(4)==0) this.set_u32("step", XORRandom(3));
 
 				u8 rand = XORRandom(5);
 				for (u8 i = 0; i < rand; i++)
@@ -131,7 +131,7 @@ void onTick(CBlob@ this)
 					}
 				}
 
-				this.getSprite().PlaySound("Construct"+this.get_u32("step"), 0.6f+XORRandom(11)*0.01f, 0.95f+XORRandom(6)*0.01f);
+				this.getSprite().PlaySound("Construct"+(this.get_u32("step")+1), 0.6f+XORRandom(11)*0.01f, 0.95f+XORRandom(6)*0.01f);
 			}
 		}
 		this.add_f32("construct_time", has_caller || this.get_f32("construct_time") / this.get_u32("construct_endtime") > 0.975f ? 1 + count : -1);

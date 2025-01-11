@@ -9,6 +9,8 @@ void onInit(CBlob@ this)
 	this.Tag("ignore fall");
 	this.Tag("vehicle");
 
+	this.set_f32("capture_time_custom", 4); // include VehicleCapBar.as tick frequency
+
 	Vehicle_Setup(this,
 	              6400.0f, // move speed  //103
 	              0.05f,  // turn speed

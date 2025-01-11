@@ -14,6 +14,7 @@ void onInit(CBlob@ this)
 	this.Tag("blocks bullet");
 	this.Tag("heavy");
 
+	this.set_f32("capture_time_custom", 40); // include VehicleCapBar.as tick frequency
 	this.set_u8("type", this.getName() == "maus" ? 0 : this.getName() == "pinkmaus" ? 1 : 2);
 
 	CShape@ shape = this.getShape();

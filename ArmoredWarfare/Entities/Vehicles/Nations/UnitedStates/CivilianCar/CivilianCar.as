@@ -13,6 +13,8 @@ void onInit(CBlob@ this)
 	this.Tag("truck");
 	this.Tag("respawn_if_crew_present");
 
+	this.set_f32("capture_time_custom", 4); // include VehicleCapBar.as tick frequency
+
 	Vehicle_Setup(this,
 	              6500.0f, // move speed
 	              0.08f,  // turn speed
