@@ -197,9 +197,10 @@ shared class TDMSpawns : RespawnSystem
 				blob.server_Die();
 			}
 
-			CBlob@ spawner; 
-			Vec2f location = getSpawnLocation(p_info, spawner);
-			CBlob@ playerBlob = SpawnPlayerIntoWorld(location, p_info, spawner);
+			CBlob@ spawner;
+			CBlob@ default_spawn;
+			Vec2f location = getSpawnLocation(p_info, spawner, default_spawn);
+			CBlob@ playerBlob = SpawnPlayerIntoWorld(location, p_info, spawner, default_spawn);
 
 			if (playerBlob !is null)
 			{
@@ -229,18 +230,28 @@ shared class TDMSpawns : RespawnSystem
 		return info.can_spawn_time == 0;
 	}
 
-	Vec2f getSpawnLocation(PlayerInfo@ p_info, CBlob@ &out spawner)
+	Vec2f getSpawnLocation(PlayerInfo@ p_info, CBlob@ &out spawner, CBlob@ &out default_spawn)
 	{
 		CBlob@[] spawns;
 		CBlob@[] teamspawns;
 
 		CPlayer@ p = getPlayerByUsername(p_info.username);
-		//printf(""+p.get_u16("spawnpick"));
-		//if (p is null || getBlobByNetworkID(p.get_u16("spawnpick")) is null)
-		//{
-		//	printf("NULL");
-		//}
 		CBlob@ sp = getBlobByNetworkID(p.get_u16("spawnpick"));
+
+		// get default spawn first
+		if (getBlobsByName("tent", @spawns) || getBlobsByTag("importantarmory", @spawns))
+		{
+			for (uint step = 0; step < spawns.length; ++step)
+			{
+				if (spawns[step].getTeamNum() == s32(p_info.team))
+				{
+					teamspawns.push_back(spawns[step]);
+					printf("setting "+spawns[step].getName()+" as spawn idx "+spawns[step].getNetworkID());
+					@default_spawn = @spawns[step]; // store default spawn if other fail
+				}
+			}
+		}
+
 		if (p !is null && sp !is null
 		&& sp.get_f32("capture time") == 0
 		&& p.getTeamNum() == sp.getTeamNum())
@@ -255,20 +266,9 @@ shared class TDMSpawns : RespawnSystem
 			teamspawns.push_back(b);
 
 			@spawner = @b;
-			//printf("RETURN "+spawner.getNetworkID()+" "+spawner.getName());
 			return b.getPosition();
 		}
-		else if (getBlobsByName("tent", @spawns) || getBlobsByTag("importantarmory", @spawns))
-		{
-			for (uint step = 0; step < spawns.length; ++step)
-			{
-				if (spawns[step].getTeamNum() == s32(p_info.team))
-				{
-					teamspawns.push_back(spawns[step]);
-				}
-			}
-		}
-
+		
 		if (teamspawns.length > 0)
 		{
 			int spawnindex = XORRandom(997) % teamspawns.length;
