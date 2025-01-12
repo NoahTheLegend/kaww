@@ -117,16 +117,16 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		int index = mats.find(carriedName);
 		if (index == -1) return;
 
-		int fuelAmount = carry.getQuantity();
-		int fuelNeededPerOutput = input[index] / output[index];
-		int currentFuel = this.get_s16(fuel_prop);
-		int maxFuelToAdd = Maths::Min(output[index], max_fuel - currentFuel);
+		f32 fuelAmount = carry.getQuantity();
+		f32 fuelNeededPerOutput = f32(input[index]) / f32(output[index]);
+		f32 currentFuel = this.get_s16(fuel_prop);
+		f32 maxFuelToAdd = Maths::Min(output[index], max_fuel - currentFuel);
 
-		if (fuelAmount >= fuelNeededPerOutput && currentFuel < max_fuel)
+		if (fuelAmount >= fuelNeededPerOutput && currentFuel < max_fuel && fuelNeededPerOutput > 0)
 		{
-			int possibleOutput = fuelAmount / fuelNeededPerOutput;
-			int fuelToAdd = Maths::Min(possibleOutput, maxFuelToAdd);
-			int currentFuel = this.get_s16(fuel_prop);
+			f32 possibleOutput = f32(fuelAmount) / f32(fuelNeededPerOutput);
+			f32 fuelToAdd = Maths::Min(possibleOutput, maxFuelToAdd);
+			f32 currentFuel = this.get_s16(fuel_prop);
 			
 			this.set_s16(fuel_prop, currentFuel + fuelToAdd);
 			if (isClient() && currentFuel < 10 && this.get_s16(fuel_prop) >= 10 && this.get_s16(sound_cooldown_prop) == 0)
@@ -287,6 +287,8 @@ void onRender(CSprite@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	if (!isPTB()) return 0;
+
 	if (hitterBlob.getName() == "c4" && hitterBlob.getTeamNum() != this.getTeamNum())
 	{
 		if (!this.get_bool("booming")) ExplosionEffects(this);
@@ -363,7 +365,7 @@ void onTick(CSprite@ this)
 
 	if (blob.get_s16(fuel_prop) >= fuel_per_scrap)
 	{
-		f32 factor = Maths::Min(1.0f, blob.get_s16(fuel_prop) / sound_fadeout_start);
+		f32 factor = Maths::Min(1.0f, f32(blob.get_s16(fuel_prop)) / f32(sound_fadeout_start));
 		float volume = 0.0f + 0.5f * factor;
 		float speed = 0.5f + 0.5f * factor;
 

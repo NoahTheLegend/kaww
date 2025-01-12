@@ -674,6 +674,8 @@ void onInit(CRules@ this)
 	this.addCommandID("ping_path");
 	this.addCommandID("ping_timer");
 	this.addCommandID("ping_textonly");
+
+	this.addCommandID("add_artillery_explosion");
 }
 
 void onRestart(CRules@ this)
@@ -1153,6 +1155,17 @@ void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 
 			Sound::Play("PopIn", pos, 1.0f, 1.0f);
 		}
+	}
+	else if (cmd == this.getCommandID("add_artillery_explosion"))
+	{
+		Vec2f pos;
+		if (!params.saferead_Vec2f(pos)) return;
+
+		Vec2f[]@ artillery_explosions;
+		if (!this.get("artillery_explosions", @artillery_explosions)) return;
+
+		artillery_explosions.push_back(pos);
+		this.Tag("artillery_exploded");
 	}
 }
 
