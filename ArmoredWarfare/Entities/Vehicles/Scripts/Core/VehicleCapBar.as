@@ -90,7 +90,7 @@ void onTick(CBlob@ this)
     {
     	this.set_f32(capture_prop, 0);
     	this.server_setTeamNum(this.get_s8(teamcapping));
-    	this.getSprite().PlaySound("CapturePoint", 1.0f, 1.0f);
+    	this.getSprite().PlaySound(capture_time <= 10 ? "UnlockClass" : "CapturePoint", 1.0f, 1.0f);
     }   
 }
 
