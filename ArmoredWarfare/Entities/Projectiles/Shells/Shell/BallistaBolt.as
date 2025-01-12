@@ -78,7 +78,7 @@ void onTick(CBlob@ this)
 		this.getSprite().SetVisible(false);
 		this.getShape().SetStatic(true);
 
-		if (this.getTimeToDie() <= linger_time)
+		if (this.getTimeToDie() <= 1.0f)
 		{
 			ResetPlayer(this);
 		}
@@ -355,6 +355,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
 	if (this.hasTag("weaken")) projExplosionRadius *= 0.75f;
+
 	float projExplosionDamage = this.get_f32(projExplosionDamageString);
 	f32 length = this.get_f32("linear_length");
 
@@ -375,8 +376,23 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	}
 
 	Vec2f pos = this.getPosition();
+	bool is_artillery = isArtilleryProjectile(this);
 
-	if (isClient() && !isArtilleryProjectile(this) && !isAPCProjectile(this)) // hacked particles cast with createblob, dont play it twice
+	if (is_artillery && isClient())
+	{
+		CRules@ rules = getRules();
+		if (rules !is null)
+		{
+			Vec2f[]@ artillery_explosions;
+			if (rules.get("artillery_explosions", @artillery_explosions))
+			{
+				artillery_explosions.push_back(this.getPosition());
+				rules.Tag("artillery_exploded");
+			}
+		}
+	}
+
+	if (isClient() && !is_artillery && !isAPCProjectile(this)) // hacked particles cast with createblob, dont play it twice
 	{
 		for (int i = 0; i < 8; i++)
 		{
