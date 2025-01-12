@@ -137,6 +137,7 @@ void onTick(CBlob@ this)
 
 		f32 angle = getAngle(this, v.charge, stats, v);
 		f32 targetAngle;
+		f32 elevation_mod = 1.0f;
 		bool isOperator = false;
 		f32 deg = this.getAngleDegrees();
 		
@@ -189,6 +190,8 @@ void onTick(CBlob@ this)
 				if (p !is null && p.get("PerkStats", @stats))
 				{
 					isOperator = stats.id == Perks::operator;
+					elevation_mod = stats.elevation_mod;
+					
 					this.set_u8("high_angle", this.get_u8("init_high_angle") - stats.top_angle);
 					this.set_u8("low_angle", this.get_u8("init_low_angle") + stats.top_angle);
 				}
@@ -215,7 +218,7 @@ void onTick(CBlob@ this)
 			//if (getGameTime()%2==0)
 			{
 				f32 factor = stats.elevation_speed;
-				if (isOperator) factor *= 2;
+				if (isOperator) factor *= elevation_mod;
 
 				f32 difference = Maths::Abs(currentAngle - targetAngle);
 
