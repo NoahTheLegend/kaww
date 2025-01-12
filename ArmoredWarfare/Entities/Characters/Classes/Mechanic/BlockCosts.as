@@ -16,7 +16,7 @@ const ::u16 ladder = 10;
 const ::u16 barbed_wire = 1;
 const ::u16 building = 50;
 const ::u16 sandbags = 25;
-const ::u16 bush = 15;
+const ::u16 bush = 75;
 const ::u16 gate_wood = 200;
 const ::u16 gate_scrap = 2;
 }

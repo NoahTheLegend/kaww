@@ -123,8 +123,51 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	visualTimerTick(this);
-	
+	ConstructionEffects(this);
+
+	if (getGameTime() % 90 == 0)
+	{
+		if (getMap() !is null
+		&& !getMap().hasSupportAtPos(this.getPosition()+Vec2f(0,8))
+		&& !getMap().hasSupportAtPos(this.getPosition()+Vec2f(8,8))
+		&& !getMap().hasSupportAtPos(this.getPosition()+Vec2f(-8,8)))
+		{
+			this.server_Die();
+		}
+	}
+}
+
+void GetButtonsFor(CBlob@ this, CBlob@ caller)
+{
+	if (!canSeeButtons(this, caller)) return;
+
+	if (this.isOverlapping(caller) && caller.getName() == "mechanic")
+		this.set_bool("shop available", true);
+	else
+		this.set_bool("shop available", false);
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
+{
+	bool isServer = getNet().isServer();
+	if (cmd == this.getCommandID("shop made item"))
+	{
+		this.Tag("shop disabled"); //no double-builds
+
+		CBlob@ caller = getBlobByNetworkID(params.read_netid());
+		CBlob@ item = getBlobByNetworkID(params.read_netid());
+		if (item !is null && caller !is null)
+		{
+			this.getSprite().PlaySound("/ConstructShort.ogg");
+			this.getSprite().getVars().gibbed = true;
+			this.server_Die();
+			caller.ClearMenus();
+		}
+	}
+}
+
+void ConstructionEffects(CBlob@ this)
+{
 	if (this.get_bool("constructing") && getMap() !is null)
 	{
 		CBlob@[] overlapping;
@@ -200,49 +243,4 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-
-	if (getGameTime() % 90 == 0)
-	{
-		if (getMap() !is null
-		&& !getMap().hasSupportAtPos(this.getPosition()+Vec2f(0,8))
-		&& !getMap().hasSupportAtPos(this.getPosition()+Vec2f(8,8))
-		&& !getMap().hasSupportAtPos(this.getPosition()+Vec2f(-8,8)))
-		{
-			this.server_Die();
-		}
-	}
-}
-
-void GetButtonsFor(CBlob@ this, CBlob@ caller)
-{
-	if (!canSeeButtons(this, caller)) return;
-
-	if (this.isOverlapping(caller) && caller.getName() == "mechanic")
-		this.set_bool("shop available", true);
-	else
-		this.set_bool("shop available", false);
-}
-
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
-	bool isServer = getNet().isServer();
-	if (cmd == this.getCommandID("shop made item"))
-	{
-		this.Tag("shop disabled"); //no double-builds
-
-		CBlob@ caller = getBlobByNetworkID(params.read_netid());
-		CBlob@ item = getBlobByNetworkID(params.read_netid());
-		if (item !is null && caller !is null)
-		{
-			this.getSprite().PlaySound("/ConstructShort.ogg");
-			this.getSprite().getVars().gibbed = true;
-			this.server_Die();
-			caller.ClearMenus();
-		}
-	}
-}
-
-void onRender(CSprite@ this)
-{
-	visualTimerRender(this);
 }

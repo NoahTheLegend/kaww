@@ -438,7 +438,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			stream.write_bool(false);
 			stream.write_bool(true);
 			stream.write_bool(false);
-			stream.write_f32(this.get_f32("construct_endtime"));
+			stream.write_f32(this.get_u32("construct_endtime"));
 			stream.write_s8(this.get_s8("constructing_index"));
 			stream.write_bool(false);
 			//printf("sent");

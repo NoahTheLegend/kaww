@@ -8,7 +8,9 @@
 #include "StandardRespawnCommand.as"
 #include "StandardControlsCommon.as"
 #include "PlayerRankInfo.as"
-#include "VehiclesParams.as";
+#include "VehicleBuilderCommon.as"
+#include "ProgressBar.as"
+#include "MakeDustParticle.as"
 
 // Armory logic
 
@@ -44,7 +46,7 @@ void onInit(CBlob@ this)
 
 	Vehicle_SetupGroundSound(this, v, "ArmoryEngine",  // movement sound
 	                         0.35f, // movement sound volume modifier   0.0f = no manipulation
-	                         0.5f // movement sound pitch modifier     0.0f = no manipulation
+	                         0.35f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 
 	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(17.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
@@ -80,241 +82,20 @@ void onInit(CBlob@ this)
 
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_ft$", "IconFT.png", Vec2f(32, 32), 0, 2);
-	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_jav$","JavelinLauncher.png", Vec2f(32, 16), 2, 2);
 	AddIconToken("$icon_barge$","IconBarge.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_importantarmoryt2$", "ImportantArmoryT2.png", Vec2f(32, 32), 25, this.getTeamNum());
 
 	bool t1 = this.getName() == "importantarmory";
 	bool t2 = this.getName() == "importantarmoryt2";
 
-	{
-		ShopItem@ s = addShopItem(this, "Ammuniton", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 3);
-	}
 	if (t2)
 	{
-		ShopItem@ s = addShopItem(this, "Special Ammuniton", "$specammo$", "specammo", "Special ammunition for advanced weapons.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 15);
+		buildT2ImportantArmoryShop(this);
 	}
+	else
 	{
-		ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 15);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "105mm Shells", "$mat_bolts$", "mat_bolts", "Ammo for a tank's main gun.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 30);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 12);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 35);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press [SPACEBAR] while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 30);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Press [SPACEBAR] while holding to arm, ~4 seconds until boom.\nEffective against infantry.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 20);
-	}
-	{
-		bool rebels_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 3; // team 3 buff
-        u8 extra_amount = 0;
-        if (rebels_power) extra_amount = 4;
-		
-		ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 14-extra_amount);
-	}
-	//{
-	//	ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
-	//	AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
-	//	AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
-	//	AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
-	//}
-	
-	{
-		ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Rocket Ammo.\nHas a small explosion radius.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 50);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build a Motorcycle", "$motorcycle$", "motorcycle", d_moto);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build a Technical Truck", "$techtruck$", "techtruck", d_truck);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build a PSZH-IV APC", "$pszh4$", "pszh4", d_pszh);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build a BTR80a APC", "$btr82a$", "btr82a", d_btr);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build a M60 Tank", "$m60$", "m60", d_m60);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 40);
-	}
-	if (t2)
-	{
-		if (this.getTeamNum() == 2)
-		{
-			ShopItem@ s = addShopItem(this, "MG42 Machinegun", "$icon_mg$", "mg42", d_mg42, false, true);
-			s.customButton = true;
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
-		}
-		else
-		{
-			ShopItem@ s = addShopItem(this, "M2 Browning Machinegun", "$icon_mg$", "m2browning", d_m2, false, true);
-			s.customButton = true;
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 10);
-		}
-		{
-			ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", d_ftw, false, true);
-			s.customButton = true;
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 12);
-		}
-	}
-	if (t2)
-	{
-		ShopItem@ s = addShopItem(this, "Build a Bat.-Cht. 25t Light Tank", "$bc25t$", "bc25t", d_bc25t);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build a T-10 Tank", "$t10$", "t10", d_t10);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 60);
-	}
-	if (t1)
-	{
-		ShopItem@ s = addShopItem(this, "Upgrade the Armory!", "$icon_importantarmoryt2$", "importantarmoryt2", "Reinforced variant of the armory, with better protection and crafting tools");
-		s.customButton = true;
-		s.buttonwidth = 2;
-		s.buttonheight = 2;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 200);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Build Figther Plane", "$bf109$", "bf109", d_bf109);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 35);
-		s.customButton = true;
-		s.buttonwidth = 3;
-		s.buttonheight = 2;
-	}
-	if (t1)
-	{
-		if (this.getTeamNum() == 2)
-		{
-			ShopItem@ s = addShopItem(this, "MG42", "$icon_mg$", "mg42", "MG42 machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
-			s.customButton = true;
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
-		}
-		else
-		{
-			ShopItem@ s = addShopItem(this, "M2 Browning", "$icon_mg$", "m2browning", "M2 Browning machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
-			s.customButton = true;
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
-		}
-		{
-			ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", d_jav, false, true);
-			s.customButton = true;
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
-		}
-		{
-			ShopItem@ s = addShopItem(this, "Bomb", "$mat_smallbomb$", "mat_smallbomb", "Small explosive bombs.", false);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
-
-			s.customButton = true;
-
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-		}
-		{
-			ShopItem@ s = addShopItem(this, "C-4 Explosive", "$c4$", "c4", d_c4, false, false);
-			s.customButton = true;
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 12);
-			//AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
-		}
-	}
-
-	if (t2)
-	{
-		this.set_Vec2f("shop menu size", Vec2f(11, 7));
-		{
-			ShopItem@ s = addShopItem(this, "Build Bomber Plane", "$bomberplane$", "bomberplane", d_bomber);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 70);
-			s.customButton = true;
-			s.buttonwidth = 3;
-			s.buttonheight = 2;
-		}
-
-		{
-			ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", d_jav, false, true);
-			s.customButton = true;
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 25);
-		}
-		{
-			ShopItem@ s = addShopItem(this, "Barge", "$icon_barge$", "barge", d_barge, false, true);
-			s.customButton = true;
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
-		}
-
-		{
-			ShopItem@ s = addShopItem(this, "Build a Maus", "$maus$", "maus", d_maus);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 125);
-		}
-		{
-			ShopItem@ s = addShopItem(this, "Build Artillery", "$artillery$", "artillery", d_arti);
-			s.customButton = true;
-			s.buttonwidth = 3;
-			s.buttonheight = 2;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
-		}
-		{
-			ShopItem@ s = addShopItem(this, "Build UH1 Helicopter", "$uh1$", "uh1", d_uh1);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 50);
-		}
-		{
-			ShopItem@ s = addShopItem(this, "Bomb", "$mat_smallbomb$", "mat_smallbomb", "Small explosive bombs.", false);
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
-
-			s.customButton = true;
-
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-		}
-		{
-			ShopItem@ s = addShopItem(this, "C-4 Explosive", "$c4$", "c4", d_c4, false, false);
-			s.customButton = true;
-			s.buttonwidth = 1;
-			s.buttonheight = 1;
-			AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 12);
-			//AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
-		}
+		buildT1ImportantArmoryShop(this);
 	}
 
 	u8 teamleft = getRules().get_u8("teamleft");
@@ -328,11 +109,12 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	this.set_Vec2f("shop offset", Vec2f(-18, 0));
 
-	this.set_bool("shop available", true);
+	bool same_team = caller.getTeamNum() == this.getTeamNum();
+	this.set_bool("shop available", same_team);
 
 	if (!canSeeButtons(this, caller)) return;
 
-	if (this.getDistanceTo(caller) < this.getRadius() && caller.getTeamNum() == this.getTeamNum())
+	if (this.getDistanceTo(caller) < this.getRadius() && same_team)
 	{
 		CBitStream params;
 		params.write_u16(caller.getNetworkID());
@@ -341,7 +123,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	// button for runner
 	// create menu for class change
-	if (caller.getTeamNum() == this.getTeamNum())
+	if (same_team)
 	{
 		caller.CreateGenericButton("$change_class$", Vec2f(10, 0), this, buildSpawnMenu, getTranslatedString("Swap Class"));
 		caller.CreateGenericButton("$change_perk$", Vec2f(0, -10), this, buildPerkMenu, getTranslatedString("Switch Perk"));
@@ -414,6 +196,7 @@ void onTick(CBlob@ this)
 		}
 	}
 
+	ConstructionEffects(this);
 	Vehicle_LevelOutInAir(this);
 
 	CBlob@[] tents;
@@ -772,7 +555,6 @@ void onInventoryQuantityChange(CBlob@ this, CBlob@ blob, int oldQuantity)
 
 void onAddToInventory(CBlob@ this, CBlob@ blob)
 {
-	printf("e");
 	if (blob.getName() == "mat_scrap")
 	{
 		UpdatePickScrapMenu(this);
@@ -826,4 +608,84 @@ void RequestClientTakeScrapSync(CBlob@ this, CBlob@ blob)
 	CBitStream params;
 	params.write_u16(blob.getNetworkID());
 	this.SendCommand(this.getCommandID("update scrap menu"), params);
+}
+
+void ConstructionEffects(CBlob@ this)
+{
+	if (this.get_bool("constructing") && getMap() !is null)
+	{
+		CBlob@[] overlapping;
+		getMap().getBlobsInBox(this.getPosition()-Vec2f(24, 8), this.getPosition()+Vec2f(24, 8), @overlapping);
+
+		bool has_caller = false;
+		s8 caller_team = -1;
+		s8 count = -1;
+		
+		for (u16 i = 0; i < overlapping.length; i++)
+		{
+			CBlob@ blob = overlapping[i];
+			if (blob is null || blob.isAttached() || blob.hasTag("dead"))
+					continue;
+
+			if (blob.getNetworkID() == this.get_u16("builder_id"))
+			{
+				has_caller = true;
+				caller_team = blob.getTeamNum();
+			}
+		}
+
+		for (u16 i = 0; i < overlapping.length; i++)
+		{
+			CBlob@ blob = overlapping[i];
+			if (blob is null || blob.isAttached() || blob.hasTag("dead"))
+					continue;
+
+			if (caller_team == blob.getTeamNum() && blob.hasTag("player"))
+			{
+				count++;
+			}
+		}
+
+		if (has_caller)
+		{
+			if (isClient() && getGameTime()%25==0)
+			{
+				this.add_u32("step", 1);
+				if (this.get_u32("step") > 2) this.set_u32("step", 0);
+
+				if (XORRandom(4)==0) this.set_u32("step", XORRandom(3));
+
+				u8 rand = XORRandom(5);
+				for (u8 i = 0; i < rand; i++)
+				{
+					MakeDustParticle(this.getPosition()+Vec2f(XORRandom(24)-12, XORRandom(16)), XORRandom(5)<2?"Smoke.png":"dust2.png");
+					
+					if (XORRandom(3) != 0)
+					{
+						CParticle@ p = makeGibParticle("WoodenGibs.png", this.getPosition()+Vec2f(XORRandom(24)-12, XORRandom(16)), Vec2f(0, (-1-XORRandom(3))).RotateBy(XORRandom(61)-30.0f), XORRandom(16), 0, Vec2f(8, 8), 1.0f, 0, "", 7);
+					}
+				}
+
+				this.getSprite().PlaySound("Construct"+(this.get_u32("step")+1), 0.6f+XORRandom(11)*0.01f, 0.95f+XORRandom(6)*0.01f);
+			}
+		}
+		this.add_f32("construct_time", has_caller || this.get_f32("construct_time") / this.get_u32("construct_endtime") > 0.975f ? 1 + count : -1);
+		
+		if (this.get_f32("construct_time") <= 0)
+		{
+			this.set_f32("construct_time", 0);
+			this.set_string("constructing_name", "");
+			this.set_s8("constructing_index", 0);
+			this.set_bool("constructing", false);
+
+			Bar@ bars;
+			if (this.get("Bar", @bars))
+			{
+				if (hasBar(bars, "construct"))
+				{
+					bars.RemoveBar("construct", false);
+				}
+			}
+		}
+	}
 }

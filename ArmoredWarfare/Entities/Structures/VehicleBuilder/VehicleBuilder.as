@@ -36,27 +36,34 @@ void onInit(CBlob@ this)
 
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_ft$", "IconFT.png", Vec2f(32, 32), 0, 2);
-	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_jav$","JavelinLauncher.png", Vec2f(32, 16), 2, 2);
+
+	string name = this.getName();
 
 	//Combined
-	if (this.getName() == "vehiclebuilder" || this.getName() == "vehiclebuilderconst")
+	if (name == "vehiclebuilder" || name == "vehiclebuilderconst")
 		buildT1ShopCombined(this);
-	else if (this.getName() == "vehiclebuildert2" || this.getName() == "vehiclebuildert2const")
+	else if (name == "vehiclebuildert2" || name == "vehiclebuildert2const")
 		buildT2ShopCombined(this);
-	else if (this.getName() == "vehiclebuildert3")
+	else if (name == "vehiclebuildert3")
 		buildT3ShopCombined(this);
 	//Ground only
-	if (this.getName() == "vehiclebuilderground" || this.getName() == "vehiclebuildergroundconst")
+	if (name == "vehiclebuilderground" || name == "vehiclebuildergroundconst")
 		buildT1ShopGround(this);
-	else if (this.getName() == "vehiclebuildert2ground" || this.getName() == "vehiclebuildert2groundconst")
+	else if (name == "vehiclebuildert2ground" || name == "vehiclebuildert2groundconst")
 		buildT2ShopGround(this);
-	else if (this.getName() == "vehiclebuildert3ground" || this.getName() == "vehiclebuildert3groundconst")
+	else if (name == "vehiclebuildert3ground" || name == "vehiclebuildert3groundconst")
 		buildT3ShopGround(this);
 	//Air only
-	if (this.getName() == "vehiclebuilderair" || this.getName() == "vehiclebuilderairconst")
+	if (name == "vehiclebuilderair" || name == "vehiclebuilderairconst")
 		buildT1ShopAir(this);
-	else if (this.getName() == "vehiclebuildert2air" || this.getName() == "vehiclebuildert2airconst")
+	else if (name == "vehiclebuildert2air" || name == "vehiclebuildert2airconst")
 		buildT2ShopAir(this);
+	//Defensives only
+	if (name =="vehiclebuilderdefense" || name == "vehiclebuilderdefenseconst")
+		buildT1ShopDefense(this);
+	else if (name == "vehiclebuildert2defense" || name == "vehiclebuildert2defenseconst")
+		buildT2ShopDefense(this);
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -76,8 +83,67 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 void onTick(CBlob@ this)
 {
-	visualTimerTick(this);
-	
+	ConstructionEffects(this);
+}
+
+void GetButtonsFor(CBlob@ this, CBlob@ caller)
+{
+	this.set_bool("shop available", caller.getTeamNum() == this.getTeamNum());
+}
+
+void onCommand( CBlob@ this, u8 cmd, CBitStream @params )
+{
+	if (cmd == this.getCommandID("shop made item"))
+	{
+		this.getSprite().PlaySound( "/UpgradeT2.ogg" );
+		
+		bool isServer = (getNet().isServer());
+			
+		u16 caller, item;
+		
+		if(!params.saferead_netid(caller) || !params.saferead_netid(item))
+			return;
+		
+		CBlob@ blob = getBlobByNetworkID( caller );
+		CBlob@ purchase = getBlobByNetworkID( item );
+		Vec2f pos = this.getPosition();
+		
+		string name = params.read_string();
+
+		if (isServer && name == "maus")
+		{
+			if (blob.getPlayer() !is null && (blob.getPlayer().getSex() == 1 || blob.getSexNum() == 1))
+			{
+				CBlob@ newblob = server_CreateBlob("pinkmaus", purchase.getTeamNum(), this.getPosition());
+				if (newblob !is null)
+				{
+					purchase.Tag("dead");
+					purchase.server_Die();
+				}
+			}
+			else if (getBlobByName("info_desert") !is null)
+			{
+				CBlob@ newblob = server_CreateBlob("desertmaus", purchase.getTeamNum(), this.getPosition());
+				if (newblob !is null)
+				{
+					purchase.Tag("dead");
+					purchase.server_Die();
+				}
+			}
+		}
+		
+		if (name == "vehiclebuildert2" || name == "vehiclebuildert3"
+		|| name == "vehiclebuildert2ground" || name == "vehiclebuildert3ground"
+		|| name == "vehiclebuildert2air")
+		{
+			this.server_Die();
+			if (blob.isMyPlayer()) blob.ClearMenus();
+		}
+	}
+}
+
+void ConstructionEffects(CBlob@ this)
+{
 	if (this.get_bool("constructing") && getMap() !is null)
 	{
 		CBlob@[] overlapping;
@@ -153,65 +219,4 @@ void onTick(CBlob@ this)
 			}
 		}
 	}
-}
-
-void GetButtonsFor(CBlob@ this, CBlob@ caller)
-{
-	this.set_bool("shop available", caller.getTeamNum() == this.getTeamNum());
-}
-
-void onCommand( CBlob@ this, u8 cmd, CBitStream @params )
-{
-	if (cmd == this.getCommandID("shop made item"))
-	{
-		this.getSprite().PlaySound( "/UpgradeT2.ogg" );
-		
-		bool isServer = (getNet().isServer());
-			
-		u16 caller, item;
-		
-		if(!params.saferead_netid(caller) || !params.saferead_netid(item))
-			return;
-		
-		CBlob@ blob = getBlobByNetworkID( caller );
-		CBlob@ purchase = getBlobByNetworkID( item );
-		Vec2f pos = this.getPosition();
-		
-		string name = params.read_string();
-
-		if (isServer && name == "maus")
-		{
-			if (blob.getPlayer() !is null && (blob.getPlayer().getSex() == 1 || blob.getSexNum() == 1))
-			{
-				CBlob@ newblob = server_CreateBlob("pinkmaus", purchase.getTeamNum(), this.getPosition());
-				if (newblob !is null)
-				{
-					purchase.Tag("dead");
-					purchase.server_Die();
-				}
-			}
-			else if (getBlobByName("info_desert") !is null)
-			{
-				CBlob@ newblob = server_CreateBlob("desertmaus", purchase.getTeamNum(), this.getPosition());
-				if (newblob !is null)
-				{
-					purchase.Tag("dead");
-					purchase.server_Die();
-				}
-			}
-		}
-		
-		if (name == "vehiclebuildert2" || name == "vehiclebuildert3"
-		|| name == "vehiclebuildert2ground" || name == "vehiclebuildert3ground"
-		|| name == "vehiclebuildert2air")
-		{
-			this.server_Die();
-			if (blob.isMyPlayer()) blob.ClearMenus();
-		}
-	}
-}
-
-void onRender(CSprite@ this)
-{
-	visualTimerRender(this);
 }

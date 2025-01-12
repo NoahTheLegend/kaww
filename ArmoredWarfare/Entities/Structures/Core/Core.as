@@ -2,6 +2,7 @@
 #include "Hitters.as";
 #include "HittersAW.as";
 #include "Explosion.as";
+#include "GamemodeCheck.as";
 
 const string fuel_prop = "fuel_level";
 const string working_prop = "working";
