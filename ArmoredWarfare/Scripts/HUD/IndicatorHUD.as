@@ -570,7 +570,8 @@ void onRender(CRules@ this)
 
 u8 getIndicatorFrame(int hash)
 {
-	u8 frame = 0;
+	u8 frame = 0; // playerclasses have a different sprite sheet
+
 	switch(hash)
 	{
 		case _mechanic:
@@ -580,23 +581,23 @@ u8 getIndicatorFrame(int hash)
 		case _obj430:
 		frame = 1; break;
 
-		case _revolver:
-		case _shielder:
+		case _ranger:
+		case _lmg:
 		case _techtruck:
 		case _civcar:
 		case _lada:
 		case _humvee:
 		frame = 2; break;
 
-		case _ranger:
-		case _lmg:
+		case _shotgun:
+		case _firebringer:
 		case _btr82a:
 		case _bmp:
 		case _bradley:
 		frame = 3; break;
 
-		case _shotgun:
-		case _firebringer:
+		case _revolver:
+		case _shielder:
 		case _maus:
 		case _pinkmaus:
 		case _desertmaus:

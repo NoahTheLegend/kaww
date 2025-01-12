@@ -267,6 +267,23 @@ void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &ino
 
 		if (req == "blob")
 		{
+			if (blobName == "mat_scrap")
+			{
+				CRules@ rules = getRules();
+				if (rules !is null && inv1 !is null)
+				{
+					CPlayer@ p = inv1.getBlob().getPlayer();
+					
+					if (p !is null)
+					{
+						CBitStream params;
+						params.write_string(p.getUsername());
+						params.write_u16(quantity);
+						rules.SendCommand(rules.getCommandID("scrap_used"), params);
+					}
+				}
+			}
+			
 			u16 taken = 0;
 			if (inv1 !is null)
 			{

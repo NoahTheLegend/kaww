@@ -79,8 +79,9 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 
 	//draw player table header
 	GUI::DrawText(getTranslatedString("Soldier"), Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(getTranslatedString("Ping"), Vec2f(bottomright.x - 380, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Username"), Vec2f(bottomright.x - 330, topleft.y), SColor(0xffffffff));
-	GUI::DrawText(getTranslatedString("Ping"), Vec2f(bottomright.x - 171, topleft.y), SColor(0xffffffff));
+	GUI::DrawText(getTranslatedString("Scrap used"), Vec2f(bottomright.x - 171, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("KDR"), Vec2f(bottomright.x - 60, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Merits"), Vec2f(bottomright.x - accolades_start, topleft.y), SColor(0xffffffff));
 	GUI::DrawText(getTranslatedString("Rank"), Vec2f(bottomright.x - accolades_start - 92, topleft.y), SColor(0xffffffff));
@@ -371,24 +372,41 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			}
 		}
 
+		// draw scrap used amount
+		string[]@ scrap_used_username;
+		int[]@ scrap_used_amount;
+
+		int scrap_used = 0;
+		if (rules.get("scrap_used_username", @scrap_used_username) && rules.get("scrap_used_amount", @scrap_used_amount))
+		{
+			int player_idx = scrap_used_username.find(username);
+			if (player_idx != -1)
+			{
+				scrap_used = scrap_used_amount[player_idx];
+			}
+		}
+		GUI::DrawText("" + scrap_used, Vec2f(bottomright.x - 171, topleft.y), SColor(0xffffffff));
+
 		string stats = p.getKills()+" | "+p.getDeaths()+" | "+formatFloat(getKDR(p), "", 0, 2);
 		Vec2f stats_dim;
 		GUI::GetTextDimensions(stats, stats_dim);
 		GUI::DrawText("" + username, Vec2f(bottomright.x - 330, topleft.y), usernamecolour);
 
-		Vec2f tl = Vec2f(bottomright.x - 170, topleft.y-17);
+		Vec2f tl = Vec2f(bottomright.x - 380, topleft.y-17);
 		Vec2f tl_ping = tl + Vec2f(8, 18);
 		Vec2f br_ping = tl_ping + Vec2f(16,13);
 
 		int ping_frame = Maths::Min(ping_in_ms/100, 3);
 		if (ping_in_ms >= 1000) ping_frame = 4;
-		GUI::DrawIcon("ConnectionIcons.png", ping_frame, Vec2f(16,16), tl, 1.0f, SColor(225,255,255,255));
 		
+		bool draw_icon = true;
 		if (mousePos.x >= topleft.x && mousePos.y >= tl_ping.y
 			&& mousePos.x <= bottomright.x && mousePos.y <= br_ping.y) 
 		{
-			GUI::DrawText("" + ping_in_ms +" ms", Vec2f(bottomright.x - 140, topleft.y), SColor(0xffffffff));
+			draw_icon = false;
+			GUI::DrawText("" + ping_in_ms +" ms", Vec2f(bottomright.x - 381, topleft.y), SColor(0xffffffff));
 		}
+		if (draw_icon) GUI::DrawIcon("ConnectionIcons.png", ping_frame, Vec2f(16,16), tl, 1.0f, SColor(225,255,255,255));
 
 		GUI::DrawText(stats, Vec2f(bottomright.x - stats_dim.x - 10, topleft.y), SColor(0xffffffff));
 	}
@@ -609,16 +627,32 @@ void onTick(CRules@ this)
 void onInit(CRules@ this)
 {
 	onRestart(this);
+
+	this.addCommandID("scrap_used");
+	this.addCommandID("scrap_used_sync");
+
+	if (isClient())
+	{
+		CBitStream params;
+		params.write_bool(true); // init
+		this.SendCommand(this.getCommandID("scrap_used_sync"), params);
+	}
 }
 
 void onRestart(CRules@ this)
 {
-	if(isServer())
+	if (isServer())
 	{
 		this.set_u32("match_time", 0);
 		this.Sync("match_time", true);
 		getMapName(this);
 	}
+
+	string[] scrap_used_username;
+	int[] scrap_used_amount;
+
+	this.set("scrap_used_username", @scrap_used_username);
+	this.set("scrap_used_amount", @scrap_used_amount);
 }
 
 void getMapName(CRules@ this)
@@ -680,4 +714,72 @@ void makeWebsiteLink(Vec2f pos, const string&in text, const string&in website, b
 	}
 
 	GUI::DrawTextCentered(text, Vec2f(tl.x + (width * 0.50f), tl.y + (height * 0.50f)), 0xffffffff);
+}
+
+void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
+{
+	if (cmd == this.getCommandID("scrap_used"))
+	{
+		string username;
+		if (!params.saferead_string(username)) return;
+
+		u16 amount;
+		if (!params.saferead_u16(amount)) return;
+
+		CRules@ rules = getRules();
+		if (rules is null) return;
+		bool change = true;
+
+		string[]@ scrap_used_username;
+		if (!rules.get("scrap_used_username", @scrap_used_username)) change = false;
+
+		int[]@ scrap_used_amount;
+		if (!rules.get("scrap_used_amount", @scrap_used_amount)) change = false;
+
+		if (change)
+		{
+			int player_idx = scrap_used_username.find(username);
+			if (player_idx == -1)
+			{
+				scrap_used_username.push_back(username);
+				scrap_used_amount.push_back(amount);
+			}
+			else
+			{
+				scrap_used_amount[player_idx] += amount;
+			}
+		}
+	}
+	else if (cmd == this.getCommandID("scrap_used_sync"))
+	{
+		bool init = params.read_bool();
+
+		if (init && isServer())
+		{
+			// write all scrap used
+			SyncAllScrapUsed(this);
+		}
+		if (!init && isClient())
+		{
+			// read all scrap used
+			string[] scrap_used_username;
+			int[] scrap_used_amount;
+			
+			u32 count = params.read_s32();
+			for (u16 i = 0; i < count; i++)
+			{
+				string username;
+				if (!params.saferead_string(username)) return;
+
+				u16 amount;
+				if (!params.saferead_s32(amount)) return;
+
+				scrap_used_username.push_back(username);
+				scrap_used_amount.push_back(amount);
+			}
+
+			this.set("scrap_used_username", @scrap_used_username);
+			this.set("scrap_used_amount", @scrap_used_amount);
+		}
+	}
 }
