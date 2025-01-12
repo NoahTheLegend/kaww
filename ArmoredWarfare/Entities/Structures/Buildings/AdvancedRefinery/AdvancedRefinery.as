@@ -38,6 +38,7 @@ void onTick(CSprite@ this)
 				if (p !is null)
 				{
 					p.Z = 500.0f;
+					p.deadeffect = -1;
 				}
 				Vec2f velr = getRandomVelocity(90, 1.3f, 40.0f);
 				velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;

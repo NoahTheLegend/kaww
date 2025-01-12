@@ -26,11 +26,14 @@ void onInit(CBlob@ this)
 	this.set_f32("defuse_time", 10);
 	this.set_f32("caller_health", 999.0f);
 
+	this.getSprite().ScaleBy(Vec2f(1.25f,1.25f));
+
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)
 	{
 		ap.SetKeysToTake(key_action3);
 	}
+
 	this.set_u8("death_timer", 120);
 	this.Tag("change team on pickup");
 	this.Tag("weapon");
@@ -218,14 +221,19 @@ void onTick(CBlob@ this)
 		extra_amount = 2.5f;
 	}
 	f32 explode_time = EXPLODE_TIME - extra_amount;
+
 	u8 scale = Maths::Min(27, (explode_time - this.get_u16("exploding")/30) * 2.0f);
 	if (this.get_bool("explode") && this.get_u16("exploding") > 0)
 	{
 		if (this.get_u8("timer") >= 30-scale && this.get_u16("exploding") > 20)
 		{
-			this.getSprite().PlaySound("C4Beep.ogg", 1.0f, 1.0f+scale*0.0075f);
+			CSprite@ sprite = this.getSprite();
+			
+			sprite.animation.frame = (sprite.animation.frame + 1) % 2;
+			sprite.PlaySound("C4Beep.ogg", 1.0f, 1.0f+scale*0.0075f);
 			this.set_u8("timer", 0);
 		}
+
 		this.add_u8("timer", 1);
 
 		this.set_u16("exploding", this.get_u16("exploding") - 1);
@@ -308,6 +316,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			if (isClient())
 			{
+				this.getSprite().animation.frame = 0;
 				Sound::Play("C4Defuse.ogg", this.getPosition(), 1.0f, 1.15f);
 			}
 
