@@ -59,6 +59,7 @@ void onTick(CRules@ this)
 	handlePlayers(p);
 	handleVehicles();
 
+	handleArtilleryExplosions(this);
 	//printf(player_frames.size()+" "+player_teams.size()+" "+player_indicator_pos.size()+" "+vehicle_frames.size()+" "+vehicle_teams.size()+" "+vehicle_indicator_pos.size()+" "+vehicle_hpbar_ids.size());
 }
 
@@ -116,6 +117,8 @@ void Update(CPlayer@ p, CBlob@ local)
 
 	CMap@ map = getMap();
 	if (map == null) return;
+
+	CRules@ rules = getRules();
 
 	mapWidth = map.tilemapwidth * 8.0f;
 	mapHeight = map.tilemapheight * 8.0f;
@@ -192,7 +195,9 @@ void handlePlayers(CPlayer@ p)
 void onRender(CRules@ this)
 {
 	if (g_videorecording) return;
+
 	renderPings(this);
+	renderArtilleryExplosions(this);
 
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
@@ -683,6 +688,10 @@ void onRestart(CRules@ this)
 void Reset(CRules@ this)
 {
 	this.Untag("animateGameOver");
+
+	Vec2f[] artillery_explosions;
+	this.set("artillery_explosions", @artillery_explosions);
+	remove_artillery_timer = 0;
 }
 
 void onStateChange(CRules@ this, const u8 oldState)
@@ -859,6 +868,53 @@ void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 	// Health meter inside
 	GUI::DrawRectangle(Vec2f(pos.x - dimension.x + 6,                        pos.y + y + 0),
 					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
+}
+
+const u16 artillery_icon_time = 6*30;
+u16 remove_artillery_timer = 0;
+
+void handleArtilleryExplosions(CRules@ this)
+{
+	if (this.hasTag("artillery_exploded"))
+	{
+		this.Untag("artillery_exploded");
+		remove_artillery_timer = artillery_icon_time;
+	}
+
+	if (remove_artillery_timer > 0)
+	{
+		remove_artillery_timer--;
+	}
+	else
+	{
+		Vec2f[]@ artillery_explosions;
+		if (this.get("artillery_explosions", @artillery_explosions))
+		{
+			if (artillery_explosions.size() > 0)
+			{
+				artillery_explosions.erase(0);
+			}
+		}
+	}
+}
+
+void renderArtilleryExplosions(CRules@ this)
+{
+	Vec2f[]@ artillery_explosions;
+	if (this.get("artillery_explosions", @artillery_explosions))
+	{
+		for (uint i = 0; i < artillery_explosions.size(); i++)
+		{
+			Vec2f pos = artillery_explosions[i];
+
+			float curXPos = pos.x - 28;
+			float indicatorProgress = curXPos / mapWidth;
+			float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+
+			Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
+			GUI::DrawIcon("indicator_sheet.png", 27, Vec2f(16, 25), indicatorPos, 1.0f);
+		}
+	}
 }
 
 Ping@[] map_pings;

@@ -209,8 +209,8 @@ class M40Turret : TurretStats
         super();
 
         name = "m40turret"; hash = _m40turret;
-        cooldown_time = 25*30; high_angle = 15; low_angle = 90; projectile_vel = -42.5f;
-        arm_offset = Vec2f(14.0f, -41.0f); arm_z = -50.0f; barrel_compression = 20; init_gun_angle = 0;
+        cooldown_time = 1*30; high_angle = 15; low_angle = 90; projectile_vel = -42.5f;
+        arm_offset = Vec2f(14.0f, -41.0f); arm_z = -50.0f; barrel_compression = 20; init_gun_angle = 0; ammo_quantity = 12;
         recoil_force = 900; fire_sound = "sound_128mm"; muzzle_offset = -28; arm_height = -2.0f; arm_joint_offset = Vec2f(-0.5f, 26.0f);
         ammo = "mat_smallbomb"; ammo_description = "Small Bombs";
         elevation_speed = 0.33f;
