@@ -951,11 +951,11 @@ shared class TDMCore : RulesCore
 
 			rules.set_s8("team_wins_on_end", team_wins_on_end);
 
-			if (winteamIndex >= 0)
+			if (winteamIndex >= 0 && !isCTFshared() && !isDTTshared() && !isPTBshared())
 			{
 				rules.SetTeamWon(winteamIndex);   //game over!
 				rules.SetCurrentState(GAME_OVER);
-				rules.SetGlobalMessage("Team \"{WINNING_TEAM}\" wins the game!\n\nWell done. Loading next map..." );
+				rules.SetGlobalMessage("Team \"{WINNING_TEAM}\" wins the game!\nEveryone of opposite team is dead!" );
 				rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.name);
 				SetCorrectMapTypeShared();
 			}
