@@ -33,7 +33,7 @@ void InitClasses(CBlob@ this)
 	AddIconToken("$rpg_class_icon$", "ClassIcon.png", Vec2f(48, 48), 5);
 	AddIconToken("$medic_class_icon$", "ClassIcon.png", Vec2f(48, 48), 6);
 	AddIconToken("$mechanic_class_icon$", "ClassIcon.png", Vec2f(48, 48), 0);
-	AddIconToken("$change_class$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 12, 2);
+	AddIconToken("$change_class$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 12, 6);
 	AddIconToken("$change_perk$", "/GUI/InteractionIcons.png", Vec2f(32, 32), 11);
 
 	bool isTDM = (getMap().tilemapwidth <= 300);
