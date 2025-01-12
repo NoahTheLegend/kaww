@@ -16,7 +16,8 @@ void onInit(CBlob@ this)
 
 	this.Tag("builder always hit");
 	this.Tag("builder urgent hit");
-
+	
+	AddIconToken("$icon_pack$", "Crate.png", Vec2f(32, 16), 0);
 	this.set_f32("custom_capture_time", 10);
 
 	// shits in console if not added
@@ -104,6 +105,7 @@ void onTick(CSprite@ this)
 	{
 		shieldfront.ResetTransform();
 		shieldfront.RotateBy(angle, Vec2f(0, 0));
+		shieldfront.SetFacingLeft(blob.isFacingLeft());
 	}
 
 	CSpriteLayer@ shieldback = this.getSpriteLayer("shieldback");
@@ -111,6 +113,7 @@ void onTick(CSprite@ this)
 	{
 		shieldback.ResetTransform();
 		shieldback.RotateBy(angle, Vec2f(0, 0));
+		shieldfront.SetFacingLeft(blob.isFacingLeft());
 	}
 }
 
@@ -164,7 +167,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	params.write_u16(caller.getNetworkID());
 
 	bool enough_health = this.getHealth()/this.getInitialHealth() >= min_health_to_pack;
-	CButton@ button = caller.CreateGenericButton("$icon_mg$", Vec2f(0, -12), this, this.getCommandID("start_packing"), enough_health ? "Pack to crate" : "Needs a repair before packing", params);
+	CButton@ button = caller.CreateGenericButton("$icon_pack$", Vec2f(0, -12), this, this.getCommandID("start_packing"), enough_health ? "Pack to crate" : "Needs a repair before packing", params);
 	if (button !is null)
 	{
 		button.SetEnabled(enough_health);
@@ -181,7 +184,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		CBlob@ caller = getBlobByNetworkID(caller_id);
 
 		if (caller is null) return;
-		if (!caller.isMyPlayer()) return;
 
 		this.set_f32("packing_time", 0);
 		this.set_u32("packing_endtime", packing_time);
