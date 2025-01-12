@@ -105,7 +105,7 @@ void onTick(CBlob@ this)
 			if (blob is null || blob.isAttached() || blob.hasTag("dead"))
 					continue;
 
-			if (caller_team == blob.getTeamNum() && caller.hasTag("player"))
+			if (caller_team == blob.getTeamNum() && blob.hasTag("player"))
 			{
 				count++;
 			}
