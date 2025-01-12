@@ -146,7 +146,7 @@ void InitShopItems(CBlob@ this, s16 tn)
 			AddRequirement(s.requirements, "coin", "", "Coins", 1);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Beer", "$heart$", "heart", "Leaf Lovers special", false);
+			ShopItem@ s = addShopItem(this, "Heal", "$heart$", "heart", "A small healing pack", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 2);
 		}
 		{
