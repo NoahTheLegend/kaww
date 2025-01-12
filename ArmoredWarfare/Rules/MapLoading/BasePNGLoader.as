@@ -602,10 +602,14 @@ class PNGLoader
 			case map_colors::blue_russianshop:        autotile(offset); spawnBlob(map, "russianshop", offset, teamleft); break;
 			case map_colors::red_russianshop:         autotile(offset); spawnBlob(map, "russianshop", offset, teamright); break;
 
-			case map_colors::m2browning:         autotile(offset); spawnVehicle(map, "m2browning", offset); break;
-			case map_colors::cratem2browning:    autotile(offset); server_MakeCrate("m2browning", "Crate with M2 Browning", 0, -1, getSpawnPosition(map, offset)); break;
-			case map_colors::mg42:         autotile(offset); spawnVehicle(map, "mg42", offset); break;
-			case map_colors::cratemg42:    autotile(offset); server_MakeCrate("mg42", "Crate with MG42", 0, -1, getSpawnPosition(map, offset)); break;
+			case map_colors::m2browning:         		autotile(offset); spawnVehicle(map, "m2browning", offset); break;
+			case map_colors::cratem2browning:    		autotile(offset); server_MakeCrate("m2browning", "Crate with M2 Browning", 0, -1, getSpawnPosition(map, offset)); break;
+			case map_colors::mg42:         				autotile(offset); spawnVehicle(map, "mg42", offset); break;
+			case map_colors::cratemg42:    				autotile(offset); server_MakeCrate("mg42", "Crate with MG42", 0, -1, getSpawnPosition(map, offset)); break;
+			case map_colors::apsniper: 					autotile(offset); spawnVehicle(map, "apsniper", offset); break;
+			case map_colors::mortar: 					autotile(offset); spawnVehicle(map, "mortar", offset); break;
+			case map_colors::javelin_launcher: 			autotile(offset); spawnVehicle(map, "javelin_launcher", offset); break;
+			case map_colors::pak38: 					autotile(offset); spawnVehicle(map, "pak38", offset); break;
 
 			case map_colors::ammocrate:        autotile(offset); spawnBlob(map, "ammocrate", offset); break;
 			case map_colors::repairstation:        autotile(offset); spawnBlob(map, "repairstation", offset); break;
