@@ -589,7 +589,7 @@ void PackerMenu(CBlob@ this, CBlob@ caller)
 					CInventory@ inv = this.getInventory();
 					if (inv !is null)
 					{
-						if (inv.getItem("mat_scrap") is null || inv.getItem("mat_scrap").getQuantity() <= (i==0?1:i==1?2:i==2?5:10)) button.SetEnabled(false);
+						if (inv.getItem("mat_scrap") is null || inv.getItem("mat_scrap").getQuantity() < (i==0?1:i==1?2:i==2?5:10)) button.SetEnabled(false);
 					}
 				}
 			}
