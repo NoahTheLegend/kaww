@@ -378,7 +378,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	Vec2f pos = this.getPosition();
 	bool is_artillery = isArtilleryProjectile(this);
 
-	if (is_artillery && isClient() && this.getPlayer() !is null)
+	if (is_artillery && this.isMyPlayer())
 	{
 		CRules@ rules = getRules();
 		if (rules !is null)
@@ -389,6 +389,10 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 				artillery_explosions.push_back(this.getPosition());
 				rules.Tag("artillery_exploded");
 			}
+
+			CBitStream params;
+			params.write_Vec2f(pos);
+			rules.SendCommand(rules.getCommandID("add_artillery_explosion"), params);
 		}
 	}
 
