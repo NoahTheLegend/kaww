@@ -31,6 +31,7 @@ shared class PerkStats {
     f32 plane_velo;         // value
     u8 top_angle;
     u8 down_angle;
+    f32 elevation_mod;      // mod
 
     // Lucky
     u8 aos_taken_time;      // cooldown on activation
@@ -77,7 +78,7 @@ shared class PerkStats {
         regen_amount = 0.04f; heal_factor = 1.0f; kill_heal = 0; damage_heal = 0.0f;
         //
         demontage_time = 150; sprint = true; mg_overheat = 1.0f; ftw_overheat = 1.0f; wrench_repair_time = 30;
-            heli_velo = Vec2f(0,0); plane_velo = 0; top_angle = 0; down_angle = 0;
+            heli_velo = Vec2f(0,0); plane_velo = 0; top_angle = 0; down_angle = 0; elevation_mod = 1.0f;
         //
         aos_taken_time = 0; aos_healed_time = 0; aos_invulnerability_time = 0;
         //
@@ -151,16 +152,17 @@ shared class PerkOperator : PerkStats {
         super();
         name = "Operator";
         id = 4;
-        demontage_time = 75;
+        demontage_time = 60;
         sprint = false;
         walk_factor = 0.95f;
         mg_overheat = 0.8f;
         ftw_overheat = 0.75f;
-        wrench_repair_time = 22;
+        wrench_repair_time = 20;
         heli_velo = Vec2f(0.25f, 0.75f);
         plane_velo = 0.033f;
         top_angle = 3;
-        down_angle = 4;
+        down_angle = 3;
+        elevation_mod = 1.5f;
     }
 };
 
