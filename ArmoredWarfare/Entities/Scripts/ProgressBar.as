@@ -59,6 +59,13 @@ bool hasBar(Bar@ bar, string name)
     return bar.getBar(name) !is null;
 }
 
+ProgressBar@ getBarByIndex(Bar@ bar, int index)
+{
+    if (bar is null) return null;
+    if (index < 0 || index >= bar.active_bars.length) return null;
+    return bar.active_bars[index];
+}
+
 // fills from left to right
 shared class ProgressBar : Bar {
     bool reverse; bool toright;

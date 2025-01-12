@@ -40,8 +40,9 @@ shared class ShopItem
 		description = _description;
 		spawnToInventory = _spawnToInventory;
 		spawnInCrate = _spawnInCrate;
-        instant = _instant;
+		instant = _instant;
 		buy_time = _buy_time;
+		if (buy_time == 0) instant = true;
 
 		crate_icon = 0;
 		enabled = true;
@@ -54,7 +55,6 @@ shared class ShopItem
 		customData = 0;
 
 		spawnNothing = false;
-
 		customButton = false;
 	}
 

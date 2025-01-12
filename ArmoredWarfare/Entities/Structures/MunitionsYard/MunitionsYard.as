@@ -19,10 +19,11 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shop menu size", Vec2f(6, 4));
 	this.set_string("shop description", "Craft Equipment");
 	this.set_u8("shop icon", 21);
+	this.Tag(SHOP_AUTOCLOSE);
 
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
 	AddIconToken("$icon_ft$", "IconFT.png", Vec2f(32, 32), 0, 2);
-	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_jav$","JavelinLauncher.png", Vec2f(32, 16), 2, 2);
 	AddIconToken("$icon_barge$","IconBarge.png", Vec2f(32, 32), 0, 2);
 }
 

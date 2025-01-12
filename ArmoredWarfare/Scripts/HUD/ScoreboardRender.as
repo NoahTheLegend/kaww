@@ -276,7 +276,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 			float x = bottomright.x - accolades_start - 140;
 			float extra = 8;
 
-			GUI::DrawIcon("PerkIcon", icon, Vec2f(32, 32), Vec2f(x, topleft.y-12), 0.5f, 0);
+			GUI::DrawIcon("PerkIcon", icon, Vec2f(32, 32), Vec2f(x-1, topleft.y-12), 0.5f, 0);
 		}
 
 		//render player accolades

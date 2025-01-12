@@ -26,7 +26,7 @@ void onInit(CBlob@ this)
 	this.Tag("trap");
 
 	AddIconToken("$icon_mg$", "IconMG.png", Vec2f(32, 32), 0, 2);
-	AddIconToken("$icon_jav$","IconJav.png", Vec2f(32, 32), 0, 2);
+	AddIconToken("$icon_jav$","JavelinLauncher.png", Vec2f(32, 16), 2, 2);
 
 	this.getCurrentScript().tickFrequency = 30;
 
@@ -96,18 +96,9 @@ void InitShopItems(CBlob@ this, s16 tn)
 			ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 20);
 		}
-		//{
-		//	ShopItem@ s = addShopItem(this, "Sticky Grenade", "$sgrenade$", "sgrenade", "An analogue for default grenades, but also\nsticks to flesh, bunkers and any type of vehicles.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
-		//	AddRequirement(s.requirements, "coin", "", "Coins", 30);
-		//	AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
-		//}
 		{
-			bool rebels_power = getRules().get_bool("enable_powers") && tn == 3; // team 3 buff
-        	u8 extra_amount = 0;
-        	if (rebels_power) extra_amount = 5;
-
 			ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 15-extra_amount);
+			AddRequirement(s.requirements, "coin", "", "Coins", 15);
 		}
 		{
 			ShopItem@ s = addShopItem(this, "Mine", "$mine$", "mine", "A dangerous trap for infantry.", false);
@@ -126,7 +117,7 @@ void InitShopItems(CBlob@ this, s16 tn)
 			AddRequirement(s.requirements, "coin", "", "Coins", 15);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further. Carry them and hold [RIGHT MOUSE] ", false);
+			ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		}
 		{

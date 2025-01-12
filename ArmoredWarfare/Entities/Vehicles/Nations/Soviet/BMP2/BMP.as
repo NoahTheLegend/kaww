@@ -66,7 +66,7 @@ void onInit(CBlob@ this)
 		front.addAnimation("default", 0, false);
 		int[] frames = { 3, 4, 5 };
 		front.animation.AddFrames(frames);
-		front.SetRelativeZ(10.8f);
+		front.SetRelativeZ(12.8f);
 		front.SetOffset(Vec2f(1.0f, -10.0f));
 	}
 
@@ -85,7 +85,7 @@ void onInit(CBlob@ this)
 		Animation@ animstopped = tracks.addAnimation("stopped", 1, true);
 		animstopped.AddFrame(15);
 
-		tracks.SetRelativeZ(0.5f);
+		tracks.SetRelativeZ(11.5f);
 		tracks.SetOffset(Vec2f(0.0f, -4.0f));
 	}
 
