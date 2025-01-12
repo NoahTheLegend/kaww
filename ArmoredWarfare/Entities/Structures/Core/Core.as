@@ -15,6 +15,7 @@ const int[] output = {20, 30, 40};
 const int fuel_per_scrap = 10; // how much fuel is needed to make 1 scrap
 const int max_fuel = 1500.0f;
 const int sound_cooldown = 6*30;
+const f32 sound_fadeout_start = 150.0f;
 
 const u8 boom_max = 20;
 
@@ -79,7 +80,7 @@ void spawnMetal(CBlob@ this)
 			ParticleAnimated("LargeSmokeGray", spawnpos + Vec2f(XORRandom(16)-8 - 4, XORRandom(16)-8), Vec2f_zero, float(XORRandom(360)), 0.5f + XORRandom(40) * 0.01f, 2, -0.0031f, true);
 		}
 
-		this.getSprite().PlaySound("ProduceSound.ogg", 1.0f, 1.15f+XORRandom(11)*0.01f);
+		this.getSprite().PlaySound("ProduceSound.ogg", 0.5f, 1.15f+XORRandom(11)*0.01f);
 	}
 	
 	if (!isServer()) return;
@@ -114,22 +115,26 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		string carriedName = carry.getName();
 		int index = mats.find(carriedName);
 		if (index == -1) return;
-		
-		if (isClient() && this.get_s16(fuel_prop) == 0 && this.get_s16(sound_cooldown_prop) == 0)
-		{
-			this.getSprite().PlaySound("PowerUp.ogg", 1.0f, 0.6f+XORRandom(11)*0.01f);
-			this.set_s16(sound_cooldown_prop, sound_cooldown);
-		}
 
 		int fuelAmount = carry.getQuantity();
-		int fuelNeeded = input[index];
+		int fuelNeededPerOutput = input[index] / output[index];
 		int currentFuel = this.get_s16(fuel_prop);
-		int fuelToAdd = Maths::Min(output[index], max_fuel - currentFuel);
+		int maxFuelToAdd = Maths::Min(output[index], max_fuel - currentFuel);
 
-		if (fuelAmount >= fuelNeeded && currentFuel < max_fuel)
+		if (fuelAmount >= fuelNeededPerOutput && currentFuel < max_fuel)
 		{
+			int possibleOutput = fuelAmount / fuelNeededPerOutput;
+			int fuelToAdd = Maths::Min(possibleOutput, maxFuelToAdd);
+			int currentFuel = this.get_s16(fuel_prop);
+			
 			this.set_s16(fuel_prop, currentFuel + fuelToAdd);
-			carry.server_SetQuantity(fuelAmount - fuelNeeded);
+			if (isClient() && currentFuel < 10 && this.get_s16(fuel_prop) >= 10 && this.get_s16(sound_cooldown_prop) == 0)
+			{
+				this.getSprite().PlaySound("PowerUp.ogg", 1.0f, 0.6f+XORRandom(11)*0.01f);
+				this.set_s16(sound_cooldown_prop, sound_cooldown);
+			}
+
+			carry.server_SetQuantity(fuelAmount - fuelToAdd * fuelNeededPerOutput);
 
 			if (carry.getQuantity() <= 0)
 			{
@@ -148,7 +153,7 @@ void onTick(CBlob@ this)
 	}
 
 	int fuelCount = this.get_s16(fuel_prop);
-	if (fuelCount > 0)
+	if (fuelCount >= fuel_per_scrap)
 	{
 		this.set_bool(working_prop, true);
 
@@ -328,6 +333,7 @@ void DoExplosion(CBlob@ this, Vec2f velocity)
 void onInit(CSprite@ this)
 {
 	this.SetEmitSound("Core_loop.ogg");
+	this.SetEmitSoundVolume(0.5f);
 	this.SetEmitSoundPaused(true);
 	this.SetZ(-150.0f); //background
 
@@ -353,6 +359,16 @@ void onTick(CSprite@ this)
 {
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
+
+	if (blob.get_s16(fuel_prop) >= fuel_per_scrap)
+	{
+		f32 factor = Maths::Min(1.0f, blob.get_s16(fuel_prop) / sound_fadeout_start);
+		float volume = 0.0f + 0.5f * factor;
+		float speed = 0.5f + 0.5f * factor;
+
+		this.SetEmitSoundVolume(volume);
+		this.SetEmitSoundSpeed(speed);
+	}
 
 	if (blob.get_bool(working_prop))
 	{
@@ -381,8 +397,8 @@ void ExplosionEffects(CBlob@ this)
 	CParticle@ p = ParticleAnimated("explosion-huge1.png",
 		pos - Vec2f(0,40),
 		Vec2f(0.0,0.0f),
-		1.0f, 1.0f,
-		4,
+		1.0f, 1.5f,
+		5,
 		0.0f, true );
 	if (p != null)
 	{
