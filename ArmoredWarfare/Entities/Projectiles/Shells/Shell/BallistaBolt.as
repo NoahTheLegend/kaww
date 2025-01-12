@@ -378,7 +378,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	Vec2f pos = this.getPosition();
 	bool is_artillery = isArtilleryProjectile(this);
 
-	if (is_artillery && isClient())
+	if (is_artillery && isClient() && this.getPlayer() !is null)
 	{
 		CRules@ rules = getRules();
 		if (rules !is null)
