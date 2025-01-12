@@ -279,6 +279,28 @@ SColor rgb(u16 id)
 		b = q;
 	}
 
-	return SColor(255, uint(r * 255.0f), uint(g * 255.0f), uint(b * 255.0f));
-			
+	return SColor(255, uint(r * 255.0f), uint(g * 255.0f), uint(b * 255.0f));	
+}
+
+void SyncAllScrapUsed(CRules@ this)
+{
+	if (!isServer()) return;
+	
+	string[]@ scrap_used_username;
+	if (!this.get("scrap_used_username", @scrap_used_username)) return;
+
+	int[]@ scrap_used_amount;
+	if (!this.get("scrap_used_amount", @scrap_used_amount)) return;
+
+	CBitStream params;
+	params.write_bool(false);
+	params.write_s32(scrap_used_username.size());
+
+	for (uint i = 0; i < scrap_used_username.size(); i++)
+	{
+		params.write_string(scrap_used_username[i]);
+		params.write_s32(scrap_used_amount[i]);
+	}
+
+	this.SendCommand(this.getCommandID("scrap_used"), params);
 }
