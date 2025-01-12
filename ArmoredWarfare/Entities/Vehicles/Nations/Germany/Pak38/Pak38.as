@@ -17,6 +17,8 @@ void onInit(CBlob@ this)
 	this.Tag("builder always hit");
 	this.Tag("builder urgent hit");
 
+	this.set_f32("custom_capture_time", 10);
+
 	// shits in console if not added
 	this.addCommandID("fire");
 	this.addCommandID("fire blob");
@@ -92,7 +94,7 @@ void onTick(CSprite@ this)
 	if (gun_angle < 0) gun_angle += 90;
 	else if (gun_angle > 0) gun_angle -= 90;
 
-	if (blob.isFacingLeft()) gun_angle += 180;
+	if (blob.isFacingLeft()) gun_angle -= 180;
 
 	gun_angle *= shield_lean_mod;
 	f32 angle = gun_angle;
