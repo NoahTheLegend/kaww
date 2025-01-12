@@ -22,6 +22,8 @@ void onInit(CBlob@ this)
 	this.addCommandID("pick_5");
 	this.addCommandID("pick_2");
 	this.addCommandID("pick_1");
+
+	this.addCommandID("update scrap menu");
 }
 
 void onTick(CBlob@ this)
@@ -43,6 +45,7 @@ void PickupOverlap(CBlob@ this)
 			if (!blob.isAttached() && blob.isOnGround() && blob.hasTag("material") && !blob.hasTag("weapon"))
 			{
 				this.server_PutInInventory(blob);
+				RequestClientTakeScrapSync(this, getLocalPlayerBlob());
 			}
 		}
 	}
@@ -71,6 +74,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			PackerMenu(this, blob);
 		}
+	}
+	else if (isClient() && cmd == this.getCommandID("update scrap menu"))
+	{
+		u16 id = params.read_u16();
+		CBlob@ blob = getBlobByNetworkID(id);
+
+		if (blob !is null && blob.isMyPlayer())
+			UpdatePickScrapMenu(this);
 	}
 	else if (isServer() && cmd == this.getCommandID("pick_1") || cmd == this.getCommandID("pick_2")
 	|| cmd == this.getCommandID("pick_5") || cmd == this.getCommandID("pick_10"))
@@ -112,6 +123,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 									drop.setPosition(this.getPosition());
 								}
 							}
+
+							RequestClientTakeScrapSync(this, blob);
 						}
 					}
 				}
@@ -161,4 +174,69 @@ void PackerMenu(CBlob@ this, CBlob@ caller)
 			}
 		}
 	}
+}
+
+void onInventoryQuantityChange(CBlob@ this, CBlob@ blob, int oldQuantity)
+{
+	if (blob.getName() == "mat_scrap")
+	{
+		UpdatePickScrapMenu(this);
+	}
+}
+
+void onAddToInventory(CBlob@ this, CBlob@ blob)
+{
+	if (blob.getName() == "mat_scrap")
+	{
+		UpdatePickScrapMenu(this);
+	}
+}
+
+void onRemoveFromInventory(CBlob@ this, CBlob@ blob)
+{
+	if (blob.getName() == "mat_scrap")
+	{
+		UpdatePickScrapMenu(this);
+	}
+}
+
+void UpdatePickScrapMenu(CBlob@ this)
+{
+	if (!isClient()) return;
+
+	CBlob@ local = getLocalPlayerBlob();
+	if (local is null) return;
+	
+	CGridMenu@ menu = getGridMenuByName("Take amount");
+	if (menu !is null)
+	{
+		//PackerMenu(this, local);
+		for (u8 i = 0; i < 4; i++)
+		{
+			CGridButton@ button = menu.getButtonOfIndex(i);
+			if (button !is null)
+			{
+				CInventory@ inv = this.getInventory();
+				if (inv !is null)
+				{
+					CBlob@ item = inv.getItem("mat_scrap");
+					if (item !is null)
+					{
+						u16 count = item.getQuantity();
+						if (count < (i==0?1:i==1?2:i==2?5:10)) button.SetEnabled(false);
+					}
+				}
+			}
+		}
+	}
+}
+
+void RequestClientTakeScrapSync(CBlob@ this, CBlob@ blob)
+{
+	if (!isServer()) return;
+	if (blob is null) return;
+
+	CBitStream params;
+	params.write_u16(blob.getNetworkID());
+	this.SendCommand(this.getCommandID("update scrap menu"), params);
 }

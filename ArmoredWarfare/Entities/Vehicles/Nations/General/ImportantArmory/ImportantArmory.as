@@ -19,16 +19,11 @@ void onInit(CBlob@ this)
 	this.Tag("armory");
 	this.Tag("importantarmory");
 	this.Tag("truck");
-	
 	this.set_u16("extra_no_heal", 5);
+
+	this.addCommandID("update scrap menu");
 	
 	if (getRules() !is null) getRules().set_u32("iarmory_warn"+this.getTeamNum(), 0);
-
-	this.addCommandID("separate");
-	this.addCommandID("pick_10");
-	this.addCommandID("pick_5");
-	this.addCommandID("pick_2");
-	this.addCommandID("pick_1");
 
 	AddIconToken("$icon_10%$", "Scrap.png", Vec2f(16, 16), 3);
 	AddIconToken("$icon_5%$", "Scrap.png", Vec2f(16, 16), 2);
@@ -521,7 +516,11 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	{
 		if (blob.hasTag("material") && !blob.hasTag("no_armory_pickup") && !blob.isAttached() && !blob.isInInventory())
 		{
-			if (isServer()) this.server_PutInInventory(blob);
+			if (isServer())
+			{
+				this.server_PutInInventory(blob);
+				RequestClientTakeScrapSync(this, getLocalPlayerBlob());
+			}
 			//else this.getSprite().PlaySound("BridgeOpen.ogg", 1.0f);
 		}
 		TryToAttachVehicle(this, blob);
@@ -648,6 +647,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			}
 		}
 	}
+	else if (isClient() && cmd == this.getCommandID("update scrap menu"))
+	{
+		u16 id = params.read_u16();
+		CBlob@ blob = getBlobByNetworkID(id);
+
+		if (blob !is null && blob.isMyPlayer())
+			UpdatePickScrapMenu(this);
+	}
 	else if (cmd == this.getCommandID("separate"))
 	{
 		u16 blobid = params.read_u16();
@@ -698,6 +705,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 									drop.setPosition(this.getPosition());
 								}
 							}
+
+							RequestClientTakeScrapSync(this, blob);
 						}
 					}
 				}
@@ -751,4 +760,70 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 
 	return damage;
+}
+
+void onInventoryQuantityChange(CBlob@ this, CBlob@ blob, int oldQuantity)
+{
+	if (blob.getName() == "mat_scrap")
+	{
+		UpdatePickScrapMenu(this);
+	}
+}
+
+void onAddToInventory(CBlob@ this, CBlob@ blob)
+{
+	printf("e");
+	if (blob.getName() == "mat_scrap")
+	{
+		UpdatePickScrapMenu(this);
+	}
+}
+
+void onRemoveFromInventory(CBlob@ this, CBlob@ blob)
+{
+	if (blob.getName() == "mat_scrap")
+	{
+		UpdatePickScrapMenu(this);
+	}
+}
+
+void UpdatePickScrapMenu(CBlob@ this)
+{
+	if (!isClient()) return;
+
+	CBlob@ local = getLocalPlayerBlob();
+	if (local is null) return;
+	
+	CGridMenu@ menu = getGridMenuByName("Take amount");
+	if (menu !is null)
+	{
+		//PackerMenu(this, local);
+		for (u8 i = 0; i < 4; i++)
+		{
+			CGridButton@ button = menu.getButtonOfIndex(i);
+			if (button !is null)
+			{
+				CInventory@ inv = this.getInventory();
+				if (inv !is null)
+				{
+					CBlob@ item = inv.getItem("mat_scrap");
+					if (item !is null)
+					{
+						u16 count = item.getQuantity();
+						if (count < (i==0?1:i==1?2:i==2?5:10)) button.SetEnabled(false);
+					}
+				}
+			}
+		}
+	}
+}
+
+void RequestClientTakeScrapSync(CBlob@ this, CBlob@ blob)
+{
+	if (!isServer()) return;
+	if (blob is null) return;
+
+	CBitStream params;
+	params.write_u16(blob.getNetworkID());
+	this.SendCommand(this.getCommandID("update scrap menu"), params);
 }
