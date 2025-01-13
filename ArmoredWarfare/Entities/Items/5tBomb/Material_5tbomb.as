@@ -20,6 +20,9 @@ void onInit(CBlob@ this)
 	this.Tag("bomber ammo");
 	this.Tag("no_armory_pickup");
 	this.Tag("weapon");
+	this.Tag("builder always hit");
+	this.Tag("builder urgent hit");
+
 	this.set_f32("hand_rotation_damp", 0.1f);
 	
 	this.maxQuantity = 1;
@@ -62,7 +65,7 @@ void onTick(CBlob@ this)
 {
 	if (isClient())
 	{
-		this.getSprite().SetRelativeZ(this.isAttached() ? -50 : 0);
+		this.getSprite().SetRelativeZ(this.isAttached() ? -50 : -10);
 	}
 	if (isServer() && this.isAttached())
 	{
