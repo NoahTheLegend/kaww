@@ -272,10 +272,10 @@ namespace LMGParams
 	const ::f32 DAMAGE_HEAD 			= 0.4f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.85f; // walk
-	const ::f32 AIRWALK_STAT 			= 2.25f; // airwalk
+	const ::f32 AIRWALK_STAT 			= 2.2f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.9f; // jump
-	const ::f32 WALK_STAT_SPRINT 		= 0.95f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 2.5f; // airwalk (sprint)
+	const ::f32 WALK_STAT_SPRINT 		= 0.925f; // walk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.4f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 0.95f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 5.0f; // x shake (20)
@@ -326,7 +326,7 @@ namespace Mp5Params
 	const ::f32 AIRWALK_STAT 			= 2.4f; // airwalk
 	const ::f32 JUMP_STAT 				= 0.87f; // jump
 	const ::f32 WALK_STAT_SPRINT 		= 1.05f; // walk (sprint)
-	const ::f32 AIRWALK_STAT_SPRINT 	= 2.65; // airwalk (sprint)
+	const ::f32 AIRWALK_STAT_SPRINT 	= 2.65f; // airwalk (sprint)
 	const ::f32 JUMP_STAT_SPRINT 		= 1.0f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 22.0f; // x shake (20)

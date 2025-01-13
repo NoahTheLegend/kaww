@@ -73,6 +73,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
 	if (cage !is null)
 	{
+		this.getSprite().SetVisible(false);
 		cage.SetVisible(false);
 	}
 }
@@ -94,6 +95,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
 	if (cage !is null)
 	{
+		this.getSprite().SetVisible(true);
 		cage.SetVisible(true);
 	}
 }

@@ -23,7 +23,7 @@ void UpdateScript(CBlob@ this)
         CSpriteLayer@ head = this.getSprite().getSpriteLayer("head");
         if (head !is null)
         {
-            helmet.SetRelativeZ(head.getRelativeZ()+1.0f);
+            helmet.SetRelativeZ(head.getRelativeZ()+0.5f);
         }
 
         int tn = this.getTeamNum();

@@ -396,7 +396,7 @@ void SetBarrierPosition(CRules@ this)
 		this.set_u16("barrier_right_x1", xr1);
 		this.set_u16("barrier_right_x2", xr2);
 	}
-	else
+	else if (getGameTime() % 30 == 0) // Only update every 30 ticks
 	{
 		if (markers.length != 0)
 		{
@@ -470,7 +470,7 @@ const bool shouldBarrier(CRules@ rules)
 	u8 teamright = rules.get_u8("teamright");
 	
 	if (!rules.isMatchRunning() || rules.isWarmup()) return false;
-	return rules.get_s16("teamLeftTickets") == 0 && !isTDM() && !isDTT() && !isCTF() && rules.get_s16("teamRightTickets") == 0;
+	return rules.get_s16("teamLeftTickets") == 0 && rules.get_s16("teamRightTickets") == 0 && !isTDM() && !isDTT() && !isCTF();
 }
 
 Vec2f[] getPTBZonesMarkers()
