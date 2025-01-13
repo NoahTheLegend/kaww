@@ -969,7 +969,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 		this.setVelocity(detached.getVelocity());
 	}
 	// Deploy parachute!
-	if (detached.hasTag("aerial"))
+	if (detached.hasTag("parachute_ondetach"))
 	{
 		if (!getMap().rayCastSolid(this.getPosition(), this.getPosition() + Vec2f(0.0f, 150.0f)) && !this.isOnGround() && !this.isInWater() && !this.isAttached())
 		{
