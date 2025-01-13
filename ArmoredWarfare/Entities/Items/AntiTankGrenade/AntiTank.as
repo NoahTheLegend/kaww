@@ -14,6 +14,8 @@ enum State
     PRIMED
 };
 
+const int death_time = 150;
+
 void onInit(CBlob@ this)
 {
 	this.set_s8(penRatingString, 4);
@@ -51,12 +53,15 @@ void onInit(CBlob@ this)
 	{
 		ap.SetKeysToTake(key_action3);
 	}
-	this.set_u8("death_timer", 140);
+	this.set_u8("death_timer", death_time);
 	this.Tag("change team on pickup");
 
-	if (this.getName() == "atgrenade")
+	string prop = "atgrenade";
+	if (this.getName().find("nazi") != -1) prop += "nazi";
+
+	if (this.getName() == prop)
 	{
-		this.set_u8("exploding_2", 140);
+		this.set_u8("exploding_2", death_time);
 	}
 }
 
@@ -80,7 +85,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 
 bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)
 {
-	return this.getName() == "mat_atgrenade";
+	return this.getName().find("mat_") != -1;
 }
 
 void DoExplosion(CBlob@ this)
@@ -135,7 +140,7 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ attachedPoint)
 void onTick(CBlob@ this)
 {
 	if (this.getShape() is null) return;
-	if (this.isAttached() && (this.getName() == "mat_atgrenade"))
+	if (this.isAttached() && this.getName().find("mat_") != -1)
 	{
 		this.getShape().SetStatic(false);
 		this.getShape().getConsts().mapCollisions = true;
@@ -162,6 +167,13 @@ void onTick(CBlob@ this)
 		f32 angle = -this.get_f32("bomb angle");
 
 		Vec2f pos = this.getPosition();
+		CSprite@ sprite = this.getSprite();
+
+		if (isClient())
+		{
+			f32 factor = (f32(this.get_u8("exploding_2")) / death_time);
+			sprite.animation.frame = 2 - Maths::Round(2*factor);
+		}
 
 		if (this.get_u8("exploding_2") == 3)
 		{
@@ -211,7 +223,7 @@ void sparks(Vec2f at, f32 angle, f32 speed, SColor color)
 {
 	Vec2f vel = getRandomVelocity(angle + 90.0f, speed, 25.0f);
 	at.y -= 2.5f;
-	ParticlePixel(at, vel, color, true, 119);
+	ParticlePixel(at, vel, color, true, 4+XORRandom(3));
 }
 
 void MakeParticle(CBlob@ this, const Vec2f pos, const Vec2f vel, const string filename = "Explosion.png")
@@ -235,6 +247,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
     	    if (point !is null)
 			{
 				string prop = "atgrenade";
+				if (this.getName().find("nazi") != -1) prop += "nazi";
+
 				CBlob@ holder = point.getOccupied();
 				if (holder !is null && this !is null && !this.hasTag("activated"))
 				{
@@ -245,7 +259,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 					CPlayer@ activator = holder.getPlayer();
 					string activatorName = activator !is null ? (activator.getUsername() + " (team " + activator.getTeamNum() + ")") : "<unknown>";
-					//printf(activatorName + " has activated " + this.getName());
 				}
 				else 
 				{
