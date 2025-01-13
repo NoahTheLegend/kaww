@@ -434,9 +434,9 @@ const VehicleParams[][] vehicles = {
 	},
 	/* Armed Transport */
 	{
+		VehicleParams(n_humvee, t_humvee, bn_humvee, d_humvee, c_humvee, ct_humvee, Vec2f(2,2)),
 		VehicleParams(n_truck, t_truck, bn_truck, d_truck, c_truck, ct_truck, Vec2f(2,2)),
-		VehicleParams(n_truck, t_truck, bn_truck, d_truck, c_truck, ct_truck, Vec2f(2,2)),
-		VehicleParams(n_truck, t_truck, bn_truck, d_truck, c_truck, ct_truck, Vec2f(2,2))
+		VehicleParams(n_amoto, t_amoto, bn_amoto, d_amoto, c_amoto, ct_amoto, Vec2f(2,2))
 	},
 	/* APC */
 	{

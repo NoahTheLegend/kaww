@@ -658,6 +658,7 @@ u8 getIndicatorFrame(int hash)
 
 		case _uh1:
 		case _mi24:
+		case _nh90:
 		frame = 10; break;
 			
 		case _ah1:

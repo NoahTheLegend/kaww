@@ -151,7 +151,6 @@ void onTick(CBlob@ this)
 	if (tents.length == 0) this.set_f32("capture time", 0);
 }
 
-
 void InitShop(CBlob@ this)
 {
 	this.set_Vec2f("shop offset", Vec2f(-18, 0));

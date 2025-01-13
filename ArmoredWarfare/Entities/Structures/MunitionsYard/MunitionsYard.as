@@ -29,137 +29,23 @@ void onInit(CBlob@ this)
 
 void InitShop(CBlob@ this)
 {
-	bool isCTF = getBlobByName("pointflag") !is null || getBlobByName("pointflagt2") !is null;
-	if (isCTF) this.set_Vec2f("shop menu size", Vec2f(7, 4));
+	this.set_Vec2f("shop offset", Vec2f(-18, 0));
 
-	{
-		ShopItem@ s = addShopItem(this, "Standard Ammo", "$ammo$", "ammo", "Used by all small arms guns, and vehicle machineguns.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Special Ammunition", "$specammo$", "specammo", "Special ammunition for advanced weapons.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "14mm Rounds", "$mat_14mmround$", "mat_14mmround", "Used by APCs", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "105mm Rounds", "$mat_bolts$", "mat_bolts", "Ammunition for tank main guns.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "HEAT War Heads", "$mat_heatwarhead$", "mat_heatwarhead", "HEAT Rockets, used with RPG or different vehicles", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Frag Grenade", "$grenade$", "grenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nIneffective against armored vehicles.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
-	}
-	if (isCTF)
-	{
-		ShopItem@ s = addShopItem(this, "5 ton Bomb", "$mat_5tbomb$", "mat_5tbomb", "The best way to destroy enemy facilities.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 300);
-		AddRequirement(s.requirements, "gametime", "", "Unlocks at", 30*30 * 60); // 45th min
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 4;
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press SPACE while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Land Mine", "$mine$", "mine", "Takes a while to arm, once activated it will expode upon contact with the enemy.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Burger", "$food$", "food", "Heal to full health instantly.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press E to heal. 6 uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 2);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue helmet, take 40% less bullet damage, and occasionally bounce bullets.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 3);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Pipe Wrench", "$pipewrench$", "pipewrench", "Left click on vehicles to repair them. Limited uses.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 5);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Tank Trap", "$tanktrap$", "tanktrap", "Czech hedgehog, will harm any enemy vehicle that collides with it.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Lantern", "$lantern$", "lantern", "A source of light.", false);
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 20);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Sponge", "$sponge$", "sponge", "Commonly used for washing vehicles.", false);
-		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Sticky Frag Grenade", "$sgrenade$", "sgrenade", "Press SPACE while holding to arm, ~4 seconds until boom.\nSticky to vehicles, bodies and blocks.", false);
-		AddRequirement(s.requirements, "blob", "grenade", "Grenade", 1);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 1);
-		AddRequirement(s.requirements, "blob", "chest", "Sorry, but this item is temporarily\n\ndisabled!\n", 1);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "M22 Binoculars", "$binoculars$", "binoculars", "A pair of glasses with optical zooming.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 6);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Bomb", "$mat_smallbomb$", "mat_smallbomb", "Small explosive bombs.", false);
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 4);
+	if (isCTF()) this.set_Vec2f("shop menu size", Vec2f(9, 3));
+	else 		 this.set_Vec2f("shop menu size", Vec2f(9, 3));
 
-		s.customButton = true;
-
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-	}
-	if (this.getTeamNum() == 2)
-	{
-		ShopItem@ s = addShopItem(this, "MG42", "$icon_mg$", "mg42", "MG42 machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
-	}
-	else
-	{
-		ShopItem@ s = addShopItem(this, "M2 Browning", "$icon_mg$", "m2browning", "M2 Browning machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 8);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Firethrower", "$icon_ft$", "firethrower", "Fire thrower.\nCan be attached to and detached from some vehicles.\n\nUses Special Ammunition.", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 12);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Javelin Launcher", "$icon_jav$", "launcher_javelin", "Homing Missile launcher. ", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 20);
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Barge", "$icon_barge$", "barge", "An armored boat for transporting vehicles across the water.", false, true);
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", 15);
-	}
+	makeDefaultAmmo(this);
+	makeDefaultExplosives(this);
+	makeDefaultGear(this);
+	makeDefaultUtils(this);
+	makeExtraUtils(this);
+	makeSmallBombs(this);
+	makeC4(this);
+	makeFactionVehicle(this, this.getTeamNum(), VehicleType::weapons1, 0, false, true);
+	makeMortar(this);
+	makeFactionVehicle(this, this.getTeamNum(), VehicleType::machinegun, 0, false, true);
+	makeFirethrower(this);
+	makeBigBombs(this);
 }
 
 void onTick(CBlob@ this)
