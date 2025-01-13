@@ -76,6 +76,8 @@ namespace map_colors
 		tile_sand              = 0xFFECD590, // ARGB(255, 236, 213, 144);
 		tile_cdirt             = 0xFF7C3212, //
 		tile_scrap             = 0xFFB25324, //
+		tile_metal             = 0xFF879092, //
+		tile_metal_back        = 0xFF636565, //
 
 		// OTHER
 		sky                    = 0xFFA5BDC8, // ARGB(255, 165, 189, 200);
