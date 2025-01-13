@@ -62,6 +62,7 @@ void onInit(CBlob@ this)
 	this.Tag("wooden");
 	this.Tag("plane");
 	this.Tag("pass_bullet");
+	this.Tag("parachute_ondetach");
 	
 	CSprite@ sprite = this.getSprite();
 	sprite.SetEmitSound("Aircraft_Loop.ogg");
