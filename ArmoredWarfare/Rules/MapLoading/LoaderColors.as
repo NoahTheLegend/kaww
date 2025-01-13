@@ -429,6 +429,7 @@ namespace map_colors
 
 		blue_armory            = 0xff0d6f98,
 		red_armory             = 0xff980f0d,
+		
 		blue_iarmory           = 0xff0d6faa, // armory for break the truck gamemode
 		red_iarmory            = 0xff980faa,
 
@@ -444,7 +445,6 @@ namespace map_colors
 		civcar                 = 0xfff0692e,
 		lada                   = 0xffaeff4c,
 		jourcop                = 0xffaeaa00,
-	
 
 		sign		           = 0xff93723a,
 		sign2		           = 0xffc0884c,
