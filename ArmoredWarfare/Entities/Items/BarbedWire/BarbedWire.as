@@ -74,7 +74,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 		if (stats_loaded && stats.id == Perks::fieldengineer)
 		{
-			damage *= 2.25f;
+			damage *= 2.0f;
 		}
 	}
 	if ((customData == Hitters::explosion && hitterBlob.getName() != "c4") || hitterBlob.hasTag("grenade"))
