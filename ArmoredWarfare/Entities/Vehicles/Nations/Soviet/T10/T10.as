@@ -74,7 +74,7 @@ void onInit(CBlob@ this)
 		Animation@ animstopped = tracks.addAnimation("stopped", 1, true);
 		animstopped.AddFrame(15);
 
-		tracks.SetRelativeZ(50.8f);
+		tracks.SetRelativeZ(20.8f);
 		tracks.SetOffset(Vec2f(0.0f, 0.0f));
 	}
 

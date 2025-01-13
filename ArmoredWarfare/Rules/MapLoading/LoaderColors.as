@@ -78,6 +78,7 @@ namespace map_colors
 		tile_scrap             = 0xFFB25324, //
 		tile_metal             = 0xFF879092, //
 		tile_metal_back        = 0xFF636565, //
+		core_zone              = 0xFFF4337C, // plant the bomb zone
 
 		// OTHER
 		sky                    = 0xFFA5BDC8, // ARGB(255, 165, 189, 200);
@@ -307,6 +308,33 @@ namespace map_colors
 		b_vehiclebuildert2defenseconst    	= 0xff4eff4f,
 		r_vehiclebuildert2defenseconst    	= 0xff57ff3f,
 
+		faction_blue_transport 				= 0xff4f40d2,
+		faction_red_transport  				= 0xffe1401a,
+		faction_blue_armedtransport 		= 0xff5041d3,
+		faction_red_armedtransport  		= 0xffe2411b,
+		faction_blue_apc 					= 0xff5142d4,
+		faction_red_apc  					= 0xffe3421c,
+		faction_blue_mediumtank 			= 0xff5243d5,
+		faction_red_mediumtank  			= 0xffe4431d,
+		faction_blue_heavytank  			= 0xff5344d6,
+		faction_red_heavytank   			= 0xffe5441e,
+		faction_blue_superheavytank 		= 0xff5425d7,
+		faction_red_superheavytank  		= 0xffe6251f,
+		faction_blue_specialvehicle1 		= 0xff5445d7,
+		faction_red_specialvehicle1  		= 0xffe6451f,
+		faction_blue_artillery 				= 0xff5546d8,
+		faction_red_artillery  				= 0xffe74620,
+		faction_blue_fighterplane			= 0xff5647d9,
+		faction_red_fighterplane 			= 0xffe84721,
+		faction_blue_bomberplane 			= 0xff5748da,
+		faction_red_bomberplane  			= 0xffe94822,
+		faction_blue_helicopter 			= 0xff5849db,
+		faction_red_helicopter  			= 0xffea4923,
+		faction_blue_machinegun 			= 0xff594adc,
+		faction_red_machinegun  			= 0xffeb4a24,
+		faction_blue_weapons1 				= 0xff5a4bdd,
+		faction_red_weapons1  				= 0xffec4b25,
+
 		m2browning             = 0xff1f11f4,
 		cratem2browning        = 0xff0f00f4,
 		mg42             	   = 0xff1f11f5,
@@ -479,6 +507,9 @@ namespace map_colors
 
 		// OBJECTIVE
 		pointflag              = 0xfffdf8e8,
+		pointflagt2            = 0xfffdfcc8,
+		core_blue              = 0xffdda53d,
+		core_red               = 0xffb06518,
 
 		// zambis
 		zspawn                 = 0xff090a09,

@@ -4,6 +4,8 @@
 #include "Explosion.as";
 #include "GamemodeCheck.as";
 
+// add collision mats inserting
+
 const string fuel_prop = "fuel_level";
 const string working_prop = "working";
 const string sound_cooldown_prop = "charge_cooldown";
@@ -197,6 +199,7 @@ void onTick(CBlob@ this)
 			{
 				CBlob@ core = cores[i];
 				if (core is null) continue;
+				if (core is this) continue;
 		
 				f32 dist = (core.getPosition() - this.getPosition()).getLength();
 				if (dist < temp)
@@ -208,35 +211,29 @@ void onTick(CBlob@ this)
 		
 			if (closest_core_id != 0)
 			{
-				this.Untag("respawn");
-
-				CBlob@ core = getBlobByNetworkID(closest_core_id);
-				if (core !is null)
-				{
-					core.Tag("respawn");
-				}
-				else if (isServer()) // set team won
-				{
-					CRules@ rules = getRules(); // better to have a npe than no winner
-
-					u8 teamleft = rules.get_u8("teamleft");
-					u8 teamright = rules.get_u8("teamright");
-
-					u8 teamwon = teamleft == this.getTeamNum() ? teamright : teamleft;
-					CTeam@ winteam = rules.getTeam(teamwon);
-					if (winteam !is null)
-					{
-						rules.SetTeamWon(teamwon);   //game over!
-						rules.SetCurrentState(GAME_OVER);
-						rules.SetGlobalMessage("Team \"{WINNING_TEAM}\" wins the game!\nAll reactors are gone!" );
-						rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.getName());
-					}
-					else
-					{
-						error("Core.as couldn't find winning team");
-					}
-				}
+			
 			}
+			/*else if (isServer()) // set team won
+			{
+				CRules@ rules = getRules(); // better to have a npe than no winner
+
+				u8 teamleft = rules.get_u8("teamleft");
+				u8 teamright = rules.get_u8("teamright");
+
+				u8 teamwon = teamleft == this.getTeamNum() ? teamright : teamleft;
+				CTeam@ winteam = rules.getTeam(teamwon);
+				if (winteam !is null)
+				{
+					rules.SetTeamWon(teamwon);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					rules.SetGlobalMessage("Team \"{WINNING_TEAM}\" wins the game!\nAll reactors are gone!" );
+					rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.getName());
+				}
+				else
+				{
+					error("Core.as couldn't find winning team");
+				}
+			}*/
 		}
 
 		if (this.getShape() !is null) this.getShape().SetStatic(true);
@@ -288,8 +285,9 @@ void onRender(CSprite@ this)
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (!isPTB()) return 0;
+	if (getRules() !is null && !getRules().isMatchRunning()) return 0;
 
-	if (hitterBlob.getName() == "c4" && hitterBlob.getTeamNum() != this.getTeamNum())
+	if (hitterBlob.hasTag("kills core") && hitterBlob.getTeamNum() != this.getTeamNum())
 	{
 		if (!this.get_bool("booming")) ExplosionEffects(this);
 		this.set_bool("booming", true);
@@ -416,5 +414,35 @@ void ExplosionEffects(CBlob@ this)
 
 void onDie(CBlob@ this)
 {
-		
+	if (!isServer()) return;
+	// kill nearest tent for respawn
+	
+	CBlob@[] tents;
+	getBlobsByName("tent", @tents);
+
+	f32 temp = 99999.0f;
+	u16 closest_tent_id = 0;
+
+	for (uint i = 0; i < tents.length; i++)
+	{
+		CBlob@ tent = tents[i];
+		if (tent is null) continue;
+		if (tent.getTeamNum() != this.getTeamNum()) continue;
+
+		f32 dist = (tent.getPosition() - this.getPosition()).getLength();
+		if (dist < temp)
+		{
+			temp = dist;
+			closest_tent_id = tent.getNetworkID();
+		}
+	}
+
+	if (closest_tent_id != 0)
+	{
+		CBlob@ tent = getBlobByNetworkID(closest_tent_id);
+		if (tent !is null)
+		{
+			tent.server_Die();
+		}
+	}
 }

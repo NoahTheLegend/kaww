@@ -506,6 +506,34 @@ const VehicleParams[][] vehicles = {
 	}
 };
 
+CBlob@ spawnFactionVehicle(int tile_offset, VehicleType type, u8 team)
+{
+	return spawnFactionVehicle(getMap().getTileWorldPosition(tile_offset), type, team);
+}
+
+CBlob@ spawnFactionVehicle(Vec2f at, VehicleType type, u8 team)
+{
+	VehicleParams[] vehicleList = vehicles[type];
+	const VehicleParams@ params;
+
+	switch (team)
+	{
+		case 1:
+			@params = vehicleList[1];
+			break;
+		case 2:
+			@params = vehicleList[2];
+			break;
+		case 0:
+		default:
+			@params = vehicleList[0];
+			break;
+	}
+
+	CBlob@ vehicle = server_CreateBlob(params.blobName, team, at);
+	return vehicle;
+}
+
 void makeShopItem(CBlob@ this, const VehicleParams@ params, const bool inv = false, const bool crate = false)
 {
 	ShopItem@ item = addShopItem(this, params.name, params.token, params.blobName, params.description, inv, crate, params.buildTime == 0, params.buildTime);

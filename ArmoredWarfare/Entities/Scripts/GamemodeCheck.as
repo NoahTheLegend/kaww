@@ -38,3 +38,19 @@ shared bool isPTBshared()
 {
     return getBlobByName("core") !is null;
 }
+
+u8 defendersTeamPTB()
+{
+    CBlob@ core = getBlobByName("core");
+    if (core !is null)  return core.getTeamNum();
+
+    return 255;
+}
+
+shared u8 defendersTeamPTBshared()
+{
+    CBlob@ core = getBlobByName("core");
+    if (core !is null)  return core.getTeamNum();
+
+    return 255;
+}

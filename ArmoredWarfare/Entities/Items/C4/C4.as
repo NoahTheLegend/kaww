@@ -15,6 +15,7 @@ void onInit(CBlob@ this)
 	this.set_bool("map_damage_raycast", true);
 	this.set_bool("explosive_teamkill", true);
 	this.Tag("collideswithglass");
+	this.Tag("kills core");
 
 	this.set_u16("exploding", 0);
 	this.set_bool("explode", false);

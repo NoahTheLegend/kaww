@@ -204,11 +204,10 @@ int decrementTickets(CRules@ this, int team)
 	s16 numTickets;
 
 	//double check idk why its passing
-	CBlob@ b = getBlobByName("pointflag");
-	if (b is null) @b = getBlobByName("pointflagt2");
-
-	CBlob@ t = getBlobByName("tent");
-	if (b !is null || t is null) return 0;
+	if (isCTF() || isDTT() || (isPTB() && team == defendersTeamPTB()))
+	{
+		return 0;
+	}
 
 	u8 teamleft = this.get_u8("teamleft");
 	u8 teamright = this.get_u8("teamright");
