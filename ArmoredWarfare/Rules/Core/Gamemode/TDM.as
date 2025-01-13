@@ -489,8 +489,11 @@ shared class TDMCore : RulesCore
 
 		RulesCore::Update(); //update respawns
 
-		bool ctf = isCTFshared();
-		if (getPlayersCount() >= 6 && !ctf) CheckTeamWon();
+		if ((getPlayersCount() >= 6 || isPTBshared()) && !isCTFshared() && !isDTTshared())
+		{
+			// check team won when everyone is dead
+			CheckTeamWon();
+		}
 	}
 
 	void updateHUD()
@@ -793,12 +796,17 @@ shared class TDMCore : RulesCore
 		TDMTeamInfo@ winteam = null;
 		s8 team_wins_on_end = -1;
 
-		CBlob@[] flags;
-		getBlobsByTag("pointflag", @flags);
-		bool flags_wincondition = flags.length > 0;
+		u8 teamleft = getRules().get_u8("teamleft");
+		u8 teamright = getRules().get_u8("teamright");
 
+		s16 teamLeftTickets = getRules().get_s16("teamLeftTickets");
+		s16 teamRightTickets = getRules().get_s16("teamRightTickets");
+
+		bool flags_wincondition = isCTFshared();
+		bool plant_the_bomb_wincondition = isPTBshared();
+		
 		if (flags_wincondition && getGameTime() >= rules.get_u32("game_end_time"))
-		{
+		{ // disabled for now
 			if (rules.getCurrentState() != GAME_OVER)
 			{
 				CBlob@[] flags;
@@ -812,11 +820,12 @@ shared class TDMCore : RulesCore
 					CBlob@ flag = flags[i];
 					if (flag is null) continue;
 					if (flag.getTeamNum() > 6) continue;
+
 					flag.getTeamNum() == rules.get_u8("teamleft") ? teamleft_flags++ : teamright_flags++;
 				}
 				if (teamright_flags != teamleft_flags)
 				{
-					u8 team_won = (teamright_flags > teamleft_flags ? 1 : 0);
+					u8 team_won = (teamright_flags > teamleft_flags ? teamright : teamleft);
 					CTeam@ teamis = rules.getTeam(team_won);
 					rules.SetTeamWon(team_won);   //game over!
 					rules.SetCurrentState(GAME_OVER);
@@ -827,6 +836,34 @@ shared class TDMCore : RulesCore
 					rules.SetTeamWon(-1);   //game over!
 					rules.SetCurrentState(GAME_OVER);
 					rules.SetGlobalMessage("It's a tie!");
+					return;
+				}
+			}
+		}
+		else if (plant_the_bomb_wincondition)
+		{
+			u8 defenders = defendersTeamPTBshared();
+			s16 attackers_tickets = teamleft == defenders ? teamRightTickets : teamLeftTickets;
+			
+			if (rules.getCurrentState() != GAME_OVER)
+			{
+				CBlob@[] cores;
+				getBlobsByName("core", @cores);
+
+				if (cores.size() == 0)
+				{
+					u8 team_won = teamleft == defenders ? teamright : teamleft;
+					CTeam@ teamis = rules.getTeam(team_won);
+					rules.SetTeamWon(team_won);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					if (teamis !is null) rules.SetGlobalMessage("Team \"" + teamis.getName() + "\" destroyed each of enemy cores and wins the game!\nWell done. Loading next map..." );
+				}
+				else if (attackers_tickets == 0)
+				{
+					CTeam@ teamis = rules.getTeam(defenders);
+					rules.SetTeamWon(defenders);   //game over!
+					rules.SetCurrentState(GAME_OVER);
+					rules.SetGlobalMessage("Team \"" + teamis.getName() + "\" wins the game! Siegers ran out of tickets.\nWell done. Loading next map..." );
 					return;
 				}
 			}
@@ -868,11 +905,10 @@ shared class TDMCore : RulesCore
 				return;
 			}
 		}
-		
-		
 
-		if (!flags_wincondition)
+		if (!flags_wincondition && !isDTTshared() && !isPTBshared())
 		{
+			// sudden death - win if whole every team is dead
 			int highkills = 0;
 			for (uint team_num = 0; team_num < teams.length; ++team_num)
 			{
@@ -950,7 +986,7 @@ shared class TDMCore : RulesCore
 
 			rules.set_s8("team_wins_on_end", team_wins_on_end);
 
-			if (winteamIndex >= 0 && !isCTFshared() && !isDTTshared() && !isPTBshared())
+			if (winteamIndex >= 0)
 			{
 				rules.SetTeamWon(winteamIndex);   //game over!
 				rules.SetCurrentState(GAME_OVER);
@@ -958,6 +994,7 @@ shared class TDMCore : RulesCore
 				rules.AddGlobalMessageReplacement("WINNING_TEAM", winteam.name);
 				SetCorrectMapTypeShared();
 			}
+
 		}
 	}
 

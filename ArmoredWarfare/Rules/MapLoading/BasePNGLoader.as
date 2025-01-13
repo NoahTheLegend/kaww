@@ -8,6 +8,7 @@
 #include "CustomBlocks.as";
 #include "MakeCrate.as";
 #include "LoadPNGMap.as";
+#include "VehiclesParams.as";
 
 enum WAROffset
 {
@@ -313,6 +314,7 @@ class PNGLoader
 			// Main spawns
 			case map_colors::blue_main_spawn:   autotile(offset); AddMarker(map, offset, "blue main spawn"); break;
 			case map_colors::red_main_spawn:    autotile(offset); AddMarker(map, offset, "red main spawn");  break;
+			case map_colors::core_zone:         autotile(offset); AddMarker(map, offset, "core zone");       break;
 			case map_colors::green_main_spawn:  autotile(offset); spawnHall(map, offset, 2); break;
 			case map_colors::purple_main_spawn: autotile(offset); spawnHall(map, offset, 3); break;
 			case map_colors::orange_main_spawn: autotile(offset); spawnHall(map, offset, 4); break;
@@ -479,6 +481,33 @@ class PNGLoader
 			case map_colors::bomber:      autotile(offset); spawnVehicle(map, "bomber",   offset); break;
 
 			// AW
+			case map_colors::faction_blue_transport:    autotile(offset); spawnFactionVehicle(offset, VehicleType::transport, teamleft); break;
+			case map_colors::faction_red_transport:     autotile(offset); spawnFactionVehicle(offset, VehicleType::transport, teamright); break;
+			case map_colors::faction_blue_armedtransport: autotile(offset); spawnFactionVehicle(offset, VehicleType::armedtransport, teamleft); break;
+			case map_colors::faction_red_armedtransport: autotile(offset); spawnFactionVehicle(offset, VehicleType::armedtransport, teamright); break;
+			case map_colors::faction_blue_apc: autotile(offset); spawnFactionVehicle(offset, VehicleType::apc, teamleft); break;
+			case map_colors::faction_red_apc: autotile(offset); spawnFactionVehicle(offset, VehicleType::apc, teamright); break;
+			case map_colors::faction_blue_mediumtank: autotile(offset); spawnFactionVehicle(offset, VehicleType::mediumtank, teamleft); break;
+			case map_colors::faction_red_mediumtank: autotile(offset); spawnFactionVehicle(offset, VehicleType::mediumtank, teamright); break;
+			case map_colors::faction_blue_heavytank: autotile(offset); spawnFactionVehicle(offset, VehicleType::heavytank, teamleft); break;
+			case map_colors::faction_red_heavytank: autotile(offset); spawnFactionVehicle(offset, VehicleType::heavytank, teamright); break;
+			case map_colors::faction_blue_superheavytank: autotile(offset); spawnFactionVehicle(offset, VehicleType::superheavytank, teamleft); break;
+			case map_colors::faction_red_superheavytank: autotile(offset); spawnFactionVehicle(offset, VehicleType::superheavytank, teamright); break;
+			case map_colors::faction_blue_artillery: autotile(offset); spawnFactionVehicle(offset, VehicleType::artillery, teamleft); break;
+			case map_colors::faction_red_artillery: autotile(offset); spawnFactionVehicle(offset, VehicleType::artillery, teamright); break;
+			case map_colors::faction_blue_fighterplane: autotile(offset); spawnFactionVehicle(offset, VehicleType::fighterplane, teamleft); break;
+			case map_colors::faction_red_fighterplane: autotile(offset); spawnFactionVehicle(offset, VehicleType::fighterplane, teamright); break;
+			case map_colors::faction_blue_bomberplane: autotile(offset); spawnFactionVehicle(offset, VehicleType::bomberplane, teamleft); break;
+			case map_colors::faction_red_bomberplane: autotile(offset); spawnFactionVehicle(offset, VehicleType::bomberplane, teamright); break;
+			case map_colors::faction_blue_helicopter: autotile(offset); spawnFactionVehicle(offset, VehicleType::helicopter, teamleft); break;
+			case map_colors::faction_red_helicopter: autotile(offset); spawnFactionVehicle(offset, VehicleType::helicopter, teamright); break;
+			case map_colors::faction_blue_machinegun: autotile(offset); spawnFactionVehicle(offset, VehicleType::machinegun, teamleft); break;
+			case map_colors::faction_red_machinegun: autotile(offset); spawnFactionVehicle(offset, VehicleType::machinegun, teamright); break;
+			case map_colors::faction_blue_weapons1: autotile(offset); spawnFactionVehicle(offset, VehicleType::weapons1, teamleft); break;
+			case map_colors::faction_red_weapons1: autotile(offset); spawnFactionVehicle(offset, VehicleType::weapons1, teamright); break;
+			case map_colors::faction_blue_specialvehicle1: autotile(offset); spawnFactionVehicle(offset, VehicleType::special1, teamleft); break;
+			case map_colors::faction_red_specialvehicle1: autotile(offset); spawnFactionVehicle(offset, VehicleType::special1, teamright); break;
+
 			case map_colors::refinery:    autotile(offset); spawnBlob(map, "refinery", offset, -1); break;
 			case map_colors::advrefinery: autotile(offset); spawnBlob(map, "advancedrefinery", offset, -1); break;
 
@@ -588,9 +617,12 @@ class PNGLoader
 			case map_colors::sandbags:    autotile(offset); spawnBlob(map, "sandbags", offset-map.tilemapwidth); break;
 			case map_colors::redbarrel:    autotile(offset); spawnBlob(map, "redbarrel", offset-map.tilemapwidth); break;
 			case map_colors::pointflag:    autotile(offset); spawnBlob(map, "pointflag", offset); break;
-			case map_colors::cobweb:            autotile(offset); spawnBlob(map, "cobweb", offset); break;
-			case map_colors::deadbush:          autotile(offset); spawnBlob(map, "deadbush", offset); break;
-			case map_colors::cacti:    autotile(offset); spawnBlob(map, "cacti", offset); break;
+			case map_colors::pointflagt2:	autotile(offset); spawnBlob(map, "pointflagt2", offset); break;
+			case map_colors::core_blue:    autotile(offset); spawnBlob(map, "core", offset, teamleft); break;
+			case map_colors::core_red:     autotile(offset); spawnBlob(map, "core", offset, teamright); break;
+			case map_colors::cobweb:        autotile(offset); spawnBlob(map, "cobweb", offset); break;
+			case map_colors::deadbush:      autotile(offset); spawnBlob(map, "deadbush", offset); break;
+			case map_colors::cacti:    		autotile(offset); spawnBlob(map, "cacti", offset); break;
 
 			case map_colors::hanginglantern:    autotile(offset); spawnBlob(map, "hanginglantern", offset); break;
 			case map_colors::bonepile:    autotile(offset); spawnBlob(map, "bonepile", offset); break;
@@ -674,6 +706,15 @@ class PNGLoader
 			case map_colors::r_vehiclebuilderairconst:     autotile(offset); spawnBlob(map, "vehiclebuilderairconst", offset, teamright); break;
 			case map_colors::b_vehiclebuildert2airconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2airconst", offset, teamleft); break;
 			case map_colors::r_vehiclebuildert2airconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2airconst", offset, teamright); break;
+
+			case map_colors::b_vehiclebuilderdefense:     autotile(offset); spawnBlob(map, "vehiclebuilderdefense", offset, teamleft); break;
+			case map_colors::r_vehiclebuilderdefense:     autotile(offset); spawnBlob(map, "vehiclebuilderdefense", offset, teamright); break;
+			case map_colors::b_vehiclebuildert2defense:    autotile(offset); spawnBlob(map, "vehiclebuildert2defense", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert2defense:    autotile(offset); spawnBlob(map, "vehiclebuildert2defense", offset, teamright); break;
+			case map_colors::b_vehiclebuilderdefenseconst:     autotile(offset); spawnBlob(map, "vehiclebuilderdefenseconst", offset, teamleft); break;
+			case map_colors::r_vehiclebuilderdefenseconst:     autotile(offset); spawnBlob(map, "vehiclebuilderdefenseconst", offset, teamright); break;
+			case map_colors::b_vehiclebuildert2defenseconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2defenseconst", offset, teamleft); break;
+			case map_colors::r_vehiclebuildert2defenseconst:    autotile(offset); spawnBlob(map, "vehiclebuildert2defenseconst", offset, teamright); break;
 
 			case map_colors::jourcop: 			   autotile(offset); spawnBlob(map, "jourcop", offset, 100); break;
 

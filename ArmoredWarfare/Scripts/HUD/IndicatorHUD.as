@@ -2,6 +2,7 @@
 #include "TeamColour.as";
 #include "TeamColorCollections.as";
 #include "PingCommon.as";
+#include "GamemodeCheck.as";
 
 const float timelineHeight = 22.0f;
 const float timelineLeftEnd = 0.34f;
@@ -36,8 +37,9 @@ float timelineRDist = 1;
 float timelineLength = 1;
 
 bool hide_indicator = true;
-bool isCTF = false;
-bool isDTT = false;
+bool ctf = false;
+bool dtt  = false;
+bool ptb = false;
 
 Vec2f timelineLPos = Vec2f(1,1);
 Vec2f timelineRPos = Vec2f(1,1);
@@ -131,8 +133,9 @@ void Update(CPlayer@ p, CBlob@ local)
 	timelineRPos = Vec2f(timelineRDist - 16, timelineHeight);
 
 	hide_indicator = !v_showminimap && local !is null && !local.isKeyPressed(key_map) || (local is null && !v_showminimap);
-	isCTF = getBlobByName("pointflag") !is null || getBlobByName("pointflagt2") !is null;
-	isDTT = getBlobByName("importantarmory") !is null || getBlobByName("importantarmoryt2") !is null;
+	ctf = isCTF();
+	dtt = isDTT();
+	ptb = isPTB();
 }
 
 void ResetArrays()
@@ -206,8 +209,8 @@ void onRender(CRules@ this)
 	if (p is null || !p.isMyPlayer()) return;
 	CBlob@ local = p.getBlob();
 	
-	if (!isCTF
-		&& !isDTT)
+	if (!ctf
+		&& !dtt)
 	{
 		u16 teamLeftKills = this.get_u16("teamleft_kills");
 		u16 teamRightKills = this.get_u16("teamright_kills");
@@ -222,12 +225,16 @@ void onRender(CRules@ this)
 
 		//if (getGameTime()%30==0)  printf("GETTING TEAMS: "+teamleft+" ||| "+teamright);
 		//if (getGameTime()%30==0) printf(""+(getNeonColor(teamleft, 0).getRed())+" "+(getNeonColor(teamleft, 0).getGreen())+" "+(getNeonColor(teamleft, 0).getBlue()));
-		
-		if (teamLeftTickets > 0) GUI::DrawText(""+teamLeftTickets, timelineLPos+Vec2f(-48.0f, 0), getNeonColor(teamleft, 0));
-		else GUI::DrawTextCentered("--", timelineLPos+Vec2f(-48.0f, 0), getNeonColor(teamleft, 0));
+		u8 PTBteam = defendersTeamPTB();
 
-		if (teamRightTickets > 0) GUI::DrawText(""+teamRightTickets, timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
-		else GUI::DrawTextCentered("--", timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
+		if (PTBteam == 255)
+		{
+			if (teamLeftTickets > 0) GUI::DrawText(""+teamLeftTickets, timelineLPos+Vec2f(-48.0f, 0), getNeonColor(teamleft, 0));
+			else GUI::DrawTextCentered("--", timelineLPos+Vec2f(-48.0f, 0), getNeonColor(teamleft, 0));
+
+			if (teamRightTickets > 0) GUI::DrawText(""+teamRightTickets, timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
+			else GUI::DrawTextCentered("--", timelineRPos+Vec2f(48.0f, 0), getNeonColor(teamright, 0));
+		}
 
 		s16 ldiff = teamLeftTickets-teamRightTickets;
 		s16 rdiff = teamRightTickets-teamLeftTickets;
@@ -236,8 +243,19 @@ void onRender(CRules@ this)
 		GUI::SetFont("score-medium");
 		if (getGameTime() > 450)
 		{
-			string text = ldiff!=rdiff?"-"+Maths::Max(ldiff, rdiff):"||";
-			SColor textcol = getNeonColor(ldiff==rdiff?7:ldiff<rdiff?teamleft:teamright, 0);
+			string text;
+			SColor textcol;
+
+			if (PTBteam != 255)
+			{
+				text = "" + (PTBteam == teamleft ? teamRightTickets : teamLeftTickets);
+				textcol = getNeonColor(PTBteam == teamleft ? teamright : teamleft, 0);
+			}
+			else
+			{
+				text = ldiff!=rdiff?"-"+Maths::Max(ldiff, rdiff):"||";
+				textcol = getNeonColor(ldiff==rdiff?7:ldiff<rdiff?teamleft:teamright, 0);
+			}
 			if (teamLeftTickets == 0 && teamRightTickets == 0)
 			{
 				text = "Sudden death";
@@ -249,7 +267,7 @@ void onRender(CRules@ this)
 	}
 
 	f32 points_target = this.get_f32("ctf_points_target");
-	if (isCTF && points_target > 0)
+	if (ctf && points_target > 0)
 	{
 		Vec2f gauge_dim = Vec2f(Maths::Min(timelineRDist-timelineLDist, 500), 24);
 		Vec2f ctf_pos = Vec2f(screenWidth/2, 125);

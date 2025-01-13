@@ -1,3 +1,5 @@
+#include "GamemodeCheck.as";
+
 #define CLIENT_ONLY
 
 Vec2f bannerStart = Vec2f_zero;
@@ -35,10 +37,17 @@ void onTick(CRules@ this)
     {
         CBlob@[] tents;
         getBlobsByName("tent", @tents);
-        CBlob@[] iarmorys;
-        getBlobsByTag("importantarmory", @iarmorys);
-        CBlob@[] flags;
-        getBlobsByTag("pointflag", @flags);
+
+        bool ctf = isCTF();
+        bool dtt = isDTT();
+        bool ptb = isPTB();
+        u8 ptb_defenders = defendersTeamPTB();
+
+        u8 local_team = 255;
+        if (getLocalPlayer() !is null)
+        {
+            local_team = getLocalPlayer().getTeamNum();
+        }
 
         Driver@ driver = getDriver();
         if (driver !is null)
@@ -56,16 +65,24 @@ void onTick(CRules@ this)
             this.set_string("bannertext", "Zombie Mode");
         }
         else {
-            if (tents.length == 0 && iarmorys.length > 0)
+            if (tents.length == 0 && dtt)
             {
                 // break the truck
                 this.set_string("bannertext", "Destroy the enemy truck!");
             }
-            else if (flags.length > 0)
+            else if (ctf)
             {
+                CBlob@[] flags;
+                getBlobsByTag("pointflag", @flags);
+
                 // capture the flag
                 this.set_string("bannertext", (flags.size() <= 2 ? "Capture all the flags to win!" : "         Collect enough control points to win!"));
                 bannerDest += Vec2f(0, 100);
+            }
+            else if (ptb)
+            {
+                // plant the bomb
+                this.set_string("bannertext", local_team == ptb_defenders ? "Don't let enemies to explode the cores!" : "Plant a C-4 at enemy cores!");
             }
             else
             {

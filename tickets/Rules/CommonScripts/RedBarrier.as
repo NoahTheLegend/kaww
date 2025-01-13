@@ -105,9 +105,15 @@ bool reachedMid(CRules@ this)
 void onTick(CRules@ this)
 {
 	f32 speed_factor = 1.0f;
+	bool ptb = isPTB();
+	
 	if (shouldBarrier(this))
 	{
-		if (!reachedMid(this))
+		if (ptb)
+		{
+			SetBarrierPosition(this);
+		}
+		else if (!reachedMid(this))
 		{
 			CMap@ map = getMap();
 			const f32 mw = map.tilemapwidth * map.tilesize;
@@ -291,27 +297,37 @@ void DamageBlob(CBlob@ blob)
 	CRules@ this = getRules();
 	if (blob.hasTag("player"))
 	{
+		bool ptb = isPTB();
+		if (ptb && blob.isAttached()) blob.server_DetachFromAll();
+
 		CMap@ map = getMap();
 		Vec2f pos = blob.getPosition();
 		f32 mapWidth = map.tilemapwidth * map.tilesize;
 		f32 dmg = 0.0f;
 
-		if (pos.x < mapWidth * 0.5f)
+		if (ptb)
 		{
-			f32 distance = pos.x - this.get_u16("barrier_left_x1");
-			f32 max_distance = this.get_u16("barrier_left_x2") - this.get_u16("barrier_left_x1");
-			dmg = damage_players_min + (damage_players_max - damage_players_min) * (1.0f - (distance / max_distance));
+			dmg = 1.5f;
 		}
 		else
 		{
-			f32 distance = this.get_u16("barrier_right_x2") - pos.x;
-			f32 max_distance = this.get_u16("barrier_right_x2") - this.get_u16("barrier_right_x1");
-			dmg = damage_players_min + (damage_players_max - damage_players_min) * (1.0f - (distance / max_distance));
+			if (pos.x < mapWidth * 0.5f)
+			{
+				f32 distance = pos.x - this.get_u16("barrier_left_x1");
+				f32 max_distance = this.get_u16("barrier_left_x2") - this.get_u16("barrier_left_x1");
+				dmg = damage_players_min + (damage_players_max - damage_players_min) * (1.0f - (distance / max_distance));
+			}
+			else
+			{
+				f32 distance = this.get_u16("barrier_right_x2") - pos.x;
+				f32 max_distance = this.get_u16("barrier_right_x2") - this.get_u16("barrier_right_x1");
+				dmg = damage_players_min + (damage_players_max - damage_players_min) * (1.0f - (distance / max_distance));
+			}
 		}
 		
 		blob.server_Hit(blob, blob.getPosition(), Vec2f(0, 0), dmg, 0);
 	}
-	else if (blob.hasTag("vehicle") || blob.hasTag("machinegun") || blob.hasTag("turret"))
+	else if (!isPTB() && (blob.hasTag("vehicle") || blob.hasTag("machinegun") || blob.hasTag("turret")))
 	{
 		blob.server_Hit(blob, blob.getPosition(), Vec2f(0, 0), damage_vehicles, 0);
 	}
@@ -360,20 +376,49 @@ void SetBarrierPosition(CRules@ this)
 {
 	IS_barrier_left_SET = true;
 	CMap@ map = getMap();
-	
-	u16 xl1, xl2, xr1, xr2;
+	Vec2f[] markers = getPTBZonesMarkers();
+
 	const f32 mapWidth = map.tilemapwidth * map.tilesize;
+	
+	if (!isPTB())
+	{
+		// Fallback to default behavior if no markers are found
+		u16 xl1, xl2, xr1, xr2;
 
-	xl1 = 0;
-	xl2 = barrier_width_left;
+		xl1 = 0;
+		xl2 = barrier_width_left;
 
-	xr1 = map.tilemapwidth * map.tilesize - barrier_width_right;
-	xr2 = map.tilemapwidth * map.tilesize;
+		xr1 = map.tilemapwidth * map.tilesize - barrier_width_right;
+		xr2 = map.tilemapwidth * map.tilesize;
 
-	this.set_u16("barrier_left_x1", xl1);
-	this.set_u16("barrier_left_x2", xl2);
-	this.set_u16("barrier_right_x1", xr1);
-	this.set_u16("barrier_right_x2", xr2);
+		this.set_u16("barrier_left_x1", xl1);
+		this.set_u16("barrier_left_x2", xl2);
+		this.set_u16("barrier_right_x1", xr1);
+		this.set_u16("barrier_right_x2", xr2);
+	}
+	else
+	{
+		if (markers.length != 0)
+		{
+			Vec2f left_marker, right_marker;
+			if (defendersOnLeft())
+			{
+				left_marker = markers[markers.length - 1];
+				this.set_u16("barrier_left_x1", 0);
+				this.set_u16("barrier_left_x2", left_marker.x);
+				this.set_u16("barrier_right_x1", map.tilemapwidth * map.tilesize);
+				this.set_u16("barrier_right_x2", map.tilemapwidth * map.tilesize);
+			}
+			else
+			{
+				right_marker = markers[0];
+				this.set_u16("barrier_right_x1", right_marker.x);
+				this.set_u16("barrier_right_x2", map.tilemapwidth * map.tilesize);
+				this.set_u16("barrier_left_x1", 0);
+				this.set_u16("barrier_left_x2", 0);
+			}
+		}
+	}
 }
 
 // Sync barrier to said player
@@ -419,9 +464,58 @@ void getBarrierRect(CRules@ rules, Vec2f &out tll, Vec2f &out brl, Vec2f &out tl
 
 const bool shouldBarrier(CRules@ rules)
 {
+	if (isPTB()) return true;
+
 	u8 teamleft = rules.get_u8("teamleft");
 	u8 teamright = rules.get_u8("teamright");
 	
 	if (!rules.isMatchRunning() || rules.isWarmup()) return false;
 	return rules.get_s16("teamLeftTickets") == 0 && !isTDM() && !isDTT() && !isCTF() && rules.get_s16("teamRightTickets") == 0;
+}
+
+Vec2f[] getPTBZonesMarkers()
+{
+	Vec2f[] markers;
+	getMap().getMarkers("core zone", @markers);
+	int map_height = getMap().tilemapheight * getMap().tilesize;
+
+	CBlob@[] cores;
+	getBlobsByName("core", @cores);
+
+	bool defenders_on_left = defendersOnLeft();
+
+	Vec2f[] return_markers;
+	for (int i = 0; i < markers.length; i++)
+	{
+		bool add = false;
+		bool has_core_after = false;
+
+		for (int j = 0; j < cores.length; j++)
+		{
+			Vec2f core_pos = cores[j].getPosition();
+			has_core_after = defenders_on_left ? core_pos.x > markers[i].x : core_pos.x < markers[i].x;
+			
+			if (has_core_after) // ignore marker if at least one core is after it
+			{
+				add = true;
+				j = cores.length;
+			}
+		}
+
+		if (has_core_after)
+		{
+			return_markers.push_back(Vec2f(markers[i].x, map_height));
+		}
+	}
+
+	return return_markers;
+}
+
+bool defendersOnLeft()
+{
+	CRules@ rules = getRules();
+	u8 teamleft = rules.get_u8("teamleft");
+	u8 teamright = rules.get_u8("teamright");
+
+	return teamleft == defendersTeamPTB();
 }
