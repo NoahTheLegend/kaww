@@ -246,7 +246,6 @@ shared class TDMSpawns : RespawnSystem
 				if (spawns[step].getTeamNum() == s32(p_info.team))
 				{
 					teamspawns.push_back(spawns[step]);
-					printf("setting "+spawns[step].getName()+" as spawn idx "+spawns[step].getNetworkID());
 					@default_spawn = @spawns[step]; // store default spawn if other fail
 				}
 			}

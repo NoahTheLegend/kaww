@@ -1514,18 +1514,6 @@ void onRangerReload(CBlob@ this)
 void onLMGReload(CBlob@ this)
 {
 	this.getSprite().PlaySound("LMG_reload.ogg", 0.8);
-
-	makeGibParticle(
-	"EmptyMag",               // file name
-	this.getPosition() + Vec2f(this.isFacingLeft() ? -6.0f : 6.0f, 0.5f),      // position
-	Vec2f(this.isFacingLeft() ? -2.0f : 2.0f, -1.0f),                          // velocity
-	0,                                  // column
-	0,                                  // row
-	Vec2f(16, 16),                      // frame size
-	1.0f,                               // scale?
-	0,                                  // ?
-	"EmptyMagSound",                    // sound
-	0);         // team number
 }
 
 void onSniperReload(CBlob@ this)
@@ -1547,8 +1535,7 @@ void onSniperReload(CBlob@ this)
 
 void onMp5Reload(CBlob@ this)
 {
-	this.getSprite().PlaySound("Mp5_reload.ogg", 0.8); //if (this.get_s8("charge_time") >= 60) 
-	// particle located at infantryanim.as
+	this.getSprite().PlaySound("Mp5_reload.ogg", 0.8); 
 }
 
 void onShotgunReload(CBlob@ this)

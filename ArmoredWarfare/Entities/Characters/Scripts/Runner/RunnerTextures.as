@@ -36,7 +36,6 @@ shared class RunnerTextures
 	RunnerTextures(string _shortname, string texture_prefix)
 	{
 		loaded = false;
-
 		shortname = _shortname;
 
 		male_shortname = shortname+"_male";

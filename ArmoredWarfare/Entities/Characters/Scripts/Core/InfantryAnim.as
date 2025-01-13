@@ -35,11 +35,46 @@ void LoadSprites(CSprite@ this)
 	CBlob@ blob = this.getBlob();
 	if (blob is null) return;
 
-	ensureCorrectRunnerTexture(this, this.getBlob().getName(), this.getBlob().getName().toUpper());
+	u8 team = blob.getTeamNum();
+	string bname = blob.getName();
+
+	InfantryInfo@ infantry;
+	if (!blob.get("infantryInfo", @infantry)) return;
+	
+	bool override_tex = false;
+	if (team == 2)
+	{
+		override_tex = true;
+		
+		if (bname == "lmg")
+		{
+			ensureCorrectRunnerTexture(this, "lmg_nazi", "LMG_nazi"); // nazi mg42 sprite
+			infantry.emptyshellonfire = false;
+			infantry.shoot_sfx = "MG42fire.ogg";
+		}
+		else if (bname == "ranger")
+		{
+			ensureCorrectRunnerTexture(this, "ranger_nazi", "Ranger_nazi"); // nazi stg44 sprite
+		}
+		else if (bname == "rpg")
+		{
+			ensureCorrectRunnerTexture(this, "rpg_nazi", "RPG_nazi");
+		}
+	}
+	else
+	{
+		if (bname == "lmg" && !infantry.emptyshellonfire)
+		{
+			infantry.emptyshellonfire = true;
+			infantry.shoot_sfx = "LMG_shoot.ogg";
+		}
+	}
+
+	if (!override_tex) ensureCorrectRunnerTexture(this, this.getBlob().getName(), this.getBlob().getName().toUpper());
 	string texname = getRunnerTextureName(this);
 
 	this.RemoveSpriteLayer("frontarm");
-	CSpriteLayer@ frontarm = this.addTexturedSpriteLayer("frontarm", texname , 32, 16);
+	CSpriteLayer@ frontarm = this.addTexturedSpriteLayer("frontarm", texname, 32, 16);
 
 	if (frontarm !is null)
 	{
@@ -191,6 +226,8 @@ void onTick(CSprite@ this)
 	{
 		if (!blob.hasTag("had_timed_particle"))
 		{
+			u8 team = blob.getTeamNum();
+
 			if (blob.getName() == "mp5")
 			{
 				if (current_anim.frame == 6)
@@ -212,7 +249,7 @@ void onTick(CSprite@ this)
 			}
 			else if (blob.getName() == "lmg")
 			{
-				if (current_anim.frame == 8)
+				if (team != 2 && current_anim.frame == 8)
 				{
 					makeGibParticle(
 					"EmptyMagBig",               // file name
@@ -226,6 +263,27 @@ void onTick(CSprite@ this)
 					"EmptyMagSound",                    // sound
 					0);         // team number
 
+					blob.Tag("had_timed_particle");
+				}
+				else if (team == 2 && current_anim.frame == 4 && !blob.hasTag("had_timed_particle"))
+				{
+					for (uint i = 0; i < 15+XORRandom(10); i++)
+					{
+						Vec2f ppos = Vec2f(blob.isFacingLeft() ? 1.0f+(0.1f * XORRandom(10) - 0.5f) : -1.0f-(XORRandom(10)*0.1f), XORRandom(11)*-0.2f);
+
+						makeGibParticle(
+						"EmptyShellSmall",      		            // file name
+						blob.getPosition() + Vec2f(blob.isFacingLeft() ? -7.0f : 7.0f, 0.0f), // position
+						ppos, // velocity
+						0,                                  // column
+						0,                                  // row
+						Vec2f(16, 16),                      // frame size
+						0.2f,                               // scale?
+						0,                                  // ?
+						"ShellCasing",                      // sound
+						0);         // team number
+					}
+					
 					blob.Tag("had_timed_particle");
 				}
 			}
