@@ -180,7 +180,7 @@ void handlePlayers(CPlayer@ p)
 
 			float curBlobXPos = curBlob.getPosition().x - 28;
 			float curBlobYPos = curBlob.getPosition().y;
-			float indicatorProgress = curBlobXPos / mapWidth;
+			float indicatorProgress = curBlobXPos / Maths::Max(mapWidth, 1);
 			float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
 
 			Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);

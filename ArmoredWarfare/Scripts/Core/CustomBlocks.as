@@ -35,7 +35,47 @@ namespace CMap
 		tile_scrap_d3,
 		tile_scrap_d4,
 		tile_scrap_d5,
-		tile_scrap_d6
+		tile_scrap_d6,
+
+		tile_metal = 432,
+		tile_metal_v0,
+		tile_metal_v1,
+		tile_metal_v2,
+		tile_metal_v3,
+		tile_metal_v4,
+		tile_metal_v5,
+		tile_metal_v6,
+		tile_metal_v7,
+		tile_metal_v8,
+		tile_metal_v9,
+		tile_metal_v10,
+		tile_metal_v11,
+		tile_metal_v12,
+		tile_metal_v13,
+		tile_metal_v14,
+		tile_metal_d0 = tile_metal + 16,
+		tile_metal_d1,
+		tile_metal_d2,
+		tile_metal_d3,
+		tile_metal_d4,
+		tile_metal_d5,
+		tile_metal_d6,
+		tile_metal_d7,
+		tile_metal_d8,
+
+		tile_metal_back = tile_metal_d0 + 16,
+		tile_metal_back_u,
+		tile_metal_back_d,
+		tile_metal_back_m,
+		tile_metal_back_d0,
+		tile_metal_back_d1,
+		tile_metal_back_d2,
+		tile_metal_back_d3,
+		tile_metal_back_d4,
+		tile_metal_back_d5,
+		tile_metal_back_d6,
+		tile_metal_back_d7,
+		tile_metal_back_d8
 	};
 };
 
@@ -152,4 +192,28 @@ Vec2f getSpawnPosition(CMap@ map, int offset)
 	pos.x += tile_offset;
 	pos.y += tile_offset;
 	return pos;
+}
+
+bool isCDirtTile(CMap@ map, Vec2f pos)
+{
+	u16 tile = map.getTile(pos).type;
+	return tile >= CMap::tile_cdirt && tile <= CMap::tile_cdirt_d3;
+}
+
+bool isScrapTile(CMap@ map, Vec2f pos)
+{
+	u16 tile = map.getTile(pos).type;
+	return tile >= CMap::tile_scrap && tile <= CMap::tile_scrap_v14;
+}
+
+bool isMetalTile(CMap@ map, Vec2f pos)
+{
+	u16 tile = map.getTile(pos).type;
+	return tile >= CMap::tile_metal && tile <= CMap::tile_metal_v14;
+}
+
+bool isMetalBackTile(CMap@ map, Vec2f pos)
+{
+	u16 tile = map.getTile(pos).type;
+	return tile >= CMap::tile_metal_back && tile <= CMap::tile_metal_back_d8;
 }

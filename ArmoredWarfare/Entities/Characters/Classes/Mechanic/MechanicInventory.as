@@ -473,10 +473,10 @@ void onRender(CSprite@ this)
 						{
 							CMap@ map = getMap();
 							Vec2f middle = blob.getAimPos() + Vec2f(map.tilesize*0.5f, map.tilesize*0.5f);
-							CMap::Sector@ sector = map.getSectorAtPosition( middle, "no build");
+							CMap::Sector@ sector = map.getSectorAtPosition(middle, "no build");
 							if (sector !is null)
 							{
-								GUI::DrawRectangle( getDriver().getScreenPosFromWorldPos(sector.upperleft), getDriver().getScreenPosFromWorldPos(sector.lowerright), SColor(0x65ed1202) );
+								GUI::DrawRectangle(getDriver().getScreenPosFromWorldPos(sector.upperleft), getDriver().getScreenPosFromWorldPos(sector.lowerright), SColor(0x65ed1202));
 							}
 							else
 							{
@@ -526,6 +526,9 @@ bool blobBlockingBuilding(CMap@ map, Vec2f v)
 {
 	CBlob@[] overlapping;
 	map.getBlobsAtPosition(v, @overlapping);
+
+	if (isMetalBackTile(map, v)) return true;
+
 	for(uint i = 0; i < overlapping.length; i++)
 	{
 		CBlob@ o_blob = overlapping[i];

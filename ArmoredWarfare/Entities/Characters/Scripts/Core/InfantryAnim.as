@@ -44,20 +44,21 @@ void LoadSprites(CSprite@ this)
 	bool override_tex = false;
 	if (team == 2)
 	{
-		override_tex = true;
-		
 		if (bname == "lmg")
 		{
+			override_tex = true;
 			ensureCorrectRunnerTexture(this, "lmg_nazi", "LMG_nazi"); // nazi mg42 sprite
 			infantry.emptyshellonfire = false;
 			infantry.shoot_sfx = "MG42fire.ogg";
 		}
 		else if (bname == "ranger")
 		{
+			override_tex = true;
 			ensureCorrectRunnerTexture(this, "ranger_nazi", "Ranger_nazi"); // nazi stg44 sprite
 		}
 		else if (bname == "rpg")
 		{
+			override_tex = true;
 			ensureCorrectRunnerTexture(this, "rpg_nazi", "RPG_nazi");
 		}
 	}

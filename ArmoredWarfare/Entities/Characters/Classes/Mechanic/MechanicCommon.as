@@ -3,6 +3,7 @@
 #include "BuildBlock.as";
 #include "PlacementCommon.as";
 #include "CheckSpam.as";
+#include "CustomBlocks.as";
 
 // DAMAGE
 const float damage_body = 0.35f;
@@ -67,7 +68,6 @@ CBlob@ server_BuildBlob(CBlob@ this, BuildBlock[]@ blocks, uint index)
 		const bool onground = this.isOnGround();
 
 		bool fail = !onground;
-
 		CMap@ map = getMap();
 
 		Vec2f space = Vec2f(b.size.x / 8, b.size.y / 8);
@@ -82,7 +82,8 @@ CBlob@ server_BuildBlob(CBlob@ this, BuildBlock[]@ blocks, uint index)
 				{
 					Vec2f temp = (Vec2f(step_x + 0.5, step_y + 0.5) * map.tilesize);
 					Vec2f v = offsetPos + temp;
-					if (map.getSectorAtPosition(v , "no build") !is null || map.isTileSolid(v))
+
+					if (map.getSectorAtPosition(v , "no build") !is null || map.isTileSolid(v) || isMetalBackTile(map, v))
 					{
 						fail = true;
 						break;

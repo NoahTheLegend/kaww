@@ -1,3 +1,5 @@
+#include "CustomBlocks.as";
+
 ///Minimap Code
 // Almost 100% accurately replicates the legacy minimap drawer
 // This is due to it being a port of the legacy code, provided by Geti
@@ -89,6 +91,105 @@ void CalculateMinimapColour( CMap@ map, u32 offset, TileType tile, SColor &out c
 	{
 		//Sky
 		col = color_minimap_open;
+	}
+
+	bool air = tile == CMap::tile_empty;
+	if (!air)
+	{
+		// TODO: Shove damage frame numbers into an enum
+		switch(tile)
+		{
+			case CMap::tile_cdirt:
+			case CMap::tile_cdirt_v0:
+			case CMap::tile_cdirt_v1:
+			case CMap::tile_cdirt_v2:
+			case CMap::tile_cdirt_v3:
+			case CMap::tile_cdirt_v4:
+			case CMap::tile_cdirt_d0:
+			case CMap::tile_cdirt_d1:
+			case CMap::tile_cdirt_d2:
+			case CMap::tile_cdirt_d3:
+			{
+				col = SColor(255, 135, 55, 15);
+				break;
+			}
+			
+			case CMap::tile_scrap:
+			case CMap::tile_scrap_v0:
+			case CMap::tile_scrap_v1:
+			case CMap::tile_scrap_v2:
+			case CMap::tile_scrap_v3:
+			case CMap::tile_scrap_v4:
+			case CMap::tile_scrap_v5:
+			case CMap::tile_scrap_v6:
+			case CMap::tile_scrap_v7:
+			case CMap::tile_scrap_v8:
+			case CMap::tile_scrap_v9:
+			case CMap::tile_scrap_v10:
+			case CMap::tile_scrap_v11:
+			case CMap::tile_scrap_v12:
+			case CMap::tile_scrap_v13:
+			case CMap::tile_scrap_v14:
+			case CMap::tile_scrap_d0:
+			case CMap::tile_scrap_d1:
+			case CMap::tile_scrap_d2:
+			case CMap::tile_scrap_d3:
+			case CMap::tile_scrap_d4:
+			case CMap::tile_scrap_d5:
+			case CMap::tile_scrap_d6:
+			{
+				col = SColor(255, 206, 118, 74);
+				break;
+			}
+
+			case CMap::tile_metal:
+			case CMap::tile_metal_v0:
+			case CMap::tile_metal_v1:
+			case CMap::tile_metal_v2:
+			case CMap::tile_metal_v3:
+			case CMap::tile_metal_v4:
+			case CMap::tile_metal_v5:
+			case CMap::tile_metal_v6:
+			case CMap::tile_metal_v7:
+			case CMap::tile_metal_v8:
+			case CMap::tile_metal_v9:
+			case CMap::tile_metal_v10:
+			case CMap::tile_metal_v11:
+			case CMap::tile_metal_v12:
+			case CMap::tile_metal_v13:
+			case CMap::tile_metal_v14:
+			case CMap::tile_metal_d0:
+			case CMap::tile_metal_d1:
+			case CMap::tile_metal_d2:
+			case CMap::tile_metal_d3:
+			case CMap::tile_metal_d4:
+			case CMap::tile_metal_d5:
+			case CMap::tile_metal_d6:
+			case CMap::tile_metal_d7:
+			case CMap::tile_metal_d8:
+			{
+				col = SColor(255, 107, 114, 115);
+				break;
+			}
+
+			case CMap::tile_metal_back:
+			case CMap::tile_metal_back_u:
+			case CMap::tile_metal_back_d:
+			case CMap::tile_metal_back_m:
+			case CMap::tile_metal_back_d0:
+			case CMap::tile_metal_back_d1:
+			case CMap::tile_metal_back_d2:
+			case CMap::tile_metal_back_d3:
+			case CMap::tile_metal_back_d4:
+			case CMap::tile_metal_back_d5:
+			case CMap::tile_metal_back_d6:
+			case CMap::tile_metal_back_d7:
+			case CMap::tile_metal_back_d8:
+			{
+				col = SColor(255, 65, 65, 65);
+				break;
+			}
+		}
 	}
 
 	///Tint the map based on Fire/Water State
