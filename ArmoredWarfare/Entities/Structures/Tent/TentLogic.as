@@ -5,8 +5,6 @@
 void onInit(CBlob@ this)
 {
 	this.getSprite().SetZ(-150.0f);
-
-	this.Tag("respawn");
 	this.Tag("ignore_arrow");
 
 	// minimap

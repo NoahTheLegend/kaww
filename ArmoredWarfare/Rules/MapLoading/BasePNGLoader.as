@@ -315,7 +315,6 @@ class PNGLoader
 			// Main spawns
 			case map_colors::blue_main_spawn:   autotile(offset); AddMarker(map, offset, "blue main spawn"); break;
 			case map_colors::red_main_spawn:    autotile(offset); AddMarker(map, offset, "red main spawn");  break;
-			case map_colors::core_zone:         autotile(offset); AddMarker(map, offset, "core zone");       break;
 			case map_colors::green_main_spawn:  autotile(offset); spawnHall(map, offset, 2); break;
 			case map_colors::purple_main_spawn: autotile(offset); spawnHall(map, offset, 3); break;
 			case map_colors::orange_main_spawn: autotile(offset); spawnHall(map, offset, 4); break;
@@ -621,6 +620,9 @@ class PNGLoader
 			case map_colors::pointflagt2:	autotile(offset); spawnBlob(map, "pointflagt2", offset); break;
 			case map_colors::core_blue:    autotile(offset); spawnBlob(map, "core", offset, teamleft); break;
 			case map_colors::core_red:     autotile(offset); spawnBlob(map, "core", offset, teamright); break;
+			case map_colors::blue_core_gamemode : autotile(offset); AddMarker(map, offset, "ptb blue");       break;
+			case map_colors::red_core_gamemode : autotile(offset); AddMarker(map, offset, "ptb red");       break;
+			case map_colors::core_zone:         autotile(offset); AddMarker(map, offset, "core zone");       break;
 			case map_colors::cobweb:        autotile(offset); spawnBlob(map, "cobweb", offset); break;
 			case map_colors::deadbush:      autotile(offset); spawnBlob(map, "deadbush", offset); break;
 			case map_colors::cacti:    		autotile(offset); spawnBlob(map, "cacti", offset); break;

@@ -160,7 +160,7 @@ shared class TDMSpawns : RespawnSystem
 	}
 
 	void DoSpawnPlayer(PlayerInfo@ p_info)
-	{
+	{	
 		if (force || (canSpawnPlayer(p_info) && (ticketsRemaining(getRules(), p_info.team) > 0) || getPlayersCount() < 2))
 		{
 			CPlayer@ player = getPlayerByUsername(p_info.username); // is still connected?
@@ -207,13 +207,11 @@ shared class TDMSpawns : RespawnSystem
 				// spawn resources
 				p_info.spawnsCount++;
 				RemovePlayerFromSpawn(player);
+
 				if (getGameTime() >= 300 && !getRules().isWarmup())
 				{
 					CBlob@ b = getBlobByName("pointflag");
 					if (b is null) @b = getBlobByName("pointflagt2");
-
-					CBlob@[] tents;
-					getBlobsByName("tent", @tents);
 				}
 			}
 		}
@@ -243,6 +241,8 @@ shared class TDMSpawns : RespawnSystem
 		{
 			for (uint step = 0; step < spawns.length; ++step)
 			{
+				if (!spawns[step].hasTag("respawn")) continue;
+
 				if (spawns[step].getTeamNum() == s32(p_info.team))
 				{
 					teamspawns.push_back(spawns[step]);
