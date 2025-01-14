@@ -221,7 +221,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 6;
 			linear_length = 16.0f;
-			scale_infantry_damage = 0.2f;
+			scale_infantry_damage = 0.25f;
 			scale_impact_damage = 2.0f;
 			break;
 		}
@@ -232,7 +232,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 5;
 			linear_length = 20.0f;
-			scale_infantry_damage = 0.2f;
+			scale_infantry_damage = 0.25f;
 			scale_impact_damage = 1.5f;
 			break;
 		}
@@ -240,7 +240,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 5;
 			linear_length = 18.0f;
-			scale_infantry_damage = 0.125f;
+			scale_infantry_damage = 0.15f;
 			scale_impact_damage = 1.4f;
 			break;
 		}
@@ -248,7 +248,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 4;
 			linear_length = 14.0f;
-			scale_infantry_damage = 0.15f;
+			scale_infantry_damage = 0.175f;
 			scale_impact_damage = 1.4f;
 			break;
 		}
@@ -256,7 +256,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 4;
 			linear_length = 16.0f;
-			scale_infantry_damage = 0.115f;
+			scale_infantry_damage = 0.15f;
 			scale_impact_damage = 1.3f;
 			break;
 		}
@@ -265,7 +265,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 4;
 			linear_length = 10.0f;
-			scale_infantry_damage = 0.125f;
+			scale_infantry_damage = 0.15f;
 			scale_impact_damage = 1.2f;
 			break;
 		}
@@ -275,7 +275,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = 3;
 			linear_length = 10.0f;
-			scale_infantry_damage = 0.125f;
+			scale_infantry_damage = 0.15f;
 			scale_impact_damage = 1.2f;
 			break;
 		}
@@ -284,7 +284,7 @@ void onInit(CBlob@ this)
 			weaponRating = 1;
 			linear_length = 4.0f;
 			scale_impact_damage = 1.25f;
-			scale_infantry_damage = 0.125f;
+			scale_infantry_damage = 0.15f;
 			impact_radius = 8.0f;
 			break;
 		}
