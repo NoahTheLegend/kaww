@@ -712,6 +712,7 @@ shared class TDMCore : RulesCore
 			"Desert.png",
 		   	"WinterFactory.png",
 		   	"Touge.png",
+			"Extensions.png",
 		   	"Mortaring.png",
 		   	"Syria.png",
 		   	"Cavern.png",
