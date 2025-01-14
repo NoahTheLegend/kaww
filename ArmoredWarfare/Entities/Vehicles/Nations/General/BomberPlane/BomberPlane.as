@@ -48,6 +48,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("reload");
 
 	this.set_f32("velocity", 0.0f);
+	this.set_f32("surface_damage_mod", 2.0f);
 	
 	this.set_bool("map_damage_raycast", true);
 	this.Tag("map_damage_dirt");

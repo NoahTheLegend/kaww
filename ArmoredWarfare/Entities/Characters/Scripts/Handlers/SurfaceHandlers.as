@@ -21,7 +21,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
     CMap@ map = getMap();
     Vec2f vel = this.getOldVelocity();
 
-    if (vel.y * this.getMass() >= 500.0f)
+    if (vel.y * this.getMass() * (this.exists("surface_damage_mod") ? this.get_f32("surface_damage_mod") : 1.0f) >= 500.0f)
     {
         f32 h = 4;
         f32 width = this.getWidth();

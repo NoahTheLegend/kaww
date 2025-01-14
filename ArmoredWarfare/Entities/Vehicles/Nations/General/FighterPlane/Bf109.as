@@ -52,6 +52,7 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 25);
 	this.set_s32("custom_hitter", HittersAW::aircraftbullet);
+	this.set_f32("surface_damage_mod", 2.0f);
 	
 	this.set_bool("map_damage_raycast", true);
 	this.Tag("map_damage_dirt");
