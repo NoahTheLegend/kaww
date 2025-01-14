@@ -103,7 +103,17 @@ TileType server_onTileHit(CMap@ map, f32 damage, u32 index, TileType oldTileType
 				return CMap::tile_empty;
 
 			case CMap::tile_ice:
-				return CMap::tile_ice_d2;
+			{
+				if (damage >= 1.0f)
+				{
+					OnIceTileDestroyed(map, index);
+					return CMap::tile_empty;
+				}
+				else
+				{
+					return CMap::tile_ice_d3;
+				}
+			}
 
 			case CMap::tile_ice_v0:
 			case CMap::tile_ice_v1:
@@ -123,7 +133,7 @@ TileType server_onTileHit(CMap@ map, f32 damage, u32 index, TileType oldTileType
 			{
 				Vec2f pos = map.getTileWorldPosition(index);
 
-				map.server_SetTile(pos, CMap::tile_ice_d2);
+				map.server_SetTile(pos, CMap::tile_ice_d3);
 				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION | Tile::LIGHT_PASSES);
 				map.RemoveTileFlag(index, Tile::LIGHT_SOURCE);
 
@@ -131,7 +141,16 @@ TileType server_onTileHit(CMap@ map, f32 damage, u32 index, TileType oldTileType
 				{
 					ice_Update(map, map.getTileWorldPosition(index) + directions[i]);
 				}
-				return CMap::tile_ice_d2;
+
+				if (damage >= 1.0f)
+				{
+					OnIceTileDestroyed(map, index);
+					return CMap::tile_empty;
+				}
+				else
+				{
+					return CMap::tile_ice_d3;
+				}
 			}
 
 			case CMap::tile_ice_d0:
@@ -308,13 +327,14 @@ void onSetTile(CMap@ map, u32 index, TileType tile_new, TileType tile_old)
 
 			case CMap::tile_ice:
 			{
+				map.SetTileSupport(index, 255);
 				Vec2f pos = map.getTileWorldPosition(index);
 
 				ice_SetTile(map, pos);
-				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION | Tile::LIGHT_PASSES);
-				map.RemoveTileFlag(index, Tile::LIGHT_SOURCE | Tile::WATER_PASSES);
+				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION | Tile::LIGHT_PASSES | Tile::WATER_PASSES);
+				map.RemoveTileFlag(index, Tile::LIGHT_SOURCE);
 
-				if (isClient()) Sound::Play("build_wall.ogg", map.getTileWorldPosition(index), 1.0f, 1.3f);
+				if (isClient()) Sound::Play("StepIce"+(XORRandom(7)+1), map.getTileWorldPosition(index), 0.25f, 0.75f);
 
 				break;
 			}
@@ -334,16 +354,18 @@ void onSetTile(CMap@ map, u32 index, TileType tile_new, TileType tile_old)
 			case CMap::tile_ice_v12:
 			case CMap::tile_ice_v13:
 			case CMap::tile_ice_v14:
-				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION);
-				map.RemoveTileFlag(index, Tile::LIGHT_PASSES | Tile::LIGHT_SOURCE | Tile::WATER_PASSES);
+				map.SetTileSupport(index, 255);
+				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION | Tile::LIGHT_PASSES | Tile::WATER_PASSES);
+				map.RemoveTileFlag(index, Tile::LIGHT_SOURCE);
 				break;
 
 			case CMap::tile_ice_d0:
 			case CMap::tile_ice_d1:
 			case CMap::tile_ice_d2:
 			case CMap::tile_ice_d3:
-				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION);
-				map.RemoveTileFlag(index, Tile::LIGHT_PASSES | Tile::LIGHT_SOURCE | Tile::WATER_PASSES);
+				map.SetTileSupport(index, 255);
+				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION | Tile::WATER_PASSES | Tile::LIGHT_PASSES);
+				map.RemoveTileFlag(index, Tile::LIGHT_SOURCE);
 				OnIceTileHit(map, index);
 				break;
 
@@ -744,18 +766,24 @@ void OnIceTileHit(CMap@ map, u32 index)
 	{
 		Vec2f pos = map.getTileWorldPosition(index);
 
-		Sound::Play("GlassBreak2.ogg", pos, 1.0f, 0.8f);
-		customSparks(pos, 1, rnd_vel(2,1,10.0f), SColor(255,25,75+XORRandom(75),200+XORRandom(55)));
+		Sound::Play("GlassBreak2.ogg", pos, 0.5f, 1.1f);
+		
+		u8 rnd = XORRandom(75);
+		customSparks(pos + Vec2f(4,-4), 8+XORRandom(5), Vec2f(0, 1.0f), SColor(255,155+rnd,155+rnd,235+XORRandom(20)));
 	}
 }
 
 void OnIceTileDestroyed(CMap@ map, u32 index)
 {
+	if (isServer())
+	{
+		map.server_setFloodWaterOffset(index, true);
+	}
 	if (isClient())
 	{
 		Vec2f pos = map.getTileWorldPosition(index);
 
-		Sound::Play("GlassBreak1.ogg", pos, 1.0f, 0.7f);
+		Sound::Play("GlassBreak1.ogg", pos, 0.5f, 0.9f);
 	}
 }
 
@@ -766,8 +794,9 @@ void customSparks(Vec2f pos, int amount, Vec2f gravity, SColor col)
 
 	for (int i = 0; i < amount; i++)
     {
+		Random@ rand = Random(123 * (i+1));
         Vec2f vel(XORRandom(16) * 0.1f * 1.0f + 0.5f, 0);
-        vel.RotateBy(XORRandom(360) * 360.0f);
+        vel.RotateBy(rand.NextRanged(360));
 
         CParticle@ p = ParticlePixelUnlimited(pos, vel, col, true);
         if(p is null) return; //bail if we stop getting particles

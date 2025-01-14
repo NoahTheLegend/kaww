@@ -10,6 +10,7 @@
 #include "WarfareGlobal.as";
 #include "PerksCommon.as";
 #include "HittersAW.as";
+#include "CustomBlocks.as";
 
 const SColor trueWhite = SColor(255,255,255,255);
 Driver@ PDriver = getDriver();
@@ -569,7 +570,7 @@ class BulletObj
 					bool try_rico = true;
 					bool do_hit_map = true;
 
-					if (map.isTileWood(tile) && Rng.NextRanged(2)==0)
+					if ((map.isTileWood(tile) || isTileIce(tile)) && Rng.NextRanged(2)==0)
 					{ // hit wood
 						map.server_DestroyTile(hitpos, 0.1f);
 					}
