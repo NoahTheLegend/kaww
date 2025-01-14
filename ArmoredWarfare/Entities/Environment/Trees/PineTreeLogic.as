@@ -55,6 +55,7 @@ void onTick(CBlob@ this)
 			if(tree !is null)
 			{
 				tree.Tag("startbig");
+				tree.Tag("request_growth");
 				tree.setPosition(this.getPosition());
 				tree.Init();
 				this.Tag("no logs");
@@ -69,6 +70,16 @@ void onTick(CBlob@ this)
 			else this.set_u8("particle type", 0);
 
 			this.Sync("particle type", true);
+		}
+	}
+
+	if (this.hasTag("request_growth"))
+	{
+		TreeVars@ vars;
+		if (this.get("TreeVars", @vars))
+		{
+			DoGrow(this, vars);
+			this.Untag("request_growth");
 		}
 	}
 

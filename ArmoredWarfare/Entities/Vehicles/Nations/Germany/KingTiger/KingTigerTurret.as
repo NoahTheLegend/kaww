@@ -88,7 +88,11 @@ void onTick(CBlob@ this)
 			f32 angle = (turned ? -this.get_f32("gunelevation") + 180 : this.get_f32("gunelevation")) + this.getAngleDegrees() - 90;
 
 			Vec2f offset = stats.secondary_gun_offset;
-			if (flip) offset.y *= -1;
+			if (flip)
+			{
+				offset.y *= -1;
+				offset.y += 1;
+			}
 			
 			Vec2f pos = this.getPosition() + Vec2f(0, -32);
 			Vec2f shootpos = pos + offset.RotateBy(angle + 180);

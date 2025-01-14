@@ -12,7 +12,7 @@ void onInit(CBlob@ this)
 	this.set_f32("capture_time_custom", 4); // include VehicleCapBar.as tick frequency
 
 	Vehicle_Setup(this,
-	              6400.0f, // move speed  //103
+	              7750.0f, // move speed  //103
 	              0.05f,  // turn speed
 	              Vec2f(0.0f, 0.58f), // jump out velocity
 	              false  // inventory access

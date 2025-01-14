@@ -64,7 +64,9 @@ void onRender(CSprite@ this)
 	}
 
 	u32 gt = getGameTime();
-	if (!blob.hasTag("turret") && blob.get_u32("heal_delayed") > gt)
+	if (blob.getTeamNum() != localBlob.getTeamNum()) return;
+	
+	if (!blob.hasTag("turret") && blob.get_u32("heal_delayed") > gt && blob.get_u32("heal_delayed") < gt + 300)
 	{
 		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, -128);
 		u32 heal_delayed = blob.get_u32("heal_delayed");

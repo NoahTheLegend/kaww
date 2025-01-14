@@ -282,7 +282,7 @@ class KingTigerTurret : TurretStats
         elevation_speed = 0.5f;
         bullet_pos_offset = Vec2f(0,-2);
         fire_sound = "sound_128mm";
-        secondary_gun_offset = arm_offset + Vec2f(0,6);
+        secondary_gun_offset = arm_offset + Vec2f(0,8);
     }
 };
 
