@@ -35,7 +35,7 @@ const f32 unfreeze_chance = 0.5f;
 
 void onTick(CRules@ this)
 {
-    if (getGameTime() % interval == 0 && find_water_tiles_at_map())
+    if (getGameTime() % interval == 0 && getBlobByName("info_snow") !is null && find_water_tiles_at_map())
     {
         CMap@ map = getMap();
 
