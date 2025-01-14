@@ -46,13 +46,13 @@ void onTick(CRules@ this)
             if (map.isInWater(tile_pos))
             {
                 CBlob@[] blobs;
-                map.getBlobsInRadius(tile_pos, 8.0f, @blobs);
+                map.getBlobsInRadius(tile_pos, 4.0f, @blobs);
 
                 bool ignore_tile = false;
                 for (int j = 0; j < blobs.length; j++)
                 {
                     CBlob@ blob = blobs[j];
-                    if (blob !is null && blob.hasTag("player"))
+                    if (blob !is null && blob.getShape() !is null && blob.getShape().getConsts().mapCollisions)
                     {
                         ignore_tile = true;
                         break;
