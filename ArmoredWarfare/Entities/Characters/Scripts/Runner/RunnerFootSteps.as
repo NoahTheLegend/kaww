@@ -54,7 +54,7 @@ void onTick(CSprite@ this)
 			}
 			else if (isMetalTile(tile))
 			{
-				this.PlayRandomSound("metalbar_run", Maths::Min(0.25f, volume), pitch);
+				this.PlayRandomSound("metalbar_run", Maths::Min(0.3f, volume), pitch);
 			}
 			else if (isScrapTile(tile))
 			{
