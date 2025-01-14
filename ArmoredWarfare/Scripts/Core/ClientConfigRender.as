@@ -187,6 +187,7 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
 
 void onRender(CRules@ this) // renderer for class, saves config if class throws update tag
 {
+    if (!u_showtutorial) return;
     bool need_update = this.hasTag("update_clientvars");
         
     ConfigMenu@ menu;
