@@ -296,6 +296,7 @@ class PNGLoader
 			case map_colors::tile_scrap:            map.SetTile(offset, CMap::tile_scrap); break;
 			case map_colors::tile_metal:			map.SetTile(offset, CMap::tile_metal); break;
 			case map_colors::tile_metal_back:		map.SetTile(offset, CMap::tile_metal_back); break;
+			case map_colors::tile_ice:              map.SetTile(offset, CMap::tile_ice);              break;
 
 			// Water
 			case map_colors::water_air:

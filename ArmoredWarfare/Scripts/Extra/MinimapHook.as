@@ -189,6 +189,31 @@ void CalculateMinimapColour( CMap@ map, u32 offset, TileType tile, SColor &out c
 				col = SColor(255, 65, 65, 65);
 				break;
 			}
+
+			case CMap::tile_ice:
+			case CMap::tile_ice_v0:
+			case CMap::tile_ice_v1:
+			case CMap::tile_ice_v2:
+			case CMap::tile_ice_v3:
+			case CMap::tile_ice_v4:
+			case CMap::tile_ice_v5:
+			case CMap::tile_ice_v6:
+			case CMap::tile_ice_v7:
+			case CMap::tile_ice_v8:
+			case CMap::tile_ice_v9:
+			case CMap::tile_ice_v10:
+			case CMap::tile_ice_v11:
+			case CMap::tile_ice_v12:
+			case CMap::tile_ice_v13:
+			case CMap::tile_ice_v14:
+			case CMap::tile_ice_d0:
+			case CMap::tile_ice_d1:
+			case CMap::tile_ice_d2:
+			case CMap::tile_ice_d3:
+			{
+				col = SColor(255, 80, 180, 200);
+				break;
+			}
 		}
 	}
 

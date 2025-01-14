@@ -78,6 +78,7 @@ namespace map_colors
 		tile_scrap             = 0xFFB25324, //
 		tile_metal             = 0xFF879092, //
 		tile_metal_back        = 0xFF636565, //
+		tile_ice 			   = 0xFF50B6C7, //
 		core_zone              = 0xFFF4337C, // plant the bomb zone
 
 		// OTHER
