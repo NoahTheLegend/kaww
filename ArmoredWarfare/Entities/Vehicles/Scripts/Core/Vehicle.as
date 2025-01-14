@@ -314,7 +314,7 @@ void onInit(CBlob@ this)
 		{
 			weaponRating = -2;
 			linear_length = 0.0f;
-			scale_infantry_damage = 0.25f;
+			scale_infantry_damage = 0.15f;
 			break;
 		}
 		case _m2browning:
