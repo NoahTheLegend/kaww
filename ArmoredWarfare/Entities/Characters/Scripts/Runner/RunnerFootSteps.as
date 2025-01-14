@@ -45,7 +45,7 @@ void onTick(CSprite@ this)
 			
 			if (map.isTileCastle(tile))
 			{
-				this.PlayRandomSound("concrete_run", Maths::Min(0.35f, volume), pitch);
+				this.PlayRandomSound("concrete_run", Maths::Min(0.3f, volume), pitch);
 			}
 			else if (map.isTileWood(tile))
 			{
@@ -54,12 +54,12 @@ void onTick(CSprite@ this)
 			}
 			else if (isMetalTile(tile))
 			{
-				this.PlayRandomSound("metalbar_run", Maths::Min(0.35f, volume), pitch);
+				this.PlayRandomSound("metalbar_run", Maths::Min(0.25f, volume), pitch);
 			}
 			else if (isScrapTile(tile))
 			{
 				pitch = 0.9f;
-				this.PlayRandomSound("metalbar_run", Maths::Min(0.35f, volume), pitch);
+				this.PlayRandomSound("metalbar_run", Maths::Min(0.25f, volume), pitch);
 			}
 			else if (isTileIce(tile))
             {

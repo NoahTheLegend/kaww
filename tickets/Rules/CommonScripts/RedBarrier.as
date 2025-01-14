@@ -44,6 +44,48 @@ void onRestart(CRules@ this)
 
 	ResetOldValues();
 	loadBarrier(this);
+
+	this.Untag("respawns_set");
+}
+
+void ResetRespawns(CRules@ this)
+{
+	bool defenders_on_left = defendersOnLeft();
+
+	CBlob@[] tents;
+	getBlobsByName("tent", @tents);
+	getBlobsByName("outpost", @tents);
+
+	for (uint i = 0; i < tents.length; i++)
+	{
+		CBlob@ tent = tents[i];
+		Vec2f pos = tent.getPosition();
+
+		if (defenders_on_left)
+		{
+			if (pos.x < this.get_u16("barrier_left_x2"))
+			{
+				tent.Untag("respawn");
+			}
+			else
+			{
+				tent.Tag("respawn");
+				this.Tag("respawns_set");
+			}
+		}
+		else
+		{
+			if (pos.x > this.get_u16("barrier_right_x1"))
+			{
+				tent.Untag("respawn");
+			}
+			else
+			{
+				tent.Tag("respawn");
+				this.Tag("respawns_set");
+			}
+		}
+	}
 }
 
 void ResetOldValues()
@@ -65,7 +107,6 @@ void loadBarrier(CRules@ this)
 	}
 
 	LoadConfigVars();
-
 	SetBarrierPosition(this);
 
 	const int playerCount = getPlayerCount();
@@ -107,10 +148,11 @@ void onTick(CRules@ this)
 	f32 speed_factor = 1.0f;
 	bool ptb = isPTB();
 	
-	if (shouldBarrier(this))
+	if (shouldBarrier(this) || ptb)
 	{
 		if (ptb)
 		{
+			if (!this.hasTag("respawns_set")) ResetRespawns(this);
 			SetBarrierPosition(this);
 		}
 		else if (!reachedMid(this))
@@ -376,8 +418,8 @@ void SetBarrierPosition(CRules@ this)
 {
 	IS_barrier_left_SET = true;
 	CMap@ map = getMap();
-	Vec2f[] markers = getPTBZonesMarkers();
 
+	Vec2f[] markers = getPTBZonesMarkers();
 	const f32 mapWidth = map.tilemapwidth * map.tilesize;
 	
 	if (!isPTB())
@@ -396,12 +438,14 @@ void SetBarrierPosition(CRules@ this)
 		this.set_u16("barrier_right_x1", xr1);
 		this.set_u16("barrier_right_x2", xr2);
 	}
-	else if (getGameTime() % 30 == 0) // Only update every 30 ticks
+	else
 	{
 		if (markers.length != 0)
 		{
+			bool defenders_on_left = defendersOnLeft();
 			Vec2f left_marker, right_marker;
-			if (defendersOnLeft())
+
+			if (defenders_on_left)
 			{
 				left_marker = markers[markers.length - 1];
 				this.set_u16("barrier_left_x1", 0);
@@ -417,6 +461,8 @@ void SetBarrierPosition(CRules@ this)
 				this.set_u16("barrier_left_x1", 0);
 				this.set_u16("barrier_left_x2", 0);
 			}
+
+			ResetRespawns(this);
 		}
 	}
 }
@@ -481,7 +527,6 @@ Vec2f[] getPTBZonesMarkers()
 
 	CBlob@[] cores;
 	getBlobsByName("core", @cores);
-
 	bool defenders_on_left = defendersOnLeft();
 
 	Vec2f[] return_markers;

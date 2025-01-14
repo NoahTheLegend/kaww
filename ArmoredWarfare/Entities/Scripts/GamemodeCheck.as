@@ -31,26 +31,30 @@ shared bool isDTTshared()
 
 bool isPTB()
 {
-    return getBlobByName("core") !is null;
+    Vec2f empty;
+    return getMap().getMarker("ptb blue", empty) || getMap().getMarker("ptb red", empty);
 }
 
 shared bool isPTBshared()
 {
-    return getBlobByName("core") !is null;
+    Vec2f empty;
+    return getMap().getMarker("ptb blue", empty) || getMap().getMarker("ptb red", empty);
 }
 
 u8 defendersTeamPTB()
 {
-    CBlob@ core = getBlobByName("core");
-    if (core !is null)  return core.getTeamNum();
+    u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
 
-    return 255;
+    Vec2f empty;
+    return getMap().getMarker("ptb blue", empty) ? teamleft : getMap().getMarker("ptb red", empty) ? teamright : 255;
 }
 
 shared u8 defendersTeamPTBshared()
 {
-    CBlob@ core = getBlobByName("core");
-    if (core !is null)  return core.getTeamNum();
+    u8 teamleft = getRules().get_u8("teamleft");
+	u8 teamright = getRules().get_u8("teamright");
 
-    return 255;
+    Vec2f empty;
+    return getMap().getMarker("ptb blue", empty) ? teamleft : getMap().getMarker("ptb red", empty) ? teamright : 255;
 }

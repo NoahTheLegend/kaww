@@ -79,6 +79,8 @@ namespace map_colors
 		tile_metal             = 0xFF879092, //
 		tile_metal_back        = 0xFF636565, //
 		tile_ice 			   = 0xFF50B6C7, //
+		blue_core_gamemode     = 0xFFAF119E, // required on the map to launch PTB gamemode (BLUE are defenders)
+		red_core_gamemode      = 0xFFFF1191, // required on the map to launch PTB gamemode (RED are defenders)
 		core_zone              = 0xFFF4337C, // plant the bomb zone
 
 		// OTHER

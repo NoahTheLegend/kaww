@@ -12,9 +12,9 @@ const u8 respawn_immunity_time = 30 * 1.5;
 
 void onInit(CBlob@ this)
 {
-	this.Tag("respawn");
 	this.Tag("builder always hit");
-	this.Tag("vehicle"); // required for minimap
+	this.Tag("vehicle"); // minimap icon hack
+
 	this.addCommandID("class menu");
 	this.addCommandID("lock_classchange");
 	this.addCommandID("lock_perkchange");

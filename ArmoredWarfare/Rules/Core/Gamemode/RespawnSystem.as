@@ -54,7 +54,6 @@ shared class RespawnSystem
 						string name = ap.name;
 						if (name == "TURRET" && occ !is null)
 						{
-							printf(""+occ.getName());
 							AttachmentPoint@ gun = occ.getAttachments().getAttachmentPointByName("GUNNER");
 							if (gun !is null)
 							{
