@@ -5,6 +5,8 @@
 #include "FallDamageCommon.as";
 #include "KnockedCommon.as";
 #include "PerksCommon.as";
+#include "UtilityChecks.as";
+#include "CustomBlocks.as";
 
 const u8 wallrun_length = 3;
 
@@ -433,9 +435,14 @@ void onTick(CMovement@ this)
 			    Maths::Abs(groundNormal.y) <= 0.01f) //sliding on wall
 			{
 				Vec2f force;
+				int rad = 10;
+
+				TileType tile_left  = map.getTile(Vec2f(pos.x-rad-4, pos.y)).type;
+				TileType tile_right = map.getTile(Vec2f(pos.x+rad+4, pos.y)).type;
 
 				Vec2f vel = blob.getVelocity();
-				if (vel.y >= slidespeed && (blob.isFacingLeft() ? groundNormal.x > 0 : groundNormal.x < 0))
+				if (vel.y >= slidespeed && (blob.isFacingLeft() ? groundNormal.x > 0 : groundNormal.x < 0) && (blob.isFacingLeft()
+					? groundNormal.x > 0 && !isTileIce(tile_left) : groundNormal.x < 0 && !isTileIce(tile_right)))
 				{
 					f32 temp = vel.y * 0.9f;
 					Vec2f new_vel(vel.x * 0.9f, temp < slidespeed ? slidespeed : temp);
@@ -638,6 +645,17 @@ void onTick(CMovement@ this)
 					moveVars.walkFactor *= 0.6f;
 			}
 
+			f32 ice_stop_factor = 1.0f;
+			f32 ice_move_factor = 1.0f;
+			TileType tile_1 = 0;
+			TileType tile_2 = 0;
+			getSurfaceTiles(blob, tile_1, tile_2);
+			if (isTileIce(tile_1) || isTileIce(tile_2))
+			{
+				ice_stop_factor = 0.05f;
+				ice_move_factor = 0.35f;
+			}
+
 			bool stopped = false;
 			if (absx > lim)
 			{
@@ -646,7 +664,7 @@ void onTick(CMovement@ this)
 					stopped = true;
 					stop_force.x -= (absx - lim) * (greater ? 1 : -1);
 
-					stop_force.x *= moveVars.overallScale * 30.0f * moveVars.stoppingFactor *
+					stop_force.x *= moveVars.overallScale * 30.0f * ice_stop_factor * moveVars.stoppingFactor *
 					                (onground ? moveVars.stoppingForce : moveVars.stoppingForceAir);
 
 					if (absx > 3.0f)
@@ -662,7 +680,7 @@ void onTick(CMovement@ this)
 
 			if (!isknocked && ((absx < lim) || left && greater || right && !greater))
 			{
-				force *= moveVars.walkFactor * moveVars.overallScale * 30.0f;
+				force *= moveVars.walkFactor * moveVars.overallScale * 30.0f * ice_move_factor;
 				if (Maths::Abs(force) > 0.01f)
 				{
 					blob.AddForce(walkDirection * force);

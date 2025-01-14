@@ -6,6 +6,7 @@
 #include "KnockedCommon.as";
 #include "FallDamageCommon.as";
 #include "PerksCommon.as";
+#include "CustomBlocks.as";
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point1)
 {
@@ -33,6 +34,29 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 	if (damage != 0.0f) //interesting value
 	{
 		bool doknockdown = true;
+		CMap@ map = this.getMap();
+
+		Vec2f vel = this.getOldVelocity();
+
+		if (isServer() && vel.y > 2.0f)
+		{
+			TileType tc = map.getTile(point1).type;
+    	    TileType tl = map.getTile(point1-Vec2f(8,0)).type;
+    	    TileType tr = map.getTile(point1+Vec2f(8,0)).type;
+    	    if (isTileIce(tc) || isTileExposure(tc))
+    	    {
+    	        TileType utc = map.getTile(point1+Vec2f(0,8)).type;
+    	        TileType utl = map.getTile(point1-Vec2f(8,-8)).type;
+    	        TileType utr = map.getTile(point1+Vec2f(8,8)).type;
+	
+    	        if (!isSolid(map, utc))
+    	            for (u8 i = 0; i < 4; i++) {map.server_DestroyTile(point1, 15.0f, this);}
+    	        if (isTileIce(tl) && !isSolid(map, utl))
+    	            for (u8 i = 0; i < 4; i++) {map.server_DestroyTile(point1-Vec2f(8,0), 15.0f, this);}
+    	        if (isTileIce(tr) && !isSolid(map, utr))
+    	            for (u8 i = 0; i < 4; i++) {map.server_DestroyTile(point1+Vec2f(8,0), 15.0f, this);}
+    	    }
+		}
 
 		if (damage > 0.0f)
 		{

@@ -102,6 +102,46 @@ TileType server_onTileHit(CMap@ map, f32 damage, u32 index, TileType oldTileType
 			case CMap::tile_scrap_d6:
 				return CMap::tile_empty;
 
+			case CMap::tile_ice:
+				return CMap::tile_ice_d2;
+
+			case CMap::tile_ice_v0:
+			case CMap::tile_ice_v1:
+			case CMap::tile_ice_v2:
+			case CMap::tile_ice_v3:
+			case CMap::tile_ice_v4:
+			case CMap::tile_ice_v5:
+			case CMap::tile_ice_v6:
+			case CMap::tile_ice_v7:
+			case CMap::tile_ice_v8:
+			case CMap::tile_ice_v9:
+			case CMap::tile_ice_v10:
+			case CMap::tile_ice_v11:
+			case CMap::tile_ice_v12:
+			case CMap::tile_ice_v13:
+			case CMap::tile_ice_v14:
+			{
+				Vec2f pos = map.getTileWorldPosition(index);
+
+				map.server_SetTile(pos, CMap::tile_ice_d2);
+				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION | Tile::LIGHT_PASSES);
+				map.RemoveTileFlag(index, Tile::LIGHT_SOURCE);
+
+				for (u8 i = 0; i < 4; i++)
+				{
+					ice_Update(map, map.getTileWorldPosition(index) + directions[i]);
+				}
+				return CMap::tile_ice_d2;
+			}
+
+			case CMap::tile_ice_d0:
+			case CMap::tile_ice_d1:
+			case CMap::tile_ice_d2:
+				return oldTileType + 1;
+
+			case CMap::tile_ice_d3:
+				return CMap::tile_empty;
+
 			// unbreakable metal
 			case CMap::tile_metal:
 			case CMap::tile_metal_v0:
@@ -178,6 +218,8 @@ void onSetTile(CMap@ map, u32 index, TileType tile_new, TileType tile_old)
 						|| tile_old == CMap::tile_metal_d8
 						|| tile_old == CMap::tile_metal_back_d8)
 				OnScrapTileDestroyed(map, index);
+			else if (tile_old == CMap::tile_ice_d3)
+				OnIceTileDestroyed(map, index);
 
 			break;
 		}
@@ -262,6 +304,47 @@ void onSetTile(CMap@ map, u32 index, TileType tile_new, TileType tile_old)
 				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION);
 				map.RemoveTileFlag(index, Tile::LIGHT_PASSES | Tile::LIGHT_SOURCE | Tile::WATER_PASSES);
 				OnScrapTileHit(map, index);
+				break;
+
+			case CMap::tile_ice:
+			{
+				Vec2f pos = map.getTileWorldPosition(index);
+
+				ice_SetTile(map, pos);
+				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION | Tile::LIGHT_PASSES);
+				map.RemoveTileFlag(index, Tile::LIGHT_SOURCE | Tile::WATER_PASSES);
+
+				if (isClient()) Sound::Play("build_wall.ogg", map.getTileWorldPosition(index), 1.0f, 1.3f);
+
+				break;
+			}
+
+            case CMap::tile_ice_v0:
+			case CMap::tile_ice_v1:
+			case CMap::tile_ice_v2:
+			case CMap::tile_ice_v3:
+			case CMap::tile_ice_v4:
+			case CMap::tile_ice_v5:
+			case CMap::tile_ice_v6:
+			case CMap::tile_ice_v7:
+			case CMap::tile_ice_v8:
+			case CMap::tile_ice_v9:
+			case CMap::tile_ice_v10:
+			case CMap::tile_ice_v11:
+			case CMap::tile_ice_v12:
+			case CMap::tile_ice_v13:
+			case CMap::tile_ice_v14:
+				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION);
+				map.RemoveTileFlag(index, Tile::LIGHT_PASSES | Tile::LIGHT_SOURCE | Tile::WATER_PASSES);
+				break;
+
+			case CMap::tile_ice_d0:
+			case CMap::tile_ice_d1:
+			case CMap::tile_ice_d2:
+			case CMap::tile_ice_d3:
+				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION);
+				map.RemoveTileFlag(index, Tile::LIGHT_PASSES | Tile::LIGHT_SOURCE | Tile::WATER_PASSES);
+				OnIceTileHit(map, index);
 				break;
 
 			case CMap::tile_metal:
@@ -621,4 +704,85 @@ void OnMetalBackTileUpdate(bool updateThis, bool updateOthers, CMap@ map, Vec2f 
 		if(isDown)
 			OnMetalBackTileUpdate(true, false, map, pos + Vec2f( 0.0f, 8.0f));
 	}
+}
+
+void ice_SetTile(CMap@ map, Vec2f pos)
+{
+	map.SetTile(map.getTileOffset(pos), CMap::tile_ice + ice_GetMask(map, pos));
+
+	for (u8 i = 0; i < 4; i++)
+	{
+		ice_Update(map, pos + directions[i]);
+	}
+}
+
+u8 ice_GetMask(CMap@ map, Vec2f pos)
+{
+	u8 mask = 0;
+
+	for (u8 i = 0; i < 4; i++)
+	{
+		if (checkIceTile(map, pos + directions[i])) mask |= 1 << i;
+	}
+
+	return mask;
+}
+
+void ice_Update(CMap@ map, Vec2f pos)
+{
+	u16 tile = map.getTile(pos).type;
+	if (checkIceTile(map, pos))
+		map.SetTile(map.getTileOffset(pos),CMap::tile_ice+ice_GetMask(map,pos));
+}
+
+void OnIceTileHit(CMap@ map, u32 index)
+{
+	map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION);
+	map.RemoveTileFlag(index, Tile::LIGHT_PASSES);
+
+	if (isClient())
+	{
+		Vec2f pos = map.getTileWorldPosition(index);
+
+		Sound::Play("GlassBreak2.ogg", pos, 1.0f, 0.8f);
+		customSparks(pos, 1, rnd_vel(2,1,10.0f), SColor(255,25,75+XORRandom(75),200+XORRandom(55)));
+	}
+}
+
+void OnIceTileDestroyed(CMap@ map, u32 index)
+{
+	if (isClient())
+	{
+		Vec2f pos = map.getTileWorldPosition(index);
+
+		Sound::Play("GlassBreak1.ogg", pos, 1.0f, 0.7f);
+	}
+}
+
+void customSparks(Vec2f pos, int amount, Vec2f gravity, SColor col)
+{
+	if (!getNet().isClient())
+		return;
+
+	for (int i = 0; i < amount; i++)
+    {
+        Vec2f vel(XORRandom(16) * 0.1f * 1.0f + 0.5f, 0);
+        vel.RotateBy(XORRandom(360) * 360.0f);
+
+        CParticle@ p = ParticlePixelUnlimited(pos, vel, col, true);
+        if(p is null) return; //bail if we stop getting particles
+
+    	p.fastcollision = true;
+		p.gravity = gravity;
+        p.timeout = 15 + XORRandom(16);
+        p.scale = 0.5f + XORRandom(51)*0.01f;
+        p.damping = 0.95f;
+    }
+}
+
+Vec2f rnd_vel(f32 max_x, f32 max_y, f32 level)
+{
+    max_x *= level;
+    max_y *= level;
+    return Vec2f((XORRandom(max_x*2)-max_x) / level, (XORRandom(max_y*2)-max_y) / level);
 }

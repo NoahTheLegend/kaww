@@ -75,7 +75,28 @@ namespace CMap
 		tile_metal_back_d5,
 		tile_metal_back_d6,
 		tile_metal_back_d7,
-		tile_metal_back_d8
+		tile_metal_back_d8,
+
+		tile_ice = tile_metal_back + 16,
+		tile_ice_v0,
+		tile_ice_v1,
+		tile_ice_v2,
+		tile_ice_v3,
+		tile_ice_v4,
+		tile_ice_v5,
+		tile_ice_v6,
+		tile_ice_v7,
+		tile_ice_v8,
+		tile_ice_v9,
+		tile_ice_v10,
+		tile_ice_v11,
+		tile_ice_v12,
+		tile_ice_v13,
+		tile_ice_v14,
+		tile_ice_d0 = tile_ice + 16,
+		tile_ice_d1,
+		tile_ice_d2,
+		tile_ice_d3
 	};
 };
 
@@ -200,9 +221,19 @@ bool isCDirtTile(CMap@ map, Vec2f pos)
 	return tile >= CMap::tile_cdirt && tile <= CMap::tile_cdirt_d3;
 }
 
+bool isCDirtTile(TileType tile)
+{
+	return tile >= CMap::tile_cdirt && tile <= CMap::tile_cdirt_d3;
+}
+
 bool isScrapTile(CMap@ map, Vec2f pos)
 {
 	u16 tile = map.getTile(pos).type;
+	return tile >= CMap::tile_scrap && tile <= CMap::tile_scrap_v14;
+}
+
+bool isScrapTile(TileType tile)
+{
 	return tile >= CMap::tile_scrap && tile <= CMap::tile_scrap_v14;
 }
 
@@ -212,8 +243,47 @@ bool isMetalTile(CMap@ map, Vec2f pos)
 	return tile >= CMap::tile_metal && tile <= CMap::tile_metal_v14;
 }
 
+bool isMetalTile(TileType tile)
+{
+	return tile >= CMap::tile_metal && tile <= CMap::tile_metal_v14;
+}
+
 bool isMetalBackTile(CMap@ map, Vec2f pos)
 {
 	u16 tile = map.getTile(pos).type;
 	return tile >= CMap::tile_metal_back && tile <= CMap::tile_metal_back_d8;
+}
+
+bool isMetalBackTile(TileType tile)
+{
+	return tile >= CMap::tile_metal_back && tile <= CMap::tile_metal_back_d8;
+}
+
+bool isTileIce(u32 tile)
+{
+	return tile >= CMap::tile_ice && tile <= CMap::tile_ice_d3;
+}
+
+bool isTileIce(CMap@ map, Vec2f pos)
+{
+	u16 tile = map.getTile(pos).type;
+	return tile >= CMap::tile_ice && tile <= CMap::tile_ice_d3;
+}
+
+bool checkIceTile(CMap@ map, Vec2f pos) 
+{
+	u16 tile = map.getTile(pos).type;
+	return tile >= CMap::tile_ice && tile <= CMap::tile_ice_v14;
+}
+
+bool isTileExposure(u32 index)
+{
+	return index == CMap::tile_empty;
+}
+
+bool isSolid(CMap@ map, u32 type) // thin ice is not solid
+{
+	return map.isTileSolid(type) || map.isTileGround(type) || isTileIce(type)
+		|| isMetalTile(type) || isScrapTile(type) || isMetalBackTile(type)
+		|| isCDirtTile(type);
 }
