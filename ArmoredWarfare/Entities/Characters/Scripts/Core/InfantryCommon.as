@@ -259,7 +259,7 @@ namespace RangerParams
 	const ::u8 DELAYAFTERFIRE 			= 4; // time between shots
 	const ::u8 RANDDELAY 				= 1; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 21.5f; // speed that bullets fly
-	const ::u32 BULLET_LIFETIME 		= 70; // in ticks, time for bullet to die
+	const ::u32 BULLET_LIFETIME 		= 60; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 1; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }
@@ -295,7 +295,7 @@ namespace LMGParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 35; // max amount of inaccuracy
+	const ::u8 INACCURACY_CAP 			= 40; // max amount of inaccuracy
 	const ::u8 INACCURACY_PER_SHOT 		= 3;
 	const ::u8 INACCURACY_MIDAIR        = 6;
 	const ::u8 INACCURACY_HIT  		    = 7;
@@ -310,7 +310,7 @@ namespace LMGParams
 	const ::u8 DELAYAFTERFIRE 			= 2; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 20.0f; // speed that bullets fly
-	const ::u32 BULLET_LIFETIME 		= 70; // in ticks, time for bullet to die
+	const ::u32 BULLET_LIFETIME 		= 50; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 2; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }
