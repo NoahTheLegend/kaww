@@ -30,7 +30,7 @@ int max_iters_per_tick = 0;
 int current_offset = 0;
 
 int search_height = 1;
-int interval = 10;
+int interval = 5;
 const f32 unfreeze_chance = 0.5f;
 
 void onTick(CRules@ this)
@@ -46,7 +46,7 @@ void onTick(CRules@ this)
             if (map.isInWater(tile_pos))
             {
                 CBlob@[] blobs;
-                map.getBlobsInRadius(tile_pos, 4.0f, @blobs);
+                map.getBlobsInRadius(tile_pos, 8.0f, @blobs);
 
                 bool ignore_tile = false;
                 for (int j = 0; j < blobs.length; j++)
