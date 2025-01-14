@@ -396,7 +396,46 @@ void onInit(CBlob@ this)
 
 		case _techbigtruck:
 		backsideOffset = -20.0f; break;
+
+		default:
+		{
+			
+		}
 	}
+
+	// surface damage modifier
+	f32 surface_damage_mod = 1.0f;
+	switch (blobHash)
+	{
+		case _radarapc:
+		case _pszh4:
+		case _btr82a:
+		case _transporttruck:
+		case _armory:
+		case _importantarmory:
+		case _techbigtruck:
+		case _techtruck:
+		surface_damage_mod = 0.15f; break;
+
+		case _bf109:
+		case _bomberplane:
+		surface_damage_mod = 10.0f; break;
+
+		case _jourcop:
+		case _uh1:
+		surface_damage_mod = 2.5f; break;
+
+		case _civcar:
+		case _lada:
+		case _armedmotorcycle:
+		surface_damage_mod = 0.33f; break;
+
+		case _motorcycle:
+		case _barge:
+		surface_damage_mod = 0.15f; break;
+	}
+
+	this.set_f32("surface_damage_mod", surface_damage_mod);
 
 	// engine power
 	f32 intake = 0.0f;
