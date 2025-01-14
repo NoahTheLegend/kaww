@@ -4,6 +4,8 @@
 #include "PerksCommon.as";
 
 const int slotsSize = 6;
+const int heartbeat_timer_base = 60;
+int heartbeat_timer = 0;
 
 void renderBox(Vec2f farside, f32 width, f32 scale)
 {
@@ -62,14 +64,24 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 				bool regenerating = blob.isAttachedToPoint("BED") || blob.isAttachedToPoint("BED2")
 					|| (blob.exists("regen") && blob.get_u32("regen") > getGameTime());
 
-				if (blob.getHealth() <= blob.getInitialHealth() / 3.5f && getGameTime() % 30 == 0)
+				#ifdef STAGING
+				if (heartbeat_timer == 0) heartbeat_timer = v_fpslimit / 60.0f * heartbeat_timer_base;
+				else heartbeat_timer--;
+				#endif
+				
+				#ifndef STAGING
+				if (heartbeat_timer == 0) heartbeat_timer = heartbeat_timer_base;
+				else heartbeat_timer--;
+				#endif
+
+				if (blob.getHealth() <= blob.getInitialHealth() / 3.5f && heartbeat_timer == 0)
 				{
 					if (blob.getHealth() <= blob.getInitialHealth() / 4.5f)
 					{
 						color.set(255, 255, 55, 22);
 						blob.getSprite().PlaySound("/Heartbeat", 1.5f);
 					}
-					else if (getGameTime() % 60 == 0)
+					else if (heartbeat_timer == 0)
 					{
 						color.set(255, 255, 55, 22);
 						blob.getSprite().PlaySound("/Heartbeat", 1.5f);

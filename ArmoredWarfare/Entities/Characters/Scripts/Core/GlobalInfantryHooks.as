@@ -207,13 +207,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			}
 			if (at_bunker) return 0;
 		}
-		/*
-		u16 dist_blocks = Maths::Floor((pos-hitterBlob.get_Vec2f("from_pos")).Length()/8);
-		// printf(""+dist_blocks);
-		f32 mod = 0.5f;
-		damage = damage * Maths::Min(mod, Maths::Max(0.05f, mod - (0.025f * (dist_blocks))));
+		if (hitterBlob.hasTag("rpg") && !hitterBlob.hasTag("artillery"))
+		{
+			u16 dist_blocks = Maths::Floor((pos-hitterBlob.get_Vec2f("from_pos")).Length()/8);
+			// printf(""+dist_blocks);
+			f32 mod = 0.5f;
+			damage = damage * Maths::Min(mod, Maths::Max(0.05f, mod - (0.025f * (dist_blocks))));
+		}
 		//printf(""+damage+" dist "+dist_blocks);
-		*/
 	}
 
 	return damage;

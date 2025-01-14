@@ -57,9 +57,6 @@ void onTick(CBlob@ this)
 
 			if (blob.get_u32("no_heal") > getGameTime())
 			{
-				if (blob.get_u32("heal_delayed") < getGameTime()) blob.Tag("request heal delay icon");
-				else if (blob.get_u32("heal_delayed") - getGameTime() < 45)
-					blob.set_u32("heal_delayed", Maths::Min(blob.get_u32("no_heal"), getGameTime() + 45));
 				continue; 
 			}
             

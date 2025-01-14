@@ -16,7 +16,7 @@ void onInit(CBlob@ this)
 	this.set_f32("capture_time_custom", 4); // include VehicleCapBar.as tick frequency
 
 	Vehicle_Setup(this,
-	              6500.0f, // move speed
+	              7750.0f, // move speed
 	              0.08f,  // turn speed
 	              Vec2f(0.0f, 0.51f), // jump out velocity
 	              false  // inventory access
@@ -28,7 +28,7 @@ void onInit(CBlob@ this)
 	}
 
 	Vehicle_SetupGroundSound(this, v, "TechnicalTruckEngine",  // movement sound
-	                         0.4f, // movement sound volume modifier   0.0f = no manipulation
+	                         0.75f, // movement sound volume modifier   0.0f = no manipulation
 	                         0.3f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 

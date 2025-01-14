@@ -69,7 +69,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 
 	bool is_bullet = (customData >= HittersAW::bullet && customData <= HittersAW::apbullet);
-	if (is_bullet)
+	if (is_bullet || customData == Hitters::builder)
 	{
 		Sound::Play("/BulletSandbag", this.getPosition(), 1.55f, 0.85f + XORRandom(40) * 0.01f);
 

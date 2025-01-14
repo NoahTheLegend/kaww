@@ -91,6 +91,16 @@ void onTick(CBlob@ this)
 {
 	if (this.getTickSinceCreated() == 3 || !this.hasTag("updated"))
 	{
+		if (this.hasTag("request_growth"))
+		{
+			TreeVars@ vars;
+			if (this.get("TreeVars", @vars))
+			{
+				DoGrow(this, vars);
+				this.Untag("request_growth");
+			}
+		}
+		
 		reloadSprite(this);
 	}
 	if (isServer() && this.getTickSinceCreated() == 3)
@@ -110,6 +120,7 @@ void onTick(CBlob@ this)
 			if(tree !is null)
 			{
 				tree.Tag("startbig");
+				tree.Tag("request_growth");
 				tree.setPosition(this.getPosition());
 				tree.Init();
 				this.Tag("no logs");
