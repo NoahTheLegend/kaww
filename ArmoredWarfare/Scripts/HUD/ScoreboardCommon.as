@@ -3,7 +3,7 @@
 const string[] descriptions = {
 	"A chance to receive extra ore or wood (+33%, +2)",
 	"Shorter respawn time, longer spawn protection, more heal (-1s, +1.5s, +10%)",
-	"Faster constructing, less constraining building (+20%, -50% lock radius)",
+	"Faster constructing, less constraining building (+33%, -50% lock radius)",
 	"Cheaper and stronger molotovs (-25%-33%, more liquid)",
 	"Faster vehicle capture, faster C-4 activation, better grenades (+50%, -2.5s, +10% radius)",
 	"A chance to receive more coins in an income (33%, +1)",
