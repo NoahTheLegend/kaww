@@ -50,7 +50,7 @@ void onTick(CSprite@ this)
 			else if (map.isTileWood(tile))
 			{
 				pitch = 1.1f + XORRandom(150) * 0.001f;
-				this.PlayRandomSound("wood_walk", Maths::Min(0.35f, volume), pitch);
+				this.PlayRandomSound("wood_walk", Maths::Min(0.3f, volume), pitch);
 			}
 			else if (isMetalTile(tile))
 			{
