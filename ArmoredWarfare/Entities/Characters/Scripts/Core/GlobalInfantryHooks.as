@@ -176,7 +176,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		//printf(""+damage+" "+customData+" "+hitterBlob.get_f32("scale_infantry_damage"));
 		if (hitterBlob.getName() == "mat_smallbomb")
 		{
-			damage *= 10;
+			damage *= 1;
 		}
 
 		bool at_bunker = false;

@@ -104,7 +104,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			if (isClient() && getLocalPlayerBlob() !is null && getLocalPlayerBlob().isAttachedTo(this)) this.getSprite().PlaySound("NoAmmo.ogg", 0.5f, 1.0f);
 		}
 
-		SyncCharge(this);
+		if (isServer()) SyncCharge(this);
 	}
 	else if (cmd == this.getCommandID("sync_charge"))
 	{
