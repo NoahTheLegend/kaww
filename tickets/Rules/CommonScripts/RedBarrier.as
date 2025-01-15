@@ -66,7 +66,7 @@ void ResetRespawns(CRules@ this)
 
 		if (defenders_on_left)
 		{
-			printf(""+pos.x+" "+this.get_u16("barrier_left_x2")+" "+tent.getNetworkID());
+			//printf(""+pos.x+" "+this.get_u16("barrier_left_x2")+" "+tent.getNetworkID());
 			if (pos.x < this.get_u16("barrier_left_x2"))
 			{
 				tent.Untag("respawn");
