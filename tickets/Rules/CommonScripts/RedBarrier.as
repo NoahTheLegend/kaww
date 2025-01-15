@@ -34,6 +34,9 @@ void onInit(CRules@ this)
 	this.addCommandID("set_barrier_pos");
 	this.addCommandID("set_barrier_vars");
 
+	this.addCommandID("sync_ptb");
+	this.addCommandID("request_sync_ptb");
+
 	onRestart(this);
 }
 
@@ -63,6 +66,7 @@ void ResetRespawns(CRules@ this)
 
 		if (defenders_on_left)
 		{
+			printf(""+pos.x+" "+this.get_u16("barrier_left_x2")+" "+tent.getNetworkID());
 			if (pos.x < this.get_u16("barrier_left_x2"))
 			{
 				tent.Untag("respawn");
@@ -147,13 +151,26 @@ void onTick(CRules@ this)
 {
 	f32 speed_factor = 1.0f;
 	bool ptb = isPTB();
+	CMap@ map = getMap();
+
+	Vec2f[] empty;
+	if (getLocalPlayer() !is null && getBlobByName("core") !is null && !map.getMarkers("core zone", @empty))
+	{
+		CPlayer@ player = getLocalPlayer();
+		if (player !is null)
+		{
+			CBitStream params;
+			params.write_u16(player.getNetworkID());
+			this.SendCommand(this.getCommandID("request_sync_ptb"), params);
+		}
+	}
 	
 	if (shouldBarrier(this) || ptb)
 	{
 		if (ptb)
 		{
-			if (!this.hasTag("respawns_set")) ResetRespawns(this);
 			SetBarrierPosition(this);
+			if (isServer() || getGameTime() % 10 == 0) ResetRespawns(this);
 		}
 		else if (!reachedMid(this))
 		{
@@ -183,8 +200,6 @@ void onTick(CRules@ this)
 	{	
 		return;
 	}
-
-	CMap@ map = getMap();
 
 	Vec2f tll, brl, tlr, brr;
 	getBarrierRect(@this, tll, brl, tlr, brr);
@@ -274,10 +289,7 @@ void onRender(CRules@ this)
 
 void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 {
-	if (!isClient())
-		return;
-
-	if (cmd == this.getCommandID("set_barrier_pos"))
+	if (isClient() && cmd == this.getCommandID("set_barrier_pos"))
 	{
 		const u16 xl1 = params.read_u16();
 		const u16 xl2 = params.read_u16();
@@ -290,10 +302,66 @@ void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 		this.set_u16("barrier_right_x2", xr2);
 
 	}
-	else if (cmd == this.getCommandID("set_barrier_vars"))
+	else if (isClient() && cmd == this.getCommandID("set_barrier_vars"))
 	{
 		VEL_PUSHBACK = params.read_f32();
 	}
+	else if (cmd == this.getCommandID("request_sync_ptb"))
+	{
+		if (!isServer()) return;
+		//printf("requested sync");
+		SyncPTB(this);
+	}
+	else if (cmd == this.getCommandID("sync_ptb"))
+	{
+		if (!isClient()) return;
+		//printf("syncing");
+		CMap@ map = getMap();
+		
+		this.set_bool("ptb", params.read_bool());
+		s8 side = params.read_s8();
+
+		this.set_s8("ptb side", side);
+		//printf("Receiving "+this.get_bool("ptb")+" "+this.get_s8("ptb side"));
+
+		if (side != -1)
+		{
+			//printf("added ptb marker "+side);
+			map.AddMarker(Vec2f(0,0), side == 0 ? "ptb blue" : "ptb red");
+		}
+
+		u16 count = params.read_u16();
+		for (uint i = 0; i < count; i++)
+		{
+			Vec2f pos = params.read_Vec2f();
+			//printf("reading "+pos);
+			map.AddMarker(pos, "core zone");
+		}
+
+		SetBarrierPosition(this);
+	}
+}
+
+void SyncPTB(CRules@ this)
+{
+	CBitStream params;
+
+	params.write_bool(this.get_bool("ptb"));
+	params.write_s8(this.get_s8("ptb side"));
+
+	//printf("Sending "+this.get_bool("ptb")+" "+this.get_s8("ptb side"));
+	
+	Vec2f[]@ core_zones;
+	this.get("core_zones", @core_zones);
+
+	params.write_u16(core_zones.size());
+	for (uint i = 0; i < core_zones.size(); i++)
+	{
+		//printf("writing "+core_zones[i]);
+		params.write_Vec2f(core_zones[i]);
+	}
+
+	this.SendCommand(this.getCommandID("sync_ptb"), params);
 }
 
 ////  FUNCTIONS  ////

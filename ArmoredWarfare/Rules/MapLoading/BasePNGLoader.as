@@ -109,6 +109,15 @@ class PNGLoader
 		}
 	}
 
+	void ResetPTB()
+	{
+		CRules@ rules = getRules();
+		rules.set_bool("ptb", false);
+		Vec2f[] empty;
+		rules.set("core_zones", @empty);
+		rules.set_s8("ptb side", -1);
+	}
+
 	bool loadMap(CMap@ _map, const string& in filename)
 	{
 		@map = _map;
@@ -620,9 +629,9 @@ class PNGLoader
 			case map_colors::pointflagt2:	autotile(offset); spawnBlob(map, "pointflagt2", offset); break;
 			case map_colors::core_blue:    autotile(offset); spawnBlob(map, "core", offset, teamleft); break;
 			case map_colors::core_red:     autotile(offset); spawnBlob(map, "core", offset, teamright); break;
-			case map_colors::blue_core_gamemode : autotile(offset); AddMarker(map, offset, "ptb blue");       break;
-			case map_colors::red_core_gamemode : autotile(offset); AddMarker(map, offset, "ptb red");       break;
-			case map_colors::core_zone:         autotile(offset); AddMarker(map, offset, "core zone");       break;
+			case map_colors::blue_core_gamemode : 	autotile(offset); AddMarkerPTB(map, offset, "ptb blue");       break;
+			case map_colors::red_core_gamemode : 	autotile(offset); AddMarkerPTB(map, offset, "ptb red");       break;
+			case map_colors::core_zone:         	autotile(offset); AddMarkerPTB(map, offset, "core zone");       break;
 			case map_colors::cobweb:        autotile(offset); spawnBlob(map, "cobweb", offset); break;
 			case map_colors::deadbush:      autotile(offset); spawnBlob(map, "deadbush", offset); break;
 			case map_colors::cacti:    		autotile(offset); spawnBlob(map, "cacti", offset); break;
@@ -992,6 +1001,35 @@ CBlob@ spawnVehicle(CMap@ map, const string& in name, int offset, int team = -1)
 void AddMarker(CMap@ map, int offset, const string& in name)
 {
 	map.AddMarker(map.getTileWorldPosition(offset), name);
+}
+
+void AddMarkerPTB(CMap@ map, int offset, const string& in name)
+{
+	AddMarker(map, offset, name);
+	
+	CRules@ rules = getRules();
+	if (rules !is null)
+	{
+		rules.set_bool("ptb", true);
+
+		bool ptb_blue = name == "ptb blue";
+		bool ptb_red = name == "ptb red";
+		if (ptb_blue || ptb_red) 
+			rules.set_s8("ptb side", ptb_blue ? 0 : 1);
+		
+		Vec2f[]@ core_zones;
+		if (!rules.get("core_zones", @core_zones))
+		{
+			Vec2f[] core_zones_new;
+
+			core_zones_new.push_back(map.getTileWorldPosition(offset));
+			rules.set("core_zones", @core_zones_new);
+		}
+		else 
+		{
+			core_zones.push_back(map.getTileWorldPosition(offset));
+		}
+	}
 }
 
 void SaveMap(CMap@ map, const string &in fileName)
