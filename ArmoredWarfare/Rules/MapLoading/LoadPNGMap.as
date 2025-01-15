@@ -10,6 +10,7 @@ bool LoadMap(CMap@ map, const string& in fileName)
 
 	PNGLoader loader();
     loader.SetTeams();
+	loader.ResetPTB();
 
 	MiniMap::Initialise();
 

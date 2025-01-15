@@ -156,12 +156,17 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	if (hitterBlob.getName() == "missile_javelin")
 	{
-		return damage * 0.1f;
+		return damage * 0.25f;
 	}
 
 	if (hitterBlob.getName() == "sagrenade")
 	{
 		return damage *= 0.33f;
+	}
+
+	if (hitterBlob.getName() == "c4")
+	{
+		return damage * 3;
 	}
 
 	if (hitterBlob.hasTag("atgrenade"))

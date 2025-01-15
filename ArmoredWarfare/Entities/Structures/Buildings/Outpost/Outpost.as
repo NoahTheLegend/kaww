@@ -73,6 +73,11 @@ void onInit(CBlob@ this)
 	}
 }
 
+void onTick(CBlob@ this)
+{
+	
+}
+
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (caller is null) return;
