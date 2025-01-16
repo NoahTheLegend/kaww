@@ -5,6 +5,7 @@
 Vec2f bannerStart = Vec2f_zero;
 Vec2f bannerPos = Vec2f_zero;
 Vec2f bannerDest = Vec2f_zero;
+Vec2f objectivePos = Vec2f(15, 70);
 f32 frameTime = 0;
 const f32 maxTime = 1.2f;
 
@@ -30,6 +31,24 @@ void onRestart(CRules@ this)
     bannerDest = Vec2f_zero;
     frameTime = 0;
 }
+
+const string[] descriptions = {
+    "Kill the enemy team until they run out of respawns!",
+    "Destroy the enemy truck!",
+    "Capture all the flags to win!",
+    "Collect enough control points to win!",
+    "Don't let enemies to explode the cores!",
+    "Plant a C-4 at enemy cores!"
+};
+
+const string[] objectives = {
+    "Showdown",
+    "Break the enemy truck",
+    "Capture the flags",
+    "Tug of war",
+    "Defend the cores",
+    "Plant the C-4 at the cores"
+};
 
 void onTick(CRules@ this)
 {
@@ -64,11 +83,12 @@ void onTick(CRules@ this)
         {
             this.set_string("bannertext", "Zombie Mode");
         }
-        else {
+        else
+        {
             if (tents.length == 0 && dtt)
             {
                 // break the truck
-                this.set_string("bannertext", "Destroy the enemy truck!");
+                this.set_u8("banneridx", 1);
             }
             else if (ctf)
             {
@@ -76,21 +96,20 @@ void onTick(CRules@ this)
                 getBlobsByTag("pointflag", @flags);
 
                 // capture the flag
-                this.set_string("bannertext", (flags.size() <= 2 ? "Capture all the flags to win!" : "         Collect enough control points to win!"));
+                this.set_u8("banneridx", (flags.size() <= 2 ? 2 : 3));
                 bannerDest += Vec2f(0, 100);
             }
             else if (ptb)
             {
                 // plant the bomb
-                this.set_string("bannertext", local_team == ptb_defenders ? "Don't let enemies to explode the cores!" : "Plant a C-4 at enemy cores!");
+                this.set_u8("banneridx", local_team == ptb_defenders ? 4 : 5);
             }
             else
             {
                 // showdown
-                this.set_string("bannertext", "Kill the enemy team until they run out of respawns!");
+                this.set_u8("banneridx", 0);
             }
         }
-
     }
     else
     {
@@ -114,6 +133,7 @@ void onRender(CRules@ this)
             DrawBanner(bannerPos, this);
         }
     }
+    else DrawObjective(objectivePos, this);
 }
 
 void DrawBanner(Vec2f center, CRules@ this)
@@ -121,11 +141,17 @@ void DrawBanner(Vec2f center, CRules@ this)
     GUI::SetFont("score-big");
 
     string text = "";
-    text = this.get_string("bannertext");
+    text = descriptions[this.get_u8("banneridx")];
     
     GUI::DrawTextCentered(getTranslatedString(text), center, SColor(255, 255, 255, 255));
+}
 
+void DrawObjective(Vec2f center, CRules@ this)
+{
+    GUI::SetFont("score-medium");
+
+    string text = "";
+    text = objectives[this.get_u8("banneridx")];
     
-    
-    //GUI::DrawIcon("TeamIcons.png", team, Vec2f(96, 96), center - Vec2f(96, 192) + offset, 1.0f, team);
+    GUI::DrawText(getTranslatedString(text), center + (u_showtutorial ? Vec2f(0,30) : Vec2f_zero), SColor(255, 255, 255, 255));
 }
