@@ -12,22 +12,26 @@ void onTick(CBlob@ this)
 
 	const bool exposed = this.hasTag("machinegunner") || this.hasTag("collidewithbullets") || this.hasTag("can_shoot_if_attached");
 	const bool sleeping = this.isAttachedToPoint("BED") || this.isAttachedToPoint("BED2");
-	if (this.isAttached() && (!exposed || sleeping))
+	const bool repairing = this.hasTag("repairing");
+	
+	CSpriteLayer@ helmet = this.getSprite().getSpriteLayer("helmet");
+	if (helmet !is null)
 	{
-		CSpriteLayer@ helmet = this.getSprite().getSpriteLayer("helmet");
-		if (helmet !is null)
+		if ((repairing && WeldCondition(this)) || (this.isAttached() && (!exposed || sleeping)))
 		{
 			helmet.SetVisible(false);
 		}
-	}
-	else
-	{
-		CSpriteLayer@ helmet =this.getSprite().getSpriteLayer("helmet");
-		if (helmet !is null)
+		else
 		{
 			helmet.SetVisible(true);
 		}
 	}
+}
+
+bool WeldCondition(CBlob@ this)
+{
+	return this.getVelocity().Length() < 0.05f && !this.isAttached()
+		&& this.getCarriedBlob() !is null && this.getCarriedBlob().getName() == "weldingtool";
 }
 
 void onCreateInventoryMenu(CBlob@ this, CBlob@ forBlob, CGridMenu@ gridmenu)
