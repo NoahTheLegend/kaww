@@ -230,7 +230,10 @@ void onTick(CSprite@ this)
 				this.SetVisible(false);
 			}
 		}
-		else if (helmet !is null) helmet.SetVisible(true);
+		else if (helmet !is null)
+		{
+			helmet.SetVisible(!blob.hasTag("repairing"));
+		}
 	}
 	
 	//this.SetVisible(!blob.isAttached() || (exposed && !sleeping));
