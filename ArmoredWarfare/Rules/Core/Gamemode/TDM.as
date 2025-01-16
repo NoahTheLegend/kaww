@@ -1504,8 +1504,8 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 }
 
 const u8 give_flag_points = 2;
-const u16 base_flag_points = 5000;
-const u16 extra_points_per_flag = 1300;
+const u16 base_flag_points = 3000;
+const u16 extra_points_per_flag = 1000;
 
 void RunCTF(CRules@ this)
 {
