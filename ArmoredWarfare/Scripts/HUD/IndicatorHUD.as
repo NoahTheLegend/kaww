@@ -208,6 +208,13 @@ void onRender(CRules@ this)
 	CPlayer@ p = getLocalPlayer();
 	if (p is null || !p.isMyPlayer()) return;
 	CBlob@ local = p.getBlob();
+
+	GUI::SetFont("score-smaller");
+	CMap@ map = getMap();
+	if (map !is null)
+	{
+		GUI::DrawTextCentered("" + map.tilemapwidth, Vec2f((timelineLDist + timelineRDist) / 2, timelineHeight - 10), SColor(255, 255, 255, 255));
+	}
 	
 	if (!ctf
 		&& !dtt)
@@ -435,7 +442,6 @@ void onRender(CRules@ this)
 	*/
 
 	//indicate respawns
-	CMap@ map = getMap();
 	if (map is null) return;
 
 	CBlob@[] tents;
