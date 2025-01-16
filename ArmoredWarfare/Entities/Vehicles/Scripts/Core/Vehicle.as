@@ -284,8 +284,8 @@ void onInit(CBlob@ this)
 			weaponRating = 1;
 			linear_length = 4.0f;
 			scale_impact_damage = 1.25f;
-			scale_infantry_damage = 0.15f;
-			impact_radius = 8.0f;
+			scale_infantry_damage = 0.2f;
+			impact_radius = 16.0f;
 			break;
 		}
 		case _bc25turret:
