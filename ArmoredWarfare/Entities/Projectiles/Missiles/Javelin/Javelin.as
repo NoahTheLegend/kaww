@@ -156,7 +156,7 @@ void onTick(CBlob@ this)
 			turnAngle = (risingPos-thisPos).getAngleDegrees();
 			
 			if (this.get_f32(robotechHeightString) > 32 ?
-				thisPos.y < this.get_f32(robotechHeightString) || thisPos.y <= 4.0f : Maths::Abs(thisPos.x - targetPos.x) < 8.0f)
+				thisPos.y < this.get_f32(robotechHeightString) || thisPos.y <= 12.0f : Maths::Abs(thisPos.x - targetPos.x) < 8.0f)
 			{
 				this.set_s8(navigationPhaseString, 1);
 			}
