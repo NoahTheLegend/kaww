@@ -12,6 +12,7 @@
 const string capture_prop = "capture time";
 const string teamcapping = "teamcapping";
 const f32 capture_time = 30*120;
+const u32 max_capping = 3;
 const Vec2f startpos = Vec2f(9.0f, -51.0f);
 
 void onInit(CBlob@ this)
@@ -261,7 +262,7 @@ void handleCapture(CBlob@ this)
     		this.set_u8("numcapping", num_teamright);
     		this.set_s8(teamcapping, teamright);
 
-    		num_teamright = Maths::Min(num_teamright, 2);
+    		num_teamright = Maths::Min(num_teamright, max_capping);
     		u16 time = this.get_f32(capture_prop) + num_teamright * (getMap() !is null && isTDM ? 1 : 2);
 			if (time > capture_time*4) time = 0;
     		this.set_f32(capture_prop, time);
@@ -271,7 +272,7 @@ void handleCapture(CBlob@ this)
     		this.set_u8("numcapping", num_teamleft);
     		this.set_s8(teamcapping, teamleft);
 
-    		num_teamleft = Maths::Min(num_teamleft, 2);
+    		num_teamleft = Maths::Min(num_teamleft, max_capping);
 			u16 time = this.get_f32(capture_prop) + num_teamleft * (getMap() !is null && isTDM ? 1 : 2);
 			if (time > capture_time*4) time = 0;
     		this.set_f32(capture_prop, time);
@@ -388,6 +389,16 @@ void onRender(CSprite@ this) // draw own capture bar
 	SColor color_dark;
 	SColor color_darker;
 	SColor flag_color_team = 0xff1c2525;
+
+	GUI::SetFont("menu");
+
+	if (focus)
+	{
+		string prod_blob = blob.get_string("producing");
+		string[] spl = prod_blob.split("mat_");
+		if (spl.size() > 1) prod_blob = spl[1];
+		GUI::DrawTextCentered("Producing "+(prod_blob == "" ? "nothing" : prod_blob), Vec2f(pos.x, pos.y + 54.0f), SColor(0xffffffff));
+	}
 
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
