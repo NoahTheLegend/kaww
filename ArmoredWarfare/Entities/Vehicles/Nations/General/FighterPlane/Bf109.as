@@ -7,7 +7,7 @@
 #include "PerksCommon.as";
 
 // const u32 fuel_timer_max = 30 * 600;
-const f32 SPEED_MAX = 57.5;
+const f32 SPEED_MAX = 60.0f;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 f32 windage = 2.0f;
 
