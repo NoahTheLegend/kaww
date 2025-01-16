@@ -32,11 +32,12 @@ void onTick(CBlob@ this)
 	{
 		this.set_u8("step", 0);
 
+		bool stats_loaded = false;
+		PerkStats@ stats;
+
 		CPlayer@ p = this.getPlayer();
 		if (p !is null)
 		{
-			bool stats_loaded = false;
-			PerkStats@ stats;
 			if (p.get("PerkStats", @stats) && stats !is null)
 				stats_loaded = true;
 
@@ -53,6 +54,14 @@ void onTick(CBlob@ this)
 		factor *= power_factor;
 
 		if (this.getHealth() > this.getInitialHealth() * 0.33f || do_regen) // regen health when its above 33%
+		{
 			this.server_Heal((amount + (do_regen ? this.get_f32("regen_amount") : 0)) * factor);
+
+			if (do_regen && stats_loaded && stats.name == "Lucky")
+			{
+				if (this.hasBlob("aceofspades", 1)) this.TakeBlob("aceofspades", 1);
+				this.set_u32("aceofspades_timer", getGameTime()+stats.aos_healed_time_regen);
+			}
+		}
 	}
 }
