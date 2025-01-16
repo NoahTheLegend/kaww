@@ -2,8 +2,8 @@ const string stone = "mat_stone";
 const string stone_prop = "stone_level";
 const string working_prop = "working";
 
-const int input = 25;					//input cost in fuel
-const int output = 2;					//output amount in metal
+const int input = 30;					//input cost in fuel
+const int output = 3;					//output amount in metal
 const int min_input = Maths::Ceil(input/output);
 const int max_fuel = 600;
 

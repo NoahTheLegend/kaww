@@ -12,7 +12,7 @@ const string sound_cooldown_prop = "charge_cooldown";
 
 const int spawnmetal_frequency = 30; // how often to spawn metal
 const string[] mats = {"mat_wood", "mat_stone", "mat_gold"};
-const int[] input = {100, 35, 20};
+const int[] input = {100, 30, 15};
 const int[] output = {20, 30, 40};
 
 const int fuel_per_scrap = 10; // how much fuel is needed to make 1 scrap
