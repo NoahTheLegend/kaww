@@ -443,8 +443,8 @@ void onPlayerRequestSpawn(CRules@ this, CPlayer@ player)
 		return;
 
 	//player swapped/joined team ages ago -> no balance
-	if (b.lastBalancedTime < getAverageBalance(infos))
-		return;
+	//if (b.lastBalancedTime < getAverageBalance(infos))
+	//	return;
 
 	s32 newTeam = getSmallestTeam(core.teams);
 
