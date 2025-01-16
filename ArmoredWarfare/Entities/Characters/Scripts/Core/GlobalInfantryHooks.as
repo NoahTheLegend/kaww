@@ -6,6 +6,11 @@
 #include "PerksCommon.as";
 
 const f32 shield_angle = 60;
+
+const f32 min_damage_from_rpg = 0.15f;
+const f32 max_damage_from_rpg = 0.75f;
+const f32 rpg_damage_falloff_per_tile = 0.015f;
+		
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	bool is_suicide = customData == Hitters::suicide;
@@ -209,12 +214,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		if (hitterBlob.hasTag("rpg") && !hitterBlob.hasTag("artillery"))
 		{
-			u16 dist_blocks = Maths::Floor((pos-hitterBlob.get_Vec2f("from_pos")).Length()/8);
-			// printf(""+dist_blocks);
-			f32 mod = 0.5f;
-			damage = damage * Maths::Min(mod, Maths::Max(0.05f, mod - (0.025f * (dist_blocks))));
+			u16 dist_tiles = Maths::Floor((pos-hitterBlob.get_Vec2f("from_pos")).Length()/8);
+			f32 min_damage_from_rpg = min_damage_from_rpg_base;
+			f32 max_damage_from_rpg = max_damage_from_rpg_base;
+			f32 rpg_damage_falloff_per_tile = rpg_damage_falloff_per_tile_base;
+			damage = damage * Maths::Min(mod, Maths::Max(min_damage_from_rpg, max_damage_from_rpg - (rpg_damage_falloff_per_tile * (dist_tiles))));
 		}
-		//printf(""+damage+" dist "+dist_blocks);
+		//printf(""+damage+" dist "+dist_tiles);
 	}
 
 	return damage;
