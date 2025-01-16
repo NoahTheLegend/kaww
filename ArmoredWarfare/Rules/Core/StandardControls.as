@@ -386,6 +386,8 @@ void onTick(CBlob@ this)
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ ap)
 {
+	if (detached is null || !detached.isMyPlayer()) return;
+	
 	if (detached.hasTag("aerial")) // for vehicles increasing zoomout
 	{
 		zoomLevel = Maths::Max(1, zoomLevel);
