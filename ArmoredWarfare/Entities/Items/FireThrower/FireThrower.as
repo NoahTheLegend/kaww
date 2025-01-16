@@ -105,10 +105,13 @@ void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 	{
 		attached.Tag("machinegunner");
 	}
+
 	if (!attached.hasTag("has mount")) return;
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
+
 	if (cage !is null)
 	{
+		this.getSprite().SetVisible(false);
 		cage.SetVisible(false);
 	}
 }
@@ -130,6 +133,7 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
 	if (cage !is null)
 	{
+		this.getSprite().SetVisible(true);
 		cage.SetVisible(true);
 	}
 }
@@ -405,7 +409,7 @@ void onTick(CBlob@ this)
 			}
 
 			if (ap !is null && ap.getOccupied() !is null)
-				arm.SetRelativeZ(-10.0f);
+				arm.SetRelativeZ(100.0f);
 			else
 				arm.SetRelativeZ(100.0f);
 

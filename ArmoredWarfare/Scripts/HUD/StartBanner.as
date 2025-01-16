@@ -153,5 +153,5 @@ void DrawObjective(Vec2f center, CRules@ this)
     string text = "";
     text = objectives[this.get_u8("banneridx")];
     
-    GUI::DrawText(getTranslatedString(text), center + (u_showtutorial ? Vec2f(0,30) : Vec2f_zero), SColor(255, 255, 255, 255));
+    GUI::DrawText(getTranslatedString(text), center + (u_showtutorial ? Vec2f(0,32) : Vec2f_zero), SColor(255, 255, 255, 255));
 }
