@@ -1873,7 +1873,6 @@ const string[] LargeMaps = {
 	"Flattening.png",
 	//"RooftopTanks_v2.png", ooc
 	//"Goldy_KAWW_Sewage.png", ooc
-	"BloodGulch.png",
 	"SkeletalTowers.png",
 	"SerenityHills.png",
 	"MotoMadness.png",
