@@ -66,7 +66,7 @@ void onRender(CSprite@ this)
 	u32 gt = getGameTime();
 	if (blob.getTeamNum() != localBlob.getTeamNum()) return;
 	
-	if (!blob.hasTag("turret") && blob.get_u32("heal_delayed") > gt && blob.get_u32("heal_delayed") < gt + 300)
+	if (!blob.hasTag("turret") && blob.get_u32("heal_delayed") > gt)
 	{
 		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, -128);
 		u32 heal_delayed = blob.get_u32("heal_delayed");
@@ -87,7 +87,11 @@ void onRender(CSprite@ this)
 
 		GUI::SetFont("menu");
 		GUI::DrawIcon("RepairCooldown.png", 0, Vec2f(32, 32), pos2d - Vec2f(32, 16), 1.0f, SColor(alpha, 255, 255, 255));
-		GUI::DrawTextCentered("Repair delayed: " + Maths::Ceil((blob.get_u32("no_heal") - gt)/30)+"s", pos2d + Vec2f(0, 48), SColor(alpha, 255, 255, 255));
+
+		s32 time = Maths::Ceil((f32(blob.get_u32("no_heal") - gt))/30.0f);
+		if (time < 0) time = 0;
+
+		GUI::DrawTextCentered("Repair delayed: " + time +"s", pos2d + Vec2f(0, 48), SColor(alpha, 255, 255, 255));
 		GUI::SetFont("default");
 	}
 
