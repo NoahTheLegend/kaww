@@ -44,6 +44,8 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 
+	sprite.SetZ(10.0f);
+
 	sprite.RemoveSpriteLayer("arm");
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 16, 48);
 	if (arm !is null)

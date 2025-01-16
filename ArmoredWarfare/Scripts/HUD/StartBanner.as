@@ -148,7 +148,7 @@ void DrawBanner(Vec2f center, CRules@ this)
 
 void DrawObjective(Vec2f center, CRules@ this)
 {
-    GUI::SetFont("score-medium");
+    GUI::SetFont("score-small");
 
     string text = "";
     text = objectives[this.get_u8("banneridx")];

@@ -36,6 +36,7 @@ shared class PerkStats {
     // Lucky
     u8 aos_taken_time;      // cooldown on activation
     u8 aos_healed_time;     // cooldown on heal
+    u8 aos_healed_time_regen;
     u8 aos_invulnerability_time;
 
     // Wealthy
@@ -80,7 +81,7 @@ shared class PerkStats {
         demontage_time = 150; sprint = true; mg_overheat = 1.0f; ftw_overheat = 1.0f; wrench_repair_time = 30;
             heli_velo = Vec2f(0,0); plane_velo = 0; top_angle = 0; down_angle = 0; elevation_mod = 1.0f;
         //
-        aos_taken_time = 0; aos_healed_time = 0; aos_invulnerability_time = 0;
+        aos_taken_time = 0; aos_healed_time = 0; aos_healed_time_regen = 0; aos_invulnerability_time = 0;
         //
         kill_coins = 2; coins_income = 1;
         //
@@ -174,6 +175,7 @@ shared class PerkLucky : PerkStats {
         id = 5;
         aos_taken_time = 30;
         aos_healed_time = 150;
+        aos_healed_time_regen = 60;
         aos_invulnerability_time = 30;
     }
 };
