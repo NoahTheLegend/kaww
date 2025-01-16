@@ -384,6 +384,14 @@ void onTick(CBlob@ this)
 
 // show dots on chat
 
+void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ ap)
+{
+	if (detached.hasTag("aerial")) // for vehicles increasing zoomout
+	{
+		zoomLevel = Maths::Max(1, zoomLevel);
+	}
+}
+
 void onDie(CBlob@ this)
 {
 	set_emote(this, "off");
@@ -434,13 +442,14 @@ void AdjustCamera(CBlob@ this, bool is_in_render)
 	CBlob@ b = this.getCarriedBlob();
 	if (b !is null && b.getName() == "launcher_javelin") javelin = true;
 
-	if (this.hasTag("scopedin") || javelin)
+	if (javelin)
 	{
 		zoom_target = 1.0f; //1.25f
 		zoomSpeed *= 0.75f; //0.4f
 	}
 
 	zoom_target = (zoomLevel == 0 && this.hasTag("increase_max_zoom") ? 0.5f : zoom_target);
+
 	if (this.getName() == "ballista_bolt")
 	{
 		zoom_target = 0.66f;
@@ -483,7 +492,7 @@ void ManageCamera(CBlob@ this)
 			zoomModifier = controls.isKeyPressed(KEY_LCONTROL);
 
 			zoomModifierLevel = Maths::Max(0, zoomModifierLevel - 1);
-			zoomLevel = Maths::Max(1, zoomLevel - 1);
+			zoomLevel = Maths::Max(1 - (this.hasTag("increase_max_zoom") ? 1 : 0), zoomLevel - 1);
 
 			Tap(this);
 		}
