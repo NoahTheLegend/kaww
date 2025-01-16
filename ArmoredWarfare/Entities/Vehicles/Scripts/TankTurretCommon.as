@@ -343,6 +343,7 @@ void GradFire(CBlob@ this, VehicleInfo@ v, CBlob@ bullet, const u8 _charge, Vec2
 		bullet.set_f32("proj_ex_radius", 32.0f);
 		bullet.Tag("rpg");
 		bullet.Tag("artillery");
+		bullet.Tag("mlrs");
 
 		CBlob@ hull = getBlobByNetworkID(this.get_u16("tankid"));
 		bool not_found = true;

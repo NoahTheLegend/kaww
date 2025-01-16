@@ -5,9 +5,13 @@
 #include "LimitedAttacks.as";
 #include "Explosion.as";
 #include "CustomBlocks.as";
+#include "ArtilleryMarker.as";
 
 const f32 MEDIUM_SPEED = 5.0f;
 const f32 linger_time = 2.0f;
+const int artillery_marker_time_light = 45;
+const int artillery_marker_time_default = 90;
+const int artillery_marker_time_heavy = 180;
 
 void onInit(CBlob@ this)
 {
@@ -377,22 +381,35 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 
 	Vec2f pos = this.getPosition();
 	bool is_artillery = isArtilleryProjectile(this);
+	bool is_mortar = isMortarProjectile(this);
+	bool is_mlrs = isMLRSProjectile(this);
+	bool add_marker = is_artillery || is_mortar || is_mlrs;
 
-	if (is_artillery && this.isMyPlayer())
+	if (isServer())
 	{
-		CRules@ rules = getRules();
-		if (rules !is null)
-		{
-			Vec2f[]@ artillery_explosions;
-			if (rules.get("artillery_explosions", @artillery_explosions))
-			{
-				artillery_explosions.push_back(this.getPosition());
-				rules.Tag("artillery_exploded");
-			}
+		u32 marker_time = artillery_marker_time_default;
+		if (is_mlrs) marker_time = artillery_marker_time_light;
+		else if (is_mortar) marker_time = artillery_marker_time_default;
+		else if (is_artillery) marker_time = artillery_marker_time_heavy;
 
-			CBitStream params;
-			params.write_Vec2f(pos);
-			rules.SendCommand(rules.getCommandID("add_artillery_explosion"), params);
+		if (add_marker)
+		{
+			CRules@ rules = getRules();
+			if (rules !is null)
+			{
+				CBitStream params;
+				params.write_Vec2f(pos);
+				params.write_u32(marker_time);
+
+				f32 scale = is_mlrs ? 0.75f : 1.0f;
+				params.write_f32(scale);
+
+				CPlayer@ p = this.getDamageOwnerPlayer();
+				if (p !is null)
+					params.write_u16(p.getNetworkID());
+
+				rules.SendCommand(rules.getCommandID("add_artillery_explosion"), params);
+			}
 		}
 	}
 
@@ -434,6 +451,16 @@ bool isHEProjectile(CBlob@ this)
 bool isArtilleryProjectile(CBlob@ this)
 {
 	return this.hasTag("artillery");
+}
+
+bool isMortarProjectile(CBlob@ this)
+{
+	return this.hasTag("mortar");
+}
+
+bool isMLRSProjectile(CBlob@ this)
+{
+	return this.hasTag("mlrs");
 }
 
 bool isAPCProjectile(CBlob@ this)

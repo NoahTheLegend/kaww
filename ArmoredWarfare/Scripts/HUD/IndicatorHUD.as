@@ -3,6 +3,7 @@
 #include "TeamColorCollections.as";
 #include "PingCommon.as";
 #include "GamemodeCheck.as";
+#include "ArtilleryMarker.as";
 
 const float timelineHeight = 22.0f;
 const float timelineLeftEnd = 0.34f;
@@ -717,9 +718,8 @@ void Reset(CRules@ this)
 {
 	this.Untag("animateGameOver");
 
-	Vec2f[] artillery_explosions;
+	GenericArtilleryExplosion@[] artillery_explosions;
 	this.set("artillery_explosions", @artillery_explosions);
-	remove_artillery_timer = 0;
 }
 
 void onStateChange(CRules@ this, const u8 oldState)
@@ -898,50 +898,55 @@ void RenderBar(CRules@ this, CBlob@ flag, Vec2f position)
 					   Vec2f(pos.x - dimension.x + perc  * 2.0f * dimension.x - 5, pos.y + y + dimension.y - 3), color_light);
 }
 
-const u16 artillery_icon_time = 6*30;
-u16 remove_artillery_timer = 0;
-
-void handleArtilleryExplosions(CRules@ this)
+void handleArtilleryExplosions(CRules@ this) // ontick
 {
-	if (this.hasTag("artillery_exploded"))
+	GenericArtilleryExplosion@[]@ artillery_explosions;
+	if (!this.get("artillery_explosions", @artillery_explosions)) return;
+	if (artillery_explosions.size() == 0)
 	{
-		this.Untag("artillery_exploded");
-		remove_artillery_timer = artillery_icon_time;
+		return;
 	}
 
-	if (remove_artillery_timer > 0)
+	for (u16 i = 0; i < artillery_explosions.size(); i++)
 	{
-		remove_artillery_timer--;
-	}
-	else
-	{
-		Vec2f[]@ artillery_explosions;
-		if (this.get("artillery_explosions", @artillery_explosions))
+		GenericArtilleryExplosion@ artillery_explosion = artillery_explosions[i];
+		if (artillery_explosion is null) continue;
+
+		if (artillery_explosion.time == 0)
 		{
-			if (artillery_explosions.size() > 0)
-			{
-				artillery_explosions.erase(0);
-			}
+			artillery_explosions.removeAt(i);
+			i--;
+			continue;
 		}
+
+		artillery_explosion.time--;
 	}
 }
 
-void renderArtilleryExplosions(CRules@ this)
+void renderArtilleryExplosions(CRules@ this) // onrender
 {
-	Vec2f[]@ artillery_explosions;
-	if (this.get("artillery_explosions", @artillery_explosions))
+	if (getLocalPlayer() is null) return;
+
+	GenericArtilleryExplosion@[]@ artillery_explosions;
+	if (!this.get("artillery_explosions", @artillery_explosions)) return;
+	if (artillery_explosions.size() == 0)
 	{
-		for (uint i = 0; i < artillery_explosions.size(); i++)
-		{
-			Vec2f pos = artillery_explosions[i];
+		return;
+	}
 
-			float curXPos = pos.x - 28;
-			float indicatorProgress = curXPos / mapWidth;
-			float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+	for (u16 i = 0; i < artillery_explosions.size(); i++)
+	{
+		GenericArtilleryExplosion@ artillery_explosion = artillery_explosions[i];
+		if (artillery_explosion is null) continue;
 
-			Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
-			GUI::DrawIcon("indicator_sheet.png", 27, Vec2f(16, 25), indicatorPos, 1.0f);
-		}
+		Vec2f pos = artillery_explosion.pos;
+
+		float curXPos = pos.x - 28;
+		float indicatorProgress = curXPos / mapWidth;
+		float indicatorDist = (indicatorProgress * timelineLength) + timelineLDist;
+
+		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
+		GUI::DrawIcon("indicator_sheet.png", 27, Vec2f(16, 25), indicatorPos, artillery_explosion.scale, artillery_explosion.owner_pid == getLocalPlayer().getNetworkID() ? SColor(255,255,255,155) : SColor(255,255,255,255));
 	}
 }
 
@@ -1007,7 +1012,27 @@ void renderPings(CRules@ this)
 
 void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 {
-	if (cmd == this.getCommandID("ping"))
+	if (cmd == this.getCommandID("add_artillery_explosion"))
+	{
+		Vec2f pos;
+		if (!params.saferead_Vec2f(pos)) return;
+
+		u32 time;
+		if (!params.saferead_u32(time)) return;
+
+		f32 scale;
+		if (!params.saferead_f32(scale)) return;
+
+		GenericArtilleryExplosion@[]@ artillery_explosions;
+		if (!this.get("artillery_explosions", @artillery_explosions)) return;
+
+		u16 pid = 0;
+		if (!params.saferead_u16(pid)){};
+
+		GenericArtilleryExplosion new_explosion(pos, time, scale, pid);
+		artillery_explosions.push_back(@new_explosion);
+	}
+	else if (cmd == this.getCommandID("ping"))
 	{
 		u8 team;
 		if (!params.saferead_u8(team)) return;
@@ -1180,17 +1205,6 @@ void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 
 			Sound::Play("PopIn", pos, 1.0f, 1.0f);
 		}
-	}
-	else if (cmd == this.getCommandID("add_artillery_explosion"))
-	{
-		Vec2f pos;
-		if (!params.saferead_Vec2f(pos)) return;
-
-		Vec2f[]@ artillery_explosions;
-		if (!this.get("artillery_explosions", @artillery_explosions)) return;
-
-		artillery_explosions.push_back(pos);
-		this.Tag("artillery_exploded");
 	}
 }
 
