@@ -262,7 +262,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	else if (cmd == this.getCommandID("14mm"))
 	{
 		this.set_string("prod_blob", "mat_14mmround");
-		this.set_u8("prod_amount", 16);
+		this.set_u8("prod_amount", 18);
 		this.set_u8("prod_time", 5);
 		this.set_u8("cost", 1);
 		this.set_u8("id", 1);
@@ -272,7 +272,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	else if (cmd == this.getCommandID("105mm"))
 	{
 		this.set_string("prod_blob", "mat_bolts");
-		this.set_u8("prod_amount", 4);
+		this.set_u8("prod_amount", 6);
 		this.set_u8("prod_time", 7);
 		this.set_u8("cost", 1);
 		this.set_u8("id", 2);
@@ -345,24 +345,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("atgrenade"))
 	{
-		this.set_string("prod_blob", "mat_atgrenade");
+		this.set_string("prod_blob", "mat_atgrenade"+(this.getTeamNum() == 2 ? "nazi" : ""));
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 15);
-		this.set_u8("cost", 4);
+		this.set_u8("cost", 3);
 		this.set_u8("id", 10);
 
 		ResetTimer(this);
 	}
-	//else if (cmd == this.getCommandID("medkit"))
-	//{
-	//	this.set_string("prod_blob", "medkit");
-	//	this.set_u8("prod_amount", 2);
-	//	this.set_u8("prod_time", 10);
-	//	this.set_u8("cost", 2);
-	//  this.set_u8("id", 9);
-//
-	//	ResetTimer(this);
-	//}
 	else if (cmd == this.getCommandID("playsound"))
 	{
 		this.getSprite().PlaySound("MakeAmmo.ogg");
