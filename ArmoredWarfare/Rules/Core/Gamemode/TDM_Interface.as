@@ -120,9 +120,6 @@ void onRender(CRules@ this)
 	{
 		u8 spawn = this.get_u8(propname);
 
-		string gamemode = this.get_string("bannertext");
-		//GUI::DrawText(gamemode, Vec2f(15, getScreenHeight() / 6.25), SColor(255, 255, 255, 255));
-
 		if (spawn != 255)
 		{
 			if (spawn == 254)
