@@ -242,6 +242,15 @@ void onSetTile(CMap@ map, u32 index, TileType tile_new, TileType tile_old)
 
 			break;
 		}
+		case CMap::tile_castle:
+		{
+			if (isMetalBackTile(tile_old))
+			{
+				map.server_SetTile(map.getTileWorldPosition(index), CMap::tile_metal_back);
+				OnMetalBackTileUpdate(true, false, map, pos);
+				break;
+			}		
+		}
 	}
 
     if (map.getTile(index).type > 255)
