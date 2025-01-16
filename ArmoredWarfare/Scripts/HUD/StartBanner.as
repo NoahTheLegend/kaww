@@ -47,7 +47,7 @@ const string[] objectives = {
     "Capture the flags",
     "Tug of war",
     "Defend the cores",
-    "Plant the C-4 at the cores"
+    "Plant a C-4 at the cores"
 };
 
 void onTick(CRules@ this)
