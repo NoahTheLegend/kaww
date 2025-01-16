@@ -407,6 +407,7 @@ void CreateProjectile(CBlob@ this, Vec2f pos, Vec2f vel)
 
 		proj.Tag("rpg");
 		proj.Tag("artillery");
+		proj.Tag("mortar");
 	}
 }
 

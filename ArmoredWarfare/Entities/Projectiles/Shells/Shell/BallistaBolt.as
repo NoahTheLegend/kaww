@@ -354,7 +354,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	if (this.hasTag("dead")) return true;
 
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
-	if (this.hasTag("weaken")) projExplosionRadius *= 0.75f;
+	if (this.hasTag("weaken")) projExplosionRadius *= 0.5f;
 
 	float projExplosionDamage = this.get_f32(projExplosionDamageString);
 	f32 length = this.get_f32("linear_length");
