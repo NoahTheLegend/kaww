@@ -7,9 +7,9 @@
 
 const f32 shield_angle = 60;
 
-const f32 min_damage_from_rpg = 0.15f;
-const f32 max_damage_from_rpg = 0.75f;
-const f32 rpg_damage_falloff_per_tile = 0.015f;
+const f32 min_damage_from_rpg_base = 0.15f;
+const f32 max_damage_from_rpg_base = 0.75f;
+const f32 rpg_damage_falloff_per_tile_base = 0.015f;
 		
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
@@ -218,7 +218,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			f32 min_damage_from_rpg = min_damage_from_rpg_base;
 			f32 max_damage_from_rpg = max_damage_from_rpg_base;
 			f32 rpg_damage_falloff_per_tile = rpg_damage_falloff_per_tile_base;
-			damage = damage * Maths::Min(mod, Maths::Max(min_damage_from_rpg, max_damage_from_rpg - (rpg_damage_falloff_per_tile * (dist_tiles))));
+			damage = damage * Maths::Min(max_damage_from_rpg, Maths::Max(min_damage_from_rpg, max_damage_from_rpg - (rpg_damage_falloff_per_tile * (dist_tiles))));
 		}
 		//printf(""+damage+" dist "+dist_tiles);
 	}
