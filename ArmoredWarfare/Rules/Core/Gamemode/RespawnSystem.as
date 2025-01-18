@@ -7,6 +7,7 @@
 //  can be designed to work without one of course.
 
 #include "PlayerInfo"
+#include "PerksCommon.as"
 
 shared class RespawnSystem
 {
@@ -78,10 +79,17 @@ shared class RespawnSystem
 						}
 					}
 
+					bool is_bull_perk = getRules().get_string(player.getUsername() + "_perk") == "Bull";
 					if (end !is null && has_free_seat && has_occupied_seat)
 					{
 						newBlob.setPosition(spawner.getPosition());
-						spawner.server_AttachTo(newBlob, end);
+
+						if (!is_bull_perk)
+						{
+							spawner.server_AttachTo(newBlob, end);
+						}
+
+						p_info.customImmunityTime = 0;
 					}
 					else if (default_spawn !is null)
 					{
