@@ -167,7 +167,7 @@ namespace ShotgunParams
 	const ::string CLASSNAME 			= "Shotgun"; // case sensitive
 	// DAMAGE
 	const ::f32 DAMAGE_BODY 			= 0.275f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 0.275f; // damage dealt on headshot
+	const ::f32 DAMAGE_HEAD 			= 0.3f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 1.0f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.5f; // airwalk
@@ -472,8 +472,8 @@ namespace SniperParams
 {
 	const ::string CLASSNAME 			= "Sniper"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 1.5f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 2.5f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 1.75f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 2.75f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.9f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.45f; // airwalk
@@ -508,9 +508,9 @@ namespace SniperParams
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 			= 45; // time to reload
+	const ::s16 RELOAD_TIME 			= 60; // time to reload
 	const ::u8 NORELOADTIMER 			= 15; // time after each shot to prevent reloading
-	const ::u32 MAG_SIZE 				= 8; // max bullets in mag
+	const ::u32 MAG_SIZE 				= 6; // max bullets in mag
 	const ::u8 DELAYAFTERFIRE 			= 25; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 35.0f; // speed that bullets fly
