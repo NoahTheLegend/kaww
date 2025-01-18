@@ -1293,6 +1293,7 @@ void onDie(CBlob@ this)
 				break;
 			}
 			case _pszh4:
+			case _pak38:
 			{
 				scrap_amount = 4+XORRandom(5);
 				explosion_radius = 32.0f;
@@ -1634,7 +1635,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	//printf("finalrating " + finalRating);
 	//print ("finalDamage: "+damage);
 
-	if (this.hasTag("turret"))
+	if (this.hasTag("turret") && !this.hasTag("no hull"))
 	{
 		// broken logic for turrets
 		if (this.getHealth()-damage/2 <= 0.0f)
