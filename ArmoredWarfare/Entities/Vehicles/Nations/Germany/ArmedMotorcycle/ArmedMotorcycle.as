@@ -463,7 +463,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		{
 			if (isServer()) this.TakeBlob("ammo", 1);
 			ParticleAnimated("SmallExplosion3", (arrowPos + Vec2f(20, 0).RotateBy(this.get_f32("gunelevation")-90)), getRandomVelocity(0.0f, XORRandom(40) * 0.01f, this.isFacingLeft() ? 90 : 270) + Vec2f(0.0f, -0.05f), float(XORRandom(360)), 0.6f + XORRandom(50) * 0.01f, 2 + XORRandom(3), XORRandom(70) * -0.00005f, true);
-			this.getSprite().PlaySound("MGfire.ogg", 0.75f, 1.0f + XORRandom(15) * 0.01f);
+			this.getSprite().PlaySound("MG42fire.ogg", 0.75f, 1.0f + XORRandom(15) * 0.01f);
 		}
 	}
 }
