@@ -220,10 +220,10 @@ void onInit(CBlob@ this)
 		case _m40turret:
 		{
 			weaponRating = 6;
-			linear_length = 16.0f;
+			linear_length = 48.0f;
 			scale_infantry_damage = 0.25f;
 			scale_impact_damage = 2.0f;
-			impact_radius = 48.0f;
+			impact_radius = 54.0f;
 			break;
 		}
 		case _mausturret:
