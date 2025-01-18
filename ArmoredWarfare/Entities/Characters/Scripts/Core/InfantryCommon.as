@@ -472,8 +472,8 @@ namespace SniperParams
 {
 	const ::string CLASSNAME 			= "Sniper"; // case sensitive
 	// DAMAGE
-	const ::f32 DAMAGE_BODY 			= 2.0f; // damage dealt to body
-	const ::f32 DAMAGE_HEAD 			= 2.9f; // damage dealt on headshot
+	const ::f32 DAMAGE_BODY 			= 1.5f; // damage dealt to body
+	const ::f32 DAMAGE_HEAD 			= 2.5f; // damage dealt on headshot
 	// MOVEMENT
 	const ::f32 WALK_STAT 				= 0.9f; // walk
 	const ::f32 AIRWALK_STAT 			= 2.45f; // airwalk
@@ -483,13 +483,13 @@ namespace SniperParams
 	const ::f32 JUMP_STAT_SPRINT 		= 1.0f; // jump (sprint)
 	// SHAKE
 	const ::f32 RECOIL_X 				= 48.0f; // x shake (20)
-	const ::f32 RECOIL_Y 				= 140.0f; // y shake (45)
+	const ::f32 RECOIL_Y 				= 175.0f; // y shake (45)
 	const ::f32 RECOIL_LENGTH 			= 750.0f; // how long to recoil (?)
 	// RECOIL
 	const ::f32 RECOIL_FORCE 			= 0.00f; // amount to push player
-	const ::u8 RECOIL_CURSOR 			= 13; // amount to raise mouse pos
-	const ::u8 SIDEWAYS_RECOIL 			= 2; // sideways recoil amount
-	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 8; // higher number means less sideways recoil
+	const ::u8 RECOIL_CURSOR 			= 20; // amount to raise mouse pos
+	const ::u8 SIDEWAYS_RECOIL 			= 5; // sideways recoil amount
+	const ::u8 SIDEWAYS_RECOIL_DAMP 	= 4; // higher number means less sideways recoil
 	const ::f32 ADS_CUSHION_AMOUNT 		= 1.0f; // lower means less recoil when aiming down sights. 1.0 is no change
 	// MOVEMENT (extra)
 	const ::f32 RELOAD_WALKSPEED_FACTOR = 0.5f;
@@ -499,22 +499,22 @@ namespace SniperParams
 	// spray pattern in logic
 	const ::f32 LENGTH_OF_RECOIL_ARC 	= 1.5f; // 2.0 is regular, -- 1.5 long arc   -- ak is 1.65
 	// ACCURACY
-	const ::u8 INACCURACY_CAP 			= 40; // max amount of inaccuracy
-	const ::u8 INACCURACY_PER_SHOT 		= 40; // aim inaccuracy  (+3 per shot)
+	const ::u8 INACCURACY_CAP 			= 60; // max amount of inaccuracy
+	const ::u8 INACCURACY_PER_SHOT 		= 60; // aim inaccuracy  (+3 per shot)
 	const ::u8 INACCURACY_MIDAIR        = 7;
-	const ::u8 INACCURACY_HIT  		    = 15;
+	const ::u8 INACCURACY_HIT  		    = 30;
 	// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 	// GUN
 	const ::bool SEMIAUTO 				= false;
 	const ::u8 BURST_SIZE 				= 1; // bullets fired per click
 	const ::u8 BURST_RATE 				= 0; // ticks per bullet fired in a burst
-	const ::s16 RELOAD_TIME 			= 50; // time to reload
+	const ::s16 RELOAD_TIME 			= 45; // time to reload
 	const ::u8 NORELOADTIMER 			= 15; // time after each shot to prevent reloading
-	const ::u32 MAG_SIZE 				= 5; // max bullets in mag
-	const ::u8 DELAYAFTERFIRE 			= 30; // time between shots
+	const ::u32 MAG_SIZE 				= 8; // max bullets in mag
+	const ::u8 DELAYAFTERFIRE 			= 25; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
-	const ::f32 BULLET_VELOCITY 		= 30.0f; // speed that bullets fly
-	const ::u32 BULLET_LIFETIME 		= 75; // in ticks, time for bullet to die
+	const ::f32 BULLET_VELOCITY 		= 35.0f; // speed that bullets fly
+	const ::u32 BULLET_LIFETIME 		= 70; // in ticks, time for bullet to die
 	const ::s8 BULLET_PEN 				= 2; // penRating for bullet
 	const ::bool EMPTYSHELLONFIRE 		= true; // should an empty shell be released when shooting
 }
