@@ -384,7 +384,7 @@ void onTick(CBlob@ this)
 						CBlob@ target = sorted_vehicles[i];
 						if (target is null) continue;
 						
-						u16 marked_time = getGameTime() + 3*30 + XORRandom(16)*0.1f*30;
+						u32 marked_time = getGameTime() + 3*30 + XORRandom(16)*0.1f*30;
 						if (target.getName() == "radarapc") this.set_u32("radar_mark", marked_time); // expose self
 
 						if (!target.exists("radar_mark") || target.get_u32("radar_mark") < getGameTime())
