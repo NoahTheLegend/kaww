@@ -120,6 +120,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Turn into a bush!     "
 						+"\n                   - Hold DOWN while standing     "
 						+"\n                   - 10% More agile     "
+						+"\n                   - Increased view range"
 						+"\n\n                   Climbing Gear"
 						+"\n                   - Allows you to climb trees     "
 						+"\n\n                   Flammable"
