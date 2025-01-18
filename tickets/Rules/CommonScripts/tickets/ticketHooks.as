@@ -46,7 +46,6 @@ void reset(CRules@ this)
 		
 		//numTeamLeftTickets = cfg.read_s16("numTeamLeftTickets",0);
 		//numTeamRightTickets = cfg.read_s16("numTeamRightTickets",0);
-
 		
 		RulesCore@ core;
 		this.get("core", @core);
@@ -72,6 +71,13 @@ void reset(CRules@ this)
 		
 		teamLeftTickets+=(ticketsPerPlayerInTeam0*players_in_team_count);
 		teamRightTickets+=(ticketsPerPlayerInTeam0*players_in_team_count);	
+
+		u8 defenders = defendersTeamPTB();
+		if (defenders != 255)
+		{
+			teamLeftTickets *= 2;
+			teamRightTickets *= 2;
+		}
 
 		this.set_s16("teamRightTickets", teamRightTickets);
 		this.set_s16("teamLeftTickets", teamLeftTickets);;
