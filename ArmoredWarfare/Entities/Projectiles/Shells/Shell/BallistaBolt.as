@@ -35,9 +35,7 @@ void onInit(CBlob@ this)
 	this.set_f32(projExplosionRadiusString, impact_radius != -1 ? impact_radius : 20.0f);
 	this.set_f32(projExplosionDamageString, 15.0f * impact_damage_mod);
 
-	bool he_shell = isHEProjectile(this);
 	bool apc = isAPCProjectile(this);
-	if (he_shell) this.set_f32(projExplosionRadiusString, 42.0f);
 	if (apc) this.set_f32("tile_damage", 0.1f);
 
 	// Configure shape properties
@@ -366,7 +364,7 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	//printf(""+projExplosionRadius);
 	//printf(""+length);
 
-	WarfareExplode(this, projExplosionRadius*1.35, projExplosionDamage);
+	WarfareExplode(this, projExplosionRadius*1.35f, projExplosionDamage); // ??? why 1.35f
 	LinearExplosion(this, velocity, length, projExplosionRadius, 2+Maths::Floor(length/6), 0.01f, Hitters::fall); // only for damaging map
 	
 	if (this.hasTag("rpg"))
@@ -441,11 +439,6 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 	if (!v_fastrender) this.getSprite().Gib();
 
 	return true;
-}
-
-bool isHEProjectile(CBlob@ this)
-{
-	return this.hasTag("HE_shell");
 }
 
 bool isArtilleryProjectile(CBlob@ this)
@@ -561,7 +554,7 @@ void Boom(CBlob@ this)
 		CPlayer @player = getLocalPlayer();
 		Vec2f pos;
 
-	    CCamera @camera = getCamera();
+	    CCamera@ camera = getCamera();
 		if (camera !is null) {
 			float mod = 0.9f;
 			// If the player is a spectating, base their location off of their camera.	

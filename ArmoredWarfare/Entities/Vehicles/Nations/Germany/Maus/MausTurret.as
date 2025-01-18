@@ -14,7 +14,6 @@ void onInit(CBlob@ this)
 	this.Tag("tank");
 	this.Tag("respawn_if_crew_present");
 	this.Tag("blocks bullet");
-	this.Tag("fireshe");
 	this.Tag("secondary gun");
 
 	// machinegun stuff

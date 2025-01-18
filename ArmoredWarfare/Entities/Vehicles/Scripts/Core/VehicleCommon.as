@@ -508,7 +508,6 @@ void Fire(CBlob@ this, VehicleInfo@ v, CBlob@ caller, const u8 charge)
 							bullet.set_f32("scale_infantry_damage", this.get_f32("scale_infantry_damage"));
 							bullet.set_f32("impact_radius", this.get_f32("impact_radius"));
 							if (this.hasTag("apc")) bullet.Tag("small_bolt");
-							if (this.hasTag("fireshe")) bullet.Tag("HE_shell");
 							bullet.SetDamageOwnerPlayer(caller.getPlayer());
 							bullet.Init();
 						}

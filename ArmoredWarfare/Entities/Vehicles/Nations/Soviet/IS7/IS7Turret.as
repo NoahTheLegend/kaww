@@ -6,7 +6,6 @@ void onInit(CBlob@ this)
 	this.Tag("respawn_if_crew_present");
 	this.Tag("has mount");
 	this.Tag("blocks bullet");
-	this.Tag("fireshe");
 
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;

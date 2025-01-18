@@ -192,7 +192,7 @@ class ArtilleryTurret : TurretStats
         super();
 
         name = "artilleryturret"; hash = _artilleryturret;
-        cooldown_time = 28*30; high_angle = 15; low_angle = 80; projectile_vel = -47.5f;
+        cooldown_time = 32*30; high_angle = 15; low_angle = 80; projectile_vel = -47.5f;
         arm_offset = Vec2f(-8.0f, -33.0f); arm_z = -50.0f; barrel_compression = 20; init_gun_angle = 20;
         recoil_force = 900; fire_sound = "sound_128mm"; muzzle_offset = -28; arm_height = -2.0f; arm_joint_offset = Vec2f(-0.5f, 26.0f);
         ammo = "mat_smallbomb"; ammo_description = "Small Bombs";
@@ -209,7 +209,7 @@ class M40Turret : TurretStats
         super();
 
         name = "m40turret"; hash = _m40turret;
-        cooldown_time = 25*30; high_angle = 15; low_angle = 90; projectile_vel = -42.5f;
+        cooldown_time = 28*30; high_angle = 15; low_angle = 90; projectile_vel = -42.5f;
         arm_offset = Vec2f(14.0f, -41.0f); arm_z = -50.0f; barrel_compression = 20; init_gun_angle = 0;
         recoil_force = 900; fire_sound = "sound_128mm"; muzzle_offset = -28; arm_height = -2.0f; arm_joint_offset = Vec2f(-0.5f, 26.0f);
         ammo = "mat_smallbomb"; ammo_description = "Small Bombs";

@@ -5,7 +5,6 @@ void onInit(CBlob@ this)
 	this.Tag("tank");
 	this.Tag("respawn_if_crew_present");
 	this.Tag("blocks bullet");
-	this.Tag("fireshe");
 	this.Tag("artillery");
 	this.set_u16("gui_mat_icon", 50);
 }

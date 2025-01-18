@@ -223,17 +223,27 @@ void onInit(CBlob@ this)
 			linear_length = 16.0f;
 			scale_infantry_damage = 0.25f;
 			scale_impact_damage = 2.0f;
+			impact_radius = 48.0f;
 			break;
 		}
 		case _mausturret:
 		case _pinkmausturret:
 		case _desertmausturret:
-		case _is7turret:
 		{
 			weaponRating = 5;
 			linear_length = 20.0f;
 			scale_infantry_damage = 0.25f;
 			scale_impact_damage = 1.5f;
+			impact_radius = 42.0f;
+			break;
+		}
+		case _is7turret:
+		{
+			weaponRating = 5;
+			linear_length = 26.0f;
+			scale_infantry_damage = 0.25f;
+			scale_impact_damage = 1.5f;
+			impact_radius = 32.0f;
 			break;
 		}
 		case _kingtigerturret:
@@ -242,6 +252,7 @@ void onInit(CBlob@ this)
 			linear_length = 18.0f;
 			scale_infantry_damage = 0.15f;
 			scale_impact_damage = 1.4f;
+			impact_radius = 32.0f;
 			break;
 		}
 		case _t10turret:
