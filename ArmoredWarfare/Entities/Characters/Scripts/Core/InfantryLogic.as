@@ -875,7 +875,7 @@ void ManageGun(CBlob@ this, ArcherInfo@ archer, RunnerMoveVars@ moveVars, Infant
 						f32 normalized = (this.getAimPos() - this.getPosition()).Angle();
 						Vec2f force = Vec2f(1, 0).RotateBy(normalized) * (scoped ? -recoilForce/1.6 : -recoilForce);
 						force *= 200;
-						if (is_rpg) force = Vec2f(force.x, force.y*1.5f); // funny
+						if (is_rpg) force = Vec2f(force.x, force.y*2.0f); // funny
 						this.AddForce(Vec2f(force.x, -force.y));
 					}
 				}
@@ -1672,6 +1672,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			spread *= 10.0f;
 			CBlob@ proj = CreateRPGProj(this, arrowPos, arrowVel.RotateBy((XORRandom(spread)-spread/2)/10.0f));
 			proj.server_SetTimeToDie(3);
+			proj.set_f32("linear_length", 16.0f);
+			proj.set_f32("scale_impact_damage", 1.0f);
+			proj.set_f32("scale_infantry_damage", 0.4f);
+			proj.set_f32("impact_radius", 16.0f);
 		}
 
 		if (this.get_u32("mag_bullets") > 0) this.set_u32("mag_bullets", this.get_u32("mag_bullets") - 1);
