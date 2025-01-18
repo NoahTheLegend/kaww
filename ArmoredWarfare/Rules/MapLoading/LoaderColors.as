@@ -346,6 +346,7 @@ namespace map_colors
 		mortar 			  	   = 0xff6fc1f7,
 		javelin_launcher 	   = 0xff6f61f8,
 		pak38 				   = 0xffcf11f9,
+		heats                  = 0xff1daf69,
 		ammocrate              = 0xffbda269,
 		arabicspeaker          = 0xffeb2c01,
 		russianspeaker         = 0xffeb4f01,
@@ -497,6 +498,7 @@ namespace map_colors
 
 		//buildings
 		ledlight               = 0xfff5be41,
+		ledlighthalfoffset     = 0xfff5be42,
 		fan             	   = 0xff6c776e,
 		glass             	   = 0xffefeffe,
 

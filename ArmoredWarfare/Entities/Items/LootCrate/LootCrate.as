@@ -99,48 +99,21 @@ void onDie(CBlob@ this)
     	"mat_scrap", //common
         "mat_wood",
         "mat_stone",
-        "mat_gold", //rare
-
-    	"grenade",
-    	"helmet",
-    	"medkit",
-        "food",
-        "ammo",
-        "mat_14mmround",
-        "mat_bolts",
-        "mat_heatwarhead"
+        "mat_gold" //rare
     };
     array<float> _chances =
     {
         0.5,
         0.5,
         0.5,
-        0.025,
-
-        0.03,
-        0.05,
-        0.03,
-        0.04,
-        0.03,
-        0.02,
-        0.01,
-        0.01
+        0.025
     };
     array<u8> _amount =
     {
         (XORRandom(3)+1),
         (XORRandom(8)+6)*10,
         (XORRandom(8)+3)*10,
-        20 + (XORRandom(26)*2),
-
-        1,
-        1,
-        1,
-        1,
-        50+(XORRandom(2)==0?50:0),
-        16,
-        4,
-        1
+        20 + (XORRandom(26)*2)
     };
 
     if (getNet().isServer())
@@ -185,7 +158,7 @@ shared u32 RandomWeightedPicker(array<float> chances, u32 seed = 0)
     {
         if(current_pos + chances[i] > random_number)
         {
-            break;//Exit out with i untouched
+            break;//Exit out wiith i untouched
         }
         else//Random number has not yet reached the chance
         {
