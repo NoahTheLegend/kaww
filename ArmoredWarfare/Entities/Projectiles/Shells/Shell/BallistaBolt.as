@@ -285,6 +285,8 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 			if (offsets.find(offset) != -1)
 				continue;
 
+			if (!map.isTileSolid(type)) continue;
+
 			if (!isTileCompactedDirt(type) && !isTileScrap(type))
 			{
 				BallistaHitMap(this, offset, temp_position, velocity, damage, Hitters::ballista);
