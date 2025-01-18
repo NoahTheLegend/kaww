@@ -132,9 +132,7 @@ void onCommand( CBlob@ this, u8 cmd, CBitStream @params )
 			}
 		}
 		
-		if (name == "vehiclebuildert2" || name == "vehiclebuildert3"
-		|| name == "vehiclebuildert2ground" || name == "vehiclebuildert3ground"
-		|| name == "vehiclebuildert2air")
+		if (name.find("vehiclebuilder") != -1)
 		{
 			this.server_Die();
 			if (blob.isMyPlayer()) blob.ClearMenus();
