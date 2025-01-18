@@ -19,6 +19,7 @@ void onInit(CBlob@ this)
 	this.Tag("pass_60sec");
 	this.Tag("friendly_bullet_pass");
 	this.Tag("autoflip");
+	this.set_u16("gui_mat_icon", 31);
 
 	this.set_f32("max_angle_diff", 1.25f);
 
