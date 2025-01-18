@@ -18,7 +18,7 @@ const Vec2f maxClampVelocity = Vec2f(0.475f, 0.00f);
 
 const f32 thrust = 1020.00f;
 
-const u8 cooldown_time = 18;
+const u8 cooldown_time = 14;
 const u8 recoil = 0;
 
 const s16 init_gunoffset_angle = -3; // up by so many degrees
