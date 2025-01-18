@@ -380,7 +380,7 @@ void onSetTile(CMap@ map, u32 index, TileType tile_new, TileType tile_old)
 
 			case CMap::tile_metal:
 			{
-				map.SetTileSupport(index, 255);
+				map.SetTileSupport(index, 10);
 				Vec2f pos = map.getTileWorldPosition(index);
 
 				metal_SetTile(map, pos);
@@ -407,7 +407,7 @@ void onSetTile(CMap@ map, u32 index, TileType tile_new, TileType tile_old)
 			case CMap::tile_metal_v12:
 			case CMap::tile_metal_v13:
 			case CMap::tile_metal_v14:
-				map.SetTileSupport(index, 255);
+				map.SetTileSupport(index, 10);
 				map.AddTileFlag(index, Tile::SOLID | Tile::COLLISION);
 				map.RemoveTileFlag(index, Tile::LIGHT_PASSES | Tile::LIGHT_SOURCE | Tile::WATER_PASSES);
 				break;

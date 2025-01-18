@@ -511,7 +511,7 @@ namespace SniperParams
 	const ::s16 RELOAD_TIME 			= 60; // time to reload
 	const ::u8 NORELOADTIMER 			= 15; // time after each shot to prevent reloading
 	const ::u32 MAG_SIZE 				= 6; // max bullets in mag
-	const ::u8 DELAYAFTERFIRE 			= 25; // time between shots
+	const ::u8 DELAYAFTERFIRE 			= 30; // time between shots
 	const ::u8 RANDDELAY 				= 0; // + randomness
 	const ::f32 BULLET_VELOCITY 		= 35.0f; // speed that bullets fly
 	const ::u32 BULLET_LIFETIME 		= 70; // in ticks, time for bullet to die
