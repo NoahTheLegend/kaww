@@ -512,11 +512,18 @@ class BulletObj
 
 					if (blob.hasTag("nolegs")) dmg = DamageHead;
 
-					if (CurrentType < 1 && (!shooterExists || shooter.getName() != "sniper")) {
-						// do less dmg offscreen
+					if (CurrentType < 1 && (!shooterExists || shooter.getName() != "sniper"))
+					{
+						f32 max_ticks_falloff = 60;
+						f32 max_damage_falloff = 0.5f;
+
 						int creationTicks = getGameTime()-CreateTime;
-						if (creationTicks > 20) 		dmg *= 0.75f;
-						else if  (creationTicks > 14) 	dmg *= 0.5f;
+						//if (creationTicks > 20) 		dmg *= 0.75f;
+
+						if (creationTicks > max_ticks_falloff) dmg *= max_damage_falloff;
+						else dmg *= 1.0f - (creationTicks / max_ticks_falloff) * max_damage_falloff;
+
+						printf(""+dmg);
 					}
 
 					if (!blob.hasTag("weakprop"))
