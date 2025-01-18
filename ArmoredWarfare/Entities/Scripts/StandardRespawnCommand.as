@@ -144,8 +144,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Gain only 75% of other heal     "
 						+"\n                   - Can't regenerate passively     "					
 						+"\n\n                  Leech"
-						+"\n                   - Bullets restore you 35% health"
-						+"\n                     of damage dealt"
+						+"\n                   - Bullets restore health"
 						);
 
 	addPlayerPerk(this, "Operator", "$4_class_icon$", "Operator",
