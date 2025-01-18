@@ -442,6 +442,13 @@ class PNGLoader
 			break;
 			case map_colors::lantern:     autotile(offset); spawnBlob(map, "lantern", offset, 255, true); break;
 			case map_colors::ledlight:    autotile(offset); spawnBlob(map, "ledlight", offset); break;
+			case map_colors::ledlighthalfoffset:
+			{
+				autotile(offset);
+				CBlob@ led = spawnBlob(map, "ledlight", offset);
+				if (led !is null) led.setPosition(led.getPosition() + Vec2f(4, 0));
+				break;
+			}
 			case map_colors::fan:    	autotile(offset); spawnBlob(map, "fan", offset); break;
 			case map_colors::glass:    	autotile(offset); spawnBlob(map, "glass", offset); break;
 			case map_colors::door:    	autotile(offset); spawnBlob(map, "door", offset); break;
@@ -657,14 +664,15 @@ class PNGLoader
 			case map_colors::javelin_launcher: 			autotile(offset); spawnVehicle(map, "javelin_launcher", offset); break;
 			case map_colors::pak38: 					autotile(offset); spawnVehicle(map, "pak38", offset); break;
 
-			case map_colors::ammocrate:        autotile(offset); spawnBlob(map, "ammocrate", offset); break;
-			case map_colors::repairstation:        autotile(offset); spawnBlob(map, "repairstation", offset); break;
-			case map_colors::blue_bunker:        autotile(offset); spawnBlob(map, "bunker", offset, teamleft); break;
-			case map_colors::red_bunker:        autotile(offset); spawnBlob(map, "bunker", offset, teamright); break;
-			case map_colors::blue_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, teamleft); break;
-			case map_colors::red_heavybunker:        autotile(offset); spawnBlob(map, "heavybunker", offset, teamright); break;
-			case map_colors::stairs:        autotile(offset); spawnBlob(map, "stairs", offset); break;
-			case map_colors::minesign:        autotile(offset); spawnBlob(map, "minesign", offset); break;
+			case map_colors::heats:       			 	autotile(offset); spawnBlob(map, "mat_heatwarhead", offset); break;
+			case map_colors::ammocrate:        			autotile(offset); spawnBlob(map, "ammocrate", offset); break;
+			case map_colors::repairstation:        		autotile(offset); spawnBlob(map, "repairstation", offset); break;
+			case map_colors::blue_bunker:        		autotile(offset); spawnBlob(map, "bunker", offset, teamleft); break;
+			case map_colors::red_bunker:        		autotile(offset); spawnBlob(map, "bunker", offset, teamright); break;
+			case map_colors::blue_heavybunker:        	autotile(offset); spawnBlob(map, "heavybunker", offset, teamleft); break;
+			case map_colors::red_heavybunker:       	autotile(offset); spawnBlob(map, "heavybunker", offset, teamright); break;
+			case map_colors::stairs:        			autotile(offset); spawnBlob(map, "stairs", offset); break;
+			case map_colors::minesign:       	 		autotile(offset); spawnBlob(map, "minesign", offset); break;
 
 			case map_colors::tickets10:        autotile(offset); spawnBlob(map, "ticket_10", offset); break;
 			case map_colors::tickets25:        autotile(offset); spawnBlob(map, "ticket_25", offset); break;

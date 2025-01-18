@@ -33,12 +33,12 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (isServer() && blob.getTeamNum() != this.getTeamNum()
 	&& (blob.hasTag("aerial") || blob.hasTag("tank") || blob.hasTag("apc")))
 	{
-		if (blob.hasTag("apc") || blob.hasTag("truck"))
-		{
-			this.server_Hit(blob, this.getPosition(), Vec2f(0, 0), 0.5f, Hitters::spikes, true);
-		}
 		//this.getSprite().Gib();
 		this.server_Hit(this, this.getPosition(), Vec2f(0, 0), 25.0f, Hitters::builder, true);
+	}
+	if (blob.hasTag("apc") || blob.hasTag("truck"))
+	{
+		this.server_Hit(blob, this.getPosition(), Vec2f(0, 0), 0.5f, Hitters::spikes, true);
 	}
 	blob.IgnoreCollisionWhileOverlapped(this, 10);
 }

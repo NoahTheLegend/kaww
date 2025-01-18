@@ -5,9 +5,7 @@
 	this.SetLightColor(SColor(255, 255, 200, 150));
 
 	this.set_TileType("background tile", CMap::tile_wood_back);
-
 	this.SetFacingLeft(XORRandom(100) < 50 );
-
 	if (isServer()) this.set_bool("light", true);
 
 	this.Tag("builder always hit");
@@ -18,11 +16,19 @@
 
 void onTick(CBlob@ this)
 {
-	if (this.getTickSinceCreated() == 0) this.Sync("light", true);
-	if (!this.get_bool("light")) this.getSprite().SetAnimation("broken");
+	if (this.getTickSinceCreated() == 0)
+	{
+		this.Sync("light", true);
+		this.getShape().SetStatic(true);
+	this.getShape().getConsts().mapCollisions = false;
+	}
+	if (!this.get_bool("light"))
+	{
+		this.getSprite().SetAnimation("broken");
+	}
 }
 
-f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData )
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (this.get_bool("light"))
 	{
