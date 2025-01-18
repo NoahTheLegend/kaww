@@ -26,9 +26,14 @@ void CalculateMinimapColour( CMap@ map, u32 offset, TileType tile, SColor &out c
 	const SColor color_minimap_gold         (0xfff7cb6f); 
 	const SColor color_minimap_gold_edge    (0xfff9b21f);
 	const SColor color_minimap_gold_exposed (0xfff5a909);
-
 	const SColor color_minimap_water        (0xff2cafde);
 	const SColor color_minimap_fire         (0xffd5543f);
+
+	const SColor color_minimap_cdirt        (0xffc48715);
+	const SColor color_minimap_scrap        (0xffbc6133);
+	const SColor color_minimap_metal        (0xff785a3b);
+	const SColor color_minimap_metal_back   (0xffa1774c);
+	const SColor color_minimap_ice          (0xffcbb686);
 
 	//neighbours
 	Tile tile_l = map.getTile(MiniMap::clampInsideMap(pos * ts - Vec2f(ts, 0), map));
@@ -110,7 +115,7 @@ void CalculateMinimapColour( CMap@ map, u32 offset, TileType tile, SColor &out c
 			case CMap::tile_cdirt_d2:
 			case CMap::tile_cdirt_d3:
 			{
-				col = SColor(255, 135, 55, 15);
+				col = color_minimap_cdirt;
 				break;
 			}
 			
@@ -138,7 +143,7 @@ void CalculateMinimapColour( CMap@ map, u32 offset, TileType tile, SColor &out c
 			case CMap::tile_scrap_d5:
 			case CMap::tile_scrap_d6:
 			{
-				col = SColor(255, 206, 118, 74);
+				col = color_minimap_scrap;
 				break;
 			}
 
@@ -168,7 +173,7 @@ void CalculateMinimapColour( CMap@ map, u32 offset, TileType tile, SColor &out c
 			case CMap::tile_metal_d7:
 			case CMap::tile_metal_d8:
 			{
-				col = SColor(255, 107, 114, 115);
+				col = color_minimap_metal;
 				break;
 			}
 
@@ -186,7 +191,7 @@ void CalculateMinimapColour( CMap@ map, u32 offset, TileType tile, SColor &out c
 			case CMap::tile_metal_back_d7:
 			case CMap::tile_metal_back_d8:
 			{
-				col = SColor(255, 65, 65, 65);
+				col = color_minimap_metal_back;
 				break;
 			}
 
@@ -211,7 +216,7 @@ void CalculateMinimapColour( CMap@ map, u32 offset, TileType tile, SColor &out c
 			case CMap::tile_ice_d2:
 			case CMap::tile_ice_d3:
 			{
-				col = SColor(255, 80, 180, 200);
+				col = color_minimap_ice;
 				break;
 			}
 		}

@@ -713,6 +713,7 @@ shared class TDMCore : RulesCore
 		   	"WinterFactory.png",
 		   	"Touge.png",
 			"Extensions.png",
+			"FortressCity.png",
 		   	"Mortaring.png",
 		   	"Syria.png",
 		   	"Cavern.png",
@@ -1845,6 +1846,7 @@ void onInit(CRules@ this)
 	this.set("maptypes-tdm", TdmMaps);
 	this.set("maptypes-water", WaterMaps);
 	this.set("maptypes-ground", GroundMaps);
+	this.set("maptypes-ptb", PTBMaps);
 }
 
 const string[] ClassicMaps = {
@@ -1862,6 +1864,8 @@ const string[] LargeMaps = {
 	"Desert.png",
 	"WinterFactory.png",
 	"Touge.png",
+	"Extensions.png",
+	"FortressCity.png",
 	"Mortaring.png",
 	"Syria.png",
 	"Cavern.png",
@@ -1965,4 +1969,9 @@ const string[] GroundMaps = {
 	"SerenityHills.png",
 	"Syria.png",
 	"PlainHills.png"
+};
+
+const string[] PTBMaps = {
+	"Extensions.png",
+	"FortressCity.png"
 };

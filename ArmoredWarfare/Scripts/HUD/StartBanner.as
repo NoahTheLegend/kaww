@@ -57,16 +57,18 @@ void onTick(CRules@ this)
         CBlob@[] tents;
         getBlobsByName("tent", @tents);
 
-        bool ctf = isCTF();
-        bool dtt = isDTT();
-        bool ptb = isPTB();
-        u8 ptb_defenders = defendersTeamPTB();
+        CBlob@ core = getBlobByName("core");
 
         u8 local_team = 255;
         if (getLocalPlayer() !is null)
         {
             local_team = getLocalPlayer().getTeamNum();
         }
+
+        bool ctf = isCTF();
+        bool dtt = isDTT();
+        bool ptb = core !is null;
+        u8 ptb_defenders = ptb ? core.getTeamNum() : 255;
 
         Driver@ driver = getDriver();
         if (driver !is null)
