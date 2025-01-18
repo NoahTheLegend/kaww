@@ -95,7 +95,7 @@ void handleVehicles()
 		
 		Vec2f indicatorPos = Vec2f(indicatorDist, timelineHeight);
 		Vec2f custom_offset = Vec2f(0, 20);
-		if (frame == 10 || frame == 11) custom_offset = Vec2f(0, -48);
+		if (frame == 10 || frame == 11 || frame == 15) custom_offset = Vec2f(0, -48);
 		else if (frame == 12) custom_offset = Vec2f(0, 34);
 
 		u16 id = 0;
