@@ -31,7 +31,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 		this.server_Hit(blob, this.getPosition(), Vec2f(0, 0), 0.15f, is_engi ? Hitters::fall : Hitters::spikes, true);
 	}
 	if (isServer() && blob.getTeamNum() != this.getTeamNum()
-	&& (blob.hasTag("aerial") || blob.hasTag("tank") || blob.hasTag("apc") || blob.hasTag("truck")))
+	&& (blob.hasTag("aerial") || blob.hasTag("tank") || blob.hasTag("apc")))
 	{
 		if (blob.hasTag("apc") || blob.hasTag("truck"))
 		{
