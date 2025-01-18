@@ -401,6 +401,15 @@ class VoteNextmapFunctor : VoteFunctor
 					}
 					break;
 
+					case 9:
+					{
+						string[]@ PTBMaps;
+						getRules().get("maptypes-ptb", @PTBMaps);
+
+						LoadMap(PTBMaps[XORRandom(PTBMaps.length)]);
+					}
+					break;
+
 					// If the maptype is invalid or set to default, 
 					// load next map like before
 					default:
@@ -426,6 +435,8 @@ class VoteNextmapCheckFunctor : VoteCheckFunctor
 	}
 };
 
+const u8 votes_count = 10;
+
 //setting up a vote next map object
 VoteObject@ Create_VoteNextmap(CPlayer@ byplayer, string reason, u8 maptype)
 {
@@ -435,7 +446,7 @@ VoteObject@ Create_VoteNextmap(CPlayer@ byplayer, string reason, u8 maptype)
 	@vote.canvote = VoteNextmapCheckFunctor();
 
 	vote.title = "Load new map\nVote pass: 70%";
-	vote.maptype = TypeToString[maptype % 9];
+	vote.maptype = TypeToString[maptype % votes_count];
 	vote.reason = reason;
 	vote.byuser = byplayer.getUsername();
 	vote.forcePassFeature = "nextmap";
@@ -910,6 +921,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 			CContextMenu@ tdm_map_menu = Menu::addContextMenu(mapmenu,  "TDM Map");
 			CContextMenu@ water_map_menu = Menu::addContextMenu(mapmenu,  "Water Map");
 			CContextMenu@ ground_map_menu = Menu::addContextMenu(mapmenu,  "Land Map");
+			CContextMenu@ ptb_map_menu = Menu::addContextMenu(mapmenu,  "Plant The Bomb Map");
 
 			for (uint i = 0 ; i < nextmap_reason_count; ++i)
 			{
@@ -973,6 +985,14 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 				params.write_u8(i);
 				params.write_u8(8);
 				Menu::addContextItemWithParams(ground_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
+			}
+
+			for (uint i = 0 ; i < nextmap_reason_count; ++i)
+			{
+				CBitStream params;
+				params.write_u8(i);
+				params.write_u8(9);
+				Menu::addContextItemWithParams(ptb_map_menu, nextmap_reason_string[i], "DefaultVotes.as", "Callback_NextMap", params);
 			}
 		}
 	}
@@ -1478,5 +1498,6 @@ const string[] TypeToString = {
 	"DTT",
 	"TDM",
 	"Watered",
-	"Land-only"
+	"Land-only",
+	"Plant The Bomb"
 };
