@@ -72,10 +72,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (is_bullet || customData == Hitters::builder)
 	{
 		Sound::Play("/BulletSandbag", this.getPosition(), 1.55f, 0.85f + XORRandom(40) * 0.01f);
-
 		MakeDustParticle((hitterBlob.getPosition() + this.getPosition())/2, "/dust2.png");
 
-		return damage / 3;
+		if (is_bullet) return damage / 5;
 	}
 	if (hitterBlob.getName() == "ballista_bolt")
 	{
@@ -89,5 +88,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		if (!v_fastrender) MakeDustParticle((hitterBlob.getPosition() + this.getPosition())/2, "/dust2.png");
 		return damage / 10.0f;
 	}
+
 	return damage;
 }
