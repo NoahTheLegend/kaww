@@ -268,7 +268,7 @@ void onInit(CBlob@ this)
 			weaponRating = 4;
 			linear_length = 16.0f;
 			scale_infantry_damage = 0.15f;
-			scale_impact_damage = 1.3f;
+			scale_impact_damage = 1.5f;
 			break;
 		}
 		case _m103turret:
