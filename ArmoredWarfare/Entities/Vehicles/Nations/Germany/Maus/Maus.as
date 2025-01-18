@@ -64,7 +64,7 @@ void onInit(CBlob@ this)
 	this.SetFacingLeft(facing_left);
 
 	CSprite@ sprite = this.getSprite();
-	sprite.SetRelativeZ(-100.0f);
+	sprite.SetRelativeZ(-20.0f);
 	CSpriteLayer@ tracks = sprite.addSpriteLayer("tracks", "MausTracks.png", 96, 16);
 	if (tracks !is null)
 	{

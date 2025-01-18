@@ -33,8 +33,8 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
 		mg_attached = ap !is null && ap.getOccupied() !is null && ap.getOccupied().isAttached();
 	}
-	bool hiding = this.get_u8("mg_hidelevel") > getGameTime();
 
+	bool hiding = this.get_u8("mg_hidelevel") > getGameTime();
 	s8 pen = hitterBlob.get_s8("pen_level");
 
 	bool stats_loaded = false;
@@ -42,18 +42,16 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 	const bool explosion_damage = customData == Hitters::explosion || customData == Hitters::keg || customData == Hitters::mine;
 	const bool fire_damage = customData == Hitters::fire || customData == Hitters::burn;
-
 	bool is_bullet = (customData >= HittersAW::bullet && customData <= HittersAW::apbullet);
 	
+	// add inaccuracy
+	InfantryInfo@ infantry;
+	if (this.get("infantryInfo", @infantry))
 	{
-		InfantryInfo@ infantry;
-		if (this.get("infantryInfo", @infantry))
-		{
-			this.set_u32("accuracy_delay", getGameTime()+ACCURACY_HIT_DELAY);
-			f32 cap = this.get_u8("inaccuracy")+infantry.inaccuracy_hit;
-			if (cap < infantry.inaccuracy_cap) this.add_u8("inaccuracy", infantry.inaccuracy_hit);
-			else this.set_u8("inaccuracy", infantry.inaccuracy_cap);
-		}
+		this.set_u32("accuracy_delay", getGameTime()+ACCURACY_HIT_DELAY);
+		f32 cap = this.get_u8("inaccuracy")+infantry.inaccuracy_hit;
+		if (cap < infantry.inaccuracy_cap) this.add_u8("inaccuracy", infantry.inaccuracy_hit);
+		else this.set_u8("inaccuracy", infantry.inaccuracy_cap);
 	}
 
 	if (this.hasTag("is_shielder")
@@ -100,18 +98,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		}
 		else if (explosion_damage || hitterBlob.getName() == "ballistabolt")
 		{
-			//printf("explosion");
-			//printf(""+damage * (exposed && !mg_attached ? 0.2f : hiding ? 0.01f : 0.025f));
 			damage *= ((exposed && !mg_attached) ? 0.25f : ((!exposed || hiding) ? 0.01f : 0.0175f));
 		}
 		else if (is_bullet)
 		{
-			//printf("bullet");
 			damage *= 0.5f;
 		}
 		else if (customData == Hitters::sword)
 		{
-			//printf("sword");
 			damage *= (exposed ? 0.5f : 0);
 		}
 	}
