@@ -117,6 +117,7 @@ shared class PerkCamouflage : PerkStats {
         fire_in_damage = 2.0f;
         ignite_self_chance = 33;
         walk_factor = 1.1f;
+        additional_vision_distance = 0.15f;
     }
 };
 
