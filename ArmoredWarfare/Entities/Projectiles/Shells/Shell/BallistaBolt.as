@@ -276,7 +276,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 		Vec2f temp_position = positions[i];
 		TileType type = map.getTile(temp_position).type;
 
-		if (map.isTileSolid(type) || type > 255)
+		if (map.isTileSolid(type) || isSolid(map, type))
 		{
 			u32[]@ offsets;
 			this.get("offsets", @offsets);
@@ -284,8 +284,6 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 
 			if (offsets.find(offset) != -1)
 				continue;
-
-			if (!map.isTileSolid(type)) continue;
 
 			if (!isTileCompactedDirt(type) && !isTileScrap(type))
 			{
@@ -356,6 +354,8 @@ bool DoExplosion(CBlob@ this, Vec2f velocity)
 {
 	if (this.hasTag("idle")) return false;
 	if (this.hasTag("dead")) return true;
+
+	this.Tag("request_shrapnel");
 
 	float projExplosionRadius = this.get_f32(projExplosionRadiusString);
 	if (this.hasTag("weaken")) projExplosionRadius *= 0.5f;

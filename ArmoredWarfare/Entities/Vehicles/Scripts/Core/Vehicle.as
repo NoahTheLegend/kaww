@@ -1293,14 +1293,6 @@ void onDie(CBlob@ this)
 				break;
 			}
 			case _pszh4:
-			case _pak38:
-			{
-				scrap_amount = 4+XORRandom(5);
-				explosion_radius = 32.0f;
-				explosion_map_damage = 0.1f;
-				explosion_damage = 1.5f;
-				break;
-			}
 			case _btr82a:
 			{
 				scrap_amount = 9+XORRandom(6);
