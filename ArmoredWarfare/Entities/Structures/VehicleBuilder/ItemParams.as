@@ -4,7 +4,7 @@
 
 // initial costs
 const u16 c_standard_ammo = 1;
-const u16 c_special_ammo = 3;
+const u16 c_special_ammo = 2;
 const u16 c_14mm_rounds = 3;
 const u16 c_105mm_rounds = 4;
 const u16 c_heat_warheads = 8;
@@ -267,7 +267,7 @@ void makeDefaultGear(CBlob@ this)
         s.buttonheight = 1;
     }
     {
-        ShopItem@ s = addShopItem(this, n_helmet, t_helmet, bn_helmet, d_helmet, true, false, false, ct_helmet);
+        ShopItem@ s = addShopItem(this, n_helmet, t_helmet, bn_helmet, d_helmet, false, false, false, ct_helmet);
         AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", c_helmet);
 
         s.customButton = true;

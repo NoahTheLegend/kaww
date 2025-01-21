@@ -1,3 +1,11 @@
+void onTick(CBlob@ this)
+{
+    if (this.hasTag("request_shrapnel"))
+    {
+        this.Untag("request_shrapnel");
+        onDie(this);
+    }
+}
 
 void onDie(CBlob@ this)
 {
@@ -48,11 +56,11 @@ void onDie(CBlob@ this)
                 current_dir.RotateBy(XORRandom(angle_deviation) - (angle_deviation/2));
             }
 
-            CBlob@ shrapnel = server_CreateBlob("shrapnel", this.getTeamNum(), this.getPosition()+Vec2f(offset.x, offset.y*this.getVelocity().Length()));
+            CBlob@ shrapnel = server_CreateBlob("shrapnel", this.getTeamNum(), this.getPosition()+Vec2f(offset.x, offset.y*this.getOldVelocity().Length()));
             if (shrapnel !is null)
             {
                 shrapnel.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
-                shrapnel.setVelocity(Vec2f(this.getVelocity().x/4, 0) + current_dir*(vel+(XORRandom(vel_random*10)*0.1f)));
+                shrapnel.setVelocity(Vec2f(this.getOldVelocity().x/4, 0) + current_dir*(vel+(XORRandom(vel_random*10)*0.1f)));
                 shrapnel.server_SetTimeToDie(time_to_die);
             }
         }

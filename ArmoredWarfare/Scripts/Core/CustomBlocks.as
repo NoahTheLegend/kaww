@@ -284,6 +284,5 @@ bool isTileExposure(u32 index)
 bool isSolid(CMap@ map, u32 type) // thin ice is not solid
 {
 	return map.isTileSolid(type) || map.isTileGround(type) || isTileIce(type)
-		|| isMetalTile(type) || isScrapTile(type) || isMetalBackTile(type)
-		|| isCDirtTile(type);
+		|| isMetalTile(type) || isScrapTile(type) || isCDirtTile(type);
 }

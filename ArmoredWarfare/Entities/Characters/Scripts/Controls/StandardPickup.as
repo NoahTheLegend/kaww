@@ -39,7 +39,9 @@ void onInit(CBlob@ this)
 		};
 		const PickupWheelOption[] atgrenade_options = {
 			PickupWheelOption("atgrenade"),
-			PickupWheelOption("mat_atgrenade")
+			PickupWheelOption("mat_atgrenade"),
+			PickupWheelOption("atgrenadenazi"),
+			PickupWheelOption("mat_atgrenadenazi")
 		};
 		menu.add_entry(PickupWheelMenuEntry("Grenade", "$grenade$", grenade_options, Vec2f(0, 0)));
 		menu.add_entry(PickupWheelMenuEntry("Anti-Tank Grenade", "$atgrenade$", atgrenade_options, Vec2f(0, 0)));

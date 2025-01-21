@@ -72,7 +72,7 @@ const u16 c_mg42 = 8;
 // Weapons 1
 const u16 c_jav = 15;
 const u16 c_apsniper = 20;
-const u16 c_pak38 = 25;
+const u16 c_pak38 = 20;
 
 // ==========
 // BUILD TIME
