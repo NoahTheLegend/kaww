@@ -38,7 +38,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("select");
 	this.addCommandID("7mm");
 	this.addCommandID("14mm");
-	this.addCommandID("105mm");
+	this.addCommandID("Tank");
 	this.addCommandID("heats");
 	this.addCommandID("molotov");
 	this.addCommandID("grenade");
@@ -269,7 +269,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		ResetTimer(this);
 	}
-	else if (cmd == this.getCommandID("105mm"))
+	else if (cmd == this.getCommandID("Tank"))
 	{
 		this.set_string("prod_blob", "mat_bolts");
 		this.set_u8("prod_amount", 6);
@@ -374,7 +374,7 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 			CGridButton@ button0 = menu.AddButton("$ammo$", "Ammo", this.getCommandID("7mm"), Vec2f(1, 1), params);
 			CGridButton@ button8 = menu.AddButton("$specammo$", "Special Ammo", this.getCommandID("specammo"), Vec2f(1, 1), params);
 			CGridButton@ button1 = menu.AddButton("$mat_14mmround$", "14mm Shells", this.getCommandID("14mm"), Vec2f(1, 1), params);
-			CGridButton@ button2 = menu.AddButton("$mat_bolts$", "105mm Shells", this.getCommandID("105mm"), Vec2f(1, 1), params);
+			CGridButton@ button2 = menu.AddButton("$mat_bolts$", "Tank Shells", this.getCommandID("Tank"), Vec2f(1, 1), params);
 			CGridButton@ button3 = menu.AddButton("$mat_heatwarhead$", "HEAT Warheads", this.getCommandID("heats"), Vec2f(1, 1), params);
 			CGridButton@ button4 = menu.AddButton("$mat_molotov$", "Molotov", this.getCommandID("molotov"), Vec2f(1, 1), params);
 			CGridButton@ button5 = menu.AddButton("$grenade$", "Grenade", this.getCommandID("grenade"), Vec2f(1, 1), params);
