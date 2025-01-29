@@ -38,15 +38,6 @@ void onInit(CBlob@ this)
 	CSprite@ sprite = this.getSprite();
 	if (sprite is null) return;
 
-	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", sprite.getConsts().filename, 24, 80);
-    if (arm !is null)
-	{
-		Animation@ anim = arm.addAnimation("default", 0, false);
-		anim.AddFrame(12);
-
-		this.Tag("arm set");
-	}
-
 	sprite.SetOffset(Vec2f(4,0));
 	
 	CSpriteLayer@ mg = sprite.addSpriteLayer("mg", "Maus.png", 16, 48);
@@ -93,7 +84,7 @@ void onTick(CBlob@ this)
 				offset.y += 1;
 			}
 			
-			Vec2f pos = this.getPosition() + Vec2f(0, -32);
+			Vec2f pos = this.getPosition() + Vec2f(0, -33);
 			Vec2f shootpos = pos + offset.RotateBy(angle + 180);
 
 			if (pressed_m3)

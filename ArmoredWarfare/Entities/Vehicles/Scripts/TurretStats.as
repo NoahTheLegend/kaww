@@ -84,7 +84,7 @@ class E50Turret : TurretStats
         cooldown_time = 180; high_angle = 70; low_angle = 100; low_angle_back = 102;
         arm_offset = Vec2f(-14.0f, -30.0f); arm_z = -50.0f; barrel_compression = 8; init_gun_angle = -3;
         recoil_force = 700; projectile_vel = -30.0f;
-        secondary_gun_offset = arm_offset + Vec2f(0,8);
+        secondary_gun_offset = arm_offset + Vec2f(0,9);
     }
 };
 
