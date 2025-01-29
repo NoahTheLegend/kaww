@@ -235,8 +235,8 @@ void onInit(CBlob@ this)
 			this.Tag("cycle_mag"); // reload faster when mag is not fully empty
 			this.set_u8("stab time", 24);
 			this.set_u8("stab timing", 16);
-			this.Tag("no bulletgib on shot");
 			this.set_f32("stab damage", 1.33f);
+			this.Tag("no bulletgib on shot");
 			this.set_u8("scoreboard_icon", 0);
 			this.set_u8("class_icon", 1);
 			break;
@@ -255,9 +255,9 @@ void onInit(CBlob@ this)
 		}
 		case _ranger:
 		{
-			this.set_u8("stab time", 36);
-			this.set_u8("stab timing", 22);
-			this.set_f32("stab damage", 1.1f);
+			this.set_u8("stab time", 30);
+			this.set_u8("stab timing", 16);
+			this.set_f32("stab damage", 1.25f);
 			this.set_u8("scoreboard_icon", 1);
 			this.set_u8("class_icon", 2);
 			break;
@@ -267,7 +267,8 @@ void onInit(CBlob@ this)
 			this.set_bool("is_lmg", true);
 			this.set_s32("custom_hitter", HittersAW::machinegunbullet);
 			this.set_u8("stab time", 24);
-			this.set_u8("stab timing", 8);
+			this.set_u8("stab timing", 16);
+			this.set_f32("stab damage", 1.33f);
 			this.set_bool("timed_particle", true);
 			this.set_Vec2f("gun_offset", Vec2f(0,2));
 			this.set_u8("scoreboard_icon", 10);
@@ -286,11 +287,10 @@ void onInit(CBlob@ this)
 		case _shotgun:
 		{
 			this.Tag("cycle_mag");
-			this.set_u8("stab time", 28);
-			this.set_u8("stab timing", 19);
-			this.set_s16("bullet_type", -1);
-			this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
+			this.set_u8("stab time", 24);
+			this.set_u8("stab timing", 16);
 			this.set_f32("stab damage", 1.25f);
+			this.Tag("simple reload"); // set "simple" reload tags for only-sound reload code
 			this.set_u8("ammo_pershot", 4);
 			this.set_u8("scoreboard_icon", 3);
 			this.set_u8("class_icon", 3);
@@ -299,6 +299,8 @@ void onInit(CBlob@ this)
 		case _sniper:
 		{
 			this.set_u8("stab time", 24);
+			this.set_u8("stab timing", 16);
+			this.set_f32("stab damage", 1.33f);
 			this.set_s16("bullet_type", 1);
 			this.set_u8("ammo_pershot", 2);
 			this.set_u8("scoreboard_icon", 4);
@@ -314,11 +316,11 @@ void onInit(CBlob@ this)
 			sprite.SetEmitSoundVolume(0.66f);
 			sprite.SetEmitSoundPaused(true);
 			
-			this.set_u8("stab time", 28);
-			this.set_u8("stab timing", 19);
+			this.set_u8("stab time", 24);
+			this.set_u8("stab timing", 16);
+			this.set_f32("stab damage", 1.25f);
 			this.set_u32("mag_bullets", 0);
 			this.set_string("ammo_prop", "specammo");
-			this.set_f32("stab damage", 1.25f);
 			this.set_u8("scoreboard_icon", 9);
 			this.set_u8("class_icon", 8);
 			break;
@@ -326,6 +328,8 @@ void onInit(CBlob@ this)
 		case _rpg:
 		{
 			this.set_u8("stab time", 24);
+			this.set_u8("stab timing", 16);
+			this.set_f32("stab damage", 1.33f);
 			this.set_bool("is_rpg", true);
 			this.set_u32("mag_bullets", 0);
 			this.set_string("ammo_prop", "mat_heatwarhead");

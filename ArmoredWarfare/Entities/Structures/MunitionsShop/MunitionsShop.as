@@ -81,7 +81,7 @@ void InitShopItems(CBlob@ this, s16 tn)
 			AddRequirement(s.requirements, "coin", "", "Coins", 8);
 		}
 		{
-			ShopItem@ s = addShopItem(this, "105mm Shells", "$mat_bolts$", "mat_bolts", "Ammo for a tank's main gun.", false);
+			ShopItem@ s = addShopItem(this, "Tank Shells", "$mat_bolts$", "mat_bolts", "Ammo for a tank's main gun.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 20);
 		}
 		{

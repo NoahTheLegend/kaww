@@ -206,26 +206,26 @@ const string d_bradley = "Heavy and armed with a Rocket launcher APC.\n\nPowerfu
 const string d_radarapc = "Light APC.\n\nLocates enemy vehicles on the map.\n\nDoesn't have any combat capabilities.";
 
 // Medium Tank
-const string d_m60 = "Medium tank.\n\nPowerful engine, fast, good elevation angles\nMedium armor, weaker armor on backside (weakpoint)\n\nUses 105mm & Ammunition.";
-const string d_e50 = "Medium tank.\n\nFast, good elevation angles, fast projectile\nMedium armor, weaker turret armor (weakpoint)\n\nUses 105mm";
-const string d_obj430 = "Medium tank.\n\nBig caliber, great turret armor\nSlow, fragile lower armor plate (weakpoint)\n\nUses 105mm & Ammunition.";
-const string d_leopard1 = "Medium tank.\n\nFast, good elevation angles, good fire rate, fast projectile\nMedium armor, weak turret armor (weakpoint)\n\nUses 105mm & Ammunition.";
-const string d_bc25t = "Light tank.\n\nFast, excellent elevation angles, 4 shells in loading cassette\nWeak engine, weak turret armor (weakpoint)\nPress LMB to release Smoke cloud.\n\nUses 105mm";
+const string d_m60 = "Medium tank.\n\nPowerful engine, fast, good elevation angles\nMedium armor, weaker armor on backside (weakpoint)\n\nUses Tank & Ammunition.";
+const string d_e50 = "Medium tank.\n\nFast, good elevation angles, fast projectile\nMedium armor, weaker turret armor (weakpoint)\n\nUses Tank";
+const string d_obj430 = "Medium tank.\n\nBig caliber, great turret armor\nSlow, fragile lower armor plate (weakpoint)\n\nUses Tank & Ammunition.";
+const string d_leopard1 = "Medium tank.\n\nFast, good elevation angles, good fire rate, fast projectile\nMedium armor, weak turret armor (weakpoint)\n\nUses Tank & Ammunition.";
+const string d_bc25t = "Light tank.\n\nFast, excellent elevation angles, 4 shells in loading cassette\nWeak engine, weak turret armor (weakpoint)\nPress LMB to release Smoke cloud.\n\nUses Tank";
 
 // Heavy Tank
-const string d_t10 = "Heavy tank.\n\nThick armor, big caliber.\nSlow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses 105mm & Ammunition.";
-const string d_kingtiger = "Heavy tank.\n\nThick armor, good elevation angles, big caliber.\nVery slow, slow fire rate\n\nUses 105mm & Ammunition.";
-const string d_m103 = "Heavy tank.\n\nThick armor, good elevation angles, good fire rate.\nVery slow, small damage, big gap between turret and hull (weakpoint)\n\nUses 105mm & Ammunition.";
+const string d_t10 = "Heavy tank.\n\nThick armor, big caliber.\nSlow, medium fire rate, big gap between turret and hull (weakpoint)\n\nUses Tank & Ammunition.";
+const string d_kingtiger = "Heavy tank.\n\nThick armor, good elevation angles, big caliber.\nVery slow, slow fire rate\n\nUses Tank & Ammunition.";
+const string d_m103 = "Heavy tank.\n\nThick armor, good elevation angles, good fire rate.\nVery slow, small damage, big gap between turret and hull (weakpoint)\n\nUses Tank & Ammunition.";
 
 // Super Heavy Tank
-const string d_abrams = "Super heavy tank.\n\nThick armor, good engine, good fire rate\nBad elevation angles, fragile hull from above and back side (weakpoint)\nPress LMB to release Smoke cloud.\n\nUses 105mm";
-const string d_maus = "Super heavy tank.\n\nThick armor, good turret armor, big caliber with high-explosive damage, good elevation angles\nVery slow, slow fire rate, very fragile lower armor plate (weakpoint)\n\nUses 105mm";
-const string d_is7 = "Super heavy tank.\n\nThick armor, best turret armor, big caliber, big max speed.\nVery weak engine, slow fire rate, fragile hull from above (weakpoint).\n\nUses 105mm";
+const string d_abrams = "Super heavy tank.\n\nThick armor, good engine, good fire rate\nBad elevation angles, fragile hull from above and back side (weakpoint)\nPress LMB to release Smoke cloud.\n\nUses Tank";
+const string d_maus = "Super heavy tank.\n\nThick armor, good turret armor, big caliber with high-explosive damage, good elevation angles\nVery slow, slow fire rate, very fragile lower armor plate (weakpoint)\n\nUses Tank";
+const string d_is7 = "Super heavy tank.\n\nThick armor, best turret armor, big caliber, big max speed.\nVery weak engine, slow fire rate, fragile hull from above (weakpoint).\n\nUses Tank";
 
 // Artillery
 const string d_arti = "A long-range, slow and fragile artillery.\n\nUses Bombs.";
 const string d_m40 = "A medium-range, decently mobile and fragile artillery.\n\nUses Bombs.";
-const string d_grad = "A short-range, mobile but fragile MLRS.\n\nUses 105mm.";
+const string d_grad = "A short-range, mobile but fragile MLRS.\n\nUses Tank.";
 const string d_mortar = "A short-range, less powerful but mobile mortar.\n\nUses Bombs.";
 
 // Fighter Plane
@@ -247,7 +247,7 @@ const string d_mg42 = "MG42 machinegun.\nCan be attached to and detached from so
 // Weapons 1
 const string d_jav = "Homing Missile launcher.\nScroll mouse wheel to change raising angle.\n\nUses HEAT warheads.";
 const string d_apsniper = "Armor-Penetrating Sniper Rifle.\nPenetrates non-solid blocks and flesh. Designed to penetrate tank armor.\n\nUses Special Ammunition.";
-const string d_pak38 = "Pak-38 Anti-Tank Cannon.\nA lightweight stationary weapon with good fire rate but tough control.\n\nUses 105mm";
+const string d_pak38 = "Pak-38 Anti-Tank Cannon.\nA lightweight stationary weapon with good fire rate but tough control.\n\nUses Tank";
 
 // ==========
 // BLOB NAMES

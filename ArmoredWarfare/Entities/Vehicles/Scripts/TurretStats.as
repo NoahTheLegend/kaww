@@ -51,7 +51,7 @@ class TurretStats
         cassette_size = 1; cycle_cooldown = 1;
         emitsound = "Hydraulics.ogg"; emitsound_volume = 1.0f; fire_sound = "sound_105mm";
         arm_offset = Vec2f_zero; arm_z = 0; barrel_compression = 0; init_gun_angle = 0; muzzle_offset = -16.0f; arm_height = 0.0f; arm_joint_offset = Vec2f(-0.5f, 15.5f);
-        projectile = "ballista_bolt"; ammo = "mat_bolts"; ammo_description = "105mm Shells"; ammo_quantity = 0; projectile_vel = -27.5f;
+        projectile = "ballista_bolt"; ammo = "mat_bolts"; ammo_description = "Tank Shells"; ammo_quantity = 0; projectile_vel = -27.5f;
         mg = ""; javelin = false; bullet_pos_offset = Vec2f(0,0);
         shape_offset = Vec2f(0, -12); recoil_force = 0;
         fixed = false;
@@ -84,6 +84,7 @@ class E50Turret : TurretStats
         cooldown_time = 180; high_angle = 70; low_angle = 100; low_angle_back = 102;
         arm_offset = Vec2f(-14.0f, -30.0f); arm_z = -50.0f; barrel_compression = 8; init_gun_angle = -3;
         recoil_force = 700; projectile_vel = -30.0f;
+        secondary_gun_offset = arm_offset + Vec2f(0,8);
     }
 };
 

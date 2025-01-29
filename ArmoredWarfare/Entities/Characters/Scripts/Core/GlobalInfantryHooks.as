@@ -166,7 +166,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if ((!this.isAttached() || exposed) && (explosion_damage || hitterBlob.getName() == "ballista_bolt") // common explosion checks & bunker protection
 		|| hitterBlob.hasTag("grenade") || hitterBlob.getName() == "c4")
 	{
-		if (hitterBlob.hasTag("grenade")) damage *= 5.0f+(XORRandom(301)*0.01f);
+		if (hitterBlob.hasTag("grenade")) damage *= 0.5f;
 		if (hitterBlob.getName() == "c4") damage *= 10;
 		if (hitterBlob.get_u16("follow_id") == this.getNetworkID()) damage *= 5.0f;
 		if (damage == 0.005f || damage == 0.01f) damage = 1.75f+(XORRandom(25)*0.01f); // someone broke damage

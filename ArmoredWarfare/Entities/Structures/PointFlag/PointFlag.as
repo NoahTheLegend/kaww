@@ -129,7 +129,7 @@ void onInit(CBlob@ this)
 			s.spawnNothing = true;
 		}
 		{
-			ShopItem@ s = addShopItem(this, "105mm Shells", "$mat_bolts$", "mat_bolts", "$mat_bolts$"+"\n\nOrder 105mm Shells");
+			ShopItem@ s = addShopItem(this, "Tank Shells", "$mat_bolts$", "mat_bolts", "$mat_bolts$"+"\n\nOrder Tank Shells");
 			s.spawnNothing = true;
 		}
 		{
