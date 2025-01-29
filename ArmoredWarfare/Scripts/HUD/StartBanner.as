@@ -50,9 +50,10 @@ const string[] objectives = {
     "Plant a C-4 at the cores"
 };
 
+bool init = false;
 void onTick(CRules@ this)
 {
-    if (getGameTime() < 370 && getGameTime() > 0)
+    if ((getGameTime() < 370 && getGameTime() > 0) || !init)
     {
         CBlob@[] tents;
         getBlobsByName("tent", @tents);
@@ -112,6 +113,8 @@ void onTick(CRules@ this)
                 this.set_u8("banneridx", 0);
             }
         }
+
+        init = true;
     }
     else
     {
