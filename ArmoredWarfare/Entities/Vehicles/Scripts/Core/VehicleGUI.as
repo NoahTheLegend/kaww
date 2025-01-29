@@ -89,7 +89,7 @@ void onRender(CSprite@ this)
 		GUI::DrawIcon("RepairCooldown.png", 0, Vec2f(32, 32), pos2d - Vec2f(32, 16), 1.0f, SColor(alpha, 255, 255, 255));
 
 		s32 time = Maths::Ceil((f32(blob.get_u32("no_heal") - gt))/30.0f);
-		if (time < 0) time = 0;
+		if (time < 0 || time > 999) time = 0;
 
 		GUI::DrawTextCentered("Repair delayed: " + time +"s", pos2d + Vec2f(0, 48), SColor(alpha, 255, 255, 255));
 		GUI::SetFont("default");
