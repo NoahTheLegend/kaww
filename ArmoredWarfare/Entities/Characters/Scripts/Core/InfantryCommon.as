@@ -1339,6 +1339,8 @@ void InAirLogic(CBlob@ this, u8 inaccuracyCap)
 			PerkStats@ stats;
 			if (this.getPlayer().get("PerkStats", @stats))
 			{
+				inaccuracy *= stats.midair_inaccuracy_factor;
+				
 				if (stats.ghillie)
 				{
 					if (this.getVelocity().Length() < 0.1f) 

@@ -151,7 +151,9 @@ void onRender(CSprite@ this)
 
 	Vec2f pos = blob.getPosition();
 	Vec2f oldpos = blob.getOldPosition();
-	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor()));
+	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(pos);
+	Vec2f oldpos2d = getDriver().getScreenPosFromWorldPos(oldpos);
+	pos2d = Vec2f_lerp(oldpos2d, pos2d, getInterpolationFactor());
 	bool is_press = controls.mousePressed1;
 
 	GUI::SetFont("menu");
