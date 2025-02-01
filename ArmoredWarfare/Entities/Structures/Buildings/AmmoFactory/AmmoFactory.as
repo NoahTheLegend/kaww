@@ -294,8 +294,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		bool rebels_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 3; // team 3 buff
         u8 extra_amount = 0;
         if (rebels_power) extra_amount = 3;
-
-		this.set_string("prod_blob", "mat_molotov");
+		
+		u8 tn = this.getTeamNum();
+		string name = "mat_molotov";
+		if (tn == 0) name = "mat_molotov_us";
+		else if (tn == 2) name = "mat_molotov_nazi";
+		
+		this.set_string("prod_blob", name);
 		this.set_u8("prod_amount", 1);
 		this.set_u8("prod_time", 10-extra_amount);
 		this.set_u8("cost", 2);

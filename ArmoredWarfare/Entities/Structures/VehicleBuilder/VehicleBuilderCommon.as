@@ -2,6 +2,7 @@
 #include "ShopCommon.as"
 #include "Costs.as"
 #include "VehiclesParams.as"
+#include "ItemParams.as"
 
 //Combined
 void buildT1ShopCombined(CBlob@ this)
@@ -411,6 +412,7 @@ void buildT2ShopDefense(CBlob@ this)
 
 void buildT1ImportantArmoryShop(CBlob@ this)
 {
+	u8 tn = this.getTeamNum();
 	this.set_Vec2f("shop menu size", Vec2f(11, 6));
 	{
 		ShopItem@ s = addShopItem(this, "Ammuniton", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
@@ -440,10 +442,7 @@ void buildT1ImportantArmoryShop(CBlob@ this)
 		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 20);
 	}
-	{
-		ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 15);
-	}
+	makeDefaultMolotov(this, tn, 15);
 	{
 		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue millitary helmet, blocks a moderate amount of headshot damage.", false);
 		AddRequirement(s.requirements, "coin", "", "Coins", 25);
@@ -469,7 +468,6 @@ void buildT1ImportantArmoryShop(CBlob@ this)
 	makeC4(this);
 	makeExtraUtils(this);
 
-	u8 tn = this.getTeamNum();
 	makeFactionVehicle(this, tn, VehicleType::weapons1, 0, false, false);
 	makeFactionVehicle(this, tn, VehicleType::machinegun, 0, false, false);
 	makeFirethrower(this);

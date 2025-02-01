@@ -16,6 +16,11 @@ void onInit(CBlob@ this)
 	this.Tag("weapon");
 
 	this.set_u32("activate_delay", 0);
+
+	string[] spl = this.getName().split("_");
+	string name = spl[1] + (spl.length > 2 ? "_" + spl[2] : "");
+
+	this.set_string("blobname", name);
 }
 
 bool canBePutInInventory(CBlob@ this, CBlob@ inventoryBlob)
@@ -88,7 +93,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 							}
 						}
 					}
-					CBlob@ blob = server_CreateBlob("molotov", this.getTeamNum(), this.getPosition());
+
+					CBlob@ blob = server_CreateBlob(this.exists("blobname") ? this.get_string("blobname") : "molotov", this.getTeamNum(), this.getPosition());
 					if (blob !is null)
 					{
 						this.Tag("dead");
@@ -104,7 +110,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				}
 				else 
 				{
-					CBlob@ blob = server_CreateBlob("molotov", this.getTeamNum(), this.getPosition());
+					CBlob@ blob = server_CreateBlob(this.exists("blobname") ? this.get_string("blobname") : "molotov", this.getTeamNum(), this.getPosition());
 					this.server_Die();
 				}
 			}

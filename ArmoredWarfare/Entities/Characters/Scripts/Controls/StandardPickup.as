@@ -45,7 +45,12 @@ void onInit(CBlob@ this)
 		};
 		menu.add_entry(PickupWheelMenuEntry("Grenade", "$grenade$", grenade_options, Vec2f(0, 0)));
 		menu.add_entry(PickupWheelMenuEntry("Anti-Tank Grenade", "$atgrenade$", atgrenade_options, Vec2f(0, 0)));
-		const PickupWheelOption[] molotovs = {PickupWheelOption("molotov", 1), PickupWheelOption("mat_molotov", 0)};
+		const PickupWheelOption[] molotovs =
+		{
+			PickupWheelOption("molotov", 1), PickupWheelOption("mat_molotov", 0),
+			PickupWheelOption("molotov_us", 1), PickupWheelOption("mat_molotov_us", 0),
+			PickupWheelOption("molotov_nazi", 1), PickupWheelOption("mat_molotov_nazi", 0)
+		};
 		menu.add_entry(PickupWheelMenuEntry("Molotov", "$mat_molotov$", molotovs, Vec2f(0, -8.0f)));
 		menu.add_entry(PickupWheelMenuEntry("Medkit", "$medkit$", "medkit"));
 		menu.add_entry(PickupWheelMenuEntry("Helmet", "$helmet$", "helmet", Vec2f(0, -4.0f)));

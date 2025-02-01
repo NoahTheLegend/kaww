@@ -10,6 +10,8 @@ const u16 c_105mm_rounds = 4;
 const u16 c_heat_warheads = 8;
 const u16 c_frag_grenade = 3;
 const u16 c_molotov = 2;
+const u16 c_molotov_us = 2;
+const u16 c_molotov_nazi = 2;
 const u16 c_anti_tank_grenade = 5;
 const u16 c_anti_tank_grenade_nazi = 5;
 const u16 c_land_mine = 4;
@@ -36,6 +38,8 @@ const u16 ct_105mm_rounds = 0;
 const u16 ct_heat_warheads = 0;
 const u16 ct_frag_grenade = 0;
 const u16 ct_molotov = 0;
+const u16 ct_molotov_us = 0;
+const u16 ct_molotov_nazi = 0;
 const u16 ct_anti_tank_grenade = 0;
 const u16 ct_anti_tank_grenade_nazi = 0;
 const u16 ct_land_mine = 0;
@@ -62,6 +66,8 @@ const string n_105mm_rounds = "Tank Rounds";
 const string n_heat_warheads = "HEAT War Heads";
 const string n_frag_grenade = "Frag Grenade";
 const string n_molotov = "Molotov";
+const string n_molotov_us = "Fire Grenade";
+const string n_molotov_nazi = "Molotov";
 const string n_anti_tank_grenade = "Anti-Tank Grenade";
 const string n_anti_tank_grenade_nazi = "Anti-Tank Grenade";
 const string n_land_mine = "Land Mine";
@@ -87,7 +93,7 @@ const string d_14mm_rounds = "Used by APCs.";
 const string d_105mm_rounds = "Ammunition for tank main guns.";
 const string d_heat_warheads = "HEAT Rockets, used with RPG or different vehicles.";
 const string d_frag_grenade = "Press SPACE while holding to arm, ~4 seconds until boom. Ineffective against armored vehicles.";
-const string d_molotov = "Press SPACE while holding to arm, ~4 seconds until boom. Effective against infantry.";
+const string d_molotov = "Press SPACE while holding to arm, explodes into flames upon contact with surface";
 const string d_anti_tank_grenade = "Press SPACE while holding to arm, ~5 seconds until boom. Effective against vehicles.";
 const string d_anti_tank_grenade_nazi = "Press SPACE while holding to arm, ~5 seconds until boom. Effective against vehicles.";
 const string d_land_mine = "Takes a while to arm, once activated it will explode upon contact with the enemy.";
@@ -114,6 +120,8 @@ const string bn_105mm_rounds = "mat_bolts";
 const string bn_heat_warheads = "mat_heatwarhead";
 const string bn_frag_grenade = "grenade";
 const string bn_molotov = "mat_molotov";
+const string bn_molotov_us = "mat_molotov_us";
+const string bn_molotov_nazi = "mat_molotov_nazi";
 const string bn_anti_tank_grenade = "mat_atgrenade";
 const string bn_anti_tank_grenade_nazi = "mat_atgrenadenazi";
 const string bn_land_mine = "mine";
@@ -140,6 +148,8 @@ const string t_105mm_rounds = "$mat_bolts$";
 const string t_heat_warheads = "$mat_heatwarhead$";
 const string t_frag_grenade = "$grenade$";
 const string t_molotov = "$molotov$";
+const string t_molotov_us = "$molotov_us$";
+const string t_molotov_nazi = "$molotov_nazi$";
 const string t_anti_tank_grenade = "$atgrenade$";
 const string t_anti_tank_grenade_nazi = "$atgrenadenazi$";
 const string t_land_mine = "$mine$";
@@ -202,6 +212,43 @@ void makeDefaultAmmo(CBlob@ this)
     }
 }
 
+void makeDefaultMolotov(CBlob@ this, u8 tn, u8 cost_coins = 0)
+{
+    string n_molotov_local = n_molotov;
+    string t_molotov_local = t_molotov;
+    string bn_molotov_local = bn_molotov;
+    string d_molotov_local = d_molotov;
+    u16 ct_molotov_local = ct_molotov;
+    u16 c_molotov_local = c_molotov;
+
+    if (tn == 0)
+    {
+        n_molotov_local = n_molotov_us;
+        t_molotov_local = t_molotov_us;
+        bn_molotov_local = bn_molotov_us;
+        d_molotov_local = d_molotov;
+        ct_molotov_local = ct_molotov_us;
+        c_molotov_local = c_molotov_us;
+    }
+    else if (tn == 2)
+    {
+        n_molotov_local = n_molotov_nazi;
+        t_molotov_local = t_molotov_nazi;
+        bn_molotov_local = bn_molotov_nazi;
+        d_molotov_local = d_molotov;
+        ct_molotov_local = ct_molotov_nazi;
+        c_molotov_local = c_molotov_nazi;
+    }
+
+    ShopItem@ s = addShopItem(this, n_molotov_local, t_molotov_local, bn_molotov_local, d_molotov_local, true, false, false, ct_molotov_local);
+    if (cost_coins == 0) AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", c_molotov_local);
+    else AddRequirement(s.requirements, "coin", "", "Coins", cost_coins);
+    
+    s.customButton = true;
+    s.buttonwidth = 1;
+    s.buttonheight = 1;
+}
+
 void makeDefaultExplosives(CBlob@ this)
 {
     {
@@ -212,14 +259,8 @@ void makeDefaultExplosives(CBlob@ this)
         s.buttonwidth = 1;
         s.buttonheight = 1;
     }
-    {
-        ShopItem@ s = addShopItem(this, n_molotov, t_molotov, bn_molotov, d_molotov, true, false, false, ct_molotov);
-        AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", c_molotov);
-
-        s.customButton = true;
-        s.buttonwidth = 1;
-        s.buttonheight = 1;
-    }
+    u8 teamnum = this.getTeamNum();
+    makeDefaultMolotov(this, teamnum);
     if (this.getTeamNum() != 2)
     {
         ShopItem@ s = addShopItem(this, n_anti_tank_grenade, t_anti_tank_grenade, bn_anti_tank_grenade, d_anti_tank_grenade, true, false, false, ct_anti_tank_grenade);
@@ -366,6 +407,10 @@ void makeBigBombs(CBlob@ this)
 
 void makeFirethrower(CBlob@ this, u8 discount = 0)
 {
+    const string b = "blob";
+    const string s = "mat_scrap";
+    const string ds = "Scrap";
+
 	ShopItem@ item = addShopItem(this, n_ftw, t_ftw, bn_ftw, d_ftw, false, true);
 	item.customButton = true;
 	item.buttonwidth = 1;
@@ -375,6 +420,10 @@ void makeFirethrower(CBlob@ this, u8 discount = 0)
 
 void makeC4(CBlob@ this, u8 discount = 0)
 {
+    const string b = "blob";
+    const string s = "mat_scrap";
+    const string ds = "Scrap";
+
     ShopItem@ item = addShopItem(this, n_c4, t_c4, bn_c4, d_c4, true, false);
     item.customButton = true;
     item.buttonwidth = 1;
