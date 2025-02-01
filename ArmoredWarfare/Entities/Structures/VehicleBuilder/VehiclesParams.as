@@ -68,6 +68,7 @@ const u16 c_nh90 = 70;
 // Machinegun
 const u16 c_m2 = 8;
 const u16 c_mg42 = 8;
+const u16 c_dshk = 8;
 
 // Weapons 1
 const u16 c_jav = 15;
@@ -123,6 +124,7 @@ const u16 ct_nh90 = 150;
 
 const u16 ct_m2 = 0;
 const u16 ct_mg42 = 0;
+const u16 ct_dshk = 0;
 
 const u16 ct_jav = 60;
 const u16 ct_apsniper = 60;
@@ -178,6 +180,7 @@ const string n_nh90 = "Build a NH-90 Versatile Helicopter";
 
 const string n_m2 = "Construct a M2 Browning Machine gun";
 const string n_mg42 = "Construct a MG42 Machine gun";
+const string n_dshk = "Construct a DShK Machine gun";
 
 const string n_jav = "Craft a Javelin Missile launcher";
 const string n_apsniper = "Craft a Armor-Penetrating Sniper Rifle.";
@@ -243,6 +246,7 @@ const string d_nh90 = "A versatile helicopter with protected co-pilot seat opera
 // Machinegun
 const string d_m2 = "M2 Browning machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.";
 const string d_mg42 = "MG42 machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.";
+const string d_dshk = "DShK machinegun.\nCan be attached to and detached from some vehicles.\n\nUses Ammunition.";
 
 // Weapons 1
 const string d_jav = "Homing Missile launcher.\nScroll mouse wheel to change raising angle.\n\nUses HEAT warheads.";
@@ -309,6 +313,7 @@ const string bn_nh90 = "nh90";
 // Machinegun
 const string bn_m2 = "m2browning";
 const string bn_mg42 = "mg42";
+const string bn_dshk = "dshk";
 
 // Weapons 1
 const string bn_jav = "launcher_javelin";
@@ -375,6 +380,7 @@ const string t_nh90 = "$"+bn_nh90+"$";
 // Machinegun
 const string t_m2 = "$icon_mg$";
 const string t_mg42 = "$icon_mg$";
+const string t_dshk = "$icon_mg$";
 
 // Weapons 1
 const string t_jav = "$icon_jav$";
@@ -489,7 +495,7 @@ const VehicleParams[][] vehicles = {
 	/* Machinegun */
 	{
 		VehicleParams(n_m2, t_m2, bn_m2, d_m2, c_m2, ct_m2, Vec2f(1,1), false, true),
-		VehicleParams(n_m2, t_m2, bn_m2, d_m2, c_m2, ct_m2, Vec2f(1,1), false, true),
+		VehicleParams(n_dshk, t_dshk, bn_dshk, d_dshk, c_dshk, ct_dshk, Vec2f(1,1), false, true),
 		VehicleParams(n_mg42, t_mg42, bn_mg42, d_mg42, c_mg42, ct_mg42, Vec2f(1,1), false, true)
 	},
 	/* Weapons 1 */
