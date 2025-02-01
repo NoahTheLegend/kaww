@@ -7,6 +7,7 @@ shared class PerkStats {
     bool climbtree;
     f32 fire_in_damage;     // mod
     u8 ignite_self_chance; // %
+    f32 midair_inaccuracy_factor;
 
     // Sharp Shooter
     f32 reload_time;        // mod, also used by Bull
@@ -72,7 +73,7 @@ shared class PerkStats {
         id = 0;
         
         //
-        ghillie = false; climbtree = false; fire_in_damage = 1.0f; ignite_self_chance = 0.0f;
+        ghillie = false; climbtree = false; fire_in_damage = 1.0f; ignite_self_chance = 0.0f; midair_inaccuracy_factor = 1.0f;
         //
         reload_time = 1.0f; accuracy = 1.0f; additional_vision_distance = 0; damage_body = 1.0f; damage_head = 1.0f;
         //
@@ -118,6 +119,7 @@ shared class PerkCamouflage : PerkStats {
         ignite_self_chance = 33;
         walk_factor = 1.1f;
         additional_vision_distance = 0.15f;
+        midair_inaccuracy_factor = 0.25f;
     }
 };
 
@@ -241,6 +243,7 @@ shared class PerkFieldEngineer : PerkStats {
 
         parachute = false;
         binoculars_distance = 1.25f;
+        midair_inaccuracy_factor = 2.0f;
     }
 };
 

@@ -123,6 +123,7 @@ void InitClasses(CBlob@ this)
 						+"\n                   - Increased view range"
 						+"\n\n                   Climbing Gear"
 						+"\n                   - Allows you to climb trees     "
+						+"\n                   - Increased mid-air accuracy"
 						+"\n\n                   Flammable"
 						+"\n                   - Fire is more deadly   "
 						+"\n                   - Molotovs may ignite you   "
@@ -224,7 +225,8 @@ void InitClasses(CBlob@ this)
 						+"\n                      on the ground"
 						+"\n                      (requires 1 scrap)"
 						+"\n\n                  Overstaffed"
-						+"\n                   - Missing parachute!"
+						+"\n                   - Missing parachute"
+						+"\n                   - Decreased mid-air accuracy"
 						);
 	
 	addPlayerPerk(this, "Mason", "$11_class_icon$", "Mason",
