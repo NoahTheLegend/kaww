@@ -6,6 +6,7 @@ void onInit(CBlob@ this)
 	this.server_SetTimeToDie(5);
 	
 	this.set_string("custom_explosion_sound", "Molotov_Explode.ogg");
+	if (this.getName() == "molotov_us") this.set_string("custom_explosion_sound", "FireGrenade_Explode.ogg");
 	
 	this.Tag("map_damage_dirt");
 	this.Tag("collideswithglass");
