@@ -58,7 +58,7 @@ void onTick(CBlob@ this)
 			if (b is null) continue;
 			if (map.rayCastSolidNoBlobs(this.getPosition(), b.getPosition())) continue;
 			
-			if (b.getName() == "mat_molotov" && !b.get_bool("active") && !b.isAttached() && !b.isInInventory())
+			if (b.getName().find("mat_molotov") != -1 && !b.get_bool("active") && !b.isAttached() && !b.isInInventory())
 			{
 				CBitStream params;
 				b.SendCommand(b.getCommandID("activate"), params);

@@ -3,6 +3,7 @@
 #include "Costs.as"
 #include "CheckSpam.as"
 #include "GenericButtonCommon.as"
+#include "ItemParams.as"
 
 void onInit(CBlob@ this)
 {
@@ -88,7 +89,7 @@ void InitShopItems(CBlob@ this, s16 tn)
 			ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas a small explosion radius.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		}
-		if (this.getTeamNum() == 2)
+		if (tn == 2)
 		{
 			ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenadenazi$", "mat_atgrenadenazi", "Press SPACE while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 25);
@@ -102,10 +103,7 @@ void InitShopItems(CBlob@ this, s16 tn)
 			ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 15);
 		}
-		{
-			ShopItem@ s = addShopItem(this, "Molotov", "$mat_molotov$", "mat_molotov", "A home-made cocktail with highly flammable liquid.\nPress [SPACEBAR] before throwing", false);
-			AddRequirement(s.requirements, "coin", "", "Coins", 10);
-		}
+		makeDefaultMolotov(this, tn, 10);
 		{
 			ShopItem@ s = addShopItem(this, "Mine", "$mine$", "mine", "A dangerous trap for infantry.", false);
 			AddRequirement(s.requirements, "coin", "", "Coins", 25);
