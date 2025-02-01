@@ -1,6 +1,6 @@
 #include "VehicleCommon.as"
 
-const Vec2f arm_offset = Vec2f(0, -2);
+const Vec2f arm_offset = Vec2f(0, -3);
 const f32 MAX_OVERHEAT = 3.0f;
 const f32 OVERHEAT_PER_SHOT = 0.05f;
 const f32 COOLDOWN_RATE = 0.075f;
