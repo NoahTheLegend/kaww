@@ -280,6 +280,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			return;
 		}
 
+		ShakeScreen(250, 40, this.getInterpolatedPosition());
+
 		f32 shoot_angle = this.getAngleDegrees() + (this.isFacingLeft()?180:0);
 		Vec2f pos = this.getPosition() + Vec2f(16,0).RotateBy(shoot_angle);
 		Vec2f vel = Vec2f(30.0f, 0).RotateBy(shoot_angle);
