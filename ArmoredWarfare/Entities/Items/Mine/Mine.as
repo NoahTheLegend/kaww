@@ -34,7 +34,7 @@ void onInit(CBlob@ this)
 	this.Tag("trap");
 	this.Tag("weapon");
 	this.getSprite().SetRelativeZ(-0.1f); //background
-	this.getShape.SetRotationsAllowed(true);
+	this.getShape().SetRotationsAllowed(true);
 
 	this.Tag("ignore fall");
 	this.Tag("ignore_saw");
