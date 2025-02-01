@@ -1,6 +1,6 @@
 #include "CustomBlocks.as";
 
-///Minimap Code
+// Minimap Code
 // Almost 100% accurately replicates the legacy minimap drawer
 // This is due to it being a port of the legacy code, provided by Geti
 
