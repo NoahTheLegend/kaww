@@ -34,6 +34,7 @@ void onInit(CBlob@ this)
 	this.set_u8("prod_time", 2);
 	this.set_u8("cost", 1);
 	this.set_f32("mod", 1.0f);
+	this.set_bool("drop_items", false);
 
 	this.addCommandID("select");
 	this.addCommandID("7mm");
@@ -49,6 +50,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("atgrenade");
 	this.addCommandID("playsound");
 	this.addCommandID("direct_pick");
+	this.addCommandID("switch_mode");
 
 	if (sprite is null) return;
 	CSpriteLayer@ icon = sprite.addSpriteLayer("icon", "AmmoFactoryIcons.png", 8, 8);
@@ -169,6 +171,8 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 			caller.CreateGenericButton(24, Vec2f(4.0f, 0.0f), this, this.getCommandID("direct_pick"), "Pick product", params);
 		}
 	}
+
+	caller.CreateGenericButton(8, Vec2f(10.0f, -10.0f), this, this.getCommandID("switch_mode"), this.get_bool("drop_items") ? "Put to inventory" : "Drop items", params);
 }
 
 void spawnMetal(CBlob@ this)
@@ -177,10 +181,10 @@ void spawnMetal(CBlob@ this)
 	{
 		CBlob@ b = server_CreateBlob(this.get_string("prod_blob"), this.getTeamNum(), this.getPosition());
 		b.server_SetQuantity(this.get_u8("prod_amount"));
-		if (!this.server_PutInInventory(b))
-		{
-			b.setPosition(this.getPosition());
-		}
+
+		if (this.get_bool("drop_items")) b.setPosition(this.getPosition());
+		else if (!this.server_PutInInventory(b)) b.setPosition(this.getPosition());
+		
 		CBitStream params;
 		this.SendCommand(this.getCommandID("playsound"), params);
 	}
@@ -242,6 +246,11 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 				}
 			}
 		}
+	}
+	else if (cmd == this.getCommandID("switch_mode"))
+	{
+		this.set_bool("drop_items", !this.get_bool("drop_items"));
+		if (isServer()) this.Sync("drop_items", true);
 	}
 	else if (cmd == this.getCommandID("select"))
 	{
