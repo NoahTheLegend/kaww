@@ -42,7 +42,16 @@ void LoadSprites(CSprite@ this)
 	if (!blob.get("infantryInfo", @infantry)) return;
 	
 	bool override_tex = false;
-	if (team == 2)
+	/*if (team == 1)
+	{
+		if (bname == "lmg")
+		{
+			override_tex = true;
+			ensureCorrectRunnerTexture(this, "lmg_soviet", "LMG_soviet"); // nazi mg42 sprite
+			infantry.emptyshellonfire = false;
+		}
+	}
+	else*/ if (team == 2)
 	{
 		if (bname == "lmg")
 		{
