@@ -40,6 +40,8 @@ void onInit(CBlob@ this)
 		const PickupWheelOption[] atgrenade_options = {
 			PickupWheelOption("atgrenade"),
 			PickupWheelOption("mat_atgrenade"),
+			PickupWheelOption("atgrenadesoviet"),
+			PickupWheelOption("mat_atgrenadesoviet"),
 			PickupWheelOption("atgrenadenazi"),
 			PickupWheelOption("mat_atgrenadenazi")
 		};

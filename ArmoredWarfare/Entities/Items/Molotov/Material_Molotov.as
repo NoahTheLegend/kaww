@@ -62,7 +62,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		if (isClient() && !this.hasTag("activated"))
 		{
-			this.getSprite().PlaySound("Lighter_Use", 1.00f, 0.90f + (XORRandom(100) * 0.30f));
+			this.getSprite().PlaySound("Lighter_Use", 1.00f, 1.0f+XORRandom(100)*0.001f);
 			sparks(this.getPosition(), 1, 0.25f);
 		}
 		
