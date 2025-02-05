@@ -14,6 +14,7 @@ const u16 c_molotov_us = 2;
 const u16 c_molotov_nazi = 2;
 const u16 c_anti_tank_grenade = 5;
 const u16 c_anti_tank_grenade_nazi = 5;
+const u16 c_anti_tank_grenade_soviet = 5;
 const u16 c_land_mine = 4;
 const u16 c_c4 = 10;
 const u16 c_burger = 1;
@@ -42,6 +43,7 @@ const u16 ct_molotov_us = 0;
 const u16 ct_molotov_nazi = 0;
 const u16 ct_anti_tank_grenade = 0;
 const u16 ct_anti_tank_grenade_nazi = 0;
+const u16 ct_anti_tank_grenade_soviet = 0;
 const u16 ct_land_mine = 0;
 const u16 ct_c4 = 0;
 const u16 ct_burger = 0;
@@ -70,6 +72,7 @@ const string n_molotov_us = "Fire Grenade";
 const string n_molotov_nazi = "Molotov";
 const string n_anti_tank_grenade = "Anti-Tank Grenade";
 const string n_anti_tank_grenade_nazi = "Anti-Tank Grenade";
+const string n_anti_tank_grenade_soviet = "Anti-Tank Grenade";
 const string n_land_mine = "Land Mine";
 const string n_c4 = "Craft a C-4 Explosive";
 const string n_burger = "Burger";
@@ -96,6 +99,7 @@ const string d_frag_grenade = "Press SPACE while holding to arm, ~4 seconds unti
 const string d_molotov = "Press SPACE while holding to arm, explodes into flames upon contact with surface";
 const string d_anti_tank_grenade = "Press SPACE while holding to arm, ~5 seconds until boom. Effective against vehicles.";
 const string d_anti_tank_grenade_nazi = "Press SPACE while holding to arm, ~5 seconds until boom. Effective against vehicles.";
+const string d_anti_tank_grenade_soviet = "Press SPACE while holding to arm, ~5 seconds until boom. Effective against vehicles.";
 const string d_land_mine = "Takes a while to arm, once activated it will explode upon contact with the enemy.";
 const string d_c4 = "A strong explosive, very effective against blocks and doors.\n\nTakes some time after activation to explode.\nCan be defused.";
 const string d_burger = "Heal to full health instantly.";
@@ -124,6 +128,7 @@ const string bn_molotov_us = "mat_molotov_us";
 const string bn_molotov_nazi = "mat_molotov_nazi";
 const string bn_anti_tank_grenade = "mat_atgrenade";
 const string bn_anti_tank_grenade_nazi = "mat_atgrenadenazi";
+const string bn_anti_tank_grenade_soviet = "mat_atgrenadesoviet";
 const string bn_land_mine = "mine";
 const string bn_c4 = "c4";
 const string bn_burger = "food";
@@ -152,6 +157,7 @@ const string t_molotov_us = "$molotov_us$";
 const string t_molotov_nazi = "$molotov_nazi$";
 const string t_anti_tank_grenade = "$atgrenade$";
 const string t_anti_tank_grenade_nazi = "$atgrenadenazi$";
+const string t_anti_tank_grenade_soviet = "$atgrenadesoviet$";
 const string t_land_mine = "$mine$";
 const string t_c4 = "$"+bn_c4+"$";
 const string t_burger = "$food$";
@@ -261,10 +267,20 @@ void makeDefaultExplosives(CBlob@ this)
     }
     u8 teamnum = this.getTeamNum();
     makeDefaultMolotov(this, teamnum);
-    if (this.getTeamNum() != 2)
+
+    if (teamnum == 0)
     {
         ShopItem@ s = addShopItem(this, n_anti_tank_grenade, t_anti_tank_grenade, bn_anti_tank_grenade, d_anti_tank_grenade, true, false, false, ct_anti_tank_grenade);
         AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", c_anti_tank_grenade);
+
+        s.customButton = true;
+        s.buttonwidth = 1;
+        s.buttonheight = 1;
+    }
+    else if (teamnum == 1)
+    {
+        ShopItem@ s = addShopItem(this, n_anti_tank_grenade_soviet, t_anti_tank_grenade_soviet, bn_anti_tank_grenade_soviet, d_anti_tank_grenade_soviet, true, false, false, ct_anti_tank_grenade_soviet);
+        AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", c_anti_tank_grenade_soviet);
 
         s.customButton = true;
         s.buttonwidth = 1;

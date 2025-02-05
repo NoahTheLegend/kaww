@@ -58,11 +58,10 @@ void onInit(CBlob@ this)
 
 	string prop = "atgrenade";
 	if (this.getName().find("nazi") != -1) prop += "nazi";
+	else if (this.getName().find("soviet") != -1) prop += "soviet";
 
-	if (this.getName() == prop)
-	{
-		this.set_u8("exploding_2", death_time);
-	}
+	if (this.getName() == prop) this.set_u8("exploding_2", death_time);
+	this.set_string("prop", prop);
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
@@ -172,7 +171,12 @@ void onTick(CBlob@ this)
 		if (isClient())
 		{
 			f32 factor = (f32(this.get_u8("exploding_2")) / death_time);
-			sprite.animation.frame = 2 - Maths::Round(2*factor);
+			u32 seed = getGameTime() + this.getNetworkID();
+			s8 frame = (sprite.animation.getFramesCount()-1) * (1.0f - factor);
+			s8 interval = 4;
+
+			if (factor < 0.175f) frame = seed % interval < interval/2 ? 2 : 3;
+			sprite.animation.frame = frame;
 		}
 
 		if (this.get_u8("exploding_2") == 3)
@@ -246,15 +250,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
     	    if (point !is null)
 			{
-				string prop = "atgrenade";
-				if (this.getName().find("nazi") != -1) prop += "nazi";
-
+				string prop = this.get_string("prop");
 				CBlob@ holder = point.getOccupied();
 				if (holder !is null && this !is null && !this.hasTag("activated"))
 				{
 					CBlob@ blob = server_CreateBlob(prop, this.getTeamNum(), this.getPosition());
+
 					this.Tag("dead");
 					holder.server_Pickup(blob);
+
 					this.server_Die();
 
 					CPlayer@ activator = holder.getPlayer();
