@@ -546,16 +546,13 @@ void DroppingBombsLogic(CBlob@ this, CBlob@ pilot, AttachmentPoint@ ap_pilot)
 					u16 droptime = this.get_u16("bomb_drop_rate_smallbomb");
 					u16 droptime_heavy = this.get_u16("bomb_drop_rate_bigbomb");
 
-					if (isClient() && itemCount > 0 && can_drop) 
-						this.getSprite().PlaySound("bridge_open", 1.0f, 1.0f);
+					bool not_ammo = item.getName() != "ammo";
+					u32 quantity = item.getQuantity();
 
-					if (isServer()) 
-					{
-						bool not_ammo = item.getName() != "ammo";
-						u32 quantity = item.getQuantity();
-
-						if (!item.hasTag("bomber ammo") && not_ammo)
-						{ 
+					if (!item.hasTag("bomber ammo") && not_ammo)
+					{ 
+						if (isServer())
+						{
 							CBlob@ b = server_CreateBlob("paracrate", this.getTeamNum(), this.getPosition()+Vec2f(0,8));
 							if (b !is null)
 							{
@@ -565,20 +562,24 @@ void DroppingBombsLogic(CBlob@ this, CBlob@ pilot, AttachmentPoint@ ap_pilot)
 									CBlob@ put = inv.getItem(j);
 									if (put is null) continue;
 									if (put.getName() == "mat_smallbomb") continue;
-									
+
 									this.server_PutOutInventory(put);
 									b.server_PutInInventory(put);
 									j--;
 								}
 							}
-
-							this.set_u32("lastDropTime", getGameTime() + droptime);
-							break;
 						}
-						else if (not_ammo)
+
+						this.set_u32("lastDropTime", getGameTime() + droptime);
+						break;
+					}
+					else if (not_ammo)
+					{
+						const f32 v = this.get_f32("velocity");
+						Vec2f d = this.get_Vec2f("direction");
+
+						if (isServer())
 						{
-							const f32 v = this.get_f32("velocity");
-							Vec2f d = this.get_Vec2f("direction");
 							CBlob@ dropped = server_CreateBlob(item.getName(), this.getTeamNum(), this.getPosition());
 							dropped.server_SetQuantity(1);
 							dropped.setVelocity(this.getVelocity()-Vec2f(0, this.getVelocity().y*0.4));
@@ -597,9 +598,12 @@ void DroppingBombsLogic(CBlob@ this, CBlob@ pilot, AttachmentPoint@ ap_pilot)
 							{
 								item.server_Die();
 							}
-
-							this.set_u32("lastDropTime", getGameTime() + (item !is null && item.hasTag("heavy weight") ? droptime_heavy : droptime));
 						}
+
+						if (isClient() && itemCount > 0) 
+							this.getSprite().PlaySound("bridge_open", 1.0f, 1.0f);
+
+						this.set_u32("lastDropTime", getGameTime() + (item !is null && item.hasTag("heavy weight") ? droptime_heavy : droptime));
 					}
 					break;
 				}
@@ -710,7 +714,7 @@ f32 getAimAngle(CBlob@ this, AttachmentPoint@ ap_pilot, Vec2f offset, int[][] an
 		        end = temp;
 		    }
 		}
-		
+
 		if (start == end)
 		{
 			return start;
@@ -807,7 +811,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				for (u8 i = 0; i < inv.getItemsCount(); i++)
 				{
-					continue;
 					if (XORRandom(2) != 0) continue;
 
 					CBlob@ ammo = inv.getItem(i);
