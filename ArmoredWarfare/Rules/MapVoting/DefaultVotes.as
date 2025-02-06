@@ -12,7 +12,7 @@ s32 g_lastExtendtimeCounter = 5;
 const float required_minutes_nextmap = 10; //global nextmap vote cooldown
 const float required_minutes_extendtime = 5;
 
-const s32 VoteKickTime = 60*6; //6h
+const s32 VoteKickTime = 60*2; //2h
 
 //kicking related globals and enums
 enum kick_reason
