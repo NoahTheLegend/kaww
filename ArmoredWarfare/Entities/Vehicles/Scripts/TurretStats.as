@@ -67,7 +67,7 @@ class M60Turret : TurretStats
 
         name = "m60turret"; hash = _m60turret;
         cooldown_time = 210; high_angle = 70; low_angle = 102; low_angle_back = 93;
-        arm_offset = Vec2f(-15.0f, -28.0f); arm_z = -50.0f; barrel_compression = 9; init_gun_angle = -3;
+        arm_offset = Vec2f(-15.0f, -29.0f); arm_z = -50.0f; barrel_compression = 9; init_gun_angle = -3;
         mg = "m2browning";
         recoil_force = 750;
         bullet_pos_offset = Vec2f(0,-1);
@@ -326,8 +326,8 @@ class M103Turret : TurretStats
         super();
 
         name = "m103turret"; hash = _m103turret;
-        cooldown_time = 180; high_angle = 77; low_angle = 99; low_angle_back = 99;
-        arm_offset = Vec2f(-14.0f, -28.0f); arm_z = -50.0f; barrel_compression = 10; init_gun_angle = -3;
+        cooldown_time = 180; high_angle = 77; low_angle = 99; low_angle_back = 91;
+        arm_offset = Vec2f(-18.0f, -29.0f); arm_z = -50.0f; barrel_compression = 10; init_gun_angle = -3;
         mg = "m2browning";
         recoil_force = 650;
         ammo_quantity = 24;
