@@ -177,8 +177,8 @@ class Pak38Turret : TurretStats
         super();
 
         name = "pak38"; hash = _pak38;
-        cooldown_time = 120; high_angle = 80; low_angle = 95;
-        arm_z = -5.0f; barrel_compression = 6; init_gun_angle = 5;
+        cooldown_time = 120; high_angle = 80; low_angle = 100;
+        arm_z = -5.0f; barrel_compression = 7; init_gun_angle = 5;
         recoil_force = 0; projectile_vel = -30.0f; ammo_quantity = -1;
         arm_offset = Vec2f(7.0f, -17.0f); bullet_pos_offset = Vec2f(0,-2.5f); shape_offset = Vec2f(0, 0);
         elevation_speed = 0.33f; elevation_sound = "";
