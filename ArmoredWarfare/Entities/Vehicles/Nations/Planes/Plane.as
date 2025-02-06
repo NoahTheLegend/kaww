@@ -30,7 +30,7 @@ void onInit(CBlob@ this)
     u8 hitter = HittersAW::aircraftbullet;
 
 	u32 fire_rate = 2;
-	f32 bullet_damage = 0.65f;
+	f32 bullet_damage = 0.6f;
 	f32 bullet_spread = 40.0f;
 
 	bool bomb_drop = false;
@@ -1004,7 +1004,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (hitterBlob.getName() == "missile_javelin" || (hitterBlob.hasTag("rpg") && !hitterBlob.hasTag("heli_proj")))
 		{
-			return damage * 1.5f;
+			return damage * 1.75f;
 		}
 
 		if (customData == HittersAW::aircraftbullet) 	 
