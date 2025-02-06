@@ -22,7 +22,7 @@ void onInit(CBlob@ this)
 	Vec2f mid_gun_offset = Vec2f(0, 0);
 
 	// 2D arrays for an experimental method of removing the snapping between 360 and 0
-	int[][] main_gun_angle = {{5, 5}};
+	int[][] main_gun_angle = {{8, 8}};
 	int[][] mid_gun_angle = {{180, 360-15}};
 
     u16 bullet_ttl = 45;
@@ -30,7 +30,7 @@ void onInit(CBlob@ this)
     u8 hitter = HittersAW::aircraftbullet;
 
 	u32 fire_rate = 2;
-	f32 bullet_damage = 0.6f;
+	f32 bullet_damage = 0.65f;
 	f32 bullet_spread = 40.0f;
 
 	bool bomb_drop = false;
@@ -94,7 +94,7 @@ void onInit(CBlob@ this)
 			has_main_gun = true;
 			has_mid_gun = true;
 			int[][] _main_gun_angle = {{360-70, 360}, {0, 70}};
-			int[][] _mid_gun_angle = {{180-35, 185}};
+			int[][] _mid_gun_angle = {{180-45, 185}};
 			main_gun_angle = _main_gun_angle;
 			mid_gun_angle = _mid_gun_angle;
 
@@ -707,13 +707,10 @@ f32 getAimAngle(CBlob@ this, AttachmentPoint@ ap_pilot, Vec2f offset, int[][] an
 		{
 		    start = (540 - start) % 360;
 		    end = (540 - end) % 360;
-		
-		    if (start > end) 
-		    {
-		        int temp = start;
-		        start = end;
-		        end = temp;
-		    }
+			
+		    int temp = start;
+		    start = end;
+		    end = temp;
 		}
 
 		if (start == end)
@@ -1083,7 +1080,9 @@ void onRender(CSprite@ this)
 
 	bool pilot_controls_main_gun = blob.get_bool("pilot_controls_main_gun");
 	bool pilot_controls_mid_gun = blob.get_bool("pilot_controls_mid_gun");
-	AttachmentPoint@ gunner = blob.getAttachments().getAttachmentPointByName(pilot_controls_main_gun || pilot_controls_mid_gun ? "PILOT" : "GUNNER");
+	bool show_ammo = pilot_controls_main_gun || pilot_controls_mid_gun;
+
+	AttachmentPoint@ gunner = blob.getAttachments().getAttachmentPointByName(show_ammo ? "PILOT" : "GUNNER");
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
 		CBlob@ gunner_blob = gunner.getOccupied();
@@ -1111,10 +1110,13 @@ void onRender(CSprite@ this)
 		Vec2f pos = pilot_blob.getPosition();
 		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
 
-		GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
-		GUI::DrawIcon("Materials.png", 50, Vec2f(16,16), pos2d+Vec2f(-40, 42.0f), 0.75f, 1.0f);
-		if (blob.getInventory() !is null)
-			GUI::DrawTextCentered(""+blob.getInventory().getCount("mat_smallbomb"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
+		if (!show_ammo)
+		{
+			GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
+			GUI::DrawIcon("Materials.png", 50, Vec2f(16,16), pos2d+Vec2f(-40, 42.0f), 0.75f, 1.0f);
+			if (blob.getInventory() !is null)
+				GUI::DrawTextCentered(""+blob.getInventory().getCount("mat_smallbomb"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
+		}
 
 		if (blob.get_u8("mode") != 0) return;
 		f32 deg = blob.getAngleDegrees();
