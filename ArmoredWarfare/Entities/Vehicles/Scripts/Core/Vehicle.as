@@ -188,7 +188,9 @@ void onInit(CBlob@ this)
 		armorRating = 1; break;
 
 		case _bf109:
-		case _bomberplane:
+		case _b24:
+		case _he111:
+		case _pe2:
 		case _civcar:
 		case _lada:
 		case _armedmotorcycle:
@@ -403,9 +405,9 @@ void onInit(CBlob@ this)
 		backsideOffset = 32.0f; break;
 
 		case _bf109:
-		backsideOffset = 16.0f; break;
-
-		case _bomberplane:
+		case _b24:
+		case _he111:
+		case _pe2:
 		backsideOffset = 16.0f; break;
 
 		case _techbigtruck:
@@ -432,7 +434,9 @@ void onInit(CBlob@ this)
 		surface_damage_mod = 0.15f; break;
 
 		case _bf109:
-		case _bomberplane:
+		case _b24:
+		case _he111:
+		case _pe2:
 		surface_damage_mod = 10.0f; break;
 
 		case _jourcop:
@@ -1340,9 +1344,11 @@ void onDie(CBlob@ this)
 				// it already has explosion script in its file
 				break;
 			}
-			case _bomberplane:
+			case _b24:
+			case _he111:
+			case _pe2:
 			{
-				scrap_amount = 10+XORRandom(6);
+				scrap_amount = 14+XORRandom(8);
 				// it already has explosion script in its file
 				break;
 			}

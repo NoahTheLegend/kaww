@@ -650,7 +650,9 @@ u8 getIndicatorFrame(int hash)
 		frame = 8; break;
 		
 		case _bf109:
-		case _bomberplane:
+		case _b24:
+		case _he111:
+		case _pe2:
 		frame = 11; break;
 
 		case _barge:
