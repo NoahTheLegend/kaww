@@ -344,7 +344,7 @@ class IS7Turret : TurretStats
         super();
 
         name = "is7turret"; hash = _is7turret;
-        cooldown_time = 330; high_angle = 78; low_angle = 95; low_angle_back = 94; muzzle_offset = -22.0f;
+        cooldown_time = 360; high_angle = 78; low_angle = 95; low_angle_back = 94; muzzle_offset = -22.0f;
         arm_offset = Vec2f(-21.0f, -34.0f); arm_z = -50.0f; barrel_compression = 12; init_gun_angle = 3;
         arm_joint_offset = Vec2f(-0.5f, 22.5f);
         mg = "m2browning";
