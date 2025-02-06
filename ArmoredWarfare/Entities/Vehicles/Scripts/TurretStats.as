@@ -66,8 +66,8 @@ class M60Turret : TurretStats
         super();
 
         name = "m60turret"; hash = _m60turret;
-        cooldown_time = 210; high_angle = 70; low_angle = 102; low_angle_back = 93;
-        arm_offset = Vec2f(-15.0f, -29.0f); arm_z = -50.0f; barrel_compression = 9; init_gun_angle = -3;
+        cooldown_time = 210; high_angle = 70; low_angle = 101; low_angle_back = 93;
+        arm_offset = Vec2f(-13.5f, -28.5f); arm_z = -50.0f; barrel_compression = 9; init_gun_angle = -3;
         mg = "m2browning";
         recoil_force = 750;
         bullet_pos_offset = Vec2f(0,-1);
@@ -126,7 +126,7 @@ class PSZH4Turret : TurretStats
 
         name = "pszh4turret"; hash = _pszh4turret;
         cooldown_time = 300; high_angle = 75; low_angle = 98;
-        cassette_size = 8; cycle_cooldown = 8;
+        cassette_size = 10; cycle_cooldown = 8;
         ammo = "mat_14mmround"; ammo_description = "14mm Rounds";
         arm_offset = Vec2f(-2.5f, -24.0f); arm_z = -50.0f; barrel_compression = 6; init_gun_angle = 3;
         recoil_force = 50; fire_sound = "sound_14mm";
@@ -327,7 +327,7 @@ class M103Turret : TurretStats
 
         name = "m103turret"; hash = _m103turret;
         cooldown_time = 180; high_angle = 77; low_angle = 99; low_angle_back = 91;
-        arm_offset = Vec2f(-18.0f, -29.0f); arm_z = -50.0f; barrel_compression = 10; init_gun_angle = -3;
+        arm_offset = Vec2f(-18.0f, -29.5f); arm_z = -50.0f; barrel_compression = 10; init_gun_angle = -3;
         mg = "m2browning";
         recoil_force = 650;
         ammo_quantity = 24;
