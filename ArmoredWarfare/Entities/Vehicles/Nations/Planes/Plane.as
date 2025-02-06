@@ -561,7 +561,8 @@ void DroppingBombsLogic(CBlob@ this, CBlob@ pilot, AttachmentPoint@ ap_pilot)
 								{
 									CBlob@ put = inv.getItem(j);
 									if (put is null) continue;
-									if (put.getName() == "mat_smallbomb") continue;
+									if (put.getName() == "mat_smallbomb"
+										|| put.getName() == "ammo") continue;
 
 									this.server_PutOutInventory(put);
 									b.server_PutInInventory(put);
