@@ -1085,17 +1085,18 @@ void onRender(CSprite@ this)
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
 		CBlob@ gunner_blob = gunner.getOccupied();
-		if (!gunner_blob.isMyPlayer()) return;
+		if (gunner_blob.isMyPlayer())
+		{
+			Vec2f oldpos = gunner_blob.getOldPosition();
+			Vec2f pos = gunner_blob.getPosition();
+			Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
 
-		Vec2f oldpos = gunner_blob.getOldPosition();
-		Vec2f pos = gunner_blob.getPosition();
-		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
-
-		GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
-		GUI::DrawIcon("Materials.png", 31, Vec2f(16,16), pos2d+Vec2f(-40, 42.0f), 0.75f, 1.0f);
-		GUI::SetFont("menu");
-		if (blob.getInventory() !is null)
-			GUI::DrawTextCentered(""+blob.getInventory().getCount("ammo"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
+			GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
+			GUI::DrawIcon("Materials.png", 31, Vec2f(16,16), pos2d+Vec2f(-40, 42.0f), 0.75f, 1.0f);
+			GUI::SetFont("menu");
+			if (blob.getInventory() !is null)
+				GUI::DrawTextCentered(""+blob.getInventory().getCount("ammo"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
+		}
 	}
 
 	AttachmentPoint@ pilot = blob.getAttachments().getAttachmentPointByName("PILOT");
