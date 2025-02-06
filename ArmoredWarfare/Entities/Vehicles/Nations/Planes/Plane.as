@@ -147,7 +147,7 @@ void onInit(CBlob@ this)
 		}
     }
 
-	if (figtherplane) this.Tag("figtherplane");
+	if (figtherplane) this.Tag("fighterplane");
 	if (bomberplane) this.Tag("bomberplane");
 
     this.set_bool("has_main_gun", has_main_gun);
@@ -774,18 +774,12 @@ void ShootBullet(CBlob@ this, AttachmentPoint@ ap_pilot, int[][] angles, Vec2f s
 	if (isClient())
 		this.getSprite().PlaySound("AssaultFire.ogg", 1.25f, 0.95f + XORRandom(15) * 0.01f);
 
-	if (isServer())
-	{
-		CBitStream params;
-		this.SendCommand(this.getCommandID("shoot bullet"), params);
-	}
-
 	f32 angle = getAimAngle(this, ap_pilot, shoot_pos, angles) + this.getAngleDegrees();
 	f32 bullet_spread = this.get_f32("bullet_spread");
 	angle += XORRandom(bullet_spread + 1) * 0.1f - bullet_spread * 0.1 * 0.5f;
 
 	bool has_owner = false;
-	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PILOT");
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName(this.hasTag("fighterplane") ? "PILOT" : "GUNNER");
 	if (ap !is null && ap.getOccupied() !is null && ap.getOccupied().getPlayer() !is null)
 		has_owner = true;
 
@@ -793,16 +787,23 @@ void ShootBullet(CBlob@ this, AttachmentPoint@ ap_pilot, int[][] angles, Vec2f s
 		angle, shoot_pos,
 		Vec2f_zero, bullet_spread, 1, 0, 0.5f, 0.75f, 1,
 		this.get_u8("TTL"), this.get_u8("speed"), this.get_s32("custom_hitter"));
+
+	if (has_owner && ap.getOccupied().isMyPlayer())
+	{
+		CBitStream params;
+		this.SendCommand(this.getCommandID("shoot bullet"), params);
+	}
+	
+	f32 fire_rate = this.get_f32("fire_rate");
+	this.set_u32("next_shoot", getGameTime()+fire_rate);
+	this.set_u32("no_more_proj", getGameTime()+fire_rate);
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shoot bullet"))
 	{
-		f32 fire_rate = this.get_f32("fire_rate");
-		this.set_u32("next_shoot", getGameTime()+fire_rate);
-
-		if (getNet().isServer() && this.get_u32("no_more_proj") <= getGameTime())
+		if (getNet().isServer())
 		{
 			CInventory@ inv = this.getInventory();
 			if (inv !is null)
@@ -820,8 +821,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					break;
 				}
 			}
-
-			this.set_u32("no_more_proj", getGameTime()+fire_rate);
 		}
 	}
 }
