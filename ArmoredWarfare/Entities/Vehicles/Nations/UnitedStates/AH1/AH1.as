@@ -24,7 +24,7 @@ const u8 recoil = 0;
 const s16 init_gunoffset_angle = -3; // up by so many degrees
 
 const Vec2f gun_clampAngle = Vec2f(-180, 180);
-const Vec2f miniGun_offset = Vec2f(-40,5);
+const Vec2f miniGun_offset = Vec2f(-40,3);
 const u8 shootDelay = 2;
 const f32 projDamage = 0.3f;
 

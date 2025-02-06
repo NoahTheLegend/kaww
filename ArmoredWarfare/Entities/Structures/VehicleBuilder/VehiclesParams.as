@@ -43,9 +43,9 @@ const u16 c_kingtiger = 75;
 const u16 c_m103 = 65;
 
 // Super Heavy Tank
-const u16 c_abrams = 120;
+const u16 c_abrams = 130;
 const u16 c_maus = 130;
-const u16 c_is7 = 125;
+const u16 c_is7 = 120;
 
 // Artillery
 const u16 c_arti = 65;
@@ -53,11 +53,13 @@ const u16 c_m40 = 70;
 const u16 c_grad = 75;
 const u16 c_mortar = 20;
 
-// Fighter Plane
+// Fighter Planes
 const u16 c_bf109 = 30;
 
-// Bomber Plane
-const u16 c_bomber = 60;
+// Bomber Planes
+const u16 c_b24 = 75;
+const u16 c_pe2 = 70;
+const u16 c_he111 = 80;
 
 // Helicopter
 const u16 c_uh1 = 50;
@@ -115,7 +117,9 @@ const u16 ct_grad = 240;
 const u16 ct_mortar = 60;
 
 const u16 ct_bf109 = 90;
-const u16 ct_bomber = 180;
+const u16 ct_b24 = 180;
+const u16 ct_pe2 = 150;
+const u16 ct_he111 = 210;
 
 const u16 ct_uh1 = 120;
 const u16 ct_ah1 = 150;
@@ -171,7 +175,9 @@ const string n_mortar = "Build an Infantry Mortar";
 
 const string n_bf109 = "Build a Fighter plane";
 
-const string n_bomber = "Build a Heavy Bomber plane";
+const string n_b24 = "Build a B-24 Heavy Bomber plane";
+const string n_pe2 = "Build a Pe-2 Heavy Bomber plane";
+const string n_he111 = "Build a He-111 Heavy Bomber plane";
 
 const string n_uh1 = "Build a UH-1 Versatile Helicopter";
 const string n_ah1 = "Build a AH-1 Fighter Helicopter";
@@ -231,11 +237,13 @@ const string d_m40 = "A medium-range, decently mobile and fragile artillery.\n\n
 const string d_grad = "A short-range, mobile but fragile MLRS.\n\nUses Tank.";
 const string d_mortar = "A short-range, less powerful but mobile mortar.\n\nUses Bombs.";
 
-// Fighter Plane
+// Fighter Planes
 const string d_bf109 = "Fighter plane.\nUses Ammunition.";
 
-// Bomber Plane
-const string d_bomber = "Heavy Bomber plane.\nUses Bombs.";
+// Bomber Planes
+const string d_b24 = "B-24 Heavy Bomber plane.\nUses Ammo and Bombs.";
+const string d_pe2 = "Pe-2 Heavy Bomber plane.\nUses Ammo and Bombs.";
+const string d_he111 = "He-111 Heavy Bomber plane.\nUses Ammo and Bombs.";
 
 // Helicopter
 const string d_uh1 = "A helicopter with heavy machinegun.\nPress SPACEBAR to launch missiles";
@@ -298,11 +306,13 @@ const string bn_m40 = "m40";
 const string bn_grad = "grad";
 const string bn_mortar = "mortar";
 
-// Fighter Plane
+// Fighter Planes
 const string bn_bf109 = "bf109";
 
-// Bomber Plane
-const string bn_bomber = "bomberplane";
+// Bomber Planes
+const string bn_b24 = "b24";
+const string bn_pe2 = "pe2";
+const string bn_he111 = "he111";
 
 // Helicopter
 const string bn_uh1 = "uh1";
@@ -365,11 +375,13 @@ const string t_m40 = "$"+bn_m40+"$";
 const string t_grad = "$"+bn_grad+"$";
 const string t_mortar = "$"+bn_mortar+"$";
 
-// Fighter Plane
+// Fighter Planes
 const string t_bf109 = "$"+bn_bf109+"$";
 
-// Bomber Plane
-const string t_bomber = "$"+bn_bomber+"$";
+// Bomber Planes
+const string t_b24 = "$"+bn_b24+"$";
+const string t_pe2 = "$"+bn_pe2+"$";
+const string t_he111 = "$"+bn_he111+"$";
 
 // Helicopter
 const string t_uh1 = "$"+bn_uh1+"$";
@@ -482,9 +494,9 @@ const VehicleParams[][] vehicles = {
 	},
 	/* Bomber Plane */
 	{
-		VehicleParams(n_bomber, t_bomber, bn_bomber, d_bomber, c_bomber, ct_bomber, Vec2f(4,2)),
-		VehicleParams(n_bomber, t_bomber, bn_bomber, d_bomber, c_bomber, ct_bomber, Vec2f(4,2)),
-		VehicleParams(n_bomber, t_bomber, bn_bomber, d_bomber, c_bomber, ct_bomber, Vec2f(4,2))
+		VehicleParams(n_b24, t_b24, bn_b24, d_b24, c_b24, ct_b24, Vec2f(4,2)),
+		VehicleParams(n_pe2, t_pe2, bn_pe2, d_pe2, c_pe2, ct_pe2, Vec2f(4,2)),
+		VehicleParams(n_he111, t_he111, bn_he111, d_he111, c_he111, ct_he111, Vec2f(4,2))
 	},
 	/* Helicopter */
 	{
