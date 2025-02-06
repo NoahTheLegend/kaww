@@ -646,6 +646,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 			proj.server_SetTimeToDie(8);
 			proj.Tag("rpg");
+			proj.Tag("heli_proj");
 			proj.Tag("no_hitmap");
 
 			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("DRIVER");

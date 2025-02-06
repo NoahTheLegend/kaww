@@ -57,9 +57,9 @@ const u16 c_mortar = 20;
 const u16 c_bf109 = 30;
 
 // Bomber Planes
-const u16 c_b24 = 75;
-const u16 c_pe2 = 70;
-const u16 c_he111 = 80;
+const u16 c_b24 = 65;
+const u16 c_pe2 = 60;
+const u16 c_he111 = 70;
 
 // Helicopter
 const u16 c_uh1 = 50;
