@@ -544,6 +544,18 @@ void onInit(CBlob@ this)
 	}
 }
 
+void setTurretDegrees(CBlob@ this)
+{
+	if (this.hasTag("turret"))
+	{
+		AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("TURRET");
+		if (ap !is null && ap.getOccupied() !is null)
+		{
+			this.setAngleDegrees(Maths::Round(ap.getOccupied().getAngleDegrees() * 10) * 0.1f);
+		}
+	}
+}
+
 void ManageFlipping(CBlob@ this)
 {
 	u32 endtime = this.get_u32("flipping_endtime");
@@ -605,7 +617,8 @@ void onTick(CBlob@ this)
 {
 	CMap@ map = getMap();
 	if (map is null) return;
-	
+
+	setTurretDegrees(this);
 	visualTimerTick(this);
 	ManageFlipping(this);
 	ManageDisguise(this);

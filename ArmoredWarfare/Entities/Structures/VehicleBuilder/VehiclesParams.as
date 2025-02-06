@@ -43,9 +43,9 @@ const u16 c_kingtiger = 75;
 const u16 c_m103 = 65;
 
 // Super Heavy Tank
-const u16 c_abrams = 130;
+const u16 c_abrams = 135;
 const u16 c_maus = 130;
-const u16 c_is7 = 120;
+const u16 c_is7 = 125;
 
 // Artillery
 const u16 c_arti = 65;
