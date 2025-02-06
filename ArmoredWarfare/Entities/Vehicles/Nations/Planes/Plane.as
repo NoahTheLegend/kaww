@@ -34,14 +34,14 @@ void onInit(CBlob@ this)
 	f32 bullet_spread = 40.0f;
 
 	bool bomb_drop = false;
-	u16 bomb_drop_rate_smallbomb = 15;
-	u16 bomb_drop_rate_bigbomb = 120;
+	u16 bomb_drop_rate_smallbomb = 13;
+	u16 bomb_drop_rate_bigbomb = 90;
 
 	bool custom_propeller = false;
 	Vec2f propeller_offset = Vec2f_zero;
 
 	f32 max_speed = 60.0f;
-	f32 acceleration = 2.5f;
+	f32 acceleration = 2.75f;
 	f32 windage = 2.0f;
 	f32 land_rotation = 7;
 
@@ -73,15 +73,15 @@ void onInit(CBlob@ this)
 			main_gun_offset = Vec2f(-40, -2);
 			mid_gun_offset = Vec2f(18, 8);
 			
-			fire_rate = 3;
+			fire_rate = 2;
 			bullet_damage = 0.4f;
 			bullet_speed = 20;
 			bullet_ttl = 30;
 			
-			acceleration = 1.5f;
+			acceleration = 2.15f;
 			custom_propeller = true;
 			propeller_offset = Vec2f(-12,-2);
-			max_speed = 53.0f;
+			max_speed = 56.0f;
 
 			land_rotation = 5;
             break;
@@ -101,17 +101,17 @@ void onInit(CBlob@ this)
 			main_gun_offset = Vec2f(-40, -2);
 			mid_gun_offset = Vec2f(7, 9);
 
-			fire_rate = 3;
+			fire_rate = 2;
 			bullet_damage = 0.4f;
 			bullet_speed = 20;
 			bullet_ttl = 30;
 			bullet_spread = 30.0f;
-			bomb_drop_rate_smallbomb = 12;
+			bomb_drop_rate_smallbomb = 10;
 
-			acceleration = 1.5f;
+			acceleration = 2.0f;
 			custom_propeller = true;
 			propeller_offset = Vec2f(-44,3);
-			max_speed = 50.0f;
+			max_speed = 52.5f;
 
 			land_rotation = 3;
             break;
@@ -131,16 +131,16 @@ void onInit(CBlob@ this)
 			main_gun_offset = Vec2f(-38, -5);
 			mid_gun_offset = Vec2f(14.5f, -8);
 
-			fire_rate = 4;
+			fire_rate = 3;
 			bullet_damage = 0.6f;
 			bullet_speed = 22;
 			bullet_ttl = 30;
-			bomb_drop_rate_bigbomb = 75;
+			bomb_drop_rate_bigbomb = 60;
 
-			acceleration = 1.5f;
+			acceleration = 2.3f;
 			custom_propeller = true;
 			propeller_offset = Vec2f(-35,6);
-			max_speed = 52.0f;
+			max_speed = 54.0f;
 
 			land_rotation = 6;
             break;
@@ -1002,7 +1002,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	}
 	else if (this.hasTag("bomberplane"))
 	{
-		if (hitterBlob.getName() == "missile_javelin" || hitterBlob.hasTag("rpg"))
+		if (hitterBlob.getName() == "missile_javelin" || (hitterBlob.hasTag("rpg") && !hitterBlob.hasTag("heli_proj")))
 		{
 			return damage * 1.5f;
 		}

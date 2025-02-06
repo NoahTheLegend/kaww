@@ -28,7 +28,7 @@ const u16 c_welding_tool = 12;
 const u16 c_binoculars = 6;
 const u16 c_small_bomb = 3;
 const u16 c_ftw = 12;
-const u16 c_907kg_bomb = 50;
+const u16 c_907kg_bomb = 40;
 const u16 c_5t_bomb = 300;
 
 // build time
