@@ -9,7 +9,6 @@ void onInit(CBlob@ this)
 	this.Tag("deal_bunker_dmg");
 	this.Tag("engine_can_get_stuck");
 	this.Tag("truck");
-	this.Tag("respawn_if_crew_present");
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();

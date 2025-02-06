@@ -9,7 +9,6 @@ void onInit(CBlob@ this)
 	this.Tag("artillery");
 	this.Tag("distant_view");
 	this.Tag("driver_exposed");
-	this.Tag("respawn_if_crew_present");
 
 	CShape@ shape = this.getShape();
 	ShapeConsts@ consts = shape.getConsts();
