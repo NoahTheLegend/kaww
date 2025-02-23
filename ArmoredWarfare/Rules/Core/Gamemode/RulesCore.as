@@ -202,7 +202,7 @@ shared class RulesCore
 
 		if (player.lastBlobName.length() > 0 && p !is null)
 		{
-			if (player.lastBlobName == "ballista_bolt") player.lastBlobName == "revolver"; // if it fails, don't respawn us as ballista_bolt
+			if (player.lastBlobName == "ballista_bolt") player.lastBlobName = "revolver"; // if it fails, don't respawn us as ballista_bolt
 			p.blob_name = filterBlobNameToSpawn(player.lastBlobName, player);
 		}
 

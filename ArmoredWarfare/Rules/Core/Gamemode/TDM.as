@@ -1200,26 +1200,26 @@ void onRestart(CRules@ this)
 	this.set_bool("show_warn_extended_time", false);
 }
 
-u16 blobscreated = 0;
-u16 blobsdestroyed = 0;
+uint blobscreated = 0;
+uint blobsdestroyed = 0;
 
-void onBlobCreated(CRules@ this, CBlob@ blob)
-{
-	if (!isServer()) return;
-	if (blob is null) return;
+//void onBlobCreated(CRules@ this, CBlob@ blob)
+//{
+//	if (!isServer()) return;
+//	if (blob is null) return;
+//
+//	string name = blob.getName();
+//	blobscreated++;
+//}
 
-	string name = blob.getName();
-	blobscreated++;
-}
-
-void onBlobDie(CRules@ this, CBlob@ blob)
-{
-	if (!isServer()) return;
-	if (blob is null) return;
-
-	string name = blob.getName();
-	blobsdestroyed++;
-}
+//void onBlobDie(CRules@ this, CBlob@ blob)
+//{
+//	if (!isServer()) return;
+//	if (blob is null) return;
+//
+//	string name = blob.getName();
+//	blobsdestroyed++;
+//}
 
 void WriteMatchInfo(CRules@ this)
 {
