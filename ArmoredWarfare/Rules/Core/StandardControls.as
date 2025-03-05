@@ -180,6 +180,7 @@ void onTick(CBlob@ this)
 
 	// rotate blobs in hands
 	//if (isServer())
+	/*
 	{
 		CBlob@ carried = this.getCarriedBlob();
 		if (carried !is null && carried.hasTag("hand_rotation"))
@@ -198,10 +199,7 @@ void onTick(CBlob@ this)
 			carried.setAngleDegrees(angle);
 		}
 	}
-
-	CControls@ controls = getControls();
-
-	// use menu
+	*/
 
 	if (this.isKeyJustPressed(key_use))
 	{
@@ -264,10 +262,6 @@ void onTick(CBlob@ this)
 		return;
 	}
 
-	// no more stuff possible while in crate...
-
-	// inventory menu
-
 	if (this.getInventory() !is null && this.getTickSinceCreated() > 10)
 	{
 		if (this.isKeyJustPressed(key_inventory))
@@ -277,6 +271,10 @@ void onTick(CBlob@ this)
 			// this.ClearMenus();
 
 			//  Vec2f center =  getDriver().getScreenCenterPos(); // center of screen
+
+			CControls@ controls = getControls();
+			if (controls is null) return;
+
 			Vec2f center = controls.getMouseScreenPos();
 			if (this.exists("inventory offset"))
 			{
@@ -303,8 +301,6 @@ void onTick(CBlob@ this)
 						b.SetEnabled(false);
 				}
 			}
-
-			//controls.setMousePosition( center );
 		}
 		else if (this.isKeyJustReleased(key_inventory))
 		{
@@ -340,7 +336,7 @@ void onTick(CBlob@ this)
 
 	if (getHUD().hasButtons())
 	{
-		if ((this.isKeyJustPressed(key_action1) /*|| controls.isKeyJustPressed(KEY_LBUTTON)*/) && !this.isKeyPressed(key_pickup))
+		if ((this.isKeyJustPressed(key_action1)) && !this.isKeyPressed(key_pickup))
 		{
 			ButtonOrMenuClick(this, this.getAimPos(), false, true);
 			this.set_bool("release click", false);
@@ -356,34 +352,9 @@ void onTick(CBlob@ this)
 	{
 		this.ClearMenus();
 	}
-
-	//if (this.isKeyPressed(key_action1))
-	//{
-	//  //server_DropCoins( this.getAimPos(), 100 );
-	//  CBlob@ mat = server_CreateBlob( "cata_rock", 0, this.getAimPos());
-	//}
-
-	// keybinds
-
-	//if (controls.ActionKeyPressed(AK_BUILD_MODIFIER))
-	//{
-	//	EKEY_CODE[] keybinds = { KEY_KEY_1, KEY_KEY_2, KEY_KEY_3, KEY_KEY_4, KEY_KEY_5, KEY_KEY_6, KEY_KEY_7, KEY_KEY_8, KEY_KEY_9, KEY_KEY_0 };
-//
-	//	// loop backwards so leftmost keybinds have priority
-	//	for (int i = keybinds.size() - 1; i >= 0; i--)
-	//	{
-	//		if (controls.isKeyJustPressed(keybinds[i]))
-	//		{
-	//			CBitStream params;
-	//			params.write_u8(i);
-	//			this.SendCommand(this.getCommandID("switch"), params);
-	//		}
-	//	}
-	//}
 }
 
 // show dots on chat
-
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ ap)
 {
 	if (detached is null || !detached.isMyPlayer()) return;

@@ -163,6 +163,7 @@ void PositionCarried(CBlob@ this, CBlob@ carryBlob)
 		{
 			carryBlob.setAngleDegrees(0.0f);
 		}
+		
 		AttachmentPoint@ hands = this.getAttachments().getAttachmentPointByName("PICKUP");
 		if (hands !is null)
 		{

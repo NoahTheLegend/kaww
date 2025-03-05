@@ -2,12 +2,14 @@ const string init_rot_string = "hand_rotations_allowed_by_intial";
 
 void onInit(CBlob@ this)
 {
+    /*
     CShape@ shape = this.getShape();
     if (shape is null) return;
 
     this.set_bool(init_rot_string, shape.isRotationsAllowed());
+    */
 }
-
+/*
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ ap)
 {
     this.Tag("hand_rotation");
@@ -34,3 +36,4 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ ap)
         this.setAngleDegrees(0);
     }
 }
+*/
