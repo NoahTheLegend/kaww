@@ -405,7 +405,8 @@ f32 getPriorityPickupScale(CBlob@ this, CBlob@ b)
 	if (name == "mat_5tbomb" || name == "mat_907kgbomb") {
 		return factor_extremely_important;
 	}
-	else if ((name == "molotov" || name == "agrenade" || name == "sgrenade" || name == "grenade"
+
+	if((name == "molotov" || name == "molotov_us" || name == "molotov_nazi" || name == "agrenade" || name == "sgrenade" || name == "grenade"
 		|| name == "atgrenade" || name == "mat_atgrenade"
 		&& (b.hasTag("activated") || b.get_u8("exploding_2") > 0))) {
 		return factor_super_important; //pick up activated stuff before deactivated stuff
