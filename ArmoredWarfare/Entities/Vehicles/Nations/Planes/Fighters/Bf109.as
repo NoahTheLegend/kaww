@@ -10,6 +10,7 @@
 const f32 SPEED_MAX = 60.0f;
 const Vec2f gun_offset = Vec2f(-30, 8.5);
 f32 windage = 2.0f;
+const f32 default_angle = 20.0f;
 
 const u32 shootDelay = 2; // Ticks
 const f32 projDamage = 0.6f;
@@ -176,7 +177,7 @@ void onTick(CBlob@ this)
 			}
 			const f32 len = dir.Length();
 			dir.Normalize();
-			dir.RotateBy(this.isFacingLeft() ? 32.5f : -32.5f); // make it fly directly to cursor, works weird vertically
+			dir.RotateBy(this.isFacingLeft() ? default_angle : -default_angle); // make it fly directly to cursor, works weird vertically
 
 			bool og = this.isOnGround();
 			f32 ground_factor = og ? 4.0f : 1.0f;

@@ -286,15 +286,94 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		CBlob@ blob = getBlobByNetworkID(blobid);
 		SelectMenu(this, blob);
 	}
-	else if (cmd >= this.getCommandID("7mm") && cmd <= this.getCommandID("atgrenade"))
+	else if (cmd == this.getCommandID("7mm"))
 	{
-		u8 index = cmd - this.getCommandID("7mm");
-		this.set_string("prod_blob", prod_blobs[index]);
-		this.set_u32("prod_amount", prod_amounts[index]);
-		this.set_u32("prod_time", prod_times[index]);
-		this.set_u8("cost", costs[index]);
-		this.set_u8("id", index);
-
+		this.set_string("prod_blob", prod_blobs[0]);
+		this.set_u32("prod_amount", prod_amounts[0]);
+		this.set_u32("prod_time", prod_times[0]);
+		this.set_u8("cost", costs[0]);
+		this.set_u8("id", 0);
+		ResetTimer(this);
+	}
+	else if (cmd == this.getCommandID("14mm"))
+	{
+		this.set_string("prod_blob", prod_blobs[1]);
+		this.set_u32("prod_amount", prod_amounts[1]);
+		this.set_u32("prod_time", prod_times[1]);
+		this.set_u8("cost", costs[1]);
+		this.set_u8("id", 1);
+		ResetTimer(this);
+	}
+	else if (cmd == this.getCommandID("tankshell"))
+	{
+		this.set_string("prod_blob", prod_blobs[2]);
+		this.set_u32("prod_amount", prod_amounts[2]);
+		this.set_u32("prod_time", prod_times[2]);
+		this.set_u8("cost", costs[2]);
+		this.set_u8("id", 2);
+		ResetTimer(this);
+	}
+	else if (cmd == this.getCommandID("heats"))
+	{
+		this.set_string("prod_blob", prod_blobs[3]);
+		this.set_u32("prod_amount", prod_amounts[3]);
+		this.set_u32("prod_time", prod_times[3]);
+		this.set_u8("cost", costs[3]);
+		this.set_u8("id", 3);
+		ResetTimer(this);
+	}
+	else if (cmd == this.getCommandID("molotov"))
+	{
+		this.set_string("prod_blob", prod_blobs[4]);
+		this.set_u32("prod_amount", prod_amounts[4]);
+		this.set_u32("prod_time", prod_times[4]);
+		this.set_u8("cost", costs[4]);
+		this.set_u8("id", 4);
+		ResetTimer(this);
+	}
+	else if (cmd == this.getCommandID("grenade"))
+	{
+		this.set_string("prod_blob", prod_blobs[5]);
+		this.set_u32("prod_amount", prod_amounts[5]);
+		this.set_u32("prod_time", prod_times[5]);
+		this.set_u8("cost", costs[5]);
+		this.set_u8("id", 5);
+		ResetTimer(this);
+	}
+	else if (cmd == this.getCommandID("mine"))
+	{
+		this.set_string("prod_blob", prod_blobs[6]);
+		this.set_u32("prod_amount", prod_amounts[6]);
+		this.set_u32("prod_time", prod_times[6]);
+		this.set_u8("cost", costs[6]);
+		this.set_u8("id", 6);
+		ResetTimer(this);
+	}
+	else if (cmd == this.getCommandID("helmet"))
+	{
+		this.set_string("prod_blob", prod_blobs[7]);
+		this.set_u32("prod_amount", prod_amounts[7]);
+		this.set_u32("prod_time", prod_times[7]);
+		this.set_u8("cost", costs[7]);
+		this.set_u8("id", 7);
+		ResetTimer(this);
+	}
+	else if (cmd == this.getCommandID("specammo"))
+	{
+		this.set_string("prod_blob", prod_blobs[8]);
+		this.set_u32("prod_amount", prod_amounts[8]);
+		this.set_u32("prod_time", prod_times[8]);
+		this.set_u8("cost", costs[8]);
+		this.set_u8("id", 8);
+		ResetTimer(this);
+	}
+	else if (cmd == this.getCommandID("atgrenade"))
+	{
+		this.set_string("prod_blob", prod_blobs[9]);
+		this.set_u32("prod_amount", prod_amounts[9]);
+		this.set_u32("prod_time", prod_times[9]);
+		this.set_u8("cost", costs[9]);
+		this.set_u8("id", 9);
 		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("playsound"))
