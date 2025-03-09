@@ -389,7 +389,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				SColor team_front = getNeonColor(this.getTeamNum(), 0);
 				ProgressBar setbar;
-				setbar.Set(this.getNetworkID(), "smoke", Vec2f(80.0f, 16.0f), false, Vec2f(0, 56), Vec2f(2, 2), back, team_front,
+				setbar.Set(this.getNetworkID(), "smoke", Vec2f(80.0f, 32.0f), false, Vec2f(0, 56), Vec2f(2, 2), back, team_front,
 					"smoke_time", this.get_u32("smoke_endtime"), 0.33f, 5, 5, false, "");
 
     			bars.AddBar(this.getNetworkID(), setbar, true);
