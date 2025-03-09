@@ -314,16 +314,16 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 		if (menu !is null)
 		{
 			menu.deleteAfterClick = true;
-			CGridButton@ button0 = menu.AddButton("$ammo$", "Ammo (" + costs[0] + " -> " + prod_amounts[0] + " -> " + prod_times[0] + "s)", this.getCommandID("7mm"), Vec2f(1, 1), params);
-			CGridButton@ button1 = menu.AddButton("$mat_14mmround$", "14mm Shells (" + costs[1] + " -> " + prod_amounts[1] + " -> " + prod_times[1] + "s)", this.getCommandID("14mm"), Vec2f(1, 1), params);
-			CGridButton@ button2 = menu.AddButton("$mat_bolts$", "Tank Shells (" + costs[2] + " -> " + prod_amounts[2] + " -> " + prod_times[2] + "s)", this.getCommandID("tankshell"), Vec2f(1, 1), params);
-			CGridButton@ button3 = menu.AddButton("$mat_heatwarhead$", "HEAT Warheads (" + costs[3] + " -> " + prod_amounts[3] + " -> " + prod_times[3] + "s)", this.getCommandID("heats"), Vec2f(1, 1), params);
-			CGridButton@ button4 = menu.AddButton("$mat_molotov$", "Molotov (" + costs[4] + " -> " + prod_amounts[4] + " -> " + prod_times[4] + "s)", this.getCommandID("molotov"), Vec2f(1, 1), params);
-			CGridButton@ button5 = menu.AddButton("$grenade$", "Grenade (" + costs[5] + " -> " + prod_amounts[5] + " -> " + prod_times[5] + "s)", this.getCommandID("grenade"), Vec2f(1, 1), params);
-			CGridButton@ button6 = menu.AddButton("$mine$", "Mine (" + costs[6] + " -> " + prod_amounts[6] + " -> " + prod_times[6] + "s)", this.getCommandID("mine"), Vec2f(1, 1), params);
-			CGridButton@ button7 = menu.AddButton("$helmet$", "Helmet (" + costs[7] + " -> " + prod_amounts[7] + " -> " + prod_times[7] + "s)", this.getCommandID("helmet"), Vec2f(1, 1), params);
-			CGridButton@ button8 = menu.AddButton("$specammo$", "Special Ammo (" + costs[8] + " -> " + prod_amounts[8] + " -> " + prod_times[8] + "s)", this.getCommandID("specammo"), Vec2f(1, 1), params);
-			CGridButton@ button9 = menu.AddButton("$atgrenade$", "Anti-Tank Grenade (" + costs[9] + " -> " + prod_amounts[9] + " -> " + prod_times[9] + "s)", this.getCommandID("atgrenade"), Vec2f(1, 1), params);
+			CGridButton@ button0 = menu.AddButton("$ammo$", "Ammo (" + costs[0] + " scrap -> " + prod_times[0] + "s -> " + prod_amounts[0] + ")", this.getCommandID("7mm"), Vec2f(1, 1), params);
+			CGridButton@ button1 = menu.AddButton("$mat_14mmround$", "14mm Shells (" + costs[1] + " scrap -> " + prod_times[1] + "s -> " + prod_amounts[1] + ")", this.getCommandID("14mm"), Vec2f(1, 1), params);
+			CGridButton@ button2 = menu.AddButton("$mat_bolts$", "Tank Shells (" + costs[2] + " scrap -> " + prod_times[2] + "s -> " + prod_amounts[2] + ")", this.getCommandID("tankshell"), Vec2f(1, 1), params);
+			CGridButton@ button3 = menu.AddButton("$mat_heatwarhead$", "HEAT Warheads (" + costs[3] + " scrap -> " + prod_times[3] + "s -> " + prod_amounts[3] + ")", this.getCommandID("heats"), Vec2f(1, 1), params);
+			CGridButton@ button4 = menu.AddButton("$mat_molotov$", "Molotov (" + costs[4] + " scrap -> " + prod_times[4] + "s -> " + prod_amounts[4] + ")", this.getCommandID("molotov"), Vec2f(1, 1), params);
+			CGridButton@ button5 = menu.AddButton("$grenade$", "Grenade (" + costs[5] + " scrap -> " + prod_times[5] + "s -> " + prod_amounts[5] + ")", this.getCommandID("grenade"), Vec2f(1, 1), params);
+			CGridButton@ button6 = menu.AddButton("$mine$", "Mine (" + costs[6] + " scrap -> " + prod_times[6] + "s -> " + prod_amounts[6] + ")", this.getCommandID("mine"), Vec2f(1, 1), params);
+			CGridButton@ button7 = menu.AddButton("$helmet$", "Helmet (" + costs[7] + " scrap -> " + prod_times[7] + "s -> " + prod_amounts[7] + ")", this.getCommandID("helmet"), Vec2f(1, 1), params);
+			CGridButton@ button8 = menu.AddButton("$specammo$", "Special Ammo (" + costs[8] + " scrap -> " + prod_times[8] + "s -> " + prod_amounts[8] + ")", this.getCommandID("specammo"), Vec2f(1, 1), params);
+			CGridButton@ button9 = menu.AddButton("$atgrenade$", "Anti-Tank Grenade (" + costs[9] + " scrap -> " + prod_times[9] + "s -> " + prod_amounts[9] + ")", this.getCommandID("atgrenade"), Vec2f(1, 1), params);
 
 			if (button0 !is null && button1 !is null && button2 !is null && button3 !is null
 				&& button4 !is null && button5 !is null && button6 !is null && button7 !is null

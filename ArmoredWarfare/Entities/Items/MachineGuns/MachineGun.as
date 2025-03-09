@@ -134,7 +134,8 @@ void onTick(CBlob@ this)
 
 	bool pickup = this.isAttachedToPoint("PICKUP");
 	bool is_attached = this.isAttached() || pickup;
-	
+	bool no_rotate = false;
+
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
 	if (isClient())
@@ -155,6 +156,7 @@ void onTick(CBlob@ this)
 			arm.ResetTransform();
 			arm.SetRelativeZ(-10.0f);
 			arm.RotateBy(this.isFacingLeft() ? 90 : -90, Vec2f_zero);
+			no_rotate = true;
 		}
 		else arm.SetRelativeZ(100.0f);
 	}
@@ -186,13 +188,53 @@ void onTick(CBlob@ this)
 		}
 	}
 
+	f32 angle = getAimAngle(this, v);
+	Vehicle_SetWeaponAngle(this, angle, v);
+    Vec2f arm_offset = this.get_Vec2f("arm offset");
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+	
+	if (arm !is null)
+	{
+		//if (this.hasAttached())
+		{
+			bool facing_left = sprite.isFacingLeft();
+			f32 rotation = angle * (facing_left ? -1 : 1);
+
+			CInventory@ inventory = this.getInventory();
+			if (inventory != null)
+			{
+				arm.animation.frame = 1;
+
+				if (this.hasAttached() && inventory.getItemsCount() <= 0)
+				{
+					v.getCurrentAmmo().ammo_stocked = 0;
+				}
+			}
+
+			if (!no_rotate)
+			{
+				if (ap !is null && ap.getOccupied() !is null)
+					arm.SetRelativeZ(100.0f);
+				else
+					arm.SetRelativeZ(100.0f);
+
+				arm.ResetTransform();
+				arm.SetFacingLeft((rotation > -90 && rotation < 90) ? facing_left : !facing_left);
+				arm.SetOffset(Vec2f(this.isAttached() && (angle > 90 || angle <= -90) ?-2:0,0)+arm_offset);
+				arm.RotateBy(rotation + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -4.0f : 4.0f, 0.0f));
+				
+				AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+				if (this.hasAttached()) arm.RotateBy(-this.getAngleDegrees(), Vec2f(0,0));
+			}
+		}
+	}
+
 	if (!(isClient() && isServer()) && (getGameTime() == 0 || getGameTime() < 60*30))
 	{
 		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
 		return; // turn engines off!
 	}
 
-	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
 	if (((ap !is null && !ap.isKeyPressed(key_action1)) || this.get_bool("overheated")) && getGameTime() % COOLDOWN_TICKRATE == 0)
 	{
 		if (this.get_f32("overheat") > COOLDOWN_RATE)
@@ -241,42 +283,6 @@ void onTick(CBlob@ this)
 			}
 			else if (gunner.get_u8("mg_hidelevel") < 5) gunner.set_u8("mg_hidelevel", gunner.get_u8("mg_hidelevel") + 1);
 			if (gunner.get_u8("mg_hidelevel") < 5) return;
-		}
-	}
-
-	f32 angle = getAimAngle(this, v);
-	Vehicle_SetWeaponAngle(this, angle, v);
-    Vec2f arm_offset = this.get_Vec2f("arm offset");
-
-	if (arm !is null)
-	{
-		//if (this.hasAttached())
-		{
-			bool facing_left = sprite.isFacingLeft();
-			f32 rotation = angle * (facing_left ? -1 : 1);
-
-			CInventory@ inventory = this.getInventory();
-			if (inventory != null)
-			{
-				arm.animation.frame = 1;
-
-				if (this.hasAttached() && inventory.getItemsCount() <= 0)
-				{
-					v.getCurrentAmmo().ammo_stocked = 0;
-				}
-			}
-
-			if (ap !is null && ap.getOccupied() !is null)
-				arm.SetRelativeZ(100.0f);
-			else
-				arm.SetRelativeZ(100.0f);
-
-			arm.ResetTransform();
-			arm.SetFacingLeft((rotation > -90 && rotation < 90) ? facing_left : !facing_left);
-			arm.SetOffset(Vec2f(this.isAttached() && (angle > 90 || angle <= -90) ?-2:0,0)+arm_offset);
-			arm.RotateBy(rotation + ((rotation > -90 && rotation < 90) ? 0 : 180), Vec2f(((rotation > -90 && rotation < 90) ? facing_left : !facing_left) ? -4.0f : 4.0f, 0.0f));
-			AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
-			if (this.hasAttached()) arm.RotateBy(-this.getAngleDegrees(), Vec2f(0,0));
 		}
 	}
 
