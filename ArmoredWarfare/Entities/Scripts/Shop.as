@@ -148,6 +148,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		bool producing = params.read_bool();
 		f32 buy_time = params.read_f32();
 		u8 s_index = params.read_u8();
+		u8 stacks = params.read_u8();
 		bool hotkey = params.read_bool();
 
 		CBlob@ caller = getBlobByNetworkID(callerID);
@@ -245,10 +246,31 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 					if (spawnInCrate)
 					{
-						CBlob@ crate = server_MakeCrate(s.blobName, s.name, s.crate_icon, caller.getTeamNum(), caller.getPosition());
+						CBlob@ crate = null;
+						if (newlyMade is null)
+						{
+							@crate = server_MakeCrate(s.blobName, s.name, s.crate_icon, caller.getTeamNum(), caller.getPosition());
+							@newlyMade = crate;
+						}
+						else
+						{
+							@crate = newlyMade;
+						}
 
 						if (crate !is null)
 						{
+							if (stacks > 1)
+							{
+								for (u8 i = 1; i < stacks; i++)
+								{
+									CBlob@ blob = server_CreateBlob(s.blobName, caller.getTeamNum(), this.getPosition() + spawn_offset);
+									if (blob !is null)
+									{
+										crate.server_PutInInventory(blob);
+									}
+								}
+							}
+							
 							if (spawnToInventory && caller.canBePutInInventory(crate))
 							{
 								caller.server_PutInInventory(crate);
@@ -257,46 +279,68 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 							{
 								caller.server_Pickup(crate);
 							}
-							@newlyMade = crate;
 						}
 					}
 					else
 					{
-						CBlob@ blob = server_CreateBlob(s.blobName, caller.getTeamNum(), this.getPosition() + spawn_offset);
-						CInventory@ callerInv = caller.getInventory();
-						if (blob !is null)
+						for (u8 i = 0; i < stacks; i++)
 						{
-							bool pickable = blob.getAttachments() !is null && blob.getAttachments().getAttachmentPointByName("PICKUP") !is null;
-							if (spawnToInventory)
+							CBlob@ blob = server_CreateBlob(s.blobName, caller.getTeamNum(), this.getPosition() + spawn_offset);
+							CInventory@ callerInv = caller.getInventory();
+							if (blob !is null)
 							{
-								if (!blob.canBePutInInventory(caller))
+								bool pickable = blob.getAttachments() !is null && blob.getAttachments().getAttachmentPointByName("PICKUP") !is null;
+								if (spawnToInventory)
 								{
-									caller.server_Pickup(blob);
-								}
-								else if (!callerInv.isFull())
-								{
-									caller.server_PutInInventory(blob);
-								}
-								// Hack: Archer Shop can force Archer to drop Arrows.
-								else if (this.getName() == "archershop" && caller.getName() == "archer")
-								{
-									int arrowCount = callerInv.getCount("mat_arrows");
-									int stacks = arrowCount / 30;
-									// Hack: Depends on Arrow stack size.
-									if (stacks > 1)
+									if (!blob.canBePutInInventory(caller))
 									{
-										CBlob@ arrowStack = caller.server_PutOutInventory("mat_arrows");
-										if (arrowStack !is null)
+										caller.server_Pickup(blob);
+									}
+									else if (!callerInv.isFull())
+									{
+										caller.server_PutInInventory(blob);
+									}
+									// Hack: Archer Shop can force Archer to drop Arrows.
+									else if (this.getName() == "archershop" && caller.getName() == "archer")
+									{
+										int arrowCount = callerInv.getCount("mat_arrows");
+										int arrstacks = arrowCount / 30;
+										// Hack: Depends on Arrow stack size.
+										if (arrstacks > 1)
 										{
-											if (arrowStack.getAttachments() !is null && arrowStack.getAttachments().getAttachmentPointByName("PICKUP") !is null)
+											CBlob@ arrowStack = caller.server_PutOutInventory("mat_arrows");
+											if (arrowStack !is null)
 											{
-												caller.server_Pickup(arrowStack);
+												if (arrowStack.getAttachments() !is null && arrowStack.getAttachments().getAttachmentPointByName("PICKUP") !is null)
+												{
+													caller.server_Pickup(arrowStack);
+												}
+												else
+												{
+													arrowStack.setPosition(caller.getPosition());
+												}
 											}
-											else
-											{
-												arrowStack.setPosition(caller.getPosition());
-											}
+											caller.server_PutInInventory(blob);
 										}
+										else if (pickable)
+										{
+											caller.server_Pickup(blob);
+										}
+									}
+									else if (pickable)
+									{
+										caller.server_Pickup(blob);
+									}
+								}
+								else
+								{
+									CBlob@ carried = caller.getCarriedBlob();
+									if (carried is null && pickable)
+									{
+										caller.server_Pickup(blob);
+									}
+									else if (blob.canBePutInInventory(caller) && !callerInv.isFull())
+									{
 										caller.server_PutInInventory(blob);
 									}
 									else if (pickable)
@@ -304,28 +348,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 										caller.server_Pickup(blob);
 									}
 								}
-								else if (pickable)
-								{
-									caller.server_Pickup(blob);
-								}
+								@newlyMade = blob;
 							}
-							else
-							{
-								CBlob@ carried = caller.getCarriedBlob();
-								if (carried is null && pickable)
-								{
-									caller.server_Pickup(blob);
-								}
-								else if (blob.canBePutInInventory(caller) && !callerInv.isFull())
-								{
-									caller.server_PutInInventory(blob);
-								}
-								else if (pickable)
-								{
-									caller.server_Pickup(blob);
-								}
-							}
-							@newlyMade = blob;
 						}
 					}
 
@@ -349,6 +373,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_f32("construct_time", 0);
 		this.set_string("constructing_name", "");
 		this.set_s8("constructing_index", 0);
+		this.set_u8("constructing_stacks", 1);
 		this.set_bool("constructing", false);
 
 		u16 callerID;
@@ -361,6 +386,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		bool producing = params.read_bool();
 		f32 buy_time = params.read_f32();
 		u8 s_index = params.read_u8();
+		u8 stacks = params.read_u8();
+		if (stacks == 0) stacks = 1;
 		bool hotkey = params.read_bool();
 
 		CBlob@ caller = getBlobByNetworkID(callerID);
@@ -385,6 +412,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			this.set_f32("construct_time", 1); // gets stuck if caller is too far already and this is set to 0
 			this.set_string("constructing_name", s.blobName);
 			this.set_s8("constructing_index", s_index);
+			this.set_u8("constructing_stacks", stacks);
 			this.set_bool("constructing", true);
 
 			u32 endtime = buy_time;
@@ -440,6 +468,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			stream.write_bool(false);
 			stream.write_f32(this.get_u32("construct_endtime"));
 			stream.write_s8(this.get_s8("constructing_index"));
+			stream.write_u8(this.get_s8("constructing_stacks"));
 			stream.write_bool(false);
 			//printf("sent");
 			this.SendCommand(this.getCommandID("shop buy"), stream);
@@ -449,6 +478,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		this.set_f32("construct_time", 0);
 		this.set_string("constructing_name", "");
 		this.set_s8("constructing_index", 0);
+		this.set_u8("constructing_stacks", 1);
 		this.set_bool("constructing", false);
 	}
 }
@@ -504,6 +534,7 @@ void addShopItemsToMenu(CBlob@ this, CGridMenu@ menu, CBlob@ caller)
 			params.write_bool(s_item.producing);
 			params.write_f32(s_item.buy_time);
 			params.write_u8(u8(i));
+			params.write_u8(s_item.stacks);
 			params.write_bool(false); //used hotkey?
 
 			CGridButton@ button;
@@ -551,25 +582,6 @@ void BuildShopMenu(CBlob@ this, CBlob @caller, string description, Vec2f offset,
 		if (!this.hasTag(SHOP_AUTOCLOSE))
 			menu.deleteAfterClick = false;
 		addShopItemsToMenu(this, menu, caller);
-		/*
-		//keybinds
-		array<EKEY_CODE> numKeys = { KEY_KEY_1, KEY_KEY_2, KEY_KEY_3, KEY_KEY_4, KEY_KEY_5, KEY_KEY_6, KEY_KEY_7, KEY_KEY_8, KEY_KEY_9, KEY_KEY_0 };
-		uint keybindCount = Maths::Min(shopitems.length(), numKeys.length());
-
-		for (uint i = 0; i < keybindCount; i++)
-		{
-			CBitStream params;
-			params.write_u16(caller.getNetworkID());
-			params.write_bool(shopitems[i].spawnToInventory);
-			params.write_bool(shopitems[i].spawnInCrate);
-			params.write_bool(shopitems[i].producing);
-			params.write_f32(shopitems[i].buy_time);
-			params.write_u8(i);
-			params.write_bool(true); //used hotkey?
-
-			menu.AddKeyCommand(numKeys[i], this.getCommandID("shop buy"), params);
-		}
-		*/
 	}
 
 }
