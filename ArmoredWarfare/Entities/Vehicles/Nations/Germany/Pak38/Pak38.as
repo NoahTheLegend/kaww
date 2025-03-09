@@ -1,7 +1,7 @@
 #include "MakeCrate.as"
 #include "ProgressBar.as";
 
-const f32 packing_time = 150;
+const f32 packing_time = 90;
 const f32 min_health_to_pack = 0.9f;
 const f32 shield_lean_mod = 0.5f;
 const bool can_rotate = false;
