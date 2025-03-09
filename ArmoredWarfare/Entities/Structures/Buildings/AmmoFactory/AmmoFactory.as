@@ -172,7 +172,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 		}
 	}
 
-	caller.CreateGenericButton(8, Vec2f(10.0f, -10.0f), this, this.getCommandID("switch_mode"), this.get_bool("drop_items") ? "Put to inventory" : "Drop items", params);
+	caller.CreateGenericButton(8, Vec2f(10.0f, -10.0f), this, this.getCommandID("switch_mode"), this.get_bool("drop_items") ? "Mode: Put to inventory" : "Mode: Drop items", params);
 }
 
 void spawnMetal(CBlob@ this)
