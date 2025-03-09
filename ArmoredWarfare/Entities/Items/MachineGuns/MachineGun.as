@@ -134,16 +134,29 @@ void onTick(CBlob@ this)
 
 	bool pickup = this.isAttachedToPoint("PICKUP");
 	bool is_attached = this.isAttached() || pickup;
-
+	
+	CSprite@ sprite = this.getSprite();
+	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
 	if (isClient())
 	{
 		this.getSprite().SetVisible(!is_attached);
-
 		CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
 		if (cage !is null)
 		{
 			cage.SetVisible(!is_attached);
 		}
+
+		AttachmentPoint@ pickup = this.getAttachments().getAttachmentPointByName("PICKUP");
+		if (pickup is null) return;
+
+    	CBlob@ holder = pickup.getOccupied();
+		if (holder !is null)
+		{
+			arm.ResetTransform();
+			arm.SetRelativeZ(-10.0f);
+			arm.RotateBy(this.isFacingLeft() ? 90 : -90, Vec2f_zero);
+		}
+		else arm.SetRelativeZ(100.0f);
 	}
 
 	if (pickup && this.hasAttached())
@@ -233,8 +246,6 @@ void onTick(CBlob@ this)
 
 	f32 angle = getAimAngle(this, v);
 	Vehicle_SetWeaponAngle(this, angle, v);
-	CSprite@ sprite = this.getSprite();
-	CSpriteLayer@ arm = sprite.getSpriteLayer("arm");
     Vec2f arm_offset = this.get_Vec2f("arm offset");
 
 	if (arm !is null)
@@ -270,22 +281,6 @@ void onTick(CBlob@ this)
 	}
 
 	Vehicle_StandardControls(this, v);
-
-	if (arm !is null)
-	{
-		AttachmentPoint@ pickup = this.getAttachments().getAttachmentPointByName("PICKUP");
-		if (pickup is null) return;
-    	CBlob@ holder = pickup.getOccupied();
-		if (holder is null) return;
-
-		if (holder.getPlayer() !is null)
-		{
-			arm.ResetTransform();
-			arm.SetRelativeZ(-10.0f);
-			arm.RotateBy(this.isFacingLeft() ? 90 : -90, Vec2f_zero);
-		}
-		else arm.SetRelativeZ(100.0f);
-	}
 }
 
 void MakeParticle(CBlob@ this, const Vec2f vel, VehicleInfo@ v, const string filename = "SmallSteam")
