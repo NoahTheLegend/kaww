@@ -16,6 +16,7 @@
 #include "ProgressBar.as";
 #include "TeamColorCollections.as";
 #include "GlobalInfantryHooks.as";
+#include "CustomBlocks.as"
 
 //can't be <2 - needs one frame less for gathering infos
 const s32 hit_frame = 2;
@@ -414,7 +415,7 @@ bool RecdHitCommand(CBlob@ this, CBitStream@ params)
 
 				if (getNet().isClient())
 				{
-					if (map.isTileBedrock(type))
+					if (map.isTileBedrock(type) || isMetalTile(type))
 					{
 						this.getSprite().PlaySound("/metal_stone.ogg");
 						sparks(tilepos, attackVel.Angle(), 1.0f);

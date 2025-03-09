@@ -56,10 +56,8 @@ void onTick(CBlob@ this)
 		TileType tu = map.getTile(pos+Vec2f(0,-8)).type; // up
 		TileType tr = map.getTile(pos+Vec2f(8,0)).type; // right
 		
-		if (!map.isTileSolid(tb) && !map.isTileSolid(tl)
-		&& !map.isTileSolid(tu) && !map.isTileSolid(tr)
-			&& !isTileCustomSolid(tb) && !isTileCustomSolid(tl)
-			&& !isTileCustomSolid(tu) && !isTileCustomSolid(tr))
+		if (!isSolid(map, tb) && !isSolid(map, tl)
+		&& !isSolid(map, tu) && !isSolid(map, tr))
 		{
 			this.server_Die();
 		}
