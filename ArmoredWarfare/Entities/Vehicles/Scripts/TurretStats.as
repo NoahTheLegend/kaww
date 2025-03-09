@@ -25,7 +25,6 @@ class TurretStats
     s16 init_gun_angle;
     s16 arm_height;
     Vec2f arm_joint_offset;
-    //
 
     string projectile;
     string ammo;
@@ -97,7 +96,7 @@ class Obj430Turret : TurretStats
         name = "obj430turret"; hash = _obj430turret;
         cooldown_time = 240; high_angle = 76; low_angle = 96; low_angle_back = 94;
         arm_offset = Vec2f(-6.0f, -27.5f); arm_z = -50.0f; barrel_compression = 10; init_gun_angle = 2;
-        mg = "m2browning";
+        mg = "dshk";
         recoil_force = 750;
     }
 };
@@ -111,7 +110,7 @@ class T10Turret : TurretStats
         name = "t10turret"; hash = _t10turret;
         cooldown_time = 270; high_angle = 75; low_angle = 97; low_angle_back = 92; muzzle_offset = -22.0f;
         arm_offset = Vec2f(-13.0f, -27.0f); arm_z = -50.0f; barrel_compression = 11; init_gun_angle = 2;
-        mg = "m2browning";
+        mg = "dshk";
         recoil_force = 850;
         elevation_speed = 0.8f;
         bullet_pos_offset = Vec2f(0,-6);
@@ -347,7 +346,7 @@ class IS7Turret : TurretStats
         cooldown_time = 360; high_angle = 78; low_angle = 95; low_angle_back = 94; muzzle_offset = -22.0f;
         arm_offset = Vec2f(-21.0f, -34.0f); arm_z = -50.0f; barrel_compression = 12; init_gun_angle = 3;
         arm_joint_offset = Vec2f(-0.5f, 22.5f);
-        mg = "m2browning";
+        mg = "dshk";
         recoil_force = 850;
         elevation_speed = 0.5f;
         bullet_pos_offset = Vec2f(0,0);
