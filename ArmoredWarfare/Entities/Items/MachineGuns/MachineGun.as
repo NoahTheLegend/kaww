@@ -62,18 +62,12 @@ void onInit(CBlob@ this)
 		}
 	}
 }
+
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
 	if (attachedPoint.name == "GUNNER")
 	{
 		attached.Tag("machinegunner");
-	}
-	if (!attached.hasTag("has mount")) return;
-	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
-	if (cage !is null)
-	{
-		this.getSprite().SetVisible(false);
-		cage.SetVisible(false);
 	}
 }
 
@@ -88,14 +82,6 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 		detached.getSprite().ResetTransform();
 		detached.getSprite().SetOffset(Vec2f(0,-4));
 		detached.set_u8("mg_hidelevel", 5);
-	}
-	if (this.isAttached()) return;
-
-	CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
-	if (cage !is null)
-	{
-		this.getSprite().SetVisible(true);
-		cage.SetVisible(true);
 	}
 }
 
@@ -146,8 +132,21 @@ void onTick(CBlob@ this)
     f32 COOLDOWN_RATE = this.get_f32("cooldown_rate");
     u8 COOLDOWN_TICKRATE = this.get_u8("cooldown_tickrate");
 
-	bool is_attached = this.isAttached();
-	if (this.isAttachedToPoint("PICKUP") && this.hasAttached())
+	bool pickup = this.isAttachedToPoint("PICKUP");
+	bool is_attached = this.isAttached() || pickup;
+
+	if (isClient())
+	{
+		this.getSprite().SetVisible(!is_attached);
+
+		CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
+		if (cage !is null)
+		{
+			cage.SetVisible(!is_attached);
+		}
+	}
+
+	if (pickup && this.hasAttached())
 	{
 		if (isServer()) this.server_DetachFromAll();
 		return;
@@ -178,15 +177,6 @@ void onTick(CBlob@ this)
 	{
 		if (isClient() && this.getSprite() !is null) this.getSprite().SetEmitSoundPaused(true);
 		return; // turn engines off!
-	}
-
-	if (isClient() && is_attached)
-	{
-		CSpriteLayer@ cage = this.getSprite().getSpriteLayer("cage");
-		if (cage !is null && cage.isVisible())
-		{
-			cage.SetVisible(false);
-		}
 	}
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
