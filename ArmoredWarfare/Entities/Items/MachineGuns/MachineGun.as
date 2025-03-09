@@ -62,7 +62,6 @@ void onInit(CBlob@ this)
 		}
 	}
 }
-
 void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
 	if (attachedPoint.name == "GUNNER")
