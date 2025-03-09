@@ -27,6 +27,7 @@ shared class ShopItem
 	CBitStream requirementsMissing;
 	// food production
 	u8 customData;
+	u8 stacks;
 	//button hack stuff
 	bool customButton;
 	u8 buttonwidth;
@@ -53,6 +54,7 @@ shared class ShopItem
 		inProductionNow = hasRequirements = inStock = false;
 		quantityLimit = 0;
 		customData = 0;
+		stacks = 1;
 
 		spawnNothing = false;
 		customButton = false;
@@ -88,6 +90,7 @@ shared class ShopItem
 		stream.write_bool(producing);
 		stream.write_f32(buy_time);
 		stream.write_u8(customData);
+		stream.write_u8(stacks);
 
 		stream.write_bool(customButton);
 		if (customButton)
@@ -113,6 +116,7 @@ shared class ShopItem
 		if (!stream.saferead_bool(producing)) return false;
 		if (!stream.saferead_f32(buy_time)) return false;
 		if (!stream.saferead_u8(customData)) return false;
+		if (!stream.saferead_u8(stacks)) return false;
 
 		if (!stream.saferead_bool(customButton)) return false;
 		if (customButton)

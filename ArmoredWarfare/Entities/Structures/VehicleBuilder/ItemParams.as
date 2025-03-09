@@ -61,7 +61,7 @@ const u16 ct_907kg_bomb = 90;
 const u16 ct_5t_bomb = 270;
 
 // names
-const string n_standard_ammo = "Standard Ammo";
+const string n_standard_ammo = "Standard Ammo (2 stacks)";
 const string n_special_ammo = "Special Ammunition";
 const string n_14mm_rounds = "14mm Rounds";
 const string n_105mm_rounds = "Tank Rounds";
@@ -180,6 +180,7 @@ void makeDefaultAmmo(CBlob@ this)
         ShopItem@ s = addShopItem(this, n_standard_ammo, t_standard_ammo, bn_standard_ammo, d_standard_ammo, true, false, false, ct_standard_ammo);
         AddRequirement(s.requirements, "blob", "mat_scrap", "Scrap", c_standard_ammo);
 
+        s.stacks = 2;
         s.customButton = true;
         s.buttonwidth = 1;
         s.buttonheight = 1;
