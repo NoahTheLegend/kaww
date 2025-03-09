@@ -333,7 +333,9 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 
 				if (gun.getSprite() !is null)
 				{
-					gun.getSprite().PlaySound(gun.get_string("shoot sound"));
+					f32 pitch = 1.0f;
+					if (gun.exists("shoot pitch")) pitch = gun.get_f32("shoot pitch");
+					gun.getSprite().PlaySound(gun.get_string("shoot sound"), 1.0f, pitch);
 				}
 
 				if (isClient())
@@ -371,8 +373,14 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 							0,                                  // ?
 							"ShellCasing",                      // sound
 							gun.get_u8("team_color"));         // team number
-	
-							if (!gun.exists("shoot sound")) gun.getSprite().PlaySound("MGfire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
+
+							if (!gun.exists("shoot sound"))
+							{
+								f32 pitch = 1.0f;
+								if (gun.exists("shoot pitch")) pitch = gun.get_f32("shoot pitch");
+								
+								gun.getSprite().PlaySound("MGfire.ogg", 1.0f, 0.93f + XORRandom(10) * 0.01f);
+							}
 						}		
 					}
 				}
