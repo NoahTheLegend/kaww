@@ -39,7 +39,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("select");
 	this.addCommandID("7mm");
 	this.addCommandID("14mm");
-	this.addCommandID("Tank");
+	this.addCommandID("tankshell");
 	this.addCommandID("heats");
 	this.addCommandID("molotov");
 	this.addCommandID("grenade");
@@ -94,7 +94,7 @@ void onTick(CBlob@ this)
 			this.set_bool(working_prop, true);
 
 			//only convert every conversion_frequency seconds
-			if (getGameTime() % ((((10 + this.get_u8("prod_time")))) * getTicksASecond()) == this.get_u8(unique_prop))
+			if (getGameTime() % ((((this.get_u8("prod_time")))) * getTicksASecond()) == this.get_u8(unique_prop))
 			{
 				if(blobCount >= this.get_u8("cost")) this.sub_s16(metal_prop, this.get_u8("cost"));
 				else this.TakeBlob(metal_prop, this.get_u8("cost"));
@@ -262,7 +262,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "ammo"); // blob cfg name
 		this.set_u8("prod_amount", 200); // how many
-		this.set_u8("prod_time", 2); // extra seconds time (10 sec for default)
+		this.set_u8("prod_time", 5); // extra seconds time
 		this.set_u8("cost", 1); // how many scrap to take
 		this.set_u8("id", 0);
 
@@ -272,17 +272,17 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "mat_14mmround");
 		this.set_u8("prod_amount", 18);
-		this.set_u8("prod_time", 5);
+		this.set_u8("prod_time", 10);
 		this.set_u8("cost", 1);
 		this.set_u8("id", 1);
 
 		ResetTimer(this);
 	}
-	else if (cmd == this.getCommandID("Tank"))
+	else if (cmd == this.getCommandID("tankshell"))
 	{
 		this.set_string("prod_blob", "mat_bolts");
 		this.set_u8("prod_amount", 6);
-		this.set_u8("prod_time", 7);
+		this.set_u8("prod_time", 15);
 		this.set_u8("cost", 1);
 		this.set_u8("id", 2);
 
@@ -292,7 +292,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "mat_heatwarhead");
 		this.set_u8("prod_amount", 3);
-		this.set_u8("prod_time", 28);
+		this.set_u8("prod_time", 30);
 		this.set_u8("cost", 7);
 		this.set_u8("id", 3);
 
@@ -300,10 +300,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("molotov"))
 	{
-		bool rebels_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 3; // team 3 buff
-        u8 extra_amount = 0;
-        if (rebels_power) extra_amount = 3;
-		
 		u8 tn = this.getTeamNum();
 		string name = "mat_molotov";
 		if (tn == 0) name = "mat_molotov_us";
@@ -311,7 +307,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		
 		this.set_string("prod_blob", name);
 		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 10-extra_amount);
+		this.set_u8("prod_time", 10);
 		this.set_u8("cost", 2);
 		this.set_u8("id", 4);
 
@@ -321,7 +317,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "grenade");
 		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 10);
+		this.set_u8("prod_time", 15);
 		this.set_u8("cost", 2);
 		this.set_u8("id", 5);
 
@@ -341,7 +337,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "helmet");
 		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 15);
+		this.set_u8("prod_time", 10);
 		this.set_u8("cost", 2);
 		this.set_u8("id", 7);
 
@@ -361,7 +357,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	{
 		this.set_string("prod_blob", "mat_atgrenade"+(this.getTeamNum() == 2 ? "nazi" : ""));
 		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 15);
+		this.set_u8("prod_time", 20);
 		this.set_u8("cost", 3);
 		this.set_u8("id", 10);
 
@@ -388,7 +384,7 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 			CGridButton@ button0 = menu.AddButton("$ammo$", "Ammo", this.getCommandID("7mm"), Vec2f(1, 1), params);
 			CGridButton@ button8 = menu.AddButton("$specammo$", "Special Ammo", this.getCommandID("specammo"), Vec2f(1, 1), params);
 			CGridButton@ button1 = menu.AddButton("$mat_14mmround$", "14mm Shells", this.getCommandID("14mm"), Vec2f(1, 1), params);
-			CGridButton@ button2 = menu.AddButton("$mat_bolts$", "Tank Shells", this.getCommandID("Tank"), Vec2f(1, 1), params);
+			CGridButton@ button2 = menu.AddButton("$mat_bolts$", "Tank Shells", this.getCommandID("tankshell"), Vec2f(1, 1), params);
 			CGridButton@ button3 = menu.AddButton("$mat_heatwarhead$", "HEAT Warheads", this.getCommandID("heats"), Vec2f(1, 1), params);
 			CGridButton@ button4 = menu.AddButton("$mat_molotov$", "Molotov", this.getCommandID("molotov"), Vec2f(1, 1), params);
 			CGridButton@ button5 = menu.AddButton("$grenade$", "Grenade", this.getCommandID("grenade"), Vec2f(1, 1), params);
