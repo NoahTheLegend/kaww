@@ -39,6 +39,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("add metal");
 
 	this.set_s16(metal_prop, 0);
+	this.set_u32("timer", 0);
 	this.set_bool(working_prop, false);
 
 	this.Tag("builder always hit");
@@ -126,6 +127,7 @@ void onTick(CBlob@ this)
 			}
 			
 			this.set_u32("timer", timer >= prod_time * getTicksASecond() ? 0 : timer + 1);
+			this.Sync("timer", true);
 			this.Sync(working_prop, true);
 		}
 		else this.set_u32("last_prod", getGameTime());
