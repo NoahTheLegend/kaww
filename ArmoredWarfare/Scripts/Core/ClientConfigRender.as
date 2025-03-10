@@ -45,6 +45,7 @@ void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
         cfg.add_u16("ammo_autopickup", 100);
         cfg.add_bool("head_rotation", true);
         cfg.add_bool("body_rotation", true);
+        cfg.add_bool("reset ping cursor", true);
 	}
     else if (vars !is null)
     {
@@ -52,6 +53,7 @@ void LoadConfig(CRules@ this, ClientVars@ vars) // load cfg from cache
         vars.ammo_autopickup = cfg.read_u16("ammo_autopickup", 100);
         vars.head_rotation = cfg.read_bool("head_rotation", true);
         vars.body_rotation = cfg.read_bool("body_rotation", true);
+        vars.reset_ping_cursor = cfg.read_bool("reset ping cursor", true);
     }
 }
 
@@ -104,6 +106,10 @@ void SetupUI(CRules@ this) // add options here
         body_rotation.check.state = vars.body_rotation;
         preference.addOption(body_rotation);  
 
+        Option reset_ping_cursor("Reset cursor upon png", body_rotation.pos+Vec2f(0,option_offset), false, true);
+        reset_ping_cursor.check.state = vars.reset_ping_cursor;
+        preference.addOption(reset_ping_cursor);
+
         setmenu.addSection(preference);
 
         ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,6 +154,9 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
                 
                 Option body_rotation    = menu.sections[1].options[1];
                 vars.body_rotation      = body_rotation.check.state;
+
+                Option reset_ping_cursor = menu.sections[1].options[2];
+                vars.reset_ping_cursor = reset_ping_cursor.check.state;
             }
 
             //====================================================
@@ -160,6 +169,7 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
                 cfg.add_u16("ammo_autopickup", vars.ammo_autopickup);
                 cfg.add_bool("head_rotation", vars.head_rotation);
                 cfg.add_bool("body_rotation", vars.body_rotation);
+                cfg.add_bool("reset ping cursor", vars.reset_ping_cursor);
                 //====================================================
                 // save config
 	        	cfg.saveFile("AW/clientconfig.cfg");
@@ -175,6 +185,7 @@ void WriteConfig(CRules@ this, ConfigMenu@ menu) // save config
                 cfg.add_u16("ammo_autopickup", 100);
                 cfg.add_bool("head_rotation", true);
                 cfg.add_bool("body_rotation", true);
+                cfg.add_bool("reset ping cursor", true);
                 //====================================================
 		        cfg.saveFile("AW/clientconfig.cfg");
             }
