@@ -141,7 +141,6 @@ void onTick(CBlob@ this)
 				{
 					// manage oar sprite animation
 					CSpriteLayer@ oar = this.getSprite().getSpriteLayer("oar " + i);
-
 					bool splash = false;
 
 					if (oar !is null)
