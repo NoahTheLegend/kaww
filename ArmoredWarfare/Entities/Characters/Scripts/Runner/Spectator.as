@@ -139,7 +139,7 @@ void Spectator(CRules@ this)
 	else if (!waitForRelease && controls.isKeyPressed(KEY_LBUTTON) && camera.getTarget() is null) //classic-like held mouse moving
 	{
 		// prevent camera moving when clicking to vote for map
-		if (!this.isGameOver() && !this.hasScript("PostGameMapVotes"))
+		if (!this.hasScript("PostGameMapVotes"))
 		{
 			pos += ((mousePos - pos) / 8.0f) * getRenderApproximateCorrectionFactor();
 		}
