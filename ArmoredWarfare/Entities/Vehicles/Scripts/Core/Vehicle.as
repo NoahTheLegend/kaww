@@ -8,6 +8,7 @@
 #include "HittersAW.as";
 #include "Explosion.as";
 #include "ProgressBar.as";
+#include "TurretStats.as";
 
 // general script for all vehicles, includes movement features, attachments,
 // visuals, core damage modifiers and damage logic (for bunkers as well)
@@ -48,6 +49,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("aos_effects");
 	this.addCommandID("sync_mag");
 	this.addCommandID("reload_mag");
+	this.addCommandID("sync_cooldown");
 	this.Tag("lag_ondie");
 
 	//vehicle common
@@ -866,7 +868,22 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	/// LOAD AMMO
 	if (isServer)
 	{
-		if (cmd == this.getCommandID("load_ammo"))
+		if (cmd == this.getCommandID("sync_cooldown"))
+		{
+			if (!isClient()) return;
+
+			VehicleInfo@ v;
+			if (!this.get("VehicleInfo", @v))
+			{
+				return;
+			}
+
+			s32 time;
+			if (!params.saferead_s32(time)) return;
+
+			v.cooldown_time = time;
+		}
+		else if (cmd == this.getCommandID("load_ammo"))
 		{
 			VehicleInfo@ v;
 			if (!this.get("VehicleInfo", @v))
@@ -1240,6 +1257,17 @@ void reloadMag(CBlob@ this)
 	v.fire_time = 0;
 	v.charge = 0;
 	v.firing = false;
+
+	TurretStats@ stats;
+	if (this.get("TurretStats", @stats))
+	{
+		if (stats.cassette_size != 0)
+		{
+			v.getCurrentAmmo().fire_delay = stats.cooldown_time;
+			v.cooldown_time = stats.cooldown_time;
+			v.fired_amount = 1;
+		}
+	}
 
 	this.set_u32("fired_amount", v.fired_amount);
 	SetFireDelay(this, v.getCurrentAmmo().fire_delay, v);

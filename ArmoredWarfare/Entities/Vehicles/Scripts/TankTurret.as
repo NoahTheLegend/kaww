@@ -85,6 +85,11 @@ void onTick(CBlob@ this)
 		return;
 	}
 
+	if (v.cooldown_time > 0)
+	{
+		v.cooldown_time--;
+	}
+
     TurretStats@ stats;
     if (!this.get("TurretStats", @stats))
     {
@@ -129,11 +134,6 @@ void onTick(CBlob@ this)
 
 		bool broken = this.hasTag("broken");
 		if (!broken) Vehicle_StandardControls(this, v);
-
-		if (v.cooldown_time > 0)
-		{
-			v.cooldown_time--;
-		}
 
 		f32 angle = getAngle(this, v.charge, stats, v);
 		f32 targetAngle;
