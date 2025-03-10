@@ -1068,6 +1068,7 @@ void onCommand(CRules@ this, u8 cmd, CBitStream@ params)
 				ping.end_time = getGameTime() + map_ping_time;
 				ping.fadeout_time = map_ping_fadeout_time;
 				ping.fadeout = 0;
+				pings.push_back(ping);
 				map_pings.push_back(ping);
 			}
 			else

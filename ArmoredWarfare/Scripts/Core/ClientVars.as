@@ -8,6 +8,8 @@ class ClientVars {
 
     bool body_rotation;
     bool head_rotation;
+    
+    bool reset_ping_cursor;
 
     ClientVars()
     {
@@ -17,5 +19,7 @@ class ClientVars {
         
         body_rotation = true;
         head_rotation = true;
+
+        reset_ping_cursor = true;
     }
 };
