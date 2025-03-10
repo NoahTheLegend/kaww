@@ -102,13 +102,6 @@ void onTick(CBlob@ this)
 
 	if (!isServer()) return;
 	if (this.getTickSinceCreated() < 30) return;
-	CShape@ shape = this.getShape();
-	if (shape is null) return;
-	
-	if (!shape.isOverlappingTileBackground(true) && !shape.isOverlappingTileSolid(true))
-	{
-		this.server_Hit(this, this.getPosition(), Vec2f_zero, 15.0f, 0, true);
-	}
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)

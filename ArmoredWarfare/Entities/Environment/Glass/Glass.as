@@ -4,7 +4,6 @@
 void onInit(CBlob@ this)
 {
 	this.SetFacingLeft(XORRandom(100) < 30);
-
 	this.getSprite().SetZ(5);
 
 	this.Tag("destructable");

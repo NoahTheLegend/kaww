@@ -199,13 +199,6 @@ void onTick(CBlob@ this)
 
 	if (!isServer()) return;
 	if ((getGameTime()+this.getNetworkID()) % 60 != 0 || this.getTickSinceCreated() < 30) return;
-	CShape@ shape = this.getShape();
-	if (shape is null) return;
-	
-	if (!shape.isOverlappingTileBackground(true) && !shape.isOverlappingTileSolid(true))
-	{
-		this.server_Hit(this, this.getPosition(), Vec2f_zero, 25.0f, 0, true);
-	}
 }
 
 // draw a stone/mat bar on mouse hover
