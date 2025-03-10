@@ -837,6 +837,8 @@ void CleanUp(CMovement@ this, CBlob@ blob, RunnerMoveVars@ moveVars)
 	moveVars.canVault = true;
 }
 
+const int max_vehicle_climb_angle = 20;
+
 //TODO: fix flags sync and hitting so we dont need this
 // blob is an optional parameter to check collisions for, e.g. you don't want enemies to climb a trapblock
 bool checkForSolidMapBlob(CMap@ map, Vec2f pos, CBlob@ blob = null)
@@ -846,19 +848,31 @@ bool checkForSolidMapBlob(CMap@ map, Vec2f pos, CBlob@ blob = null)
 	if (_tempBlob !is null && _tempBlob.isCollidable())
 	{
 		@_tempShape = _tempBlob.getShape();
-		if (_tempShape.isStatic())
+		bool is_collidable_vehicle = _tempBlob.hasTag("vehicle") && _tempBlob.isCollidable();
+		if (_tempShape.isStatic() || is_collidable_vehicle)
 		{
-			if (blob !is null && (_tempBlob.getName() == "wooden_platform" || _tempBlob.getName() == "bridge"))
+			if (blob !is null && (_tempBlob.getName() == "wooden_platform"
+				|| _tempBlob.getName() == "bridge"
+				|| is_collidable_vehicle))
 			{
+				bool facingleft = _tempBlob.isFacingLeft();
 				f32 angle = _tempBlob.getAngleDegrees();
 				Vec2f runnerPos = blob.getPosition();
 				Vec2f platPos = _tempBlob.getPosition();
+
+				if (is_collidable_vehicle && blob.getTeamNum() != _tempBlob.getTeamNum())
+				{
+					if ((angle >= 270 && angle < 270 + max_vehicle_climb_angle)
+						|| (angle >= 90 - max_vehicle_climb_angle && angle < 90))	
+					{
+						return true;
+					}	
+				}
 
 				if (angle == 90.0f && runnerPos.x > platPos.x && (blob.isKeyPressed(key_left) || blob.wasKeyPressed(key_left)))
 				{
 					// platform is facing right
 					return true;
-
 				}
 				else if(angle == 270.0f && runnerPos.x < platPos.x && (blob.isKeyPressed(key_right) || blob.wasKeyPressed(key_right)))
 				{
