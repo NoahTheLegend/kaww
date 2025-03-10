@@ -13,6 +13,7 @@ void onInit(CBlob@ this)
 	this.Tag("respawn_if_crew_present");
 	this.Tag("deal_bunker_dmg");
 	this.Tag("ignore fall");
+	this.Tag("autoturret");
 	this.set_u32("next_shoot", 0);
 
 	CShape@ shape = this.getShape();

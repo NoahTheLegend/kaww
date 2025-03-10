@@ -5,6 +5,7 @@ void onInit(CBlob@ this)
 	this.Tag("apc");
 	this.Tag("respawn_if_crew_present");
 	this.Tag("blocks bullet");
+	this.Tag("autoturret");
 
 	this.getSprite().SetOffset(Vec2f(8,0));
 }

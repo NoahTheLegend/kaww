@@ -4,4 +4,5 @@ void onInit(CBlob@ this)
 	this.Tag("turret");
 	this.Tag("apc");
 	this.Tag("respawn_if_crew_present");
+	this.Tag("autoturret");
 }

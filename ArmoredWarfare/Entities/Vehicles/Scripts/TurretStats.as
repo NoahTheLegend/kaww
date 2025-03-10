@@ -244,7 +244,7 @@ class BradleyTurret : TurretStats
 
         name = "bradleyturret"; hash = _bradleyturret;
         cooldown_time = 480; high_angle = 35; low_angle = 100; low_angle_back = 92;
-        cassette_size = 18; cycle_cooldown = 13; ammo_quantity = 72;
+        cassette_size = 18; cycle_cooldown = 12; ammo_quantity = 72;
         arm_offset = Vec2f(-12.0f, -30.0f); arm_z = -50.0f; barrel_compression = 5; init_gun_angle = 5;
         ammo = "mat_14mmround"; ammo_description = "14mm Rounds";
         recoil_force = 75; fire_sound = "sound_14mm";
