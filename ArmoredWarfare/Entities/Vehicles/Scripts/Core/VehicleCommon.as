@@ -915,6 +915,15 @@ void Vehicle_StandardControls(CBlob@ this, VehicleInfo@ v)
 							this.SendCommand(this.getCommandID("swap_ammo"));
 						}
 
+						// shift + r sends reload_mag
+						CControls@ controls = blob.getControls();
+						if (controls !is null && controls.isKeyJustPressed(KEY_KEY_R) && controls.isKeyPressed(KEY_LSHIFT))
+						{
+							CBitStream params;
+							params.write_bool(true);
+							this.SendCommand(this.getCommandID("reload_mag"), params);
+						}
+
 						if (this.hasTag("tank") && v.cooldown_time == 110)
 						{
 							Sound::Play("TankReload.ogg", this.getPosition(), 0.7f, 0.9f + (0.01f * XORRandom(30)));
@@ -1282,8 +1291,14 @@ bool Vehicle_doesCollideWithBlob_boat(CBlob@ this, CBlob@ blob)
 
 void Vehicle_onAttach(CBlob@ this, VehicleInfo@ v, CBlob@ attached, AttachmentPoint @attachedPoint)
 {
+	if (isServer() && attached.getPlayer() !is null)
+	{
+		CBitStream params;
+		params.write_s32(v.cooldown_time);
+		this.server_SendCommandToPlayer(this.getCommandID("sync_cooldown"), params, attached.getPlayer());
+	}
 	// special-case stone material  - put in inventory
-	if(v.current_ammo_index < v.ammo_types.size())
+	if (v.current_ammo_index < v.ammo_types.size())
 	{
 		if (getNet().isServer() && attached.getName() == v.getCurrentAmmo().ammo_name)
 		{

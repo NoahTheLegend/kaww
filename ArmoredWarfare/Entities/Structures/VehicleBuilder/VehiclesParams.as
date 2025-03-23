@@ -63,9 +63,9 @@ const u16 c_he111 = 70;
 
 // Helicopter
 const u16 c_uh1 = 50;
-const u16 c_ah1 = 65;
-const u16 c_mi24 = 75;
-const u16 c_nh90 = 70;
+const u16 c_ah1 = 80;
+const u16 c_mi24 = 90;
+const u16 c_nh90 = 85;
 
 // Machinegun
 const u16 c_m2 = 8;

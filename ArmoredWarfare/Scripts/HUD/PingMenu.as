@@ -13,8 +13,8 @@ Vec2f keypress_pos = Vec2f_zero; // screen pos
 Vec2f keypress_worldpos = Vec2f_zero; // world pos
 
 // section wheel
-const int radius = 80.0f; // how far from keypress_pos
-const f32 blind_area_range = 16.0f; // category selection blind area
+const int radius = 128.0f; // how far from keypress_pos
+const f32 blind_area_range = 12.0f; // category selection blind area
 
 // subsection ping list
 const f32 subsection_radius = 96.0f; // how far from category_name
@@ -118,7 +118,7 @@ void onRender(CRules@ this)
 				if (Maths::Floor(mvec.Length()) > endpoint)
 				{
 					f32 angle = Maths::ATan2(mvec.y, mvec.x) * (180.0 / 3.14159265); // getAngle() snaps angle to int if its == 90 || == 270
-					controls.setMousePosition(keypress_pos + Vec2f(endpoint, 0).RotateBy(angle));
+					//controls.setMousePosition(keypress_pos + Vec2f(endpoint, 0).RotateBy(angle));
 				}
 
 				// draw
@@ -377,7 +377,16 @@ void SendPing(CBlob@ blob, Vec2f pos, u8 section, u8 ping_type)
 	CControls@ controls = getControls();
 	if (controls is null) return;
 	
-	controls.setMousePosition(keypress_pos);
+	bool reset_mouse_pos = true;
+	ClientVars@ vars;
+    if (getRules().get("ClientVars", @vars))
+    {
+		reset_mouse_pos = vars.reset_ping_cursor;
+	}
+
+	if (reset_mouse_pos)
+		controls.setMousePosition(keypress_pos);
+
 	Load(ping_cost);
 }
 

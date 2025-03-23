@@ -226,6 +226,7 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!canSeeButtons(this, caller)) return;
+	if (this.isAttached() && !this.isAttachedTo(caller)) return;
 
 	Vec2f buttonpos(0, 0);
 
@@ -502,12 +503,6 @@ void onCreateInventoryMenu(CBlob@ this, CBlob@ forBlob, CGridMenu @gridmenu)
 		}
 	}
 }
-
-// let people bring it home
-/*void onAttach(CBlob@ this, CBlob@ attached, AttachmentPoint@ ap)
-{
-	this.Untag("no_expiration");
-}*/
 
 void onAddToInventory(CBlob@ this, CBlob@ blob)
 {

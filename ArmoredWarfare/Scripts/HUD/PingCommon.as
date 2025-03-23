@@ -5,7 +5,7 @@ const int sh = getDriver().getScreenHeight();
 
 const SColor[] PingColors = {
 	SColor(200,255,225,35),
-	SColor(200,55,95,225),
+	SColor(200,95,125,255),
 	SColor(200,110,235,70),
 	SColor(200,255,55,55),
 	SColor(200,255,100,230),
@@ -169,7 +169,10 @@ class Ping {
 		Vec2f text_pos = screen_pos - Vec2f(2, 80 - ping_slidein_dist * fadeout);
 
 		GUI::SetFont("score-big");
-		GUI::DrawTextCentered(PingList[type], text_pos, type_col);
+	
+		string text = PingList[type];
+		if (text.find("map_") != -1) text = "Map ping";
+		GUI::DrawTextCentered(text, text_pos, type_col);
 
 		DrawCaster(text_pos + Vec2f(0,24));
 		DrawPointer(pos, (diff/15)%2==0?2:3, type_col);

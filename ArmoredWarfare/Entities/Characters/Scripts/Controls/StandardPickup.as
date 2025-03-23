@@ -402,24 +402,22 @@ f32 getPriorityPickupScale(CBlob@ this, CBlob@ b)
 		return b.getTeamNum() != this.getTeamNum() ? factor_extremely_important : factor_boring;
 	}
 
-	if(name == "mat_5tbomb"){
+	if (name == "mat_5tbomb" || name == "mat_907kgbomb") {
 		return factor_extremely_important;
 	}
-
-	if((name == "molotov" || name == "molotov_us" || name == "molotov_nazi" || name == "agrenade" || name == "sgrenade" || name == "grenade"
-		|| name == "atgrenade" || name == "mat_atgrenade"
-		&& (b.hasTag("activated") || b.get_u8("exploding_2") > 0))){
+	else if ((name == "molotov" || name == "molotov_us" || name == "molotov_nazi" || name == "agrenade" 
+    || name == "sgrenade" || name == "grenade" || name == "atgrenade" || name == "mat_atgrenade"
+		&& (b.hasTag("activated") || b.get_u8("exploding_2") > 0))) {
 		return factor_super_important; //pick up activated stuff before deactivated stuff
 	}
-
-	if(name == "mat_gold" || name == "mat_stone" || name == "mat_wood" || name == "mat_scrap" || name == "medkit"
-		|| b.hasTag("crane_mount")){
+	else if (name == "mat_gold" || name == "mat_stone" || name == "mat_wood" || name == "mat_scrap" || name == "medkit"
+		|| b.hasTag("crane_mount")) {
 		return factor_very_important;
 	}
-	if(name == "mat_molotov" || name == "agrenade" || name == "sgrenade" || name == "grenade" || name == "medkit"){
+	else if (name == "mat_molotov" || name == "agrenade" || name == "sgrenade" || name == "grenade" || name == "medkit") {
 		return factor_very_important;
 	}
-	if(name == "ammo" || name == "specammo" || name == "mat_14mmround" || name == "mat_bolts" || name == "tanktrap"){
+	else if (name == "ammo" || name == "specammo" || name == "mat_14mmround" || name == "mat_bolts" || name == "tanktrap") {
 		return factor_boring;
 	}
 
@@ -523,9 +521,9 @@ bool canBlobBePickedUp(CBlob@ this, CBlob@ blob)
 	if (blob.hasTag("heavy weight"))
 		maxDist *= 0.35f;
 	else if (blob.hasTag("heavy weight"))
-		maxDist *= 0.45f;
+		maxDist *= 0.65f;
 	else if (blob.hasTag("medium weight"))
-		maxDist *= 0.6f;
+		maxDist *= 0.8f;
 
 	Vec2f pos = this.getPosition() + Vec2f(0.0f, -this.getRadius() * 0.9f);
 	Vec2f pos2 = blob.getPosition();

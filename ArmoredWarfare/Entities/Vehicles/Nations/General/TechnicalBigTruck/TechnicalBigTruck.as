@@ -54,9 +54,13 @@ void onInit(CBlob@ this)
 	// Add machine gun on top
 	if (getNet().isServer())
 	{
+		u8 tn = this.getTeamNum();
+		string turret = "m2browning";
+		if (tn == 1) turret = "dshk";
+		else if (tn == 2) turret = "mg42";
+		
 		for (u8 i = 0; i < 3; i++)
 		{
-			string turret = this.getTeamNum() == 2 ? "mg42" : "m2browning";
 			CBlob@ bow = server_CreateBlob(turret);	
 
 			if (bow !is null)

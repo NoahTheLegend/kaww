@@ -3,11 +3,27 @@
 const string metal = "mat_scrap";
 const string metal_prop = "metal_level";
 const string working_prop = "working";
-const string unique_prop = "unique";
 
 #include "GenericButtonCommon.as";
 #include "Hitters.as";
 #include "HittersAW.as";
+
+const string[] prod_blobs = {
+	"ammo", "mat_14mmround", "mat_bolts", "mat_heatwarhead", "mat_molotov", 
+	"grenade", "mine", "helmet", "specammo", "mat_atgrenade"
+};
+const u32[] prod_amounts = {
+	200, 18, 6, 3, 1, 
+	1, 1, 1, 50, 1
+};
+const u32[] prod_times = {
+	8, 15, 20, 35, 12, 
+	20, 30, 15, 15, 25
+};
+const u8[] costs = {
+	1, 1, 1, 7, 2, 
+	2, 3, 2, 2, 3
+};
 
 void onInit(CBlob@ this)
 {
@@ -23,23 +39,24 @@ void onInit(CBlob@ this)
 	this.addCommandID("add metal");
 
 	this.set_s16(metal_prop, 0);
+	this.set_u32("timer", 0);
 	this.set_bool(working_prop, false);
-	this.set_u8(unique_prop, XORRandom(getTicksASecond() * 30));
 
 	this.Tag("builder always hit");
 	this.Tag("structure");
 
-	this.set_string("prod_blob", "ammo");
-	this.set_u8("prod_amount", 200);
-	this.set_u8("prod_time", 2);
-	this.set_u8("cost", 1);
+	this.set_string("prod_blob", prod_blobs[0]);
+	this.set_u32("prod_amount", prod_amounts[0]);
+	this.set_u32("prod_time", prod_times[0]);
+	this.set_u8("cost", costs[0]);
 	this.set_f32("mod", 1.0f);
 	this.set_bool("drop_items", false);
+	this.set_u32("timer", 0);
 
 	this.addCommandID("select");
 	this.addCommandID("7mm");
 	this.addCommandID("14mm");
-	this.addCommandID("Tank");
+	this.addCommandID("tankshell");
 	this.addCommandID("heats");
 	this.addCommandID("molotov");
 	this.addCommandID("grenade");
@@ -89,29 +106,32 @@ void onTick(CBlob@ this)
 		int blobCount = this.get_s16(metal_prop);
 		CInventory@ inventory = this.getInventory();
 
-		if(blobCount >= this.get_u8("cost"))
+		if (blobCount >= this.get_u8("cost"))
 		{
 			this.set_bool(working_prop, true);
 
-			//only convert every conversion_frequency seconds
-			if (getGameTime() % ((((10 + this.get_u8("prod_time")))) * getTicksASecond()) == this.get_u8(unique_prop))
-			{
-				if(blobCount >= this.get_u8("cost")) this.sub_s16(metal_prop, this.get_u8("cost"));
-				else this.TakeBlob(metal_prop, this.get_u8("cost"));
+			u32 timer = this.get_u32("timer");
+			u32 prod_time = this.get_u32("prod_time");
 			
-				spawnMetal(this);
+			if (timer == prod_time * getTicksASecond())
+			{
+				if (blobCount >= this.get_u8("cost")) this.sub_s16(metal_prop, this.get_u8("cost"));
+				else this.TakeBlob(metal_prop, this.get_u8("cost"));
+
+				spawnBlob(this);
 				this.set_u32("last_prod", getGameTime());
 				//this.Sync("last_prod", true);
 
 				this.set_bool(working_prop, false);
-
 				this.Sync(metal_prop, true);
 			}
-
+			
+			this.set_u32("timer", timer >= prod_time * getTicksASecond() ? 0 : timer + 1);
+			this.Sync("timer", true);
 			this.Sync(working_prop, true);
 		}
 		else this.set_u32("last_prod", getGameTime());
-		if (getGameTime() % (15 * getTicksASecond()) == this.get_u8(unique_prop))PickupOverlap(this);
+		if (getGameTime() % (15 * getTicksASecond()) == 0) PickupOverlap(this);
 	}
 
 	CSprite@ sprite = this.getSprite();
@@ -172,15 +192,15 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 		}
 	}
 
-	caller.CreateGenericButton(8, Vec2f(10.0f, -10.0f), this, this.getCommandID("switch_mode"), this.get_bool("drop_items") ? "Put to inventory" : "Drop items", params);
+	caller.CreateGenericButton(8, Vec2f(10.0f, -10.0f), this, this.getCommandID("switch_mode"), this.get_bool("drop_items") ? "Mode: Put to inventory" : "Mode: Drop items", params);
 }
 
-void spawnMetal(CBlob@ this)
+void spawnBlob(CBlob@ this)
 {
 	if (isServer())
 	{
 		CBlob@ b = server_CreateBlob(this.get_string("prod_blob"), this.getTeamNum(), this.getPosition());
-		b.server_SetQuantity(this.get_u8("prod_amount"));
+		b.server_SetQuantity(this.get_u32("prod_amount"));
 
 		if (this.get_bool("drop_items")) b.setPosition(this.getPosition());
 		else if (!this.server_PutInInventory(b)) b.setPosition(this.getPosition());
@@ -202,23 +222,31 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		CBlob@ caller = getBlobByNetworkID(params.read_u16());
 		if (caller is null) return;
 
-		//amount we'd _like_ to insert
 		int requestedAmount = Maths::Max(0, 20 - this.get_s16(metal_prop));
-		//(possible with laggy commands from 2 players, faster to early out here if we can)
 		if (requestedAmount <= 0) return;
 
 		CBlob@ carried = caller.getCarriedBlob();
-		//how much metal does the caller have including what's potentially in his hand?
 		int callerQuantity = caller.getInventory().getCount(metal) + (carried !is null && carried.getName() == metal ? carried.getQuantity() : 0);
 
-		//amount we _can_ insert
-		int ammountToStore = Maths::Min(Maths::Max(2, this.get_u8("cost")), callerQuantity);
-		//can we even insert anything?
-		if (ammountToStore > 0)
+		int amountToStore = Maths::Min(Maths::Max(1, this.get_u8("cost")), callerQuantity);
+		if (amountToStore > 0)
 		{
-			//print("added "+ammountToStore);
-			caller.TakeBlob(metal, ammountToStore);
-			this.add_s16(metal_prop, ammountToStore);
+			caller.TakeBlob(metal, amountToStore);
+			this.add_s16(metal_prop, amountToStore);
+			
+			CRules@ rules = getRules();
+			if (isServer() && rules !is null)
+			{
+				CPlayer@ p = caller.getPlayer();
+				
+				if (p !is null)
+				{
+					CBitStream params;
+					params.write_string(p.getUsername());
+					params.write_u16(amountToStore);
+					rules.SendCommand(rules.getCommandID("scrap_used"), params);
+				}
+			}
 
 			this.getSprite().PlaySound("FireFwoosh.ogg");
 		}
@@ -260,111 +288,92 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("7mm"))
 	{
-		this.set_string("prod_blob", "ammo"); // blob cfg name
-		this.set_u8("prod_amount", 200); // how many
-		this.set_u8("prod_time", 2); // extra seconds time (10 sec for default)
-		this.set_u8("cost", 1); // how many scrap to take
+		this.set_string("prod_blob", prod_blobs[0]);
+		this.set_u32("prod_amount", prod_amounts[0]);
+		this.set_u32("prod_time", prod_times[0]);
+		this.set_u8("cost", costs[0]);
 		this.set_u8("id", 0);
-
 		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("14mm"))
 	{
-		this.set_string("prod_blob", "mat_14mmround");
-		this.set_u8("prod_amount", 18);
-		this.set_u8("prod_time", 5);
-		this.set_u8("cost", 1);
+		this.set_string("prod_blob", prod_blobs[1]);
+		this.set_u32("prod_amount", prod_amounts[1]);
+		this.set_u32("prod_time", prod_times[1]);
+		this.set_u8("cost", costs[1]);
 		this.set_u8("id", 1);
-
 		ResetTimer(this);
 	}
-	else if (cmd == this.getCommandID("Tank"))
+	else if (cmd == this.getCommandID("tankshell"))
 	{
-		this.set_string("prod_blob", "mat_bolts");
-		this.set_u8("prod_amount", 6);
-		this.set_u8("prod_time", 7);
-		this.set_u8("cost", 1);
+		this.set_string("prod_blob", prod_blobs[2]);
+		this.set_u32("prod_amount", prod_amounts[2]);
+		this.set_u32("prod_time", prod_times[2]);
+		this.set_u8("cost", costs[2]);
 		this.set_u8("id", 2);
-
 		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("heats"))
 	{
-		this.set_string("prod_blob", "mat_heatwarhead");
-		this.set_u8("prod_amount", 3);
-		this.set_u8("prod_time", 28);
-		this.set_u8("cost", 7);
+		this.set_string("prod_blob", prod_blobs[3]);
+		this.set_u32("prod_amount", prod_amounts[3]);
+		this.set_u32("prod_time", prod_times[3]);
+		this.set_u8("cost", costs[3]);
 		this.set_u8("id", 3);
-
 		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("molotov"))
 	{
-		bool rebels_power = getRules().get_bool("enable_powers") && this.getTeamNum() == 3; // team 3 buff
-        u8 extra_amount = 0;
-        if (rebels_power) extra_amount = 3;
-		
-		u8 tn = this.getTeamNum();
-		string name = "mat_molotov";
-		if (tn == 0) name = "mat_molotov_us";
-		else if (tn == 2) name = "mat_molotov_nazi";
-		
-		this.set_string("prod_blob", name);
-		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 10-extra_amount);
-		this.set_u8("cost", 2);
+		this.set_string("prod_blob", prod_blobs[4]);
+		this.set_u32("prod_amount", prod_amounts[4]);
+		this.set_u32("prod_time", prod_times[4]);
+		this.set_u8("cost", costs[4]);
 		this.set_u8("id", 4);
-
 		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("grenade"))
 	{
-		this.set_string("prod_blob", "grenade");
-		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 10);
-		this.set_u8("cost", 2);
+		this.set_string("prod_blob", prod_blobs[5]);
+		this.set_u32("prod_amount", prod_amounts[5]);
+		this.set_u32("prod_time", prod_times[5]);
+		this.set_u8("cost", costs[5]);
 		this.set_u8("id", 5);
-
 		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("mine"))
 	{
-		this.set_string("prod_blob", "mine");
-		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 20);
-		this.set_u8("cost", 3);
+		this.set_string("prod_blob", prod_blobs[6]);
+		this.set_u32("prod_amount", prod_amounts[6]);
+		this.set_u32("prod_time", prod_times[6]);
+		this.set_u8("cost", costs[6]);
 		this.set_u8("id", 6);
-
 		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("helmet"))
 	{
-		this.set_string("prod_blob", "helmet");
-		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 15);
-		this.set_u8("cost", 2);
+		this.set_string("prod_blob", prod_blobs[7]);
+		this.set_u32("prod_amount", prod_amounts[7]);
+		this.set_u32("prod_time", prod_times[7]);
+		this.set_u8("cost", costs[7]);
 		this.set_u8("id", 7);
-
 		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("specammo"))
 	{
-		this.set_string("prod_blob", "specammo");
-		this.set_u8("prod_amount", 50);
-		this.set_u8("prod_time", 10);
-		this.set_u8("cost", 2);
+		this.set_string("prod_blob", prod_blobs[8]);
+		this.set_u32("prod_amount", prod_amounts[8]);
+		this.set_u32("prod_time", prod_times[8]);
+		this.set_u8("cost", costs[8]);
 		this.set_u8("id", 8);
-
 		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("atgrenade"))
 	{
-		this.set_string("prod_blob", "mat_atgrenade"+(this.getTeamNum() == 2 ? "nazi" : ""));
-		this.set_u8("prod_amount", 1);
-		this.set_u8("prod_time", 15);
-		this.set_u8("cost", 3);
-		this.set_u8("id", 10);
-
+		this.set_string("prod_blob", prod_blobs[9]);
+		this.set_u32("prod_amount", prod_amounts[9]);
+		this.set_u32("prod_time", prod_times[9]);
+		this.set_u8("cost", costs[9]);
+		this.set_u8("id", 9);
 		ResetTimer(this);
 	}
 	else if (cmd == this.getCommandID("playsound"))
@@ -384,18 +393,16 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 		if (menu !is null)
 		{
 			menu.deleteAfterClick = true;
-
-			CGridButton@ button0 = menu.AddButton("$ammo$", "Ammo", this.getCommandID("7mm"), Vec2f(1, 1), params);
-			CGridButton@ button8 = menu.AddButton("$specammo$", "Special Ammo", this.getCommandID("specammo"), Vec2f(1, 1), params);
-			CGridButton@ button1 = menu.AddButton("$mat_14mmround$", "14mm Shells", this.getCommandID("14mm"), Vec2f(1, 1), params);
-			CGridButton@ button2 = menu.AddButton("$mat_bolts$", "Tank Shells", this.getCommandID("Tank"), Vec2f(1, 1), params);
-			CGridButton@ button3 = menu.AddButton("$mat_heatwarhead$", "HEAT Warheads", this.getCommandID("heats"), Vec2f(1, 1), params);
-			CGridButton@ button4 = menu.AddButton("$mat_molotov$", "Molotov", this.getCommandID("molotov"), Vec2f(1, 1), params);
-			CGridButton@ button5 = menu.AddButton("$grenade$", "Grenade", this.getCommandID("grenade"), Vec2f(1, 1), params);
-			CGridButton@ button6 = menu.AddButton("$mine$", "Mine", this.getCommandID("mine"), Vec2f(1, 1), params);
-			CGridButton@ button7 = menu.AddButton("$helmet$", "Helmet", this.getCommandID("helmet"), Vec2f(1, 1), params);
-			//CGridButton@ button9 = menu.AddButton("$medkit$", "Medkit", this.getCommandID("medkit"), Vec2f(1, 1), params);
-			CGridButton@ button9 = menu.AddButton("$atgrenade$", "Anti-Tank Grenade", this.getCommandID("atgrenade"), Vec2f(1, 1), params);
+			CGridButton@ button0 = menu.AddButton("$ammo$", "Ammo (" + costs[0] + " scrap -> " + prod_times[0] + "s -> " + prod_amounts[0] + ")", this.getCommandID("7mm"), Vec2f(1, 1), params);
+			CGridButton@ button1 = menu.AddButton("$mat_14mmround$", "14mm Shells (" + costs[1] + " scrap -> " + prod_times[1] + "s -> " + prod_amounts[1] + ")", this.getCommandID("14mm"), Vec2f(1, 1), params);
+			CGridButton@ button2 = menu.AddButton("$mat_bolts$", "Tank Shells (" + costs[2] + " scrap -> " + prod_times[2] + "s -> " + prod_amounts[2] + ")", this.getCommandID("tankshell"), Vec2f(1, 1), params);
+			CGridButton@ button3 = menu.AddButton("$mat_heatwarhead$", "HEAT Warheads (" + costs[3] + " scrap -> " + prod_times[3] + "s -> " + prod_amounts[3] + ")", this.getCommandID("heats"), Vec2f(1, 1), params);
+			CGridButton@ button4 = menu.AddButton("$mat_molotov$", "Molotov (" + costs[4] + " scrap -> " + prod_times[4] + "s -> " + prod_amounts[4] + ")", this.getCommandID("molotov"), Vec2f(1, 1), params);
+			CGridButton@ button5 = menu.AddButton("$grenade$", "Grenade (" + costs[5] + " scrap -> " + prod_times[5] + "s -> " + prod_amounts[5] + ")", this.getCommandID("grenade"), Vec2f(1, 1), params);
+			CGridButton@ button6 = menu.AddButton("$mine$", "Mine (" + costs[6] + " scrap -> " + prod_times[6] + "s -> " + prod_amounts[6] + ")", this.getCommandID("mine"), Vec2f(1, 1), params);
+			CGridButton@ button7 = menu.AddButton("$helmet$", "Helmet (" + costs[7] + " scrap -> " + prod_times[7] + "s -> " + prod_amounts[7] + ")", this.getCommandID("helmet"), Vec2f(1, 1), params);
+			CGridButton@ button8 = menu.AddButton("$specammo$", "Special Ammo (" + costs[8] + " scrap -> " + prod_times[8] + "s -> " + prod_amounts[8] + ")", this.getCommandID("specammo"), Vec2f(1, 1), params);
+			CGridButton@ button9 = menu.AddButton("$atgrenade$", "Anti-Tank Grenade (" + costs[9] + " scrap -> " + prod_times[9] + "s -> " + prod_amounts[9] + ")", this.getCommandID("atgrenade"), Vec2f(1, 1), params);
 
 			if (button0 !is null && button1 !is null && button2 !is null && button3 !is null
 				&& button4 !is null && button5 !is null && button6 !is null && button7 !is null
@@ -421,8 +428,6 @@ void SelectMenu(CBlob@ this, CBlob@ caller)
 					button7.SetEnabled(false);
 				else if (prod_prop == "specammo")
 					button8.SetEnabled(false);
-				//else if (prod_prop == "medkit")
-				//	button9.SetEnabled(false);
 				else if (prod_prop == "mat_atgrenade")
 					button9.SetEnabled(false);
 			}
@@ -459,6 +464,7 @@ void onRender(CSprite@ this)
 	bool mouseOnBlob = (mouseWorld - center).getLength() < renderRadius;
 	if (!mouseOnBlob) return;
 
+	// fuel
 	{
 		//VV right here VV
 		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 30);
@@ -470,6 +476,20 @@ void onRender(CSprite@ this)
 		{
 			GUI::DrawRectangle(Vec2f(pos2d.x - dim.x - 2, pos2d.y + y - 2), Vec2f(pos2d.x + dim.x + 2, pos2d.y + y + dim.y + 2));
 			GUI::DrawRectangle(Vec2f(pos2d.x - dim.x + 2, pos2d.y + y + 2), Vec2f(pos2d.x - dim.x + perc * 2.0f * dim.x - 2, pos2d.y + y + dim.y - 2), SColor(0xff8bbc7e));
+		}
+	}
+
+	// working
+	{
+		Vec2f pos2d = blob.getScreenPos() + Vec2f(0, 40);
+		Vec2f dim = Vec2f(24, 8);
+		const f32 y = blob.getHeight() * 2.4f;
+		const f32 perc = blob.get_u32("timer") / f32(blob.get_u32("prod_time") * getTicksASecond());
+
+		if (blob.get_bool(working_prop))
+		{
+			GUI::DrawRectangle(Vec2f(pos2d.x - dim.x - 2, pos2d.y + y - 2), Vec2f(pos2d.x + dim.x + 2, pos2d.y + y + dim.y + 2));
+			GUI::DrawRectangle(Vec2f(pos2d.x - dim.x + 2, pos2d.y + y + 2), Vec2f(pos2d.x - dim.x + perc * 2.0f * dim.x - 2, pos2d.y + y + dim.y - 2), SColor(255,255,205,35));
 		}
 	}
 }

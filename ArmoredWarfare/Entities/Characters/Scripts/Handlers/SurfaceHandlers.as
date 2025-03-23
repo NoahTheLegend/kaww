@@ -1,15 +1,5 @@
 #define SERVER_ONLY
-
 #include "CustomBlocks.as";
-
-void onTick(CBlob@ this)
-{
-    CShape@ shape = this.getShape();
-    if (shape.isOverlappingTileSolid(true))
-    {
-        
-    }
-}
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point1)
 {

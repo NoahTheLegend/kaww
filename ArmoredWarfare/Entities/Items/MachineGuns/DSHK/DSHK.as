@@ -34,6 +34,7 @@ void onInit(CBlob@ this)
 	}
 
 	this.set_string("shoot sound", "MGfire.ogg");
+	this.set_f32("shoot pitch", 0.85f);
 
 	Vehicle_AddAmmo(this, v,
 	                    2, // fire delay (ticks), +1 tick on server due to onCommand delay

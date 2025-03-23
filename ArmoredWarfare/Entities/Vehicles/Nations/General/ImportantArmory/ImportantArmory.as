@@ -222,8 +222,9 @@ void onDie(CBlob@ this)
 		if (iarmory is this) continue;
 		dont_end = true;
 	}
-	
+
 	if (dont_end) return;
+
 	CBlob@[] tents;
 	getBlobsByName("tent", @tents);
 
@@ -237,17 +238,20 @@ void onDie(CBlob@ this)
 		{
 			CBlob@[] armories;
 			getBlobsByTag("importantarmory", @armories);
+
 			for (u8 i = 0; i < armories.size(); i++)
 			{
 				CBlob@ armory = armories[i];
 				if (armory is null) continue;
 
-				if (armory.getTeamNum() == this.getTeamNum()) return; // there are armories remaining, keep playing
+				if (armory.getTeamNum() == this.getTeamNum()) dont_end = true; // there are armories remaining, keep playing
 				else draw = false; // there are enemy armories remaining, set their team won
 				// else draw
 			}
 		}
 
+		if (dont_end) return;
+		
 		u8 team = (this.getTeamNum() == teamleft ? teamright : teamleft);
 		if (draw)
 		{

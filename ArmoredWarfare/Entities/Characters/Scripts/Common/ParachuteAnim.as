@@ -30,7 +30,6 @@ void onTick(CSprite@ this)
 		if (parachuting)
 		{
 			parachute.SetFacingLeft(false);
-
 			parachute.SetOffset(blob.getVelocity()*-1 + Vec2f(0.0f, -23.0f + Maths::Sin(getGameTime() / 5.0f)) + Vec2f(-1,0));
 			
 			f32 parachute_angle = (Maths::Sin((blob.getOldVelocity().x + blob.getVelocity().x)/2)*-10);
@@ -38,7 +37,6 @@ void onTick(CSprite@ this)
 
 			parachute.ResetTransform();
 			parachute.RotateBy(parachute_angle, Vec2f(0.5, 35.0));
-			
 		}
 		
 		parachute.SetVisible(parachuting);	

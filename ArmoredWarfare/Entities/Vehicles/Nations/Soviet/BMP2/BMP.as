@@ -124,7 +124,7 @@ void onInit(CBlob@ this)
 			if (soundmanager !is null)
 			{
 				soundmanager.set_bool("manager_Type", false);
-				soundmanager.set_f32("custom_pitch", 1.2f);
+				soundmanager.set_f32("custom_pitch", 1.1f);
 				soundmanager.Init();
 				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
 
@@ -137,7 +137,7 @@ void onInit(CBlob@ this)
 			if (soundmanager !is null)
 			{
 				soundmanager.set_bool("manager_Type", true);
-				soundmanager.set_f32("custom_pitch", 1.2f);
+				soundmanager.set_f32("custom_pitch", 1.1f);
 				soundmanager.Init();
 				soundmanager.setPosition(this.getPosition() + Vec2f(this.isFacingLeft() ? 20 : -20, 0));
 				
@@ -389,7 +389,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 			{
 				SColor team_front = getNeonColor(this.getTeamNum(), 0);
 				ProgressBar setbar;
-				setbar.Set(this.getNetworkID(), "smoke", Vec2f(80.0f, 16.0f), false, Vec2f(0, 56), Vec2f(2, 2), back, team_front,
+				setbar.Set(this.getNetworkID(), "smoke", Vec2f(80.0f, 16.0f), false, Vec2f(0, 70), Vec2f(2, 2), back, team_front,
 					"smoke_time", this.get_u32("smoke_endtime"), 0.33f, 5, 5, false, "");
 
     			bars.AddBar(this.getNetworkID(), setbar, true);

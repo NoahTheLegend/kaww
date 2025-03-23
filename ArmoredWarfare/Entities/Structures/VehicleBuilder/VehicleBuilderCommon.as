@@ -416,19 +416,19 @@ void buildT1ImportantArmoryShop(CBlob@ this)
 	this.set_Vec2f("shop menu size", Vec2f(11, 6));
 	{
 		ShopItem@ s = addShopItem(this, "Ammuniton", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 3);
+		AddRequirement(s.requirements, "coin", "", "Coins", 2);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Special Ammunition", "$specammo$", "specammo", "Special ammunition for advanced weapons.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 10);
+		AddRequirement(s.requirements, "coin", "", "Coins", 8);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 15);
+		AddRequirement(s.requirements, "coin", "", "Coins", 10);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Tank Shells", "$mat_bolts$", "mat_bolts", "Ammo for a tank's main gun.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 35);
+		AddRequirement(s.requirements, "coin", "", "Coins", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas a small explosion radius.", false);
@@ -436,7 +436,7 @@ void buildT1ImportantArmoryShop(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press SPACE while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 30);
+		AddRequirement(s.requirements, "coin", "", "Coins", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
@@ -445,7 +445,7 @@ void buildT1ImportantArmoryShop(CBlob@ this)
 	makeDefaultMolotov(this, tn, 15);
 	{
 		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue millitary helmet, blocks a moderate amount of headshot damage.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 25);
+		AddRequirement(s.requirements, "coin", "", "Coins", 15);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Buy wood (400)", "$mat_wood$", "mat_wood", "Purchase 400 wood.", false);
@@ -457,7 +457,7 @@ void buildT1ImportantArmoryShop(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Medkit", "$medkit$", "medkit", "If hurt, press [E] to heal. Has 4 uses total. Bonus: allows medics to perform healing faster.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 15);
+		AddRequirement(s.requirements, "coin", "", "Coins", 10);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Binoculars", "$binoculars$", "binoculars", "A pair of zooming binoculars that allow you to see much further.", false);
@@ -496,19 +496,19 @@ void buildT2ImportantArmoryShop(CBlob@ this)
 	this.set_Vec2f("shop menu size", Vec2f(12, 8));
 	{
 		ShopItem@ s = addShopItem(this, "Ammuniton", "$ammo$", "ammo", "Ammo for machine guns and infantry.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 3);
+		AddRequirement(s.requirements, "coin", "", "Coins", 2);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Special Ammunition", "$specammo$", "specammo", "Special ammunition for advanced weapons.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 10);
+		AddRequirement(s.requirements, "coin", "", "Coins", 8);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "14.5mm Rounds", "$mat_14mmround$", "mat_14mmround", "Ammo for an APC.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 15);
+		AddRequirement(s.requirements, "coin", "", "Coins", 10);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Tank Shells", "$mat_bolts$", "mat_bolts", "Ammo for a tank's main gun.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 35);
+		AddRequirement(s.requirements, "coin", "", "Coins", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "HEAT Warheads", "$mat_heatwarhead$", "mat_heatwarhead", "Ammo for RPGs.\nHas a small explosion radius.", false);
@@ -516,7 +516,7 @@ void buildT2ImportantArmoryShop(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Anti-Tank Grenade", "$atgrenade$", "mat_atgrenade", "Press SPACE while holding to arm, ~5 seconds until boom.\nEffective against vehicles.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 30);
+		AddRequirement(s.requirements, "coin", "", "Coins", 25);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Grenade", "$grenade$", "grenade", "Very effective against vehicles or in close quarter rooms.\nPress [SPACEBAR] to pull the pin, [C] to throw.", false);
@@ -528,7 +528,7 @@ void buildT2ImportantArmoryShop(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Helmet", "$helmet$", "helmet", "Standard issue millitary helmet, blocks a moderate amount of headshot damage.", false);
-		AddRequirement(s.requirements, "coin", "", "Coins", 25);
+		AddRequirement(s.requirements, "coin", "", "Coins", 15);
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Buy wood (400)", "$mat_wood$", "mat_wood", "Purchase 400 wood.", false);
