@@ -21,3 +21,4 @@ void onInit(CBlob@ this)
 		anim.AddFrame(20);
 	}*/
 }
+//test
