@@ -32,6 +32,7 @@ void onInit(CBlob@ this)
     shape.SetOffset(stats.shape_offset);
 	ShapeConsts@ consts = shape.getConsts();
 	consts.collideWhenAttached = true;
+	if (!this.hasTag("no hull")) consts.mapCollisions = false;
 
 	if (stats.mg != "") CreateMachineGun(this, stats);
     if (stats.ammo_quantity != -1) Restock(this, stats, stats.ammo_quantity);
