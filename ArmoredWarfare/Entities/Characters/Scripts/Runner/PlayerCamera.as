@@ -101,8 +101,6 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ attacker, u8 customData
 				SetTargetPlayer(null);
 
 			}
-			deathTime = getGameTime() + 2 * getTicksASecond();
-
 		}
 		else
 		{
@@ -123,10 +121,9 @@ void onPlayerDie(CRules@ this, CPlayer@ victim, CPlayer@ attacker, u8 customData
 				camera.setTarget(null);
 
 			}
-			deathTime = getGameTime() + 2 * getTicksASecond();
-
 		}
 
+		deathTime = getGameTime() + 1 * getTicksASecond();
 	}
 
 }
