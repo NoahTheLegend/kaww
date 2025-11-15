@@ -193,7 +193,8 @@ void onRender(CSprite@ this)
 			float exp = 0;
 			// load exp
 			u32 level = getRankId(blob.getPlayer());
-			string rank = RANKS[level];
+			string rank = RANKS[Maths::Min(level, RANKS.length-1)];
+
 			if (level != -1)
 			{
 				GUI::DrawIcon("Ranks", level, Vec2f(32, 32), Vec2f(0, -12), 1.0f, 0);

@@ -8,7 +8,6 @@
 #include "PlayerRankInfo.as";
 #include "PerksCommon.as";
 #include "Perks.as";
-#include "SaveExp.as";
 #include "GamemodeCheck.as";
 
 const u32 min_gametime_to_increment = 20 * 30*60;
@@ -1431,12 +1430,13 @@ void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 
     player.server_setCoins(40);
 
+	int HARDCODED_EXP_MIN = 0;
 	if (cfg_playerexp.exists(player.getUsername()))
     {
-		this.set_u32(player.getUsername() + "_exp", cfg_playerexp.read_u32(player.getUsername()));
+		this.set_u32(player.getUsername() + "_exp", Maths::Max(HARDCODED_EXP_MIN, cfg_playerexp.read_u32(player.getUsername())));
 	}
-	else{
-		this.set_u32(player.getUsername() + "_exp", 0);
+	else {
+		this.set_u32(player.getUsername() + "_exp", HARDCODED_EXP_MIN);
 	}
 
 	if (player.getUsername() == "TheCustomerMan")
@@ -1800,7 +1800,7 @@ void onTick(CRules@ this)
 		}
 	}
 
-	if (getGameTime() % 9000 == 0) // auto save exp every 5 minutes
+	if (getGameTime() % (30*30) == 0) // auto save exp every 30 seconds
     {
     	SaveEXP(this);
 	}

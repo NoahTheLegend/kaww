@@ -106,7 +106,7 @@ void SetupUI(CRules@ this) // add options here
         body_rotation.check.state = vars.body_rotation;
         preference.addOption(body_rotation);  
 
-        Option reset_ping_cursor("Reset cursor upon png", body_rotation.pos+Vec2f(0,option_offset), false, true);
+        Option reset_ping_cursor("Reset cursor position on ping", body_rotation.pos+Vec2f(0,option_offset), false, true);
         reset_ping_cursor.check.state = vars.reset_ping_cursor;
         preference.addOption(reset_ping_cursor);
 

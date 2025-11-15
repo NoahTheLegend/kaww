@@ -234,25 +234,8 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 		}
 
 		{
-			//draw rank level
-			int level = 1;
-			string rank = RANKS[0];
-
-			// Calculate the exp required to reach each level
-			for (int i = 1; i <= RANKS.length; i++)
-			{
-				int expToNextLevel = getExpToNextLevel(level);
-				if (exp >= expToNextLevel)
-				{
-					level = i+1;
-					rank = RANKS[Maths::Min(i, RANKS.length-1)];
-				}
-				else
-				{
-					// The current level has been reached
-					break;
-				}
-			}
+			u32 level = getRankId(p);
+			string rank = RANKS[Maths::Min(level, RANKS.length-1)];
 
 			float x = bottomright.x - accolades_start - 90;
 			float extra = 8;
@@ -260,7 +243,7 @@ float drawScoreboard(CPlayer@ localplayer, CPlayer@[] players, Vec2f topleft, CT
 
 			if (playerHover && mousePos.x > x - extra && mousePos.x < x + 16 + extra)
 			{
-				hovered_rank = level-1;
+				hovered_rank = level;
 			}
 		}
 
