@@ -54,8 +54,8 @@ void renderHPBar(CBlob@ blob, Vec2f origin)
 		const f32 initialHealth = blob.getInitialHealth();
 		if (initialHealth > 0.0f)
 		{
-			const f32 perc  = blob.getHealth() / initialHealth;
-			const f32 perc2 = blob.get_f32(linadj_hp) / initialHealth;
+			const f32 perc  = blob.getHealth() / (initialHealth == 0 ? 1 : initialHealth);
+			const f32 perc2 = blob.get_f32(linadj_hp) / (initialHealth == 0 ? 1 : initialHealth);
 
 			if (perc >= 0.0f)
 			{

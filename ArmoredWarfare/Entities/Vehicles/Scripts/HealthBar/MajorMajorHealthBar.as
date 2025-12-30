@@ -73,8 +73,8 @@ void onRender(CSprite@ this)
 
 	if ((mouseOnBlob || (localblob !is null && localblob.getDistanceTo(blob) < 48.0f)) && (localblob is null || (localblob !is null && localblob.getDistanceTo(blob) < 312.0f)))
 	{
-		const f32 perc  = blob.getHealth() / initialHealth;
-		const f32 perc2 = blob.get_f32(linadj_hp) / initialHealth;
+		const f32 perc  = blob.getHealth() / (initialHealth == 0 ? 1 : initialHealth);
+		const f32 perc2 = blob.get_f32(linadj_hp) / (initialHealth == 0 ? 1 : initialHealth);
 
 		u8 team = blob.getTeamNum();
 		SColor color_light = getNeonColor(team, 0);

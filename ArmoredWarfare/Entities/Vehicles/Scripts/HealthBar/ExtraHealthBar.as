@@ -30,7 +30,7 @@ void onRender(CSprite@ this)
 	const f32 renderRadius = (blob.getRadius()) * 1.95f;
 	bool mouseOnBlob = (mouseWorld - center).getLength() < renderRadius;
 	
-	const f32 perc  = blob.getHealth() / initialHealth;
+	const f32 perc  = blob.getHealth() / (initialHealth == 0 ? 1 : initialHealth);
 
 	if (initialHealth > 0.0f)
 	{

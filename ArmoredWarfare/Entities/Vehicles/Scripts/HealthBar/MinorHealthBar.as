@@ -69,8 +69,8 @@ void onRender(CSprite@ this)
 	const f32 renderRadius = (blob.getRadius()) * 3.0f;
 	bool mouseOnBlob = (mouseWorld - center).getLength() < renderRadius;
 	
-	const f32 perc  = blob.getHealth() / initialHealth;
-	const f32 perc2 = blob.get_f32(linadj_hp) / initialHealth;
+	const f32 perc  = blob.getHealth() / (initialHealth == 0 ? 1 : initialHealth);
+	const f32 perc2 = blob.get_f32(linadj_hp) / (initialHealth == 0 ? 1 : initialHealth);
 
 	CBlob@ localblob = getLocalPlayerBlob();
 
