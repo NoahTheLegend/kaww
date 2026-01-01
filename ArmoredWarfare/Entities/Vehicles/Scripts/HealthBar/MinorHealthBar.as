@@ -73,7 +73,6 @@ void onRender(CSprite@ this)
 	const f32 perc2 = blob.get_f32(linadj_hp) / (initialHealth == 0 ? 1 : initialHealth);
 
 	CBlob@ localblob = getLocalPlayerBlob();
-
 	if (mouseOnBlob && (localblob is null || (localblob !is null && localblob.getDistanceTo(blob) < 312.0f)))
 	{
 		if (initialHealth > 0.0f)
