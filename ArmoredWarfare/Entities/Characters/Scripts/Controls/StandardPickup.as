@@ -568,10 +568,9 @@ bool canBlobBePickedUp(CBlob@ this, CBlob@ blob)
 		canRayCast = true;
 	}
 
-	return (((pos2 - pos).getLength() <= maxDist)
-	        && !blob.isAttached() && !blob.hasTag("no pickup")
-	        && (canRayCast || this.isOverlapping(blob)) //overlapping fixes "in platform" issue
-	       );
+	bool inDistance = (pos2 - pos).getLength() <= maxDist;
+	return (!blob.isAttached() && !blob.hasTag("no pickup")
+			&& ((canRayCast && inDistance) || this.isOverlapping(blob))); //overlapping fixes "in platform" issue
 }
 
 void onInit(CSprite@ this)
