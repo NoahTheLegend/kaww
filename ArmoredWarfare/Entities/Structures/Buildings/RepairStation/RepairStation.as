@@ -48,6 +48,7 @@ void onTick(CBlob@ this)
     {
 		CBlob@ blob = blobs[i];
 
+		if (blob is null) continue;
         if (blob.hasTag("vehicle") && (blob.getTeamNum() == this.getTeamNum() || blob.getTeamNum() >= 7))
         {
 			//printf(blob.getName()+" "+(blob.getHealth()/blob.getInitialHealth()));
@@ -78,18 +79,18 @@ void onTick(CBlob@ this)
         {
 			repair_blob.server_SetHealth(repair_blob.getHealth() + repair_amount); //Add the repair amount.
 			
-			if (repair_amount > 2.0f)
+			if (repair_amount > 2.0f) this.getSprite().PlayRandomSound("RepairVehicle.ogg", 1.2f, 0.7f + XORRandom(10) * 0.01f);
+			else this.getSprite().PlayRandomSound("RepairVehicle.ogg", 1.2f, 0.9f + XORRandom(20) * 0.01f);
+			
+			const Vec2f pos = repair_blob.getPosition() + getRandomVelocity(0, repair_blob.getRadius() * 0.3f, 360);
+			CParticle@ p = ParticleAnimated("SparkParticle.png", pos, Vec2f(0, 0), 0.0f, 1.0f, 1 + XORRandom(5), 0.0f, false);
+			if (p !is null)
 			{
-				this.getSprite().PlayRandomSound("RepairVehicle.ogg", 1.2f, 0.7f + XORRandom(10) * 0.01f);
+				p.diesoncollide = true;
+				p.fastcollision = true;
+				p.lighting = false;
 			}
-			else
-			{
-				this.getSprite().PlayRandomSound("RepairVehicle.ogg", 1.2f, 0.9f + XORRandom(20) * 0.01f);
-			}
-			    
-        	const Vec2f pos = repair_blob.getPosition() + getRandomVelocity(0, repair_blob.getRadius()*0.3f, 360);
-			CParticle@ p = ParticleAnimated("SparkParticle.png", pos, Vec2f(0,0),  0.0f, 1.0f, 1+XORRandom(5), 0.0f, false);
-			if (p !is null) { p.diesoncollide = true; p.fastcollision = true; p.lighting = false; }
+
 			Vec2f velr = getRandomVelocity(!this.isFacingLeft() ? 70 : 110, 4.3f, 40.0f);
 			velr.y = -Maths::Abs(velr.y) + Maths::Abs(velr.x) / 3.0f - 2.0f - float(XORRandom(100)) / 100.0f;
 			ParticlePixel(pos, velr, SColor(255, 255, 255, 0), true);
@@ -99,9 +100,6 @@ void onTick(CBlob@ this)
             repair_blob.server_SetHealth(repair_blob.getInitialHealth());
         }
 	}
-
-	if (!isServer()) return;
-	if (this.getTickSinceCreated() < 30) return;
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
