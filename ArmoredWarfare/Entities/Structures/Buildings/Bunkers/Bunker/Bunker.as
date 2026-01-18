@@ -20,7 +20,7 @@ void onInit(CBlob@ this)
 		front.addAnimation("default", 0, false);
 		int[] frames = { 0, 1, 2, 3, 4, 5};
 		front.animation.AddFrames(frames);
-		front.SetRelativeZ(65.8f);
+		front.SetRelativeZ(150.0f);
 		front.SetOffset(Vec2f(0.0f, -4.0f));
 	}
 }
