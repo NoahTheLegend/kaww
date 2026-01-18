@@ -177,11 +177,16 @@ bool canBePutInInventory( CBlob@ this, CBlob@ inventoryBlob )
 	return inventoryBlob.getPlayer() is null;
 }
 
+bool canDropHelmet()
+{
+	return XORRandom(3) == 0; // 1 in 3 chance
+}
+
 void onDie(CBlob@ this)
 {
 	if (this.getPlayer() !is null && this.hasTag("player")) this.getPlayer().set_string("last_class", this.getName());
 	
-	if (isServer() && XORRandom(3)==0 && this.get_string("equipment_head") != "" && !this.hasTag("switch class"))
+	if (isServer() && canDropHelmet() && this.get_string("equipment_head") != "" && !this.hasTag("switch class"))
 	{
 		CBlob@ helmet = server_CreateBlob(this.get_string("equipment_head"), 2, this.getPosition());	
 	}

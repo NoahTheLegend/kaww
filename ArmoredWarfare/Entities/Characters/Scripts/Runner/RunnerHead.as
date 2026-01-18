@@ -12,7 +12,6 @@ const s32 NUM_UNIQUEHEADS = 30;
 const int FRAMES_WIDTH = 8 * NUM_HEADFRAMES;
 
 //handling Heads pack DLCs
-
 int getHeadsPackIndex(int headIndex)
 {
 	if (headIndex > 255) {
@@ -191,6 +190,11 @@ CSpriteLayer@ LoadHead(CSprite@ this, int headIndex)
 	s32 headFrame = override_frame ?
 		(headIndex * NUM_HEADFRAMES) :
 		getHeadFrame(blob, headIndex, headsPackIndex == 0);
+
+	if (player.isBot())
+	{
+		headFrame = getHeadFrame(blob, XORRandom(99), headsPackIndex == 0);
+	}
 
 	if (head !is null)
 	{
