@@ -10,7 +10,6 @@
 #include "MedicisCommon.as";
 #include "TeamColour.as";
 #include "CustomBlocks.as";
-#include "RunnerHead.as";
 #include "PlayerRankInfo.as";
 #include "HoverMessage.as";
 #include "ProgressBar.as";
@@ -1277,11 +1276,6 @@ void onTick(CBlob@ this)
 	bool a1 = this.isKeyPressed(key_action1);
 	bool a2 = this.isKeyPressed(key_action2);
 	bool a3 = this.isKeyPressed(key_action3);
-
-	if (this.isBot() && this.getTickSinceCreated() == 1 && isClient()) 
-	{
-		LoadHead(this.getSprite(), XORRandom(99)); // TODO: make a way to sync between players and save when blob dies!
-	}
 
 	if (this.getName() != "sniper") // climbing trees by default
 	{
