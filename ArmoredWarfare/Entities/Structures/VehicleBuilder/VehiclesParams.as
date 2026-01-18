@@ -22,6 +22,8 @@ const u16 c_humvee = 15;
 const u16 c_truckbig = 30;
 const u16 c_barge = 10;
 const u16 c_armory = 30;
+const u16 c_sovietarmory = 30;
+const u16 c_reicharmory = 30;
 
 // APC
 const u16 c_pszh = 15;
@@ -90,6 +92,8 @@ const u16 ct_humvee = 90;
 const u16 ct_truckbig = 120;
 const u16 ct_barge = 30;
 const u16 ct_armory = 90;
+const u16 ct_sovietarmory = 90;
+const u16 ct_reicharmory = 90;
 
 const u16 ct_pszh = 60;
 const u16 ct_btr = 90;
@@ -147,6 +151,8 @@ const string n_humvee = "Build a Humvee";
 const string n_truckbig = "Build a Cargo Truck";
 const string n_barge = "Build a Barge";
 const string n_armory = "Build an Armory Truck";
+const string n_sovietarmory = "Build an Armory Truck";
+const string n_reicharmory = "Build an Armory Truck";
 
 const string n_pszh = "Build a D944 PSZH Light APC";
 const string n_btr = "Build a BTR-82A Medium APC";
@@ -206,6 +212,8 @@ const string d_humvee = "Armored transport.\n\nUses Ammunition.";
 const string d_truckbig = "A modernized heavy truck. Additionally has 2 machineguns mounted.\n\nUses Ammunition.\nYou can construct crane augments in the crane buildings.";
 const string d_barge = "An armored boat for transporting vehicles across water.";
 const string d_armory = "Supply truck.\nAllows to switch class and perk.";
+const string d_sovietarmory = "Supply truck.\nAllows to switch class and perk.";
+const string d_reicharmory = "Supply truck.\nAllows to switch class and perk.";
 
 // APC
 const string d_pszh = "Scout APC.\n\nVery fast, medium firerate, amphibious\nVery fragile armor, bad elevation angles\n\nUses 14.5mm.";
@@ -275,6 +283,8 @@ const string bn_humvee = "humvee";
 const string bn_truckbig = "techbigtruck";
 const string bn_barge = "barge";
 const string bn_armory = "armory";
+const string bn_sovietarmory = "sovietarmory";
+const string bn_reicharmory = "reicharmory";
 
 // APC
 const string bn_pszh = "pszh4";
@@ -344,6 +354,8 @@ const string t_humvee = "$"+bn_humvee+"$";
 const string t_truckbig = "$"+bn_truckbig+"$";
 const string t_barge = "$"+bn_barge+"$";
 const string t_armory = "$"+bn_armory+"$";
+const string t_sovietarmory = "$"+bn_sovietarmory+"$";
+const string t_reicharmory = "$"+bn_reicharmory+"$";
 
 // APC
 const string t_pszh = "$"+bn_pszh+"$";
@@ -408,6 +420,7 @@ enum VehicleType
 	heavytank,
 	superheavytank,
 	artillery,
+	armory,
 	fighterplane,
 	bomberplane,
 	helicopter,
@@ -485,6 +498,12 @@ const VehicleParams[][] vehicles = {
 		VehicleParams(n_m40, t_m40, bn_m40, d_m40, c_m40, ct_m40, Vec2f(2,2)),
 		VehicleParams(n_grad, t_grad, bn_grad, d_grad, c_grad, ct_grad, Vec2f(2,2)),
 		VehicleParams(n_arti, t_arti, bn_arti, d_arti, c_arti, ct_arti, Vec2f(2,2))
+	},
+	/* Armory */
+	{
+		VehicleParams(n_armory, t_armory, bn_armory, d_armory, c_armory, ct_armory, Vec2f(2,2)),
+		VehicleParams(n_sovietarmory, t_sovietarmory, bn_sovietarmory, d_sovietarmory, c_sovietarmory, ct_sovietarmory, Vec2f(2,2)),
+		VehicleParams(n_reicharmory, t_reicharmory, bn_reicharmory, d_reicharmory, c_reicharmory, ct_reicharmory, Vec2f(2,2))
 	},
 	/* Fighter Plane */
 	{
@@ -602,11 +621,7 @@ void makeBarge(CBlob@ this, u8 discount = 0)
 
 void makeArmory(CBlob@ this, u8 discount = 0)
 {
-	ShopItem@ item = addShopItem(this, n_armory, t_armory, bn_armory, d_armory, false, false, false, ct_armory);
-	item.customButton = true;
-	item.buttonwidth = 2;
-	item.buttonheight = 2;
-	AddRequirement(item.requirements, b, s, ds, c_armory - discount);
+	makeFactionVehicle(this, 0, VehicleType::armory, discount, false, false);
 }
 
 void makeMotorcycle(CBlob@ this, u8 discount = 0)

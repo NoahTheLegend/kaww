@@ -50,12 +50,11 @@ void onInit(CBlob@ this)
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-17.0f, 6.0f)); if (w !is null) w.SetRelativeZ(10.1f);  w.ScaleBy(Vec2f(0.85f, 0.85f));}
 	{ CSpriteLayer@ w = Vehicle_addRollerWheel(this, v, 0, Vec2f(-24.0f, 4.5f)); if (w !is null) w.SetRelativeZ(10.1f); w.ScaleBy(Vec2f(0.85f, 0.85f));}
 
-	this.getShape().SetOffset(Vec2f(0, 2));
-
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
 	bool facing_left = this.getTeamNum() == teamright;
 	this.SetFacingLeft(facing_left);
+	this.getShape().SetOffset(Vec2f(facing_left ? 4 : -4, 2));
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-80.0f);

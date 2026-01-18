@@ -29,8 +29,22 @@ void onInit(CBlob@ this)
 	AddIconToken("$icon_2%$", "Scrap.png", Vec2f(16, 16), 1);
 	AddIconToken("$icon_1$", "Scrap.png", Vec2f(16, 16), 0);
 
+	f32 speed = 4500.0f;
+	if (this.getName() == "armory")
+	{
+		speed = 5000.0f;
+	}
+	else if (this.getName() == "sovietarmory")
+	{
+		speed = 6000.0f;
+	}
+	else if (this.getName() == "reicharmory")
+	{
+
+	}
+
 	Vehicle_Setup(this,
-	              4500.0f, // move speed  //103
+	              speed, // move speed  //103
 	              0.4f,  // turn speed
 	              Vec2f(0.0f, 0.57f), // jump out velocity
 	              true  // inventory access
@@ -46,25 +60,36 @@ void onInit(CBlob@ this)
 	                         0.25f // movement sound pitch modifier     0.0f = no manipulation
 	                        );
 
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(17.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(15.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-26.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
-	{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-27.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	this.getShape().SetOffset(Vec2f(0, 2)); //0,8
 
-	this.getShape().SetOffset(Vec2f(-4, 2)); //0,8
+	if (this.getName() == "armory")
+	{
+		speed = 5000.0f;
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(15.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(13.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-25.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-26.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	}
+	else if (this.getName() == "sovietarmory")
+	{
+		speed = 6000.0f;
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(15.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(13.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(3.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(1.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-14.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-15.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	}
+	else if (this.getName() == "reicharmory")
+	{
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(16.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(14.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-27.0f, 8.0f)); if (w !is null) w.SetRelativeZ(10.0f); }
+		{ CSpriteLayer@ w = Vehicle_addRubberWheel(this, v, 0, Vec2f(-28.5f, 8.0f)); if (w !is null) w.SetRelativeZ(-10.0f); }
+	}
 
 	CSprite@ sprite = this.getSprite();
 	sprite.SetZ(-100.0f);
-	
-	//CSpriteLayer@ front = sprite.addSpriteLayer("front layer", sprite.getConsts().filename, 80, 80);
-	//if (front !is null)
-	//{
-	//	front.addAnimation("default", 0, false);
-	//	int[] frames = { 0, 1, 2 };
-	//	front.animation.AddFrames(frames);
-	//	front.SetRelativeZ(0.8f);
-	//	front.SetOffset(Vec2f(0.0f, 0.0f));
-	//}
 
 	//INIT COSTS
 	InitCosts();
