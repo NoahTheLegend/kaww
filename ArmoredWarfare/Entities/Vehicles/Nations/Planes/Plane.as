@@ -933,13 +933,7 @@ void onDetach(CBlob@ this,CBlob@ detached,AttachmentPoint@ attachedPoint)
 
 bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 {
-	AttachmentPoint@ ap_pilot = this.getAttachments().getAttachmentPointByName("PILOT");
-	
-	if (ap_pilot !is null)
-	{
-		return ap_pilot.getOccupied() == null;
-	}
-	else return true;
+	return this.getTeamNum() == forBlob.getTeamNum() && !forBlob.isAttached();
 }
 
 void onHealthChange(CBlob@ this, f32 oldHealth)
