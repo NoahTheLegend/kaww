@@ -129,7 +129,7 @@ shared class PerkSharpShooter : PerkStats {
         super();
         name = "Sharp Shooter";
         id = 2;
-        reload_time = 1.5f;
+        reload_time = 1.33f;
         accuracy = 1.25f;
         additional_vision_distance = 0.15f;
         damage_body = 1.15f;
@@ -145,8 +145,8 @@ shared class PerkBloodthirsty : PerkStats {
         id = 3;
         regen_amount = 0;
         heal_factor = 0.75f;
-        kill_heal = 1.5f;
-        damage_heal = 0.35f;
+        kill_heal = 1.0f;
+        damage_heal = 0.45f;
     }
 };
 
@@ -176,7 +176,7 @@ shared class PerkLucky : PerkStats {
         super();
         name = "Lucky";
         id = 5;
-        aos_taken_time = 30;
+        aos_taken_time = 90;
         aos_healed_time = 150;
         aos_healed_time_regen = 60;
         aos_invulnerability_time = 30;

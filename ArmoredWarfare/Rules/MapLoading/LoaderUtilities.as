@@ -226,6 +226,12 @@ void onSetTile(CMap@ map, u32 index, TileType tile_new, TileType tile_old)
     if (isClient() && (tile_new == CMap::tile_ground || tile_new == CMap::tile_cdirt)) Sound::Play("dig_dirt" + (1 + XORRandom(3)) + ".ogg", map.getTileWorldPosition(index), 1.0f, 1.0f);
 	Vec2f pos = map.getTileWorldPosition(index);
 
+	if (tile_old >= CMap::tile_metal_back && tile_old <= CMap::tile_metal_back_d8
+		&& !(tile_new >= CMap::tile_metal_back && tile_new <= CMap::tile_metal_back_d8))
+	{
+		map.server_SetTile(pos, tile_old);
+	}
+
     switch(tile_new)
 	{
 		case CMap::tile_empty:

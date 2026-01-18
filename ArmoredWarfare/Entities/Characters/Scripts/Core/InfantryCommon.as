@@ -118,8 +118,8 @@ class InfantryInfo
 		classname 				= "Shotgun"; // case sensitive
 		class_hash 				= 234279893; // hash of the name
 		// DAMAGE
-		damage_body 			= 0.35f; // damage dealt to body
-		damage_head 			= 0.45f; // damage dealt on headshot
+		damage_body 			= 0.3f; // damage dealt to body
+		damage_head 			= 0.4f; // damage dealt on headshot
 		// SHAKE
 		recoil_x 				= 20.0f; // x shake (20)
 		recoil_y 				= 80.0f; // y shake (45)
@@ -138,16 +138,16 @@ class InfantryInfo
 		inaccuracy_midair 		= 15;
 		inaccuracy_hit  		= 0;
 		// movement
-		reload_walkspeed_factor = 0.55f;
+		reload_walkspeed_factor = 0.65f;
 		reload_jumpheight_factor = 1.0f;
 		stab_walkspeed_factor = 0.25f;
 		stab_jumpheight_factor = 0.8f;
 		// delayafterfire + randdelay + 1 = no change in accuracy when holding lmb down
 		// GUN
 		semiauto 				= false;
-		burst_size 				= 6; // bullets fired per click
+		burst_size 				= 8; // bullets fired per click
 		burst_rate 				= 0; // ticks per bullet fired in a burst
-		reload_time 			= 60; // time to reload
+		reload_time 			= 55; // time to reload
 		noreloadtimer           = 0; // time after each shot to prevent reloading
 		mag_size 				= 4; // max bullets in mag
 		delayafterfire 			= 15; // time between shots 4

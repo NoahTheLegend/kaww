@@ -191,7 +191,7 @@ CSpriteLayer@ LoadHead(CSprite@ this, int headIndex)
 		(headIndex * NUM_HEADFRAMES) :
 		getHeadFrame(blob, headIndex, headsPackIndex == 0);
 
-	if (player.isBot())
+	if (player !is null && player.isBot())
 	{
 		headFrame = getHeadFrame(blob, XORRandom(99), headsPackIndex == 0);
 	}
