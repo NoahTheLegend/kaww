@@ -6,17 +6,12 @@
 #include "WheelMenuCommon.as"
 #include "KnockedCommon.as"
 
-const u32 PICKUP_ERASE_TICKS = 80;
+u16[] pickup_netids;
+u16[] closest_netids;
+u16 hover_netid = 0;
 
 void onInit(CBlob@ this)
 {
-	CBlob@[] blobs;
-	this.set("pickup blobs", blobs);
-	CBlob@[] closestblobs;
-	this.set("closest blobs", closestblobs);
-
-//	this.addCommandID("detach"); in StandardControls
-
 	this.getCurrentScript().runFlags |= Script::tick_myplayer;
 	this.getCurrentScript().removeIfTag = "dead";
 
@@ -88,14 +83,12 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	bool clear = !isKnocked(this) && !this.isAttached();
-
-	if (this.isInInventory())
+	if (this.isInInventory() || isKnocked(this))
 	{
-		this.clear("pickup blobs");
-		this.clear("closest blobs");
-		
-		if (clear) return;
+		pickup_netids.clear();
+		closest_netids.clear();
+
+		return;
 	}
 
 	CControls@ controls = getControls();
@@ -103,45 +96,42 @@ void onTick(CBlob@ this)
 	// drop / pickup / throw
 	if (controls.ActionKeyPressed(AK_PICKUP_MODIFIER))
 	{
-		if (clear)
+		WheelMenu@ menu = get_wheel_menu("pickup");
+		if (this.isKeyPressed(key_pickup) && menu !is get_active_wheel_menu())
 		{
-			WheelMenu@ menu = get_wheel_menu("pickup");
-			if (this.isKeyPressed(key_pickup) && menu !is get_active_wheel_menu())
+			set_active_wheel_menu(@menu);
+		}
+
+		if (this.isKeyPressed(key_pickup))
+		{
+			GatherPickupBlobs(this);
+
+			CBlob@[]@ pickupBlobs;
+			this.get("pickup blobs", @pickupBlobs);
+
+			CBlob@[] available;
+			FillAvailable(this, available);
+
+			for (uint i = 0; i < menu.entries.length; i++)
 			{
-				set_active_wheel_menu(@menu);
-			}
+				PickupWheelMenuEntry@ entry = cast<PickupWheelMenuEntry>(menu.entries[i]);
+				entry.disabled = true;
 
-			if (this.isKeyPressed(key_pickup))
-			{
-				GatherPickupBlobs(this);
-
-				CBlob@[]@ pickupBlobs;
-				this.get("pickup blobs", @pickupBlobs);
-
-				CBlob@[] available;
-				FillAvailable(this, available, pickupBlobs);
-
-				for (uint i = 0; i < menu.entries.length; i++)
+				for (uint j = 0; j < available.length; j++)
 				{
-					PickupWheelMenuEntry@ entry = cast<PickupWheelMenuEntry>(menu.entries[i]);
-					entry.disabled = true;
-
-					for (uint j = 0; j < available.length; j++)
+					string bname = available[j].getName();
+					for (uint k = 0; k < entry.options.length; k++)
 					{
-						string bname = available[j].getName();
-						for (uint k = 0; k < entry.options.length; k++)
+						if (entry.options[k].name == bname)
 						{
-							if (entry.options[k].name == bname)
-							{
-								entry.disabled = false;
-								break;
-							}
-						}
-
-						if (!entry.disabled)
-						{
+							entry.disabled = false;
 							break;
 						}
+					}
+
+					if (!entry.disabled)
+					{
+						break;
 					}
 				}
 			}
@@ -150,8 +140,7 @@ void onTick(CBlob@ this)
 	else if (this.isKeyJustPressed(key_pickup))
 	{
 		TapPickup(this);
-
-		CBlob @carryBlob = this.getCarriedBlob();
+		CBlob@ carryBlob = this.getCarriedBlob();
 
 		if (this.isAttached()) // default drop from attachment
 		{
@@ -171,12 +160,11 @@ void onTick(CBlob@ this)
 				}
 			}
 		}
-		else if (clear && carryBlob !is null && !carryBlob.hasTag("custom drop") && (!carryBlob.hasTag("temp blob")))
+		else if (carryBlob !is null && !carryBlob.hasTag("custom drop") && (!carryBlob.hasTag("temp blob")))
 		{
-			ClearPickupBlobs(this);
+			pickup_netids.clear();
 			client_SendThrowCommand(this);
 			this.set_bool("release click", false);
-
 		}
 		else
 		{
@@ -250,56 +238,40 @@ void onTick(CBlob@ this)
 		{
 			GatherPickupBlobs(this);
 
-			CBlob@[]@ closestBlobs;
-			this.get("closest blobs", @closestBlobs);
-			closestBlobs.clear();
+			closest_netids.clear();
 			CBlob@ closest = getClosestBlob(this);
 			if (closest !is null)
 			{
-				closestBlobs.push_back(closest);
-				/*
-				if (this.isKeyJustPressed(key_action1))	// pickup
-				{
-					server_Pickup(this, this, closest);
-					this.set_bool("release click", false);
-				}
-				*/
+				closest_netids.push_back(closest.getNetworkID());
 			}
-
 		}
 
 		if (this.isKeyJustReleased(key_pickup))
 		{
-			if (this.get_bool("release click"))
+			if (this.get_bool("release click") && closest_netids.length > 0)
 			{
-				CBlob@[]@ closestBlobs;
-				this.get("closest blobs", @closestBlobs);
-				if (closestBlobs.length > 0)
-				{
-					server_Pickup(this, this, closestBlobs[0]);
-				}
+				CBlob@ closest = getBlobByNetworkID(closest_netids[0]);
+				server_Pickup(this, this, closest);
 			}
-			ClearPickupBlobs(this);
+
+			pickup_netids.clear();
 		}
 	}
 }
 
 void GatherPickupBlobs(CBlob@ this)
 {
-	CBlob@[]@ pickupBlobs;
-	this.get("pickup blobs", @pickupBlobs);
-	pickupBlobs.clear();
-	CBlob@[] blobsInRadius;
+	pickup_netids.clear();
 
-	if (this.getMap().getBlobsInRadius(this.getPosition(), this.getRadius() + 50.0f, @blobsInRadius))
+	CBlob@[] blobsInRadius;
+	if (getMap().getBlobsInRadius(this.getPosition(), this.getRadius() + 50.0f, @blobsInRadius))
 	{
 		for (uint i = 0; i < blobsInRadius.length; i++)
 		{
-			CBlob @b = blobsInRadius[i];
-
+			CBlob@ b = blobsInRadius[i];
 			if (b.canBePickedUp(this))
 			{
-				pickupBlobs.push_back(b);
+				pickup_netids.push_back(b.getNetworkID());
 			}
 		}
 	}
@@ -338,13 +310,14 @@ void ClearPickupBlobs(CBlob@ this)
 	this.clear("pickup blobs");
 }
 
-void FillAvailable(CBlob@ this, CBlob@[]@ available, CBlob@[]@ pickupBlobs)
+void FillAvailable(CBlob@ this, CBlob@[]@ available)
 {
-	for (uint i = 0; i < pickupBlobs.length; i++)
+	for (uint i = 0; i < pickup_netids.length; i++)
 	{
-		CBlob @b = pickupBlobs[i];
+		CBlob@ b = getBlobByNetworkID(pickup_netids[i]);
+		if (b is null || b is this) continue;
 
-		if (b !is this && canBlobBePickedUp(this, b))
+		if (canBlobBePickedUp(this, b))
 		{
 			available.push_back(b);
 		}
@@ -448,7 +421,7 @@ CBlob@ getClosestAimedBlob(CBlob@ this, CBlob@[] available)
 		float cursorDistance = (this.getAimPos() - current.getPosition()).Length();
 
 		float radius = current.getRadius();
-		if (radius > 3.0f && cursorDistance > current.getRadius() * (current.hasTag("dead") ? 0.5f : 1.5f)) // corpses don't count unless you really try to aim at one
+		if (radius > 3.0f && cursorDistance > radius * (current.hasTag("dead") ? 0.5f : 1.5f)) // corpses don't count unless you really try to aim at one
 		{
 			continue;
 		}
@@ -466,51 +439,75 @@ CBlob@ getClosestAimedBlob(CBlob@ this, CBlob@[] available)
 CBlob@ getClosestBlob(CBlob@ this)
 {
 	CBlob@ closest;
+	CBlob@ target; // when hovering a blob
 
-	CBlob@[]@ pickupBlobs;
-	if (this.get("pickup blobs", @pickupBlobs))
+	Vec2f pos = this.getPosition();
+
+	CBlob@[] available;
+	FillAvailable(this, available);
+
+	if (!isTapPickup(this))
 	{
-		Vec2f pos = this.getPosition();
-
-		CBlob@[] available;
-		FillAvailable(this, available, pickupBlobs);
-
-		if (!isTapPickup(this))
+		CBlob@ closestAimed = getClosestAimedBlob(this, available);
+		if (closestAimed !is null)
 		{
-			CBlob@ closestAimed = getClosestAimedBlob(this, available);
-			if (closestAimed !is null)
-			{
-				return closestAimed;
-			}
-		}
-
-		float closestScore = 999999.9f;
-
-		for (uint i = 0; i < available.length; ++i)
-		{
-			CBlob @b = available[i];
-			Vec2f bpos = b.getPosition();
-			// consider corpse center to be lower than it actually is because otherwise centers of player and corpse are on the same level,
-			// which makes corpse priority skyrocket if player is standing too close 
-			if (b.hasTag("dead")) bpos += Vec2f(0, 6.0f);
-
-			float maxDist = Maths::Max(this.getRadius() + b.getRadius() + 20.0f, 36.0f);
-
-			float dist = (bpos - pos).getLength();
-			float factor = dist / maxDist;
-			float score = getPriorityPickupScale(this, b, factor);
-
-			if (score < closestScore)
-			{
-				closestScore = score;
-				@closest = @b;
-			}
-		}
-
-		if (closest !is null) {
-			@closest = @GetBetterAlternativePickupBlobs(available, closest);
+			return closestAimed;
 		}
 	}
+
+	float closestScore = 999999.9f;
+	float drawOrderScore = -999999.9f;
+	for (uint i = 0; i < available.length; ++i)
+	{
+		CBlob@ b = available[i];
+
+		Vec2f bpos = b.getPosition();
+		// consider corpse center to be lower than it actually is because otherwise centers of player and corpse are on the same level,
+		// which makes corpse priority skyrocket if player is standing too close 
+		if (b.hasTag("dead")) bpos += Vec2f(0, 6.0f);
+
+		Vec2f[]@ hoverShape;
+		bool isPointInsidePolygon = false;
+		
+		if (b.get("hover-poly", @hoverShape))
+		{
+			isPointInsidePolygon = pointInsidePolygon(this.getAimPos(),  hoverShape, bpos, b.isFacingLeft());
+		}
+		
+		if (isPointInsidePolygon || b.isPointInside(this.getAimPos())) 
+		{
+			// Let's just get the draw order of the sprite
+			CSprite@ bs = b.getSprite();
+			float draworder = bs.getDrawOrder();
+
+			if (draworder > drawOrderScore)
+			{
+				drawOrderScore = draworder;
+				@target = @b;
+			}			
+		}
+
+
+		float maxDist = Maths::Max(this.getRadius() + b.getRadius() + 20.0f, 36.0f);
+
+		float dist = (bpos - pos).getLength();
+		float factor = dist / maxDist;
+		float score = getPriorityPickupScale(this, b, factor);
+
+		if (score < closestScore)
+		{
+			closestScore = score;
+			@closest = @b;
+		}
+	}
+
+	if (closest !is null)
+	{
+		@closest = @GetBetterAlternativePickupBlobs(available, closest);
+	}
+
+	if (target !is null)
+		return target;
 
 	return closest;
 }
@@ -586,93 +583,68 @@ void onRender(CSprite@ this)
 
 	if (blob.isKeyPressed(key_inventory))
 	{
-		CBlob @pickBlob = blob.getCarriedBlob();
-
-		if (pickBlob !is null)
+		CBlob@ carried = blob.getCarriedBlob();
+		if (carried !is null)
 		{
-			pickBlob.RenderForHUD((blob.getAimPos() + Vec2f(0.0f, 8.0f)) - blob.getPosition() , RenderStyle::normal);
+			carried.RenderForHUD((blob.getAimPos() + Vec2f(0.0f, 8.0f)) - blob.getPosition() , RenderStyle::normal);
 		}
 	}
 
-	if (blob.isKeyPressed(key_pickup))
+	if (!blob.isKeyPressed(key_pickup)) return;
+
+	// pickup render
+	bool hover = false;
+
+	CBlob@ closest = null;
+	if (closest_netids.length > 0)
 	{
-		// pickup render
-		bool tickPlayed = false;
-		bool hover = false;
-		CBlob@[]@ pickupBlobs;
-		CBlob@[]@ closestBlobs;
-		blob.get("closest blobs", @closestBlobs);
-		CBlob@ closestBlob = null;
-		if (closestBlobs.length > 0)
+		@closest = getBlobByNetworkID(closest_netids[0]);
+	}
+
+	// render outline only if hovering
+	for (uint i = 0; i < pickup_netids.length; i++)
+	{
+		CBlob@ b = getBlobByNetworkID(pickup_netids[i]);
+		if (b is null) continue;
+
+		if (canBlobBePickedUp(blob, b))
 		{
-			@closestBlob = closestBlobs[0];
+			b.RenderForHUD(RenderStyle::outline_front);
 		}
 
-		if (blob.get("pickup blobs", @pickupBlobs))
+		if (b is closest)
 		{
-			// render outline only if hovering
-			for (uint i = 0; i < pickupBlobs.length; i++)
+			hover = true;
+			Vec2f dimensions;
+			GUI::SetFont("menu");
+
+			/*
+			GUI::DrawCircle(
+				getDriver().getScreenPosFromWorldPos(b.getPosition()),
+				32.0f,
+				SColor(255, 255, 255, 255)
+			);
+			*/
+
+			string invName = getTranslatedString(b.getInventoryName());
+			GUI::GetTextDimensions(invName, dimensions);
+			GUI::DrawText(invName, getDriver().getScreenPosFromWorldPos(b.getPosition() - Vec2f(0, -b.getHeight() / 2)) - Vec2f(dimensions.x / 2, -8.0f), color_white);
+
+			// draw mouse hover effect
+			b.RenderForHUD(RenderStyle::additive);
+
+			if (hover_netid != b.getNetworkID())
 			{
-				CBlob @b = pickupBlobs[i];
-
-				bool canBePicked = canBlobBePickedUp(blob, b);
-
-				if (canBePicked)
-				{
-					b.RenderForHUD(RenderStyle::outline_front);
-				}
-
-				if (b is closestBlob)
-				{
-					hover = true;
-					Vec2f dimensions;
-					GUI::SetFont("menu");
-
-					/*
-					GUI::DrawCircle(
-						getDriver().getScreenPosFromWorldPos(b.getPosition()),
-						32.0f,
-						SColor(255, 255, 255, 255)
-					);
-					*/
-
-					GUI::GetTextDimensions(b.getInventoryName(), dimensions);
-					GUI::DrawText(getTranslatedString(b.getInventoryName()), getDriver().getScreenPosFromWorldPos(b.getPosition() - Vec2f(0, -b.getHeight() / 2)) - Vec2f(dimensions.x / 2, -8.0f), color_white);
-
-					// draw mouse hover effect
-					//if (canBePicked)
-					{
-						b.RenderForHUD(RenderStyle::additive);
-
-						if (!tickPlayed)
-						{
-							if (blob.get_u16("hover netid") != b.getNetworkID())
-							{
-								Sound::Play(CFileMatcher("/select.ogg").getFirst());
-							}
-
-							blob.set_u16("hover netid", b.getNetworkID());
-							tickPlayed = true;
-						}
-
-						//break;
-					}
-				}
-
+				Sound::Play(CFileMatcher("/select.ogg").getFirst());
 			}
 
-			// no hover
-			if (!hover)
-			{
-				blob.set_u16("hover netid", 0);
-			}
-
-			// render outlines
-
-			//for (uint i = 0; i < pickupBlobs.length; i++)
-			//{
-			//    pickupBlobs[i].RenderForHUD( RenderStyle::outline_front );
-			//}
+			hover_netid = b.getNetworkID();
 		}
+	}
+
+	// no hover
+	if (!hover)
+	{
+		hover_netid = 0;
 	}
 }

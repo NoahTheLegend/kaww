@@ -12,9 +12,6 @@ int zoomLevel = 1; // we can declare a global because this script is just used b
 void onInit(CBlob@ this)
 {
 	this.set_s32("tap_time", getGameTime());
-	CBlob@[] blobs;
-	this.set("pickup blobs", blobs);
-	this.set_u16("hover netid", 0);
 	this.set_bool("release click", false);
 	this.set_bool("can button tap", true);
 	this.addCommandID("pickup");
@@ -89,14 +86,17 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("drop_inventory"))
 	{
-		if (!isServer()) return;
 		if (!canDropMats(this)) return;
 
 		CInventory@ inv = this.getInventory();
-		while (inv !is null && inv.getItemsCount() > 0)
+		if (inv is null) return;
+
+		for (u16 i = 0; i < 50; i++) // getItemsCount() is bullshit
 		{
-			CBlob@ blob = inv.getItem(0);
-			this.server_PutOutInventory(blob);
+			CBlob@ item = inv.getItem(0);
+			if (item is null) break;
+
+			this.server_PutOutInventory(item);
 		}
 	}
 }
