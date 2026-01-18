@@ -267,7 +267,7 @@ void onRender(CSprite@ this)
 	GUI::DrawIcon("ClassIconSimple.png", icon_num, Vec2f(48, 48), Vec2f(icon_num == 0 ? -14 : 46, getScreenHeight()-166), 2);
 
 	bool isTDM = (getMap().tilemapwidth <= 300);
-	if (isTDM)
+	if (isTDM && icon_num > 0) // builder is 0
 	{
 		GUI::DrawIcon("JetpackIcon.png", 0, Vec2f(32,32), Vec2f(32.0f, getHUDY() - dim.y - 250.0f), 1.0f);
 		GUI::DrawText("C\nT\nR\nL", Vec2f(20.0f, getHUDY() - dim.y - 242.0f), SColor(0x99ffffff));
