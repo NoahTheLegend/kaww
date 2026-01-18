@@ -177,6 +177,28 @@ void onTick(CBlob@ this)
 
 	Pierce(this, velocity, angle); // pierce tiles
 
+	if (this.hasTag("artillery"))
+	{
+		Vec2f direction = velocity;
+		direction.Normalize();
+
+		Vec2f position = this.getPosition();
+		Vec2f old_position = this.getOldPosition();
+
+		for (uint i = 0; i < (old_position - position).Length(); i += 4)
+		{
+			TileType type = map.getTile(old_position + direction * i).type;
+			if (isSolid(map, type))
+			{
+				for (u8 j = 0; j < 2 + XORRandom(3); j++)
+				{
+					map.server_DestroyTile(old_position + direction * i, 0.5f, this);
+					//map.server_SetTile(old_position + direction * i, CMap::tile_wood_back);
+				}
+			}
+		}
+	}
+
 	if (this.getTickSinceCreated() == 0) this.set_Vec2f("from_pos", this.getPosition());
 	this.setAngleDegrees(-angle + 180.0f);
 }
@@ -259,6 +281,7 @@ void Pierce(CBlob@ this, Vec2f velocity, const f32 angle)
 	direction.Normalize();
 
 	Vec2f position = this.getPosition();
+	Vec2f old_position = this.getOldPosition();
 	Vec2f tip_position = position + direction * 13.0f;
 	Vec2f middle_position = position + direction * 6.0f;
 	Vec2f tail_position = position - direction * 8.0f;
