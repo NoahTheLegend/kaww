@@ -89,17 +89,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	}
 	else if (cmd == this.getCommandID("drop_inventory"))
 	{
+		if (!isServer()) return;
 		if (!canDropMats(this)) return;
 
 		CInventory@ inv = this.getInventory();
-		if (inv is null) return;
-
-		for (u16 i = 0; i < 50; i++) // getItemsCount() is bullshit
+		while (inv !is null && inv.getItemsCount() > 0)
 		{
-			CBlob@ item = inv.getItem(0);
-			if (item is null) break;
-
-			this.server_PutOutInventory(item);
+			CBlob@ blob = inv.getItem(0);
+			this.server_PutOutInventory(blob);
 		}
 	}
 }
