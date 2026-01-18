@@ -16,12 +16,15 @@ void onInit(CBlob@ this)
 	this.getCurrentScript().tickFrequency = 10;
 	
 	this.Tag("explosive");
+	this.Tag("heavy bomb");
 	this.Tag("always bullet collide");
 	this.Tag("trap");
 	this.Tag("bomber ammo");
 	this.Tag("no_armory_pickup");
 	this.Tag("weapon");
+
 	this.set_f32("hand_rotation_damp", 0.15f);
+
 	this.Tag("builder always hit");
 	this.Tag("builder urgent hit");
 

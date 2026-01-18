@@ -16,6 +16,7 @@ void onInit(CBlob@ this)
 	this.getCurrentScript().tickFrequency = 5;
 	
 	this.Tag("explosive");
+	this.Tag("heavy bomb");
 	this.Tag("always bullet collide");
 	this.Tag("trap");
 	this.Tag("bomber ammo");

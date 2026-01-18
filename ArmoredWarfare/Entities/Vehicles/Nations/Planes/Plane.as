@@ -196,6 +196,7 @@ void onInit(CBlob@ this)
 	this.addCommandID("sync_ammo");
 	this.addCommandID("reload");
     this.addCommandID("shoot bullet");
+	this.addCommandID("drop");
 
 	this.set_f32("velocity", 0.0f);
 	this.set_u8("mode", 0);
@@ -285,7 +286,6 @@ void onTick(CBlob@ this)
 	if (ap_pilot !is null)
 	{
 		CBlob@ pilot = ap_pilot.getOccupied();
-		
 		if (pilot !is null)
 		{
 			StandardControls(this, pilot, ap_pilot);
@@ -307,6 +307,16 @@ void onTick(CBlob@ this)
 	if (this.hasTag("falling")) this.setAngleDegrees(this.getAngleDegrees() + (Maths::Sin(getGameTime() / 5.0f) * 6.0f));
 }
 
+namespace BombTypes
+{
+	enum type
+	{
+		SMALL,
+		BIG,
+		TOTAL
+	};
+}
+
 void StandardControls(CBlob@ this, CBlob@ pilot, AttachmentPoint@ ap_pilot)
 {
 	if (pilot.isMyPlayer() && pilot.getControls() !is null)
@@ -315,6 +325,23 @@ void StandardControls(CBlob@ this, CBlob@ pilot, AttachmentPoint@ ap_pilot)
 		{
 			this.add_u8("mode", 1);
 			if (this.get_u8("mode") > 1) this.set_u8("mode", 0);
+		}
+
+		if (pilot.isKeyJustPressed(key_inventory))
+		{
+			CInventory@ inv = this.getInventory();
+			if (inv is null) return;
+
+			u8 bombs = inv.getCount("mat_smallbomb");
+			u8 bombs_907kg = inv.getCount("mat_907kgbomb");
+			u8 bombs_5t = inv.getCount("mat_5tbomb");
+
+			if (bombs > 0 && (bombs_907kg > 0 || bombs_5t > 0))
+			{
+				Sound::Play("CycleInventory.ogg");
+				this.add_u8("bomb_type_selected", 1);
+				if (this.get_u8("bomb_type_selected") >= BombTypes::TOTAL) this.set_u8("bomb_type_selected", 0);
+			}
 		}
 	}
 
@@ -528,6 +555,7 @@ void FallingLogic(CBlob@ this, AttachmentPoint@ ap_pilot)
 
 void DroppingBombsLogic(CBlob@ this, CBlob@ pilot, AttachmentPoint@ ap_pilot)
 {
+	if (!isClient()) return;
 	if (ap_pilot.isKeyPressed(key_action3) && !this.isOnGround() && this.getVelocity().Length() > 5.0f && this.get_u32("lastDropTime") < getGameTime()) 
 	{
 		CInventory@ inv = this.getInventory();
@@ -540,72 +568,17 @@ void DroppingBombsLogic(CBlob@ this, CBlob@ pilot, AttachmentPoint@ ap_pilot)
 			{
 				CBlob@ item = inv.getItem(i);
 				if (item is null || item.getName() == "ammo") continue;
+				if (item.getName() == "mat_smallbomb" && this.get_u8("bomb_type_selected") != BombTypes::SMALL) continue;
+				if (item.hasTag("heavy bomb") && this.get_u8("bomb_type_selected") != BombTypes::BIG) continue;
 
-				if (can_drop) 
+				if (can_drop)
 				{
-					u16 droptime = this.get_u16("bomb_drop_rate_smallbomb");
-					u16 droptime_heavy = this.get_u16("bomb_drop_rate_bigbomb");
+					CBitStream params;
+					params.write_u16(pilot.getNetworkID());
+					params.write_u8(this.get_u8("bomb_type_selected"));
+					params.write_u16(item.getNetworkID());
+					this.SendCommand(this.getCommandID("drop"), params);
 
-					bool not_ammo = item.getName() != "ammo";
-					u32 quantity = item.getQuantity();
-
-					if (!item.hasTag("bomber ammo") && not_ammo)
-					{ 
-						if (isServer())
-						{
-							CBlob@ b = server_CreateBlob("paracrate", this.getTeamNum(), this.getPosition()+Vec2f(0,8));
-							if (b !is null)
-							{
-								b.Tag("no_expiration");
-								for (u8 j = 0; j < inv.getItemsCount(); j++)
-								{
-									CBlob@ put = inv.getItem(j);
-									if (put is null) continue;
-									if (put.getName() == "mat_smallbomb"
-										|| put.getName() == "ammo") continue;
-
-									this.server_PutOutInventory(put);
-									b.server_PutInInventory(put);
-									j--;
-								}
-							}
-						}
-
-						this.set_u32("lastDropTime", getGameTime() + droptime);
-						break;
-					}
-					else if (not_ammo)
-					{
-						const f32 v = this.get_f32("velocity");
-						Vec2f d = this.get_Vec2f("direction");
-
-						if (isServer())
-						{
-							CBlob@ dropped = server_CreateBlob(item.getName(), this.getTeamNum(), this.getPosition());
-							dropped.server_SetQuantity(1);
-							dropped.setVelocity(this.getVelocity()-Vec2f(0, this.getVelocity().y*0.4));
-							dropped.AddForce(Vec2f(0, 20.0f));
-							dropped.setPosition(this.getPosition() - Vec2f(0,-24.0));
-							dropped.IgnoreCollisionWhileOverlapped(this);
-							dropped.SetDamageOwnerPlayer(pilot.getPlayer());
-							dropped.Tag("no pickup");
-							dropped.Tag("change rotation");
-
-							if (quantity > 0)
-							{
-								item.server_SetQuantity(quantity - 1);
-							}
-							if (item.getQuantity() == 0) 
-							{
-								item.server_Die();
-							}
-						}
-
-						if (isClient() && itemCount > 0) 
-							this.getSprite().PlaySound("bridge_open", 1.0f, 1.0f);
-
-						this.set_u32("lastDropTime", getGameTime() + (item !is null && item.hasTag("heavy weight") ? droptime_heavy : droptime));
-					}
 					break;
 				}
 			}
@@ -821,6 +794,90 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 					break;
 				}
 			}
+		}
+	}
+	else if (cmd == this.getCommandID("drop"))
+	{
+		u16 pilot_id;
+		if (!params.saferead_u16(pilot_id)) return;
+		
+		u8 type;
+		if (!params.saferead_u8(type)) return;
+
+		u16 item_id;
+		if (!params.saferead_u16(item_id)) return;
+
+		CBlob@ pilot = getBlobByNetworkID(pilot_id);
+		CBlob@ item = getBlobByNetworkID(item_id);
+
+		bool not_ammo = item.getName() != "ammo";
+		u32 quantity = item.getQuantity();
+
+		u16 droptime = this.get_u16("bomb_drop_rate_smallbomb");
+		u16 droptime_heavy = this.get_u16("bomb_drop_rate_bigbomb");
+
+		CInventory@ inv = this.getInventory();
+		if (inv is null) return;
+
+		u32 itemCount = inv.getItemsCount();
+		if (pilot is null || item is null) return;
+		
+
+		if (!item.hasTag("bomber ammo") && not_ammo)
+		{
+			if (isServer())
+			{
+				CBlob@ b = server_CreateBlob("paracrate", this.getTeamNum(), this.getPosition() + Vec2f(0, 8));
+				if (b !is null)
+				{
+					b.Tag("no_expiration");
+					for (u8 j = 0; j < inv.getItemsCount(); j++)
+					{
+						CBlob@ put = inv.getItem(j);
+						if (put is null) continue;
+						if (put.getName() == "mat_smallbomb"
+							|| put.getName() == "ammo") continue;
+
+						this.server_PutOutInventory(put);
+						b.server_PutInInventory(put);
+						j--;
+					}
+				}
+			}
+
+			this.set_u32("lastDropTime", getGameTime() + droptime);
+		}
+		else if (not_ammo)
+		{
+			const f32 v = this.get_f32("velocity");
+			Vec2f d = this.get_Vec2f("direction");
+
+			if (isServer())
+			{
+				CBlob@ dropped = server_CreateBlob(item.getName(), this.getTeamNum(), this.getPosition());
+				dropped.server_SetQuantity(1);
+				dropped.setVelocity(this.getVelocity()-Vec2f(0, this.getVelocity().y * 0.4));
+				dropped.AddForce(Vec2f(0, 20.0f));
+				dropped.setPosition(this.getPosition() - Vec2f(0,-24.0));
+				dropped.IgnoreCollisionWhileOverlapped(this);
+				dropped.SetDamageOwnerPlayer(pilot.getPlayer());
+				dropped.Tag("no pickup");
+				dropped.Tag("change rotation");
+
+				if (quantity > 0)
+				{
+					item.server_SetQuantity(quantity - 1);
+				}
+				if (item.getQuantity() == 0) 
+				{
+					item.server_Die();
+				}
+			}
+
+			if (isClient() && itemCount > 0) 
+				this.getSprite().PlaySound("bridge_open", 1.0f, 1.0f);
+
+			this.set_u32("lastDropTime", getGameTime() + (item !is null && item.hasTag("heavy weight") ? droptime_heavy : droptime));
 		}
 	}
 }
@@ -1083,13 +1140,17 @@ void onRender(CSprite@ this)
 		{
 			Vec2f oldpos = gunner_blob.getOldPosition();
 			Vec2f pos = gunner_blob.getPosition();
-			Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
+			Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0, 0);
 
-			GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
+			GUI::DrawSunkenPane(pos2d - Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
 			GUI::DrawIcon("Materials.png", 31, Vec2f(16,16), pos2d+Vec2f(-40, 42.0f), 0.75f, 1.0f);
 			GUI::SetFont("menu");
-			if (blob.getInventory() !is null)
-				GUI::DrawTextCentered(""+blob.getInventory().getCount("ammo"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
+
+			CInventory@ inv = blob.getInventory();
+			if (inv !is null)
+			{
+				GUI::DrawTextCentered(""+inv.getCount("ammo"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
+			}
 		}
 	}
 
@@ -1102,20 +1163,69 @@ void onRender(CSprite@ this)
 		// draw ammo count
 		Vec2f oldpos = pilot_blob.getOldPosition();
 		Vec2f pos = pilot_blob.getPosition();
-		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0 , 0);
+		Vec2f pos2d = getDriver().getScreenPosFromWorldPos(Vec2f_lerp(oldpos, pos, getInterpolationFactor())) - Vec2f(0, 0);
 
 		if (!show_ammo)
 		{
-			GUI::DrawSunkenPane(pos2d-Vec2f(40.0f, -48.0f), pos2d+Vec2f(18.0f, 70.0f));
-			GUI::DrawIcon("Materials.png", 50, Vec2f(16,16), pos2d+Vec2f(-40, 42.0f), 0.75f, 1.0f);
-			if (blob.getInventory() !is null)
-				GUI::DrawTextCentered(""+blob.getInventory().getCount("mat_smallbomb"), pos2d+Vec2f(-8, 58.0f), SColor(255, 255, 255, 0));
+			u8 type_selected = blob.get_u8("bomb_type_selected");
+
+			f32 y_start = 58.0f;
+			f32 y_next = 38.0f;
+			
+			if (type_selected == BombTypes::BIG) // big bombs
+			{
+				f32 swap = y_start;
+				y_start = y_next;
+				y_next = swap;
+			}
+
+			GUI::DrawSunkenPane(pos2d - Vec2f(40.0f, -48.0f), pos2d + Vec2f(18.0f, 70.0f));
+			if (type_selected == BombTypes::SMALL) GUI::DrawIcon("Materials.png", 50, Vec2f(16, 16), pos2d+Vec2f(-40, y_start - 13), 0.75f, 1.0f);
+			
+			CInventory@ inv = blob.getInventory();
+			if (inv !is null)
+			{
+				u8 bombs = inv.getCount("mat_smallbomb");
+				u8 bombs_907kg = inv.getCount("mat_907kgbomb");
+				u8 bombs_5t = inv.getCount("mat_5tbomb");
+
+				GUI::DrawTextCentered(""+bombs, pos2d + Vec2f(-8, y_start), SColor(255, 255, 255, 0));
+				if (bombs_907kg > 0 || bombs_5t > 0)
+				{
+					if (bombs == 0)
+					{
+						blob.set_u8("bomb_type_selected", BombTypes::BIG); // switch to big bombs if no small bombs
+						type_selected = BombTypes::BIG;
+					}
+					
+					u8 b_count = 0;
+					u8 b_icon = 0;
+					if (bombs_5t > 0)
+					{
+						bombs_907kg = 0; // cant have both same time
+						b_count = bombs_5t;
+					}
+					else
+					{
+						b_count = bombs_907kg;
+					}
+
+					if (type_selected == BombTypes::BIG) GUI::DrawIcon("Materials.png", bombs_5t > 0 ? 52 : b_count == 2 ? 44 : 44 - 8, Vec2f(16, 16), pos2d + Vec2f(-44, y_next - 20), 1.0f, 1.0f);
+					GUI::DrawTextCentered(""+b_count, pos2d + Vec2f(-8, y_next), SColor(255, 255, 255, 0));
+				}
+				else
+				{
+					blob.set_u8("bomb_type_selected", BombTypes::SMALL); // reset to small bombs if there are no big bombs
+				}
+			}
 		}
 
 		if (blob.get_u8("mode") != 0) return;
+
 		f32 deg = blob.getAngleDegrees();
 		bool fl = blob.isFacingLeft();
-		f32 new_deg = (fl?180:0)+deg;
+
+		f32 new_deg = (fl ? 180 : 0) + deg;
 		int d = 64.0f;
 
 		Vec2f offset = Vec2f(0, 0).RotateBy(new_deg);
@@ -1175,8 +1285,9 @@ void onRender(CSprite@ this)
 			col_eng = SColor(155,255,0,0);
 		}
 
-		GUI::DrawTextCentered("RPM: "+(Maths::Max(0, Maths::Round(rpm)*10))+".0\nEFF: "+force_factor+"%", pos2d+Vec2f(0,96), col);
-		GUI::DrawTextCentered("ENG: "+state, pos2d+Vec2f(0,112), col_eng);
+		GUI::DrawTextCentered("RPM: " + (Maths::Max(0, Maths::Round(rpm) * 10))+".0\nEFF: " + force_factor + "%", pos2d + Vec2f(0, 96), col);
+		GUI::DrawTextCentered("ENG: " + state, pos2d+Vec2f(0,112), col_eng);
+		GUI::DrawTextCentered("Press inventory key [F] to cycle bombs", pos2d + Vec2f(0,130), SColor(55, 255, 255, 255));
 	}
 }
 
