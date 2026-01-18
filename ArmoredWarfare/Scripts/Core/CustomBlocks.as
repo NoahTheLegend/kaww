@@ -229,23 +229,23 @@ bool isCDirtTile(TileType tile)
 bool isScrapTile(CMap@ map, Vec2f pos)
 {
 	u16 tile = map.getTile(pos).type;
-	return tile >= CMap::tile_scrap && tile <= CMap::tile_scrap_v14;
+	return tile >= CMap::tile_scrap && tile <= CMap::tile_scrap_d6;
 }
 
 bool isScrapTile(TileType tile)
 {
-	return tile >= CMap::tile_scrap && tile <= CMap::tile_scrap_v14;
+	return tile >= CMap::tile_scrap && tile <= CMap::tile_scrap_d6;
 }
 
 bool isMetalTile(CMap@ map, Vec2f pos)
 {
 	u16 tile = map.getTile(pos).type;
-	return tile >= CMap::tile_metal && tile <= CMap::tile_metal_v14;
+	return tile >= CMap::tile_metal && tile <= CMap::tile_metal_d8;
 }
 
 bool isMetalTile(TileType tile)
 {
-	return tile >= CMap::tile_metal && tile <= CMap::tile_metal_v14;
+	return tile >= CMap::tile_metal && tile <= CMap::tile_metal_d8;
 }
 
 bool isMetalBackTile(CMap@ map, Vec2f pos)
