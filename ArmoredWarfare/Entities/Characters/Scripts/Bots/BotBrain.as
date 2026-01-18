@@ -3,9 +3,9 @@
 #include "BrainCommon.as"
 #include "InfantryCommon.as"
 #include "RunnerHead.as"
+#include "FireCommon.as"
 
 const bool emotes = false; // debug emotes
-
 const bool realemotes = true; // player like emotes
 
 void onInit(CBrain@ this)
@@ -698,7 +698,7 @@ void onTick(CBrain@ this)
 		
 	}
 	else{ // infantry logic
-		CBlob @check;
+		CBlob@ check;
 		u8 strategy = blob.get_u8("strategy");
 
 		if (blob.getHealth() < blob.getInitialHealth() / 2.5) // low hp, seek cover
@@ -892,7 +892,7 @@ void onTick(CBrain@ this)
 
 														if (new_seat !is null)
 														{
-															if (new_seat.getOccupied() is null) // check if nobody is in the seat
+															if (new_seat.getOccupied() is null && !blob.hasTag(burning_tag)) // check if nobody is in the seat
 															{
 																choosen_seat.getOccupied().server_AttachTo(blob, @new_seat);
 															}
@@ -904,7 +904,7 @@ void onTick(CBrain@ this)
 													}
 												}
 												else {
-													if (choosen_seat.getOccupied() is null) // check if nobody is in the seat
+													if (choosen_seat.getOccupied() is null && !blob.hasTag(burning_tag)) // check if nobody is in the seat
 													{
 														secondarytarget.server_AttachTo(blob, @choosen_seat);
 													}
@@ -935,7 +935,7 @@ void onTick(CBrain@ this)
 											// random seat in the vehicle is empty
 
 											// if right next to the seat, attach
-											if ((blob.getPosition() - ap.getPosition()).getLength() < 11)
+											if ((blob.getPosition() - ap.getPosition()).getLength() < 11 && !blob.hasTag(burning_tag))
 											{
 												secondarytarget.server_AttachTo(blob, @ap);
 
