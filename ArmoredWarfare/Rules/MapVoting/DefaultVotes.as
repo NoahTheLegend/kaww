@@ -915,7 +915,7 @@ void onMainMenuCreated(CRules@ this, CContextMenu@ menu)
 		{
 			CContextMenu@ classic_map_menu = Menu::addContextMenu(mapmenu, "Classic Map");
 			CContextMenu@ large_map_menu = Menu::addContextMenu(mapmenu, "Large Map");
-			CContextMenu@ average_map_menu = Menu::addContextMenu(mapmenu, "Small Map");
+			CContextMenu@ average_map_menu = Menu::addContextMenu(mapmenu, "Average Map");
 			CContextMenu@ flag_map_menu = Menu::addContextMenu(mapmenu,  "Flags Map");
 			CContextMenu@ truck_map_menu = Menu::addContextMenu(mapmenu,  "Trucks Map");
 			CContextMenu@ tdm_map_menu = Menu::addContextMenu(mapmenu,  "TDM Map");
