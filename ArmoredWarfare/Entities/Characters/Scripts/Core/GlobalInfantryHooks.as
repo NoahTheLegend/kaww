@@ -240,7 +240,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 void ManageParachute(CBlob@ this, PerkStats@ stats)
 {
-	if (this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder() || this.hasTag("dead"))
+	CMap::Sector@ tree_sector = this.getMap().getSectorAtPosition(this.getPosition(), "tree");
+	if ((tree_sector !is null && this.isKeyPressed(key_up))
+		|| this.isOnGround() || this.isInWater() || this.isAttached() || this.isOnLadder() || this.hasTag("dead"))
 	{
 		if (this.hasTag("parachute"))
 		{

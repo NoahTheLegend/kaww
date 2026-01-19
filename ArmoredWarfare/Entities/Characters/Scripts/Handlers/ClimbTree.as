@@ -51,7 +51,5 @@ void onTick(CBlob@ this)
 	else
 	{
 		this.set_u16("climbed_tree", 0);
-
 	}
-
 }
