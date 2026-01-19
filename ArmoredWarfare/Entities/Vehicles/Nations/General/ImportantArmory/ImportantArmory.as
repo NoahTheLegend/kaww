@@ -239,15 +239,20 @@ void onDie(CBlob@ this)
 			CBlob@[] armories;
 			getBlobsByTag("importantarmory", @armories);
 
+			bool enemy_armories_exist = false;
+			bool friendly_armories_exist = false;
+
 			for (u8 i = 0; i < armories.size(); i++)
 			{
 				CBlob@ armory = armories[i];
 				if (armory is null) continue;
 
-				if (armory.getTeamNum() == this.getTeamNum()) dont_end = true; // there are armories remaining, keep playing
-				else draw = false; // there are enemy armories remaining, set their team won
-				// else draw
+				if (armory.getTeamNum() == this.getTeamNum()) friendly_armories_exist = true;
+				else enemy_armories_exist = true;
 			}
+
+			dont_end = friendly_armories_exist;
+			draw = !enemy_armories_exist && !friendly_armories_exist;
 		}
 
 		if (dont_end) return;
