@@ -810,6 +810,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		CBlob@ pilot = getBlobByNetworkID(pilot_id);
 		CBlob@ item = getBlobByNetworkID(item_id);
 
+		if (pilot is null || item is null) return;
+
 		bool not_ammo = item.getName() != "ammo";
 		u32 quantity = item.getQuantity();
 
@@ -820,9 +822,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		if (inv is null) return;
 
 		u32 itemCount = inv.getItemsCount();
-		if (pilot is null || item is null) return;
-		
-
 		if (!item.hasTag("bomber ammo") && not_ammo)
 		{
 			if (isServer())
