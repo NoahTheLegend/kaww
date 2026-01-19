@@ -803,14 +803,27 @@ bool HitBlob(CBlob@ this, Vec2f mapPos, CBlob@ hit_blob, f32 radius, f32 damage,
 	//explosion particle
 	makeSmallExplosionParticle(hit_blob_pos);
 
+	u16 netID = 0;
+	if (this.exists("last_dmg_player"))
+	{
+		netID = this.get_u16("last_dmg_player");
+	}
+	CPlayer@ dmg_player = getPlayerByNetworkId(netID);
+	CBlob@ hitterblob = dmg_player !is null ? @dmg_player.getBlob() is null ? @this : @dmg_player.getBlob() : @this;
+	if (hitterblob !is null) print("Hitter: " + hitterblob.getName());
+
 	//hit the object
-	this.server_Hit(hit_blob, hit_blob_pos,
+	if (hitterblob !is null)
+	{
+		hitterblob.server_Hit(hit_blob, hit_blob_pos,
 	                bombforce, dam,
 	                hitter, hitter == Hitters::water || //hit with water
 	                isOwnerBlob(this, hit_blob) ||	//allow selfkill with bombs
 	                should_teamkill || hit_blob.hasTag("dead") || //hit all corpses ("dead" tag)
 					hit_blob.hasTag("explosion always teamkill") // check for override with tag
 	               );
+	}
+
 	return true;
 }
 
@@ -831,13 +844,25 @@ bool WarfareHitBlob(CBlob@ this, CBlob@ hit_blob, f32 radius, f32 damage, const 
 	//explosion particle
 	makeSmallExplosionParticle(hit_blob_pos);
 
+	u16 netID = 0;
+	if (this.exists("last_dmg_player"))
+	{
+		netID = this.get_u16("last_dmg_player");
+	}
+	CPlayer@ dmg_player = getPlayerByNetworkId(netID);
+	CBlob@ hitterblob = dmg_player !is null ? @dmg_player.getBlob() is null ? @this : @dmg_player.getBlob() : @this;
+	if (hitterblob !is null) print("Hitter: " + hitterblob.getName());
 	//hit the object
-	this.server_Hit(hit_blob, hit_blob_pos,
+	if (hitterblob !is null)
+	{
+		hitterblob.server_Hit(hit_blob, hit_blob_pos,
 	                bombforce, dam,
 	                hitter, hitter == Hitters::water || //hit with water
 	                isOwnerBlob(this, hit_blob) ||	//allow selfkill with bombs
 	                should_teamkill || hit_blob.hasTag("dead") || //hit all corpses ("dead" tag)
 					hit_blob.hasTag("explosion always teamkill") // check for override with tag
 	               );
+	}
+
 	return true;
 }

@@ -855,6 +855,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!isFlipped(this)) return;
 	if (this.hasTag("aerial")) return;
+
 	if (caller.getDistanceTo(this) > this.getRadius()) return;
 	if (this.hasTag("turret") || this.hasTag("machinegun") || this.hasTag("autoflip")) return;
 	
@@ -1495,6 +1496,13 @@ void DoExplosion(CBlob@ this, f32 damage, f32 map_damage, f32 radius)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
+	CPlayer@ player = hitterBlob.getPlayer();
+	CPlayer@ dmg_owner = hitterBlob.getDamageOwnerPlayer();
+	if (player !is null || dmg_owner !is null)
+	{
+		this.set_u16("last_dmg_player", player !is null ? player.getNetworkID() : dmg_owner.getNetworkID());
+	}
+
 	if (this.hasTag("broken") || this.hasTag("falling") || (this.exists("ignore_damage") && this.get_u32("ignore_damage") > getGameTime())) return 0;
 	
 	if (customData == Hitters::fire)
