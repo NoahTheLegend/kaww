@@ -805,7 +805,7 @@ void AttackBlob(CBlob@ blob, CBlob @target)
 	// shoot the target
 	f32 distance;
 	Vec2f col;
-	if (!getMap().rayCastSolid(blob.getPosition() + blob.getVelocity()*3.0f, targetPos + getRandomVelocity( 0, target.getRadius() , 360 ) + target.getVelocity()*5.0f, col))
+	if (!getMap().rayCastSolidNoBlobs(blob.getPosition() + blob.getVelocity()*3.0f, targetPos + getRandomVelocity( 0, target.getRadius(), 360 ) + target.getVelocity()*5.0f, col))
 	{
 		if (targetDistance > 8.0f)
 		{
