@@ -47,10 +47,5 @@ void onCollision( CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f coll
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (blob.hasTag("flesh") || blob.hasTag("collideswithglass"))
-	{
-		return true;
-	}
-
-    return false;
+	return true;
 }
