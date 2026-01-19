@@ -235,7 +235,7 @@ void onInit(CBlob@ this)
 		case _desertmausturret:
 		{
 			weaponRating = 5;
-			linear_length = 20.0f;
+			linear_length = 24.0f;
 			scale_infantry_damage = 0.25f;
 			scale_impact_damage = 1.5f;
 			impact_radius = 42.0f;
@@ -244,7 +244,7 @@ void onInit(CBlob@ this)
 		case _is7turret:
 		{
 			weaponRating = 5;
-			linear_length = 26.0f;
+			linear_length = 32.0f;
 			scale_infantry_damage = 0.25f;
 			scale_impact_damage = 1.5f;
 			impact_radius = 32.0f;
@@ -253,7 +253,7 @@ void onInit(CBlob@ this)
 		case _kingtigerturret:
 		{
 			weaponRating = 5;
-			linear_length = 18.0f;
+			linear_length = 32.0f;
 			scale_infantry_damage = 0.15f;
 			scale_impact_damage = 1.4f;
 			impact_radius = 32.0f;
@@ -262,7 +262,7 @@ void onInit(CBlob@ this)
 		case _t10turret:
 		{
 			weaponRating = 4;
-			linear_length = 14.0f;
+			linear_length = 24.0f;
 			scale_infantry_damage = 0.175f;
 			scale_impact_damage = 1.4f;
 			break;
@@ -270,7 +270,7 @@ void onInit(CBlob@ this)
 		case _m1abramsturret:
 		{
 			weaponRating = 4;
-			linear_length = 16.0f;
+			linear_length = 24.0f;
 			scale_infantry_damage = 0.15f;
 			scale_impact_damage = 1.5f;
 			break;
@@ -279,7 +279,7 @@ void onInit(CBlob@ this)
 		case _obj430turret:
 		{
 			weaponRating = 4;
-			linear_length = 10.0f;
+			linear_length = 16.0f;
 			scale_infantry_damage = 0.15f;
 			scale_impact_damage = 1.2f;
 			break;
@@ -289,7 +289,7 @@ void onInit(CBlob@ this)
 		case _leopard1turret:
 		{
 			weaponRating = 3;
-			linear_length = 10.0f;
+			linear_length = 16.0f;
 			scale_infantry_damage = 0.25f;
 			scale_impact_damage = 1.2f;
 			break;
@@ -297,7 +297,7 @@ void onInit(CBlob@ this)
 		case _pak38:
 		{
 			weaponRating = 1;
-			linear_length = 4.0f;
+			linear_length = 8.0f;
 			scale_impact_damage = 1.25f;
 			scale_infantry_damage = 0.25f;
 			impact_radius = 16.0f;
@@ -306,7 +306,7 @@ void onInit(CBlob@ this)
 		case _bc25turret:
 		{
 			weaponRating = 2;
-			linear_length = 4.0f;
+			linear_length = 16.0f;
 			scale_impact_damage = 1.25f;
 			scale_infantry_damage = 0.25f;
 			break;
