@@ -13,7 +13,7 @@ const u16 max_times_used = 8; // max ammo
 const f32 light_radius = 16.0f;
 
 const u16 times_cut_per_time_used = 3; // how many cuts to decrease ammo by 1
-const f32 drill_damage = 0.1f;
+const f32 drill_damage = 0.33f;
 const u16 drill_frequency_tiles = 8;
 const u16 drill_frequency_blobs = 8; // how often to drill
 const u32 drill_spinup = 20; // sound spinup
