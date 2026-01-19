@@ -420,13 +420,13 @@ enum VehicleType
 	heavytank,
 	superheavytank,
 	artillery,
-	armory,
 	fighterplane,
 	bomberplane,
 	helicopter,
 	machinegun,
 	weapons1,
 	special1,
+	armory,
 	TOTAL
 };
 
@@ -499,12 +499,6 @@ const VehicleParams[][] vehicles = {
 		VehicleParams(n_grad, t_grad, bn_grad, d_grad, c_grad, ct_grad, Vec2f(2,2)),
 		VehicleParams(n_arti, t_arti, bn_arti, d_arti, c_arti, ct_arti, Vec2f(2,2))
 	},
-	/* Armory */
-	{
-		VehicleParams(n_armory, t_armory, bn_armory, d_armory, c_armory, ct_armory, Vec2f(2,2)),
-		VehicleParams(n_sovietarmory, t_sovietarmory, bn_sovietarmory, d_sovietarmory, c_sovietarmory, ct_sovietarmory, Vec2f(2,2)),
-		VehicleParams(n_reicharmory, t_reicharmory, bn_reicharmory, d_reicharmory, c_reicharmory, ct_reicharmory, Vec2f(2,2))
-	},
 	/* Fighter Plane */
 	{
 		VehicleParams(n_bf109, t_bf109, bn_bf109, d_bf109, c_bf109, ct_bf109, Vec2f(4,2)),
@@ -540,6 +534,12 @@ const VehicleParams[][] vehicles = {
 		VehicleParams(n_bc25t, t_bc25t, bn_bc25t, d_bc25t, c_bc25t, ct_bc25t, Vec2f(2,2)),
 		VehicleParams(n_bmp, t_bmp, bn_bmp, d_bmp, c_bmp, ct_bmp, Vec2f(2,2)),
 		VehicleParams(n_leopard1, t_leopard1, bn_leopard1, d_leopard1, c_leopard1, ct_leopard1, Vec2f(2,2))
+	},
+	/* Armory */
+	{
+		VehicleParams(n_armory, t_armory, bn_armory, d_armory, c_armory, ct_armory, Vec2f(2,2)),
+		VehicleParams(n_sovietarmory, t_sovietarmory, bn_sovietarmory, d_sovietarmory, c_sovietarmory, ct_sovietarmory, Vec2f(2,2)),
+		VehicleParams(n_reicharmory, t_reicharmory, bn_reicharmory, d_reicharmory, c_reicharmory, ct_reicharmory, Vec2f(2,2))
 	}
 };
 

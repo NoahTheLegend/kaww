@@ -893,7 +893,7 @@ class BulletHolder
 		this.onFakeTick(map);
 		bullets.push_back(this);
 	}
-	
+
 	void Clean()
 	{
 		bullets.clear();

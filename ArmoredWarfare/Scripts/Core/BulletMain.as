@@ -9,9 +9,11 @@
 #include "BulletCase.as";
 #include "InfantryCommon.as";
 #include "PerksCommon.as";
+#include "GunCommon.as";
+#include "Recoil.as";
+#include "Bullet.as";
 
 Random@ r = Random(12345);
-
 BulletHolder@ BulletGrouped = BulletHolder();
 
 Vertex[] v_r_bullet;
@@ -22,6 +24,7 @@ SColor eatUrGreens = SColor(255,0,255,0);
 int FireGunID;
 int FireVehicleID;
 int FireShotgunID;
+int FireWeaponID;
 
 f32 FRAME_TIME = 0;
 //
@@ -54,6 +57,7 @@ void Reset(CRules@ this)
 	FireGunID     = this.addCommandID("fireGun");
 	FireVehicleID = this.addCommandID("fireVehicleGun");
 	FireShotgunID = this.addCommandID("fireShotgun");
+	FireWeaponID  = this.addCommandID("fireWeapon");
 	v_r_bullet.clear();
 	v_r_fade.clear();
 	BulletGrouped.Clean();
@@ -233,7 +237,7 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 			}
 		}
 	}
-	if (cmd == rules.getCommandID("fireVehicleGun"))
+	else if (cmd == rules.getCommandID("fireVehicleGun"))
 	{
 		CBlob@ this = getBlobByNetworkID(params.read_netid());
 		CBlob@ gun = getBlobByNetworkID(params.read_netid());
@@ -387,4 +391,77 @@ void onCommand(CRules@ rules, u8 cmd, CBitStream @params)
 			}
 		}
 	}
+    else if (cmd == rules.getCommandID("fireWeapon"))
+    {
+        CBlob@ hoomanBlob = getBlobByNetworkID(params.read_netid());
+        CBlob@ gunBlob    = getBlobByNetworkID(params.read_netid());
+
+        if (hoomanBlob !is null && gunBlob !is null)
+        {
+            if (gunBlob.exists("clip"))
+            {
+                if (gunBlob.get_u8("clip") < 1) return;
+                else gunBlob.sub_u8("clip", 1);
+            }
+
+            f32 angle = params.read_f32();
+            const Vec2f pos = params.read_Vec2f();
+            u32 timeSpawnedAt = params.read_u32();
+            CMap@ map = getMap(); 
+
+            GunSettings@ settings;
+            gunBlob.get("gun_settings", @settings);
+			if (gunBlob.isFacingLeft()) angle += 180.0f;
+
+            if (settings !is null)
+            {
+                u8 burstSize = settings.B_PER_SHOT;
+
+                for (u8 i = 0; i < burstSize; i++)
+                {
+                    f32 tempAngle = angle;
+                    if (burstSize > 1) // Shotgun/Burst spread logic
+                    {
+                        f32 spread = settings.B_SPREAD;
+                        tempAngle += (XORRandom(2) == 0 ? -1 : 1) * (XORRandom(spread * 100) / 100.0f);
+                    }
+
+                    // Refactored to use BulletObj instead of Bullet
+                    BulletObj@ bullet = BulletObj(
+                        hoomanBlob.getNetworkID(), 
+                        tempAngle, 
+                        pos, 
+                        0,                       // type (normal)
+                        settings.B_DAMAGE,       // damageBody
+                        settings.B_DAMAGE * 1.5f, // damageHead (assuming 1.5x headshot)
+                        settings.B_PENETRATION, 
+                        timeSpawnedAt,
+                        settings.B_HITTER, 
+                        settings.B_TTL, 
+                        settings.B_SPEED
+                    );
+
+                    if (bullet !is null)
+                    {
+                        // Catch up to current game time (Network Latency Compensation)
+                        for (u32 time = timeSpawnedAt; time < getGameTime(); time++)
+                        {
+                            bullet.onFakeTick(map);
+                        }
+
+                        BulletGrouped.AddNewObj(bullet);
+                    }
+                }
+
+                // Visual Effects
+                if (isClient())
+                {
+                    if (gunBlob.hasTag("powerful"))
+                    {
+                        ParticleAnimated("LargeSmoke", gunBlob.getPosition() + Vec2f(gunBlob.getRadius() * (gunBlob.isFacingLeft() ? -1.0f : 1.0f), -1.5f + (XORRandom(11) * 0.1f)).RotateBy(angle), Vec2f(0.0f, -0.25f), 0, 0.35f + (XORRandom(21) * 0.01f), 2, 0, false);
+                    }
+                }
+            }
+        }
+    }
 }

@@ -2,6 +2,7 @@
 //  StandardFire.as - Vamist
 
 #include "GunStandard.as";
+#include "InfantryCommon.as";
  
 void gunInit(CBlob@ this) 
 {

@@ -39,6 +39,8 @@ void onInit(CBlob@ this)
 
 	this.maxQuantity = 3;
 	if (isServer()) this.server_SetQuantity(this.maxQuantity);
+
+	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_right);
 }
 
 void onDie(CBlob@ this)

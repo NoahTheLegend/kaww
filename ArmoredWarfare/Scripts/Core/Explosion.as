@@ -810,7 +810,6 @@ bool HitBlob(CBlob@ this, Vec2f mapPos, CBlob@ hit_blob, f32 radius, f32 damage,
 	}
 	CPlayer@ dmg_player = getPlayerByNetworkId(netID);
 	CBlob@ hitterblob = dmg_player !is null ? @dmg_player.getBlob() is null ? @this : @dmg_player.getBlob() : @this;
-	if (hitterblob !is null) print("Hitter: " + hitterblob.getName());
 
 	//hit the object
 	if (hitterblob !is null)
@@ -851,7 +850,7 @@ bool WarfareHitBlob(CBlob@ this, CBlob@ hit_blob, f32 radius, f32 damage, const 
 	}
 	CPlayer@ dmg_player = getPlayerByNetworkId(netID);
 	CBlob@ hitterblob = dmg_player !is null ? @dmg_player.getBlob() is null ? @this : @dmg_player.getBlob() : @this;
-	if (hitterblob !is null) print("Hitter: " + hitterblob.getName());
+
 	//hit the object
 	if (hitterblob !is null)
 	{
