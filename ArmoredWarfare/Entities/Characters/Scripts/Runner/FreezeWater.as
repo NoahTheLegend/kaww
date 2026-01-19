@@ -29,7 +29,7 @@ void onRestart(CRules@ this)
 int max_iters_per_tick = 0;
 int current_offset = 0;
 
-int search_height = 3;
+int search_height = 2;
 int interval = 5;
 const f32 unfreeze_chance = 0.5f;
 
