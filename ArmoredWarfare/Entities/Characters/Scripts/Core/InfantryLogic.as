@@ -1158,9 +1158,8 @@ bool ModifyTDM(CBlob@ this, RunnerMoveVars@ moveVars)
 			CSprite@ sprite = this.getSprite();
 			if (sprite is null) return false;
 
-			if (controls.isKeyPressed(KEY_LSHIFT) && this.get_f32("jet_current") > jet_fuel_min)
+			if (controls.ActionKeyPressed(AK_BUILD_MODIFIER) && this.get_f32("jet_current") > jet_fuel_min)
 			{
-
 				if (!hasBar(bars, "jet"))
 				{
 					SColor color = SColor(255, 255, 2255, 55);
