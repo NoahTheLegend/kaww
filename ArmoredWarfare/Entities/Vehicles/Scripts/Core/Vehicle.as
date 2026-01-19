@@ -854,6 +854,7 @@ void onTick(CBlob@ this)
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!isFlipped(this)) return;
+	if (this.hasTag("aerial")) return;
 	if (caller.getDistanceTo(this) > this.getRadius()) return;
 	if (this.hasTag("turret") || this.hasTag("machinegun") || this.hasTag("autoflip")) return;
 	
