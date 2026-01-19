@@ -17,6 +17,7 @@ const u16 c_anti_tank_grenade_nazi = 5;
 const u16 c_anti_tank_grenade_soviet = 5;
 const u16 c_land_mine = 4;
 const u16 c_c4 = 10;
+const u16 c_redflare = 14;
 const u16 c_burger = 1;
 const u16 c_medkit = 2;
 const u16 c_helmet = 3;
@@ -46,6 +47,7 @@ const u16 ct_anti_tank_grenade_nazi = 0;
 const u16 ct_anti_tank_grenade_soviet = 0;
 const u16 ct_land_mine = 0;
 const u16 ct_c4 = 0;
+const u16 ct_redflare = 0;
 const u16 ct_burger = 0;
 const u16 ct_medkit = 0;
 const u16 ct_helmet = 0;
@@ -75,6 +77,7 @@ const string n_anti_tank_grenade_nazi = "Anti-Tank Grenade";
 const string n_anti_tank_grenade_soviet = "Anti-Tank Grenade";
 const string n_land_mine = "Land Mine";
 const string n_c4 = "Craft a C-4 Explosive";
+const string n_redflare = "Aerial Strike Flare";
 const string n_burger = "Burger";
 const string n_medkit = "Medkit";
 const string n_helmet = "Helmet";
@@ -102,6 +105,7 @@ const string d_anti_tank_grenade_nazi = "Press SPACE while holding to arm, ~5 se
 const string d_anti_tank_grenade_soviet = "Press SPACE while holding to arm, ~5 seconds until boom. Effective against vehicles.";
 const string d_land_mine = "Takes a while to arm, once activated it will explode upon contact with the enemy.";
 const string d_c4 = "A strong explosive, very effective against blocks and doors.\n\nTakes some time after activation to explode.\nCan be defused.";
+const string d_redflare = "Call for an aerial strike.";
 const string d_burger = "Heal to full health instantly.";
 const string d_medkit = "If hurt, press E to heal. 6 uses.";
 const string d_helmet = "Standard issue helmet, take 40% less bullet damage, and occasionally bounce bullets.";
@@ -131,6 +135,7 @@ const string bn_anti_tank_grenade_nazi = "mat_atgrenadenazi";
 const string bn_anti_tank_grenade_soviet = "mat_atgrenadesoviet";
 const string bn_land_mine = "mine";
 const string bn_c4 = "c4";
+const string bn_redflare = "redflare";
 const string bn_burger = "food";
 const string bn_medkit = "medkit";
 const string bn_helmet = "helmet";
@@ -160,6 +165,7 @@ const string t_anti_tank_grenade_nazi = "$atgrenadenazi$";
 const string t_anti_tank_grenade_soviet = "$atgrenadesoviet$";
 const string t_land_mine = "$mine$";
 const string t_c4 = "$"+bn_c4+"$";
+const string t_redflare = "$redflare$";
 const string t_burger = "$food$";
 const string t_medkit = "$medkit$";
 const string t_helmet = "$helmet$";
@@ -446,4 +452,17 @@ void makeC4(CBlob@ this, u8 discount = 0)
     item.buttonwidth = 1;
     item.buttonheight = 1;
     AddRequirement(item.requirements, b, s, ds, c_c4 - discount);
+}
+
+void makeRedFlare(CBlob@ this, u8 discount = 0)
+{
+    const string b = "blob";
+    const string s = "mat_scrap";
+    const string ds = "Scrap";
+
+    ShopItem@ item = addShopItem(this, n_redflare, t_redflare, bn_redflare, d_redflare, true, false);
+    item.customButton = true;
+    item.buttonwidth = 1;
+    item.buttonheight = 1;
+    AddRequirement(item.requirements, b, s, ds, c_redflare - discount);
 }

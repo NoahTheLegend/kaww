@@ -525,9 +525,9 @@ const VehicleParams[][] vehicles = {
 	},
 	/* Weapons 1 */
 	{
-		VehicleParams(n_jav, t_jav, bn_jav, d_jav, c_jav, ct_jav, Vec2f(2,1)),
-		VehicleParams(n_apsniper, t_apsniper, bn_apsniper, d_apsniper, c_apsniper, ct_apsniper, Vec2f(2,1)),
-		VehicleParams(n_pak38, t_pak38, bn_pak38, d_pak38, c_pak38, ct_pak38, Vec2f(2,1), false, true)
+		VehicleParams(n_jav, t_jav, bn_jav, d_jav, c_jav, ct_jav, Vec2f(1,1)),
+		VehicleParams(n_apsniper, t_apsniper, bn_apsniper, d_apsniper, c_apsniper, ct_apsniper, Vec2f(1,1)),
+		VehicleParams(n_pak38, t_pak38, bn_pak38, d_pak38, c_pak38, ct_pak38, Vec2f(1,1), false, true)
 	},
 	/* Special 1 */
 	{
@@ -621,7 +621,8 @@ void makeBarge(CBlob@ this, u8 discount = 0)
 
 void makeArmory(CBlob@ this, u8 discount = 0)
 {
-	makeFactionVehicle(this, 0, VehicleType::armory, discount, false, false);
+	u8 tn = this.getTeamNum();
+	makeFactionVehicle(this, tn, VehicleType::armory, discount, false, false);
 }
 
 void makeMotorcycle(CBlob@ this, u8 discount = 0)

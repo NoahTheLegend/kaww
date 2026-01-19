@@ -109,6 +109,7 @@ void onInit(CBlob@ this)
 	
 	u8 teamleft = getRules().get_u8("teamleft");
 	u8 teamright = getRules().get_u8("teamright");
+
 	this.SetFacingLeft(this.getTeamNum() == teamright);
 }
 
@@ -190,6 +191,7 @@ void InitShop(CBlob@ this)
 	makeExtraUtils(this);
 	makeSmallBombs(this);
 	makeC4(this);
+	makeRedFlare(this);
 	makeFactionVehicle(this, this.getTeamNum(), VehicleType::weapons1, 0, false, true);
 	makeMortar(this);
 	makeFactionVehicle(this, this.getTeamNum(), VehicleType::machinegun, 0, false, true);

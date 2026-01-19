@@ -10,7 +10,7 @@ void onInit(CBlob@ this)
 	this.getShape().SetRotationsAllowed(true);
 
 	this.addCommandID("sync");
-	this.set_u8("bombs_remaining", 5 + XORRandom(3));
+	this.set_u8("bombs_remaining", 6 + XORRandom(3));
 	this.set_u8("max_bombs", this.get_u8("bombs_remaining"));
 
 	if (isClient())

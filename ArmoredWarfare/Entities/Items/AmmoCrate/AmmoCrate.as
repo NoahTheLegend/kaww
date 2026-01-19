@@ -72,7 +72,10 @@ void onInit(CBlob@ this)
 			"mat_14mmround",
     	    "mat_bolts",
 
-    	    "pipewrench"
+    	    "pipewrench",
+			"redflare",
+			"projector",
+			"plasmacutter"
     	};
     	array<float> _chances =
     	{
@@ -92,7 +95,10 @@ void onInit(CBlob@ this)
 			0.033,
 			0.05,
 			
-    	    0.05
+    	    0.05,
+			0.05,
+			0.05,
+			0.025
     	};
     	array<u16> _amount =
     	{
@@ -112,6 +118,9 @@ void onInit(CBlob@ this)
 			(XORRandom(6)+1)*10,
 			(XORRandom(4)+1)*6,
 			
+			1,
+			1,
+			1,
 			1
     	};
 
