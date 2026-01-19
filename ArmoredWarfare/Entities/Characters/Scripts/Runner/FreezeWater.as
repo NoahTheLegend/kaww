@@ -72,7 +72,8 @@ void onTick(CRules@ this)
                         }
                     }
 
-                    if (!has_room)
+                    CMap::Sector@ sector = map.getSectorAtPosition(tile_pos, "no build");
+                    if (!has_room && sector is null)
                     {
                         map.server_SetTile(tile_pos, CMap::tile_ice);
                     }
