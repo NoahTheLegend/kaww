@@ -42,6 +42,9 @@ void onTick(CSprite@ this)
 
 			f32 pitch = 1.0f;
 			CMap@ map = blob.getMap();
+
+			CBlob@ desert_blob = getBlobByName("info_desert");
+			bool desert_blob_null = desert_blob is null;
 			
 			if (map.isTileCastle(tile))
 			{
@@ -66,7 +69,7 @@ void onTick(CSprite@ this)
                 pitch = 0.75f + XORRandom(150) * 0.001f;
                 this.PlayRandomSound("StepIce", Maths::Min(0.25f, volume), pitch);
             }
-			else if ((map.isTileGround(tile) || isCDirtTile(tile)) && !snowy && map.isTileGrass(up_tile))
+			else if ((map.isTileGround(tile) || isCDirtTile(tile)) && !snowy && map.isTileGrass(up_tile) && desert_blob_null)
 			{
 				this.PlayRandomSound("leaves_through", Maths::Min(0.25f, volume));
 			}
@@ -77,7 +80,11 @@ void onTick(CSprite@ this)
 			}
 			else
 			{
-				this.PlayRandomSound("/StoneStep", volume);
+				if (!desert_blob_null && (map.isTileGround(tile) || isCDirtTile(tile)))
+				{
+					this.PlayRandomSound("/sand_run", volume * 1.1f);
+				}
+				else this.PlayRandomSound("/StoneStep", volume);
 			}
 		}
 	}
