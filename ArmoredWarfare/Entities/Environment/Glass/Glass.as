@@ -12,9 +12,10 @@ void onInit(CBlob@ this)
 	this.Tag("builder urgent hit");
 	this.Tag("passable");
 	this.Tag("bulletpassable");
+	this.Tag("solid");
 }
 
-f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData )
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
 	if (customData == Hitters::sword)
 	{

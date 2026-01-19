@@ -70,7 +70,7 @@ void onDie(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	if (blob.getName() == "barge") return true;
+	if (blob.getName() == "barge" || blob.hasTag("solid")) return true;
 	return ((blob.hasTag("door") && blob.getShape().getConsts().collidable) || blob.getName() == "wooden_platform");
 }
 

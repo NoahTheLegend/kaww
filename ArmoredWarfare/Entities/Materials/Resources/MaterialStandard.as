@@ -65,9 +65,8 @@ void onQuantityChange(CBlob@ this, int old)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-  if (blob.hasTag('solid')) return true;
-
-  if (blob.getShape().isStatic()) return true;
+  if (blob.hasTag("solid")) return blob.isCollidable();
+  if (blob.getShape().isStatic()) return blob.isCollidable();
 
   return false;
 }

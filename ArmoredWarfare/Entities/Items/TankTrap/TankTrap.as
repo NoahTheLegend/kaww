@@ -56,11 +56,10 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	this.SetMass(this.isOnGround()?2500:250);
-	if (this.isAttached())
-	{
-		return false;
-	}
+	this.SetMass(this.isOnGround() ? 2500 : 250);
+	if (blob.hasTag("solid")) return blob.isCollidable();
+
+	if (this.isAttached()) return false;
 	if (blob.hasTag("vehicle") && blob.getTeamNum() < 7 && this.getTeamNum() != blob.getTeamNum())
 	{
 		return true;
