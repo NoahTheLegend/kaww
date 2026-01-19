@@ -29,7 +29,7 @@ void onRestart(CRules@ this)
 int max_iters_per_tick = 0;
 int current_offset = 0;
 
-int search_height = 1;
+int search_height = 3;
 int interval = 5;
 const f32 unfreeze_chance = 0.5f;
 
@@ -59,7 +59,24 @@ void onTick(CRules@ this)
                     }
                 }
 
-                if (!ignore_tile) map.server_SetTile(tile_pos, CMap::tile_ice);
+                if (!ignore_tile)
+                {
+                    bool has_room = false;
+                    for (u8 i = 0; i < search_height; i++)
+                    {
+                        Tile tile_above = map.getTile(tile_pos - Vec2f(0, 8 * (i + 1)));
+                        if (map.isTileBackground(tile_above))
+                        {
+                            has_room = true;
+                            break;
+                        }
+                    }
+
+                    if (!has_room)
+                    {
+                        map.server_SetTile(tile_pos, CMap::tile_ice);
+                    }
+                }
             }
         }
 
