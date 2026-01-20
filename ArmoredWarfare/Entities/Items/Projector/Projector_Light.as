@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 
 	this.addCommandID("sync");
 
-	if (isClient())
+	if (isClient() && getLocalPlayer() !is null)
 	{
 		CBitStream params;
 		params.write_bool(true);
