@@ -220,3 +220,21 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ ap)
 {
 	this.getShape().SetRotationsAllowed(true);
 }
+
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	if (blob.hasTag("trap")) return false;
+	if (blob.hasTag("destructable"))
+	{
+		return true;
+	}
+	if (blob.hasTag("structure") && (!blob.hasTag("bunker") || blob.getName() == "sandbags" || blob.getTeamNum() == this.getTeamNum()))
+	{
+		return false;
+	}
+	if (blob.hasTag("flesh"))
+	{
+		return false;
+	}
+	return (!blob.hasTag("vehicle") && blob.isCollidable());
+}
