@@ -556,7 +556,7 @@ void FallingLogic(CBlob@ this, AttachmentPoint@ ap_pilot)
 void DroppingBombsLogic(CBlob@ this, CBlob@ pilot, AttachmentPoint@ ap_pilot)
 {
 	if (!isClient()) return;
-	if (!ap_pilot.isMyPlayer()) return;
+	if (!pilot.isMyPlayer()) return;
 
 	if (ap_pilot.isKeyPressed(key_action3) && !this.isOnGround() && this.getVelocity().Length() > 5.0f && this.get_u32("lastDropTime") < getGameTime()) 
 	{
