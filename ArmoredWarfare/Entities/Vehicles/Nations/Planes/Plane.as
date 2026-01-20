@@ -564,7 +564,7 @@ void DroppingBombsLogic(CBlob@ this, CBlob@ pilot, AttachmentPoint@ ap_pilot)
 		if (inv !is null) 
 		{
 			u32 itemCount = inv.getItemsCount();
-			bool can_drop =  this.getAngleDegrees() > 335 || this.getAngleDegrees() < 45;
+			bool can_drop =  this.getAngleDegrees() > 335 || this.getAngleDegrees() < 45 && getGameTime() > this.get_u32("lastDropTime");
 
 			for (u8 i = 0; i < itemCount; i++)
 			{
@@ -822,6 +822,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 		CInventory@ inv = this.getInventory();
 		if (inv is null) return;
+
+		if (getGameTime() < this.get_u32("lastDropTime")) return;
 
 		u32 itemCount = inv.getItemsCount();
 		if (!item.hasTag("bomber ammo") && not_ammo)
