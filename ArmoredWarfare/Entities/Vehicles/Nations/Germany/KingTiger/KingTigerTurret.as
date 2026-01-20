@@ -17,7 +17,7 @@ void onInit(CBlob@ this)
 	this.Tag("secondary gun");
 
 	// machinegun stuff
-	this.set_u8("TTL", 35);
+	this.set_u8("TTL", 45);
 	this.set_Vec2f("KB", Vec2f(0,0));
 	this.set_u8("speed", 16);
 	this.set_s32("custom_hitter", HittersAW::machinegunbullet);
