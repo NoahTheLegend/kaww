@@ -134,7 +134,7 @@ void onInit(CBlob@ this)
 		case _t10turret:
 		case _m1abramsturret:
 		case _obj430turret:
-		armorRating = 5; break;
+		armorRating = 4; break;
 		
 		case _t10:
 		case _kingtiger:
@@ -375,6 +375,7 @@ void onInit(CBlob@ this)
 		case _desertmaus:
 		backsideOffset = 32.0f; break;
 
+		case _m1abrams:
 		case _t10:
 		case _bc25t:
 		case _e50:
@@ -394,7 +395,6 @@ void onInit(CBlob@ this)
 
 		case _pszh4:
 		case _is7:
-		case _m1abrams:
 		case _obj430:
 		case _m40:
 		case _radarapc:
@@ -482,7 +482,7 @@ void onInit(CBlob@ this)
 		intake = -50.0f; break;
 		
 		case _m1abrams:
-		intake = 10.0f; break;
+		intake = -10.0f; break;
 
 		case _e50:
 		case _bmp:
